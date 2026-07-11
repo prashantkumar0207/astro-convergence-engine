@@ -1,0 +1,655 @@
+{
+ "schema": "astro_kernel_regression_v1",
+ "profile": {
+  "profile_id": "ASTRO_KERNEL_CALC_PROFILE_V1",
+  "engine": "Swiss Ephemeris via pyswisseph",
+  "pyswisseph_version": "2.10.03",
+  "ephemeris_mode": "MOSHIER analytical (SEFLG_MOSEPH). NOTE: no Swiss Ephemeris data files present in this environment; production must pin sepl*/semo* (DE431-based) files and re-run.",
+  "frame": "geocentric, apparent (light-time + aberration applied), true equinox of date (precession + nutation), standard Swiss Ephemeris apparent-position pipeline",
+  "delta_t": "Swiss Ephemeris internal deltat() model, logged per run",
+  "zodiac": "sidereal; tropical intermediate computed then ayanamsha applied by swisseph",
+  "ayanamsha_primary": "SIDM_KRISHNAMURTI (swisseph implementation of KP/Krishnamurti)",
+  "ayanamsha_probes": "SIDM_LAHIRI, SIDM_KRISHNAMURTI, SIDM_KRISHNAMURTI_VP291 (if available in build)",
+  "node_mode_primary": "MEAN_NODE - IDENTIFIED from both Brihat cases (True-node runs mis-fit Rahu-Ketu by 1.0-1.6 deg; mean-node residual ~ +40 arcsec). KundliStar True-Node setting belongs to the KundliStar app profile, a different fixture set",
+  "node_mode_probe": "MEAN_NODE (diagnostic only)",
+  "ketu": "Rahu + 180 deg (mod 360)",
+  "houses": "Placidus via swe.houses_ex with sidereal flag; Ascendant = ascmc[0]",
+  "polar_policy": "Placidus undefined above polar circles; swisseph default fallback (Porphyry) applies; all fixture latitudes < 31N so the edge case is unexercised here and flagged for production tests",
+  "internal_precision": "full float64 longitudes end-to-end; DMS is display-only and is never fed back; hierarchy interval ownership uses exact rational arithmetic with [start,end) rule",
+  "timezone": "IANA tzdb via Python zoneinfo (Asia/Kolkata); IST = UTC+5:30, no DST in any fixture era",
+  "place_resolution": "static gazetteer v0 (PLACES below) from standard references; proprietary app place databases may differ - differences are reported, never silently fitted",
+  "error_metric": "absolute angular error in arc-seconds; never percentage"
+ },
+ "cases": [
+  {
+   "label": "CASE C",
+   "place_used": {
+    "lat": 25.6,
+    "lon": 85.1333
+   },
+   "profile_probe": [
+    {
+     "ayanamsha": "LAHIRI",
+     "node": "TRUE",
+     "mean_abs_arcsec": 1225.84,
+     "median_abs_arcsec": 370.18,
+     "max_abs_arcsec": 5616.95
+    },
+    {
+     "ayanamsha": "LAHIRI",
+     "node": "MEAN",
+     "mean_abs_arcsec": 341.48,
+     "median_abs_arcsec": 356.34,
+     "max_abs_arcsec": 468.8
+    },
+    {
+     "ayanamsha": "KRISHNAMURTI",
+     "node": "TRUE",
+     "mean_abs_arcsec": 1046.61,
+     "median_abs_arcsec": 66.88,
+     "max_abs_arcsec": 5965.62
+    },
+    {
+     "ayanamsha": "KRISHNAMURTI",
+     "node": "MEAN",
+     "mean_abs_arcsec": 58.66,
+     "median_abs_arcsec": 36.33,
+     "max_abs_arcsec": 166.36
+    },
+    {
+     "ayanamsha": "KRISHNAMURTI_VP291",
+     "node": "TRUE",
+     "mean_abs_arcsec": 1064.97,
+     "median_abs_arcsec": 95.28,
+     "max_abs_arcsec": 5893.16
+    },
+    {
+     "ayanamsha": "KRISHNAMURTI_VP291",
+     "node": "MEAN",
+     "mean_abs_arcsec": 88.53,
+     "median_abs_arcsec": 86.07,
+     "max_abs_arcsec": 192.59
+    }
+   ],
+   "best_probe": {
+    "ayanamsha": "KRISHNAMURTI",
+    "node": "MEAN",
+    "mean_abs_arcsec": 58.66,
+    "median_abs_arcsec": 36.33,
+    "max_abs_arcsec": 166.36
+   },
+   "planets": [
+    {
+     "body": "Ascendant",
+     "fixture_dms": "030:42:20",
+     "computed_deg": 30.739192,
+     "delta_arcsec": 121.1,
+     "fx_lords": "Ve/Su/Ra/Ve",
+     "calc_lords": "Ve/Su/Ra/Ve",
+     "lords_match": "YYYY"
+    },
+    {
+     "body": "Sun",
+     "fixture_dms": "245:53:26",
+     "computed_deg": 245.888632,
+     "delta_arcsec": -6.9,
+     "fx_lords": "Ju/Ke/Ra/Ju",
+     "calc_lords": "Ju/Ke/Ra/Ju",
+     "lords_match": "YYYY"
+    },
+    {
+     "body": "Moon",
+     "fixture_dms": "001:15:05",
+     "computed_deg": 1.261045,
+     "delta_arcsec": 34.8,
+     "fx_lords": "Ma/Ke/Ve/Su",
+     "calc_lords": "Ma/Ke/Ve/Mo",
+     "lords_match": "YYYN"
+    },
+    {
+     "body": "Mars",
+     "fixture_dms": "190:30:30",
+     "computed_deg": 190.499636,
+     "delta_arcsec": -31.3,
+     "fx_lords": "Ve/Ra/Sa/Sa",
+     "calc_lords": "Ve/Ra/Sa/Sa",
+     "lords_match": "YYYY"
+    },
+    {
+     "body": "Mercury",
+     "fixture_dms": "224:59:27",
+     "computed_deg": 224.988493,
+     "delta_arcsec": -8.4,
+     "fx_lords": "Ma/Sa/Ju/Ju",
+     "calc_lords": "Ma/Sa/Ju/Ju",
+     "lords_match": "YYYY"
+    },
+    {
+     "body": "Jupiter",
+     "fixture_dms": "292:31:37",
+     "computed_deg": 292.499446,
+     "delta_arcsec": -99.0,
+     "fx_lords": "Sa/Mo/Ve/Me",
+     "calc_lords": "Sa/Mo/Ve/Me",
+     "lords_match": "YYYY"
+    },
+    {
+     "body": "Venus",
+     "fixture_dms": "238:53:15",
+     "computed_deg": 238.882274,
+     "delta_arcsec": -18.8,
+     "fx_lords": "Ma/Me/Sa/Ve",
+     "calc_lords": "Ma/Me/Sa/Ve",
+     "lords_match": "YYYY"
+    },
+    {
+     "body": "Saturn",
+     "fixture_dms": "220:27:24",
+     "computed_deg": 220.449944,
+     "delta_arcsec": -24.2,
+     "fx_lords": "Ma/Sa/Su/Ma",
+     "calc_lords": "Ma/Sa/Su/Ma",
+     "lords_match": "YYYY"
+    },
+    {
+     "body": "Rahu",
+     "fixture_dms": "012:48:40",
+     "computed_deg": 12.821637,
+     "delta_arcsec": 37.9,
+     "fx_lords": "Ma/Ke/Me/Ju",
+     "calc_lords": "Ma/Ke/Me/Ju",
+     "lords_match": "YYYY"
+    },
+    {
+     "body": "Ketu",
+     "fixture_dms": "192:48:40",
+     "computed_deg": 192.821637,
+     "delta_arcsec": 37.9,
+     "fx_lords": "Ve/Ra/Me/Me",
+     "calc_lords": "Ve/Ra/Me/Me",
+     "lords_match": "YYYY"
+    },
+    {
+     "body": "Uranus",
+     "fixture_dms": "235:20:32",
+     "computed_deg": 235.308852,
+     "delta_arcsec": -120.1,
+     "fx_lords": "Ma/Me/Ra/Ke",
+     "calc_lords": "Ma/Me/Ra/Ke",
+     "lords_match": "YYYY"
+    },
+    {
+     "body": "Neptune",
+     "fixture_dms": "249:34:38",
+     "computed_deg": 249.623432,
+     "delta_arcsec": 166.4,
+     "fx_lords": "Ju/Ke/Sa/Sa",
+     "calc_lords": "Ju/Ke/Sa/Sa",
+     "lords_match": "YYYY"
+    },
+    {
+     "body": "Pluto",
+     "fixture_dms": "193:03:00",
+     "computed_deg": 193.082826,
+     "delta_arcsec": 118.2,
+     "fx_lords": "Ve/Ra/Me/Ve",
+     "calc_lords": "Ve/Ra/Me/Ve",
+     "lords_match": "YYYY"
+    }
+   ],
+   "cusps": [
+    {
+     "cusp": "1",
+     "fixture_dms": "030:42:20",
+     "computed_deg": 30.739192,
+     "delta_arcsec": 121.1,
+     "fx_lords": "Ve/Su/Ra/Ve",
+     "calc_lords": "Ve/Su/Ra/Ve",
+     "lords_match": "YYYY"
+    },
+    {
+     "cusp": "2",
+     "fixture_dms": "057:35:17",
+     "computed_deg": 57.616469,
+     "delta_arcsec": 102.3,
+     "fx_lords": "Ve/Ma/Ju/Ma",
+     "calc_lords": "Ve/Ma/Ju/Ma",
+     "lords_match": "YYYY"
+    },
+    {
+     "cusp": "3",
+     "fixture_dms": "081:28:40",
+     "computed_deg": 81.503794,
+     "delta_arcsec": 93.7,
+     "fx_lords": "Me/Ju/Ju/Ma",
+     "calc_lords": "Me/Ju/Ju/Ma",
+     "lords_match": "YYYY"
+    },
+    {
+     "cusp": "4",
+     "fixture_dms": "106:28:51",
+     "computed_deg": 106.509789,
+     "delta_arcsec": 104.2,
+     "fx_lords": "Mo/Sa/Ju/Ra",
+     "calc_lords": "Mo/Sa/Ju/Ra",
+     "lords_match": "YYYY"
+    },
+    {
+     "cusp": "5",
+     "fixture_dms": "136:05:02",
+     "computed_deg": 136.124575,
+     "delta_arcsec": 146.5,
+     "fx_lords": "Su/Ve/Su/Ke",
+     "calc_lords": "Su/Ve/Su/Ve",
+     "lords_match": "YYYN"
+    },
+    {
+     "cusp": "6",
+     "fixture_dms": "172:09:45",
+     "computed_deg": 172.188099,
+     "delta_arcsec": 92.2,
+     "fx_lords": "Me/Mo/Ve/Sa",
+     "calc_lords": "Me/Mo/Ve/Sa",
+     "lords_match": "YYYY"
+    },
+    {
+     "cusp": "7",
+     "fixture_dms": "210:42:20",
+     "computed_deg": 210.739192,
+     "delta_arcsec": 121.1,
+     "fx_lords": "Ma/Ju/Ma/Ra",
+     "calc_lords": "Ma/Ju/Ma/Ju",
+     "lords_match": "YYYN"
+    },
+    {
+     "cusp": "8",
+     "fixture_dms": "237:35:17",
+     "computed_deg": 237.616469,
+     "delta_arcsec": 102.3,
+     "fx_lords": "Ma/Me/Ju/Ma",
+     "calc_lords": "Ma/Me/Ju/Ma",
+     "lords_match": "YYYY"
+    },
+    {
+     "cusp": "9",
+     "fixture_dms": "261:28:40",
+     "computed_deg": 261.503794,
+     "delta_arcsec": 93.7,
+     "fx_lords": "Ju/Ve/Ju/Mo",
+     "calc_lords": "Ju/Ve/Ju/Mo",
+     "lords_match": "YYYY"
+    },
+    {
+     "cusp": "10",
+     "fixture_dms": "286:28:51",
+     "computed_deg": 286.509789,
+     "delta_arcsec": 104.2,
+     "fx_lords": "Sa/Mo/Sa/Ve",
+     "calc_lords": "Sa/Mo/Sa/Ve",
+     "lords_match": "YYYY"
+    },
+    {
+     "cusp": "11",
+     "fixture_dms": "316:05:02",
+     "computed_deg": 316.124575,
+     "delta_arcsec": 146.5,
+     "fx_lords": "Sa/Ra/Ve/Ra",
+     "calc_lords": "Sa/Ra/Ve/Ra",
+     "lords_match": "YYYY"
+    },
+    {
+     "cusp": "12",
+     "fixture_dms": "352:09:45",
+     "computed_deg": 352.188099,
+     "delta_arcsec": 92.2,
+     "fx_lords": "Ju/Me/Su/Ve",
+     "calc_lords": "Ju/Me/Su/Ve",
+     "lords_match": "YYYY"
+    }
+   ],
+   "summary": {
+    "planets_mean_abs_arcsec": 63.5,
+    "planets_max_abs_arcsec": 166.4,
+    "cusps_mean_abs_arcsec": 110.0,
+    "cusps_max_abs_arcsec": 146.5,
+    "hierarchy_match_primary": {
+     "SL": 13,
+     "NL": 13,
+     "SB": 13,
+     "SS": 12
+    },
+    "hierarchy_total": 13
+   },
+   "structural_check_on_fixture_longitudes": {
+    "SL": 25,
+    "NL": 25,
+    "SB": 25,
+    "SS": 25,
+    "total": 25,
+    "boundary_flags": []
+   }
+  },
+  {
+   "label": "CASE D",
+   "place_used": {
+    "lat": 30.3165,
+    "lon": 78.0322
+   },
+   "profile_probe": [
+    {
+     "ayanamsha": "LAHIRI",
+     "node": "TRUE",
+     "mean_abs_arcsec": 831.12,
+     "median_abs_arcsec": 353.53,
+     "max_abs_arcsec": 3443.43
+    },
+    {
+     "ayanamsha": "LAHIRI",
+     "node": "MEAN",
+     "mean_abs_arcsec": 307.92,
+     "median_abs_arcsec": 325.35,
+     "max_abs_arcsec": 478.29
+    },
+    {
+     "ayanamsha": "KRISHNAMURTI",
+     "node": "TRUE",
+     "mean_abs_arcsec": 762.64,
+     "median_abs_arcsec": 110.64,
+     "max_abs_arcsec": 3792.1
+    },
+    {
+     "ayanamsha": "KRISHNAMURTI",
+     "node": "MEAN",
+     "mean_abs_arcsec": 138.03,
+     "median_abs_arcsec": 62.33,
+     "max_abs_arcsec": 703.91
+    },
+    {
+     "ayanamsha": "KRISHNAMURTI_VP291",
+     "node": "TRUE",
+     "mean_abs_arcsec": 754.87,
+     "median_abs_arcsec": 163.98,
+     "max_abs_arcsec": 3719.66
+    },
+    {
+     "ayanamsha": "KRISHNAMURTI_VP291",
+     "node": "MEAN",
+     "mean_abs_arcsec": 139.59,
+     "median_abs_arcsec": 81.76,
+     "max_abs_arcsec": 631.46
+    }
+   ],
+   "best_probe": {
+    "ayanamsha": "KRISHNAMURTI",
+    "node": "MEAN",
+    "mean_abs_arcsec": 138.03,
+    "median_abs_arcsec": 62.33,
+    "max_abs_arcsec": 703.91
+   },
+   "planets": [
+    {
+     "body": "Ascendant",
+     "fixture_dms": "337:17:08",
+     "computed_deg": 337.323889,
+     "delta_arcsec": 138.0,
+     "fx_lords": "Ju/Sa/Me/Sa",
+     "calc_lords": "Ju/Sa/Me/Sa",
+     "lords_match": "YYYY"
+    },
+    {
+     "body": "Sun",
+     "fixture_dms": "214:09:54",
+     "computed_deg": 214.164125,
+     "delta_arcsec": -3.1,
+     "fx_lords": "Ma/Sa/Sa/Ve",
+     "calc_lords": "Ma/Sa/Sa/Ve",
+     "lords_match": "YYYY"
+    },
+    {
+     "body": "Moon",
+     "fixture_dms": "215:06:23",
+     "computed_deg": 215.114053,
+     "delta_arcsec": 27.6,
+     "fx_lords": "Ma/Sa/Sa/Ra",
+     "calc_lords": "Ma/Sa/Sa/Ra",
+     "lords_match": "YYYY"
+    },
+    {
+     "body": "Mars",
+     "fixture_dms": "227:21:41",
+     "computed_deg": 227.339113,
+     "delta_arcsec": -80.2,
+     "fx_lords": "Ma/Me/Me/Su",
+     "calc_lords": "Ma/Me/Me/Ve",
+     "lords_match": "YYYN"
+    },
+    {
+     "body": "Mercury",
+     "fixture_dms": "214:12:29",
+     "computed_deg": 214.213347,
+     "delta_arcsec": 19.0,
+     "fx_lords": "Ma/Sa/Sa/Ve",
+     "calc_lords": "Ma/Sa/Sa/Ve",
+     "lords_match": "YYYY"
+    },
+    {
+     "body": "Jupiter",
+     "fixture_dms": "090:50:05",
+     "computed_deg": 90.903904,
+     "delta_arcsec": 249.1,
+     "fx_lords": "Mo/Ju/Ma/Sa",
+     "calc_lords": "Mo/Ju/Ma/Sa",
+     "lords_match": "YYYY"
+    },
+    {
+     "body": "Venus",
+     "fixture_dms": "202:43:15",
+     "computed_deg": 202.716532,
+     "delta_arcsec": -15.5,
+     "fx_lords": "Ve/Ju/Sa/Ve",
+     "calc_lords": "Ve/Ju/Sa/Ve",
+     "lords_match": "YYYY"
+    },
+    {
+     "body": "Saturn",
+     "fixture_dms": "331:03:49",
+     "computed_deg": 331.089072,
+     "delta_arcsec": 91.7,
+     "fx_lords": "Ju/Ju/Ma/Ke",
+     "calc_lords": "Ju/Ju/Ma/Ke",
+     "lords_match": "YYYY"
+    },
+    {
+     "body": "Rahu",
+     "fixture_dms": "320:14:22",
+     "computed_deg": 320.251796,
+     "delta_arcsec": 44.5,
+     "fx_lords": "Sa/Ju/Ju/Sa",
+     "calc_lords": "Sa/Ju/Ju/Sa",
+     "lords_match": "YYYY"
+    },
+    {
+     "body": "Ketu",
+     "fixture_dms": "140:14:22",
+     "computed_deg": 140.251796,
+     "delta_arcsec": 44.5,
+     "fx_lords": "Su/Ve/Ju/Ju",
+     "calc_lords": "Su/Ve/Ju/Ju",
+     "lords_match": "YYYY"
+    },
+    {
+     "body": "Uranus",
+     "fixture_dms": "035:24:25",
+     "computed_deg": 35.370937,
+     "delta_arcsec": -129.6,
+     "fx_lords": "Ve/Su/Me/Ke",
+     "calc_lords": "Ve/Su/Me/Me",
+     "lords_match": "YYYN"
+    },
+    {
+     "body": "Neptune",
+     "fixture_dms": "335:17:41",
+     "computed_deg": 335.363545,
+     "delta_arcsec": 247.8,
+     "fx_lords": "Ju/Sa/Sa/Ju",
+     "calc_lords": "Ju/Sa/Sa/Ju",
+     "lords_match": "YYYY"
+    },
+    {
+     "body": "Pluto",
+     "fixture_dms": "277:22:38",
+     "computed_deg": 277.572752,
+     "delta_arcsec": 703.9,
+     "fx_lords": "Sa/Su/Ke/Ra",
+     "calc_lords": "Sa/Su/Ke/Sa",
+     "lords_match": "YYYN"
+    }
+   ],
+   "cusps": [
+    {
+     "cusp": "1",
+     "fixture_dms": "337:17:08",
+     "computed_deg": 337.323889,
+     "delta_arcsec": 138.0,
+     "fx_lords": "Ju/Sa/Me/Sa",
+     "calc_lords": "Ju/Sa/Me/Sa",
+     "lords_match": "YYYY"
+    },
+    {
+     "cusp": "2",
+     "fixture_dms": "015:04:50",
+     "computed_deg": 15.08645,
+     "delta_arcsec": 21.2,
+     "fx_lords": "Ma/Ve/Ve/Sa",
+     "calc_lords": "Ma/Ve/Ve/Sa",
+     "lords_match": "YYYY"
+    },
+    {
+     "cusp": "3",
+     "fixture_dms": "043:06:13",
+     "computed_deg": 43.124192,
+     "delta_arcsec": 74.1,
+     "fx_lords": "Ve/Mo/Ra/Ke",
+     "calc_lords": "Ve/Mo/Ra/Ke",
+     "lords_match": "YYYY"
+    },
+    {
+     "cusp": "4",
+     "fixture_dms": "066:45:38",
+     "computed_deg": 66.786393,
+     "delta_arcsec": 93.0,
+     "fx_lords": "Me/Ra/Ra/Ra",
+     "calc_lords": "Me/Ra/Ra/Ra",
+     "lords_match": "YYYY"
+    },
+    {
+     "cusp": "5",
+     "fixture_dms": "090:32:30",
+     "computed_deg": 90.576897,
+     "delta_arcsec": 126.8,
+     "fx_lords": "Mo/Ju/Mo/Su",
+     "calc_lords": "Mo/Ju/Ma/Ma",
+     "lords_match": "YYNN"
+    },
+    {
+     "cusp": "6",
+     "fixture_dms": "118:58:01",
+     "computed_deg": 119.025563,
+     "delta_arcsec": 211.0,
+     "fx_lords": "Mo/Me/Sa/Ve",
+     "calc_lords": "Mo/Me/Sa/Su",
+     "lords_match": "YYYN"
+    },
+    {
+     "cusp": "7",
+     "fixture_dms": "157:17:08",
+     "computed_deg": 157.323889,
+     "delta_arcsec": 138.0,
+     "fx_lords": "Me/Su/Ke/Ma",
+     "calc_lords": "Me/Su/Ke/Ma",
+     "lords_match": "YYYY"
+    },
+    {
+     "cusp": "8",
+     "fixture_dms": "195:04:50",
+     "computed_deg": 195.08645,
+     "delta_arcsec": 21.2,
+     "fx_lords": "Ve/Ra/Ke/Sa",
+     "calc_lords": "Ve/Ra/Ke/Sa",
+     "lords_match": "YYYY"
+    },
+    {
+     "cusp": "9",
+     "fixture_dms": "223:06:13",
+     "computed_deg": 223.124192,
+     "delta_arcsec": 74.1,
+     "fx_lords": "Ma/Sa/Ra/Ra",
+     "calc_lords": "Ma/Sa/Ra/Ra",
+     "lords_match": "YYYY"
+    },
+    {
+     "cusp": "10",
+     "fixture_dms": "246:45:38",
+     "computed_deg": 246.786393,
+     "delta_arcsec": 93.0,
+     "fx_lords": "Ju/Ke/Ra/Ke",
+     "calc_lords": "Ju/Ke/Ra/Ke",
+     "lords_match": "YYYY"
+    },
+    {
+     "cusp": "11",
+     "fixture_dms": "270:32:30",
+     "computed_deg": 270.576897,
+     "delta_arcsec": 126.8,
+     "fx_lords": "Sa/Su/Ra/Ve",
+     "calc_lords": "Sa/Su/Ra/Ve",
+     "lords_match": "YYYY"
+    },
+    {
+     "cusp": "12",
+     "fixture_dms": "298:58:01",
+     "computed_deg": 299.025563,
+     "delta_arcsec": 211.0,
+     "fx_lords": "Sa/Ma/Sa/Ve",
+     "calc_lords": "Sa/Ma/Sa/Su",
+     "lords_match": "YYYN"
+    }
+   ],
+   "summary": {
+    "planets_mean_abs_arcsec": 138.0,
+    "planets_max_abs_arcsec": 703.9,
+    "cusps_mean_abs_arcsec": 110.7,
+    "cusps_max_abs_arcsec": 211.0,
+    "hierarchy_match_primary": {
+     "SL": 13,
+     "NL": 13,
+     "SB": 13,
+     "SS": 10
+    },
+    "hierarchy_total": 13
+   },
+   "structural_check_on_fixture_longitudes": {
+    "SL": 25,
+    "NL": 25,
+    "SB": 25,
+    "SS": 25,
+    "total": 25,
+    "boundary_flags": []
+   }
+  }
+ ],
+ "meta_only_cases": {
+  "CASE A": {
+   "date": "1979-11-11",
+   "time": "23:11:00",
+   "place": "Delhi",
+   "note": "reference material exists but numeric tables were not transcribed in the handoff"
+  },
+  "CASE B": {
+   "date": "1985-12-20",
+   "time": "12:32:40",
+   "place": "Jaipur",
+   "note": "reference material exists but numeric tables were not transcribed in the handoff"
+  }
+ }
+}

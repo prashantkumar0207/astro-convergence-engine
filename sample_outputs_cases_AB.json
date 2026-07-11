@@ -1,0 +1,604 @@
+{
+ "CASE A": {
+  "schema": "astro_kernel_chart_v1.1",
+  "input": {
+   "date": "1979-11-11",
+   "time": "23:11:00",
+   "timezone": "Asia/Kolkata",
+   "lat": 28.6667,
+   "lon": 77.2167,
+   "utc": "1979-11-11T17:41:00+00:00",
+   "jd_ut": 2444189.2368055554
+  },
+  "profile": {
+   "ayanamsha": "KRISHNAMURTI",
+   "ayanamsha_value_deg": 23.478933453091088,
+   "node_mode": "MEAN",
+   "delta_t_sec": 50.41493247258682,
+   "requested_ephemeris": "MOSEPH",
+   "houses": "Placidus",
+   "actual_ephemeris_modes": [
+    "MOSEPH"
+   ]
+  },
+  "bodies": {
+   "Sun": {
+    "lon_deg": 205.25444983857176,
+    "speed": 1.0055268131827362,
+    "retro": false,
+    "sign": "Libra",
+    "SL": "Ve",
+    "nakshatra": "Vishakha",
+    "NL": "Ju",
+    "SB": "Me",
+    "SS": "Ju",
+    "nearest_boundary_arcsec": 99.35275219166934
+   },
+   "Moon": {
+    "lon_deg": 115.83758347738161,
+    "speed": 11.898407493110959,
+    "retro": false,
+    "sign": "Cancer",
+    "SL": "Mo",
+    "nakshatra": "Ashlesha",
+    "NL": "Me",
+    "SB": "Ra",
+    "SS": "Mo",
+    "nearest_boundary_arcsec": 35.300518573796
+   },
+   "Mars": {
+    "lon_deg": 122.71154566380886,
+    "speed": 0.4822116360512188,
+    "retro": false,
+    "sign": "Leo",
+    "SL": "Su",
+    "nakshatra": "Magha",
+    "NL": "Ke",
+    "SB": "Ve",
+    "SS": "Me",
+    "nearest_boundary_arcsec": 561.564389711896
+   },
+   "Mercury": {
+    "lon_deg": 221.97638354349002,
+    "speed": -0.33834387404679056,
+    "retro": true,
+    "sign": "Scorpio",
+    "SL": "Ma",
+    "nakshatra": "Anuradha",
+    "NL": "Sa",
+    "SB": "Mo",
+    "SS": "Ve",
+    "nearest_boundary_arcsec": 285.019243435928
+   },
+   "Jupiter": {
+    "lon_deg": 133.7271928342357,
+    "speed": 0.1274316307157518,
+    "retro": false,
+    "sign": "Leo",
+    "SL": "Su",
+    "nakshatra": "P.Phalguni",
+    "NL": "Ve",
+    "SB": "Ve",
+    "SS": "Su",
+    "nearest_boundary_arcsec": 84.56086991518667
+   },
+   "Venus": {
+    "lon_deg": 225.54208673956978,
+    "speed": 1.2448796962919293,
+    "retro": false,
+    "sign": "Scorpio",
+    "SL": "Ma",
+    "nakshatra": "Anuradha",
+    "NL": "Sa",
+    "SB": "Ju",
+    "SS": "Me",
+    "nearest_boundary_arcsec": 421.82107088212535
+   },
+   "Saturn": {
+    "lon_deg": 150.84069276224238,
+    "speed": 0.0896086852744372,
+    "retro": false,
+    "sign": "Virgo",
+    "SL": "Me",
+    "nakshatra": "U.Phalguni",
+    "NL": "Su",
+    "SB": "Ra",
+    "SS": "Su",
+    "nearest_boundary_arcsec": 6.493944072568
+   },
+   "Rahu": {
+    "lon_deg": 131.08104015137621,
+    "speed": -0.05299202400072674,
+    "retro": true,
+    "sign": "Leo",
+    "SL": "Su",
+    "nakshatra": "Magha",
+    "NL": "Ke",
+    "SB": "Sa",
+    "SS": "Ra",
+    "nearest_boundary_arcsec": 294.9221217123107
+   },
+   "Ketu": {
+    "lon_deg": 311.0810401513762,
+    "speed": -1.0,
+    "retro": true,
+    "sign": "Aquarius",
+    "SL": "Sa",
+    "nakshatra": "Shatabhisha",
+    "NL": "Ra",
+    "SB": "Sa",
+    "SS": "Ke",
+    "nearest_boundary_arcsec": 11.74454495432
+   },
+   "Uranus": {
+    "lon_deg": 207.6678726379668,
+    "speed": 0.06221857611488438,
+    "retro": false,
+    "sign": "Libra",
+    "SL": "Ve",
+    "nakshatra": "Vishakha",
+    "NL": "Ju",
+    "SB": "Ve",
+    "SS": "Ra",
+    "nearest_boundary_arcsec": 62.325169986186665
+   },
+   "Neptune": {
+    "lon_deg": 235.60218025841561,
+    "speed": 0.03349436006116587,
+    "retro": false,
+    "sign": "Scorpio",
+    "SL": "Ma",
+    "nakshatra": "Jyeshtha",
+    "NL": "Me",
+    "SB": "Ra",
+    "SS": "Ve",
+    "nearest_boundary_arcsec": 452.151069703804
+   },
+   "Pluto": {
+    "lon_deg": 176.80274030147265,
+    "speed": 0.03598693021737744,
+    "retro": false,
+    "sign": "Virgo",
+    "SL": "Me",
+    "nakshatra": "Chitra",
+    "NL": "Ma",
+    "SB": "Ju",
+    "SS": "Me",
+    "nearest_boundary_arcsec": 283.46824803179334
+   },
+   "Ascendant": {
+    "lon_deg": 106.83416248572661,
+    "sign": "Cancer",
+    "SL": "Mo",
+    "nakshatra": "Ashlesha",
+    "NL": "Me",
+    "SB": "Me",
+    "SS": "Me",
+    "nearest_boundary_arcsec": 360.34838471753733
+   }
+  },
+  "cusps": {
+   "1": {
+    "lon_deg": 106.83416248572661,
+    "sign": "Cancer",
+    "SL": "Mo",
+    "nakshatra": "Ashlesha",
+    "NL": "Me",
+    "SB": "Me",
+    "SS": "Me",
+    "nearest_boundary_arcsec": 360.34838471753733
+   },
+   "2": {
+    "lon_deg": 131.02981225187187,
+    "sign": "Leo",
+    "SL": "Su",
+    "nakshatra": "Magha",
+    "NL": "Ke",
+    "SB": "Sa",
+    "SS": "Ra",
+    "nearest_boundary_arcsec": 479.34255992793464
+   },
+   "3": {
+    "lon_deg": 159.28744196583506,
+    "sign": "Virgo",
+    "SL": "Me",
+    "nakshatra": "U.Phalguni",
+    "NL": "Su",
+    "SB": "Ve",
+    "SS": "Sa",
+    "nearest_boundary_arcsec": 301.45774367288266
+   },
+   "4": {
+    "lon_deg": 191.54285650590163,
+    "sign": "Libra",
+    "SL": "Ve",
+    "nakshatra": "Swati",
+    "NL": "Ra",
+    "SB": "Sa",
+    "SS": "Ve",
+    "nearest_boundary_arcsec": 35.716578754132
+   },
+   "5": {
+    "lon_deg": 225.18454683946607,
+    "sign": "Scorpio",
+    "SL": "Ma",
+    "nakshatra": "Anuradha",
+    "NL": "Sa",
+    "SB": "Ju",
+    "SS": "Sa",
+    "nearest_boundary_arcsec": 211.03528874451865
+   },
+   "6": {
+    "lon_deg": 257.2674070919558,
+    "sign": "Sagittarius",
+    "SL": "Ju",
+    "nakshatra": "P.Ashadha",
+    "NL": "Ve",
+    "SB": "Mo",
+    "SS": "Ve",
+    "nearest_boundary_arcsec": 37.33446895912
+   },
+   "7": {
+    "lon_deg": 286.8341624857266,
+    "sign": "Capricorn",
+    "SL": "Sa",
+    "nakshatra": "Shravana",
+    "NL": "Mo",
+    "SB": "Sa",
+    "SS": "Su",
+    "nearest_boundary_arcsec": 167.01505138424
+   },
+   "8": {
+    "lon_deg": 311.0298122518719,
+    "sign": "Aquarius",
+    "SL": "Sa",
+    "nakshatra": "Shatabhisha",
+    "NL": "Ra",
+    "SB": "Sa",
+    "SS": "Me",
+    "nearest_boundary_arcsec": 172.67589326116
+   },
+   "9": {
+    "lon_deg": 339.28744196583506,
+    "sign": "Pisces",
+    "SL": "Ju",
+    "nakshatra": "U.Bhadrapada",
+    "NL": "Sa",
+    "SB": "Ve",
+    "SS": "Ju",
+    "nearest_boundary_arcsec": 168.12441033954934
+   },
+   "10": {
+    "lon_deg": 11.542856505901607,
+    "sign": "Aries",
+    "SL": "Ma",
+    "nakshatra": "Ashwini",
+    "NL": "Ke",
+    "SB": "Me",
+    "SS": "Me",
+    "nearest_boundary_arcsec": 354.2834212457852
+   },
+   "11": {
+    "lon_deg": 45.18454683946605,
+    "sign": "Taurus",
+    "SL": "Ve",
+    "nakshatra": "Rohini",
+    "NL": "Mo",
+    "SB": "Ju",
+    "SS": "Mo",
+    "nearest_boundary_arcsec": 131.03528874444666
+   },
+   "12": {
+    "lon_deg": 77.26740709195582,
+    "sign": "Gemini",
+    "SL": "Me",
+    "nakshatra": "Ardra",
+    "NL": "Ra",
+    "SB": "Ve",
+    "SS": "Me",
+    "nearest_boundary_arcsec": 170.66780229238134
+   }
+  }
+ },
+ "CASE B": {
+  "schema": "astro_kernel_chart_v1.1",
+  "input": {
+   "date": "1985-12-20",
+   "time": "12:32:40",
+   "timezone": "Asia/Kolkata",
+   "lat": 26.9167,
+   "lon": 75.8167,
+   "utc": "1985-12-20T07:02:40+00:00",
+   "jd_ut": 2446419.7935185186
+  },
+  "profile": {
+   "ayanamsha": "KRISHNAMURTI",
+   "ayanamsha_value_deg": 23.56423404334845,
+   "node_mode": "MEAN",
+   "delta_t_sec": 54.85581272628141,
+   "requested_ephemeris": "MOSEPH",
+   "houses": "Placidus",
+   "actual_ephemeris_modes": [
+    "MOSEPH"
+   ]
+  },
+  "bodies": {
+   "Sun": {
+    "lon_deg": 244.78042987640046,
+    "speed": 1.0181275422523322,
+    "retro": false,
+    "sign": "Sagittarius",
+    "SL": "Ju",
+    "nakshatra": "Mula",
+    "NL": "Ke",
+    "SB": "Ma",
+    "SS": "Ma",
+    "nearest_boundary_arcsec": 9.547555041656
+   },
+   "Moon": {
+    "lon_deg": 348.28479599506335,
+    "speed": 12.016379595526509,
+    "retro": false,
+    "sign": "Pisces",
+    "SL": "Ju",
+    "nakshatra": "Revati",
+    "NL": "Me",
+    "SB": "Me",
+    "SS": "Sa",
+    "nearest_boundary_arcsec": 101.93224889472667
+   },
+   "Mars": {
+    "lon_deg": 189.83009635344862,
+    "speed": 0.6153412752240783,
+    "retro": false,
+    "sign": "Libra",
+    "SL": "Ve",
+    "nakshatra": "Swati",
+    "NL": "Ra",
+    "SB": "Ju",
+    "SS": "Ve",
+    "nearest_boundary_arcsec": 24.986460918301333
+   },
+   "Mercury": {
+    "lon_deg": 223.68858176176323,
+    "speed": 1.1718604152134848,
+    "retro": false,
+    "sign": "Scorpio",
+    "SL": "Ma",
+    "nakshatra": "Anuradha",
+    "NL": "Sa",
+    "SB": "Ra",
+    "SS": "Sa",
+    "nearest_boundary_arcsec": 301.105657652372
+   },
+   "Jupiter": {
+    "lon_deg": 292.28317336266144,
+    "speed": 0.19791537630810135,
+    "retro": false,
+    "sign": "Capricorn",
+    "SL": "Sa",
+    "nakshatra": "Shravana",
+    "NL": "Mo",
+    "SB": "Ve",
+    "SS": "Me",
+    "nearest_boundary_arcsec": 219.424105581184
+   },
+   "Venus": {
+    "lon_deg": 237.51272653424817,
+    "speed": 1.258286795974459,
+    "retro": false,
+    "sign": "Scorpio",
+    "SL": "Ma",
+    "nakshatra": "Jyeshtha",
+    "NL": "Me",
+    "SB": "Ju",
+    "SS": "Mo",
+    "nearest_boundary_arcsec": 20.851143373254665
+   },
+   "Saturn": {
+    "lon_deg": 220.32840883443316,
+    "speed": 0.11195293090088518,
+    "retro": false,
+    "sign": "Scorpio",
+    "SL": "Ma",
+    "nakshatra": "Anuradha",
+    "NL": "Sa",
+    "SB": "Ve",
+    "SS": "Ke",
+    "nearest_boundary_arcsec": 17.728196040624
+   },
+   "Rahu": {
+    "lon_deg": 12.879314633056355,
+    "speed": -0.052992034755592464,
+    "retro": true,
+    "sign": "Aries",
+    "SL": "Ma",
+    "nakshatra": "Ashwini",
+    "NL": "Ke",
+    "SB": "Me",
+    "SS": "Ju",
+    "nearest_boundary_arcsec": 348.8660123362113
+   },
+   "Ketu": {
+    "lon_deg": 192.87931463305637,
+    "speed": -1.0,
+    "retro": true,
+    "sign": "Libra",
+    "SL": "Ve",
+    "nakshatra": "Swati",
+    "NL": "Ra",
+    "SB": "Me",
+    "SS": "Ke",
+    "nearest_boundary_arcsec": 194.467320997068
+   },
+   "Uranus": {
+    "lon_deg": 235.24318096871247,
+    "speed": 0.06040889598163975,
+    "retro": false,
+    "sign": "Scorpio",
+    "SL": "Ma",
+    "nakshatra": "Jyeshtha",
+    "NL": "Me",
+    "SB": "Ra",
+    "SS": "Me",
+    "nearest_boundary_arcsec": 124.548512635108
+   },
+   "Neptune": {
+    "lon_deg": 249.58236154011712,
+    "speed": 0.03771116407628956,
+    "retro": false,
+    "sign": "Sagittarius",
+    "SL": "Ju",
+    "nakshatra": "Mula",
+    "NL": "Ke",
+    "SB": "Sa",
+    "SS": "Sa",
+    "nearest_boundary_arcsec": 306.8317889117013
+   },
+   "Pluto": {
+    "lon_deg": 193.05240535101586,
+    "speed": 0.028193256818024294,
+    "retro": false,
+    "sign": "Libra",
+    "SL": "Ve",
+    "nakshatra": "Swati",
+    "NL": "Ra",
+    "SB": "Me",
+    "SS": "Ve",
+    "nearest_boundary_arcsec": 428.659263657096
+   },
+   "Ascendant": {
+    "lon_deg": 336.8511098242356,
+    "sign": "Pisces",
+    "SL": "Ju",
+    "nakshatra": "U.Bhadrapada",
+    "NL": "Sa",
+    "SB": "Me",
+    "SS": "Ju",
+    "nearest_boundary_arcsec": 247.32870058149334
+   }
+  },
+  "cusps": {
+   "1": {
+    "lon_deg": 336.8511098242356,
+    "sign": "Pisces",
+    "SL": "Ju",
+    "nakshatra": "U.Bhadrapada",
+    "NL": "Sa",
+    "SB": "Me",
+    "SS": "Ju",
+    "nearest_boundary_arcsec": 247.32870058149334
+   },
+   "2": {
+    "lon_deg": 13.943060582985236,
+    "sign": "Aries",
+    "SL": "Ma",
+    "nakshatra": "Bharani",
+    "NL": "Ve",
+    "SB": "Ve",
+    "SS": "Mo",
+    "nearest_boundary_arcsec": 204.9819012531504
+   },
+   "3": {
+    "lon_deg": 42.428501663105806,
+    "sign": "Taurus",
+    "SL": "Ve",
+    "nakshatra": "Rohini",
+    "NL": "Mo",
+    "SB": "Ra",
+    "SS": "Ju",
+    "nearest_boundary_arcsec": 97.3940128190984
+   },
+   "4": {
+    "lon_deg": 66.70937260954962,
+    "sign": "Gemini",
+    "SL": "Me",
+    "nakshatra": "Ardra",
+    "NL": "Ra",
+    "SB": "Ra",
+    "SS": "Ra",
+    "nearest_boundary_arcsec": 153.741394378632
+   },
+   "5": {
+    "lon_deg": 91.02659058426376,
+    "sign": "Cancer",
+    "SL": "Mo",
+    "nakshatra": "Punarvasu",
+    "NL": "Ju",
+    "SB": "Ma",
+    "SS": "Me",
+    "nearest_boundary_arcsec": 100.94056331713067
+   },
+   "6": {
+    "lon_deg": 119.62418432540959,
+    "sign": "Cancer",
+    "SL": "Mo",
+    "nakshatra": "Ashlesha",
+    "NL": "Me",
+    "SB": "Sa",
+    "SS": "Ra",
+    "nearest_boundary_arcsec": 339.6030951921427
+   },
+   "7": {
+    "lon_deg": 156.85110982423564,
+    "sign": "Virgo",
+    "SL": "Me",
+    "nakshatra": "U.Phalguni",
+    "NL": "Su",
+    "SB": "Me",
+    "SS": "Sa",
+    "nearest_boundary_arcsec": 536.004632751696
+   },
+   "8": {
+    "lon_deg": 193.94306058298525,
+    "sign": "Libra",
+    "SL": "Ve",
+    "nakshatra": "Swati",
+    "NL": "Ra",
+    "SB": "Me",
+    "SS": "Ju",
+    "nearest_boundary_arcsec": 178.35143208023334
+   },
+   "9": {
+    "lon_deg": 222.4285016631058,
+    "sign": "Scorpio",
+    "SL": "Ma",
+    "nakshatra": "Anuradha",
+    "NL": "Sa",
+    "SB": "Ma",
+    "SS": "Sa",
+    "nearest_boundary_arcsec": 185.93932051421334
+   },
+   "10": {
+    "lon_deg": 246.70937260954963,
+    "sign": "Sagittarius",
+    "SL": "Ju",
+    "nakshatra": "Mula",
+    "NL": "Ke",
+    "SB": "Ra",
+    "SS": "Me",
+    "nearest_boundary_arcsec": 46.258605621332
+   },
+   "11": {
+    "lon_deg": 271.0265905842638,
+    "sign": "Capricorn",
+    "SL": "Sa",
+    "nakshatra": "U.Ashadha",
+    "NL": "Su",
+    "SB": "Ra",
+    "SS": "Mo",
+    "nearest_boundary_arcsec": 284.27389665032
+   },
+   "12": {
+    "lon_deg": 299.6241843254096,
+    "sign": "Capricorn",
+    "SL": "Sa",
+    "nakshatra": "Dhanishta",
+    "NL": "Ma",
+    "SB": "Sa",
+    "SS": "Ra",
+    "nearest_boundary_arcsec": 339.60309519210665
+   }
+  }
+ }
+}

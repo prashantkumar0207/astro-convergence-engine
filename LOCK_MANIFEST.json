@@ -1,0 +1,43 @@
+{
+  "schema_version": "1.0",
+  "project": "astro-convergence-engine",
+  "source_of_truth": "repository",
+  "tiers": {
+    "tier0_numerical_core": {
+      "status": "LOCKED",
+      "version": "1.3-portable",
+      "certification": "PORTABLY_CERTIFIED",
+      "numerical_threshold_arcsec": 0.5,
+      "categorical_mismatch_allowed": 0,
+      "reference": "Astrodienst swetest 2.10.03 under identical frozen profile",
+      "profile": {
+        "sidereal_mode": "KRISHNAMURTI / SIDM 5",
+        "node_mode": "MEAN NODE",
+        "house_system": "PLACIDUS",
+        "ephemeris_mode": "STRICT SWIEPH",
+        "position_model": "GEOCENTRIC APPARENT SIDEREAL",
+        "kp_hierarchy": "SL -> NL -> SB -> SS"
+      },
+      "evidence": {
+        "tests": "11/11 PASS",
+        "skipped": 0,
+        "planetary_holdout_comparisons": 132,
+        "max_planetary_error_arcsec": 0.000179,
+        "max_ascendant_error_arcsec": 0.000168,
+        "max_cusp_error_arcsec": 0.000176,
+        "SL_mismatches": 0,
+        "NL_mismatches": 0,
+        "SB_mismatches": 0,
+        "SS_mismatches": 0,
+        "moshier_fallback_events": 0,
+        "hardcoded_fitting_found": false,
+        "environment_specific_absolute_path_dependencies": 0,
+        "fresh_extraction_one_command_reproduction": "PASS"
+      },
+      "change_policy": "DO NOT MODIFY without formal change request, new version, and full recertification"
+    },
+    "tier1_kp_significator": {"status": "SPECIFICATION_PENDING"},
+    "tier2_four_step": {"status": "NOT_STARTED"},
+    "tier3_cil": {"status": "NOT_STARTED"}
+  }
+}

@@ -1,0 +1,6 @@
+== CASE C best probe: {'ayanamsha': 'KRISHNAMURTI', 'node': 'MEAN', 'mean_abs_arcsec': 58.66, 'median_abs_arcsec': 36.33, 'max_abs_arcsec': 166.36}
+   primary summary: {'planets_mean_abs_arcsec': 63.5, 'planets_max_abs_arcsec': 166.4, 'cusps_mean_abs_arcsec': 110.0, 'cusps_max_abs_arcsec': 146.5, 'hierarchy_match_primary': {'SL': 13, 'NL': 13, 'SB': 13, 'SS': 12}, 'hierarchy_total': 13}
+   structural on fixture lons: SL 25 NL 25 SB 25 SS 25 of 25; flags: 0
+== CASE D best probe: {'ayanamsha': 'KRISHNAMURTI', 'node': 'MEAN', 'mean_abs_arcsec': 138.03, 'median_abs_arcsec': 62.33, 'max_abs_arcsec': 703.91}
+   primary summary: {'planets_mean_abs_arcsec': 138.0, 'planets_max_abs_arcsec': 703.9, 'cusps_mean_abs_arcsec': 110.7, 'cusps_max_abs_arcsec': 211.0, 'hierarchy_match_primary': {'SL': 13, 'NL': 13, 'SB': 13, 'SS': 10}, 'hierarchy_total': 13}
+   structural on fixture lons: SL 25 NL 25 SB 25 SS 25 of 25; flags: 0

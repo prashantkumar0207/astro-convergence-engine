@@ -1,0 +1,1588 @@
+{
+ "schema": "tier0_certification_v1",
+ "reference": "Astrodienst swetest v2.10.03 compiled from official source tag; independent C binary, not the Python engine",
+ "ephemeris_files": {
+  "seas_18.se1": "a2cd8fc33807c78ca9a700c91c2e042258b12fc4796519e00781440b5ad8b2e2",
+  "semo_18.se1": "1ca07bd67c24374d77226180c20a4f9996cba013697894810518e7eb582ca4f7",
+  "sepl_18.se1": "ca1393ceab3a44fbc895887cf789c68819ae6a1cbc9b22225872dbe4ccd99a66"
+ },
+ "cases": [
+  {
+   "id": "H1_london_1823",
+   "planets": {
+    "Sun": {
+     "ref": 5.0077564,
+     "calc": 5.0077563551729884,
+     "delta_arcsec": 0.000161,
+     "hier_flip": []
+    },
+    "Moon": {
+     "ref": 83.2787711,
+     "calc": 83.27877113263652,
+     "delta_arcsec": 0.000117,
+     "hier_flip": []
+    },
+    "Mercury": {
+     "ref": 352.0832763,
+     "calc": 352.08327634520737,
+     "delta_arcsec": 0.000163,
+     "hier_flip": []
+    },
+    "Venus": {
+     "ref": 32.4180329,
+     "calc": 32.41803285857009,
+     "delta_arcsec": 0.000149,
+     "hier_flip": []
+    },
+    "Mars": {
+     "ref": 0.064618,
+     "calc": 0.06461800149084314,
+     "delta_arcsec": 5e-06,
+     "hier_flip": []
+    },
+    "Jupiter": {
+     "ref": 45.4771897,
+     "calc": 45.477189691758504,
+     "delta_arcsec": 3e-05,
+     "hier_flip": []
+    },
+    "Saturn": {
+     "ref": 19.8417423,
+     "calc": 19.841742251586055,
+     "delta_arcsec": 0.000174,
+     "hier_flip": []
+    },
+    "Uranus": {
+     "ref": 260.3101564,
+     "calc": 260.3101563785582,
+     "delta_arcsec": 7.7e-05,
+     "hier_flip": []
+    },
+    "Neptune": {
+     "ref": 256.132361,
+     "calc": 256.1323610196958,
+     "delta_arcsec": 7.1e-05,
+     "hier_flip": []
+    },
+    "Pluto": {
+     "ref": 339.7977681,
+     "calc": 339.79776810240804,
+     "delta_arcsec": 9e-06,
+     "hier_flip": []
+    },
+    "Rahu": {
+     "ref": 281.5192765,
+     "calc": 281.5192765447397,
+     "delta_arcsec": 0.000161,
+     "hier_flip": []
+    },
+    "Ketu": {
+     "ref": 101.51927649999999,
+     "calc": 101.51927654473968,
+     "delta_arcsec": 0.000161,
+     "hier_flip": []
+    }
+   },
+   "cusps": {
+    "1": {
+     "ref": 304.0337568,
+     "calc": 304.03375678267696,
+     "delta_arcsec": 6.2e-05
+    },
+    "2": {
+     "ref": 3.242968,
+     "calc": 3.2429679791561696,
+     "delta_arcsec": 7.5e-05
+    },
+    "3": {
+     "ref": 34.2975432,
+     "calc": 34.29754317693941,
+     "delta_arcsec": 8.3e-05
+    },
+    "4": {
+     "ref": 54.5320205,
+     "calc": 54.53202050995937,
+     "delta_arcsec": 3.6e-05
+    },
+    "5": {
+     "ref": 72.0127158,
+     "calc": 72.01271583496255,
+     "delta_arcsec": 0.000126
+    },
+    "6": {
+     "ref": 91.6824085,
+     "calc": 91.68240851027271,
+     "delta_arcsec": 3.7e-05
+    },
+    "7": {
+     "ref": 124.0337568,
+     "calc": 124.03375678267697,
+     "delta_arcsec": 6.2e-05
+    },
+    "8": {
+     "ref": 183.242968,
+     "calc": 183.24296797915616,
+     "delta_arcsec": 7.5e-05
+    },
+    "9": {
+     "ref": 214.2975432,
+     "calc": 214.29754317693943,
+     "delta_arcsec": 8.3e-05
+    },
+    "10": {
+     "ref": 234.5320205,
+     "calc": 234.53202050995935,
+     "delta_arcsec": 3.6e-05
+    },
+    "11": {
+     "ref": 252.0127158,
+     "calc": 252.01271583496253,
+     "delta_arcsec": 0.000126
+    },
+    "12": {
+     "ref": 271.6824085,
+     "calc": 271.6824085102727,
+     "delta_arcsec": 3.7e-05
+    }
+   },
+   "boundary_sensitive": false,
+   "ascendant_delta_arcsec": 6.2e-05
+  },
+  {
+   "id": "H2_newyork_1900",
+   "planets": {
+    "Sun": {
+     "ref": 257.7848406,
+     "calc": 257.78484064378046,
+     "delta_arcsec": 0.000158,
+     "hier_flip": []
+    },
+    "Moon": {
+     "ref": 250.0478115,
+     "calc": 250.047811529256,
+     "delta_arcsec": 0.000105,
+     "hier_flip": []
+    },
+    "Mercury": {
+     "ref": 236.6292493,
+     "calc": 236.62924928286108,
+     "delta_arcsec": 6.2e-05,
+     "hier_flip": []
+    },
+    "Venus": {
+     "ref": 284.0059189,
+     "calc": 284.00591891161395,
+     "delta_arcsec": 4.2e-05,
+     "hier_flip": []
+    },
+    "Mars": {
+     "ref": 261.4992219,
+     "calc": 261.49922193291724,
+     "delta_arcsec": 0.000119,
+     "hier_flip": []
+    },
+    "Jupiter": {
+     "ref": 218.767425,
+     "calc": 218.76742499757032,
+     "delta_arcsec": 9e-06,
+     "hier_flip": []
+    },
+    "Saturn": {
+     "ref": 245.3482879,
+     "calc": 245.34828793863048,
+     "delta_arcsec": 0.000139,
+     "hier_flip": []
+    },
+    "Uranus": {
+     "ref": 227.7707938,
+     "calc": 227.77079384832146,
+     "delta_arcsec": 0.000174,
+     "hier_flip": []
+    },
+    "Neptune": {
+     "ref": 62.850194,
+     "calc": 62.85019401493839,
+     "delta_arcsec": 5.4e-05,
+     "hier_flip": []
+    },
+    "Pluto": {
+     "ref": 52.8829338,
+     "calc": 52.88293375772575,
+     "delta_arcsec": 0.000152,
+     "hier_flip": []
+    },
+    "Rahu": {
+     "ref": 236.7927863,
+     "calc": 236.79278633288015,
+     "delta_arcsec": 0.000118,
+     "hier_flip": []
+    },
+    "Ketu": {
+     "ref": 56.79278629999999,
+     "calc": 56.792786332880155,
+     "delta_arcsec": 0.000118,
+     "hier_flip": []
+    }
+   },
+   "cusps": {
+    "1": {
+     "ref": 107.4151818,
+     "calc": 107.41518176614171,
+     "delta_arcsec": 0.000122
+    },
+    "2": {
+     "ref": 128.3156163,
+     "calc": 128.31561633265125,
+     "delta_arcsec": 0.000118
+    },
+    "3": {
+     "ref": 153.9311566,
+     "calc": 153.9311566156586,
+     "delta_arcsec": 5.6e-05
+    },
+    "4": {
+     "ref": 185.820503,
+     "calc": 185.82050303425297,
+     "delta_arcsec": 0.000123
+    },
+    "5": {
+     "ref": 222.2332594,
+     "calc": 222.23325936986362,
+     "delta_arcsec": 0.000108
+    },
+    "6": {
+     "ref": 257.3148088,
+     "calc": 257.3148088226958,
+     "delta_arcsec": 8.2e-05
+    },
+    "7": {
+     "ref": 287.4151818,
+     "calc": 287.41518176614176,
+     "delta_arcsec": 0.000122
+    },
+    "8": {
+     "ref": 308.3156163,
+     "calc": 308.31561633265125,
+     "delta_arcsec": 0.000118
+    },
+    "9": {
+     "ref": 333.9311566,
+     "calc": 333.9311566156586,
+     "delta_arcsec": 5.6e-05
+    },
+    "10": {
+     "ref": 5.820503,
+     "calc": 5.8205030342529795,
+     "delta_arcsec": 0.000123
+    },
+    "11": {
+     "ref": 42.2332594,
+     "calc": 42.23325936986363,
+     "delta_arcsec": 0.000108
+    },
+    "12": {
+     "ref": 77.3148088,
+     "calc": 77.31480882269577,
+     "delta_arcsec": 8.2e-05
+    }
+   },
+   "boundary_sensitive": false,
+   "ascendant_delta_arcsec": 0.000122
+  },
+  {
+   "id": "H3_sydney_1946",
+   "planets": {
+    "Sun": {
+     "ref": 60.1953021,
+     "calc": 60.19530212600258,
+     "delta_arcsec": 9.4e-05,
+     "hier_flip": []
+    },
+    "Moon": {
+     "ref": 241.6083374,
+     "calc": 241.60833738635404,
+     "delta_arcsec": 4.9e-05,
+     "hier_flip": []
+    },
+    "Mercury": {
+     "ref": 76.3868558,
+     "calc": 76.38685579338849,
+     "delta_arcsec": 2.4e-05,
+     "hier_flip": []
+    },
+    "Venus": {
+     "ref": 93.0725074,
+     "calc": 93.07250738756171,
+     "delta_arcsec": 4.5e-05,
+     "hier_flip": []
+    },
+    "Mars": {
+     "ref": 123.9289002,
+     "calc": 123.92890017224363,
+     "delta_arcsec": 0.0001,
+     "hier_flip": []
+    },
+    "Jupiter": {
+     "ref": 174.4445566,
+     "calc": 174.44455661951022,
+     "delta_arcsec": 7e-05,
+     "hier_flip": []
+    },
+    "Saturn": {
+     "ref": 90.8418357,
+     "calc": 90.84183570829806,
+     "delta_arcsec": 3e-05,
+     "hier_flip": []
+    },
+    "Uranus": {
+     "ref": 54.9025459,
+     "calc": 54.902545871470714,
+     "delta_arcsec": 0.000103,
+     "hier_flip": []
+    },
+    "Neptune": {
+     "ref": 162.8340295,
+     "calc": 162.8340294930587,
+     "delta_arcsec": 2.5e-05,
+     "hier_flip": []
+    },
+    "Pluto": {
+     "ref": 107.0407607,
+     "calc": 107.04076074682933,
+     "delta_arcsec": 0.000169,
+     "hier_flip": []
+    },
+    "Rahu": {
+     "ref": 57.7339137,
+     "calc": 57.73391374317983,
+     "delta_arcsec": 0.000155,
+     "hier_flip": []
+    },
+    "Ketu": {
+     "ref": 237.73391370000002,
+     "calc": 237.73391374317984,
+     "delta_arcsec": 0.000155,
+     "hier_flip": []
+    }
+   },
+   "cusps": {
+    "1": {
+     "ref": 70.5516577,
+     "calc": 70.55165766318018,
+     "delta_arcsec": 0.000133
+    },
+    "2": {
+     "ref": 107.0453406,
+     "calc": 107.04534064388594,
+     "delta_arcsec": 0.000158
+    },
+    "3": {
+     "ref": 145.8689637,
+     "calc": 145.86896367498085,
+     "delta_arcsec": 9e-05
+    },
+    "4": {
+     "ref": 179.4441751,
+     "calc": 179.4441750599134,
+     "delta_arcsec": 0.000144
+    },
+    "5": {
+     "ref": 206.1338237,
+     "calc": 206.13382366356657,
+     "delta_arcsec": 0.000131
+    },
+    "6": {
+     "ref": 228.6837336,
+     "calc": 228.68373363195718,
+     "delta_arcsec": 0.000115
+    },
+    "7": {
+     "ref": 250.5516577,
+     "calc": 250.55165766318015,
+     "delta_arcsec": 0.000133
+    },
+    "8": {
+     "ref": 287.0453406,
+     "calc": 287.04534064388594,
+     "delta_arcsec": 0.000158
+    },
+    "9": {
+     "ref": 325.8689637,
+     "calc": 325.8689636749809,
+     "delta_arcsec": 9e-05
+    },
+    "10": {
+     "ref": 359.4441751,
+     "calc": 359.4441750599134,
+     "delta_arcsec": 0.000144
+    },
+    "11": {
+     "ref": 26.1338237,
+     "calc": 26.133823663566563,
+     "delta_arcsec": 0.000131
+    },
+    "12": {
+     "ref": 48.6837336,
+     "calc": 48.683733631957196,
+     "delta_arcsec": 0.000115
+    }
+   },
+   "boundary_sensitive": false,
+   "ascendant_delta_arcsec": 0.000133
+  },
+  {
+   "id": "H4_delhi_1979",
+   "planets": {
+    "Sun": {
+     "ref": 205.2548839,
+     "calc": 205.25488385063312,
+     "delta_arcsec": 0.000178,
+     "hier_flip": []
+    },
+    "Moon": {
+     "ref": 115.8423751,
+     "calc": 115.84237508944241,
+     "delta_arcsec": 3.8e-05,
+     "hier_flip": []
+    },
+    "Mercury": {
+     "ref": 221.9762382,
+     "calc": 221.9762382161946,
+     "delta_arcsec": 5.8e-05,
+     "hier_flip": []
+    },
+    "Venus": {
+     "ref": 225.5426171,
+     "calc": 225.54261709583193,
+     "delta_arcsec": 1.5e-05,
+     "hier_flip": []
+    },
+    "Mars": {
+     "ref": 122.7117595,
+     "calc": 122.71175949467921,
+     "delta_arcsec": 1.9e-05,
+     "hier_flip": []
+    },
+    "Jupiter": {
+     "ref": 133.7271919,
+     "calc": 133.72719189510747,
+     "delta_arcsec": 1.8e-05,
+     "hier_flip": []
+    },
+    "Saturn": {
+     "ref": 150.8408061,
+     "calc": 150.84080611302986,
+     "delta_arcsec": 4.7e-05,
+     "hier_flip": []
+    },
+    "Uranus": {
+     "ref": 207.6678621,
+     "calc": 207.6678620842334,
+     "delta_arcsec": 5.7e-05,
+     "hier_flip": []
+    },
+    "Neptune": {
+     "ref": 235.6021399,
+     "calc": 235.60213989255305,
+     "delta_arcsec": 2.7e-05,
+     "hier_flip": []
+    },
+    "Pluto": {
+     "ref": 176.8026499,
+     "calc": 176.80264989046103,
+     "delta_arcsec": 3.4e-05,
+     "hier_flip": []
+    },
+    "Rahu": {
+     "ref": 131.0810175,
+     "calc": 131.08101745800548,
+     "delta_arcsec": 0.000151,
+     "hier_flip": []
+    },
+    "Ketu": {
+     "ref": 311.08101750000003,
+     "calc": 311.0810174580055,
+     "delta_arcsec": 0.000151,
+     "hier_flip": []
+    }
+   },
+   "cusps": {
+    "1": {
+     "ref": 106.9656658,
+     "calc": 106.96566580458233,
+     "delta_arcsec": 1.6e-05
+    },
+    "2": {
+     "ref": 131.1726133,
+     "calc": 131.17261332301825,
+     "delta_arcsec": 8.3e-05
+    },
+    "3": {
+     "ref": 159.4435469,
+     "calc": 159.4435468809086,
+     "delta_arcsec": 6.9e-05
+    },
+    "4": {
+     "ref": 191.7025348,
+     "calc": 191.70253475713852,
+     "delta_arcsec": 0.000154
+    },
+    "5": {
+     "ref": 225.3346305,
+     "calc": 225.33463046599786,
+     "delta_arcsec": 0.000122
+    },
+    "6": {
+     "ref": 257.4056019,
+     "calc": 257.4056018821608,
+     "delta_arcsec": 6.4e-05
+    },
+    "7": {
+     "ref": 286.9656658,
+     "calc": 286.9656658045824,
+     "delta_arcsec": 1.6e-05
+    },
+    "8": {
+     "ref": 311.1726133,
+     "calc": 311.17261332301825,
+     "delta_arcsec": 8.3e-05
+    },
+    "9": {
+     "ref": 339.4435469,
+     "calc": 339.4435468809086,
+     "delta_arcsec": 6.9e-05
+    },
+    "10": {
+     "ref": 11.7025348,
+     "calc": 11.70253475713854,
+     "delta_arcsec": 0.000154
+    },
+    "11": {
+     "ref": 45.3346305,
+     "calc": 45.33463046599786,
+     "delta_arcsec": 0.000122
+    },
+    "12": {
+     "ref": 77.4056019,
+     "calc": 77.40560188216074,
+     "delta_arcsec": 6.4e-05
+    }
+   },
+   "boundary_sensitive": false,
+   "ascendant_delta_arcsec": 1.6e-05
+  },
+  {
+   "id": "H5_reykjavik_1992",
+   "planets": {
+    "Sun": {
+     "ref": 317.0037054,
+     "calc": 317.0037053633342,
+     "delta_arcsec": 0.000132,
+     "hier_flip": []
+    },
+    "Moon": {
+     "ref": 278.0290543,
+     "calc": 278.02905428200853,
+     "delta_arcsec": 6.5e-05,
+     "hier_flip": []
+    },
+    "Mercury": {
+     "ref": 331.5519247,
+     "calc": 331.55192465015915,
+     "delta_arcsec": 0.000179,
+     "hier_flip": []
+    },
+    "Venus": {
+     "ref": 290.2940976,
+     "calc": 290.29409760357936,
+     "delta_arcsec": 1.3e-05,
+     "hier_flip": []
+    },
+    "Mars": {
+     "ref": 285.4052816,
+     "calc": 285.4052816248025,
+     "delta_arcsec": 8.9e-05,
+     "hier_flip": []
+    },
+    "Jupiter": {
+     "ref": 135.8971756,
+     "calc": 135.89717559469847,
+     "delta_arcsec": 1.9e-05,
+     "hier_flip": []
+    },
+    "Saturn": {
+     "ref": 289.2076276,
+     "calc": 289.2076276362321,
+     "delta_arcsec": 0.00013,
+     "hier_flip": []
+    },
+    "Uranus": {
+     "ref": 263.250523,
+     "calc": 263.2505229582061,
+     "delta_arcsec": 0.00015,
+     "hier_flip": []
+    },
+    "Neptune": {
+     "ref": 264.618674,
+     "calc": 264.61867398468337,
+     "delta_arcsec": 5.5e-05,
+     "hier_flip": []
+    },
+    "Pluto": {
+     "ref": 209.2930003,
+     "calc": 209.2930002624991,
+     "delta_arcsec": 0.000135,
+     "hier_flip": []
+    },
+    "Rahu": {
+     "ref": 252.9739223,
+     "calc": 252.973922276164,
+     "delta_arcsec": 8.6e-05,
+     "hier_flip": []
+    },
+    "Ketu": {
+     "ref": 72.97392230000003,
+     "calc": 72.97392227616399,
+     "delta_arcsec": 8.6e-05,
+     "hier_flip": []
+    }
+   },
+   "cusps": {
+    "1": {
+     "ref": 183.2208918,
+     "calc": 183.22089180749236,
+     "delta_arcsec": 2.7e-05
+    },
+    "2": {
+     "ref": 207.6316632,
+     "calc": 207.63166323041784,
+     "delta_arcsec": 0.00011
+    },
+    "3": {
+     "ref": 242.704602,
+     "calc": 242.70460200546145,
+     "delta_arcsec": 2e-05
+    },
+    "4": {
+     "ref": 290.9814483,
+     "calc": 290.9814482816513,
+     "delta_arcsec": 6.6e-05
+    },
+    "5": {
+     "ref": 325.5341573,
+     "calc": 325.5341573269708,
+     "delta_arcsec": 9.7e-05
+    },
+    "6": {
+     "ref": 348.0001976,
+     "calc": 348.00019757775726,
+     "delta_arcsec": 8e-05
+    },
+    "7": {
+     "ref": 3.2208918,
+     "calc": 3.220891807492336,
+     "delta_arcsec": 2.7e-05
+    },
+    "8": {
+     "ref": 27.6316632,
+     "calc": 27.631663230417843,
+     "delta_arcsec": 0.00011
+    },
+    "9": {
+     "ref": 62.704602,
+     "calc": 62.70460200546145,
+     "delta_arcsec": 2e-05
+    },
+    "10": {
+     "ref": 110.9814483,
+     "calc": 110.98144828165135,
+     "delta_arcsec": 6.6e-05
+    },
+    "11": {
+     "ref": 145.5341573,
+     "calc": 145.53415732697084,
+     "delta_arcsec": 9.7e-05
+    },
+    "12": {
+     "ref": 168.0001976,
+     "calc": 168.00019757775732,
+     "delta_arcsec": 8e-05
+    }
+   },
+   "boundary_sensitive": false,
+   "ascendant_delta_arcsec": 2.7e-05
+  },
+  {
+   "id": "H6_quito_2010",
+   "planets": {
+    "Sun": {
+     "ref": 94.4462093,
+     "calc": 94.44620926415678,
+     "delta_arcsec": 0.000129,
+     "hier_flip": []
+    },
+    "Moon": {
+     "ref": 218.9315426,
+     "calc": 218.93154259407908,
+     "delta_arcsec": 2.1e-05,
+     "hier_flip": []
+    },
+    "Mercury": {
+     "ref": 116.3008946,
+     "calc": 116.30089458664854,
+     "delta_arcsec": 4.8e-05,
+     "hier_flip": []
+    },
+    "Venus": {
+     "ref": 138.0094054,
+     "calc": 138.00940542624264,
+     "delta_arcsec": 9.4e-05,
+     "hier_flip": []
+    },
+    "Mars": {
+     "ref": 150.792436,
+     "calc": 150.79243598982396,
+     "delta_arcsec": 3.7e-05,
+     "hier_flip": []
+    },
+    "Jupiter": {
+     "ref": 339.4808455,
+     "calc": 339.4808455340579,
+     "delta_arcsec": 0.000123,
+     "hier_flip": []
+    },
+    "Saturn": {
+     "ref": 156.0543199,
+     "calc": 156.05431990781435,
+     "delta_arcsec": 2.8e-05,
+     "hier_flip": []
+    },
+    "Uranus": {
+     "ref": 336.5831408,
+     "calc": 336.5831407909613,
+     "delta_arcsec": 3.3e-05,
+     "hier_flip": []
+    },
+    "Neptune": {
+     "ref": 304.1638094,
+     "calc": 304.1638094447241,
+     "delta_arcsec": 0.000161,
+     "hier_flip": []
+    },
+    "Pluto": {
+     "ref": 249.5723975,
+     "calc": 249.5723975334874,
+     "delta_arcsec": 0.000121,
+     "hier_flip": []
+    },
+    "Rahu": {
+     "ref": 257.0683524,
+     "calc": 257.0683524087751,
+     "delta_arcsec": 3.2e-05,
+     "hier_flip": []
+    },
+    "Ketu": {
+     "ref": 77.06835239999998,
+     "calc": 77.06835240877513,
+     "delta_arcsec": 3.2e-05,
+     "hier_flip": []
+    }
+   },
+   "cusps": {
+    "1": {
+     "ref": 4.7487373,
+     "calc": 4.7487373466052425,
+     "delta_arcsec": 0.000168
+    },
+    "2": {
+     "ref": 34.9392416,
+     "calc": 34.939241589310626,
+     "delta_arcsec": 3.8e-05
+    },
+    "3": {
+     "ref": 63.0069254,
+     "calc": 63.00692541257342,
+     "delta_arcsec": 4.5e-05
+    },
+    "4": {
+     "ref": 90.8290874,
+     "calc": 90.82908737133539,
+     "delta_arcsec": 0.000103
+    },
+    "5": {
+     "ref": 120.4695758,
+     "calc": 120.46957583292556,
+     "delta_arcsec": 0.000119
+    },
+    "6": {
+     "ref": 152.4610852,
+     "calc": 152.4610851622424,
+     "delta_arcsec": 0.000136
+    },
+    "7": {
+     "ref": 184.7487373,
+     "calc": 184.74873734660525,
+     "delta_arcsec": 0.000168
+    },
+    "8": {
+     "ref": 214.9392416,
+     "calc": 214.93924158931063,
+     "delta_arcsec": 3.8e-05
+    },
+    "9": {
+     "ref": 243.0069254,
+     "calc": 243.00692541257342,
+     "delta_arcsec": 4.5e-05
+    },
+    "10": {
+     "ref": 270.8290874,
+     "calc": 270.8290873713354,
+     "delta_arcsec": 0.000103
+    },
+    "11": {
+     "ref": 300.4695758,
+     "calc": 300.46957583292556,
+     "delta_arcsec": 0.000119
+    },
+    "12": {
+     "ref": 332.4610852,
+     "calc": 332.46108516224245,
+     "delta_arcsec": 0.000136
+    }
+   },
+   "boundary_sensitive": false,
+   "ascendant_delta_arcsec": 0.000168
+  },
+  {
+   "id": "H7_tokyo_2033",
+   "planets": {
+    "Sun": {
+     "ref": 137.046469,
+     "calc": 137.04646902246154,
+     "delta_arcsec": 8.1e-05,
+     "hier_flip": []
+    },
+    "Moon": {
+     "ref": 243.0081837,
+     "calc": 243.00818366200897,
+     "delta_arcsec": 0.000137,
+     "hier_flip": []
+    },
+    "Mercury": {
+     "ref": 149.5834207,
+     "calc": 149.5834207474129,
+     "delta_arcsec": 0.000171,
+     "hier_flip": []
+    },
+    "Venus": {
+     "ref": 106.9044921,
+     "calc": 106.90449210862975,
+     "delta_arcsec": 3.1e-05,
+     "hier_flip": []
+    },
+    "Mars": {
+     "ref": 252.4077448,
+     "calc": 252.40774477153852,
+     "delta_arcsec": 0.000102,
+     "hier_flip": []
+    },
+    "Jupiter": {
+     "ref": 306.9214234,
+     "calc": 306.92142343172094,
+     "delta_arcsec": 0.000114,
+     "hier_flip": []
+    },
+    "Saturn": {
+     "ref": 84.0116597,
+     "calc": 84.01165971732433,
+     "delta_arcsec": 6.2e-05,
+     "hier_flip": []
+    },
+    "Uranus": {
+     "ref": 71.242806,
+     "calc": 71.24280602015624,
+     "delta_arcsec": 7.3e-05,
+     "hier_flip": []
+    },
+    "Neptune": {
+     "ref": 355.4347733,
+     "calc": 355.4347733096829,
+     "delta_arcsec": 3.5e-05,
+     "hier_flip": []
+    },
+    "Pluto": {
+     "ref": 290.7749869,
+     "calc": 290.77498688990937,
+     "delta_arcsec": 3.6e-05,
+     "hier_flip": []
+    },
+    "Rahu": {
+     "ref": 169.5375246,
+     "calc": 169.53752464736914,
+     "delta_arcsec": 0.000171,
+     "hier_flip": []
+    },
+    "Ketu": {
+     "ref": 349.5375246,
+     "calc": 349.53752464736914,
+     "delta_arcsec": 0.000171,
+     "hier_flip": []
+    }
+   },
+   "cusps": {
+    "1": {
+     "ref": 6.9459835,
+     "calc": 6.94598347949422,
+     "delta_arcsec": 7.4e-05
+    },
+    "2": {
+     "ref": 38.6823627,
+     "calc": 38.68236270864173,
+     "delta_arcsec": 3.1e-05
+    },
+    "3": {
+     "ref": 62.447924,
+     "calc": 62.44792396954908,
+     "delta_arcsec": 0.00011
+    },
+    "4": {
+     "ref": 84.5636688,
+     "calc": 84.56366884532399,
+     "delta_arcsec": 0.000163
+    },
+    "5": {
+     "ref": 109.5092908,
+     "calc": 109.50929078071532,
+     "delta_arcsec": 6.9e-05
+    },
+    "6": {
+     "ref": 142.5602032,
+     "calc": 142.56020323977413,
+     "delta_arcsec": 0.000143
+    },
+    "7": {
+     "ref": 186.9459835,
+     "calc": 186.94598347949423,
+     "delta_arcsec": 7.4e-05
+    },
+    "8": {
+     "ref": 218.6823627,
+     "calc": 218.68236270864173,
+     "delta_arcsec": 3.1e-05
+    },
+    "9": {
+     "ref": 242.447924,
+     "calc": 242.4479239695491,
+     "delta_arcsec": 0.00011
+    },
+    "10": {
+     "ref": 264.5636688,
+     "calc": 264.563668845324,
+     "delta_arcsec": 0.000163
+    },
+    "11": {
+     "ref": 289.5092908,
+     "calc": 289.50929078071533,
+     "delta_arcsec": 6.9e-05
+    },
+    "12": {
+     "ref": 322.5602032,
+     "calc": 322.56020323977407,
+     "delta_arcsec": 0.000143
+    }
+   },
+   "boundary_sensitive": false,
+   "ascendant_delta_arcsec": 7.4e-05
+  },
+  {
+   "id": "H8_mumbai_2077",
+   "planets": {
+    "Sun": {
+     "ref": 227.2157414,
+     "calc": 227.21574142380445,
+     "delta_arcsec": 8.6e-05,
+     "hier_flip": []
+    },
+    "Moon": {
+     "ref": 94.651399,
+     "calc": 94.65139899324744,
+     "delta_arcsec": 2.4e-05,
+     "hier_flip": []
+    },
+    "Mercury": {
+     "ref": 219.6326487,
+     "calc": 219.63264868097806,
+     "delta_arcsec": 6.8e-05,
+     "hier_flip": []
+    },
+    "Venus": {
+     "ref": 254.1775435,
+     "calc": 254.17754349403864,
+     "delta_arcsec": 2.1e-05,
+     "hier_flip": []
+    },
+    "Mars": {
+     "ref": 160.3230919,
+     "calc": 160.32309191935855,
+     "delta_arcsec": 7e-05,
+     "hier_flip": []
+    },
+    "Jupiter": {
+     "ref": 213.9841654,
+     "calc": 213.98416541159736,
+     "delta_arcsec": 4.2e-05,
+     "hier_flip": []
+    },
+    "Saturn": {
+     "ref": 255.1984309,
+     "calc": 255.19843085825946,
+     "delta_arcsec": 0.00015,
+     "hier_flip": []
+    },
+    "Uranus": {
+     "ref": 266.3042825,
+     "calc": 266.3042824509352,
+     "delta_arcsec": 0.000177,
+     "hier_flip": []
+    },
+    "Neptune": {
+     "ref": 93.662995,
+     "calc": 93.66299496854126,
+     "delta_arcsec": 0.000113,
+     "hier_flip": []
+    },
+    "Pluto": {
+     "ref": 345.2680694,
+     "calc": 345.26806940265664,
+     "delta_arcsec": 1e-05,
+     "hier_flip": []
+    },
+    "Rahu": {
+     "ref": 33.0741727,
+     "calc": 33.0741726758932,
+     "delta_arcsec": 8.7e-05,
+     "hier_flip": []
+    },
+    "Ketu": {
+     "ref": 213.0741727,
+     "calc": 213.0741726758932,
+     "delta_arcsec": 8.7e-05,
+     "hier_flip": []
+    }
+   },
+   "cusps": {
+    "1": {
+     "ref": 76.1809327,
+     "calc": 76.18093268364264,
+     "delta_arcsec": 5.9e-05
+    },
+    "2": {
+     "ref": 100.864848,
+     "calc": 100.86484797910884,
+     "delta_arcsec": 7.5e-05
+    },
+    "3": {
+     "ref": 127.9827831,
+     "calc": 127.98278310347725,
+     "delta_arcsec": 1.3e-05
+    },
+    "4": {
+     "ref": 159.0335055,
+     "calc": 159.0335055437833,
+     "delta_arcsec": 0.000158
+    },
+    "5": {
+     "ref": 192.7209326,
+     "calc": 192.720932633902,
+     "delta_arcsec": 0.000122
+    },
+    "6": {
+     "ref": 225.6756741,
+     "calc": 225.67567406806273,
+     "delta_arcsec": 0.000115
+    },
+    "7": {
+     "ref": 256.1809327,
+     "calc": 256.18093268364265,
+     "delta_arcsec": 5.9e-05
+    },
+    "8": {
+     "ref": 280.864848,
+     "calc": 280.86484797910884,
+     "delta_arcsec": 7.5e-05
+    },
+    "9": {
+     "ref": 307.9827831,
+     "calc": 307.9827831034773,
+     "delta_arcsec": 1.3e-05
+    },
+    "10": {
+     "ref": 339.0335055,
+     "calc": 339.0335055437833,
+     "delta_arcsec": 0.000158
+    },
+    "11": {
+     "ref": 12.7209326,
+     "calc": 12.72093263390203,
+     "delta_arcsec": 0.000122
+    },
+    "12": {
+     "ref": 45.6756741,
+     "calc": 45.675674068062705,
+     "delta_arcsec": 0.000115
+    }
+   },
+   "boundary_sensitive": false,
+   "ascendant_delta_arcsec": 5.9e-05
+  },
+  {
+   "id": "H9_paris_2350",
+   "planets": {
+    "Sun": {
+     "ref": 265.7843901,
+     "calc": 265.78439014299687,
+     "delta_arcsec": 0.000155,
+     "hier_flip": []
+    },
+    "Moon": {
+     "ref": 343.3730674,
+     "calc": 343.37306743044337,
+     "delta_arcsec": 0.00011,
+     "hier_flip": []
+    },
+    "Mercury": {
+     "ref": 281.0160504,
+     "calc": 281.0160504001794,
+     "delta_arcsec": 1e-06,
+     "hier_flip": []
+    },
+    "Venus": {
+     "ref": 221.6176778,
+     "calc": 221.61767781774623,
+     "delta_arcsec": 6.4e-05,
+     "hier_flip": []
+    },
+    "Mars": {
+     "ref": 337.8352876,
+     "calc": 337.83528763247733,
+     "delta_arcsec": 0.000117,
+     "hier_flip": []
+    },
+    "Jupiter": {
+     "ref": 200.8911261,
+     "calc": 200.89112613474322,
+     "delta_arcsec": 0.000125,
+     "hier_flip": []
+    },
+    "Saturn": {
+     "ref": 332.8414998,
+     "calc": 332.84149981216905,
+     "delta_arcsec": 4.4e-05,
+     "hier_flip": []
+    },
+    "Uranus": {
+     "ref": 344.8810574,
+     "calc": 344.8810574225818,
+     "delta_arcsec": 8.1e-05,
+     "hier_flip": []
+    },
+    "Neptune": {
+     "ref": 323.2441435,
+     "calc": 323.2441435352342,
+     "delta_arcsec": 0.000127,
+     "hier_flip": []
+    },
+    "Pluto": {
+     "ref": 9.1111131,
+     "calc": 9.111113102904403,
+     "delta_arcsec": 1e-05,
+     "hier_flip": []
+    },
+    "Rahu": {
+     "ref": 166.3431719,
+     "calc": 166.3431719421075,
+     "delta_arcsec": 0.000152,
+     "hier_flip": []
+    },
+    "Ketu": {
+     "ref": 346.3431719,
+     "calc": 346.34317194210746,
+     "delta_arcsec": 0.000152,
+     "hier_flip": []
+    }
+   },
+   "cusps": {
+    "1": {
+     "ref": 239.9396395,
+     "calc": 239.93963947629015,
+     "delta_arcsec": 8.5e-05
+    },
+    "2": {
+     "ref": 283.1917554,
+     "calc": 283.1917553714643,
+     "delta_arcsec": 0.000103
+    },
+    "3": {
+     "ref": 328.9090432,
+     "calc": 328.9090432440174,
+     "delta_arcsec": 0.000158
+    },
+    "4": {
+     "ref": 1.568676,
+     "calc": 1.5686759749622219,
+     "delta_arcsec": 9e-05
+    },
+    "5": {
+     "ref": 24.3632621,
+     "calc": 24.363262052928068,
+     "delta_arcsec": 0.000169
+    },
+    "6": {
+     "ref": 42.5820986,
+     "calc": 42.58209864894343,
+     "delta_arcsec": 0.000176
+    },
+    "7": {
+     "ref": 59.9396395,
+     "calc": 59.939639476290154,
+     "delta_arcsec": 8.5e-05
+    },
+    "8": {
+     "ref": 103.1917554,
+     "calc": 103.1917553714643,
+     "delta_arcsec": 0.000103
+    },
+    "9": {
+     "ref": 148.9090432,
+     "calc": 148.90904324401737,
+     "delta_arcsec": 0.000158
+    },
+    "10": {
+     "ref": 181.568676,
+     "calc": 181.5686759749622,
+     "delta_arcsec": 9e-05
+    },
+    "11": {
+     "ref": 204.3632621,
+     "calc": 204.36326205292804,
+     "delta_arcsec": 0.000169
+    },
+    "12": {
+     "ref": 222.5820986,
+     "calc": 222.58209864894343,
+     "delta_arcsec": 0.000176
+    }
+   },
+   "boundary_sensitive": false,
+   "ascendant_delta_arcsec": 8.5e-05
+  },
+  {
+   "id": "H10_boundary_moon_a",
+   "planets": {
+    "Sun": {
+     "ref": 317.2201549,
+     "calc": 317.22015492815734,
+     "delta_arcsec": 0.000101,
+     "hier_flip": []
+    },
+    "Moon": {
+     "ref": 339.8888403,
+     "calc": 339.88884032717795,
+     "delta_arcsec": 9.8e-05,
+     "hier_flip": []
+    },
+    "Mercury": {
+     "ref": 333.2756232,
+     "calc": 333.2756232238909,
+     "delta_arcsec": 8.6e-05,
+     "hier_flip": []
+    },
+    "Venus": {
+     "ref": 346.7211703,
+     "calc": 346.7211702831004,
+     "delta_arcsec": 6.1e-05,
+     "hier_flip": []
+    },
+    "Mars": {
+     "ref": 83.093281,
+     "calc": 83.0932809929775,
+     "delta_arcsec": 2.5e-05,
+     "hier_flip": []
+    },
+    "Jupiter": {
+     "ref": 48.2163837,
+     "calc": 48.21638370090447,
+     "delta_arcsec": 3e-06,
+     "hier_flip": []
+    },
+    "Saturn": {
+     "ref": 326.6600798,
+     "calc": 326.66007977713093,
+     "delta_arcsec": 8.2e-05,
+     "hier_flip": []
+    },
+    "Uranus": {
+     "ref": 29.5412149,
+     "calc": 29.541214918341385,
+     "delta_arcsec": 6.6e-05,
+     "hier_flip": []
+    },
+    "Neptune": {
+     "ref": 334.8050322,
+     "calc": 334.8050322229739,
+     "delta_arcsec": 8.3e-05,
+     "hier_flip": []
+    },
+    "Pluto": {
+     "ref": 278.7926445,
+     "calc": 278.79264447914744,
+     "delta_arcsec": 7.5e-05,
+     "hier_flip": []
+    },
+    "Rahu": {
+     "ref": 334.2252061,
+     "calc": 334.2252060995535,
+     "delta_arcsec": 2e-06,
+     "hier_flip": []
+    },
+    "Ketu": {
+     "ref": 154.22520609999992,
+     "calc": 154.22520609955347,
+     "delta_arcsec": 2e-06,
+     "hier_flip": []
+    }
+   },
+   "cusps": {
+    "1": {
+     "ref": 184.0795259,
+     "calc": 184.0795259075291,
+     "delta_arcsec": 2.7e-05
+    },
+    "2": {
+     "ref": 212.9283479,
+     "calc": 212.9283479213963,
+     "delta_arcsec": 7.7e-05
+    },
+    "3": {
+     "ref": 243.7084797,
+     "calc": 243.70847965908095,
+     "delta_arcsec": 0.000147
+    },
+    "4": {
+     "ref": 275.8975724,
+     "calc": 275.89757242568214,
+     "delta_arcsec": 9.2e-05
+    },
+    "5": {
+     "ref": 308.0689852,
+     "calc": 308.06898523072925,
+     "delta_arcsec": 0.000111
+    },
+    "6": {
+     "ref": 337.9501883,
+     "calc": 337.9501882678769,
+     "delta_arcsec": 0.000116
+    },
+    "7": {
+     "ref": 4.0795259,
+     "calc": 4.079525907529135,
+     "delta_arcsec": 2.7e-05
+    },
+    "8": {
+     "ref": 32.9283479,
+     "calc": 32.928347921396295,
+     "delta_arcsec": 7.7e-05
+    },
+    "9": {
+     "ref": 63.7084797,
+     "calc": 63.70847965908095,
+     "delta_arcsec": 0.000147
+    },
+    "10": {
+     "ref": 95.8975724,
+     "calc": 95.8975724256821,
+     "delta_arcsec": 9.2e-05
+    },
+    "11": {
+     "ref": 128.0689852,
+     "calc": 128.06898523072923,
+     "delta_arcsec": 0.000111
+    },
+    "12": {
+     "ref": 157.9501883,
+     "calc": 157.95018826787685,
+     "delta_arcsec": 0.000116
+    }
+   },
+   "boundary_sensitive": true,
+   "ascendant_delta_arcsec": 2.7e-05
+  },
+  {
+   "id": "H11_boundary_moon_b",
+   "planets": {
+    "Sun": {
+     "ref": 318.0265749,
+     "calc": 318.02657486634166,
+     "delta_arcsec": 0.000121,
+     "hier_flip": []
+    },
+    "Moon": {
+     "ref": 351.7832556,
+     "calc": 351.7832555699069,
+     "delta_arcsec": 0.000108,
+     "hier_flip": []
+    },
+    "Mercury": {
+     "ref": 334.5384974,
+     "calc": 334.5384974304536,
+     "delta_arcsec": 0.00011,
+     "hier_flip": []
+    },
+    "Venus": {
+     "ref": 346.7192593,
+     "calc": 346.7192593127637,
+     "delta_arcsec": 4.6e-05,
+     "hier_flip": []
+    },
+    "Mars": {
+     "ref": 83.1509542,
+     "calc": 83.15095420896866,
+     "delta_arcsec": 3.2e-05,
+     "hier_flip": []
+    },
+    "Jupiter": {
+     "ref": 48.2824174,
+     "calc": 48.28241737787932,
+     "delta_arcsec": 8e-05,
+     "hier_flip": []
+    },
+    "Saturn": {
+     "ref": 326.7584748,
+     "calc": 326.758474756077,
+     "delta_arcsec": 0.000158,
+     "hier_flip": []
+    },
+    "Uranus": {
+     "ref": 29.5620522,
+     "calc": 29.562052192600284,
+     "delta_arcsec": 2.7e-05,
+     "hier_flip": []
+    },
+    "Neptune": {
+     "ref": 334.8343862,
+     "calc": 334.8343861849592,
+     "delta_arcsec": 5.4e-05,
+     "hier_flip": []
+    },
+    "Pluto": {
+     "ref": 278.8138554,
+     "calc": 278.8138554399942,
+     "delta_arcsec": 0.000144,
+     "hier_flip": []
+    },
+    "Rahu": {
+     "ref": 334.1826285,
+     "calc": 334.1826285103546,
+     "delta_arcsec": 3.7e-05,
+     "hier_flip": []
+    },
+    "Ketu": {
+     "ref": 154.18262849999996,
+     "calc": 154.18262851035456,
+     "delta_arcsec": 3.7e-05,
+     "hier_flip": []
+    }
+   },
+   "cusps": {
+    "1": {
+     "ref": 122.8785076,
+     "calc": 122.87850763629274,
+     "delta_arcsec": 0.000131
+    },
+    "2": {
+     "ref": 148.581774,
+     "calc": 148.58177397024792,
+     "delta_arcsec": 0.000107
+    },
+    "3": {
+     "ref": 178.2039945,
+     "calc": 178.20399446995614,
+     "delta_arcsec": 0.000108
+    },
+    "4": {
+     "ref": 210.4816948,
+     "calc": 210.48169475646256,
+     "delta_arcsec": 0.000157
+    },
+    "5": {
+     "ref": 242.948031,
+     "calc": 242.9480309765166,
+     "delta_arcsec": 8.5e-05
+    },
+    "6": {
+     "ref": 273.9135729,
+     "calc": 273.9135729287714,
+     "delta_arcsec": 0.000104
+    },
+    "7": {
+     "ref": 302.8785076,
+     "calc": 302.87850763629274,
+     "delta_arcsec": 0.000131
+    },
+    "8": {
+     "ref": 328.581774,
+     "calc": 328.5817739702479,
+     "delta_arcsec": 0.000107
+    },
+    "9": {
+     "ref": 358.2039945,
+     "calc": 358.2039944699561,
+     "delta_arcsec": 0.000108
+    },
+    "10": {
+     "ref": 30.4816948,
+     "calc": 30.481694756462566,
+     "delta_arcsec": 0.000157
+    },
+    "11": {
+     "ref": 62.948031,
+     "calc": 62.948030976516634,
+     "delta_arcsec": 8.5e-05
+    },
+    "12": {
+     "ref": 93.9135729,
+     "calc": 93.91357292877134,
+     "delta_arcsec": 0.000104
+    }
+   },
+   "boundary_sensitive": true,
+   "ascendant_delta_arcsec": 0.000131
+  }
+ ],
+ "kp_holdout_hierarchy_mismatches": [],
+ "summary": {
+  "planetary_holdout_count": 132,
+  "cusp_holdout_count": 132,
+  "ascendant_count": 11,
+  "max_planetary_error_arcsec": 0.000179,
+  "worst_planet": {
+   "case": "H5_reykjavik_1992",
+   "body": "Mercury"
+  },
+  "median_planetary_error_arcsec": 8.2e-05,
+  "max_ascendant_error_arcsec": 0.000168,
+  "max_cusp_error_arcsec": 0.000176,
+  "worst_cusp": {
+   "case": "H9_paris_2350",
+   "cusp": "6"
+  },
+  "hierarchy_mismatches": {
+   "SL": 0,
+   "NL": 0,
+   "SB": 0,
+   "SS": 0
+  },
+  "moshier_fallback_events": 0,
+  "hardcoded_fitting_findings": []
+ }
+}

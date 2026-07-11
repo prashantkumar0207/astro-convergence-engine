@@ -1,0 +1,3 @@
+Built from official source: https://github.com/aloistr/swisseph tag v2.10.03
+Build: make swetest (gcc, linux x86_64). Version evidence: header line "version 2.10.03".
+To rebuild: curl -sL https://codeload.github.com/aloistr/swisseph/tar.gz/refs/tags/v2.10.03 | tar xz && cd swisseph-2.10.03 && make swetest

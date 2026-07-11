@@ -1,0 +1,33 @@
+{
+  "status": "PARTIAL_VALIDATION_ONLY_NOT_FULL_LOCK",
+  "official_swetest_independent_fixture": {
+    "source": "Astrodienst swetest 2.10.03 published output; 28 Dec 1946 09:33 UT; sid0 Fagan/Bradley; -eswe",
+    "errors_arcsec": {
+      "Sun": 0.010609690457386023,
+      "Moon": 0.1698831295925629
+    },
+    "max_error_arcsec": 0.1698831295925629,
+    "target_arcsec": 0.5,
+    "pass": true
+  },
+  "brihat_fixture_result": {
+    "case_C_max_planet_arcsec": 166.4,
+    "case_D_max_planet_arcsec": 703.9,
+    "interpretation": "FAIL as Brihat compatibility. Residual pattern is too large and body-dependent to be an ayanamsha-only issue. Do not fit corrections."
+  },
+  "kp_hierarchy": {
+    "fixture_items": 50,
+    "fields": 200,
+    "exact_matches": 200,
+    "mismatches": 0,
+    "status": "RULE_ENGINE_VALIDATED_ON_AVAILABLE_TRANSCRIBED_FIXTURES"
+  },
+  "changes": [
+    "Fraction(float) replaced by Decimal(str(float))->Fraction conversion",
+    "meaningless `or True` assertion removed",
+    "ephemeris actual-mode logging added",
+    "strict SWIEPH mode added to fail on silent fallback",
+    "independent official swetest <=0.5 arcsec regression added"
+  ],
+  "final_decision": "The canonical Swiss-based core is on a defensible path and passes <=0.5 arcsec on the independent official fixture available in this environment, but a full all-planets+cusps <=0.5 arcsec certification is NOT established. Brihat cannot be used as that accuracy authority because its supplied values disagree with Swiss by tens to hundreds of arcseconds. Full lock requires pinned sepl_18.se1/semo_18.se1 and a larger official swetest/JPL holdout fixture set with identical flags; cusp validation additionally needs exact coordinates and house-profile reference outputs."
+}
