@@ -1,0 +1,480 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hlkg.project/schemas/question.schema.json",
+  "title": "HLKG Canonical Question",
+  "description": "Canonical machine-readable representation of one HLKG Question. Governed by docs/CANONICAL_QUESTION_SCHEMA.md, docs/QUESTION_REGISTRY_SPEC.md, docs/HLKG_CONSTITUTION.md. Writer mode: additionalProperties=false. Cross-record rules (uniqueness, registry refs, acyclicity) are registry-level validators, not schema-expressible.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "question_id",
+    "slug",
+    "canonical_label",
+    "primary_domain",
+    "question_class",
+    "lifecycle_state",
+    "version",
+    "provenance",
+    "created_at",
+    "modified_at",
+    "history"
+  ],
+  "properties": {
+    "schema_version": {
+      "description": "Semver of this schema the record conforms to.",
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "question_id": {
+      "description": "Immutable registry-issued primary key; never reused.",
+      "type": "string",
+      "pattern": "^HLKG-N-[0-9]{6}$"
+    },
+    "slug": {
+      "description": "domain.topic.aspect; segment 1 must equal the primary domain's slug segment (registry-level check).",
+      "type": "string",
+      "pattern": "^[a-z0-9](?:[a-z0-9_]{0,28}[a-z0-9])?\\.[a-z0-9](?:[a-z0-9_]{0,28}[a-z0-9])?\\.[a-z0-9](?:[a-z0-9_]{0,28}[a-z0-9])?$"
+    },
+    "canonical_label": {
+      "description": "Exactly one English neutral interrogative ending in '?'.",
+      "type": "string",
+      "minLength": 6,
+      "maxLength": 120,
+      "pattern": "\\?$"
+    },
+    "human_title": {
+      "description": "Optional short display name; carries no identity.",
+      "type": "string",
+      "maxLength": 60
+    },
+    "primary_domain": {
+      "description": "Owning domain (Domain Registry ID, APPROVED/LOCKED - registry-level check).",
+      "type": "string",
+      "pattern": "^HLKG-D-[0-9]{3}$"
+    },
+    "question_class": {
+      "description": "Answer shape from the closed constitutional registry.",
+      "type": "string",
+      "enum": [
+        "TIMING",
+        "OCCURRENCE",
+        "QUALITY",
+        "SELECTION",
+        "QUANTITY",
+        "DESCRIPTION",
+        "CAUSAL"
+      ]
+    },
+    "definition": {
+      "description": "1-3 sentences: what is asked and what a complete answer contains. Required at CANONICAL.",
+      "type": "string",
+      "minLength": 20,
+      "maxLength": 600
+    },
+    "parameters": {
+      "description": "Declared bindable slots; values are never stored.",
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/parameter"
+      },
+      "uniqueItems": true
+    },
+    "relationships": {
+      "description": "Typed edges from the closed constitutional registry.",
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/relationship"
+      },
+      "uniqueItems": true
+    },
+    "aliases": {
+      "description": "Per-locale surface forms; alias never owns identity.",
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/alias"
+      },
+      "uniqueItems": true
+    },
+    "translations": {
+      "description": "Per-locale labels/definitions; never create identity.",
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/translation"
+      },
+      "uniqueItems": true
+    },
+    "lifecycle_state": {
+      "description": "Constitutional five-state lifecycle.",
+      "type": "string",
+      "enum": [
+        "PROPOSED",
+        "REVIEW",
+        "CANONICAL",
+        "DEPRECATED",
+        "RETIRED"
+      ]
+    },
+    "version": {
+      "description": "Node revision; increments on any change.",
+      "type": "integer",
+      "minimum": 1
+    },
+    "owner": {
+      "description": "Accountable owner; required at CANONICAL.",
+      "type": "string",
+      "minLength": 1
+    },
+    "review_status": {
+      "description": "Latest review outcome reference; required at/after REVIEW.",
+      "type": "string",
+      "minLength": 1
+    },
+    "provenance": {
+      "description": "Origin of the concept (proposal/import/decision link).",
+      "type": "string",
+      "minLength": 1
+    },
+    "created_at": {
+      "description": "UTC creation timestamp.",
+      "type": "string",
+      "format": "date-time"
+    },
+    "modified_at": {
+      "description": "UTC last-modification timestamp; >= created_at (registry-level check).",
+      "type": "string",
+      "format": "date-time"
+    },
+    "deprecation": {
+      "$ref": "#/$defs/deprecation"
+    },
+    "history": {
+      "description": "Append-only event log; never shrinks (registry-level check).",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/history_event"
+      }
+    },
+    "reserved_annotations": {
+      "description": "Slots reserved by QUESTION_REGISTRY_SPEC Block D; MUST remain null until QQ-2 semantics are ratified.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "priority": {
+          "type": "null"
+        },
+        "sensitivity": {
+          "type": "null"
+        },
+        "predictability": {
+          "type": "null"
+        },
+        "actionability": {
+          "type": "null"
+        },
+        "confidence_default": {
+          "type": "null"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "locale": {
+      "description": "BCP-47 language tag (pragmatic pattern; full BCP-47 validity is a registry-level check).",
+      "type": "string",
+      "pattern": "^[a-zA-Z]{2,3}(-[a-zA-Z0-9]{2,8})*$"
+    },
+    "parameter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "kind",
+        "required"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]{1,29}$"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "horizon",
+            "subject",
+            "option_set",
+            "count_threshold",
+            "locale_of_answer"
+          ]
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "constraints": {
+          "type": "string",
+          "maxLength": 300
+        }
+      }
+    },
+    "relationship": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "target"
+      ],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "REFINES",
+            "PRECEDES",
+            "DEPENDS_ON",
+            "EXCLUDES",
+            "RELATES_TO",
+            "SUPERSEDED_BY"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "pattern": "^HLKG-N-[0-9]{6}$"
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 600
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "RELATES_TO"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "rationale"
+            ]
+          }
+        }
+      ]
+    },
+    "alias": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "locale",
+        "text",
+        "provenance"
+      ],
+      "properties": {
+        "locale": {
+          "$ref": "#/$defs/locale"
+        },
+        "text": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 200
+        },
+        "provenance": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "translation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "locale",
+        "label",
+        "provenance",
+        "translator"
+      ],
+      "properties": {
+        "locale": {
+          "$ref": "#/$defs/locale"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 160
+        },
+        "definition": {
+          "type": "string",
+          "maxLength": 800
+        },
+        "provenance": {
+          "type": "string",
+          "minLength": 1
+        },
+        "translator": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reviewed_by": {
+          "type": "string"
+        }
+      }
+    },
+    "deprecation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rationale",
+        "superseded_by",
+        "migration_note",
+        "deprecated_at"
+      ],
+      "properties": {
+        "rationale": {
+          "type": "string",
+          "minLength": 10
+        },
+        "superseded_by": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^HLKG-N-[0-9]{6}$"
+          },
+          "uniqueItems": true
+        },
+        "migration_note": {
+          "type": "string",
+          "minLength": 1
+        },
+        "deprecated_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "history_event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "event",
+        "actor",
+        "timestamp"
+      ],
+      "properties": {
+        "event": {
+          "type": "string",
+          "enum": [
+            "CREATED",
+            "EDITED",
+            "STATE_CHANGED",
+            "ALIAS_CHANGED",
+            "RELATIONSHIP_CHANGED",
+            "TRANSLATION_CHANGED",
+            "ADJUDICATED",
+            "DEPRECATED",
+            "RETIRED"
+          ]
+        },
+        "actor": {
+          "type": "string",
+          "minLength": 1
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "rationale": {
+          "type": "string"
+        },
+        "evidence": {
+          "type": "string"
+        },
+        "diff_ref": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "lifecycle_state": {
+            "const": "CANONICAL"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "definition",
+          "owner",
+          "review_status"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "lifecycle_state": {
+            "enum": [
+              "REVIEW",
+              "CANONICAL",
+              "DEPRECATED",
+              "RETIRED"
+            ]
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "review_status"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "lifecycle_state": {
+            "enum": [
+              "DEPRECATED",
+              "RETIRED"
+            ]
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "deprecation"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "relationships": {
+            "contains": {
+              "properties": {
+                "type": {
+                  "const": "SUPERSEDED_BY"
+                }
+              }
+            }
+          }
+        },
+        "required": [
+          "relationships"
+        ]
+      },
+      "then": {
+        "properties": {
+          "lifecycle_state": {
+            "enum": [
+              "DEPRECATED",
+              "RETIRED"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}
