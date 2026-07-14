@@ -1,0 +1,1286 @@
+{
+  "$schema_note": "career.test.dataset.v1 - synthetic test scenarios for intake/resolution/validation machinery. TEST DATA ONLY.",
+  "version": "0.1.0",
+  "generated": "2026-07-11",
+  "provenance": "Fully synthetic; no real persons, no user data, no astrology. Generated against career.questions.json v0.1.0 + CAREER_ALIAS_REGISTRY.md v0.1.0.",
+  "expected_outcome_vocabulary": [
+    "RESOLVED",
+    "RESOLVED_WITH_PARAMETERS",
+    "NO_MATCH",
+    "NO_MATCH_EXACT",
+    "DISAMBIGUATION_REQUIRED",
+    "DECOMPOSITION",
+    "OUT_OF_DOMAIN",
+    "NOT_YET_SUPPORTED",
+    "OPTIONS_REQUIRED"
+  ],
+  "machine_verification": "100 unique scenario IDs; every referenced question_id exists in the batch; every RESOLVED utterance exact-matches a registered alias under constitutional normalisation to the exact expected node; every DISAMBIGUATION/NO_MATCH_EXACT utterance verified NOT to exact-match any alias. ALL PASS.",
+  "usage_rules": [
+    "Expected outcomes for NO_MATCH_EXACT scenarios assert exact-resolution behaviour; similarity_candidates are Gate-2 style advisories, not resolution assertions.",
+    "NOT_YET_SUPPORTED and OPTIONS_REQUIRED assert policy refusals per CAREER_PARAMETER_REGISTRY (VC-D4) and the SELECTION contract.",
+    "OUT_OF_DOMAIN scenarios assert career-resolver refusal + routing hint; target-domain resolution is out of scope for this dataset.",
+    "Never import scenarios as Questions; this file is a fixture, not registry content."
+  ],
+  "scenarios": [
+    {
+      "scenario_id": "TC-CAR-001",
+      "kind": "exact_alias",
+      "locale": "en",
+      "utterance": "When will I get a job again?",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000404"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-002",
+      "kind": "exact_alias",
+      "locale": "en",
+      "utterance": "Which of these skill paths should I pick?",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000444"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-003",
+      "kind": "exact_alias",
+      "locale": "en",
+      "utterance": "When will I come back from onsite?",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000449"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-004",
+      "kind": "exact_alias",
+      "locale": "en",
+      "utterance": "How will my relations with colleagues be?",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000436"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-005",
+      "kind": "exact_alias",
+      "locale": "en",
+      "utterance": "When will I lead a team?",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000423"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-006",
+      "kind": "exact_alias",
+      "locale": "en",
+      "utterance": "Will I get the offer?",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000407"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-007",
+      "kind": "exact_alias",
+      "locale": "en",
+      "utterance": "Will I move into a different career altogether?",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000429"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-008",
+      "kind": "exact_alias",
+      "locale": "en",
+      "utterance": "When will I return from this posting?",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000449"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-009",
+      "kind": "exact_alias",
+      "locale": "en",
+      "utterance": "Will I get a raise?",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000450"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-010",
+      "kind": "exact_alias",
+      "locale": "en",
+      "utterance": "How favourable will my rating be this cycle?",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000439"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-011",
+      "kind": "exact_alias",
+      "locale": "en",
+      "utterance": "Will I reach a leadership position?",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000422"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-012",
+      "kind": "exact_alias",
+      "locale": "en",
+      "utterance": "Will I switch professions?",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000409"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-013",
+      "kind": "exact_alias",
+      "locale": "en",
+      "utterance": "Will I start a business?",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000414"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-014",
+      "kind": "exact_alias",
+      "locale": "en",
+      "utterance": "When will things get better at work?",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000457"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-015",
+      "kind": "exact_alias",
+      "locale": "en",
+      "utterance": "Will my business do well?",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000415"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-016",
+      "kind": "exact_alias",
+      "locale": "en",
+      "utterance": "When will I reach a leadership role?",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000423"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-017",
+      "kind": "exact_alias",
+      "locale": "en",
+      "utterance": "Will I take a break from work?",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000430"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-018",
+      "kind": "exact_alias",
+      "locale": "en",
+      "utterance": "Will I stop working before the usual age?",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000459"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-019",
+      "kind": "exact_alias",
+      "locale": "en",
+      "utterance": "When will I go abroad for work?",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000446"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-020",
+      "kind": "exact_alias",
+      "locale": "en",
+      "utterance": "Which career field suits me among these?",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000408"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-021",
+      "kind": "exact_alias",
+      "locale": "en",
+      "utterance": "When will this workplace conflict get resolved?",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000435"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-022",
+      "kind": "exact_alias",
+      "locale": "en",
+      "utterance": "When will I start earning for the first time?",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000401"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-023",
+      "kind": "exact_alias",
+      "locale": "en",
+      "utterance": "When will my career restart after the gap?",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000431"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-024",
+      "kind": "exact_alias",
+      "locale": "en",
+      "utterance": "When will my work be recognised?",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000438"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-025",
+      "kind": "exact_alias",
+      "locale": "en",
+      "utterance": "When will my business grow?",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000417"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-026",
+      "kind": "spelling_variant",
+      "locale": "hi-Latn",
+      "utterance": "promosan kab hoga",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000420"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-027",
+      "kind": "spelling_variant",
+      "locale": "hi-Latn",
+      "utterance": "incriment milega kya",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000450"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-028",
+      "kind": "spelling_variant",
+      "locale": "en",
+      "utterance": "will i get a foriegn posting",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000445"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-029",
+      "kind": "spelling_variant",
+      "locale": "en",
+      "utterance": "will i get a rise in salary",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000450"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-030",
+      "kind": "spelling_variant",
+      "locale": "en",
+      "utterance": "will i be happy in my carrer",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000455"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-031",
+      "kind": "spelling_variant",
+      "locale": "hi-Latn",
+      "utterance": "pahli nokri kab lagegi",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000401"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-032",
+      "kind": "spelling_variant",
+      "locale": "en",
+      "utterance": "when will i get promtion",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000420"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-033",
+      "kind": "spelling_variant",
+      "locale": "hi-Latn",
+      "utterance": "apprisal acha hoga kya",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000439"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-034",
+      "kind": "hindi_devanagari",
+      "locale": "hi",
+      "utterance": "सहकर्मियों से संबंध कैसे रहेंगे?",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000436"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-035",
+      "kind": "hindi_devanagari",
+      "locale": "hi",
+      "utterance": "क्या मैं व्यवसाय शुरू करूँगा?",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000414"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-036",
+      "kind": "hindi_devanagari",
+      "locale": "hi",
+      "utterance": "क्या जल्दी सेवानिवृत्ति होगी?",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000459"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-037",
+      "kind": "hindi_devanagari",
+      "locale": "hi",
+      "utterance": "ब्रेक के बाद काम पर कब लौटूँगा?",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000431"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-038",
+      "kind": "hindi_devanagari",
+      "locale": "hi",
+      "utterance": "अपने क्षेत्र में मेरी प्रतिष्ठा कैसी होगी?",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000440"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-039",
+      "kind": "hindi_devanagari",
+      "locale": "hi",
+      "utterance": "क्या सरकारी नौकरी मिलेगी?",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000406"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-040",
+      "kind": "hindi_devanagari",
+      "locale": "hi",
+      "utterance": "क्या मेरा व्यवसाय अच्छा चलेगा?",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000415"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-041",
+      "kind": "hindi_devanagari",
+      "locale": "hi",
+      "utterance": "दोबारा नौकरी कब मिलेगी?",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000404"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-042",
+      "kind": "hinglish",
+      "locale": "hi-Latn",
+      "utterance": "kya main sahi profession me hun",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000411"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-043",
+      "kind": "hinglish",
+      "locale": "hi-Latn",
+      "utterance": "promotion kab milega",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000420"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-044",
+      "kind": "hinglish",
+      "locale": "hi-Latn",
+      "utterance": "kaam ka credit kab milega",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000438"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-045",
+      "kind": "hinglish",
+      "locale": "hi-Latn",
+      "utterance": "career growth kaisi rahegi",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000424"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-046",
+      "kind": "hinglish",
+      "locale": "hi-Latn",
+      "utterance": "career kyu ruka hua hai",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000425"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-047",
+      "kind": "hinglish",
+      "locale": "hi-Latn",
+      "utterance": "govt job milegi ya nahi",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000406"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-048",
+      "kind": "hinglish",
+      "locale": "hi-Latn",
+      "utterance": "business expand kab hoga",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000417"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-049",
+      "kind": "hinglish",
+      "locale": "hi-Latn",
+      "utterance": "job kab change hogi",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000426"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-050",
+      "kind": "hinglish",
+      "locale": "hi-Latn",
+      "utterance": "kaam me halaat kab sudhrenge",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000457"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-051",
+      "kind": "hinglish",
+      "locale": "hi-Latn",
+      "utterance": "kya main company change karunga",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000427"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-052",
+      "kind": "hinglish",
+      "locale": "hi-Latn",
+      "utterance": "salary kab badhegi",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000451"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-053",
+      "kind": "hinglish",
+      "locale": "hi-Latn",
+      "utterance": "onsite jaunga kya",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000445"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-054",
+      "kind": "search_phrase",
+      "locale": "en",
+      "utterance": "career break chance",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000430"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-055",
+      "kind": "search_phrase",
+      "locale": "en",
+      "utterance": "job change count",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000428"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-056",
+      "kind": "search_phrase",
+      "locale": "en",
+      "utterance": "income growth from job",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000452"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-057",
+      "kind": "search_phrase",
+      "locale": "en",
+      "utterance": "office conflict chance",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000434"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-058",
+      "kind": "search_phrase",
+      "locale": "en",
+      "utterance": "job yes or no",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000402"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-059",
+      "kind": "search_phrase",
+      "locale": "en",
+      "utterance": "career switch timing",
+      "expected": {
+        "outcome": "RESOLVED",
+        "question_ids": [
+          "HLKG-N-000410"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-060",
+      "kind": "novel_paraphrase",
+      "locale": "en",
+      "utterance": "Is a promotion on the cards for me",
+      "expected": {
+        "outcome": "NO_MATCH_EXACT",
+        "notes": "Similarity (Gate-2 style) should surface HLKG-N-000421 as top candidate; exact resolution correctly returns NO_MATCH",
+        "similarity_candidates": [
+          "HLKG-N-000421"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-061",
+      "kind": "novel_paraphrase",
+      "locale": "en",
+      "utterance": "Any chance my company sends me overseas",
+      "expected": {
+        "outcome": "NO_MATCH_EXACT",
+        "notes": "Similarity (Gate-2 style) should surface HLKG-N-000445 as top candidate; exact resolution correctly returns NO_MATCH",
+        "similarity_candidates": [
+          "HLKG-N-000445"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-062",
+      "kind": "novel_paraphrase",
+      "locale": "en",
+      "utterance": "Could my startup fold",
+      "expected": {
+        "outcome": "NO_MATCH_EXACT",
+        "notes": "Similarity (Gate-2 style) should surface HLKG-N-000416 as top candidate; exact resolution correctly returns NO_MATCH",
+        "similarity_candidates": [
+          "HLKG-N-000416"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-063",
+      "kind": "novel_paraphrase",
+      "locale": "en",
+      "utterance": "Is a pay bump coming my way",
+      "expected": {
+        "outcome": "NO_MATCH_EXACT",
+        "notes": "Similarity (Gate-2 style) should surface HLKG-N-000450 as top candidate; exact resolution correctly returns NO_MATCH",
+        "similarity_candidates": [
+          "HLKG-N-000450"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-064",
+      "kind": "novel_paraphrase",
+      "locale": "en",
+      "utterance": "Am I headed for a management role",
+      "expected": {
+        "outcome": "NO_MATCH_EXACT",
+        "notes": "Similarity (Gate-2 style) should surface HLKG-N-000422 as top candidate; exact resolution correctly returns NO_MATCH",
+        "similarity_candidates": [
+          "HLKG-N-000422"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-065",
+      "kind": "novel_paraphrase",
+      "locale": "en",
+      "utterance": "Might I end up switching employers soon",
+      "expected": {
+        "outcome": "NO_MATCH_EXACT",
+        "notes": "Similarity (Gate-2 style) should surface HLKG-N-000427 as top candidate; exact resolution correctly returns NO_MATCH",
+        "similarity_candidates": [
+          "HLKG-N-000427"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-066",
+      "kind": "novel_paraphrase",
+      "locale": "en",
+      "utterance": "Is my position at the firm shaky",
+      "expected": {
+        "outcome": "NO_MATCH_EXACT",
+        "notes": "Similarity (Gate-2 style) should surface HLKG-N-000405 as top candidate; exact resolution correctly returns NO_MATCH",
+        "similarity_candidates": [
+          "HLKG-N-000405"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-067",
+      "kind": "novel_paraphrase",
+      "locale": "en",
+      "utterance": "Will recognition finally come for my efforts",
+      "expected": {
+        "outcome": "NO_MATCH_EXACT",
+        "notes": "Similarity (Gate-2 style) should surface HLKG-N-000437 as top candidate; exact resolution correctly returns NO_MATCH",
+        "similarity_candidates": [
+          "HLKG-N-000437"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-068",
+      "kind": "novel_paraphrase",
+      "locale": "en",
+      "utterance": "Is working for myself in my future",
+      "expected": {
+        "outcome": "NO_MATCH_EXACT",
+        "notes": "Similarity (Gate-2 style) should surface HLKG-N-000414 as top candidate; exact resolution correctly returns NO_MATCH",
+        "similarity_candidates": [
+          "HLKG-N-000414"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-069",
+      "kind": "novel_paraphrase",
+      "locale": "en",
+      "utterance": "Do my capabilities match what this goal needs",
+      "expected": {
+        "outcome": "NO_MATCH_EXACT",
+        "notes": "Similarity (Gate-2 style) should surface HLKG-N-000442 as top candidate; exact resolution correctly returns NO_MATCH",
+        "similarity_candidates": [
+          "HLKG-N-000442"
+        ]
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-070",
+      "kind": "ambiguous",
+      "locale": "en",
+      "utterance": "When will I get a job?",
+      "expected": {
+        "outcome": "DISAMBIGUATION_REQUIRED",
+        "question_ids": [
+          "HLKG-N-000401",
+          "HLKG-N-000404"
+        ],
+        "notes": "Deliberately unmapped per Alias Registry ambiguity table"
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-071",
+      "kind": "ambiguous",
+      "locale": "hi-Latn",
+      "utterance": "naukri kab milegi",
+      "expected": {
+        "outcome": "DISAMBIGUATION_REQUIRED",
+        "question_ids": [
+          "HLKG-N-000401",
+          "HLKG-N-000404"
+        ],
+        "notes": "Deliberately unmapped per Alias Registry ambiguity table"
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-072",
+      "kind": "ambiguous",
+      "locale": "en",
+      "utterance": "Will my career be good?",
+      "expected": {
+        "outcome": "DISAMBIGUATION_REQUIRED",
+        "question_ids": [
+          "HLKG-N-000424",
+          "HLKG-N-000455"
+        ],
+        "notes": "Deliberately unmapped per Alias Registry ambiguity table"
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-073",
+      "kind": "ambiguous",
+      "locale": "en",
+      "utterance": "Will I go abroad?",
+      "expected": {
+        "outcome": "DISAMBIGUATION_REQUIRED",
+        "question_ids": [
+          "HLKG-N-000445"
+        ],
+        "notes": "Deliberately unmapped per Alias Registry ambiguity table ; abroad also spans travel/residence domains"
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-074",
+      "kind": "ambiguous",
+      "locale": "en",
+      "utterance": "Will I be successful?",
+      "expected": {
+        "outcome": "DISAMBIGUATION_REQUIRED",
+        "question_ids": [
+          "HLKG-N-000424",
+          "HLKG-N-000440",
+          "HLKG-N-000455"
+        ],
+        "notes": "Deliberately unmapped per Alias Registry ambiguity table"
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-075",
+      "kind": "ambiguous",
+      "locale": "hi-Latn",
+      "utterance": "videsh jaunga kya",
+      "expected": {
+        "outcome": "DISAMBIGUATION_REQUIRED",
+        "question_ids": [
+          "HLKG-N-000445"
+        ],
+        "notes": "Deliberately unmapped per Alias Registry ambiguity table ; abroad also spans travel/residence domains"
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-076",
+      "kind": "composite",
+      "locale": "en",
+      "utterance": "Will I get promoted, and when?",
+      "expected": {
+        "outcome": "DECOMPOSITION",
+        "question_ids": [
+          "HLKG-N-000421",
+          "HLKG-N-000420"
+        ],
+        "notes": "Composite never becomes a node; multiple Query targets"
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-077",
+      "kind": "composite",
+      "locale": "en",
+      "utterance": "Will I lose my job, and when will I find a new one?",
+      "expected": {
+        "outcome": "DECOMPOSITION",
+        "question_ids": [
+          "HLKG-N-000403",
+          "HLKG-N-000404"
+        ],
+        "notes": "Composite never becomes a node; multiple Query targets"
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-078",
+      "kind": "composite",
+      "locale": "en",
+      "utterance": "When will I retire and will I work afterwards?",
+      "expected": {
+        "outcome": "DECOMPOSITION",
+        "question_ids": [
+          "HLKG-N-000458",
+          "HLKG-N-000460"
+        ],
+        "notes": "Composite never becomes a node; multiple Query targets"
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-079",
+      "kind": "composite",
+      "locale": "en",
+      "utterance": "When will I change jobs and will my salary grow?",
+      "expected": {
+        "outcome": "DECOMPOSITION",
+        "question_ids": [
+          "HLKG-N-000426",
+          "HLKG-N-000452"
+        ],
+        "notes": "Composite never becomes a node; multiple Query targets"
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-080",
+      "kind": "composite",
+      "locale": "en",
+      "utterance": "Will I start a business and will it survive?",
+      "expected": {
+        "outcome": "DECOMPOSITION",
+        "question_ids": [
+          "HLKG-N-000414",
+          "HLKG-N-000415"
+        ],
+        "notes": "Composite never becomes a node; multiple Query targets"
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-081",
+      "kind": "composite",
+      "locale": "en",
+      "utterance": "Will I get a transfer and when will I return?",
+      "expected": {
+        "outcome": "DECOMPOSITION",
+        "question_ids": [
+          "HLKG-N-000447",
+          "HLKG-N-000449"
+        ],
+        "notes": "Composite never becomes a node; multiple Query targets"
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-082",
+      "kind": "composite",
+      "locale": "en",
+      "utterance": "Will I become a manager and get a raise?",
+      "expected": {
+        "outcome": "DECOMPOSITION",
+        "question_ids": [
+          "HLKG-N-000422",
+          "HLKG-N-000450"
+        ],
+        "notes": "Composite never becomes a node; multiple Query targets"
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-083",
+      "kind": "composite",
+      "locale": "en",
+      "utterance": "When is my promotion and my increment due?",
+      "expected": {
+        "outcome": "DECOMPOSITION",
+        "question_ids": [
+          "HLKG-N-000420",
+          "HLKG-N-000451"
+        ],
+        "notes": "Composite never becomes a node; multiple Query targets"
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-084",
+      "kind": "out_of_domain",
+      "locale": "en",
+      "utterance": "Will my business make me wealthy?",
+      "expected": {
+        "outcome": "OUT_OF_DOMAIN",
+        "notes": "Route to `finance`; Boundary 4.1: money outcome, not venture fate"
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-085",
+      "kind": "out_of_domain",
+      "locale": "en",
+      "utterance": "When will I get married?",
+      "expected": {
+        "outcome": "OUT_OF_DOMAIN",
+        "notes": "Route to `relationship`; Different domain entirely"
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-086",
+      "kind": "out_of_domain",
+      "locale": "en",
+      "utterance": "Will I pass the civil services exam?",
+      "expected": {
+        "outcome": "OUT_OF_DOMAIN",
+        "notes": "Route to `education`; Boundary 4.2: exam is education; appointment would be career"
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-087",
+      "kind": "out_of_domain",
+      "locale": "en",
+      "utterance": "Will work stress ruin my health?",
+      "expected": {
+        "outcome": "OUT_OF_DOMAIN",
+        "notes": "Route to `health`; Boundary 4.5: wellbeing state, not career appraisal"
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-088",
+      "kind": "out_of_domain",
+      "locale": "en",
+      "utterance": "Will I win the court case against my employer?",
+      "expected": {
+        "outcome": "OUT_OF_DOMAIN",
+        "notes": "Route to `legal`; Boundary 4.8: proceeding is legal"
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-089",
+      "kind": "out_of_domain",
+      "locale": "en",
+      "utterance": "Will I become famous?",
+      "expected": {
+        "outcome": "OUT_OF_DOMAIN",
+        "notes": "Route to `reputation`; Boundary 4.7: public fame, not field standing"
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-090",
+      "kind": "out_of_domain",
+      "locale": "en",
+      "utterance": "Should I buy an office for my firm?",
+      "expected": {
+        "outcome": "OUT_OF_DOMAIN",
+        "notes": "Route to `property`; Premises as asset"
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-091",
+      "kind": "out_of_domain",
+      "locale": "en",
+      "utterance": "Will my pension be enough?",
+      "expected": {
+        "outcome": "OUT_OF_DOMAIN",
+        "notes": "Route to `finance`; Retirement corpus is finance"
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-092",
+      "kind": "parameter_binding",
+      "locale": "en",
+      "utterance": "Will I get promoted before 2028?",
+      "expected": {
+        "outcome": "RESOLVED_WITH_PARAMETERS",
+        "question_ids": [
+          "HLKG-N-000421"
+        ],
+        "parameters_extracted": {
+          "horizon": {
+            "start": "QUERY_DATE",
+            "end": "2028-01-01"
+          }
+        },
+        "notes": "Year/duration tokens bind to horizon; they are parameters, never aliases (VC-E3)"
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-093",
+      "kind": "parameter_binding",
+      "locale": "en",
+      "utterance": "Will I change jobs in the next two years?",
+      "expected": {
+        "outcome": "RESOLVED_WITH_PARAMETERS",
+        "question_ids": [
+          "HLKG-N-000427"
+        ],
+        "parameters_extracted": {
+          "horizon": {
+            "from": "QUERY_TIME",
+            "duration": "P2Y"
+          }
+        },
+        "notes": "Year/duration tokens bind to horizon; they are parameters, never aliases (VC-E3)"
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-094",
+      "kind": "parameter_binding",
+      "locale": "en",
+      "utterance": "How many times will I change jobs in the next ten years?",
+      "expected": {
+        "outcome": "RESOLVED_WITH_PARAMETERS",
+        "question_ids": [
+          "HLKG-N-000428"
+        ],
+        "parameters_extracted": {
+          "horizon": {
+            "from": "QUERY_TIME",
+            "duration": "P10Y"
+          }
+        },
+        "notes": "Year/duration tokens bind to horizon; they are parameters, never aliases (VC-E3)"
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-095",
+      "kind": "parameter_binding",
+      "locale": "en",
+      "utterance": "Will I go onsite within three years?",
+      "expected": {
+        "outcome": "RESOLVED_WITH_PARAMETERS",
+        "question_ids": [
+          "HLKG-N-000445"
+        ],
+        "parameters_extracted": {
+          "horizon": {
+            "from": "QUERY_TIME",
+            "duration": "P3Y"
+          }
+        },
+        "notes": "Year/duration tokens bind to horizon; they are parameters, never aliases (VC-E3)"
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-096",
+      "kind": "parameter_binding",
+      "locale": "en",
+      "utterance": "Will my startup shut down this year?",
+      "expected": {
+        "outcome": "RESOLVED_WITH_PARAMETERS",
+        "question_ids": [
+          "HLKG-N-000416"
+        ],
+        "parameters_extracted": {
+          "horizon": {
+            "from": "QUERY_TIME",
+            "duration": "P1Y"
+          }
+        },
+        "notes": "Year/duration tokens bind to horizon; they are parameters, never aliases (VC-E3)"
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-097",
+      "kind": "policy_other_subject",
+      "locale": "en",
+      "utterance": "Will my son get a government job?",
+      "expected": {
+        "outcome": "NOT_YET_SUPPORTED",
+        "question_ids": [
+          "HLKG-N-000406"
+        ],
+        "parameters_extracted": {
+          "subject": {
+            "relation": "other",
+            "relation_label": "child"
+          }
+        },
+        "notes": "subject=other acceptance blocked pending CDQ-4; explicit refusal, never silent remap (VC-D4)"
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-098",
+      "kind": "policy_options_missing",
+      "locale": "en",
+      "utterance": "Should I change my career?",
+      "expected": {
+        "outcome": "OPTIONS_REQUIRED",
+        "question_ids": [
+          "HLKG-N-000408"
+        ],
+        "notes": "SELECTION without bound option_set is malformed; intake must prompt for options"
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-099",
+      "kind": "malformed_empty",
+      "locale": "en",
+      "utterance": "",
+      "expected": {
+        "outcome": "NO_MATCH",
+        "notes": "Empty input"
+      }
+    },
+    {
+      "scenario_id": "TC-CAR-100",
+      "kind": "malformed_gibberish",
+      "locale": "en",
+      "utterance": "xkqz vprt mlln",
+      "expected": {
+        "outcome": "NO_MATCH",
+        "notes": "Non-language input"
+      }
+    }
+  ]
+}
