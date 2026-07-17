@@ -1,3 +1,4 @@
 pysweph==2.10.3.6
 pydantic==2.11.7
 numpy==2.3.2
+tzdata==2025.2
