@@ -4,3 +4,5 @@ from .house_position import HousePosition
 from .ayanamsa import Ayanamsa
 from .sidereal_planet_position import SiderealPlanetPosition
 from .planet_collection import PlanetCollection
+from .astronomy_snapshot import AstronomySnapshot
+from .aspect import Aspect
