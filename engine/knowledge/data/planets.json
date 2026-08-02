@@ -1,0 +1,50 @@
+{
+    "schema_version": "1.0",
+    "metadata": {
+        "authority": "BPHS",
+        "description": "Canonical planetary knowledge.",
+        "version": "1.0"
+    },
+    "planets": [
+        {
+            "id": "PLANET_SUN",
+            "enum": "SUN",
+            "name": {
+                "english": "Sun",
+                "sanskrit": "Surya"
+            },
+            "symbol": "☉",
+            "classification": {
+                "category": "luminary",
+                "gender": "male",
+                "element": "fire",
+                "nature": "natural_malefic",
+                "guna": "sattva",
+                "caste": "kshatriya",
+                "direction": "east",
+                "weekday": "Sunday"
+            },
+            "attributes": {
+                "luminary": true,
+                "visible": true,
+                "physical": true
+            },
+            "karakas": [
+                "Soul",
+                "Father",
+                "Government",
+                "Authority",
+                "Vitality",
+                "Power"
+            ],
+            "references": [
+                {
+                    "source": "BPHS"
+                },
+                {
+                    "source": "Saravali"
+                }
+            ]
+        }
+    ]
+}

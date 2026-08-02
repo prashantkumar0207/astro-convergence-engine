@@ -1,0 +1,9 @@
+{
+    "schema_version": "1.0",
+    "metadata": {
+        "authority": "BPHS",
+        "description": "Canonical planetary dignity knowledge.",
+        "version": "1.0"
+    },
+    "dignities": []
+}

@@ -10,3 +10,4 @@ from .astronomy_result import AstronomyResult
 from .relationship import Relationship, PlanetRelationship
 from .relationship_matrix import RelationshipMatrix
 from .planet import Planet
+from .planet_metadata import PlanetMetadata

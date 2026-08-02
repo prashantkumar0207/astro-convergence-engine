@@ -1,8 +1,10 @@
 """
 Ayanamsa Engine
 
-Computes deterministic sidereal offsets using
-Swiss Ephemeris.
+Computes the sidereal offset using the configured
+Swiss Ephemeris sidereal mode.
+
+Contains no astrological interpretation.
 """
 
 from __future__ import annotations
@@ -12,32 +14,22 @@ import swisseph as swe
 from engine.models.ayanamsa import Ayanamsa
 
 
+DEFAULT_SIDEREAL_MODE = swe.SIDM_LAHIRI
+
+
 def ayanamsa(
     julian_day: float,
-    mode: int = swe.SIDM_LAHIRI,
+    mode: int = DEFAULT_SIDEREAL_MODE,
 ) -> Ayanamsa:
     """
     Compute the ayanamsa for a Julian Day.
-
-    Parameters
-    ----------
-    julian_day
-        Julian Day in UTC.
-
-    mode
-        Swiss Ephemeris sidereal mode.
-
-    Returns
-    -------
-    Ayanamsa
-        Deterministic sidereal offset.
     """
 
     if not isinstance(julian_day, (int, float)):
         raise TypeError("julian_day must be numeric.")
 
     if not isinstance(mode, int):
-        raise TypeError("mode must be a Swiss Ephemeris sidereal mode.")
+        raise TypeError("mode must be an integer.")
 
     swe.set_sid_mode(mode)
 

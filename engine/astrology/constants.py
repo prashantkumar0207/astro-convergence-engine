@@ -1,0 +1,8 @@
+"""
+Astrology Constants
+"""
+
+TOTAL_SIGNS = 12
+TOTAL_HOUSES = 12
+TOTAL_NAKSHATRAS = 27
+TOTAL_PADAS = 108

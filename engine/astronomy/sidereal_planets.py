@@ -1,41 +1,33 @@
 """
 Sidereal Planet Engine
 
-Transforms tropical planetary positions into sidereal
-planetary positions using an Ayanamsa.
+Converts a tropical planetary position into a sidereal position.
 
-No astrological interpretation is performed here.
+Contains no astrological interpretation.
 """
 
 from __future__ import annotations
 
-from engine.models.planet_position import PlanetPosition
 from engine.models.ayanamsa import Ayanamsa
+from engine.models.planet_position import PlanetPosition
 from engine.models.sidereal_planet_position import SiderealPlanetPosition
 
 
 def sidereal_planet(
-    planet: PlanetPosition,
+    tropical: PlanetPosition,
     ayanamsa: Ayanamsa,
 ) -> SiderealPlanetPosition:
     """
-    Convert a tropical planetary position into
-    a sidereal planetary position.
+    Convert a tropical position to a sidereal position.
     """
 
-    if not isinstance(planet, PlanetPosition):
-        raise TypeError("planet must be a PlanetPosition.")
-
-    if not isinstance(ayanamsa, Ayanamsa):
-        raise TypeError("ayanamsa must be an Ayanamsa.")
-
-    longitude = (planet.longitude - ayanamsa.value) % 360.0
+    longitude = (tropical.longitude - ayanamsa.value) % 360.0
 
     return SiderealPlanetPosition(
         longitude=longitude,
-        latitude=planet.latitude,
-        distance=planet.distance,
-        speed_longitude=planet.speed_longitude,
-        speed_latitude=planet.speed_latitude,
-        speed_distance=planet.speed_distance,
+        latitude=tropical.latitude,
+        distance=tropical.distance,
+        speed_longitude=tropical.speed_longitude,
+        speed_latitude=tropical.speed_latitude,
+        speed_distance=tropical.speed_distance,
     )
