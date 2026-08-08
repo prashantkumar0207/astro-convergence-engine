@@ -33,6 +33,12 @@ def aspect(
     if not isinstance(longitude2, (int, float)):
         raise TypeError("longitude2 must be numeric.")
 
+    # Normalize both inputs to [0, 360) before folding, so
+    # un-normalized inputs (negative, >= 360) cannot produce a
+    # negative or > 180 separation (audit finding F-13).
+    longitude1 = longitude1 % 360.0
+    longitude2 = longitude2 % 360.0
+
     angle = abs(longitude1 - longitude2)
 
     if angle > 180.0:
