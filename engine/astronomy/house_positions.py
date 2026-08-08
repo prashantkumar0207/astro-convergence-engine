@@ -75,5 +75,5 @@ def house_positions(
         equatorial_ascendant=ascmc[4],
         co_ascendant=ascmc[5],
         polar_ascendant=ascmc[7],
-        houses=tuple(cusps[1:]),
+        houses=tuple(cusps),
     )

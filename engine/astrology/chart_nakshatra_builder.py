@@ -1,12 +1,22 @@
 """
-Navamsa Builder
+Nakshatra Builder
 """
 
-from engine.astrology.navamsa_chart import navamsa_sign
+from engine.astrology.nakshatra import nakshatra
+from engine.astrology.nakshatra_names import nakshatra_name
+from engine.models.chart_nakshatra import ChartNakshatra
 
 
-def build_chart_navamsa(longitude: float) -> int:
+def build_chart_nakshatra(longitude: float) -> ChartNakshatra:
     """
-    Return the Navamsa (D9) sign for a longitude.
+    Build ChartNakshatra from ecliptic longitude.
     """
-    return navamsa_sign(longitude)
+
+    number = nakshatra(longitude)
+
+    return ChartNakshatra(
+        number=number,
+        name=nakshatra_name(number),
+        start=(number - 1) * (360 / 27),
+        end=number * (360 / 27),
+    )
