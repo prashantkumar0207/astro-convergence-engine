@@ -30,10 +30,26 @@ from engine.models.astronomy_snapshot import AstronomySnapshot
 
 DASHAMSA_SIZE = 3.0
 
+# Same tolerance and convention as the certified D9 module and
+# the shared longitude utilities.
+_BOUNDARY_TOLERANCE = 1e-10
+
 
 def _normalize_longitude(longitude: float) -> float:
-    """Normalize longitude to [0, 360)."""
-    return longitude % 360.0
+    """
+    Normalize longitude to [0, 360).
+
+    Guards the float-modulo artifact where x % 360.0 returns
+    exactly 360.0 for tiny negative x (audit finding F-18: the
+    previous version survived that input only by accident of the
+    odd/even start rule).
+    """
+    longitude = longitude % 360.0
+
+    if longitude >= 360.0:
+        return 0.0
+
+    return longitude
 
 
 def _start_sign(source_sign: int) -> int:
@@ -65,9 +81,13 @@ def _segment(longitude: float) -> tuple[int, int, float]:
 
     degree = longitude - source_sign * 30.0
 
-    segment = int(degree // DASHAMSA_SIZE)
+    # Project boundary convention (audit finding F-19): a value
+    # within 1e-10 of a segment boundary belongs to the NEXT
+    # segment, clamped at the top edge. This unifies D10 with the
+    # D9/nakshatra/sign convention; see
+    # engine.astrology.longitude_utils for the tolerance rationale.
+    segment = int((degree + _BOUNDARY_TOLERANCE) // DASHAMSA_SIZE)
 
-    # Protect the upper edge from floating-point spillover.
     if segment >= 10:
         segment = 9
 
@@ -106,6 +126,12 @@ def dashamsa_longitude(longitude: float) -> float:
     fraction = (
         degree - segment_start
     ) / DASHAMSA_SIZE
+
+    # A tolerance-promoted value sits at the boundary of its new
+    # segment: clamp the tiny negative raw fraction so the D10
+    # longitude stays inside the sign dashamsa_sign() reports.
+    if fraction < 0.0:
+        fraction = 0.0
 
     result = (
         d10_sign * 30.0

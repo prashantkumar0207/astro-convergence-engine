@@ -34,10 +34,10 @@ def make_snapshot() -> AstronomySnapshot:
 
     return AstronomySnapshot(
         julian_day=2447719.968055556,
-        planets=PlanetCollection(planets=()),
+        planets=PlanetCollection(planets={}),
         houses=houses,
         ayanamsa=Ayanamsa(value=24.0, mode=1),
-        sidereal_planets=(),
+        sidereal_planets={},
     )
 
 
@@ -63,9 +63,29 @@ def test_divisional_chart_dispatches_d10_to_dashamsa():
     assert result.planets == {}
 
 
-def test_divisional_chart_preserves_unsupported_divisions():
+def test_divisional_chart_rejects_unsupported_divisions():
+    # Spec-correct replacement (audit F-15): the old test locked
+    # in the silent D1 passthrough for unimplemented vargas.
+    import pytest
+
+    from engine.astrology.divisional_chart import UnsupportedVargaError
+
     snapshot = make_snapshot()
 
-    result = divisional_chart(snapshot, division=7)
+    for division in (2, 7, 12, 60):
+        with pytest.raises(UnsupportedVargaError):
+            divisional_chart(snapshot, division=division)
 
-    assert result == snapshot
+    with pytest.raises(UnsupportedVargaError):
+        divisional_chart(snapshot, division=13)  # not a varga at all
+
+
+def test_divisional_chart_dispatches_d1_to_real_chart():
+    from engine.models.chart import Chart
+
+    snapshot = make_snapshot()
+
+    result = divisional_chart(snapshot, division=1)
+
+    assert isinstance(result, Chart)
+    assert result.chart_type == "D1"
