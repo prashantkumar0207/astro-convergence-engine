@@ -1,9 +1,116 @@
 {
-    "schema_version": "1.0",
+    "schema_version": "1.1",
     "metadata": {
         "authority": "BPHS",
+        "citation": "Brihat Parashara Hora Shastra, naisargika graha maitri (natural planetary friendship) table, standard published editions.",
         "description": "Canonical natural planetary relationships.",
-        "version": "1.0"
+        "version": "1.1",
+        "notes": "Naisargika maitri is NOT symmetric (e.g. Mercury treats the Moon as an enemy while the Moon treats Mercury as a friend); this is classical, not an error. Rahu/Ketu relationships vary across traditions and are omitted rather than silently invented."
     },
-    "relationships": []
+    "relationships": [
+        {
+            "planet": "Sun",
+            "friends": [
+                "Moon",
+                "Mars",
+                "Jupiter"
+            ],
+            "neutral": [
+                "Mercury"
+            ],
+            "enemies": [
+                "Venus",
+                "Saturn"
+            ]
+        },
+        {
+            "planet": "Moon",
+            "friends": [
+                "Sun",
+                "Mercury"
+            ],
+            "neutral": [
+                "Mars",
+                "Jupiter",
+                "Venus",
+                "Saturn"
+            ],
+            "enemies": []
+        },
+        {
+            "planet": "Mars",
+            "friends": [
+                "Sun",
+                "Moon",
+                "Jupiter"
+            ],
+            "neutral": [
+                "Venus",
+                "Saturn"
+            ],
+            "enemies": [
+                "Mercury"
+            ]
+        },
+        {
+            "planet": "Mercury",
+            "friends": [
+                "Sun",
+                "Venus"
+            ],
+            "neutral": [
+                "Mars",
+                "Jupiter",
+                "Saturn"
+            ],
+            "enemies": [
+                "Moon"
+            ]
+        },
+        {
+            "planet": "Jupiter",
+            "friends": [
+                "Sun",
+                "Moon",
+                "Mars"
+            ],
+            "neutral": [
+                "Saturn"
+            ],
+            "enemies": [
+                "Mercury",
+                "Venus"
+            ]
+        },
+        {
+            "planet": "Venus",
+            "friends": [
+                "Mercury",
+                "Saturn"
+            ],
+            "neutral": [
+                "Mars",
+                "Jupiter"
+            ],
+            "enemies": [
+                "Sun",
+                "Moon"
+            ]
+        },
+        {
+            "planet": "Saturn",
+            "friends": [
+                "Mercury",
+                "Venus"
+            ],
+            "neutral": [
+                "Jupiter"
+            ],
+            "enemies": [
+                "Sun",
+                "Moon",
+                "Mars"
+            ]
+        }
+    ]
 }

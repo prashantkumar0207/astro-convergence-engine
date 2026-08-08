@@ -1,4 +1,7 @@
-pysweph==2.10.3.6
-pydantic==2.11.7
-numpy==2.3.2
+# Canonical runtime dependencies (audit F-16: the previous file
+# pinned "pysweph", a wrong package name, and omitted jsonschema).
+pyswisseph==2.10.3.2
 tzdata==2025.2
+jsonschema>=4
+# Optional API surface:
+# fastapi + uvicorn are only needed to serve engine/main.py.

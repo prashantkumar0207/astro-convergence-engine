@@ -1,9 +1,154 @@
 {
-    "schema_version": "1.0",
+    "schema_version": "1.1",
     "metadata": {
         "authority": "BPHS",
+        "citation": "Brihat Parashara Hora Shastra, chapter on the characteristics of the planets (graha guna); exaltation/debilitation degrees and moolatrikona ranges per the standard published editions (e.g. R. Santhanam tr., ch. 3).",
         "description": "Canonical planetary dignity knowledge.",
-        "version": "1.0"
+        "version": "1.1",
+        "notes": "Signs are 1-based (1=Aries). Degrees are within-sign. Rahu/Ketu dignities differ across traditions and are recorded as variants, not as a silently chosen value."
     },
-    "dignities": []
+    "dignities": [
+        {
+            "planet": "Sun",
+            "exaltation_sign": 1,
+            "exaltation_degree": 10.0,
+            "debilitation_sign": 7,
+            "debilitation_degree": 10.0,
+            "moolatrikona_sign": 5,
+            "moolatrikona_range": [
+                0.0,
+                20.0
+            ],
+            "own_signs": [
+                5
+            ]
+        },
+        {
+            "planet": "Moon",
+            "exaltation_sign": 2,
+            "exaltation_degree": 3.0,
+            "debilitation_sign": 8,
+            "debilitation_degree": 3.0,
+            "moolatrikona_sign": 2,
+            "moolatrikona_range": [
+                3.0,
+                30.0
+            ],
+            "own_signs": [
+                4
+            ]
+        },
+        {
+            "planet": "Mars",
+            "exaltation_sign": 10,
+            "exaltation_degree": 28.0,
+            "debilitation_sign": 4,
+            "debilitation_degree": 28.0,
+            "moolatrikona_sign": 1,
+            "moolatrikona_range": [
+                0.0,
+                12.0
+            ],
+            "own_signs": [
+                1,
+                8
+            ]
+        },
+        {
+            "planet": "Mercury",
+            "exaltation_sign": 6,
+            "exaltation_degree": 15.0,
+            "debilitation_sign": 12,
+            "debilitation_degree": 15.0,
+            "moolatrikona_sign": 6,
+            "moolatrikona_range": [
+                15.0,
+                20.0
+            ],
+            "own_signs": [
+                3,
+                6
+            ]
+        },
+        {
+            "planet": "Jupiter",
+            "exaltation_sign": 4,
+            "exaltation_degree": 5.0,
+            "debilitation_sign": 10,
+            "debilitation_degree": 5.0,
+            "moolatrikona_sign": 9,
+            "moolatrikona_range": [
+                0.0,
+                10.0
+            ],
+            "own_signs": [
+                9,
+                12
+            ]
+        },
+        {
+            "planet": "Venus",
+            "exaltation_sign": 12,
+            "exaltation_degree": 27.0,
+            "debilitation_sign": 6,
+            "debilitation_degree": 27.0,
+            "moolatrikona_sign": 7,
+            "moolatrikona_range": [
+                0.0,
+                15.0
+            ],
+            "own_signs": [
+                2,
+                7
+            ]
+        },
+        {
+            "planet": "Saturn",
+            "exaltation_sign": 7,
+            "exaltation_degree": 20.0,
+            "debilitation_sign": 1,
+            "debilitation_degree": 20.0,
+            "moolatrikona_sign": 11,
+            "moolatrikona_range": [
+                0.0,
+                20.0
+            ],
+            "own_signs": [
+                10,
+                11
+            ]
+        },
+        {
+            "planet": "Rahu",
+            "traditions_differ": true,
+            "exaltation_variants": [
+                {
+                    "sign": 2,
+                    "source": "common modern usage"
+                },
+                {
+                    "sign": 3,
+                    "source": "some classical lists"
+                }
+            ],
+            "own_signs": [],
+            "notes": "No moolatrikona consensus; not chosen silently per audit mandate."
+        },
+        {
+            "planet": "Ketu",
+            "traditions_differ": true,
+            "exaltation_variants": [
+                {
+                    "sign": 8,
+                    "source": "common modern usage"
+                },
+                {
+                    "sign": 9,
+                    "source": "some classical lists"
+                }
+            ],
+            "own_signs": [],
+            "notes": "No moolatrikona consensus; not chosen silently per audit mandate."
+        }
+    ]
 }
