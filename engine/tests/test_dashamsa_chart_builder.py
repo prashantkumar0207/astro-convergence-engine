@@ -75,8 +75,8 @@ def test_dashamsa_chart_returns_dashamsa_chart():
     result = dashamsa_chart(snapshot)
 
     assert isinstance(result, DashamsaChart)
-    assert result.ascendant == 190.0
-    assert result.ascendant_sign == 6
+    assert result.ascendant == 70.0
+    assert result.ascendant_sign == 2
     assert set(result.planets) == {"Sun", "Moon", "Mars"}
 
 
@@ -106,8 +106,8 @@ def test_dashamsa_chart_builds_planet_models():
     assert moon.segment == 1
 
     assert mars.name == "Mars"
-    assert mars.longitude == 195.0
-    assert mars.sign == 6
+    assert mars.longitude == 75.0
+    assert mars.sign == 2
     assert mars.degree == 15.0
     assert mars.segment == 1
 

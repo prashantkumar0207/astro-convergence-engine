@@ -4,6 +4,7 @@ from engine.models.planet_collection import PlanetCollection
 from engine.models.house_position import HousePosition
 from engine.models.ayanamsa import Ayanamsa
 from engine.models.navamsa_chart import NavamsaChart
+from engine.models.dashamsa_chart import DashamsaChart
 
 
 def test_chart_factory_builds_supported_charts():
@@ -41,8 +42,18 @@ def test_chart_factory_builds_supported_charts():
 
     charts = build_all_charts(snapshot)
 
+    # Supported chart keys
     assert "D1" in charts
     assert "D9" in charts
+    assert "D10" in charts
+
+    # D1 remains the original snapshot representation
     assert charts["D1"] == snapshot
+
+    # D9 is a dedicated Navamsa representation
     assert isinstance(charts["D9"], NavamsaChart)
     assert charts["D9"] != snapshot
+
+    # D10 is a dedicated Dashamsa representation
+    assert isinstance(charts["D10"], DashamsaChart)
+    assert charts["D10"] != snapshot

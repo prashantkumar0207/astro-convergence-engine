@@ -8,23 +8,44 @@ from engine.astrology.dashamsa_chart import (
 
 DASHAMSA_SIZE = Fraction(3, 1)
 
-MOVABLE = {0, 3, 6, 9}
-FIXED = {1, 4, 7, 10}
-
 
 def reference_start_sign(sign: int) -> int:
-    """Independent Dashamsa starting-sign rule."""
-    if sign in MOVABLE:
+    """
+    Independent Parashari Dashamsa starting-sign rule.
+
+    Odd zodiac signs:
+        Start from the source sign.
+
+    Even zodiac signs:
+        Start from the 9th sign from the source sign.
+
+    Zero-based sign indices:
+        0 Aries
+        1 Taurus
+        2 Gemini
+        3 Cancer
+        4 Leo
+        5 Virgo
+        6 Libra
+        7 Scorpio
+        8 Sagittarius
+        9 Capricorn
+        10 Aquarius
+        11 Pisces
+    """
+    if sign % 2 == 0:
         return sign
 
-    if sign in FIXED:
-        return (sign + 8) % 12
-
-    return (sign + 4) % 12
+    return (sign + 8) % 12
 
 
 def reference(longitude: float):
-    """Independent D10 reference calculation."""
+    """
+    Independent exact-reference calculation for Parashari D10.
+
+    This function intentionally does not call any production
+    Dashamsa helper.
+    """
     x = Fraction(str(longitude)) % 360
 
     source_sign = int(x // 30)
@@ -68,13 +89,13 @@ def check(label: str, longitude: float):
     if abs(actual_longitude - expected_longitude) > 1e-9:
         raise AssertionError(
             f"{label}: LONGITUDE mismatch at {longitude}: "
-            f"expected {expected_longitude}, got {actual_longitude}"
+            f"expected {expected_longitude}, "
+            f"got {actual_longitude}"
         )
 
 
 # ------------------------------------------------------------
-# 1. Midpoint holdout
-# 12 signs × 10 Dashamsas = 120 cases
+# 1. All 120 segment midpoints
 # ------------------------------------------------------------
 
 midpoint_cases = 0
@@ -97,7 +118,6 @@ for sign in range(12):
 
 # ------------------------------------------------------------
 # 2. Exact internal boundaries
-# 12 signs × 9 boundaries = 108 cases
 # ------------------------------------------------------------
 
 exact_boundary_cases = 0
@@ -115,8 +135,7 @@ for sign in range(12):
 
 
 # ------------------------------------------------------------
-# 3. Just below + just above boundaries
-# 108 × 2 = 216 cases
+# 3. Just below and just above every boundary
 # ------------------------------------------------------------
 
 epsilon = 1e-9
@@ -144,30 +163,87 @@ for sign in range(12):
 
 
 # ------------------------------------------------------------
-# 4. Normalization cases
+# 4. Normalization
 # ------------------------------------------------------------
 
-check("NORMALIZATION 360", 360.0)
-check("NORMALIZATION 720", 720.0)
-check("NORMALIZATION -0.001", -0.001)
-check("NORMALIZATION -30", -30.0)
+normalization_cases = 0
 
-normalization_cases = 4
-
-
-print()
-print("=" * 60)
-print("INDEPENDENT DASHAMSA D10 HOLDOUT VALIDATION")
-print("=" * 60)
-print(f"Midpoint cases       : {midpoint_cases} PASSED")
-print(f"Exact boundary cases : {exact_boundary_cases} PASSED")
-print(f"Near-boundary cases  : {near_boundary_cases} PASSED")
-print(f"Normalization cases  : {normalization_cases} PASSED")
-print()
-print(
-    "TOTAL CASES          : "
-    f"{midpoint_cases + exact_boundary_cases + near_boundary_cases + normalization_cases}"
+normalization_inputs = (
+    360.0,
+    720.0,
+    -0.001,
+    -30.0,
+    -360.0,
+    361.5,
 )
+
+for longitude in normalization_inputs:
+    check(
+        f"NORMALIZATION longitude={longitude}",
+        longitude,
+    )
+
+    normalization_cases += 1
+
+
+# ------------------------------------------------------------
+# 5. Explicit classical anchor cases
+# ------------------------------------------------------------
+
+anchor_cases = {
+    # longitude : expected D10 sign index
+    1.5: 0,      # Aries 1°30' -> Aries
+    34.5: 10,    # Taurus 4°30' -> Aquarius
+    67.5: 4,     # Gemini 7°30' -> Leo
+    100.5: 2,    # Cancer 10°30' -> Gemini
+    133.5: 8,    # Leo 13°30' -> Sagittarius
+    166.5: 6,    # Virgo 16°30' -> Libra
+    199.5: 0,    # Libra 19°30' -> Aries
+    232.5: 10,   # Scorpio 22°30' -> Aquarius
+    265.5: 4,    # Sagittarius 25°30' -> Leo
+    298.5: 2,    # Capricorn 28°30' -> Gemini
+    301.5: 10,   # Aquarius 1°30' -> Aquarius
+    334.5: 8,    # Pisces 4°30' -> Sagittarius
+}
+
+anchor_cases_count = 0
+
+for longitude, expected_sign in anchor_cases.items():
+    actual_sign = dashamsa_sign(longitude)
+
+    if actual_sign != expected_sign:
+        raise AssertionError(
+            f"CLASSICAL ANCHOR mismatch at {longitude}: "
+            f"expected sign {expected_sign}, "
+            f"got {actual_sign}"
+        )
+
+    anchor_cases_count += 1
+
+
+# ------------------------------------------------------------
+# Report
+# ------------------------------------------------------------
+
+total_cases = (
+    midpoint_cases
+    + exact_boundary_cases
+    + near_boundary_cases
+    + normalization_cases
+    + anchor_cases_count
+)
+
 print()
-print("RESULT: ALL INDEPENDENT DASHAMSA CASES PASSED")
+print("=" * 60)
+print("INDEPENDENT PARASHARI DASHAMSA D10 VALIDATION")
+print("=" * 60)
+print(f"Midpoint cases        : {midpoint_cases} PASSED")
+print(f"Exact boundary cases  : {exact_boundary_cases} PASSED")
+print(f"Near-boundary cases   : {near_boundary_cases} PASSED")
+print(f"Normalization cases   : {normalization_cases} PASSED")
+print(f"Classical anchors     : {anchor_cases_count} PASSED")
+print()
+print(f"TOTAL CASES           : {total_cases}")
+print()
+print("RESULT: ALL INDEPENDENT PARASHARI D10 CASES PASSED")
 print("=" * 60)
