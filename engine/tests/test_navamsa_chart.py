@@ -74,7 +74,7 @@ def test_navamsa_chart_maps_sidereal_planets():
     assert result.planets["Sun"].longitude == 180.0
     assert result.planets["Sun"].sign == 6
     assert result.planets["Sun"].degree == 0.0
-    assert result.planets["Sun"].pada == 1
+    assert result.planets["Sun"].navamsa_number == 1
 
 def test_navamsa_exact_boundaries():
     # Each Navamsa is exactly 3°20' = 10/3 degrees.

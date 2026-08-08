@@ -32,12 +32,21 @@ def test_birth_chart_returns_snapshot():
 
     snapshot = AstronomySnapshot(
         julian_day=2447719.968055556,
-        planets=PlanetCollection(planets=()),
+        planets=PlanetCollection(planets={}),
         houses=houses,
         ayanamsa=Ayanamsa(value=24.0, mode=1),
-        sidereal_planets=(),
+        sidereal_planets={},
     )
 
     result = birth_chart(snapshot)
 
-    assert result == snapshot
+    # Spec-correct expectation (audit section 5): the D1 entry
+    # point now builds a real Chart instead of echoing the
+    # snapshot (previous placeholder behavior).
+    from engine.models.chart import Chart
+
+    assert isinstance(result, Chart)
+    assert result.chart_type == "D1"
+    assert result.ascendant == snapshot.houses.ascendant
+    assert result.lagna.sign == 4  # 100.0 deg = Cancer
+    assert result.planets == {}

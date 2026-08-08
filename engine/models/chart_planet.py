@@ -17,7 +17,9 @@ class ChartPlanet:
 
     nakshatra: int
 
-    pada: int
+    #: Nakshatra pada (1-4). Canonical name per audit A-6;
+    #: the 1-9 navamsa division is `navamsa.navamsa_number`.
+    nakshatra_pada: int
 
     navamsa: ChartNavamsa | None = None
 

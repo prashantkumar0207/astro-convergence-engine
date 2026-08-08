@@ -1,10 +1,14 @@
 """
 Chart Planet Builder
+
+House rule: WHOLE SIGN (the documented project decision for the
+Parashari D1 chart; audit A-2). Equal-house and Placidus cusp
+data remain available separately and are never mixed in here.
 """
 
 from engine.astrology.chart_navamsa_builder import build_chart_navamsa
 from engine.astrology.degrees import degree_in_sign
-from engine.astrology.house import house_from_longitude
+from engine.astrology.house import whole_sign_house
 from engine.astrology.nakshatra import nakshatra
 from engine.astrology.pada import pada
 from engine.astrology.signs import zodiac_sign
@@ -17,8 +21,6 @@ def build_chart_planet(
     planet: SiderealPlanetPosition,
     ascendant: float,
 ) -> ChartPlanet:
-    pada_value = pada(planet.longitude)
-
     return ChartPlanet(
         name=name,
         longitude=planet.longitude,
@@ -28,14 +30,11 @@ def build_chart_planet(
         retrograde=planet.speed_longitude < 0,
         sign=zodiac_sign(planet.longitude),
         degree=degree_in_sign(planet.longitude),
-        house=house_from_longitude(
+        house=whole_sign_house(
             planet.longitude,
             ascendant,
         ),
         nakshatra=nakshatra(planet.longitude),
-        pada=pada_value,
-        navamsa=build_chart_navamsa(
-            longitude=planet.longitude,
-            pada=pada_value,
-        ),
+        nakshatra_pada=pada(planet.longitude),
+        navamsa=build_chart_navamsa(planet.longitude),
     )

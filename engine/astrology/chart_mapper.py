@@ -19,5 +19,5 @@ def map_chart(snapshot: AstronomySnapshot) -> list[dict]:
             longitude=planet.longitude,
             ascendant=ascendant,
         )
-        for planet in snapshot.sidereal_planets
+        for planet in snapshot.sidereal_planets.values()
     ]

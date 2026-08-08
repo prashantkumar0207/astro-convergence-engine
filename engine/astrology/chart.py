@@ -1,15 +1,14 @@
 """
-Birth Chart Builder
+Birth Chart Entry Point
 """
 
+from engine.astrology.chart_builder import build_chart
 from engine.models.astronomy_snapshot import AstronomySnapshot
+from engine.models.chart import Chart
 
 
-def birth_chart(snapshot: AstronomySnapshot) -> AstronomySnapshot:
+def birth_chart(snapshot: AstronomySnapshot) -> Chart:
     """
-    Initial chart builder.
-
-    For now it simply returns the astronomy snapshot.
-    Higher-level astrology layers will build on this.
+    Build the D1 birth chart for a snapshot.
     """
-    return snapshot
+    return build_chart(snapshot)

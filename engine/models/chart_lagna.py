@@ -7,4 +7,5 @@ class ChartLagna:
     sign: int
     degree: float
     nakshatra: int
-    pada: int
+    #: Nakshatra pada (1-4), canonical name per audit A-6.
+    nakshatra_pada: int

@@ -11,5 +11,5 @@ def build_chart_lagna(longitude: float) -> ChartLagna:
         sign=zodiac_sign(longitude),
         degree=degree_in_sign(longitude),
         nakshatra=nakshatra(longitude),
-        pada=pada(longitude),
+        nakshatra_pada=pada(longitude),
     )

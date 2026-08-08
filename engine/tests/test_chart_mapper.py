@@ -33,10 +33,10 @@ def test_chart_mapper_empty():
 
     snapshot = AstronomySnapshot(
         julian_day=2447719.968055556,
-        planets=PlanetCollection(planets=()),
+        planets=PlanetCollection(planets={}),
         houses=houses,
         ayanamsa=Ayanamsa(value=24.0, mode=1),
-        sidereal_planets=(),
+        sidereal_planets={},
     )
 
     assert map_chart(snapshot) == []

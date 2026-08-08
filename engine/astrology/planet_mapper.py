@@ -4,7 +4,7 @@ Planet Mapping Utilities
 
 from engine.astrology.signs import zodiac_sign
 from engine.astrology.degrees import degree_in_sign
-from engine.astrology.house import house_from_longitude
+from engine.astrology.house import whole_sign_house
 
 
 def map_planet(
@@ -20,7 +20,7 @@ def map_planet(
         "longitude": longitude,
         "sign": zodiac_sign(longitude),
         "degree": degree_in_sign(longitude),
-        "house": house_from_longitude(
+        "house": whole_sign_house(
             longitude,
             ascendant,
         ),

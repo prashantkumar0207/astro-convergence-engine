@@ -9,8 +9,9 @@ def test_chart_planet():
         degree=5.5,
         house=2,
         nakshatra=10,
-        pada=2,
+        nakshatra_pada=2,
     )
 
     assert planet.name == "Sun"
     assert planet.sign == 5
+    assert planet.nakshatra_pada == 2

@@ -89,8 +89,13 @@ def navamsa_longitude(longitude: float) -> float:
     return d9_sign * 30.0 + fraction * 30.0
 
 
-def navamsa_pada(longitude: float) -> int:
-    """Return Navamsa pada number (1-9) for a sidereal longitude."""
+def navamsa_number(longitude: float) -> int:
+    """
+    Return the navamsa number (1-9) for a sidereal longitude.
+
+    Canonical name per audit A-6; this is the 1-9 division within
+    a sign, a distinct concept from the 1-4 nakshatra pada.
+    """
     longitude = _normalize_longitude(longitude)
 
     sign_degree = longitude % 30.0
@@ -100,6 +105,11 @@ def navamsa_pada(longitude: float) -> int:
     # boundaries such as 10°00'00" are classified into the next
     # Navamsa, and clamps the index so the result never exceeds 9.
     return _navamsa_index(sign_degree) + 1
+
+
+#: Backward-compatible alias (pre-A-6 name). The 1-9 value is a
+#: navamsa number, not a nakshatra pada; prefer navamsa_number.
+navamsa_pada = navamsa_number
 
 
 def _iter_sidereal_planets(snapshot: AstronomySnapshot):
@@ -125,7 +135,7 @@ def navamsa_chart(snapshot: AstronomySnapshot):
             longitude=longitude,
             sign=navamsa_sign(planet.longitude),
             degree=longitude % 30.0,
-            pada=navamsa_pada(planet.longitude),
+            navamsa_number=navamsa_number(planet.longitude),
         )
 
     return NavamsaChart(
