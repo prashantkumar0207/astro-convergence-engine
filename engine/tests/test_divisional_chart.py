@@ -4,6 +4,7 @@ from engine.models.planet_collection import PlanetCollection
 from engine.models.house_position import HousePosition
 from engine.models.ayanamsa import Ayanamsa
 from engine.models.navamsa_chart import NavamsaChart
+from engine.models.dashamsa_chart import DashamsaChart
 
 
 def make_snapshot() -> AstronomySnapshot:
@@ -48,6 +49,17 @@ def test_divisional_chart_dispatches_d9_to_navamsa():
     assert isinstance(result, NavamsaChart)
     assert result.ascendant == 180.0
     assert result.ascendant_sign == 6
+    assert result.planets == {}
+
+
+def test_divisional_chart_dispatches_d10_to_dashamsa():
+    snapshot = make_snapshot()
+
+    result = divisional_chart(snapshot, division=10)
+
+    assert isinstance(result, DashamsaChart)
+    assert result.ascendant == 70.0
+    assert result.ascendant_sign == 2
     assert result.planets == {}
 
 

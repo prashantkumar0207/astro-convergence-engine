@@ -8,18 +8,19 @@ Parashari Dashamsa rule:
 - Even signs start counting from the 9th sign from the source sign.
 
 Sign indices:
-    0 = Aries
-    1 = Taurus
-    2 = Gemini
-    3 = Cancer
-    4 = Leo
-    5 = Virgo
-    6 = Libra
-    7 = Scorpio
-    8 = Sagittarius
-    9 = Capricorn
-    10 = Aquarius
-    11 = Pisces
+
+0 = Aries
+1 = Taurus
+2 = Gemini
+3 = Cancer
+4 = Leo
+5 = Virgo
+6 = Libra
+7 = Scorpio
+8 = Sagittarius
+9 = Capricorn
+10 = Aquarius
+11 = Pisces
 """
 
 from collections.abc import Mapping
@@ -37,14 +38,12 @@ def _normalize_longitude(longitude: float) -> float:
 
 def _start_sign(source_sign: int) -> int:
     """
-    Return the starting D10 sign using the classical
-    Parashari Dashamsa rule.
+    Return the starting D10 sign for a source Rashi.
 
-    Odd signs:
-        Start from the source sign.
+    Parashari rule:
 
-    Even signs:
-        Start from the 9th sign from the source sign.
+    - Odd sign  -> start from the source sign.
+    - Even sign -> start from the 9th sign from the source sign.
     """
     if source_sign % 2 == 0:
         return source_sign
@@ -56,15 +55,14 @@ def _segment(longitude: float) -> tuple[int, int, float]:
     """
     Return:
 
-        source_sign
-        Dashamsa segment index
-        degree within source Rashi
-
-    Segment index is zero-based: 0 through 9.
+    - source sign
+    - Dashamsa segment index (0-9)
+    - degree within the source Rashi
     """
     longitude = _normalize_longitude(longitude)
 
     source_sign = int(longitude // 30.0)
+
     degree = longitude - source_sign * 30.0
 
     segment = int(degree // DASHAMSA_SIZE)
@@ -81,10 +79,11 @@ def dashamsa_sign(longitude: float) -> int:
     Return the D10 sign index for a sidereal longitude.
 
     Sign indices:
-        0 = Aries
-        1 = Taurus
-        ...
-        11 = Pisces
+
+    0 = Aries
+    1 = Taurus
+    ...
+    11 = Pisces
     """
     source_sign, segment, _ = _segment(longitude)
 
@@ -113,7 +112,11 @@ def dashamsa_longitude(longitude: float) -> float:
         + fraction * 30.0
     )
 
-    return round(result % 360.0, 12)
+    # Do not round here. Fixed-decimal rounding can move a value
+    # immediately below a D10 boundary onto that boundary.
+    #
+    # Modulo guarantees the canonical [0, 360) range.
+    return result % 360.0
 
 
 def dashamsa_chart(snapshot: AstronomySnapshot):

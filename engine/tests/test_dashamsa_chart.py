@@ -243,3 +243,67 @@ def test_dashamsa_classical_midpoint_anchors():
 
     for longitude, expected_sign in cases.items():
         assert dashamsa_sign(longitude) == expected_sign
+
+def test_dashamsa_longitude_stays_in_canonical_range():
+    """
+    D10 longitude must always be in [0, 360).
+    """
+    test_longitudes = [
+        0.0,
+        1.5,
+        29.99999999999999,
+        30.0,
+        59.99999999999999,
+        60.0,
+        89.99999999999999,
+        90.0,
+        119.99999999999999,
+        120.0,
+        179.99999999999999,
+        180.0,
+        239.99999999999999,
+        240.0,
+        299.99999999999999,
+        300.0,
+        359.99999999999999,
+        360.0,
+        -0.00000000000001,
+    ]
+
+    for longitude in test_longitudes:
+        result = dashamsa_longitude(longitude)
+
+        assert 0.0 <= result < 360.0
+
+
+def test_dashamsa_sign_and_longitude_remain_consistent_near_boundaries():
+    """
+    The canonical D10 longitude and D10 sign must describe
+    the same zodiac sign, including values extremely close
+    to sign boundaries.
+    """
+    test_longitudes = [
+        29.99999999999999,
+        30.0,
+        59.99999999999999,
+        60.0,
+        89.99999999999999,
+        90.0,
+        119.99999999999999,
+        120.0,
+        179.99999999999999,
+        180.0,
+        239.99999999999999,
+        240.0,
+        299.99999999999999,
+        300.0,
+        359.99999999999999,
+    ]
+
+    for longitude in test_longitudes:
+        transformed = dashamsa_longitude(longitude)
+        sign = dashamsa_sign(longitude)
+
+        transformed_sign = int(transformed // 30.0)
+
+        assert transformed_sign == sign
