@@ -19,8 +19,9 @@ LEGACY CERTIFIED (historical):
 
 CURRENT ENGINE (this codebase's future):
 - Code: `engine/` (astronomy, astrology, models, calculations).
-- Status after remediation: REFERENCE-VERIFIED, working toward full
-  certification. Not yet claimed as LOCKED.
+- Status after remediation: HOLDOUT-CERTIFIED (see below). LOCK
+  recommended pending one human decision (per-system ayanamsa
+  sign-off, A-1).
 - Gate: the default `pytest` run (engine/tests) plus the two independent
   holdout validators. Everything below is collected by a bare `pytest`.
 
@@ -64,10 +65,33 @@ Astrology:
 - Polar-latitude house behavior is exercised only at 64.1 N; Placidus
   behavior above the polar circles remains NOT YET VERIFIED.
 
-## Toward a LOCKED claim for the current engine
+## Holdout certification (Phase 1 gate) - EXECUTED AND PASSED
 
-Remaining before a LOCK equivalent to the legacy one: a full multi-case
-holdout run (the 11-case geography/epoch matrix of
-scripts/certify_tier0.py) executed against engine/ with archived
-machine-readable results, and a decision record for the per-system
-ayanamsa profiles (A-1) signed off by the project owner.
+Date: 2026-08-08. Runner: scripts/certify_current_engine.py. Archive:
+certification/current_engine_certification.json (machine-readable,
+regenerated from scratch on every run; stored JSON is never accepted
+as proof). Collected gate: engine/tests/test_current_engine_certification.py.
+
+- Matrix: the frozen 11-case holdout (1823 London through 2350 Paris,
+  latitudes -33.9 to +64.1, plus two Moon nakshatra-boundary cases),
+  identical to the legacy Tier-0 matrix and never used for tuning.
+- Profiles: BOTH parashari_lahiri (SIDM 1) and kp_krishnamurti
+  (SIDM 5), 264 planet comparisons and 264 cusp comparisons total
+  against the independent swetest 2.10.03 C binary.
+- Results: max planet error 0.000179 arcsec, max ascendant error
+  0.000176 arcsec, max cusp error 0.000180 arcsec; zero Moshier
+  fallbacks (strict mode); all four boundary-sensitive Moon
+  classifications agree with exact rational arithmetic; the two
+  profiles differ by the expected 5.811 arcmin, proving the profile
+  system drives the computation (A-1 verified mechanically).
+- These figures match the legacy kernel's archived certification
+  precision (0.000179 arcsec), on the current engine's own code path.
+
+## LOCK determination
+
+READY TO LOCK, conditional on one human decision: the project owner
+must sign off the per-system ayanamsa assignments (Parashari=Lahiri,
+KP=Krishnamurti) as the intended defaults, since classical practice
+varies and the audit mandate forbids choosing silently. Everything
+mechanical is certified. Until that sign-off is recorded here, the
+status remains HOLDOUT-CERTIFIED, UNLOCKED.
