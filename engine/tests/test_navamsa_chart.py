@@ -3,9 +3,10 @@ from engine.models.astronomy_snapshot import AstronomySnapshot
 from engine.models.planet_collection import PlanetCollection
 from engine.models.house_position import HousePosition
 from engine.models.ayanamsa import Ayanamsa
+from engine.models.navamsa_chart import NavamsaChart
 
 
-def test_navamsa_chart_returns_snapshot():
+def test_navamsa_chart_builds_d9_chart():
     houses = HousePosition(
         ascendant=100.0,
         mc=190.0,
@@ -40,4 +41,7 @@ def test_navamsa_chart_returns_snapshot():
 
     result = navamsa_chart(snapshot)
 
-    assert result == snapshot
+    assert isinstance(result, NavamsaChart)
+    assert result.ascendant == 180.0
+    assert result.ascendant_sign == 5
+    assert result.planets == {}

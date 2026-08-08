@@ -3,6 +3,7 @@ from engine.models.astronomy_snapshot import AstronomySnapshot
 from engine.models.planet_collection import PlanetCollection
 from engine.models.house_position import HousePosition
 from engine.models.ayanamsa import Ayanamsa
+from engine.models.navamsa_chart import NavamsaChart
 
 
 def test_chart_factory_builds_supported_charts():
@@ -43,4 +44,5 @@ def test_chart_factory_builds_supported_charts():
     assert "D1" in charts
     assert "D9" in charts
     assert charts["D1"] == snapshot
-    assert charts["D9"] == snapshot
+    assert isinstance(charts["D9"], NavamsaChart)
+    assert charts["D9"] != snapshot
