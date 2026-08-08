@@ -1,13 +1,16 @@
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 
-from models.birth_data import BirthData
+from engine.models.birth_data import BirthData
 
 
 def local_datetime(data: BirthData) -> datetime:
     """
-    Return timezone-aware local datetime.
+    Build a timezone-aware local datetime from BirthData.
     """
+
+    if not isinstance(data, BirthData):
+        raise TypeError("data must be a BirthData instance.")
 
     return datetime(
         year=data.year,
@@ -23,7 +26,7 @@ def local_datetime(data: BirthData) -> datetime:
 
 def utc_datetime(data: BirthData) -> datetime:
     """
-    Convert local birth time to UTC.
+    Convert BirthData local birth time to UTC.
     """
 
     return local_datetime(data).astimezone(timezone.utc)
