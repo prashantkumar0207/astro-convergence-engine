@@ -3,9 +3,10 @@ from engine.models.astronomy_snapshot import AstronomySnapshot
 from engine.models.planet_collection import PlanetCollection
 from engine.models.house_position import HousePosition
 from engine.models.ayanamsa import Ayanamsa
+from engine.models.navamsa_chart import NavamsaChart
 
 
-def test_divisional_chart_returns_snapshot():
+def make_snapshot() -> AstronomySnapshot:
     houses = HousePosition(
         ascendant=100.0,
         mc=190.0,
@@ -30,7 +31,7 @@ def test_divisional_chart_returns_snapshot():
         ),
     )
 
-    snapshot = AstronomySnapshot(
+    return AstronomySnapshot(
         julian_day=2447719.968055556,
         planets=PlanetCollection(planets=()),
         houses=houses,
@@ -38,6 +39,21 @@ def test_divisional_chart_returns_snapshot():
         sidereal_planets=(),
     )
 
+
+def test_divisional_chart_dispatches_d9_to_navamsa():
+    snapshot = make_snapshot()
+
     result = divisional_chart(snapshot, division=9)
+
+    assert isinstance(result, NavamsaChart)
+    assert result.ascendant == 180.0
+    assert result.ascendant_sign == 6
+    assert result.planets == {}
+
+
+def test_divisional_chart_preserves_unsupported_divisions():
+    snapshot = make_snapshot()
+
+    result = divisional_chart(snapshot, division=7)
 
     assert result == snapshot
