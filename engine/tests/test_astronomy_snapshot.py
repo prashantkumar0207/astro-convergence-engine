@@ -11,9 +11,9 @@ def test_astronomy_snapshot_returns_model():
 
     assert result.julian_day > 0
 
-    assert len(result.planets.planets) == 12
+    assert len(result.planets.planets) == 14
 
-    assert len(result.sidereal_planets) == 12
+    assert len(result.sidereal_planets) == 14
 
     assert result.ayanamsa.value > 0
 

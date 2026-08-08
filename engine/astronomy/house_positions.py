@@ -19,6 +19,7 @@ def house_positions(
     latitude: float,
     longitude: float,
     house_system: bytes = b"P",
+    flags: int = 0,
 ) -> HousePosition:
     """
     Compute deterministic house cusps and major angles.
@@ -36,6 +37,13 @@ def house_positions(
 
     house_system
         Swiss Ephemeris house system code.
+
+    flags
+        Swiss Ephemeris calculation flags. Pass swe.FLG_SIDEREAL
+        (with the sidereal mode already set via set_sid_mode) to
+        obtain sidereal cusps and angles; the default 0 yields the
+        tropical frame. The produced HousePosition records which
+        frame was used (audit finding F-01).
 
     Returns
     -------
@@ -65,7 +73,17 @@ def house_positions(
         latitude,
         longitude,
         house_system,
+        flags,
     )
+
+    # Defend against the C-style 13-element cusp tuple used by some
+    # library versions (house 1 at index 1). pyswisseph 2.10 returns
+    # 12 elements with house 1 at index 0; normalize to that.
+    cusps = tuple(cusps)
+    if len(cusps) == 13:
+        cusps = cusps[1:]
+
+    frame = "sidereal" if flags & swe.FLG_SIDEREAL else "tropical"
 
     return HousePosition(
         ascendant=ascmc[0],
@@ -75,5 +93,7 @@ def house_positions(
         equatorial_ascendant=ascmc[4],
         co_ascendant=ascmc[5],
         polar_ascendant=ascmc[7],
-        houses=tuple(cusps),
+        houses=cusps,
+        house_system=house_system.decode("ascii"),
+        frame=frame,
     )
