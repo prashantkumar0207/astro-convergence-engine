@@ -1,64 +1,78 @@
 """
-Divisional Chart Dispatcher
+Divisional Chart Dispatcher (school-aware since Phase A)
 
 Audit finding F-15: unsupported divisions previously returned the
-original D1 snapshot silently, so a caller asking for D60 received
-D1 data disguised as a D60 result. Unsupported divisions now raise
-UnsupportedVargaError.
+original D1 snapshot silently. Unsupported divisions and schools
+raise UnsupportedVargaError.
+
+Phase A of the Generic Varga Architecture ADR adds the explicit
+`school` parameter and routes unknown (division, school) pairs
+through the varga registry. D1, D9 and D10 remain hard-wired to
+their certified implementations, byte-for-byte unchanged; the
+registry is empty in Phase A, so behavior for every division is
+exactly as before, with the school dimension now explicit.
 """
 
 from typing import Any
 
-from engine.astrology.chart_constants import SUPPORTED_VARGAS
+from engine.astrology.varga_registry import (
+    DEFAULT_SCHOOL,
+    UnsupportedVargaError,
+    get_varga_rule,
+)
 from engine.models.astronomy_snapshot import AstronomySnapshot
 
 
-#: Divisions with a real, independently verified implementation.
+#: Divisions served by certified, independently verified modules.
 IMPLEMENTED_VARGAS = (1, 9, 10)
-
-
-class UnsupportedVargaError(NotImplementedError):
-    """Raised when a divisional chart is not implemented."""
 
 
 def divisional_chart(
     snapshot: AstronomySnapshot,
     division: int,
+    school: str | None = None,
 ) -> Any:
     """
     Build a supported divisional chart.
 
-    D1 builds the real Rashi chart.
-    D9 delegates to the certified Navamsa implementation.
-    D10 delegates to the certified Dashamsa implementation.
+    D1 builds the real Rashi chart. D9 and D10 delegate to their
+    certified implementations. Any other (division, school) is
+    looked up in the varga registry and raises
+    UnsupportedVargaError until a rule is registered under the full
+    ADR certification protocol.
 
-    Any other division raises UnsupportedVargaError; a varga is
-    only added once its classical rule is independently
-    established and testable (audit Phase 9 requirement).
+    `school` is explicit; None resolves to the varga's documented
+    default ("parashara"). The certified D1/D9/D10 implementations
+    ARE the Parashara school; requesting any other school for them
+    raises rather than silently substituting.
     """
-    if division == 1:
-        from engine.astrology.chart_builder import build_chart
+    resolved_school = school if school is not None else DEFAULT_SCHOOL
 
-        return build_chart(snapshot)
+    if division in IMPLEMENTED_VARGAS:
+        if resolved_school != DEFAULT_SCHOOL:
+            raise UnsupportedVargaError(
+                f"D{division} is implemented only for the "
+                f"'{DEFAULT_SCHOOL}' school; got '{resolved_school}'."
+            )
 
-    if division == 9:
-        from engine.astrology.navamsa_chart import navamsa_chart
+        if division == 1:
+            from engine.astrology.chart_builder import build_chart
 
-        return navamsa_chart(snapshot)
+            return build_chart(snapshot)
 
-    if division == 10:
+        if division == 9:
+            from engine.astrology.navamsa_chart import navamsa_chart
+
+            return navamsa_chart(snapshot)
+
         from engine.astrology.dashamsa_chart import dashamsa_chart
 
         return dashamsa_chart(snapshot)
 
-    if division in SUPPORTED_VARGAS:
-        raise UnsupportedVargaError(
-            f"D{division} is a recognized varga but its rule is "
-            f"not implemented yet. Implemented: "
-            f"{IMPLEMENTED_VARGAS}."
-        )
+    # Future vargas (ADR Phase D) resolve through the registry;
+    # empty in Phase A, so this raises with the registered list.
+    rule = get_varga_rule(division, resolved_school)
 
-    raise UnsupportedVargaError(
-        f"D{division} is not a recognized varga. Implemented: "
-        f"{IMPLEMENTED_VARGAS}."
-    )
+    from engine.astrology.varga_chart_builder import build_varga_chart
+
+    return build_varga_chart(snapshot, division, rule, resolved_school)
