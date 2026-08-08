@@ -8,6 +8,19 @@ using the Swiss Ephemeris implementation.
 
 This module performs no timezone conversion. The caller is responsible
 for supplying a UTC-aware datetime.
+
+Calendar policy (audit finding F-10): Python datetimes are proleptic
+Gregorian BY DEFINITION, so the Gregorian calendar flag is passed to
+the Swiss Ephemeris explicitly. Historical dates recorded in the
+Julian calendar (before 1582-10-15 in most of Europe, later
+elsewhere) must be converted to proleptic Gregorian by the caller
+BEFORE constructing the datetime; passing a Julian-calendar date
+unconverted shifts the result by about 10 days near 1582.
+
+Time basis: the result is a Julian Day in UT, passed to Swiss
+Ephemeris *_ut functions. UTC is treated as UT1; the difference is
+bounded by 0.9 s (about 0.5 arcsec of Moon motion) and accepted as
+within tolerance. This is recorded in snapshot Provenance.
 """
 
 from __future__ import annotations
@@ -58,4 +71,5 @@ def julian_day(datetime_utc: datetime) -> float:
             + datetime_utc.second / 3600
             + datetime_utc.microsecond / 3_600_000_000
         ),
+        swe.GREG_CAL,
     )

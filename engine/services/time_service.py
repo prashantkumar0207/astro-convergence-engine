@@ -1,3 +1,21 @@
+"""
+Time Service
+
+Converts BirthData local civil time to UTC using the IANA timezone
+database (zoneinfo + tzdata), which correctly handles DST and
+historical UTC-offset changes.
+
+Remediates audit finding F-11: this module was previously dead
+code while the live pipeline accepted fixed offsets that silently
+ignore DST and history. It is now the live path
+(engine.calculations.calculations.calculate).
+
+Ambiguous local times (DST fall-back, occurring twice) are
+disambiguated by BirthData.fold per PEP 495. Nonexistent local
+times (DST gap) are rejected by engine.core.validation before this
+service runs.
+"""
+
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 
@@ -19,8 +37,9 @@ def local_datetime(data: BirthData) -> datetime:
         hour=data.hour,
         minute=data.minute,
         second=int(data.second),
-        microsecond=int((data.second % 1) * 1_000_000),
+        microsecond=int(round((data.second % 1) * 1_000_000)),
         tzinfo=ZoneInfo(data.timezone),
+        fold=data.fold,
     )
 
 

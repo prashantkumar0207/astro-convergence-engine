@@ -1,1 +1,3 @@
-VERSION = "0.1.0"
+from engine.version import ENGINE_VERSION
+
+VERSION = ENGINE_VERSION

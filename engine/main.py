@@ -1,15 +1,23 @@
-from datetime import datetime
-from datetime import timedelta
-from datetime import timezone
+"""
+FastAPI surface for the calculation engine.
+
+The API serializes provenance-stamped facts produced by the
+validated pipeline; it performs no astrology itself (audit
+AI/LLM boundary requirement).
+"""
+
+from dataclasses import asdict
 
 import swisseph as swe
 from fastapi import FastAPI
 
 from engine.calculations.calculations import calculate
+from engine.models.birth_data import BirthData
+from engine.version import ENGINE_VERSION
 
 app = FastAPI(
     title="Astro Convergence Engine",
-    version="0.1.0",
+    version=ENGINE_VERSION,
 )
 
 
@@ -18,7 +26,7 @@ def root():
     return {
         "status": "ok",
         "engine": "astro-convergence",
-        "version": "0.1.0",
+        "version": ENGINE_VERSION,
     }
 
 
@@ -33,16 +41,20 @@ def engine_info():
 @app.get("/engine/test")
 def engine_test():
     result = calculate(
-        birth_datetime=datetime(
-            1989,
-            7,
-            12,
-            16,
-            44,
-            tzinfo=timezone(timedelta(hours=5, minutes=30)),
-        ),
-        latitude=25.5941,
-        longitude=85.1376,
+        BirthData(
+            year=1989,
+            month=7,
+            day=12,
+            hour=16,
+            minute=44,
+            second=0.0,
+            latitude=25.5941,
+            longitude=85.1376,
+            timezone="Asia/Kolkata",
+        )
     )
 
-    return result.model_dump()
+    # AstronomyResult is a frozen dataclass, not a pydantic model;
+    # the previous .model_dump() call raised AttributeError
+    # (audit finding, section 24).
+    return asdict(result)
