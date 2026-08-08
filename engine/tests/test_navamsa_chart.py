@@ -107,3 +107,106 @@ def test_navamsa_exact_boundaries():
     assert navamsa_pada(70.0) == 4
     assert navamsa_sign(70.0) == 9
     assert navamsa_longitude(70.0) == 270.0
+
+def test_navamsa_longitude_stays_in_canonical_range():
+    """
+    D9 longitude must always be in [0, 360).
+    """
+    test_longitudes = [
+        0.0,
+        1.5,
+        29.99999999999,
+        29.99999999999999,
+        30.0,
+        359.99999999999994,
+        360.0,
+        720.0,
+        -360.0,
+        -720.0,
+        -0.001,
+        -1e-16,
+        -1e-15,
+        -1e-14,
+        -1e-12,
+        -1e-10,
+        1e-16,
+        1e-12,
+    ]
+
+    for longitude in test_longitudes:
+        result = navamsa_longitude(longitude)
+
+        assert 0.0 <= result < 360.0
+
+
+def test_navamsa_tiny_negative_longitudes_normalize_to_aries():
+    """
+    A tiny negative longitude represents the 0 Aries boundary
+    and must not leak an out-of-range sign index through
+    float-modulo returning exactly 360.0.
+    """
+    for longitude in (-1e-16, -1e-15, -1e-14):
+        assert navamsa_sign(longitude) == 0
+        assert navamsa_longitude(longitude) == 0.0
+        assert navamsa_pada(longitude) == 1
+
+
+def test_navamsa_pada_always_in_range():
+    """
+    Navamsa pada must always be within 1..9.
+    """
+    step = 30.0 / 9.0
+
+    test_longitudes = [
+        0.0,
+        29.99999999999,
+        29.99999999999999,
+        30.0,
+        -1e-16,
+        -1e-12,
+        -1e-10,
+        -0.001,
+    ]
+
+    for sign in range(12):
+        for boundary in range(10):
+            edge = sign * 30.0 + boundary * step
+
+            for offset in (
+                -1e-9, -1e-11, -1e-12, -1e-15,
+                0.0,
+                1e-15, 1e-12, 1e-11, 1e-9,
+            ):
+                test_longitudes.append(edge + offset)
+
+    for longitude in test_longitudes:
+        pada = navamsa_pada(longitude)
+
+        assert 1 <= pada <= 9
+
+
+def test_navamsa_sign_and_longitude_remain_consistent_near_boundaries():
+    """
+    The continuous D9 longitude and the D9 sign must describe
+    the same zodiac sign, including for values immediately
+    below a Navamsa boundary where the boundary tolerance
+    promotes the value into the next Navamsa.
+    """
+    step = 30.0 / 9.0
+
+    for sign in range(12):
+        for boundary in range(1, 9):
+            edge = sign * 30.0 + boundary * step
+
+            for offset in (
+                -1e-9, -1e-11, -1e-12, -1e-13,
+                0.0,
+                1e-13, 1e-12, 1e-11, 1e-9,
+            ):
+                longitude = edge + offset
+
+                transformed = navamsa_longitude(longitude)
+                d9_sign = navamsa_sign(longitude)
+
+                assert 0.0 <= transformed < 360.0
+                assert int(transformed // 30.0) % 12 == d9_sign

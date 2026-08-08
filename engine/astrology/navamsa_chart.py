@@ -9,6 +9,40 @@ _MOVABLE_SIGNS = {0, 3, 6, 9}
 _FIXED_SIGNS = {1, 4, 7, 10}
 _NAVAMSA_SIZE = 30.0 / 9.0
 
+# Small tolerance so values immediately below an exact Navamsa
+# boundary are classified into the next Navamsa, matching the
+# convention that an exact boundary belongs to the next division.
+_BOUNDARY_TOLERANCE = 1e-10
+
+
+def _normalize_longitude(longitude: float) -> float:
+    """
+    Normalize a longitude to the canonical [0, 360) range.
+
+    Python's float modulo can return exactly 360.0 for tiny
+    negative inputs (for example -1e-16 % 360.0 == 360.0),
+    which would produce an out-of-range sign index of 12.
+    Guard against that explicitly.
+    """
+    longitude = longitude % 360.0
+
+    if longitude >= 360.0:
+        return 0.0
+
+    return longitude
+
+
+def _navamsa_index(degree: float) -> int:
+    """
+    Return the zero-based Navamsa index (0-8) for a degree
+    within a sign, applying the boundary tolerance and
+    clamping against floating-point spillover at the top edge.
+    """
+    return min(
+        8,
+        int((degree + _BOUNDARY_TOLERANCE) / _NAVAMSA_SIZE),
+    )
+
 
 def _navamsa_start_sign(sign: int) -> int:
     """Return the first D9 sign for a source zodiac sign (0-based)."""
@@ -21,44 +55,51 @@ def _navamsa_start_sign(sign: int) -> int:
 
 def navamsa_sign(longitude: float) -> int:
     """Return the D9 sign index (0-11) for a sidereal longitude."""
-    longitude %= 360.0
+    longitude = _normalize_longitude(longitude)
+
     sign = int(longitude // 30.0)
     degree = longitude % 30.0
-    navamsa_index = min(
-    8,
-    int((degree + 1e-10) / _NAVAMSA_SIZE),
-)
+
+    navamsa_index = _navamsa_index(degree)
+
     return (_navamsa_start_sign(sign) + navamsa_index) % 12
 
 
 def navamsa_longitude(longitude: float) -> float:
     """Map a sidereal longitude to its continuous D9 longitude."""
-    longitude %= 360.0
+    longitude = _normalize_longitude(longitude)
 
     sign = int(longitude // 30.0)
     degree = longitude % 30.0
-    navamsa_index = min(
-    8,
-    int((degree + 1e-10) / _NAVAMSA_SIZE),
-)
+
+    navamsa_index = _navamsa_index(degree)
+
     fraction = (degree - navamsa_index * _NAVAMSA_SIZE) / _NAVAMSA_SIZE
 
+    # When the boundary tolerance promotes a value sitting
+    # immediately below a Navamsa boundary into the next
+    # Navamsa, the raw fraction is a tiny negative number.
+    # Clamp it so the returned longitude stays inside the
+    # same D9 sign that navamsa_sign() reports.
+    if fraction < 0.0:
+        fraction = 0.0
+
     d9_sign = (_navamsa_start_sign(sign) + navamsa_index) % 12
+
     return d9_sign * 30.0 + fraction * 30.0
 
 
 def navamsa_pada(longitude: float) -> int:
     """Return Navamsa pada number (1-9) for a sidereal longitude."""
-    longitude = longitude % 360.0
+    longitude = _normalize_longitude(longitude)
 
     sign_degree = longitude % 30.0
 
     # Each Navamsa = 10/3 degrees.
-    # Use a small tolerance so exact boundaries such as
-    # 10°00'00" are classified into the next Navamsa.
-    navamsa_index = int((sign_degree + 1e-10) / (10.0 / 3.0))
-
-    return navamsa_index + 1
+    # The shared helper applies the boundary tolerance so exact
+    # boundaries such as 10°00'00" are classified into the next
+    # Navamsa, and clamps the index so the result never exceeds 9.
+    return _navamsa_index(sign_degree) + 1
 
 
 def _iter_sidereal_planets(snapshot: AstronomySnapshot):
