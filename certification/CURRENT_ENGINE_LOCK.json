@@ -1,0 +1,51 @@
+{
+  "schema": "current_engine_lock_v1",
+  "status": "LOCKED_TIER0_CERTIFIED",
+  "date": "2026-08-08",
+  "engine_version": "0.3.0",
+  "ayanamsa_profiles": {
+    "parashari": {
+      "name": "parashari_lahiri",
+      "sidereal_mode": 1,
+      "ayanamsa": "LAHIRI"
+    },
+    "kp": {
+      "name": "kp_krishnamurti",
+      "sidereal_mode": 5,
+      "ayanamsa": "KRISHNAMURTI"
+    }
+  },
+  "profile_policy": "Ayanamsa is set only through an explicit CalculationProfile; no hidden global default may override it; every snapshot records its profile in Provenance.",
+  "human_sign_off": {
+    "date": "2026-08-08",
+    "decision": "Parashari = Lahiri; KP = Krishnamurti; system-specific profiles isolated by methodology; no hidden global/default ayanamsa overriding the profile.",
+    "recorded_in": "CURRENT_ENGINE_CERTIFICATION_STATUS.md"
+  },
+  "evidence": {
+    "holdout_certification": "certification/current_engine_certification.json",
+    "max_planet_error_arcsec": 0.000179,
+    "max_ascendant_error_arcsec": 0.000176,
+    "max_cusp_error_arcsec": 0.00018,
+    "comparisons": 528,
+    "profiles_certified": [
+      "parashari_lahiri",
+      "kp_krishnamurti"
+    ],
+    "default_gate": "python -m pytest (engine/tests)",
+    "d9_holdout": "validate_d9_holdout.py",
+    "d10_holdout": "validate_d10_holdout.py",
+    "legacy_gate": "test_tier0_certification.py (legacy kernel, unchanged)"
+  },
+  "explicit_non_claims": [
+    "Vargas other than D1/D9/D10",
+    "dasha",
+    "transits",
+    "KP engine layer",
+    "Jaimini",
+    "BNN/Nadi",
+    "numerology",
+    "convergence",
+    "polar-circle house behavior (NOT YET VERIFIED)",
+    "UTC treated as UT1 (documented, bounded 0.9 s)"
+  ]
+}

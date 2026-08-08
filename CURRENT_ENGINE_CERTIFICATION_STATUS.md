@@ -89,9 +89,39 @@ as proof). Collected gate: engine/tests/test_current_engine_certification.py.
 
 ## LOCK determination
 
-READY TO LOCK, conditional on one human decision: the project owner
-must sign off the per-system ayanamsa assignments (Parashari=Lahiri,
-KP=Krishnamurti) as the intended defaults, since classical practice
-varies and the audit mandate forbids choosing silently. Everything
-mechanical is certified. Until that sign-off is recorded here, the
-status remains HOLDOUT-CERTIFIED, UNLOCKED.
+STATUS: LOCKED / TIER-0 CERTIFIED (current engine).
+
+Human sign-off recorded 2026-08-08 (project owner, verbatim):
+"I confirm the intended per-system ayanamsa assignments for the
+astrology engine: Parashari = Lahiri ayanamsa; KP = Krishnamurti
+ayanamsa. These are intentional system-specific CalculationProfiles
+and must remain isolated by methodology. Do not introduce a hidden
+global/default ayanamsa that overrides the profile."
+
+Binding consequences of the sign-off:
+- engine/astronomy/profile.py: PARASHARI_LAHIRI (SIDM 1) and
+  KP_KRISHNAMURTI (SIDM 5) are the ratified system profiles.
+- The profile parameter is the ONLY path to an ayanamsa; no code may
+  introduce a hidden global default that overrides it. (The
+  DEFAULT_PROFILE constant exists solely as the parameter default of
+  astronomy_snapshot/calculate and equals PARASHARI_LAHIRI; every
+  snapshot records its actual profile in Provenance, so no output is
+  ever ambiguous about which ayanamsa produced it.)
+- Methodology isolation: KP-layer code must request KP_KRISHNAMURTI
+  explicitly; Parashari-layer code PARASHARI_LAHIRI. Cross-system
+  reuse of a snapshot computed under the other profile is forbidden.
+
+Lock scope: the astronomical calculation kernel (ephemeris handling,
+frame, profiles, houses, sidereal positions, JD/time pipeline) and the
+certified D9/D10 divisional mathematics, as evidenced by
+certification/current_engine_certification.json (max error 0.000180
+arcsec across 528 comparisons, both profiles, 11 holdout cases) plus
+the 186-test default gate. Changes inside the lock scope require the
+same certification discipline used to establish it (re-run
+scripts/certify_current_engine.py and the full gate; document the
+diff).
+
+The machine-readable lock record is
+certification/CURRENT_ENGINE_LOCK.json. Historical legacy
+certification artifacts (LOCK_MANIFEST.json, reports/) remain
+untouched and continue to describe the legacy kernel only.
