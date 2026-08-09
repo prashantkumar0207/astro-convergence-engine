@@ -1,0 +1,20 @@
+{
+  "schema_version": "1.0.0",
+  "question_id": "HLKG-N-000301",
+  "slug": "residence.relocation.timing",
+  "canonical_label": "When is a change of residence likely to occur?",
+  "primary_domain": "HLKG-D-008",
+  "question_class": "TIMING",
+  "lifecycle_state": "PROPOSED",
+  "version": 1,
+  "provenance": "intake:proposal 2026-07-11, author owner-team",
+  "created_at": "2026-07-11T09:00:00Z",
+  "modified_at": "2026-07-11T09:00:00Z",
+  "history": [
+    {
+      "event": "CREATED",
+      "actor": "owner-team",
+      "timestamp": "2026-07-11T09:00:00Z"
+    }
+  ]
+}

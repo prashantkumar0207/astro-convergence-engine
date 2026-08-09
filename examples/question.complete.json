@@ -1,0 +1,100 @@
+{
+  "schema_version": "1.0.0",
+  "question_id": "HLKG-N-000204",
+  "slug": "relationship.partnership.formation_timing",
+  "canonical_label": "When is a committed partnership likely to form?",
+  "human_title": "Partnership formation timing",
+  "primary_domain": "HLKG-D-003",
+  "question_class": "TIMING",
+  "definition": "Asks for the likely time interval(s) in which a committed partnership forms for the subject. A complete answer is a Timeline Object of one or more intervals with declared precision, or an explicit not-established outcome.",
+  "parameters": [
+    {
+      "name": "subject",
+      "kind": "subject",
+      "required": true
+    },
+    {
+      "name": "horizon",
+      "kind": "horizon",
+      "required": false,
+      "constraints": "bounded window; open-ended permitted"
+    }
+  ],
+  "relationships": [
+    {
+      "type": "PRECEDES",
+      "target": "HLKG-N-000205"
+    },
+    {
+      "type": "RELATES_TO",
+      "target": "HLKG-N-000207",
+      "rationale": "Partnership formation and relocation frequently co-occur in user composites; recorded for intake routing analytics only."
+    }
+  ],
+  "aliases": [
+    {
+      "locale": "en",
+      "text": "When will I get married?",
+      "provenance": "intake batch 2026-07-A"
+    },
+    {
+      "locale": "en",
+      "text": "When will a long-term relationship start?",
+      "provenance": "intake batch 2026-07-A"
+    },
+    {
+      "locale": "hi",
+      "text": "shaadi kab hogi?",
+      "provenance": "community submission, adjudicated"
+    }
+  ],
+  "translations": [
+    {
+      "locale": "hi",
+      "label": "pratibaddh saajhedaari kab banane ki sambhavna hai?",
+      "provenance": "translation pass 1",
+      "translator": "translator-01",
+      "reviewed_by": "reviewer-02"
+    }
+  ],
+  "lifecycle_state": "CANONICAL",
+  "version": 4,
+  "owner": "hlkg-owner",
+  "review_status": "REVIEW-2026-07-11-017: passed gates 1-2, adjudicated distinct",
+  "provenance": "intake:proposal 2026-06-30; ratified DECISION_LOG ADR-XXXX",
+  "created_at": "2026-06-30T10:15:00Z",
+  "modified_at": "2026-07-11T12:30:00Z",
+  "reserved_annotations": {
+    "priority": null,
+    "sensitivity": null,
+    "predictability": null,
+    "actionability": null,
+    "confidence_default": null
+  },
+  "history": [
+    {
+      "event": "CREATED",
+      "actor": "intake-bot",
+      "timestamp": "2026-06-30T10:15:00Z"
+    },
+    {
+      "event": "STATE_CHANGED",
+      "actor": "hlkg-owner",
+      "timestamp": "2026-07-05T08:00:00Z",
+      "rationale": "PROPOSED->REVIEW"
+    },
+    {
+      "event": "ADJUDICATED",
+      "actor": "hlkg-owner",
+      "timestamp": "2026-07-10T14:00:00Z",
+      "rationale": "Two-way answer test vs HLKG-N-000203: distinct.",
+      "evidence": "reports/review-017.json"
+    },
+    {
+      "event": "STATE_CHANGED",
+      "actor": "hlkg-owner",
+      "timestamp": "2026-07-11T12:30:00Z",
+      "rationale": "REVIEW->CANONICAL"
+    }
+  ]
+}

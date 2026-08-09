@@ -1,0 +1,1793 @@
+- schema_version: 1.0.0
+  question_id: HLKG-N-000401
+  slug: career.employment.first_job_timing
+  canonical_label: When is first employment likely to begin?
+  primary_domain: HLKG-D-001
+  question_class: TIMING
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a Timeline Object of intervals with declared precision.
+  parameters:
+  - name: horizon
+    kind: horizon
+    required: false
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: When will I get my first job?
+    provenance: library v0.1.0 intake evidence
+  - locale: hi-Latn
+    text: Naukri kab lagegi?
+    provenance: library v0.1.0 intake evidence
+  relationships:
+  - type: PRECEDES
+    target: HLKG-N-000420
+- schema_version: 1.0.0
+  question_id: HLKG-N-000402
+  slug: career.employment.job_occurrence
+  canonical_label: Will employment be obtained within the stated horizon?
+  primary_domain: HLKG-D-001
+  question_class: OCCURRENCE
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a yes/no/not_established value with a mandatory horizon.
+  parameters:
+  - name: horizon
+    kind: horizon
+    required: true
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: Will I find work this year?
+    provenance: library v0.1.0 intake evidence
+  - locale: en
+    text: Will I get a job?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000403
+  slug: career.employment.job_loss_occurrence
+  canonical_label: Will loss of employment occur within the stated horizon?
+  primary_domain: HLKG-D-001
+  question_class: OCCURRENCE
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a yes/no/not_established value with a mandatory horizon.
+  parameters:
+  - name: horizon
+    kind: horizon
+    required: true
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: Is my job at risk?
+    provenance: library v0.1.0 intake evidence
+  - locale: en
+    text: Will I lose my job?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000404
+  slug: career.employment.reemployment_timing
+  canonical_label: When is re-employment after a loss of employment likely to occur?
+  primary_domain: HLKG-D-001
+  question_class: TIMING
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a Timeline Object of intervals with declared precision.
+  parameters:
+  - name: horizon
+    kind: horizon
+    required: false
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: When will I get a job again?
+    provenance: library v0.1.0 intake evidence
+  relationships:
+  - type: DEPENDS_ON
+    target: HLKG-N-000403
+- schema_version: 1.0.0
+  question_id: HLKG-N-000405
+  slug: career.employment.job_security
+  canonical_label: How secure is the current employment?
+  primary_domain: HLKG-D-001
+  question_class: QUALITY
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a Rating Object against a declared scale (scale ratification pending CDQ-5).
+  parameters:
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: How safe is my job?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000406
+  slug: career.employment.government_job_occurrence
+  canonical_label: Will government employment be obtained within the stated horizon?
+  primary_domain: HLKG-D-001
+  question_class: OCCURRENCE
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: 'A complete answer is a yes/no/not_established value with a mandatory horizon. Boundary note: Appointment
+    is Career; the qualifying examination itself is Education (boundary 4.2).'
+  parameters:
+  - name: horizon
+    kind: horizon
+    required: true
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: Will I get a government job?
+    provenance: library v0.1.0 intake evidence
+  - locale: hi-Latn
+    text: Sarkari naukri milegi?
+    provenance: library v0.1.0 intake evidence
+  relationships:
+  - type: REFINES
+    target: HLKG-N-000402
+- schema_version: 1.0.0
+  question_id: HLKG-N-000407
+  slug: career.employment.offer_occurrence
+  canonical_label: Will an employment offer be received within the stated horizon?
+  primary_domain: HLKG-D-001
+  question_class: OCCURRENCE
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a yes/no/not_established value with a mandatory horizon.
+  parameters:
+  - name: horizon
+    kind: horizon
+    required: true
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: Will I get the offer?
+    provenance: library v0.1.0 intake evidence
+  relationships:
+  - type: PRECEDES
+    target: HLKG-N-000402
+- schema_version: 1.0.0
+  question_id: HLKG-N-000408
+  slug: career.profession.vocation_direction
+  canonical_label: Which of the declared vocational directions fits best?
+  primary_domain: HLKG-D-001
+  question_class: SELECTION
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a selection among the options bound at query time.
+  parameters:
+  - name: option_set
+    kind: option_set
+    required: true
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: What line of work should I choose among these?
+    provenance: library v0.1.0 intake evidence
+  - locale: en
+    text: Which career field suits me?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000409
+  slug: career.profession.change_occurrence
+  canonical_label: Will a change of profession occur within the stated horizon?
+  primary_domain: HLKG-D-001
+  question_class: OCCURRENCE
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a yes/no/not_established value with a mandatory horizon.
+  parameters:
+  - name: horizon
+    kind: horizon
+    required: true
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: Will I change my field?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000410
+  slug: career.profession.change_timing
+  canonical_label: When is a change of profession likely to occur?
+  primary_domain: HLKG-D-001
+  question_class: TIMING
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a Timeline Object of intervals with declared precision.
+  parameters:
+  - name: horizon
+    kind: horizon
+    required: false
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: When will I switch careers?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000411
+  slug: career.profession.fit_quality
+  canonical_label: How well does the current profession fit the subject?
+  primary_domain: HLKG-D-001
+  question_class: QUALITY
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a Rating Object against a declared scale (scale ratification pending CDQ-5).
+  parameters:
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: Am I in the right profession?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000412
+  slug: career.profession.practice_establishment_timing
+  canonical_label: When is an independent professional practice likely to be established?
+  primary_domain: HLKG-D-001
+  question_class: TIMING
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a Timeline Object of intervals with declared precision.
+  parameters:
+  - name: horizon
+    kind: horizon
+    required: false
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: When can I start my own practice?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000413
+  slug: career.business.start_timing
+  canonical_label: When is a business venture likely to start?
+  primary_domain: HLKG-D-001
+  question_class: TIMING
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a Timeline Object of intervals with declared precision.
+  parameters:
+  - name: horizon
+    kind: horizon
+    required: false
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: When can I start my own business?
+    provenance: library v0.1.0 intake evidence
+  - locale: hi-Latn
+    text: Business kab shuru hoga?
+    provenance: library v0.1.0 intake evidence
+  relationships:
+  - type: PRECEDES
+    target: HLKG-N-000417
+- schema_version: 1.0.0
+  question_id: HLKG-N-000414
+  slug: career.business.start_occurrence
+  canonical_label: Will a business venture start within the stated horizon?
+  primary_domain: HLKG-D-001
+  question_class: OCCURRENCE
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a yes/no/not_established value with a mandatory horizon.
+  parameters:
+  - name: horizon
+    kind: horizon
+    required: true
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: Will I start a business?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000415
+  slug: career.business.venture_viability
+  canonical_label: How viable is the stated business venture as a working enterprise?
+  primary_domain: HLKG-D-001
+  question_class: QUALITY
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: 'A complete answer is a Rating Object against a declared scale (scale ratification pending CDQ-5).
+    Boundary note: Venture-as-activity only; wealth outcomes belong to finance (boundary 4.1).'
+  parameters:
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: Will my business do well?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000416
+  slug: career.business.closure_occurrence
+  canonical_label: Will closure of the stated business occur within the stated horizon?
+  primary_domain: HLKG-D-001
+  question_class: OCCURRENCE
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a yes/no/not_established value with a mandatory horizon.
+  parameters:
+  - name: horizon
+    kind: horizon
+    required: true
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: Will my business shut down?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000417
+  slug: career.business.expansion_timing
+  canonical_label: When is expansion of the stated business likely to occur?
+  primary_domain: HLKG-D-001
+  question_class: TIMING
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a Timeline Object of intervals with declared precision.
+  parameters:
+  - name: horizon
+    kind: horizon
+    required: false
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: When will my business grow?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000418
+  slug: career.business.sale_occurrence
+  canonical_label: Will a sale or exit of the stated business occur within the stated horizon?
+  primary_domain: HLKG-D-001
+  question_class: OCCURRENCE
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a yes/no/not_established value with a mandatory horizon.
+  parameters:
+  - name: horizon
+    kind: horizon
+    required: true
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: Will I sell my company?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000419
+  slug: career.business.partnership_occurrence
+  canonical_label: Will a business partnership form within the stated horizon?
+  primary_domain: HLKG-D-001
+  question_class: OCCURRENCE
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: 'A complete answer is a yes/no/not_established value with a mandatory horizon. Boundary note: Partnership
+    in the venture; personal partnerships belong to relationship.'
+  parameters:
+  - name: horizon
+    kind: horizon
+    required: true
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: Will I get a business partner?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000420
+  slug: career.advancement.promotion_timing
+  canonical_label: When is a promotion likely to occur?
+  primary_domain: HLKG-D-001
+  question_class: TIMING
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a Timeline Object of intervals with declared precision.
+  parameters:
+  - name: horizon
+    kind: horizon
+    required: false
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: When will I get promoted?
+    provenance: library v0.1.0 intake evidence
+  - locale: hi-Latn
+    text: Promotion kab hoga?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000421
+  slug: career.advancement.promotion_occurrence
+  canonical_label: Will a promotion occur within the stated horizon?
+  primary_domain: HLKG-D-001
+  question_class: OCCURRENCE
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a yes/no/not_established value with a mandatory horizon.
+  parameters:
+  - name: horizon
+    kind: horizon
+    required: true
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: Will I get promoted this year?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000422
+  slug: career.advancement.leadership_occurrence
+  canonical_label: Will a leadership role be attained within the stated horizon?
+  primary_domain: HLKG-D-001
+  question_class: OCCURRENCE
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a yes/no/not_established value with a mandatory horizon.
+  parameters:
+  - name: horizon
+    kind: horizon
+    required: true
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: Will I become a manager?
+    provenance: library v0.1.0 intake evidence
+  - locale: en
+    text: Will I reach a leadership position?
+    provenance: library v0.1.0 intake evidence
+  relationships:
+  - type: RELATES_TO
+    target: HLKG-N-000421
+    rationale: Leadership attainment often but not necessarily arrives via promotion; neither refines the other.
+- schema_version: 1.0.0
+  question_id: HLKG-N-000423
+  slug: career.advancement.leadership_timing
+  canonical_label: When is a leadership role likely to be attained?
+  primary_domain: HLKG-D-001
+  question_class: TIMING
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a Timeline Object of intervals with declared precision.
+  parameters:
+  - name: horizon
+    kind: horizon
+    required: false
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: When will I lead a team?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000424
+  slug: career.advancement.trajectory_description
+  canonical_label: What is the likely trajectory of career advancement?
+  primary_domain: HLKG-D-001
+  question_class: DESCRIPTION
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a Structured Narrative of facets and summary.
+  parameters:
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: How will my career progress?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000425
+  slug: career.advancement.stagnation_cause
+  canonical_label: What factors underlie stagnation in career advancement?
+  primary_domain: HLKG-D-001
+  question_class: CAUSAL
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a set of factors with an explanation.
+  parameters:
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: Why am I not getting promoted?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000426
+  slug: career.transition.job_change_timing
+  canonical_label: When is a change of job likely to occur?
+  primary_domain: HLKG-D-001
+  question_class: TIMING
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a Timeline Object of intervals with declared precision.
+  parameters:
+  - name: horizon
+    kind: horizon
+    required: false
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: When will I change my job?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000427
+  slug: career.transition.job_change_occurrence
+  canonical_label: Will a change of job occur within the stated horizon?
+  primary_domain: HLKG-D-001
+  question_class: OCCURRENCE
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a yes/no/not_established value with a mandatory horizon.
+  parameters:
+  - name: horizon
+    kind: horizon
+    required: true
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: Will I switch jobs?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000428
+  slug: career.transition.job_change_count
+  canonical_label: How many changes of employer are indicated within the stated horizon?
+  primary_domain: HLKG-D-001
+  question_class: QUANTITY
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a number or range with unit and basis note.
+  parameters:
+  - name: horizon
+    kind: horizon
+    required: true
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: How many times will I change jobs?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000429
+  slug: career.transition.career_change_occurrence
+  canonical_label: Will a change of career occur within the stated horizon?
+  primary_domain: HLKG-D-001
+  question_class: OCCURRENCE
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a yes/no/not_established value with a mandatory horizon.
+  parameters:
+  - name: horizon
+    kind: horizon
+    required: true
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: Will I change my career completely?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000430
+  slug: career.transition.career_break_occurrence
+  canonical_label: Will a career break occur within the stated horizon?
+  primary_domain: HLKG-D-001
+  question_class: OCCURRENCE
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a yes/no/not_established value with a mandatory horizon.
+  parameters:
+  - name: horizon
+    kind: horizon
+    required: true
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: Will I take a break from work?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000431
+  slug: career.transition.reentry_timing
+  canonical_label: When is re-entry into working life after a career break likely?
+  primary_domain: HLKG-D-001
+  question_class: TIMING
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a Timeline Object of intervals with declared precision.
+  parameters:
+  - name: horizon
+    kind: horizon
+    required: false
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: When will I return to work after my break?
+    provenance: library v0.1.0 intake evidence
+  relationships:
+  - type: DEPENDS_ON
+    target: HLKG-N-000430
+- schema_version: 1.0.0
+  question_id: HLKG-N-000432
+  slug: career.transition.second_career_occurrence
+  canonical_label: Will a second career begin within the stated horizon?
+  primary_domain: HLKG-D-001
+  question_class: OCCURRENCE
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a yes/no/not_established value with a mandatory horizon.
+  parameters:
+  - name: horizon
+    kind: horizon
+    required: true
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: Will I start a new career later in life?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000433
+  slug: career.workplace.environment_quality
+  canonical_label: How favourable is the working environment expected to be?
+  primary_domain: HLKG-D-001
+  question_class: QUALITY
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a Rating Object against a declared scale (scale ratification pending CDQ-5).
+  parameters:
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: Is my work environment good?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000434
+  slug: career.workplace.conflict_occurrence
+  canonical_label: Will workplace conflict occur within the stated horizon?
+  primary_domain: HLKG-D-001
+  question_class: OCCURRENCE
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: 'A complete answer is a yes/no/not_established value with a mandatory horizon. Boundary note: Conflict
+    as a work matter; legal proceedings belong to legal, romance to relationship.'
+  parameters:
+  - name: horizon
+    kind: horizon
+    required: true
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: Will I have problems with my boss?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000435
+  slug: career.workplace.conflict_resolution_timing
+  canonical_label: When is resolution of the stated workplace conflict likely?
+  primary_domain: HLKG-D-001
+  question_class: TIMING
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a Timeline Object of intervals with declared precision.
+  parameters:
+  - name: horizon
+    kind: horizon
+    required: false
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: When will my office problems end?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000436
+  slug: career.workplace.relations_quality
+  canonical_label: How favourable are working relations with colleagues and superiors expected to be?
+  primary_domain: HLKG-D-001
+  question_class: QUALITY
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a Rating Object against a declared scale (scale ratification pending CDQ-5).
+  parameters:
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: Will my boss support me?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000437
+  slug: career.performance.recognition_occurrence
+  canonical_label: Will professional recognition be received within the stated horizon?
+  primary_domain: HLKG-D-001
+  question_class: OCCURRENCE
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a yes/no/not_established value with a mandatory horizon.
+  parameters:
+  - name: horizon
+    kind: horizon
+    required: true
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: Will I get an award at work?
+    provenance: library v0.1.0 intake evidence
+  - locale: en
+    text: Will my work be recognised?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000438
+  slug: career.performance.recognition_timing
+  canonical_label: When is professional recognition likely to be received?
+  primary_domain: HLKG-D-001
+  question_class: TIMING
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a Timeline Object of intervals with declared precision.
+  parameters:
+  - name: horizon
+    kind: horizon
+    required: false
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: When will I get credit for my work?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000439
+  slug: career.performance.appraisal_quality
+  canonical_label: How favourable is the upcoming appraisal outcome expected to be?
+  primary_domain: HLKG-D-001
+  question_class: QUALITY
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a Rating Object against a declared scale (scale ratification pending CDQ-5).
+  parameters:
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: Will my appraisal go well?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000440
+  slug: career.performance.field_standing_quality
+  canonical_label: How strong is professional standing within the subject's field expected to be?
+  primary_domain: HLKG-D-001
+  question_class: QUALITY
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: 'A complete answer is a Rating Object against a declared scale (scale ratification pending CDQ-5).
+    Boundary note: Audience test (boundary 4.7): within-field standing is Career; public fame is reputation.'
+  parameters:
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: Will I be respected in my field?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000441
+  slug: career.performance.setback_cause
+  canonical_label: What factors underlie repeated professional setbacks?
+  primary_domain: HLKG-D-001
+  question_class: CAUSAL
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a set of factors with an explanation.
+  parameters:
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: Why do I keep failing at work?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000442
+  slug: career.skill.adequacy_quality
+  canonical_label: How adequate are current skills for the stated career goal?
+  primary_domain: HLKG-D-001
+  question_class: QUALITY
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a Rating Object against a declared scale (scale ratification pending CDQ-5).
+  parameters:
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: Are my skills enough for this role?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000443
+  slug: career.skill.demand_description
+  canonical_label: What is the demand outlook for the declared skill set in professional application?
+  primary_domain: HLKG-D-001
+  question_class: DESCRIPTION
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a Structured Narrative of facets and summary.
+  parameters:
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: Are my skills in demand?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000444
+  slug: career.skill.upskilling_direction
+  canonical_label: Which of the declared upskilling paths best serves the stated career goal?
+  primary_domain: HLKG-D-001
+  question_class: SELECTION
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: 'A complete answer is a selection among the options bound at query time. Boundary note: Career use
+    of learning; the study/qualification itself is Education (boundary 4.2).'
+  parameters:
+  - name: option_set
+    kind: option_set
+    required: true
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: Which course should I do for my career among these?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000445
+  slug: career.assignment.foreign_posting_occurrence
+  canonical_label: Will a work posting abroad occur within the stated horizon?
+  primary_domain: HLKG-D-001
+  question_class: OCCURRENCE
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a yes/no/not_established value with a mandatory horizon.
+  parameters:
+  - name: horizon
+    kind: horizon
+    required: true
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: Will I get a foreign posting?
+    provenance: library v0.1.0 intake evidence
+  - locale: en
+    text: Will I go onsite?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000446
+  slug: career.assignment.foreign_posting_timing
+  canonical_label: When is a work posting abroad likely to occur?
+  primary_domain: HLKG-D-001
+  question_class: TIMING
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a Timeline Object of intervals with declared precision.
+  parameters:
+  - name: horizon
+    kind: horizon
+    required: false
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: When will I go abroad for work?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000447
+  slug: career.assignment.transfer_occurrence
+  canonical_label: Will a transfer of work location occur within the stated horizon?
+  primary_domain: HLKG-D-001
+  question_class: OCCURRENCE
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a yes/no/not_established value with a mandatory horizon.
+  parameters:
+  - name: horizon
+    kind: horizon
+    required: true
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: Will I get transferred?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000448
+  slug: career.assignment.transfer_timing
+  canonical_label: When is a transfer of work location likely to occur?
+  primary_domain: HLKG-D-001
+  question_class: TIMING
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a Timeline Object of intervals with declared precision.
+  parameters:
+  - name: horizon
+    kind: horizon
+    required: false
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: When is my transfer due?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000449
+  slug: career.assignment.posting_return_timing
+  canonical_label: When is return from the current work posting likely?
+  primary_domain: HLKG-D-001
+  question_class: TIMING
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a Timeline Object of intervals with declared precision.
+  parameters:
+  - name: horizon
+    kind: horizon
+    required: false
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: When will I come back from onsite?
+    provenance: library v0.1.0 intake evidence
+  relationships:
+  - type: DEPENDS_ON
+    target: HLKG-N-000445
+- schema_version: 1.0.0
+  question_id: HLKG-N-000450
+  slug: career.compensation.raise_occurrence
+  canonical_label: Will a salary increase occur within the stated horizon?
+  primary_domain: HLKG-D-001
+  question_class: OCCURRENCE
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a yes/no/not_established value with a mandatory horizon.
+  parameters:
+  - name: horizon
+    kind: horizon
+    required: true
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: Will I get a raise?
+    provenance: library v0.1.0 intake evidence
+  - locale: hi-Latn
+    text: Increment milega?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000451
+  slug: career.compensation.raise_timing
+  canonical_label: When is a salary increase likely to occur?
+  primary_domain: HLKG-D-001
+  question_class: TIMING
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a Timeline Object of intervals with declared precision.
+  parameters:
+  - name: horizon
+    kind: horizon
+    required: false
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: When will my salary increase?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000452
+  slug: career.compensation.income_growth_quality
+  canonical_label: How strong is professional income growth expected to be?
+  primary_domain: HLKG-D-001
+  question_class: QUALITY
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: 'A complete answer is a Rating Object against a declared scale (scale ratification pending CDQ-5).
+    Boundary note: Compensation attached to work only; wealth belongs to finance (boundary 4.1, CDQ-6).'
+  parameters:
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: Will my earnings from work grow well?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000453
+  slug: career.compensation.level_quantity
+  canonical_label: What level of professional income is indicated for the stated period?
+  primary_domain: HLKG-D-001
+  question_class: QUANTITY
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: 'A complete answer is a number or range with unit and basis note. Boundary note: Answer carries unit
+    and basis note per QUANTITY contract.'
+  parameters:
+  - name: horizon
+    kind: horizon
+    required: true
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: How much will I earn from my job?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000454
+  slug: career.compensation.stagnation_cause
+  canonical_label: What factors underlie stagnation of professional income?
+  primary_domain: HLKG-D-001
+  question_class: CAUSAL
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a set of factors with an explanation.
+  parameters:
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: Why is my salary not increasing?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000455
+  slug: career.satisfaction.career_quality
+  canonical_label: How satisfying is the subject's working life expected to be?
+  primary_domain: HLKG-D-001
+  question_class: QUALITY
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: 'A complete answer is a Rating Object against a declared scale (scale ratification pending CDQ-5).
+    Boundary note: Career appraisal only; wellbeing states belong to health (boundary 4.5).'
+  parameters:
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: Will I be happy in my career?
+    provenance: library v0.1.0 intake evidence
+  relationships:
+  - type: RELATES_TO
+    target: HLKG-N-000433
+    rationale: Frequent co-signal in user intent; recorded for intake routing analytics only.
+- schema_version: 1.0.0
+  question_id: HLKG-N-000456
+  slug: career.satisfaction.dissatisfaction_cause
+  canonical_label: What factors underlie dissatisfaction with the subject's working life?
+  primary_domain: HLKG-D-001
+  question_class: CAUSAL
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a set of factors with an explanation.
+  parameters:
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: Why am I unhappy at work?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000457
+  slug: career.satisfaction.improvement_timing
+  canonical_label: When is satisfaction with working life likely to improve?
+  primary_domain: HLKG-D-001
+  question_class: TIMING
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a Timeline Object of intervals with declared precision.
+  parameters:
+  - name: horizon
+    kind: horizon
+    required: false
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: When will things get better at work?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000458
+  slug: career.exit.retirement_timing
+  canonical_label: When is retirement from working life likely to occur?
+  primary_domain: HLKG-D-001
+  question_class: TIMING
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a Timeline Object of intervals with declared precision.
+  parameters:
+  - name: horizon
+    kind: horizon
+    required: false
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: When will I retire?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000459
+  slug: career.exit.early_retirement_occurrence
+  canonical_label: Will retirement occur earlier than the stated expected point?
+  primary_domain: HLKG-D-001
+  question_class: OCCURRENCE
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: 'A complete answer is a yes/no/not_established value with a mandatory horizon. Boundary note: Horizon
+    binds the ''expected point''; pension adequacy belongs to finance.'
+  parameters:
+  - name: horizon
+    kind: horizon
+    required: true
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: Will I retire early?
+    provenance: library v0.1.0 intake evidence
+- schema_version: 1.0.0
+  question_id: HLKG-N-000460
+  slug: career.exit.postretirement_work_occurrence
+  canonical_label: Will professional activity resume after retirement within the stated horizon?
+  primary_domain: HLKG-D-001
+  question_class: OCCURRENCE
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a yes/no/not_established value with a mandatory horizon.
+  parameters:
+  - name: horizon
+    kind: horizon
+    required: true
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: Will I work after retirement?
+    provenance: library v0.1.0 intake evidence
+  relationships:
+  - type: DEPENDS_ON
+    target: HLKG-N-000458
+- schema_version: 1.0.0
+  question_id: HLKG-N-000461
+  slug: career.exit.career_end_description
+  canonical_label: What is the likely character of the final phase of working life?
+  primary_domain: HLKG-D-001
+  question_class: DESCRIPTION
+  lifecycle_state: PROPOSED
+  version: 1
+  provenance: knowledge/hlkg/domains/career/CAREER_QUESTION_LIBRARY.md v0.1.0; PROPOSED batch 2026-07-11; reserved
+    ID block HLKG-N-000401..000461 pending registry issuance (CQL-1)
+  created_at: '2026-07-11T00:00:00Z'
+  modified_at: '2026-07-11T00:00:00Z'
+  history:
+  - event: CREATED
+    actor: lead-knowledge-engineer
+    timestamp: '2026-07-11T00:00:00Z'
+    rationale: Generated from CAREER_DOMAIN_MODEL.md v0.1.0 frozen topic vocabulary
+  definition: A complete answer is a Structured Narrative of facets and summary.
+  parameters:
+  - name: subject
+    kind: subject
+    required: true
+  aliases:
+  - locale: en
+    text: How will my career end?
+    provenance: library v0.1.0 intake evidence
