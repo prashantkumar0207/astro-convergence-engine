@@ -1,6 +1,6 @@
 {
  "schema": "parashari_drishti_v1_certification",
- "adr": "ADR-ASPECT-PAR-001",
+ "adr": "ADR-0012",
  "date": "2026-08-09",
  "scope": "Parashari graha drishti, full (purna) aspects; facts only",
  "decisions": {

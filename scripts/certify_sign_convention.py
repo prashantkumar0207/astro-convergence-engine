@@ -1,4 +1,4 @@
-"""SIGN_CONVENTION_V1 CERTIFICATION RUNNER (ADR-CONVENTION-001).
+"""SIGN_CONVENTION_V1 CERTIFICATION RUNNER (ADR-0012).
 
 Regenerates certification/SIGN_CONVENTION_V1_certification.json FROM
 SCRATCH on every run; the stored JSON is never accepted as proof.
@@ -237,7 +237,7 @@ def gate_d_cross_layer():
 def main():
     report = {
         "schema": "sign_convention_v1_certification",
-        "adr": "ADR-CONVENTION-001",
+        "adr": "ADR-0012",
         "date": str(date.today()),
         "scope": ("explicit, machine-checked sign-index conventions across every "
                   "layer; no certified value renumbered"),

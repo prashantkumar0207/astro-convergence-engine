@@ -1,5 +1,5 @@
 """
-Transit computation layer (TRANSIT_V1, ADR-TRANSIT-001).
+Transit computation layer (TRANSIT_V1, ADR-0008).
 
 Facts only: transit positions and longitude-crossing events on the
 certified astronomy. Every event time is refined by bisection on the

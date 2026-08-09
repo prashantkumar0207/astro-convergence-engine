@@ -1,5 +1,5 @@
 """
-Vimshottari dasha timeline models (VIMSHOTTARI_V1, ADR-DASHA-001).
+Vimshottari dasha timeline models (VIMSHOTTARI_V1, ADR-0007).
 
 Exact rational bookkeeping: every period carries its start and end as
 EXACT year offsets (Fractions) from the first mahadasha's start; the

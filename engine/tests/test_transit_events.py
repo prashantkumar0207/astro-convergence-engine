@@ -1,6 +1,6 @@
 """
 Transit event types and cross-layer consistency
-(Gates 1-2 of ADR-TRANSIT-001).
+(Gates 1-2 of ADR-0008).
 """
 
 import math

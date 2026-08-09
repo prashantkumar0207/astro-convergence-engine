@@ -1,5 +1,5 @@
 """
-KP chart assembly (KP_CHAIN_V1, ADR-KP-001).
+KP chart assembly (KP_CHAIN_V1, ADR-0006).
 
 Methodology isolation (lock sign-off, 2026-08-08): KP work MUST use
 the KP_KRISHNAMURTI profile explicitly. This module therefore never

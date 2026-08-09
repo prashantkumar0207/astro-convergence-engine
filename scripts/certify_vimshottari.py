@@ -1,4 +1,4 @@
-"""VIMSHOTTARI_V1 CERTIFICATION RUNNER (ADR-DASHA-001).
+"""VIMSHOTTARI_V1 CERTIFICATION RUNNER (ADR-0007).
 
 Regenerates certification/VIMSHOTTARI_V1_certification.json FROM
 SCRATCH on every run; the stored JSON is never accepted as proof.
@@ -154,7 +154,7 @@ def main():
 
     report = {
         "schema": "vimshottari_v1_certification",
-        "adr": "ADR-DASHA-001",
+        "adr": "ADR-0007",
         "date": str(date.today()),
         "scope": "Vimshottari maha/antar/pratyantar timelines, school-explicit seeding",
         "year_convention": {

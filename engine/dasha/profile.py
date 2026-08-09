@@ -1,5 +1,5 @@
 """
-Dasha calculation profiles (VIMSHOTTARI_V1, ADR-DASHA-001).
+Dasha calculation profiles (VIMSHOTTARI_V1, ADR-0007).
 
 Decision DA-A (approved 2026-08-09): the year-length convention is an
 EXPLICIT profile field with no hidden default resolution; traditions

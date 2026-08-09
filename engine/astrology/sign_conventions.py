@@ -1,6 +1,6 @@
 """
 Sign-convention declaration registry (SIGN_CONVENTION_V1,
-ADR-CONVENTION-001, Decision SC-C).
+ADR-0012, Decision SC-C).
 
 This module is the SINGLE SOURCE OF TRUTH for which convention every
 sign-typed field on every public model uses. It exists so the

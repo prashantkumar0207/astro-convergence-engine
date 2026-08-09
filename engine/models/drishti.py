@@ -1,5 +1,5 @@
 """
-Parashari graha drishti models (PARASHARI_DRISHTI_V1, ADR-ASPECT-PAR-001).
+Parashari graha drishti models (PARASHARI_DRISHTI_V1, ADR-0012).
 """
 
 from dataclasses import dataclass
@@ -29,7 +29,7 @@ class PlanetDrishti:
         The 0-based index of :attr:`sign_number`.
 
         :attr:`sign_number` is 1-based and CERTIFIED; this accessor is
-        additive (ADR-CONVENTION-001, Decision SC-B) and changes no
+        additive (ADR-0012, Decision SC-B) and changes no
         stored value.
         """
 
@@ -37,7 +37,7 @@ class PlanetDrishti:
 
     @property
     def sign_object(self):
-        """:attr:`sign_number` as an explicit Sign (ADR-CONVENTION-001)."""
+        """:attr:`sign_number` as an explicit Sign (ADR-0012)."""
 
         from engine.astrology.sign import Sign
 
@@ -73,7 +73,7 @@ class DrishtiChart:
         The 0-based index of :attr:`ascendant_sign`.
 
         :attr:`ascendant_sign` is 1-based and CERTIFIED; this accessor is
-        additive (ADR-CONVENTION-001, Decision SC-B) and changes no
+        additive (ADR-0012, Decision SC-B) and changes no
         stored value.
         """
 
@@ -81,7 +81,7 @@ class DrishtiChart:
 
     @property
     def ascendant_sign_object(self):
-        """:attr:`ascendant_sign` as an explicit Sign (ADR-CONVENTION-001)."""
+        """:attr:`ascendant_sign` as an explicit Sign (ADR-0012)."""
 
         from engine.astrology.sign import Sign
 

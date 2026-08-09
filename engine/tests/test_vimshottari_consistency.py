@@ -1,6 +1,6 @@
 """
 Vimshottari cross-layer consistency and seeding guards
-(Gate 2 of ADR-DASHA-001).
+(Gate 2 of ADR-0007).
 """
 
 from fractions import Fraction

@@ -1,6 +1,6 @@
 {
  "schema": "kp_chain_v1_certification",
- "adr": "ADR-KP-001",
+ "adr": "ADR-0006",
  "date": "2026-08-09",
  "scope": "KP lordship chain (SL/NL/SB/SS) and KP fact charts under kp_krishnamurti",
  "explicit_non_claims": [

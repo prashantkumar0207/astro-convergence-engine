@@ -1,4 +1,4 @@
-"""KP_CHAIN_V1 CERTIFICATION RUNNER (Gate 6 of ADR-KP-001).
+"""KP_CHAIN_V1 CERTIFICATION RUNNER (Gate 6 of ADR-0006).
 
 Regenerates certification/KP_CHAIN_V1_certification.json FROM SCRATCH
 on every run; the stored JSON is never accepted as proof. Collects:
@@ -156,7 +156,7 @@ def gate_d_independent_validator():
 def main():
     report = {
         "schema": "kp_chain_v1_certification",
-        "adr": "ADR-KP-001",
+        "adr": "ADR-0006",
         "date": str(date.today()),
         "scope": "KP lordship chain (SL/NL/SB/SS) and KP fact charts under kp_krishnamurti",
         "explicit_non_claims": [

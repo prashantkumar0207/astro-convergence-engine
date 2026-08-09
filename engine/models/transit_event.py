@@ -1,5 +1,5 @@
 """
-Transit event model (TRANSIT_V1, ADR-TRANSIT-001).
+Transit event model (TRANSIT_V1, ADR-0008).
 """
 
 from dataclasses import dataclass

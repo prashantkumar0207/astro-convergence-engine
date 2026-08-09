@@ -1,6 +1,6 @@
 """
 Per-body maximum apparent geocentric longitude speeds
-(TRANSIT_V1, ADR-TRANSIT-001, Decision TR-B).
+(TRANSIT_V1, ADR-0008, Decision TR-B).
 
 Values are deliberately GENEROUS upper bounds on |dL/dt| in degrees
 per day (Swiss Ephemeris apparent geocentric extremes, rounded UP),

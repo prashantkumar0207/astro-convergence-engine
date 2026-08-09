@@ -1,5 +1,5 @@
 """
-Natal-relative transit view (TRANSIT_V1, ADR-TRANSIT-001).
+Natal-relative transit view (TRANSIT_V1, ADR-0008).
 
 A TransitView is the certified transit-moment snapshot annotated
 with separations from a natal snapshot's points. Methodology

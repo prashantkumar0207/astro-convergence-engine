@@ -1,5 +1,5 @@
 """
-KP chart models (KP_CHAIN_V1, ADR-KP-001).
+KP chart models (KP_CHAIN_V1, ADR-0006).
 
 A KP chart is the KP lordship chain attached to every body, every
 Placidus cusp, and the ascendant of an AstronomySnapshot computed

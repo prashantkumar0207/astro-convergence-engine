@@ -1,4 +1,4 @@
-"""Independent Parashari drishti validator (ADR-ASPECT-PAR-001).
+"""Independent Parashari drishti validator (ADR-0012).
 
 Validates production graha drishti against an in-file reference built
 by NAME-COUNTING (walk the zodiac by sign name from the planet's sign

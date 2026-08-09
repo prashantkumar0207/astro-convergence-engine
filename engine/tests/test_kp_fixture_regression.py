@@ -1,5 +1,5 @@
 """
-KP transcribed-fixture regression (Gate 4 of ADR-KP-001).
+KP transcribed-fixture regression (Gate 4 of ADR-0006).
 
 The 50-item Brihat fixture set (brihat_fixtures.py, COMPARISON
 FIXTURES transcribed from screenshots, not astronomical ground truth)

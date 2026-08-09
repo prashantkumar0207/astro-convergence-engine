@@ -1,5 +1,5 @@
 """
-Explicit sign value type (SIGN_CONVENTION_V1, ADR-CONVENTION-001).
+Explicit sign value type (SIGN_CONVENTION_V1, ADR-0012).
 
 The repository carries two sign-index conventions by history, both
 certified and both locked: every VARGA sign output is 0-based

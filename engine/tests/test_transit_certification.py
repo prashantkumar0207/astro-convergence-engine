@@ -23,7 +23,7 @@ def test_artifact_exists_and_claims_pass():
     assert ARTIFACT.exists(), "run scripts/certify_transits.py"
     report = json.loads(ARTIFACT.read_text())
     assert report["schema"] == "transit_v1_certification"
-    assert report["adr"] == "ADR-TRANSIT-001"
+    assert report["adr"] == "ADR-0008"
     assert report["result"] == "PASS"
     gates = report["gates"]
     assert gates["A_residual_battery"]["max_residual_arcsec"] <= RESIDUAL_BOUND_ARCSEC

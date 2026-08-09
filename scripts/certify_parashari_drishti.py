@@ -1,4 +1,4 @@
-"""PARASHARI_DRISHTI_V1 CERTIFICATION RUNNER (ADR-ASPECT-PAR-001).
+"""PARASHARI_DRISHTI_V1 CERTIFICATION RUNNER (ADR-0012).
 
 Regenerates certification/PARASHARI_DRISHTI_V1_certification.json
 FROM SCRATCH on every run. Gates: A table integrity; B combinatorial
@@ -128,7 +128,7 @@ def gate_d_validator():
 def main():
     report = {
         "schema": "parashari_drishti_v1_certification",
-        "adr": "ADR-ASPECT-PAR-001",
+        "adr": "ADR-0012",
         "date": str(date.today()),
         "scope": "Parashari graha drishti, full (purna) aspects; facts only",
         "decisions": {

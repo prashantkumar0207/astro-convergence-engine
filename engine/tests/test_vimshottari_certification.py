@@ -23,7 +23,7 @@ def test_artifact_exists_and_claims_pass():
     assert ARTIFACT.exists(), "run scripts/certify_vimshottari.py"
     report = json.loads(ARTIFACT.read_text())
     assert report["schema"] == "vimshottari_v1_certification"
-    assert report["adr"] == "ADR-DASHA-001"
+    assert report["adr"] == "ADR-0007"
     assert report["result"] == "PASS"
     assert report["year_convention"]["profile"] == "vimshottari_mean_sidereal_year"
     assert report["year_convention"]["days"] == "91314091/250000"  # 365.256364 exact

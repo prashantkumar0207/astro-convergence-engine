@@ -1,5 +1,5 @@
 """
-KP lordship chain result model (KP_CHAIN_V1, ADR-KP-001).
+KP lordship chain result model (KP_CHAIN_V1, ADR-0006).
 
 Lords are KP abbreviations (Ke, Ve, Su, Mo, Ma, Ra, Ju, Sa, Me);
 see engine/kp/tables.py for the mapping to engine planet names.
@@ -60,7 +60,7 @@ class KpChain:
         The 0-based index of :attr:`sign_number`.
 
         :attr:`sign_number` is 1-based and CERTIFIED; this accessor is
-        additive (ADR-CONVENTION-001, Decision SC-B) and changes no
+        additive (ADR-0012, Decision SC-B) and changes no
         stored value.
         """
 
@@ -68,7 +68,7 @@ class KpChain:
 
     @property
     def sign_object(self):
-        """:attr:`sign_number` as an explicit Sign (ADR-CONVENTION-001)."""
+        """:attr:`sign_number` as an explicit Sign (ADR-0012)."""
 
         from engine.astrology.sign import Sign
 

@@ -37,7 +37,7 @@ class ChartPlanet:
         The 0-based index of :attr:`sign`.
 
         :attr:`sign` is 1-based and CERTIFIED; this accessor is
-        additive (ADR-CONVENTION-001, Decision SC-B) and changes no
+        additive (ADR-0012, Decision SC-B) and changes no
         stored value.
         """
 
@@ -45,7 +45,7 @@ class ChartPlanet:
 
     @property
     def sign_object(self):
-        """:attr:`sign` as an explicit Sign (ADR-CONVENTION-001)."""
+        """:attr:`sign` as an explicit Sign (ADR-0012)."""
 
         from engine.astrology.sign import Sign
 

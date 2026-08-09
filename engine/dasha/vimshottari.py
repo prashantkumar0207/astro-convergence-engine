@@ -1,5 +1,5 @@
 """
-Vimshottari dasha timeline (VIMSHOTTARI_V1, ADR-DASHA-001).
+Vimshottari dasha timeline (VIMSHOTTARI_V1, ADR-0007).
 
 Mathematics (all exact rational until the final calendar view):
 the birth Moon's exact fraction elapsed within its nakshatra fixes

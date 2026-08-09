@@ -1,5 +1,5 @@
 """
-KP chart-level equivalence and isolation gates (Gate 3 of ADR-KP-001).
+KP chart-level equivalence and isolation gates (Gate 3 of ADR-0006).
 
 Compares engine/kp/chart.py against the certified legacy kernel
 (legacy/engine.py, oracle only) over the frozen 11-case holdout

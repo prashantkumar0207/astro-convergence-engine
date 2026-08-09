@@ -1,5 +1,5 @@
 """
-Exact-rational KP interval mathematics (KP_CHAIN_V1, ADR-KP-001).
+Exact-rational KP interval mathematics (KP_CHAIN_V1, ADR-0006).
 
 Numeric contract (Decision KP-A, approved 2026-08-09)
 -----------------------------------------------------

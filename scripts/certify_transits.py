@@ -1,4 +1,4 @@
-"""TRANSIT_V1 CERTIFICATION RUNNER (ADR-TRANSIT-001).
+"""TRANSIT_V1 CERTIFICATION RUNNER (ADR-0008).
 
 Regenerates certification/TRANSIT_V1_certification.json FROM SCRATCH
 on every run; the stored JSON is never accepted as proof.
@@ -117,7 +117,7 @@ def gate_d_validator():
 def main():
     report = {
         "schema": "transit_v1_certification",
-        "adr": "ADR-TRANSIT-001",
+        "adr": "ADR-0008",
         "date": str(date.today()),
         "scope": ("longitude-crossing primitive; sign/nakshatra ingresses; "
                   "returns; natal conjunctions; natal-relative view"),

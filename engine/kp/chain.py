@@ -1,5 +1,5 @@
 """
-KP lordship chain classification (KP_CHAIN_V1, ADR-KP-001).
+KP lordship chain classification (KP_CHAIN_V1, ADR-0006).
 
 Computes the KP hierarchy (SL, NL, SB, SS) for a sidereal longitude
 using exact rational arithmetic (see engine/kp/intervals.py for the

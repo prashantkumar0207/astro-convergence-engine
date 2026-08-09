@@ -23,7 +23,7 @@ def test_artifact_exists_and_claims_pass():
     assert ARTIFACT.exists(), "run scripts/certify_kp_chain.py"
     report = json.loads(ARTIFACT.read_text())
     assert report["schema"] == "kp_chain_v1_certification"
-    assert report["adr"] == "ADR-KP-001"
+    assert report["adr"] == "ADR-0006"
     assert report["result"] == "PASS"
     gates = report["gates"]
     assert gates["A_legacy_oracle_equivalence"]["mismatches"] == 0

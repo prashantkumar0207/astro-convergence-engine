@@ -1,6 +1,6 @@
 {
  "schema": "sign_convention_v1_certification",
- "adr": "ADR-CONVENTION-001",
+ "adr": "ADR-0012",
  "date": "2026-08-09",
  "scope": "explicit, machine-checked sign-index conventions across every layer; no certified value renumbered",
  "decisions": {

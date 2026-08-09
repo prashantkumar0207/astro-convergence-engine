@@ -1,4 +1,4 @@
-"""Independent transit-event holdout validator (Gate 4 of ADR-TRANSIT-001).
+"""Independent transit-event holdout validator (Gate 4 of ADR-0008).
 
 Validates engine/transits against an event finder built INDEPENDENTLY
 inside this file: dense fixed-step scanning with inverse quadratic

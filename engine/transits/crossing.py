@@ -1,5 +1,5 @@
 """
-Longitude-crossing primitive (TRANSIT_V1, ADR-TRANSIT-001).
+Longitude-crossing primitive (TRANSIT_V1, ADR-0008).
 
 Finds every instant in a window at which a body's certified sidereal
 longitude crosses a target longitude.

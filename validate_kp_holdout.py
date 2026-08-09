@@ -1,4 +1,4 @@
-"""Independent KP chain holdout validator (Gate 5 of ADR-KP-001).
+"""Independent KP chain holdout validator (Gate 5 of ADR-0006).
 
 Validates engine/kp against a reference implementation derived
 INDEPENDENTLY inside this file from the classical rule: the KP

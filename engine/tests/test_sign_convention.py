@@ -1,5 +1,5 @@
 """
-SIGN_CONVENTION_V1 gates (ADR-CONVENTION-001).
+SIGN_CONVENTION_V1 gates (ADR-0012).
 
 Gate 2: Sign type correctness, exhaustive and adversarial.
 Gate 3: declaration coverage, enforced by walking the live object

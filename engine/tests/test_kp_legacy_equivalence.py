@@ -1,5 +1,5 @@
 """
-KP legacy equivalence gate (Gate 1 of ADR-KP-001).
+KP legacy equivalence gate (Gate 1 of ADR-0006).
 
 The certified legacy kernel (legacy/kp.py) is the equivalence ORACLE:
 engine/kp must reproduce its (SL, NL, SB, SS) classification exactly,

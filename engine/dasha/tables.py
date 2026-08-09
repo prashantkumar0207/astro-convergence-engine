@@ -1,5 +1,5 @@
 """
-Vimshottari dasha tables (VIMSHOTTARI_V1, ADR-DASHA-001).
+Vimshottari dasha tables (VIMSHOTTARI_V1, ADR-0007).
 
 Classical source: Brihat Parashara Hora Shastra (Vimshottari
 adhyaya): lord sequence Ketu, Venus, Sun, Moon, Mars, Rahu, Jupiter,

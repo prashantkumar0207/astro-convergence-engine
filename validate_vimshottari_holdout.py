@@ -1,4 +1,4 @@
-"""Independent Vimshottari holdout validator (Gate 4 of ADR-DASHA-001).
+"""Independent Vimshottari holdout validator (Gate 4 of ADR-0007).
 
 Validates engine/dasha against a reference built INDEPENDENTLY inside
 this file with closed-form prefix sums (no recursive subdivision, the

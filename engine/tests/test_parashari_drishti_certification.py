@@ -16,7 +16,7 @@ def test_artifact_exists_and_claims_pass():
     assert ARTIFACT.exists(), "run scripts/certify_parashari_drishti.py"
     report = json.loads(ARTIFACT.read_text())
     assert report["schema"] == "parashari_drishti_v1_certification"
-    assert report["adr"] == "ADR-ASPECT-PAR-001"
+    assert report["adr"] == "ADR-0012"
     assert report["result"] == "PASS"
     gates = report["gates"]
     assert gates["A_table_integrity"] == {"planets": 7, "mismatches": 0}

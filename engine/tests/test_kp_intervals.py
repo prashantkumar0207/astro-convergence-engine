@@ -1,5 +1,5 @@
 """
-KP interval invariants (Gate 2 of ADR-KP-001).
+KP interval invariants (Gate 2 of ADR-0006).
 
 Ports the certified legacy invariant tests (legacy/test_kp_intervals.py)
 into the default gate, plus table and conversion contracts.

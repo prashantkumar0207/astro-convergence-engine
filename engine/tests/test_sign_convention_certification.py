@@ -30,7 +30,7 @@ def test_artifact_exists_and_claims_pass():
     assert ARTIFACT.exists(), "run scripts/certify_sign_convention.py"
     report = json.loads(ARTIFACT.read_text())
     assert report["schema"] == "sign_convention_v1_certification"
-    assert report["adr"] == "ADR-CONVENTION-001"
+    assert report["adr"] == "ADR-0012"
     assert report["result"] == "PASS"
     gates = report["gates"]
     assert gates["B_sign_type"] == {"signs": 12, "mismatches": 0, "inert": True}

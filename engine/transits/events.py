@@ -1,5 +1,5 @@
 """
-Transit event types (TRANSIT_V1, ADR-TRANSIT-001).
+Transit event types (TRANSIT_V1, ADR-0008).
 
 Every event type is the certified crossing primitive applied to a
 documented target set. Boundary targets use the same exact rational

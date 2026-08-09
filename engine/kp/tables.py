@@ -1,5 +1,5 @@
 """
-KP frozen data tables (KP_CHAIN_V1, ADR-KP-001).
+KP frozen data tables (KP_CHAIN_V1, ADR-0006).
 
 Classical sources
 -----------------

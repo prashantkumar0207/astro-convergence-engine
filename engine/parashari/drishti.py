@@ -1,6 +1,6 @@
 """
 Parashari graha drishti, full aspects (PARASHARI_DRISHTI_V1,
-ADR-ASPECT-PAR-001).
+ADR-0012).
 
 Classical source: Brihat Parashara Hora Shastra, drishti adhyaya,
 purna (full) aspects: every graha aspects the seventh sign from its

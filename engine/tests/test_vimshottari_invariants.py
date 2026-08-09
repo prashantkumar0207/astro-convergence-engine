@@ -1,5 +1,5 @@
 """
-Vimshottari exact-arithmetic invariants (Gate 1 of ADR-DASHA-001).
+Vimshottari exact-arithmetic invariants (Gate 1 of ADR-0007).
 """
 
 from fractions import Fraction

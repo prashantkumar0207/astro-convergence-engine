@@ -1,5 +1,5 @@
 """
-Transit crossing primitive gates (Gate 1 of ADR-TRANSIT-001):
+Transit crossing primitive gates (Gate 1 of ADR-0008):
 residuals, completeness vs an independent dense scan, direction
 flags, retrograde multiplicity, guards.
 """
