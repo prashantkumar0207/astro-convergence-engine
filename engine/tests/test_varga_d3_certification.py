@@ -23,7 +23,8 @@ def test_artifact_exists_and_claims_pass():
     assert gates["A_table_integrity"] == {"cells": 36, "mismatches": 0}
     assert gates["B_dense_sweep"] == {"points": 51429, "mismatches": 0}
     assert gates["C_oracle"]["mismatches"] == 0
-    assert gates["D_non_invasiveness"]["registry"] == [[3, "parashara"]]
+    assert [3, "parashara"] in gates["D_non_invasiveness"]["registry"]
+    assert not any(entry[0] in (1, 9, 10) for entry in gates["D_non_invasiveness"]["registry"])
     assert len(gates["D_non_invasiveness"]["d9_sweep_sha256"]) == 64
     assert gates["E_independent_validator"] == {"result": "PASS"}
 

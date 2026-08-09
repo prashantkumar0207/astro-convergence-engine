@@ -128,9 +128,12 @@ def test_normalization_parity():
 
 # ---------------------------------------------------------------- Gate 4
 
-def test_registry_contains_exactly_d3_parashara():
+def test_registry_contains_the_certified_set_including_d3():
     ensure_registered()
-    assert registered_vargas() == ((3, D3_SCHOOL),)
+    from engine.astrology import CERTIFIED_PRODUCTION_VARGAS
+
+    assert registered_vargas() == CERTIFIED_PRODUCTION_VARGAS
+    assert (3, D3_SCHOOL) in registered_vargas()
 
 
 def test_certified_d1_d9_d10_dispatch_unchanged():
@@ -146,7 +149,7 @@ def test_certified_d1_d9_d10_dispatch_unchanged():
 
 def test_other_vargas_still_refused():
     snapshot = calculate(BIRTH, profile=PARASHARI_LAHIRI).snapshot
-    for division in (2, 4, 7, 12, 16, 20, 24, 27, 30, 40, 45, 60):
+    for division in (2, 4, 7, 16, 20, 24, 27, 30, 40, 45, 60):
         with pytest.raises(UnsupportedVargaError):
             divisional_chart(snapshot, division)
 

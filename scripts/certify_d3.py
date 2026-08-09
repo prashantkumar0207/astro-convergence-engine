@@ -101,8 +101,12 @@ def gate_c_oracle():
 
 
 def gate_d_non_invasiveness():
-    if registered_vargas() != ((3, "parashara"),):
+    from engine.astrology import CERTIFIED_PRODUCTION_VARGAS
+
+    if registered_vargas() != CERTIFIED_PRODUCTION_VARGAS:
         fail(f"registry contents: {registered_vargas()}")
+    if (3, "parashara") not in registered_vargas():
+        fail("D3 not registered")
 
     snapshot = calculate(
         BirthData(1985, 12, 21, 14, 40, 0.0, 25.6, 85.1333, "Asia/Kolkata"),
@@ -112,7 +116,7 @@ def gate_d_non_invasiveness():
         fail("D9 no longer served by the certified module")
     if type(divisional_chart(snapshot, 10)).__name__ != "DashamsaChart":
         fail("D10 no longer served by the certified module")
-    for division in (2, 4, 7, 12, 30, 60):
+    for division in (2, 4, 7, 30, 60):
         try:
             divisional_chart(snapshot, division)
             fail(f"D{division} no longer refused")
@@ -140,7 +144,7 @@ def gate_d_non_invasiveness():
         h10.update(repr((dashamsa_sign(longitude), dashamsa_longitude(longitude))).encode())
         count += 1
     return {
-        "registry": [[3, "parashara"]],
+        "registry": [list(entry) for entry in registered_vargas()],
         "certified_dispatch": "intact",
         "refusals": "intact",
         "d9_d10_sweep_points": count,

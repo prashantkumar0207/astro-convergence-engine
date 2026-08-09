@@ -230,10 +230,13 @@ def test_fraction_always_in_range():
 
 
 def test_registry_contains_exactly_the_certified_production_vargas():
-    # REPLACED (was: registry empty in Phase A): ADR-VARGA-D3-001
-    # registered D3 Drekkana as the first certified production entry;
-    # the registry must now contain exactly the certified set.
-    assert registered_vargas() == ((3, "parashara"),)
+    # REPLACED (was: registry empty in Phase A): certified production
+    # vargas are registered per their approved ADRs; the registry
+    # must contain exactly the sanctioned set (single source of
+    # truth: engine.astrology.CERTIFIED_PRODUCTION_VARGAS).
+    from engine.astrology import CERTIFIED_PRODUCTION_VARGAS
+
+    assert registered_vargas() == CERTIFIED_PRODUCTION_VARGAS
 
 
 def test_registry_lookup_roundtrip_and_cleanup():
@@ -245,8 +248,10 @@ def test_registry_lookup_roundtrip_and_cleanup():
         unregister_varga_rule(9999, "test_school")
 
     # REPLACED (was: registry empty after cleanup): the certified
-    # production entries remain (ADR-VARGA-D3-001).
-    assert registered_vargas() == ((3, "parashara"),)
+    # production entries remain.
+    from engine.astrology import CERTIFIED_PRODUCTION_VARGAS
+
+    assert registered_vargas() == CERTIFIED_PRODUCTION_VARGAS
 
 
 def test_registry_rejects_duplicates_and_bad_input():
@@ -319,10 +324,10 @@ def test_dispatcher_rejects_non_default_school_for_certified_vargas():
 def test_dispatcher_rejects_unimplemented_vargas_with_and_without_school():
     snapshot = make_snapshot()
 
-    # REPLACED (was: included 3): D3 is now a certified registry
-    # entry (ADR-VARGA-D3-001); every other recognized varga must
-    # still refuse.
-    for division in (2, 4, 7, 12, 16, 20, 24, 27, 30, 40, 45, 60):
+    # REPLACED (was: included 3 and 12): D3 and D12 are certified
+    # registry entries; every other recognized varga must still
+    # refuse.
+    for division in (2, 4, 7, 16, 20, 24, 27, 30, 40, 45, 60):
         with pytest.raises(UnsupportedVargaError):
             divisional_chart(snapshot, division)
 
