@@ -229,8 +229,11 @@ def test_fraction_always_in_range():
 # ---------------- registry ----------------
 
 
-def test_registry_is_empty_in_phase_a():
-    assert registered_vargas() == ()
+def test_registry_contains_exactly_the_certified_production_vargas():
+    # REPLACED (was: registry empty in Phase A): ADR-VARGA-D3-001
+    # registered D3 Drekkana as the first certified production entry;
+    # the registry must now contain exactly the certified set.
+    assert registered_vargas() == ((3, "parashara"),)
 
 
 def test_registry_lookup_roundtrip_and_cleanup():
@@ -241,7 +244,9 @@ def test_registry_lookup_roundtrip_and_cleanup():
     finally:
         unregister_varga_rule(9999, "test_school")
 
-    assert registered_vargas() == ()
+    # REPLACED (was: registry empty after cleanup): the certified
+    # production entries remain (ADR-VARGA-D3-001).
+    assert registered_vargas() == ((3, "parashara"),)
 
 
 def test_registry_rejects_duplicates_and_bad_input():
@@ -314,7 +319,10 @@ def test_dispatcher_rejects_non_default_school_for_certified_vargas():
 def test_dispatcher_rejects_unimplemented_vargas_with_and_without_school():
     snapshot = make_snapshot()
 
-    for division in (2, 3, 4, 7, 12, 16, 20, 24, 27, 30, 40, 45, 60):
+    # REPLACED (was: included 3): D3 is now a certified registry
+    # entry (ADR-VARGA-D3-001); every other recognized varga must
+    # still refuse.
+    for division in (2, 4, 7, 12, 16, 20, 24, 27, 30, 40, 45, 60):
         with pytest.raises(UnsupportedVargaError):
             divisional_chart(snapshot, division)
 

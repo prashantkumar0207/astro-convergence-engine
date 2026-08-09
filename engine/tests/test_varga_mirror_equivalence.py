@@ -245,7 +245,12 @@ def test_d10_output_hash_equivalence():
 def test_mirrors_are_not_registered_and_dispatcher_unchanged():
     from engine.astrology.varga_registry import registered_vargas
 
-    assert registered_vargas() == ()
+    # REPLACED (was: registry empty): D3 Drekkana is a certified
+    # production entry (ADR-VARGA-D3-001). The mirror guard is that
+    # D9/D10 keys are NOT in the registry under any school and the
+    # certified modules still serve them.
+    assert registered_vargas() == ((3, "parashara"),)
+    assert not any(division in (9, 10) for division, _school in registered_vargas())
 
     # The dispatcher still serves D9/D10 from the certified modules.
     from engine.calculations.calculations import calculate
