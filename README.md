@@ -1,27 +1,33 @@
 # Astro Convergence Engine
 
-Private source-of-truth repository for a deterministic multi-system astrology calculation, methodology, validation, and convergence engine.
+Private source-of-truth repository for a deterministic, independently verifiable, multi-system astrology calculation platform.
 
-## Current project state
+## Current state
 
-- Tier 0 Numerical Core: PORTABLY CERTIFIED and LOCKED against the frozen canonical Swiss Ephemeris profile.
-- Tier 1 KP Significator: SPECIFICATION PENDING.
-- Tier 2 Four-Step: NOT STARTED.
-- Tier 3 CIL: NOT STARTED.
+CURRENT ENGINE (`engine/`): LOCKED / TIER-0 CERTIFIED per `certification/CURRENT_ENGINE_LOCK.json` and `CURRENT_ENGINE_CERTIFICATION_STATUS.md`. The astronomical kernel (strict SWIEPH ephemeris, sidereal frame, calculation profiles, IANA time pipeline, Placidus cusp data, provenance on every snapshot) and the certified D1/D9/D10 calculations passed an 11-case holdout matrix against the bundled swetest 2.10.03 reference binary under both ratified profiles (Parashari = Lahiri, KP = Krishnamurti), max error 0.000180 arcsec across 528 comparisons.
 
-## Non-negotiable engineering rule
+LEGACY KERNEL (`legacy/`): historical Tier-0 certification evidence, described by `LOCK_MANIFEST.json` and `reports/`. Unmodified. It remains the migration reference for the future KP layer.
 
-No tier may be marked LOCKED without executable evidence, automated regression tests, a frozen specification/profile, and a reproducible certification report.
+GENERIC VARGA FRAMEWORK: infrastructure only. The registry is empty by design; the certified D9/D10 production modules remain authoritative. Vargas other than D1/D9/D10 raise UnsupportedVargaError.
 
-## Tier 0 quick verification
+Explicit non-claims: no dasha, transits, KP engine layer, Jaimini, BNN/Nadi, numerology, or convergence functionality exists yet. Placidus behavior above the polar circles is NOT YET VERIFIED. UTC is treated as UT1 (bounded 0.9 s, recorded in Provenance).
+
+## Verification gates
 
 ```bash
-cd tier0_numerical_core
-./run_all.sh
+python -m pytest                                   # default gate (engine/tests)
+python validate_d9_holdout.py                      # independent D9 holdout
+python validate_d10_holdout.py                     # independent D10 holdout
+python -m pytest test_tier0_certification.py test_official_swetest_reference.py   # legacy gate
+python scripts/certify_current_engine.py           # regenerate 11-case holdout matrix
 ```
 
-Expected final status:
+The stored `certification/current_engine_certification.json` is never accepted as proof; the certifier regenerates it from scratch on every run. Do not commit an audit-run regeneration.
 
-`TIER-0 NUMERICAL CORE - PORTABLY CERTIFIED <=0.5 ARCSECOND`
+## Non-negotiable engineering rules
 
-See `LOCK_MANIFEST.json` and `docs/DECISION_LOG.md` before changing a locked tier.
+No component may be called certified without executable evidence, a frozen profile, independent references, and a reproducible report. Locked components (see `CURRENT_ENGINE_CERTIFICATION_STATUS.md` lock scope and `LOCK_MANIFEST.json` for the legacy kernel) must not change without a formal change request and full recertification. Astrology schools remain isolated; per-system ayanamsa profiles must never be overridden by a hidden default.
+
+## Roadmap
+
+See `ARCHITECTURE_STATUS.md` for the recommended order: KP migration from `legacy/kp.py` under the kp_krishnamurti profile, then Vimshottari dasha, transits, additional vargas through the generic registry (one at a time, each with classical source, rule table, independent reference, and certification artifact), aspect systems per school, evidence layer, API, and only then a production application.
