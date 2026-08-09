@@ -10,7 +10,9 @@ LEGACY KERNEL (`legacy/`): historical Tier-0 certification evidence, described b
 
 GENERIC VARGA FRAMEWORK: infrastructure only. The registry is empty by design; the certified D9/D10 production modules remain authoritative. Vargas other than D1/D9/D10 raise UnsupportedVargaError.
 
-Explicit non-claims: no dasha, transits, KP engine layer, Jaimini, BNN/Nadi, numerology, or convergence functionality exists yet. Placidus behavior above the polar circles is NOT YET VERIFIED. UTC is treated as UT1 (bounded 0.9 s, recorded in Provenance).
+KP LAYER (`engine/kp/`): KP_CHAIN_V1 CERTIFIED per `certification/KP_CHAIN_V1_certification.json` (ADR-KP-001). Exact-rational KP lordship chains (SL/NL/SB/SS) and KP fact charts under the kp_krishnamurti profile, proven equivalent to the certified legacy kernel with zero categorical mismatches (51,429-point sweep, 19,679 boundary points, 11-case chart holdout, 200/200 transcribed fixture fields, independent validator). KP scope covers chains and fact charts ONLY.
+
+Explicit non-claims: no KP significators, four-step, ruling planets, or horary (Tier-1 KP_SIGNIFICATOR_V1 requires a frozen spec first, per D-008); no dasha, transits, Jaimini, BNN/Nadi, numerology, or convergence functionality exists yet. Placidus behavior above the polar circles is NOT YET VERIFIED. UTC is treated as UT1 (bounded 0.9 s, recorded in Provenance).
 
 ## Verification gates
 
@@ -20,6 +22,8 @@ python validate_d9_holdout.py                      # independent D9 holdout
 python validate_d10_holdout.py                     # independent D10 holdout
 python -m pytest test_tier0_certification.py test_official_swetest_reference.py   # legacy gate
 python scripts/certify_current_engine.py           # regenerate 11-case holdout matrix
+python validate_kp_holdout.py                      # independent KP chain holdout
+python scripts/certify_kp_chain.py                 # regenerate KP_CHAIN_V1 certification
 ```
 
 The stored `certification/current_engine_certification.json` is never accepted as proof; the certifier regenerates it from scratch on every run. Do not commit an audit-run regeneration.

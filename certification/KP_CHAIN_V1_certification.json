@@ -1,0 +1,38 @@
+{
+ "schema": "kp_chain_v1_certification",
+ "adr": "ADR-KP-001",
+ "date": "2026-08-09",
+ "scope": "KP lordship chain (SL/NL/SB/SS) and KP fact charts under kp_krishnamurti",
+ "explicit_non_claims": [
+  "significators (Tier-1 KP_SIGNIFICATOR_V1; spec must be frozen first, D-008)",
+  "four-step",
+  "ruling planets",
+  "horary",
+  "dashas"
+ ],
+ "environment": {
+  "python": "3.11.15",
+  "swisseph": "2.10.03"
+ },
+ "gates": {
+  "A_legacy_oracle_equivalence": {
+   "dense_points": 51429,
+   "boundary_points": 19679,
+   "mismatches": 0
+  },
+  "B_holdout_chart_equivalence": {
+   "cases": 11,
+   "chain_comparisons": 275,
+   "chain_mismatches": 0,
+   "max_longitude_delta_arcsec": 0.0
+  },
+  "C_fixture_structural_200": {
+   "fields": 200,
+   "mismatches": 0
+  },
+  "D_independent_validator": {
+   "result": "PASS"
+  }
+ },
+ "result": "PASS"
+}
