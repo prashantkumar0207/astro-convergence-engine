@@ -1,0 +1,9 @@
+============================================================
+KP_CHAIN_V1 CERTIFICATION
+============================================================
+A_legacy_oracle_equivalence: {'dense_points': 51429, 'boundary_points': 19679, 'mismatches': 0}
+B_holdout_chart_equivalence: {'cases': 11, 'chain_comparisons': 275, 'chain_mismatches': 0, 'max_longitude_delta_arcsec': 0.0}
+C_fixture_structural_200: {'fields': 200, 'mismatches': 0}
+D_independent_validator: {'result': 'PASS'}
+archived          : certification/KP_CHAIN_V1_certification.json
+RESULT            : PASS

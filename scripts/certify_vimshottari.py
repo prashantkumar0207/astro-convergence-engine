@@ -26,6 +26,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+sys.path.insert(0, str(ROOT / "scripts"))
+import certification_support as support  # noqa: E402
+
 import swisseph as swe  # noqa: E402
 
 from engine.astronomy.profile import KP_KRISHNAMURTI, PARASHARI_LAHIRI  # noqa: E402
@@ -134,6 +137,8 @@ def run_case(case, engine_profile, jhora_ayanamsa):
 
 
 def main():
+    tee = support.start_transcript()
+    preconditions = support.preflight()
     per_profile = {}
     total_rows = 0
     worst_start = 0.0
@@ -187,10 +192,10 @@ def main():
             "transit or event overlays",
         ],
         "environment": {"python": sys.version.split()[0]},
+        "preconditions": preconditions,
         "result": "PASS",
     }
-    out = ROOT / "certification" / "VIMSHOTTARI_V1_certification.json"
-    out.write_text(json.dumps(report, indent=1) + "\n")
+    out = support.emit(report, "VIMSHOTTARI_V1_certification.json", "vimshottari", tee)
     print("=" * 60)
     print("VIMSHOTTARI_V1 CERTIFICATION")
     print("=" * 60)

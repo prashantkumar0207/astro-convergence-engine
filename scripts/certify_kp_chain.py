@@ -22,6 +22,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+sys.path.insert(0, str(ROOT / "scripts"))
+import certification_support as support  # noqa: E402
+
 import swisseph as swe  # noqa: E402
 
 from engine.kp.chain import kp_chain  # noqa: E402
@@ -154,6 +157,8 @@ def gate_d_independent_validator():
 
 
 def main():
+    tee = support.start_transcript()
+    preconditions = support.preflight()
     report = {
         "schema": "kp_chain_v1_certification",
         "adr": "ADR-0006",
@@ -173,10 +178,10 @@ def main():
             "C_fixture_structural_200": gate_c_fixture_structural(),
             "D_independent_validator": gate_d_independent_validator(),
         },
+        "preconditions": preconditions,
         "result": "PASS",
     }
-    out = ROOT / "certification" / "KP_CHAIN_V1_certification.json"
-    out.write_text(json.dumps(report, indent=1) + "\n")
+    out = support.emit(report, "KP_CHAIN_V1_certification.json", "kp_chain", tee)
     print("=" * 60)
     print("KP_CHAIN_V1 CERTIFICATION")
     print("=" * 60)

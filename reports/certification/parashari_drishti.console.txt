@@ -1,0 +1,9 @@
+============================================================
+PARASHARI_DRISHTI_V1 CERTIFICATION
+============================================================
+A_table_integrity: {'planets': 7, 'mismatches': 0}
+B_combinatorial_12x12: {'planet_sign_pairs': 84, 'mismatches': 0}
+C_oracle: {'cases': 11, 'comparisons': 154, 'mismatches': 0}
+D_independent_validator: {'result': 'PASS'}
+archived          : certification/PARASHARI_DRISHTI_V1_certification.json
+RESULT            : PASS

@@ -21,6 +21,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+sys.path.insert(0, str(ROOT / "scripts"))
+import certification_support as support  # noqa: E402
+
 import swisseph as swe  # noqa: E402
 
 from engine.astronomy.profile import KP_KRISHNAMURTI, PARASHARI_LAHIRI  # noqa: E402
@@ -115,6 +118,8 @@ def gate_d_validator():
 
 
 def main():
+    tee = support.start_transcript()
+    preconditions = support.preflight()
     report = {
         "schema": "transit_v1_certification",
         "adr": "ADR-0008",
@@ -146,10 +151,10 @@ def main():
             "interpretation",
         ],
         "environment": {"python": sys.version.split()[0]},
+        "preconditions": preconditions,
         "result": "PASS",
     }
-    out = ROOT / "certification" / "TRANSIT_V1_certification.json"
-    out.write_text(json.dumps(report, indent=1) + "\n")
+    out = support.emit(report, "TRANSIT_V1_certification.json", "transit", tee)
     print("=" * 60)
     print("TRANSIT_V1 CERTIFICATION")
     print("=" * 60)

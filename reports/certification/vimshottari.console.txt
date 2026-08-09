@@ -1,0 +1,10 @@
+============================================================
+VIMSHOTTARI_V1 CERTIFICATION
+============================================================
+profiles x cases  : 2 x 11
+bhukti rows       : 1782
+lord mismatches   : 0
+max start delta   : 1.3969838619232178e-09 days (tolerance 1e-05)
+oracle moon delta : 0.745776 arcsec max (recorded, see D-007)
+archived          : certification/VIMSHOTTARI_V1_certification.json
+RESULT            : PASS

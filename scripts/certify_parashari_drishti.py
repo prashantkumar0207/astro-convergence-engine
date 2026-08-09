@@ -19,6 +19,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+sys.path.insert(0, str(ROOT / "scripts"))
+import certification_support as support  # noqa: E402
+
 from engine.calculations.calculations import calculate  # noqa: E402
 from engine.models.birth_data import BirthData  # noqa: E402
 from engine.parashari.drishti import (  # noqa: E402
@@ -126,6 +129,8 @@ def gate_d_validator():
 
 
 def main():
+    tee = support.start_transcript()
+    preconditions = support.preflight()
     report = {
         "schema": "parashari_drishti_v1_certification",
         "adr": "ADR-0012",
@@ -152,10 +157,10 @@ def main():
             "yogas, strengths, interpretation",
         ],
         "environment": {"python": sys.version.split()[0]},
+        "preconditions": preconditions,
         "result": "PASS",
     }
-    out = ROOT / "certification" / "PARASHARI_DRISHTI_V1_certification.json"
-    out.write_text(json.dumps(report, indent=1) + "\n")
+    out = support.emit(report, "PARASHARI_DRISHTI_V1_certification.json", "parashari_drishti", tee)
     print("=" * 60)
     print("PARASHARI_DRISHTI_V1 CERTIFICATION")
     print("=" * 60)

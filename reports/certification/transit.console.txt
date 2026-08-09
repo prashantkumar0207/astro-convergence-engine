@@ -1,0 +1,8 @@
+============================================================
+TRANSIT_V1 CERTIFICATION
+============================================================
+residual battery  : 74 events, max 2.11e-05 arcsec
+oracle anchors    : 24 sankrantis, worst delta/tolerance 0.809
+validator         : PASS
+archived          : certification/TRANSIT_V1_certification.json
+RESULT            : PASS

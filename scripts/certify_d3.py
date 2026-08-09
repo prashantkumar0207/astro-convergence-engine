@@ -25,6 +25,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+sys.path.insert(0, str(ROOT / "scripts"))
+import certification_support as support  # noqa: E402
+
 import engine.astrology  # noqa: F401, E402  (registers production vargas)
 from engine.astrology.dashamsa_chart import dashamsa_longitude, dashamsa_sign  # noqa: E402
 from engine.astrology.divisional_chart import divisional_chart  # noqa: E402
@@ -163,6 +166,8 @@ def gate_e_validator():
 
 
 def main():
+    tee = support.start_transcript()
+    preconditions = support.preflight()
     report = {
         "schema": "varga_d3_v1_certification",
         "adr": "ADR-VARGA-D3-001",
@@ -193,10 +198,10 @@ def main():
             "any other varga; each requires its own ADR and certification",
         ],
         "environment": {"python": sys.version.split()[0]},
+        "preconditions": preconditions,
         "result": "PASS",
     }
-    out = ROOT / "certification" / "VARGA_D3_V1_certification.json"
-    out.write_text(json.dumps(report, indent=1) + "\n")
+    out = support.emit(report, "VARGA_D3_V1_certification.json", "varga_d3", tee)
     print("=" * 60)
     print("VARGA_D3_V1 CERTIFICATION")
     print("=" * 60)

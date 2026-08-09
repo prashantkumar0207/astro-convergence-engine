@@ -35,6 +35,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+sys.path.insert(0, str(ROOT / "scripts"))
+import certification_support as support  # noqa: E402
+
 from engine.astrology.chart_factory import build_master_chart  # noqa: E402
 from engine.astrology.dashamsa_chart import (  # noqa: E402
     dashamsa_chart, dashamsa_longitude, dashamsa_sign,
@@ -235,6 +238,8 @@ def gate_d_cross_layer():
 
 
 def main():
+    tee = support.start_transcript()
+    preconditions = support.preflight()
     report = {
         "schema": "sign_convention_v1_certification",
         "adr": "ADR-0012",
@@ -268,10 +273,10 @@ def main():
             "nakshatra and division-index conventions are out of scope for V1",
         ],
         "environment": {"python": sys.version.split()[0]},
+        "preconditions": preconditions,
         "result": "PASS",
     }
-    out = ROOT / "certification" / "SIGN_CONVENTION_V1_certification.json"
-    out.write_text(json.dumps(report, indent=1) + "\n")
+    out = support.emit(report, "SIGN_CONVENTION_V1_certification.json", "sign_convention", tee)
     gates = report["gates"]
     print("=" * 60)
     print("SIGN_CONVENTION_V1 CERTIFICATION")
