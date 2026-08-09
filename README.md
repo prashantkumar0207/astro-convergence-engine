@@ -12,6 +12,8 @@ GENERIC VARGA FRAMEWORK: infrastructure only. The registry is empty by design; t
 
 KP LAYER (`engine/kp/`): KP_CHAIN_V1 CERTIFIED per `certification/KP_CHAIN_V1_certification.json` (ADR-KP-001). Exact-rational KP lordship chains (SL/NL/SB/SS) and KP fact charts under the kp_krishnamurti profile, proven equivalent to the certified legacy kernel with zero categorical mismatches (51,429-point sweep, 19,679 boundary points, 11-case chart holdout, 200/200 transcribed fixture fields, independent validator). KP scope covers chains and fact charts ONLY.
 
+DASHA LAYER (`engine/dasha/`): VIMSHOTTARI_V1 CERTIFIED per `certification/VIMSHOTTARI_V1_certification.json` (ADR-DASHA-001). Exact-rational Vimshottari maha/antar/pratyantar timelines, school-explicit seeding (parashari_lahiri or kp_krishnamurti Moon), year length pinned as an explicit DashaProfile (mean sidereal year, exactly 91314091/250000 days). Certified against the PyJHora external oracle by injecting the oracle's own Moon into this engine's timeline (D-007 methodology): 1,782 bhukti rows, zero lord mismatches, max start delta 1.4e-9 days; plus an independent closed-form validator (1,081 moon cases, exact arithmetic, zero failures). Other dasha systems and deeper levels are non-claims.
+
 Explicit non-claims: no KP significators, four-step, ruling planets, or horary (Tier-1 KP_SIGNIFICATOR_V1 requires a frozen spec first, per D-008); no dasha, transits, Jaimini, BNN/Nadi, numerology, or convergence functionality exists yet. Placidus behavior above the polar circles is NOT YET VERIFIED. UTC is treated as UT1 (bounded 0.9 s, recorded in Provenance).
 
 ## Verification gates
@@ -24,6 +26,8 @@ python -m pytest test_tier0_certification.py test_official_swetest_reference.py 
 python scripts/certify_current_engine.py           # regenerate 11-case holdout matrix
 python validate_kp_holdout.py                      # independent KP chain holdout
 python scripts/certify_kp_chain.py                 # regenerate KP_CHAIN_V1 certification
+python validate_vimshottari_holdout.py             # independent Vimshottari holdout
+python scripts/certify_vimshottari.py              # regenerate VIMSHOTTARI_V1 certification (needs PyJHora)
 ```
 
 The stored `certification/current_engine_certification.json` is never accepted as proof; the certifier regenerates it from scratch on every run. Do not commit an audit-run regeneration.
