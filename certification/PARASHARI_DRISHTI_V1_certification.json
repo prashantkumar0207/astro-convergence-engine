@@ -1,0 +1,46 @@
+{
+ "schema": "parashari_drishti_v1_certification",
+ "adr": "ADR-ASPECT-PAR-001",
+ "date": "2026-08-09",
+ "scope": "Parashari graha drishti, full (purna) aspects; facts only",
+ "decisions": {
+  "AS-A": "full aspects only; sputa drishti (fractional) deferred",
+  "AS-B": "no node-cast aspects in V1; variant recorded",
+  "AS-C": "whole-sign inclusive counting; signs/houses/planets reported"
+ },
+ "oracle": {
+  "package": "PyJHora",
+  "version": "4.8.7",
+  "function": "graha_drishti_from_chart (pure combinatorics on our certified placements)"
+ },
+ "gates": {
+  "A_table_integrity": {
+   "planets": 7,
+   "mismatches": 0
+  },
+  "B_combinatorial_12x12": {
+   "planet_sign_pairs": 84,
+   "mismatches": 0
+  },
+  "C_oracle": {
+   "cases": 11,
+   "comparisons": 154,
+   "mismatches": 0,
+   "node_divergence_note": "oracle gives Rahu/Ketu a 7th aspect; V1 excludes node-cast aspects per approved Decision AS-B (recorded variant)"
+  },
+  "D_independent_validator": {
+   "result": "PASS"
+  }
+ },
+ "explicit_non_claims": [
+  "sputa/fractional drishti strengths",
+  "node-cast aspects (recorded variant)",
+  "Jaimini rashi drishti (separate school module)",
+  "Western aspects (separate module)",
+  "yogas, strengths, interpretation"
+ ],
+ "environment": {
+  "python": "3.11.15"
+ },
+ "result": "PASS"
+}
