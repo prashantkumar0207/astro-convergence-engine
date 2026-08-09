@@ -6,9 +6,9 @@ Private source-of-truth repository for a deterministic, independently verifiable
 
 CURRENT ENGINE (`engine/`): LOCKED / TIER-0 CERTIFIED per `certification/CURRENT_ENGINE_LOCK.json` and `CURRENT_ENGINE_CERTIFICATION_STATUS.md`. The astronomical kernel (strict SWIEPH ephemeris, sidereal frame, calculation profiles, IANA time pipeline, Placidus cusp data, provenance on every snapshot) and the certified D1/D9/D10 calculations passed an 11-case holdout matrix against the bundled swetest 2.10.03 reference binary under both ratified profiles (Parashari = Lahiri, KP = Krishnamurti), max error 0.000180 arcsec across 528 comparisons.
 
-LEGACY KERNEL (`legacy/`): historical Tier-0 certification evidence, described by `LOCK_MANIFEST.json` and `reports/`. Unmodified. It remains the migration reference for the future KP layer.
+LEGACY KERNEL (`legacy/`): historical Tier-0 certification evidence, described by `LOCK_MANIFEST.json` and `reports/`. Unmodified, and verified so by diff at every phase. It served as the equivalence oracle for the KP chain migration (ADR-0006) and is retained per `docs/LEGACY_KERNEL_MIGRATION.md`, which forbids retiring it before all certified functionality has been migrated.
 
-GENERIC VARGA FRAMEWORK: infrastructure only. The registry is empty by design; the certified D9/D10 production modules remain authoritative. Vargas other than D1/D9/D10 raise UnsupportedVargaError.
+GENERIC VARGA FRAMEWORK: in certified production use. The certified D9/D10 production modules remain authoritative and are never routed through the registry, which refuses those divisions by contract. The sanctioned registry contents are the single constant `engine.astrology.CERTIFIED_PRODUCTION_VARGAS`; every division outside the certified eight raises UnsupportedVargaError.
 
 KP LAYER (`engine/kp/`): KP_CHAIN_V1 CERTIFIED per `certification/KP_CHAIN_V1_certification.json` (ADR-0006). Exact-rational KP lordship chains (SL/NL/SB/SS) and KP fact charts under the kp_krishnamurti profile, proven equivalent to the certified legacy kernel with zero categorical mismatches (51,429-point sweep, 19,679 boundary points, 11-case chart holdout, 200/200 transcribed fixture fields, independent validator). KP scope covers chains and fact charts ONLY.
 
@@ -65,4 +65,4 @@ No component may be called certified without executable evidence, a frozen profi
 
 ## Roadmap
 
-See `ARCHITECTURE_STATUS.md` for the recommended order: KP migration from `legacy/kp.py` under the kp_krishnamurti profile, then Vimshottari dasha, transits, additional vargas through the generic registry (one at a time, each with classical source, rule table, independent reference, and certification artifact), aspect systems per school, evidence layer, API, and only then a production application.
+The ratified roadmap is still OPEN (`docs/OPEN_QUESTIONS.md` Q8). `docs/PROJECT_BACKLOG.md` is the enumerated plan of record: Phase 1 Core Intelligence (Question, Knowledge, Inference and Prediction engines) precedes Phase 2 Astrology Systems, then Phase 3 validation against historical cases, Phase 4 API, Phase 5 frontend, Phase 6 production. The astrology layers certified so far are Phase 2 content built ahead of Phase 1; that divergence is recorded in `docs/DECISION_LOG.md` ADR-0013. `ARCHITECTURE_STATUS.md` carries the remediation-era engineering order for reference, not as a ratified sequence.

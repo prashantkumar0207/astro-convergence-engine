@@ -1,5 +1,13 @@
 # FINDINGS MATRIX - REMEDIATION STATUS
 
+> **SUPERSEDING NOTE (2026-08-09).** Two dispositions in this matrix have since changed and
+> are recorded in `docs/DECISION_LOG.md` ADR-0003 and ADR-0012. **F-13**: aspect SYSTEMS,
+> recorded here as intentionally not claimed, were built and certified as Parashari graha
+> drishti (ADR-0012). **F-22**: recorded here as DEFERRED WITH JUSTIFICATION pending the API
+> layer, resolved instead by DELETION of `app/` in commit 5ae8ee7, because the stub displayed
+> values not produced by the engine; a frontend is rebuilt at PROJECT_BACKLOG.md Phase 5
+> (ADR-0003). The table below is otherwise preserved unmodified as dated evidence.
+
 Base audit: MASTER_AUDIT_REPORT (audited HEAD 16ccea2). Every finding
 carries one of: FIXED, RESOLVED BY SPECIFICATION, NOT APPLICABLE WITH
 EVIDENCE, DEFERRED WITH EXPLICIT JUSTIFICATION.

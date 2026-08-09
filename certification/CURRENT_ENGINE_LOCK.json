@@ -37,15 +37,29 @@
     "legacy_gate": "test_tier0_certification.py (legacy kernel, unchanged)"
   },
   "explicit_non_claims": [
-    "Vargas other than D1/D9/D10",
-    "dasha",
-    "transits",
-    "KP engine layer",
-    "Jaimini",
-    "BNN/Nadi",
-    "numerology",
-    "convergence",
+    "vargas other than the certified D1/D2/D3/D7/D9/D10/D12/D30",
+    "dasha systems other than Vimshottari; depths beyond pratyantardasha",
+    "KP significators, four-step, ruling planets, horary (root D-008 requires a frozen, independently audited specification first)",
+    "aspect systems other than Parashari full graha drishti; node-cast aspects; sputa drishti",
+    "Jaimini, BNN/Nadi, numerology",
+    "evidence, reasoning, prediction and explanation layers (PROJECT_BACKLOG.md Phase 1)",
+    "convergence analysis",
+    "API surface beyond the demo endpoint; production application",
     "polar-circle house behavior (NOT YET VERIFIED)",
     "UTC treated as UT1 (documented, bounded 0.9 s)"
-  ]
+  ],
+  "decision_log_entries": {
+    "tier0_lock": "ADR-0005",
+    "layers_since_lock": [
+      "ADR-0006",
+      "ADR-0007",
+      "ADR-0008",
+      "ADR-0009",
+      "ADR-0010",
+      "ADR-0011",
+      "ADR-0012"
+    ],
+    "note": "PROJECT_CONSTITUTION.md s12 condition 4 requires a decision entry for a lock; ADR-0005 records this one. Entries are PROPOSED pending owner ratification (Q1)."
+  },
+  "lock_scope_note": "This record locks the CURRENT ENGINE only. LOCK_MANIFEST.json is deliberately left untouched: it describes the LEGACY kernel exclusively, and keeping the two separate is the substance of audit finding F-17."
 }

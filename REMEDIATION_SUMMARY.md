@@ -1,5 +1,13 @@
 # REMEDIATION SUMMARY
 
+> **SUPERSEDING NOTE (2026-08-09).** This document is DATED EVIDENCE of the state it
+> describes and is preserved unmodified below per the repository's append-only discipline.
+> It is now superseded in substance: the layers it lists as not built (dasha, transits, KP in
+> `engine/`, aspect systems, vargas beyond D1/D9/D10) were subsequently built and certified,
+> and its readiness scorecard was never re-scored. For current state see
+> `docs/DECISION_LOG.md` ADR-0005..0012 and the artifacts in `certification/`.
+
+
 Mandate: full remediation of the MASTER audit findings at HEAD 16ccea2.
 Result: every actionable finding is FIXED or RESOLVED BY SPECIFICATION;
 one item (F-22, the Flutter stub) is DEFERRED with justification

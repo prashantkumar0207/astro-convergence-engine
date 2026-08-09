@@ -57,9 +57,23 @@ Astrology:
 
 ## Explicit non-claims
 
-- No dasha, transit, KP (in engine/), Jaimini, BNN/Nadi, numerology,
-  or convergence functionality exists yet; nothing here certifies them.
-- Vargas other than D1/D9/D10 raise UnsupportedVargaError by design.
+- CORRECTED 2026-08-09: KP chains, Vimshottari dashas, transit events,
+  five further vargas (D2/D3/D7/D12/D30) and Parashari graha drishti
+  were built and certified AFTER this document's original non-claims
+  were written; each has its own artifact in certification/ and its own
+  decision entry (docs/DECISION_LOG.md ADR-0006..0012). This document's
+  lock scope is unchanged: it covers the astronomical kernel and the
+  certified D9/D10 mathematics only, and does NOT certify those later
+  layers.
+- Still absent and uncertified: KP significators, four-step, ruling
+  planets, horary (root D-008 requires a frozen, independently audited
+  specification first); dasha systems other than Vimshottari; aspect
+  systems other than Parashari full drishti; Jaimini; BNN/Nadi;
+  numerology; the evidence, reasoning, prediction and explanation
+  layers; convergence analysis.
+- Vargas other than the certified eight raise UnsupportedVargaError by
+  design; the sanctioned registry set is
+  engine.astrology.CERTIFIED_PRODUCTION_VARGAS.
 - Planet strength (Shadbala) raises NotImplementedError by design.
 - UTC is treated as UT1 (|dUT1| <= 0.9 s), recorded in Provenance.
 - Polar-latitude house behavior is exercised only at 64.1 N; Placidus

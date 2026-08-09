@@ -25,13 +25,27 @@ dignity accessors, engine/models (with provenance), the test suite.
 
 ## Deliberately unimplemented (explicit, error-raising or absent)
 
-Vargas other than D1/D9/D10 (UnsupportedVargaError), planet strength
-(NotImplementedError), aspect SYSTEMS (only the normalized separation
-primitive exists), dasha, transits, KP in engine/ (legacy/kp.py is the
-reference for migration), Jaimini, BNN/Nadi, numerology, evidence/
-convergence, API routes beyond the demo endpoint.
+CORRECTED 2026-08-09. Since this document was written, KP chains,
+Vimshottari dashas, transit events, five further vargas and Parashari
+graha drishti were built and certified (docs/DECISION_LOG.md
+ADR-0006..0012). Still deliberately unimplemented: vargas outside the
+certified eight (UnsupportedVargaError), planet strength
+(NotImplementedError), aspect systems other than Parashari full
+drishti, KP significators and the rest of the KP tiers, dasha systems
+other than Vimshottari, Jaimini, BNN/Nadi, numerology, the evidence /
+reasoning / prediction / explanation layers, convergence, and API
+routes beyond the demo endpoint.
 
 ## Remaining architectural work, in recommended order
+
+STATUS NOTE 2026-08-09: items 1 through 4 below are DONE, and item 5's
+sign-convention prerequisite is done by explicit declaration rather
+than renumbering (ADR-0012 records that substitution). Item 5's
+evidence layer and item 6's API layer remain. Note also that this
+recommended order is NOT the ratified sequence: docs/PROJECT_BACKLOG.md
+places Phase 1 Core Intelligence before Phase 2 Astrology Systems, and
+docs/OPEN_QUESTIONS.md Q8 (ratified roadmap phases) is still OPEN. The
+divergence is recorded in ADR-0013 conflict 7.
 
 1. Engine holdout matrix: run the 11-case geography/epoch matrix from
    scripts/certify_tier0.py against engine/ and archive machine-readable
@@ -65,5 +79,7 @@ convergence, API routes beyond the demo endpoint.
   flags, review before high-precision speed work.
 - Rahu/Ketu dignity/friendship variants recorded but no tradition
   profile selects them yet.
-- app/ still contains the labeled-temporary fake horoscope stub
-  (release-blocking; see F-22).
+- app/ was REMOVED (commit 5ae8ee7) rather than repaired, because its
+  displayed values were not produced by the engine. Disposition change
+  recorded in docs/DECISION_LOG.md ADR-0003; a frontend is rebuilt at
+  PROJECT_BACKLOG.md Phase 5 on the API layer.

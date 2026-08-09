@@ -1,5 +1,13 @@
 # FINAL CERTIFICATION REPORT - ASTRO-CONVERGENCE-ENGINE
 
+> **SUPERSEDING NOTE (2026-08-09).** This document is DATED EVIDENCE of the state it
+> describes and is preserved unmodified below per the repository's append-only discipline.
+> It is now superseded in substance: the layers it lists as not built (dasha, transits, KP in
+> `engine/`, aspect systems, vargas beyond D1/D9/D10) were subsequently built and certified,
+> and its readiness scorecard was never re-scored. For current state see
+> `docs/DECISION_LOG.md` ADR-0005..0012 and the artifacts in `certification/`.
+
+
 Date: 2026-08-08. Remediation base: audited HEAD 16ccea2 (readiness
 34/100). This report follows the mandate's Phase 26 requirements: it is
 a fresh adversarial audit of the remediated state, not a rerun of the
