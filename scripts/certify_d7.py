@@ -1,4 +1,4 @@
-"""VARGA_D3_V1 CERTIFICATION RUNNER (ADR-VARGA-D3-001).
+"""VARGA_D7_V1 CERTIFICATION RUNNER (ADR-VARGA-D7-001).
 
 Regenerates certification/VARGA_D3_V1_certification.json FROM SCRATCH
 on every run; the stored JSON is never accepted as proof.
@@ -30,7 +30,7 @@ from engine.astrology.dashamsa_chart import dashamsa_longitude, dashamsa_sign  #
 from engine.astrology.divisional_chart import divisional_chart  # noqa: E402
 from engine.astrology.navamsa_chart import navamsa_longitude, navamsa_sign  # noqa: E402
 from engine.astrology.varga_classifier import classify  # noqa: E402
-from engine.astrology.varga_d3 import D3_PARASHARA  # noqa: E402
+from engine.astrology.varga_d7 import D7_PARASHARA  # noqa: E402
 from engine.astrology.varga_registry import (  # noqa: E402
     UnsupportedVargaError,
     registered_vargas,
@@ -40,32 +40,29 @@ from engine.calculations.calculations import calculate  # noqa: E402
 from engine.models.birth_data import BirthData  # noqa: E402
 
 try:
-    from jhora.horoscope.chart.charts import _drekkana_chart_parasara
+    from jhora.horoscope.chart.charts import saptamsa_chart
     import importlib.metadata
     PYJHORA_VERSION = importlib.metadata.version("PyJHora")
 except Exception as error:  # pragma: no cover
-    print("D3 CERTIFICATION FAIL: PyJHora oracle unavailable:", error)
+    print("D7 CERTIFICATION FAIL: PyJHora oracle unavailable:", error)
     sys.exit(3)
 
 
 def fail(message):
-    print("D3 CERTIFICATION FAIL:", message)
+    print("D7 CERTIFICATION FAIL:", message)
     sys.exit(3)
 
 
 def gate_a_table_integrity():
+    if D7_PARASHARA.divisions != 7:
+        fail("divisions != 7")
     for source in range(12):
-        segments = D3_PARASHARA.segments[source]
-        if len(segments) != 3:
-            fail(f"sign {source}: expected 3 segments")
-        for division, (width, target) in enumerate(segments):
-            if width != 10.0:
-                fail(f"sign {source} division {division}: width {width}")
-            if target != (source + 4 * division) % 12:
-                fail(f"sign {source} division {division}: target {target}")
-            if target % 4 != source % 4:
-                fail(f"sign {source} division {division}: element mismatch")
-    return {"cells": 36, "mismatches": 0}
+        expected = source if source % 2 == 0 else (source + 6) % 12
+        if D7_PARASHARA.start_sign[source] != expected:
+            fail(f"sign {source}: start {D7_PARASHARA.start_sign[source]}")
+        if D7_PARASHARA.direction[source] != 1:
+            fail(f"sign {source}: direction")
+    return {"cells": 24, "mismatches": 0}
 
 
 def gate_b_dense_sweep():
@@ -73,10 +70,13 @@ def gate_b_dense_sweep():
     step = 360.0 / 51429
     for i in range(51429):
         longitude = i * step
-        result = classify(longitude, D3_PARASHARA)
+        result = classify(longitude, D7_PARASHARA)
         source = int(longitude // 30.0)
-        division = int((longitude - source * 30.0) // 10.0)
-        if (result.d_sign, result.division_index) != ((source + 4 * division) % 12, division):
+        division = int(((longitude - source * 30.0) + 1e-10) / (30.0 / 7.0))
+        if division > 6:
+            division = 6
+        start = source if source % 2 == 0 else (source + 6) % 12
+        if (result.d_sign, result.division_index) != ((start + division) % 12, division):
             mismatches += 1
     if mismatches:
         fail(f"dense sweep mismatches: {mismatches}")
@@ -89,9 +89,9 @@ def gate_c_oracle():
     for source in range(12):
         for i in range(300):
             within = (i + 0.5) * (30.0 / 300.0)  # midpoints, no boundary dust
-            oracle = _drekkana_chart_parasara([["planet", [source, within]]])
+            oracle = saptamsa_chart([["planet", [source, within]]], chart_method=1)
             oracle_sign = oracle[0][1][0]
-            ours = classify(source * 30.0 + within, D3_PARASHARA)
+            ours = classify(source * 30.0 + within, D7_PARASHARA)
             if ours.d_sign != oracle_sign:
                 mismatches += 1
             comparisons += 1
@@ -105,8 +105,8 @@ def gate_d_non_invasiveness():
 
     if registered_vargas() != CERTIFIED_PRODUCTION_VARGAS:
         fail(f"registry contents: {registered_vargas()}")
-    if (3, "parashara") not in registered_vargas():
-        fail("D3 not registered")
+    if (7, "parashara") not in registered_vargas():
+        fail("D7 not registered")
 
     snapshot = calculate(
         BirthData(1985, 12, 21, 14, 40, 0.0, 25.6, 85.1333, "Asia/Kolkata"),
@@ -155,22 +155,22 @@ def gate_d_non_invasiveness():
 
 def gate_e_validator():
     result = subprocess.run(
-        [sys.executable, str(ROOT / "validate_d3_holdout.py")],
+        [sys.executable, str(ROOT / "validate_d7_holdout.py")],
         capture_output=True, text=True)
-    if result.returncode != 0 or "ALL INDEPENDENT D3 CASES PASSED" not in result.stdout:
+    if result.returncode != 0 or "ALL INDEPENDENT D7 CASES PASSED" not in result.stdout:
         fail("independent validator failed")
     return {"result": "PASS"}
 
 
 def main():
     report = {
-        "schema": "varga_d3_v1_certification",
-        "adr": "ADR-VARGA-D3-001",
+        "schema": "varga_d7_v1_certification",
+        "adr": "ADR-VARGA-D7-001",
         "date": str(date.today()),
-        "scope": "D3 Drekkana (Parashara variant) as the generic registry's first production entry",
+        "scope": "D7 Saptamsa (Parashara variant): first non-identity start table on the cyclic path",
         "rule": {
-            "kind": "SegmentVargaRule",
-            "variant": "parashara (sign, 5th, 9th)",
+            "kind": "CyclicVargaRule",
+            "variant": "parashara (odd from self, even from the 7th, forward)",
             "school_key": "parashara",
             "boundary_policy": (
                 "inherited locked convention: intra-sign boundaries promote "
@@ -179,7 +179,7 @@ def main():
             ),
         },
         "oracle": {"package": "PyJHora", "version": PYJHORA_VERSION,
-                   "function": "_drekkana_chart_parasara (pure longitude math)"},
+                   "function": "saptamsa_chart method 1 Traditional Parasara (pure longitude math)"},
         "gates": {
             "A_table_integrity": gate_a_table_integrity(),
             "B_dense_sweep": gate_b_dense_sweep(),
@@ -188,17 +188,17 @@ def main():
             "E_independent_validator": gate_e_validator(),
         },
         "explicit_non_claims": [
-            "Jagannatha / Somnath / parivritti drekkana variants",
-            "22nd drekkana and drekkana-based interpretation",
+            "backward-counting saptamsa variants",
+            "saptamsa-based interpretation",
             "any other varga; each requires its own ADR and certification",
         ],
         "environment": {"python": sys.version.split()[0]},
         "result": "PASS",
     }
-    out = ROOT / "certification" / "VARGA_D3_V1_certification.json"
+    out = ROOT / "certification" / "VARGA_D7_V1_certification.json"
     out.write_text(json.dumps(report, indent=1) + "\n")
     print("=" * 60)
-    print("VARGA_D3_V1 CERTIFICATION")
+    print("VARGA_D7_V1 CERTIFICATION")
     print("=" * 60)
     for name in ("A_table_integrity", "B_dense_sweep", "C_oracle"):
         print(f"{name}: {report['gates'][name]}")

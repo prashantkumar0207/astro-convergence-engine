@@ -1,0 +1,72 @@
+{
+ "schema": "varga_d2_v1_certification",
+ "adr": "ADR-VARGA-D2-001",
+ "date": "2026-08-09",
+ "scope": "D2 Hora (Traditional Parashara): two-sign output space, Leo and Cancer only",
+ "rule": {
+  "kind": "SegmentVargaRule",
+  "variant": "parashara (odd: Sun then Moon hora; even reversed)",
+  "school_key": "parashara",
+  "boundary_policy": "inherited locked convention: intra-sign boundaries promote within 1e-10; the source-sign decomposition carries no tolerance (identical to certified D9/D10 behavior, verified)"
+ },
+ "oracle": {
+  "package": "PyJHora",
+  "version": "4.8.7",
+  "function": "hora_chart method 2 Traditional Parasara (pure longitude math)"
+ },
+ "gates": {
+  "A_table_integrity": {
+   "cells": 24,
+   "mismatches": 0
+  },
+  "B_dense_sweep": {
+   "points": 51429,
+   "mismatches": 0
+  },
+  "C_oracle": {
+   "comparisons": 3600,
+   "mismatches": 0
+  },
+  "D_non_invasiveness": {
+   "registry": [
+    [
+     2,
+     "parashara"
+    ],
+    [
+     3,
+     "parashara"
+    ],
+    [
+     7,
+     "parashara"
+    ],
+    [
+     12,
+     "parashara"
+    ],
+    [
+     30,
+     "parashara"
+    ]
+   ],
+   "certified_dispatch": "intact",
+   "refusals": "intact",
+   "d9_d10_sweep_points": 53019,
+   "d9_sweep_sha256": "ca444f10dd17fb46d24f9354f0c7a8e75505617bf2b04277708056890611593a",
+   "d10_sweep_sha256": "78cd000fc7d16f4004020cda120ce6302bd220b2c4df8ac33481d4311095576a"
+  },
+  "E_independent_validator": {
+   "result": "PASS"
+  }
+ },
+ "explicit_non_claims": [
+  "parivritti / Uma-Shambu hora variants",
+  "hora-based interpretation",
+  "any other varga; each requires its own ADR and certification"
+ ],
+ "environment": {
+  "python": "3.11.15"
+ },
+ "result": "PASS"
+}

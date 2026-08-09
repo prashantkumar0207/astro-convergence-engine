@@ -276,8 +276,14 @@ def test_registry_refuses_certified_divisions():
 
 
 def test_unsupported_school_lookup_raises():
+    # REPLACED (was: (7, parashara) unregistered): D7 is certified
+    # (ADR-VARGA-D7-001); an unregistered (division, school) pair
+    # must still raise.
     with pytest.raises(UnsupportedVargaError):
-        get_varga_rule(7, "parashara")
+        get_varga_rule(16, "parashara")
+
+    with pytest.raises(UnsupportedVargaError):
+        get_varga_rule(7, "no_such_school")
 
     with pytest.raises(UnsupportedVargaError):
         get_varga_rule(9999, "no_such_school")
@@ -324,15 +330,18 @@ def test_dispatcher_rejects_non_default_school_for_certified_vargas():
 def test_dispatcher_rejects_unimplemented_vargas_with_and_without_school():
     snapshot = make_snapshot()
 
-    # REPLACED (was: included 3 and 12): D3 and D12 are certified
-    # registry entries; every other recognized varga must still
-    # refuse.
-    for division in (2, 4, 7, 16, 20, 24, 27, 30, 40, 45, 60):
+    # REPLACED: refusal list shrinks as vargas are certified per their ADRs.
+    for division in (4, 16, 20, 24, 27, 40, 45, 60):
         with pytest.raises(UnsupportedVargaError):
             divisional_chart(snapshot, division)
 
+    # REPLACED (was: D7 parashara unregistered): certified now; an
+    # unregistered school for a certified division must still raise.
     with pytest.raises(UnsupportedVargaError):
-        divisional_chart(snapshot, 7, school="parashara")
+        divisional_chart(snapshot, 16, school="parashara")
+
+    with pytest.raises(UnsupportedVargaError):
+        divisional_chart(snapshot, 7, school="no_such_school")
 
     with pytest.raises(UnsupportedVargaError):
         divisional_chart(snapshot, 13)  # not a varga at all

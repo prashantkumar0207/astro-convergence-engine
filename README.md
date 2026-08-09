@@ -18,6 +18,8 @@ VARGA REGISTRY, FIRST PRODUCTION ENTRY: D3 Drekkana (Parashara variant) CERTIFIE
 
 VARGA REGISTRY, SECOND PRODUCTION ENTRY: D12 Dwadasamsa (Parashara variant) CERTIFIED per `certification/VARGA_D12_V1_certification.json` (ADR-VARGA-D12-001), the first production use of the CyclicVargaRule path; with it both certified rule contracts carry production traffic. Same six-gate discipline as D3: cell-verified literals, 51,429-point sweep, full ULP battery at all 144 boundaries, PyJHora oracle 3,600/3,600, registration proven non-invasive (D9/D10 bit-identical, refusals intact), independent validator. The sanctioned registry state is the single constant engine.astrology.CERTIFIED_PRODUCTION_VARGAS.
 
+VARGA REGISTRY, BATCH THREE THROUGH FIVE: D7 Saptamsa, D30 Trimsamsa, and D2 Hora (Parashara variants) CERTIFIED per `certification/VARGA_D7_V1_certification.json`, `VARGA_D30_V1_certification.json`, and `VARGA_D2_V1_certification.json` (ADR-VARGA-D7-001, ADR-VARGA-D30-001, ADR-VARGA-D2-001). Same six-gate discipline per varga: dual-transcribed literals (D7's parity start table, D30's tara-graha unequal segments with a rulership re-derivation, D2's pinned two-sign Leo/Cancer output space), 51,429-point sweeps, ULP batteries, PyJHora Parasara oracles 3,600/3,600 each, non-invasive registration (D9/D10 bit-identical), independent by-name validators. The registry now serves D2, D3, D7, D12, D30 under parashara.
+
 TRANSIT LAYER (`engine/transits/`): TRANSIT_V1 CERTIFIED per `certification/TRANSIT_V1_certification.json` (ADR-TRANSIT-001). Longitude-crossing events by station-aware bisection on the certified position pipeline (event residual bound 1e-4 arcsec, event-time guarantee 1e-6 day): sign and nakshatra ingresses, returns, natal conjunctions (retrograde multiplicity handled, directions flagged), and the profile-guarded natal-relative TransitView. Verified by a residual battery, an independent scan-plus-interpolation validator, and 24 PyJHora sankranti anchors under per-event derived tolerances (D-007). Aspect-system events, dasha-transit convergence, and interpretation are non-claims.
 
 Explicit non-claims: no KP significators, four-step, ruling planets, or horary (Tier-1 KP_SIGNIFICATOR_V1 requires a frozen spec first, per D-008); no dasha systems beyond Vimshottari V1; no aspect-system transit events; no Jaimini, BNN/Nadi, numerology, or convergence functionality exists yet. Placidus behavior above the polar circles is NOT YET VERIFIED. UTC is treated as UT1 (bounded 0.9 s, recorded in Provenance).
@@ -40,6 +42,12 @@ python validate_d3_holdout.py                      # independent D3 drekkana hol
 python scripts/certify_d3.py                       # regenerate VARGA_D3_V1 certification (needs PyJHora)
 python validate_d12_holdout.py                     # independent D12 dwadasamsa holdout
 python scripts/certify_d12.py                      # regenerate VARGA_D12_V1 certification (needs PyJHora)
+python validate_d7_holdout.py                      # independent D7 saptamsa holdout
+python scripts/certify_d7.py                       # regenerate VARGA_D7_V1 certification (needs PyJHora)
+python validate_d30_holdout.py                     # independent D30 trimsamsa holdout
+python scripts/certify_d30.py                      # regenerate VARGA_D30_V1 certification (needs PyJHora)
+python validate_d2_holdout.py                      # independent D2 hora holdout
+python scripts/certify_d2.py                       # regenerate VARGA_D2_V1 certification (needs PyJHora)
 ```
 
 The stored `certification/current_engine_certification.json` is never accepted as proof; the certifier regenerates it from scratch on every run. Do not commit an audit-run regeneration.

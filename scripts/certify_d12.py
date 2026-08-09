@@ -112,7 +112,7 @@ def gate_d_non_invasiveness():
         fail("D9 no longer served by the certified module")
     if type(divisional_chart(snapshot, 10)).__name__ != "DashamsaChart":
         fail("D10 no longer served by the certified module")
-    for division in (2, 4, 7, 30, 60):
+    for division in (4, 16, 27, 60):
         try:
             divisional_chart(snapshot, division)
             fail(f"D{division} no longer refused")
