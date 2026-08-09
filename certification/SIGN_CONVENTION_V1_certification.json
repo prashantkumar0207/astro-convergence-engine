@@ -1,0 +1,299 @@
+{
+ "schema": "sign_convention_v1_certification",
+ "adr": "ADR-CONVENTION-001",
+ "date": "2026-08-09",
+ "scope": "explicit, machine-checked sign-index conventions across every layer; no certified value renumbered",
+ "decisions": {
+  "SC-A": "inert Sign value type as the shared convention carrier",
+  "SC-B": "purely additive adoption; no certified value or field changed",
+  "SC-C": "declaration registry enforced by a collected gate"
+ },
+ "certified_conventions": {
+  "varga_level": "zero_based (Aries = 0), certified and locked",
+  "rashi_level": "one_based (Aries = 1), certified and locked"
+ },
+ "declaration_registry": {
+  "Chart.sign_map": {
+   "convention": "one_based",
+   "shape": "dict_keys",
+   "accessor": null
+  },
+  "ChartHouse.sign": {
+   "convention": "one_based",
+   "shape": "scalar",
+   "accessor": "sign"
+  },
+  "ChartLagna.sign": {
+   "convention": "one_based",
+   "shape": "scalar",
+   "accessor": "sign"
+  },
+  "ChartNavamsa.sign": {
+   "convention": "zero_based",
+   "shape": "scalar",
+   "accessor": "sign"
+  },
+  "ChartPlanet.sign": {
+   "convention": "one_based",
+   "shape": "scalar",
+   "accessor": "sign"
+  },
+  "ChartSign.number": {
+   "convention": "one_based",
+   "shape": "scalar",
+   "accessor": null
+  },
+  "DashamsaChart.ascendant_sign": {
+   "convention": "zero_based",
+   "shape": "scalar",
+   "accessor": "ascendant_sign"
+  },
+  "DashamsaPlanet.sign": {
+   "convention": "zero_based",
+   "shape": "scalar",
+   "accessor": "sign"
+  },
+  "DrishtiChart.ascendant_sign": {
+   "convention": "one_based",
+   "shape": "scalar",
+   "accessor": "ascendant_sign"
+  },
+  "DrishtiChart.planet_signs": {
+   "convention": "one_based",
+   "shape": "dict_values",
+   "accessor": null
+  },
+  "KpChain.sign_lord": {
+   "convention": "not_an_index",
+   "shape": "scalar",
+   "accessor": null
+  },
+  "KpChain.sign_name": {
+   "convention": "not_an_index",
+   "shape": "scalar",
+   "accessor": null
+  },
+  "KpChain.sign_number": {
+   "convention": "one_based",
+   "shape": "scalar",
+   "accessor": "sign"
+  },
+  "NavamsaChart.ascendant_sign": {
+   "convention": "zero_based",
+   "shape": "scalar",
+   "accessor": "ascendant_sign"
+  },
+  "NavamsaPlanet.sign": {
+   "convention": "zero_based",
+   "shape": "scalar",
+   "accessor": "sign"
+  },
+  "PlanetDrishti.aspected_signs": {
+   "convention": "one_based",
+   "shape": "tuple_of_indexes",
+   "accessor": null
+  },
+  "PlanetDrishti.sign_number": {
+   "convention": "one_based",
+   "shape": "scalar",
+   "accessor": "sign"
+  },
+  "VargaPlanet.sign": {
+   "convention": "zero_based",
+   "shape": "scalar",
+   "accessor": "sign"
+  },
+  "VargaPosition.sign": {
+   "convention": "zero_based",
+   "shape": "scalar",
+   "accessor": "sign"
+  }
+ },
+ "function_registry": {
+  "engine.astrology.dashamsa_chart.dashamsa_sign": "zero_based",
+  "engine.astrology.navamsa_chart.navamsa_sign": "zero_based",
+  "engine.astrology.signs.zodiac_sign": "one_based",
+  "engine.astrology.varga_classifier.classify.d_sign": "zero_based",
+  "engine.kp.chain.kp_chain.sign_number": "one_based",
+  "engine.parashari.drishti.aspected_signs": "one_based"
+ },
+ "gates": {
+  "A_non_invasiveness": {
+   "sweep_points": 54697,
+   "d9_sweep_sha256": "58b133367fba404976f3e562fd46ed50bd332006b8c7107415e9d3a3a9263c5e",
+   "d10_sweep_sha256": "5678aecfe9576ca81ecf818566b9a9302ffb62eeb5a7cfcce8cc2f86504ab9e3",
+   "registry_varga_sweep_sha256": {
+    "D2_parashara": "41c2cb733f3bdb18e63cab9f9d837f013977c6d171229f4e865b85056c4b5436",
+    "D3_parashara": "71672e052fc5877fce4e6b8bc0ab1160f9e776e4b6e85a8e2f16386024e673a0",
+    "D7_parashara": "51f7acf701b1978990accbfcbedfbac6001446f2e31789077752e44c54c3b73c",
+    "D12_parashara": "81b14663c6d66a8680e3697a25b9bd53c72897768e233b82f1dfcbc3eb1306ac",
+    "D30_parashara": "8b10c2f7b1d8bd8c76406e2290b19f37e55899e78653b520896e9e662606f5a4"
+   },
+   "note": "compare against published main; this phase must change no certified value (Decision SC-B)"
+  },
+  "B_sign_type": {
+   "signs": 12,
+   "mismatches": 0,
+   "inert": true
+  },
+  "C_declaration_coverage": {
+   "charts_swept": 192,
+   "fields_proven": 17,
+   "mismatches": 0,
+   "proof": "each declaration proven by a value impossible under the other convention, plus range containment",
+   "fields": {
+    "Chart.sign_map": {
+     "convention": "one_based",
+     "discriminating_witness": 12,
+     "distinct_values_observed": 12,
+     "full_zodiac_coverage": true,
+     "min": 1,
+     "max": 12
+    },
+    "ChartHouse.sign": {
+     "convention": "one_based",
+     "discriminating_witness": 12,
+     "distinct_values_observed": 12,
+     "full_zodiac_coverage": true,
+     "min": 1,
+     "max": 12
+    },
+    "ChartLagna.sign": {
+     "convention": "one_based",
+     "discriminating_witness": 12,
+     "distinct_values_observed": 12,
+     "full_zodiac_coverage": true,
+     "min": 1,
+     "max": 12
+    },
+    "ChartNavamsa.sign": {
+     "convention": "zero_based",
+     "discriminating_witness": 0,
+     "distinct_values_observed": 12,
+     "full_zodiac_coverage": true,
+     "min": 0,
+     "max": 11
+    },
+    "ChartPlanet.sign": {
+     "convention": "one_based",
+     "discriminating_witness": 12,
+     "distinct_values_observed": 12,
+     "full_zodiac_coverage": true,
+     "min": 1,
+     "max": 12
+    },
+    "ChartSign.number": {
+     "convention": "one_based",
+     "discriminating_witness": 12,
+     "distinct_values_observed": 12,
+     "full_zodiac_coverage": true,
+     "min": 1,
+     "max": 12
+    },
+    "DashamsaChart.ascendant_sign": {
+     "convention": "zero_based",
+     "discriminating_witness": 0,
+     "distinct_values_observed": 12,
+     "full_zodiac_coverage": true,
+     "min": 0,
+     "max": 11
+    },
+    "DashamsaPlanet.sign": {
+     "convention": "zero_based",
+     "discriminating_witness": 0,
+     "distinct_values_observed": 12,
+     "full_zodiac_coverage": true,
+     "min": 0,
+     "max": 11
+    },
+    "DrishtiChart.ascendant_sign": {
+     "convention": "one_based",
+     "discriminating_witness": 12,
+     "distinct_values_observed": 12,
+     "full_zodiac_coverage": true,
+     "min": 1,
+     "max": 12
+    },
+    "DrishtiChart.planet_signs": {
+     "convention": "one_based",
+     "discriminating_witness": 12,
+     "distinct_values_observed": 12,
+     "full_zodiac_coverage": true,
+     "min": 1,
+     "max": 12
+    },
+    "KpChain.sign_number": {
+     "convention": "one_based",
+     "discriminating_witness": 12,
+     "distinct_values_observed": 12,
+     "full_zodiac_coverage": true,
+     "min": 1,
+     "max": 12
+    },
+    "NavamsaChart.ascendant_sign": {
+     "convention": "zero_based",
+     "discriminating_witness": 0,
+     "distinct_values_observed": 12,
+     "full_zodiac_coverage": true,
+     "min": 0,
+     "max": 11
+    },
+    "NavamsaPlanet.sign": {
+     "convention": "zero_based",
+     "discriminating_witness": 0,
+     "distinct_values_observed": 12,
+     "full_zodiac_coverage": true,
+     "min": 0,
+     "max": 11
+    },
+    "PlanetDrishti.aspected_signs": {
+     "convention": "one_based",
+     "discriminating_witness": 12,
+     "distinct_values_observed": 12,
+     "full_zodiac_coverage": true,
+     "min": 1,
+     "max": 12
+    },
+    "PlanetDrishti.sign_number": {
+     "convention": "one_based",
+     "discriminating_witness": 12,
+     "distinct_values_observed": 12,
+     "full_zodiac_coverage": true,
+     "min": 1,
+     "max": 12
+    },
+    "VargaPlanet.sign": {
+     "convention": "zero_based",
+     "discriminating_witness": 0,
+     "distinct_values_observed": 12,
+     "full_zodiac_coverage": true,
+     "min": 0,
+     "max": 11
+    },
+    "VargaPosition.sign": {
+     "convention": "zero_based",
+     "discriminating_witness": 0,
+     "distinct_values_observed": 12,
+     "full_zodiac_coverage": true,
+     "min": 0,
+     "max": 11
+    }
+   }
+  },
+  "D_cross_layer_agreement": {
+   "surface_checks": 59988,
+   "mismatches": 0,
+   "surfaces": 6
+  }
+ },
+ "explicit_non_claims": [
+  "no renumbering of any certified sign value",
+  "no deprecation of existing fields in V1",
+  "house-number conventions are out of scope for V1",
+  "nakshatra and division-index conventions are out of scope for V1"
+ ],
+ "environment": {
+  "python": "3.11.15"
+ },
+ "result": "PASS"
+}

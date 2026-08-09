@@ -23,6 +23,32 @@ class PlanetDrishti:
     aspected_houses: tuple
     aspected_planets: tuple
 
+    @property
+    def sign_zero_based(self) -> int:
+        """
+        The 0-based index of :attr:`sign_number`.
+
+        :attr:`sign_number` is 1-based and CERTIFIED; this accessor is
+        additive (ADR-CONVENTION-001, Decision SC-B) and changes no
+        stored value.
+        """
+
+        return self.sign_number - 1
+
+    @property
+    def sign_object(self):
+        """:attr:`sign_number` as an explicit Sign (ADR-CONVENTION-001)."""
+
+        from engine.astrology.sign import Sign
+
+        return Sign.from_one_based(self.sign_number)
+
+    @property
+    def aspected_signs_zero_based(self) -> tuple:
+        """:attr:`aspected_signs` (1-based, certified) as 0-based indexes."""
+
+        return tuple(sign - 1 for sign in self.aspected_signs)
+
 
 @dataclass(frozen=True, slots=True)
 class DrishtiChart:
@@ -40,3 +66,23 @@ class DrishtiChart:
     planet_signs: dict
     drishti: tuple
     provenance: Provenance
+
+    @property
+    def ascendant_sign_zero_based(self) -> int:
+        """
+        The 0-based index of :attr:`ascendant_sign`.
+
+        :attr:`ascendant_sign` is 1-based and CERTIFIED; this accessor is
+        additive (ADR-CONVENTION-001, Decision SC-B) and changes no
+        stored value.
+        """
+
+        return self.ascendant_sign - 1
+
+    @property
+    def ascendant_sign_object(self):
+        """:attr:`ascendant_sign` as an explicit Sign (ADR-CONVENTION-001)."""
+
+        from engine.astrology.sign import Sign
+
+        return Sign.from_one_based(self.ascendant_sign)

@@ -53,3 +53,23 @@ class KpChain:
     sub_sub_lord: str
 
     nearest_boundary_arcsec: float
+
+    @property
+    def sign_zero_based(self) -> int:
+        """
+        The 0-based index of :attr:`sign_number`.
+
+        :attr:`sign_number` is 1-based and CERTIFIED; this accessor is
+        additive (ADR-CONVENTION-001, Decision SC-B) and changes no
+        stored value.
+        """
+
+        return self.sign_number - 1
+
+    @property
+    def sign_object(self):
+        """:attr:`sign_number` as an explicit Sign (ADR-CONVENTION-001)."""
+
+        from engine.astrology.sign import Sign
+
+        return Sign.from_one_based(self.sign_number)

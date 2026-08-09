@@ -24,6 +24,8 @@ PARASHARI SCHOOL LAYER (`engine/parashari/`): PARASHARI_DRISHTI_V1 CERTIFIED per
 
 TRANSIT LAYER (`engine/transits/`): TRANSIT_V1 CERTIFIED per `certification/TRANSIT_V1_certification.json` (ADR-TRANSIT-001). Longitude-crossing events by station-aware bisection on the certified position pipeline (event residual bound 1e-4 arcsec, event-time guarantee 1e-6 day): sign and nakshatra ingresses, returns, natal conjunctions (retrograde multiplicity handled, directions flagged), and the profile-guarded natal-relative TransitView. Verified by a residual battery, an independent scan-plus-interpolation validator, and 24 PyJHora sankranti anchors under per-event derived tolerances (D-007). Aspect-system events, dasha-transit convergence, and interpretation are non-claims.
 
+SIGN CONVENTIONS (`engine/astrology/sign.py`, `sign_conventions.py`): SIGN_CONVENTION_V1 CERTIFIED per `certification/SIGN_CONVENTION_V1_certification.json` (ADR-CONVENTION-001). The repository carries two certified, locked sign-index conventions by history: every VARGA sign output is 0-based (including certified D9/D10 and all registry vargas) and every RASHI-level output is 1-based (D1 fields, KP chains, drishti). Neither is renumbered. Instead an inert `Sign` value type carries the convention explicitly, additive accessors expose the opposite view on every sign-carrying model, and `SIGN_FIELD_CONVENTIONS` is the single declared source of truth, enforced by a collected gate that FAILS when a new sign-typed field is added without a declaration. Each declaration is proven by a discriminating witness (a value impossible under the other convention) observed on real charts. This is the documented prerequisite for the future convergence layer.
+
 Explicit non-claims: no KP significators, four-step, ruling planets, or horary (Tier-1 KP_SIGNIFICATOR_V1 requires a frozen spec first, per D-008); no dasha systems beyond Vimshottari V1; no aspect-system transit events; no Jaimini, BNN/Nadi, numerology, or convergence functionality exists yet. Placidus behavior above the polar circles is NOT YET VERIFIED. UTC is treated as UT1 (bounded 0.9 s, recorded in Provenance).
 
 ## Verification gates
@@ -52,6 +54,7 @@ python validate_d2_holdout.py                      # independent D2 hora holdout
 python scripts/certify_d2.py                       # regenerate VARGA_D2_V1 certification (needs PyJHora)
 python validate_parashari_drishti_holdout.py       # independent graha drishti holdout
 python scripts/certify_parashari_drishti.py        # regenerate PARASHARI_DRISHTI_V1 certification (needs PyJHora)
+python scripts/certify_sign_convention.py          # regenerate SIGN_CONVENTION_V1 certification
 ```
 
 The stored `certification/current_engine_certification.json` is never accepted as proof; the certifier regenerates it from scratch on every run. Do not commit an audit-run regeneration.
