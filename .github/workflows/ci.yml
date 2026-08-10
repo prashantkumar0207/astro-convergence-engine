@@ -1,28 +1,188 @@
+# Astro Convergence Engine CI (ADR-0018, Phase G commit 1 / G6).
+#
+# Two jobs, split by whether an EXTERNAL ORACLE is required. The split exists
+# for reproducibility and outage isolation, never for speed. No gate that
+# existed before this change was removed or weakened; the hermetic job gains
+# nine validators, the legacy gate and three certification runners that CI
+# previously never ran.
+#
+#   hermetic : default pytest gate + ALL ELEVEN independent holdout validators
+#              + legacy kernel gate + the three non-oracle certification
+#              runners, each also re-run with the network blocked.
+#   oracle   : the eight PyJHora certification runners, installed hash-pinned
+#              from requirements-oracle.lock ALONE, asserting and uploading the
+#              environment identity used for certification.
+#
+# VALIDATION_STANDARD.md s2 rule 5: skips are failures in certification suites.
+# Nothing here uses continue-on-error and no step converts a failure into a
+# warning.
+#
+# A third `governance` job is specified in the approved Phase G plan and is
+# deliberately NOT added in this commit: its primary check is the retired
+# identifier search, which cannot pass until Phase G commit 2 (G1) removes the
+# 70 remaining occurrences. Adding it now would either break CI or require
+# disabling its real checks, both of which the plan forbids. It lands with G1.
+
 name: engine-ci
 
 on:
   push:
-    branches: [main]
+    branches: [main, phase-g-governance]
   pull_request:
 
 jobs:
-  test:
+  hermetic:
+    name: hermetic gate (no oracle, no network)
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         python-version: ["3.11", "3.12"]
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Install dependencies
+
+      - name: Install pinned dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pyswisseph==2.10.3.2 tzdata jsonschema pytest
-      - name: Run test suite (certification gate)
+          python -m pip install -r requirements.lock
+
+      - name: Record environment
+        run: |
+          python -c "import sys; print('python', sys.version)"
+          python -c "import platform; print('platform', platform.platform(), platform.machine())"
+          python -c "import swisseph as swe; print('pyswisseph reports', swe.version)"
+          python -m pip freeze
+
+      - name: Verify ephemeris asset checksums
+        run: sha256sum --check CHECKSUMS.sha256
+
+      - name: Default gate (engine/tests)
         run: python -m pytest -q
-      - name: Run D9 independent holdout validator
-        run: python validate_d9_holdout.py
-      - name: Run D10 independent holdout validator
-        run: python validate_d10_holdout.py
+
+      - name: Independent holdout validators (all eleven)
+        run: |
+          set -e
+          for v in validate_d9_holdout.py \
+                   validate_d10_holdout.py \
+                   validate_d2_holdout.py \
+                   validate_d3_holdout.py \
+                   validate_d7_holdout.py \
+                   validate_d12_holdout.py \
+                   validate_d30_holdout.py \
+                   validate_kp_holdout.py \
+                   validate_vimshottari_holdout.py \
+                   validate_transits_holdout.py \
+                   validate_parashari_drishti_holdout.py; do
+            echo "::group::$v"
+            python "$v"
+            echo "::endgroup::"
+          done
+
+      - name: Legacy kernel gate
+        run: python -m pytest -q test_tier0_certification.py test_official_swetest_reference.py
+
+      - name: Non-oracle certification runners
+        run: |
+          set -e
+          python scripts/certify_current_engine.py
+          python scripts/certify_kp_chain.py
+          python scripts/certify_sign_convention.py
+
+      - name: Prove the hermetic tier really is hermetic (network blocked)
+        run: |
+          set -e
+          python scripts/ci_no_network.py -m pytest -q
+          python scripts/ci_no_network.py validate_d9_holdout.py
+          python scripts/ci_no_network.py validate_kp_holdout.py
+          python scripts/ci_no_network.py scripts/certify_current_engine.py
+          python scripts/ci_no_network.py scripts/certify_kp_chain.py
+          python scripts/ci_no_network.py scripts/certify_sign_convention.py
+
+      - name: Assert the network guard actually blocks (negative control)
+        run: |
+          set +e
+          printf "import socket\nsocket.create_connection(('pypi.org', 443), timeout=5)\n" > /tmp/netprobe.py
+          python scripts/ci_no_network.py /tmp/netprobe.py
+          rc=$?
+          set -e
+          if [ "$rc" -eq 0 ]; then
+            echo "network guard did NOT block; the hermetic proof above is worthless"
+            exit 1
+          fi
+          echo "negative control passed: guard blocked the connection (exit $rc)"
+
+      - name: Assert no source file was modified by a certification run
+        run: |
+          git checkout -- certification/ reports/
+          test -z "$(git status --porcelain -- engine/ scripts/ legacy/ validate_*.py)"
+
+  oracle:
+    name: oracle gate (PyJHora, hash-pinned)
+    runs-on: ubuntu-latest
+    # Python 3.11 only: requirements-oracle.lock carries CPython 3.11 linux
+    # x86_64 wheel hashes, matching certification/ORACLE_ENVIRONMENT.json
+    # exactly. Another interpreter or platform needs its own lock and its own
+    # recorded identity; it must never be obtained by relaxing hashes.
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install the oracle environment from the lock ALONE (hash-pinned)
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install --require-hashes -r requirements-oracle.lock
+
+      - name: Print the environment identity used for certification
+        run: |
+          echo "=== recorded identity: certification/ORACLE_ENVIRONMENT.json ==="
+          cat certification/ORACLE_ENVIRONMENT.json
+          echo "=== actual runner identity ==="
+          python -c "import sys; print('python', sys.version)"
+          python -c "import platform; print('platform', platform.platform(), platform.machine())"
+          python -c "import swisseph as swe; print('pyswisseph reports', swe.version)"
+          python -c "import importlib.metadata as m; print('PyJHora', m.version('PyJHora'))"
+          sha256sum requirements-oracle.lock
+          python -m pip freeze
+
+      - name: Assert the runner matches the recorded environment identity
+        run: python scripts/check_oracle_environment.py
+
+      - name: Verify ephemeris asset checksums
+        run: sha256sum --check CHECKSUMS.sha256
+
+      - name: Oracle certification runners (all eight)
+        run: |
+          set -e
+          for c in scripts/certify_d2.py \
+                   scripts/certify_d3.py \
+                   scripts/certify_d7.py \
+                   scripts/certify_d12.py \
+                   scripts/certify_d30.py \
+                   scripts/certify_vimshottari.py \
+                   scripts/certify_transits.py \
+                   scripts/certify_parashari_drishti.py; do
+            echo "::group::$c"
+            python "$c"
+            echo "::endgroup::"
+          done
+
+      - name: Show regenerated artifact delta (run date is the only expected change)
+        run: git --no-pager diff -- certification/ reports/certification/
+
+      - name: Upload regenerated artifacts, reports and transcripts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: oracle-certification-evidence
+          path: |
+            certification/*.json
+            reports/certification/*.report.md
+            reports/certification/*.console.txt
+          if-no-files-found: error

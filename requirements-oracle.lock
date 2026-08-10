@@ -1,0 +1,104 @@
+# ORACLE CERTIFICATION LOCK  (VALIDATION_STANDARD.md s2 rule 4; ADR-0018)
+#
+# Self-contained, hash-pinned environment for the EIGHT external-oracle
+# certification runners:
+#   scripts/certify_d2.py   scripts/certify_d3.py   scripts/certify_d7.py
+#   scripts/certify_d12.py  scripts/certify_d30.py  scripts/certify_vimshottari.py
+#   scripts/certify_transits.py  scripts/certify_parashari_drishti.py
+#
+# WHY THIS FILE EXISTS
+# PyJHora 4.8.7 declares an EMPTY Requires-Dist. Its runtime imports therefore
+# fail one at a time on a clean machine and pip cannot resolve them. This file
+# is the compensating control: it records the complete verified closure so the
+# oracle environment is reproducible from the repository alone.
+#
+# The six dependencies PyJHora needs but does not declare are:
+#   numpy, geocoder, pytz, timezonefinder, geopy, python-dateutil
+# (discovered by iterative import failure in an isolated venv, 2026-08-10).
+#
+# INSTALL (exactly this command; --require-hashes is mandatory):
+#   python -m pip install --require-hashes -r requirements-oracle.lock
+#
+# ENVIRONMENT CONSTRAINT
+# The hashes below are for CPython 3.11, linux x86_64 wheels. This lock
+# reproduces the environment recorded in certification/ORACLE_ENVIRONMENT.json
+# and no other. A different Python minor version or platform MUST get its own
+# lock and its own recorded environment identity; it must not be obtained by
+# relaxing hashes.
+#
+# Base runtime pins (pyswisseph, tzdata, jsonschema, pytest) are included so
+# this file is a single self-contained reproducibility unit. They agree with
+# requirements.lock and engine/requirements-lock.txt.
+#
+# Regenerate: docs/CI_AND_ORACLE_REPRODUCIBILITY_SPEC.md section 6.
+
+attrs==26.1.0 \
+    --hash=sha256:c647aa4a12dfbad9333ca4e71fe62ddc36f4e63b2d260a37a8b83d2f043ac309
+certifi==2026.7.22 \
+    --hash=sha256:62f22742b58a1a33014a2b6b706588a8d7e2a88ae7bd1a6ebe8c992928483775
+cffi==2.1.1 \
+    --hash=sha256:34e261f78cb6ceaaa36f42f2613f4380d94d9c759a9c73c769ee6e0247364632
+charset-normalizer==3.4.9 \
+    --hash=sha256:04ce310cb89c15df659582aee80a0603788732a5e017d5bd5c81158106ce249c
+click==8.4.2 \
+    --hash=sha256:e6f9f66136c816745b9d65817da91d61d957fb16e02e4dcd0552553c5a197b76
+decorator==5.3.1 \
+    --hash=sha256:f47fe6fdbd2edd623ecfe36875d37aba411624e2670dd395dddae1358689bb3c
+flatbuffers==25.12.19 \
+    --hash=sha256:7634f50c427838bb021c2d66a3d1168e9d199b0607e6329399f04846d42e20b4
+future==1.0.0 \
+    --hash=sha256:929292d34f5872e70396626ef385ec22355a1fae8ad29e1a734c3e43f9fbc216
+geocoder==1.38.1 \
+    --hash=sha256:a733e1dfbce3f4e1a526cac03aadcedb8ed1239cf55bd7f3a23c60075121a834
+geographiclib==2.1 \
+    --hash=sha256:e2a873b9b9e7fc38721ad73d5f4e6c9ed140d428a339970f505c07056997d40b
+geopy==2.5.0 \
+    --hash=sha256:8ad8cc226b505ca4d272ae9a2eeba08b8a2c565fc9a04eaefc33ad49c32b51aa
+h3==4.5.0 \
+    --hash=sha256:7b181b13758e3852b02276e2e46422feb61ba38c23ea02bd4f045bbeb29df154
+idna==3.18 \
+    --hash=sha256:7f952cbe720b688055e3f87de14f5c3e5fdaa8bc3928985c4077ca689de849a2
+iniconfig==2.3.0 \
+    --hash=sha256:f631c04d2c48c52b84d0d0549c99ff3859c98df65b3101406327ecc7d53fbf12
+jsonschema==4.25.0 \
+    --hash=sha256:24c2e8da302de79c8b9382fee3e76b355e44d2a4364bb207159ce10b517bd716
+jsonschema-specifications==2025.9.1 \
+    --hash=sha256:98802fee3a11ee76ecaca44429fda8a41bff98b00a0f2838151b113f210cc6fe
+numpy==2.4.6 \
+    --hash=sha256:89cd468399cfd2504718f0ba50e410dca55a170b61a02ad92bb18c8a65186e93
+packaging==26.3 \
+    --hash=sha256:d7193f7c8e4e93f444fde0262bf90af30e16fa0ad0ad44cb553c87339b23cd1c
+pluggy==1.6.0 \
+    --hash=sha256:e920276dd6813095e9377c0bc5566d94c932c33b27a3e3945d8389c374dd4746
+pycparser==3.0 \
+    --hash=sha256:b727414169a36b7d524c1c3e31839a521725078d7b2ff038656844266160a992
+pygments==2.20.0 \
+    --hash=sha256:81a9e26dd42fd28a23a2d169d86d7ac03b46e2f8b59ed4698fb4785f946d0176
+pyjhora==4.8.7 \
+    --hash=sha256:d8d8014573a38ddefedcae57d3b8d84687cac2ad31bb5b1dd70d945906a4d54d
+pyswisseph==2.10.3.2 \
+    --hash=sha256:e00d7e08aeafe00938603bc118874b6ca7871c5aaa55aafca8fa2c6d76aff812
+pytest==9.1.1 \
+    --hash=sha256:37a86b45efb9a47a61a36449063e8e18d0cab3161329fc099eb21783169c4f0c
+python-dateutil==2.9.0.post0 \
+    --hash=sha256:a8b2bc7bffae282281c8140a97d3aa9c14da0b136dfe83f850eea9a5f7470427
+pytz==2026.3.post1 \
+    --hash=sha256:dd95840dd199baea12d9cc096a1d452caa6596a1c1e4b5f3dbd1541855d5e815
+ratelim==0.1.6 \
+    --hash=sha256:e1a7dd39e6b552b7cc7f52169cd66cdb826a1a30198e355d7016012987c9ad08
+referencing==0.37.0 \
+    --hash=sha256:381329a9f99628c9069361716891d34ad94af76e461dcb0335825aecc7692231
+requests==2.34.2 \
+    --hash=sha256:2a0d60c172f83ac6ab31e4554906c0f3b3588d37b5cb939b1c061f4907e278e0
+rpds-py==2026.6.3 \
+    --hash=sha256:9c1255b302953c86a486b81d330d5ee1d5bd937691ce271b6be0ef0e299eaab7
+six==1.17.0 \
+    --hash=sha256:4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274
+timezonefinder==8.2.5 \
+    --hash=sha256:976230555eb9943f3651fa00fe587854a5c1b6d0aa9c7c714296d0934dccf406
+typing-extensions==4.16.0 \
+    --hash=sha256:481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8
+tzdata==2025.2 \
+    --hash=sha256:1a403fada01ff9221ca8044d701868fa132215d84beb92242d9acd2147f667a8
+urllib3==2.7.0 \
+    --hash=sha256:9fb4c81ebbb1ce9531cce37674bbc6f1360472bc18ca9a553ede278ef7276897

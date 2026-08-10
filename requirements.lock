@@ -1,3 +1,17 @@
+# Base runtime lock for the HERMETIC tier (default gate, the eleven
+# independent holdout validators, the legacy gate, and the three non-oracle
+# certification runners).
+#
+# The ORACLE tier uses requirements-oracle.lock, which is self-contained and
+# hash-pinned; see docs/CI_AND_ORACLE_REPRODUCIBILITY_SPEC.md (ADR-0018).
+#
+# jsonschema is pinned here because engine/knowledge/validator.py imports it
+# and engine/tests/test_schema_validator.py collects it, so the default gate
+# cannot run without it. It was previously absent from this file while
+# pyproject.toml and engine/requirements-lock.txt both declared it; CI
+# installed it unpinned, contravening VALIDATION_STANDARD.md s2 rule 4.
+# The three pre-existing pins are unchanged.
 pyswisseph==2.10.3.2
 pytest==9.1.1
 tzdata==2025.2
+jsonschema==4.25.0

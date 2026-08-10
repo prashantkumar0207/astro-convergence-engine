@@ -3,16 +3,22 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | DRAFT - contains accepted entries ADR-0001..0002 and proposed entries ADR-0003..0012 |
-| Version | 0.2.0 |
+| Status | DRAFT - contains accepted entries ADR-0001..0002 and proposed entries ADR-0003..0013, ADR-0018 |
+| Version | 0.3.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-09 |
+| Last updated | 2026-08-10 |
 | Review cadence | TBD |
 
 # Decision Log (ADR register)
 
 Append-only. Entries are never edited after acceptance; they are superseded by later entries.
 Template at the bottom. Numbering: ADR-XXXX, monotonically increasing.
+
+RESERVED NUMBERS. ADR-0014 through ADR-0017 are reserved for the remaining Phase G commits
+(0014 identifier-reconciliation completion, 0015 charter adoption, 0016 precedence hierarchy
+and agent workflow, 0017 certification taxonomy). Phase G commit 1 delivered G6 first by CEO
+sequencing decision, so ADR-0018 exists before them. The gap is a reservation, not a lost
+entry. Numbers are obtained from this register BEFORE implementation, per ADR-0004.
 
 ---
 
@@ -346,6 +352,81 @@ Template at the bottom. Numbering: ADR-XXXX, monotonically increasing.
 - **Consequences:** None of these is resolved by this entry. Each requires an owner decision,
   and several require a superseding ADR once decided.
 
+
+## ADR-0018 - CI tiering and oracle environment reproducibility
+
+- **Date:** 2026-08-10
+- **Status:** PROPOSED - pending owner ratification (Q1). Per PROJECT_CONSTITUTION.md s11,
+  AI output is proposal, not authority.
+- **Context:** Two conditions violated `docs/VALIDATION_STANDARD.md` s2. (a) CI ran the
+  default gate and two of the eleven independent holdout validators; nine validators, the
+  legacy kernel gate and all eleven certification runners never ran in CI, and three of the
+  four installed dependencies were unpinned, contravening s2 rule 4. (b) More seriously, the
+  oracle environment was not reproducible from the repository. `PyJHora` 4.8.7 declares an
+  EMPTY `Requires-Dist`, so its runtime imports fail one at a time on a clean machine and pip
+  cannot resolve them. The certification artifacts recorded the package version and the Python
+  version and nothing else, so an engineer holding only this repository could not recreate the
+  environment that produced the eight oracle certifications. A certification whose environment
+  cannot be recreated is a report, not proof.
+- **Decision:**
+  1. SPLIT CI into two jobs by external-oracle dependence, verified by inspection that no file
+     under `engine/tests/` and no `validate_*.py` imports `jhora`. `hermetic` runs the default
+     gate, ALL ELEVEN validators, the legacy kernel gate and the three non-oracle certification
+     runners on Python 3.11 and 3.12. `oracle` runs the eight PyJHora runners on Python 3.11.
+     The split is for reproducibility and outage isolation, never for speed: this change ADDED
+     nine validators, the legacy gate and three certification runners to CI and removed
+     nothing. `continue-on-error` is prohibited and absent; no step converts a failure into a
+     warning; no validator or runner is skipped.
+  2. RECORD the oracle environment identity in `certification/ORACLE_ENVIRONMENT.json`: OS and
+     architecture, Python version and implementation, the CPython 3.11 linux x86_64 ABI
+     constraint, PyJHora version with the explicit statement that it declares no dependencies,
+     the six undeclared runtime dependencies (`numpy`, `geocoder`, `pytz`, `timezonefinder`,
+     `geopy`, `python-dateutil`) and the iterative import-failure method by which they were
+     discovered, the Swiss Ephemeris binding and reported library version, the `swetest`
+     reference binary SHA-256 and build provenance, the ephemeris asset checksums, the lock
+     file with its own SHA-256 and full 35-package closure, and the per-runner oracle
+     invocation method including the D-007 Moon-injection methodology for Vimshottari and the
+     per-event derived tolerances for transits with the ~20.5 arcsec oracle Sun divergence
+     recorded NOT VERIFIED.
+  3. PIN the oracle environment in `requirements-oracle.lock`: 35 packages, every one carrying
+     a SHA-256, installed with `--require-hashes`. Self-contained by design so one file plus a
+     clean interpreter reproduces the environment. A different Python minor version or platform
+     requires its own lock and its own recorded identity and MUST NOT be obtained by relaxing
+     hashes.
+  4. ASSERT the identity at run time via `scripts/check_oracle_environment.py`, which fails
+     loudly on any divergence in Python minor version, architecture, PyJHora version, any
+     locked package version, or any ephemeris checksum.
+  5. PROVE hermeticity rather than assert it. `scripts/ci_no_network.py` blocks outbound
+     connection paths in-process without replacing the `socket.socket` class, because `ssl`
+     subclasses it at import time and swapping the class yields a false failure. A negative
+     control step proves the guard still blocks, so a guard that silently stopped working is
+     caught rather than trusted. The guarantee is process-scoped and is documented as such.
+  6. ADD `jsonschema==4.25.0` to `requirements.lock`. It is imported by
+     `engine/knowledge/validator.py` and collected by `engine/tests/test_schema_validator.py`,
+     so the default gate cannot run without it, yet it was absent from this file while
+     `pyproject.toml` and `engine/requirements-lock.txt` both declared it. The three
+     pre-existing pins are unchanged.
+- **Consequences:** The oracle tier is bound to CPython 3.11 linux x86_64 until a second lock
+  exists; the hermetic tier still runs 3.12. Hash pinning protects integrity, not availability:
+  if an index removes a version the job fails loudly rather than installing something else,
+  which is intended. The `governance` job specified in the Phase G plan is deliberately NOT
+  added by this commit, because its primary check is the retired-identifier search that cannot
+  pass until Phase G commit 2 (G1); adding it now would either break CI or require disabling
+  its real checks. `scripts/certify_tier0.py` remains broken and untouched; its disposition is
+  Phase G commit 6 (G7). NO calculation, varga, dasha, interpretation, BTR, validation,
+  convergence, prediction, UI or ML work is included, and no certified logic was refactored.
+- **Evidence:** Executed 2026-08-10 on the baseline tree at `1f861f6` in virtual environments
+  created with no system site-packages. Oracle tier: hash-pinned install from
+  `requirements-oracle.lock` alone, 35 packages, all hashes satisfied; all eight oracle
+  certification runners PASS; regenerated artifacts differ from the committed artifacts in the
+  `date` field ONLY, every gate value byte-identical. Hermetic tier: install from
+  `requirements.lock` alone, 395 tests pass, all eleven validators pass, legacy gate 5 of 5,
+  all three non-oracle certifiers PASS; the same set re-run under the network guard produces
+  identical results; the negative control fails with `NoNetworkError` and exit code 1.
+  `scripts/check_oracle_environment.py` returns 0 in the reproduced environment and 1 in a
+  non-matching one. Specification: `docs/CI_AND_ORACLE_REPRODUCIBILITY_SPEC.md`.
+
+---
 
 ## ADR template (copy, do not edit above the line)
 
