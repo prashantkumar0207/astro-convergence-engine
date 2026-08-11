@@ -105,8 +105,35 @@ A holdout-leakage test that fails if selection reads a protected event. Immutabi
 original birth data. A test that the sufficiently-consistent conclusion is reachable, using synthetic
 data where it is the correct answer. A test that search-space size is recorded.
 
-## 10. Change history
+## 11. Multi-domain amendment (2026-08-11, additive)
+
+BTR is **not universally applicable**, and treating it as such would reintroduce the failure this
+document exists to prevent.
+
+Applicability by entity shape, per `docs/H0_ENTITY_MODEL_SPEC.md` section 3:
+
+**Shape A, origin moment.** Applicable, and only where origin certainty is `uncertain` or `reported`.
+**Shape B, derived moment (Varshaphal).** Not independently applicable. Uncertainty is inherited from
+the parent natal chart, so rectification happens on the parent or not at all.
+**Shape C, query moment (Prashna).** Never applicable. The moment is known by construction, because
+it is the moment the question was asked. There is no origin-time uncertainty to resolve.
+**Shape D, no entity (General Muhurta).** Not applicable; there is no subject.
+
+**BTR MUST refuse where origin certainty is `documented`.** A company incorporation timestamped by a
+registry, or a treaty signed at a recorded hour, is documented fact. Rectifying against it would be
+the prohibited reasoning of section 1 wearing a different hat: prediction failed, therefore the
+documented time must be wrong. The refusal must be structural, gated on the entity field, not left to
+the judgment of whoever invokes it.
+
+**Search honesty.** Section 5 requires recording the search space and the number of candidates
+evaluated. `docs/PLATFORM_DOMAIN_ARCHITECTURE.md` section 8 records that General Muhurta has the same
+statistical shape, evaluating many candidates and reporting the best, and is therefore bound by the
+same discipline. Neither may present "best of ten thousand" as "strongly indicated" without its
+denominator.
+
+## 12. Change history
 
 | Version | Date | Change |
 |---|---|---|
 | 1.0.0 | 2026-08-11 | Created in the G1 work package as Phase H preparation. |
+| 1.1.0 | 2026-08-11 | Additive section 11: applicability by entity shape, the documented-origin refusal, and shared search honesty with Muhurta. Sections 1 to 10 unmodified. |

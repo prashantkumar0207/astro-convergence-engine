@@ -3,8 +3,8 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | DRAFT - contains accepted entries ADR-0001..0002 and proposed entries ADR-0003..0014, ADR-0018 (plus the ADR-0018 remote-CI evidence addendum, 2026-08-11) |
-| Version | 0.4.0 |
+| Status | DRAFT - contains accepted entries ADR-0001..0002 and proposed entries ADR-0003..0014, ADR-0018, ADR-0019 (plus the ADR-0018 remote-CI evidence addendum, 2026-08-11) |
+| Version | 0.5.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 | Last updated | 2026-08-11 |
 | Review cadence | TBD |
@@ -537,6 +537,66 @@ reservation, not a lost entry. Numbers are obtained from this register BEFORE im
   independent validators PASS. Calculation-impact fingerprints over a 51,429-point dense sweep
   plus 1e-9 boundary neighbourhoods are identical to a pristine worktree of `1f861f6` for D9
   sign and longitude, D10 sign and longitude, and all five registry vargas.
+
+---
+
+## ADR-0019 - Product identity: multi-domain Jyotisha platform, not a natal application
+
+- **Date:** 2026-08-11
+- **Status:** PROPOSED - pending owner ratification (Q1).
+- **Context:** The repository's specifications, including H1 through H8 written earlier the same day,
+  assumed the subject of analysis is a person with a birth chart. The owner clarified that the
+  long-term product is a multi-domain Jyotisha intelligence platform spanning Jataka, Varshaphal,
+  Muhurta, Prashna and Mundane astrology. Four of those five domains violate the person-plus-birth-
+  chart assumption. Left unrecorded, that assumption would harden into the entity model, the evidence
+  model and the convergence layer, where it would be expensive to remove.
+- **Decision:**
+  1. RECORD the product identity: a transparent, evidence-driven, multi-domain Jyotisha intelligence
+     platform that evaluates analytical methods against historical evidence, measures consistency and
+     confidence, and provides qualified future-oriented analysis through convergence of multiple
+     systems. The USP is unchanged: PAST to TEST to LEARN to CONFIDENCE to FUTURE.
+  2. GENERALISE the core subject from person to **astrological entity**, specified in
+     `docs/H0_ENTITY_MODEL_SPEC.md`, numbered zero because H1 through H8 depend on it.
+  3. RECORD that entities are NOT uniform. Four structurally different shapes exist: origin moment
+     (person, country, company), derived moment (Varshaphal, from a parent chart), query moment
+     (Prashna, where the moment is known by construction), and no entity at all (General Muhurta,
+     which evaluates a candidate moment for a purpose). Generalising "person" to "entity" is necessary
+     but not sufficient, because these differ in which operations are valid.
+  4. RECORD that General Muhurta **inverts the pipeline**: every other domain takes a moment and
+     produces analysis, while General Muhurta takes a purpose and a window and searches for moments.
+     It is the only domain requiring an optimiser, and its output is a ranked set with reasons.
+  5. SCOPE BTR by entity shape and gate it on origin certainty. BTR MUST refuse where the origin
+     moment is `documented`. Rectifying against a registry-timestamped incorporation would be the
+     prohibited reasoning "prediction failed, therefore the time is wrong" in another form.
+  6. ADD entity, domain and chart reference to the evidence model. The chart reference exists to make
+     **shared-origin detection** possible: Varshaphal derives from the natal chart, so natal and
+     Varshaphal agreeing is one source agreeing with itself through a transformation. Without it,
+     convergence would systematically overstate confidence in exactly the combination the product most
+     wants to present.
+  7. ADD the cross-domain axis to convergence, with the requirement that it be able to state whether
+     agreeing sources **could have disagreed**, and with an explicit multiple-comparison discipline for
+     mundane validation, where large samples of publicly dated events make chance agreement likely.
+  8. DECLARE domain isolation as a second axis orthogonal to school isolation. Tajika aspects are not a
+     variant of Parashari drishti; Mudda dasha is not a variant of Vimshottari; Prashna rules are not
+     natal rules. Terminological overlap is not methodological identity.
+- **Consequences:** No code, no calculation change, no new domain implementation. `docs/H0_ENTITY_MODEL_
+  SPEC.md` and `docs/PLATFORM_DOMAIN_ARCHITECTURE.md` are added; H1, H4, H7 and H8 receive additive
+  amendment sections with their prior content unmodified. Two capability gaps are recorded that were
+  not previously visible: **panchanga** (tithi, vara, nakshatra, yoga, karana) is a calculation-layer
+  capability that does not exist, and **rising and setting** does not exist either, which blocks Rahu
+  Kalam, Yamaganda and Gulika and is genuine Tier-0 astronomical work with its own high-latitude edge
+  cases. Verified: `engine/` contains zero occurrences of tithi, vara, karana, panchanga, rahu kalam,
+  yamaganda, gulika, muhurta, varshaphal, muntha, varshesh, saham, tajika, prashna or mundane.
+  Audit finding H-02 is elevated in priority: transit event instants are misclassified by the engine's
+  own classifier at 17 percent of sign ingresses and 43 percent of nakshatra ingresses, and Muhurta is
+  precisely the question "which tithi and nakshatra hold at this candidate moment", evaluated over many
+  candidates of which the marginal ones sit near boundaries. `engine/transits/events.py` `returns()`
+  already implements longitude return and would serve solar return, but appears in no certification
+  artifact. Mudda dasha inherits the whole depth requirement in `docs/DASHA_CERTIFICATION_ROADMAP.md`.
+  Development priority is unchanged: governance and certification, then calculation confidence, then
+  evidence, interpretation, convergence, and domain modules last.
+- **Evidence:** `docs/PLATFORM_DOMAIN_ARCHITECTURE.md`, `docs/H0_ENTITY_MODEL_SPEC.md`, additive
+  sections in H1 s9, H4 s8, H7 s11 and H8 s10, and the capability-absence search recorded above.
 
 ---
 

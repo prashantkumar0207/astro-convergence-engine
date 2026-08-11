@@ -92,8 +92,38 @@ Explanation completeness: every convergent claim decomposes into its contributin
 Disagreement preservation across aggregation. A test that convergence produces a result with BTR
 absent. Vocabulary coverage including conflict and insufficient evidence.
 
-## 9. Change history
+## 10. Multi-domain amendment (2026-08-11, additive)
+
+Convergence now has **two axes**: across systems, as specified above, and across **domains**.
+
+A business question may draw on natal structure, Varshaphal annual themes, Muhurta launch timing and
+current transits. Combining them is the point of the platform. Combining them naively would be its
+most persuasive failure mode.
+
+**Cross-domain agreement is not automatically independent evidence.** Varshaphal is derived from the
+natal chart by construction. Natal and Varshaphal agreeing is one source agreeing with itself through
+a transformation, and no amount of presentation makes it two. The section 2 rule, that the output must
+explain WHY sources agree, therefore extends to a stronger requirement here: convergence MUST be able
+to state whether the agreeing sources **could have disagreed**.
+
+Mechanically this needs the chart reference added to evidence by `docs/H4_EVIDENCE_MODEL_SPEC.md`
+section 8. Shared origin is detectable only if evidence records which chart it came from.
+
+**Mundane multiple comparisons.** Mundane validation offers large samples of publicly verifiable
+dated events, which is genuinely the strongest evidence source available to the platform. It also
+offers enough entities, event classes and rules that agreement will appear by chance. A convergence
+layer reporting confidence from mundane performance MUST carry the multiple-comparison discipline
+recorded in `docs/H2_HISTORICAL_EVENT_LEDGER_SPEC.md`, or it will produce its most confident and
+least justified claims exactly where the data looks best.
+
+**Domain isolation.** School isolation and domain isolation are two orthogonal axes of the same
+principle. Tajika aspects must not be merged into Parashari drishti, Mudda dasha must not be merged
+into Vimshottari, and Prashna rules must not be applied to natal charts, in each case regardless of
+terminological overlap.
+
+## 11. Change history
 
 | Version | Date | Change |
 |---|---|---|
 | 1.0.0 | 2026-08-11 | Created in the G1 work package as Phase H preparation. |
+| 1.1.0 | 2026-08-11 | Additive section 10: the cross-domain axis, shared-origin independence, mundane multiple comparisons, and domain isolation. Sections 1 to 9 unmodified. |

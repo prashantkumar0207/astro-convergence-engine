@@ -255,6 +255,11 @@
       "machine_learning": {
         "status": "ABSENT",
         "note": "prohibited in Phase G and Phase H"
+      },
+      "entity_model": {
+        "status": "SPECIFIED",
+        "evidence": "docs/H0_ENTITY_MODEL_SPEC.md",
+        "note": "four structurally different entity shapes; one-type-vs-four is an open decision"
       }
     },
     "infrastructure": {
@@ -282,8 +287,118 @@
         "status": "ABSENT",
         "note": "broken: ModuleNotFoundError astro_kernel; superseded; disposition is G7"
       }
+    },
+    "panchanga": {
+      "tithi": {
+        "status": "ABSENT"
+      },
+      "vara": {
+        "status": "ABSENT"
+      },
+      "nakshatra_as_panchanga_element": {
+        "status": "IMPLEMENTED",
+        "note": "nakshatra classification exists and is certified; its panchanga role does not"
+      },
+      "yoga": {
+        "status": "ABSENT"
+      },
+      "karana": {
+        "status": "ABSENT"
+      },
+      "_note": "Panchanga is a CALCULATION-layer capability, not a Muhurta feature (ADR-0019). Deterministic from Sun and Moon longitudes; must be certified like a varga. Prashna needs it as immediately as Muhurta does."
+    },
+    "rising_and_setting": {
+      "sunrise_sunset": {
+        "status": "ABSENT",
+        "note": "genuine Tier-0 astronomical gap with high-latitude edge cases where the concept degrades"
+      },
+      "rahu_kalam": {
+        "status": "ABSENT",
+        "blocked_by": "sunrise_sunset"
+      },
+      "yamaganda": {
+        "status": "ABSENT",
+        "blocked_by": "sunrise_sunset"
+      },
+      "gulika": {
+        "status": "ABSENT",
+        "blocked_by": "sunrise_sunset"
+      }
+    },
+    "domains": {
+      "jataka_natal": {
+        "status": "IMPLEMENTED",
+        "note": "the only domain with certified capability; gaps in the two roadmaps and the 2026-08-11 audit"
+      },
+      "varshaphal_annual": {
+        "status": "PLANNED",
+        "components": {
+          "solar_return": {
+            "status": "IMPLEMENTED",
+            "note": "engine/transits/events.py returns() exists but appears in NO certification artifact"
+          },
+          "varsha_lagna": {
+            "status": "ABSENT"
+          },
+          "muntha": {
+            "status": "ABSENT"
+          },
+          "varshesh": {
+            "status": "ABSENT"
+          },
+          "tajika_aspects": {
+            "status": "ABSENT",
+            "note": "a DIFFERENT aspect system from Parashari drishti; must be school-isolated, never routed through it"
+          },
+          "sahams": {
+            "status": "ABSENT"
+          },
+          "mudda_dasha": {
+            "status": "ABSENT",
+            "note": "a NEW dasha system; inherits the whole depth requirement in docs/DASHA_CERTIFICATION_ROADMAP.md"
+          }
+        }
+      },
+      "muhurta_electional": {
+        "status": "PLANNED",
+        "note": "inverts the pipeline: searches for moments rather than analysing one; the only domain needing an optimiser",
+        "components": {
+          "general_muhurta": {
+            "status": "ABSENT",
+            "blocked_by": [
+              "panchanga",
+              "rising_and_setting"
+            ]
+          },
+          "personalised_muhurta": {
+            "status": "ABSENT",
+            "blocked_by": [
+              "general_muhurta",
+              "tara_bala",
+              "chandra_bala"
+            ]
+          },
+          "tara_bala": {
+            "status": "ABSENT"
+          },
+          "chandra_bala": {
+            "status": "ABSENT"
+          }
+        },
+        "elevated_finding": "H-02 is close to blocking for this domain: transit instants misclassify at 17 percent of sign and 43 percent of nakshatra ingresses, and Muhurta is exactly the question of which tithi and nakshatra hold at a candidate moment"
+      },
+      "prashna_horary": {
+        "status": "PLANNED",
+        "note": "question is itself an entity; question model and entity model meet here. BTR never applies: the moment is known by construction"
+      },
+      "mundane": {
+        "status": "PLANNED",
+        "note": "strongest and most dangerous evidence source: public dated record in volume, but disputed entity charts and severe multiple-comparison risk"
+      }
     }
   },
   "counts_note": "Counts are deliberately omitted. A tally invites the impression that certified capabilities are comparable units, which they are not: D2 and the Tier-0 kernel carry very different weight.",
-  "audit_reference": "reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md"
+  "audit_reference": "reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md",
+  "version": "1.1.0",
+  "product_identity": "Multi-domain Jyotisha intelligence platform (ADR-0019), not a natal application. Five domains: Jataka, Varshaphal, Muhurta, Prashna, Mundane."
 }

@@ -96,8 +96,30 @@ Rejection of system-asserted events as validation input. Time-representation cov
 including the degenerate cases of a zero-length interval and an unbounded one. A negative test
 proving an interpretation field cannot be smuggled in.
 
-## 8. Change history
+## 9. Multi-domain amendment (2026-08-11, additive)
+
+The sections above were written assuming the subject is a person. Under the multi-domain platform
+vision the subject is an **astrological entity** per `docs/H0_ENTITY_MODEL_SPEC.md`: a person, a
+country, a company, an institution, a market, an event, or a question.
+
+Two field generalisations follow. The subject field becomes an entity reference rather than a person
+reference. The birth-record anchor becomes a chart reference, because an entity may carry several
+competing charts and an event must be attributable to the one it was evaluated against.
+
+One genuinely new requirement. Mundane events come from public record rather than personal memory,
+and the two have different and in places opposite reliability characteristics: public record is
+better dated and independently verifiable, but national-scale events are more ambiguously classified
+and their boundaries more disputed. The assertion path must distinguish them, because a scoring layer
+that treats a registry filing date and a recollected anniversary as the same kind of input will
+misweight both.
+
+The section 3 property that events are asserted rather than silently inferred is unchanged and
+applies with equal force to public-record events: a date scraped from a source is an assertion by
+that source, not a fact the system may treat as confirmed.
+
+## 10. Change history
 
 | Version | Date | Change |
 |---|---|---|
 | 1.0.0 | 2026-08-11 | Created in the G1 work package as Phase H preparation. |
+| 1.1.0 | 2026-08-11 | Additive section 9: entity generalisation and the public-record assertion path. Sections 1 to 8 unmodified. |

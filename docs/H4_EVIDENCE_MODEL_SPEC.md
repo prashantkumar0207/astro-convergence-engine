@@ -111,8 +111,31 @@ provenance. Decomposability: every aggregate reproduces its inputs. Provenance-m
 across joined items. Coverage of all five polarities. A test that historical performance absent and
 historical performance zero are distinguishable.
 
-## 7. Change history
+## 8. Multi-domain amendment (2026-08-11, additive)
+
+Three fields are added, and one is added for a reason that is easy to miss.
+
+**Entity.** Which entity this evidence concerns, per `docs/H0_ENTITY_MODEL_SPEC.md`.
+
+**Domain.** Jataka, Varshaphal, Muhurta, Prashna or Mundane. Domain is orthogonal to producing
+system: natal-Parashari and Varshaphal-Tajika are different pairs and MUST NOT be merged. The
+mandatory-and-must-survive-aggregation rule stated for producing system applies identically to
+domain.
+
+**Chart reference.** Which chart produced this evidence, since an entity may carry several competing
+charts.
+
+The chart reference is not bookkeeping. It is what makes **shared-origin detection** possible.
+Varshaphal derives from the natal chart by construction, so natal and Varshaphal agreeing is not two
+independent confirmations; they share an origin and could hardly have disagreed. Without a chart
+reference a convergence layer cannot tell that combination apart from two genuinely independent
+sources, and it would systematically overstate confidence in precisely the combination the product
+most wants to present. This is the same trap section 2 of `docs/H8_CONVERGENCE_SPEC.md` records for
+two systems sharing a Moon position, in a sharper form.
+
+## 9. Change history
 
 | Version | Date | Change |
 |---|---|---|
 | 1.0.0 | 2026-08-11 | Created in the G1 work package as Phase H preparation. |
+| 1.1.0 | 2026-08-11 | Additive section 8: entity, domain and chart reference, and the shared-origin rationale. Sections 1 to 7 unmodified. |
