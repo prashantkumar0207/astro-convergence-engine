@@ -91,8 +91,31 @@ fails if any selection or rectification process reads a protected record. Class-
 correctness against hand-computed fixtures. A test that a rejected hypothesis is retained and
 counted.
 
-## 9. Change history
+## 9. Mundane validation protocol (ADR-0021 D1, additive)
+
+Section 5 requires protected holdout support in the store. Mundane validation adds a protocol
+requirement on top, because its sample sizes make chance agreement likely in a way personal event
+histories do not.
+
+Every mundane validation run MUST be pre-registered per `docs/VALIDATION_STANDARD.md` section 5, and
+the ledger MUST retain the registration alongside the results, so that the protocol as run can be
+compared against the protocol as declared. A registration retained only outside the ledger is not
+retained.
+
+The ledger MUST record, per validation run: the hypotheses tested and their count, the events tested
+and their count, the multiple-comparison method applied, the effect sizes observed, the negative
+control results, and whether the run used the development set or the protected holdout.
+
+**Rules must not be selected, modified or tuned using protected holdout results.** The store-level
+protection in section 5 makes this enforceable rather than aspirational, which is why the protection
+lives in the store.
+
+Results reported without their hypothesis and event counts are incomplete, and the ledger should be
+unable to emit them that way.
+
+## 10. Change history
 
 | Version | Date | Change |
 |---|---|---|
 | 1.0.0 | 2026-08-11 | Created in the G1 work package as Phase H preparation. |
+| 1.1.0 | 2026-08-11 | Additive section 9: the pre-registered mundane validation protocol per ADR-0021 D1. Sections 1 to 9 unmodified. |

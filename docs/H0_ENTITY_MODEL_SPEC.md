@@ -149,9 +149,39 @@ One consequence worth naming: D3 is a requirement on a layer that does not exist
 Still open from section 7: the identifier family and pattern, the entity-kind vocabulary beyond the
 five named types, and whether relationships between entities are modelled as entities or as links.
 
+### 9.1 Further decisions (ADR-0021)
+
+**Entity vocabulary, D3.** The five kinds are provisional and the ontology is deliberately NOT
+frozen: Person, Organisation/Company, Geographic/National Entity, Event, Question. A new kind
+requires an explicit architectural decision, because kind determines which rules are applicable and
+therefore what the system may claim about that subject.
+
+**Relationships are links, D4.** RESOLVES the last open question in section 7. Relationships are
+modelled as explicit links between entities rather than as entities in their own right:
+
+```
+Entity A  --[ RELATIONSHIP ]-->  Entity B
+
+Person   --[ LEADS ]-->          Organisation
+Person   --[ CANDIDATE_IN ]-->   Election
+Company  --[ OPERATES_IN ]-->    Country
+Event    --[ OCCURS_IN ]-->      GeographicEntity
+```
+
+A relationship MAY be promoted to an entity later, and only if it requires all of its own lifecycle,
+identity, evidence, provenance, temporal state and independent analysis.
+
+The promotion criteria are recorded rather than assumed because relationships in this domain
+genuinely can acquire those properties. A marriage has a beginning, sometimes an end, its own events,
+and in some traditions its own chart. Recording the criteria makes promotion a decision rather than a
+drift, which is the same discipline applied to entity kinds and to identifier families.
+
+Section 7's remaining open item is therefore the identifier family and pattern.
+
 ## 10. Change history
 
 | Version | Date | Change |
 |---|---|---|
 | 1.0.0 | 2026-08-11 | Created from the CEO multi-domain platform vision, as the abstraction beneath H1 through H8. |
-| 1.1.0 | 2026-08-11 | Additive section 10: records ADR-0020 D1 and D3, which decide two of the section 7 open questions. Sections 1 to 9 unmodified. |
+| 1.1.0 | 2026-08-11 | Additive section 9: records ADR-0020 D1 and D3, which decide two of the section 7 open questions. Sections 1 to 8 unmodified. |
+| 1.2.0 | 2026-08-11 | Additive section 9.1: ADR-0021 D3 extensible vocabulary and D4 relationships as links, resolving the last section 7 question but one. |

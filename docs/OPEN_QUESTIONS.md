@@ -27,6 +27,20 @@ artifacts listed against it. Resolution = decision log entry + this register upd
 | Q9 | Should the existing certified calculation kernel (astro_kernel v1.3, Tier-0 portably certified) be imported into `engine/` as-is as the first component, and under what module name? | Avoids re-implementation; preserves certification lineage | engine/ population | OPEN |
 | Q10 | CI provider and mandatory pipeline stages (validation standard is CI-ready but no provider is chosen)? | Automation of the gates | tools/, repository settings | OPEN |
 
+## Q8 closure criteria (ADR-0021 D2)
+
+Q8 remains **OPEN**. ADR-0020 D6 supplies a preferred domain order (FOUNDATION, JATAKA, EVIDENCE,
+INTERPRETATION, CONVERGENCE, VARSHAPHAL, MUHURTA, PRASHNA, MUNDANE) and that order is explicitly
+**not** authorisation to begin implementation.
+
+Q8 closes only when the roadmap defines, for every implementation phase: prerequisites, entry
+criteria, implementation scope, certification gates, exit criteria, and CEO approval requirements.
+
+No roadmap document in this repository authorises implementation. `docs/PROJECT_ROADMAP.md`,
+`docs/VARGA_CERTIFICATION_ROADMAP.md`, `docs/DASHA_CERTIFICATION_ROADMAP.md` and
+`docs/PLATFORM_DOMAIN_ARCHITECTURE.md` each state orders or sequences and each says so; this note
+records it at register level so the point survives reading any one of them in isolation.
+
 ## Resolution log
 | ID | Resolved by | Date | Decision link |
 |---|---|---|---|

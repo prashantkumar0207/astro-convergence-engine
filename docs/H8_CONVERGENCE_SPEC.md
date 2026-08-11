@@ -139,10 +139,38 @@ where its evidence is weakest, which is the failure this project exists to avoid
 Unmeasured relationships MUST NOT default to independent. Absent evidence of correlation is not
 evidence of independence.
 
-## 13. Change history
+## 14. The independence principle (ADR-0021 D5, normative)
+
+> **Absence of measured correlation is not evidence of independence.**
+
+Section 12 derived this as a consequence. It is now a named principle in its own right, recorded
+normatively in `docs/VALIDATION_STANDARD.md` section 6, and it governs evidence aggregation anywhere
+in the system rather than only here.
+
+Four non-equivalences: unknown is not independent, derived is not independent, shared-origin is not
+independent, correlated is not independent.
+
+**The question convergence must eventually answer is not "how many systems agree" but "how many
+genuinely independent evidence paths support this conclusion".** These differ, and the difference is
+the whole value of the layer. Four agreeing systems, three of which derive from one natal chart,
+constitute two independent paths at most, and reporting four would be the most persuasive wrong
+answer this system could produce.
+
+The dependency structure between evidence sources is a graph. The count of agreeing sources is an
+**upper bound** on the number of independent paths through it and never an estimate. How the
+effective independent count is computed is an open design question; that it must not be the raw
+count is decided.
+
+## 15. Change history
 
 | Version | Date | Change |
 |---|---|---|
 | 1.0.0 | 2026-08-11 | Created in the G1 work package as Phase H preparation. |
 | 1.1.0 | 2026-08-11 | Additive section 10: the cross-domain axis, shared-origin independence, mundane multiple comparisons, and domain isolation. Sections 1 to 9 unmodified. |
 | 1.2.0 | 2026-08-11 | Additive section 12: dependency-aware convergence per ADR-0020 D4, and the prohibition on defaulting unmeasured relationships to independent. Sections 1 to 11 unmodified. |
+| 1.3.0 | 2026-08-11 | Additive section 14: the independence principle as a named normative rule per ADR-0021 D5, and the independent-evidence-paths question. Sections 1 to 13 unmodified. |
+
+Numbering note: section numbers in this document are STABLE and the gaps at 9, 11 and 13 are
+deliberate. Each marks a change-history heading that a later additive section replaced. Renumbering
+would falsify the change-history rows above, which cite section numbers, and would break the
+cross-references in ADR-0020 and ADR-0021. Do not tidy them.

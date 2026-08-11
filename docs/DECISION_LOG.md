@@ -3,8 +3,8 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | DRAFT - contains accepted entries ADR-0001..0002 and proposed entries ADR-0003..0014, ADR-0018, ADR-0019, ADR-0020 (plus the ADR-0018 remote-CI evidence addendum, 2026-08-11) |
-| Version | 0.6.0 |
+| Status | DRAFT - contains accepted entries ADR-0001..0002 and proposed entries ADR-0003..0014, ADR-0018, ADR-0019, ADR-0020, ADR-0021 (plus the ADR-0018 remote-CI evidence addendum, 2026-08-11) |
+| Version | 0.7.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 | Last updated | 2026-08-11 |
 | Review cadence | TBD |
@@ -716,6 +716,110 @@ reservation, not a lost entry. Numbers are obtained from this register BEFORE im
 - **Evidence:** `docs/PLATFORM_DOMAIN_ARCHITECTURE.md` s13, `docs/H0_ENTITY_MODEL_SPEC.md` s10,
   `docs/H4_EVIDENCE_MODEL_SPEC.md` s10, `docs/H8_CONVERGENCE_SPEC.md` s12, and
   `certification/ENGINE_CAPABILITY_INVENTORY.json`. Default gate 404 passed and the identifier
+  governance gate PASS at the time of recording, with zero changes under `engine/`, `legacy/`,
+  `scripts/`, any validator or any certification artifact.
+
+---
+
+## ADR-0021 - Mundane validation discipline, Q8 status, entity vocabulary and relationships, and the independence principle
+
+- **Date:** 2026-08-11
+- **Status:** PROPOSED - pending owner ratification (Q1). Recorded on CEO direction following
+  approval of ADR-0020 as the current architectural baseline.
+- **Context:** ADR-0020 was approved and four of its recorded residues were referred back for
+  decision: the multiple-comparison discipline for mundane validation, the status of Q8, the entity
+  vocabulary, and entity relationships. A fifth item elevates the independence rule from a
+  consequence noted in a specification to a permanent normative principle.
+- **Decision:**
+
+  **D1. Mundane validation is pre-registered, not mined.** Mundane historical validation MUST NOT
+  become a large-scale pattern-mining exercise in which many hypotheses are tested and only the
+  successful-looking results are reported. Before any protected testing, a mundane validation
+  protocol MUST define: event classes; hypotheses and rules; the development or training historical
+  set; the protected holdout historical set; the number of hypotheses tested; the number of events
+  tested; the applicable multiple-comparison methodology; effect-size measures; negative controls
+  where feasible; and replication requirements where feasible.
+
+  Rules MUST NOT be selected, modified or tuned using protected holdout results.
+
+  **Statistical significance MUST NEVER be represented as scientific proof of astrology.** It is
+  evidence about the measured performance of a specified astrological method under a specified
+  validation protocol, and it is to be stated in exactly those terms.
+
+  This is a permanent governance and validation requirement, recorded normatively in
+  `docs/VALIDATION_STANDARD.md` s4 and in `docs/H2_HISTORICAL_EVENT_LEDGER_SPEC.md` s9.
+
+  **D2. Q8 REMAINS OPEN.** ADR-0020 D6 supplies a preferred domain order and does not close Q8. Q8
+  remains open until the roadmap defines, for every implementation phase: prerequisites, entry
+  criteria, implementation scope, certification gates, exit criteria, and CEO approval requirements.
+  **The domain order is NOT authorisation to begin implementation.**
+
+  **D3. The entity vocabulary is provisional and extensible.** Current kinds: Person,
+  Organisation/Company, Geographic/National Entity, Event, Question. The ontology is deliberately NOT
+  frozen at this stage. A new entity kind requires an explicit architectural decision.
+
+  **D4. Relationships are modelled as explicit links, not as entities.** Entity A, relationship,
+  Entity B. For example Person LEADS Organisation, Person CANDIDATE_IN Election, Company OPERATES_IN
+  Country, Event OCCURS_IN GeographicEntity. A relationship MAY later be promoted to an entity only
+  if it requires its own lifecycle, identity, evidence, provenance, temporal state and independent
+  analysis. RESOLVES the third open question in `docs/H0_ENTITY_MODEL_SPEC.md` s7.
+
+  **D5. The independence principle is permanent and normative:**
+
+  > **Absence of measured correlation is not evidence of independence.**
+
+  Therefore, and stated as non-equivalences because each has been assumed in practice elsewhere:
+  unknown relationship is not independent; derived relationship is not independent; shared-origin
+  relationship is not independent; correlated relationship is not independent.
+
+  The convergence architecture must eventually determine AND EXPLAIN the dependency structure
+  between evidence sources, and must answer not "how many systems agree" but **"how many genuinely
+  independent evidence paths support this conclusion"**.
+
+- **Consequences and analysis:**
+
+  1. **D1 is pre-registration, and naming it that is useful.** The list of things to define before
+     testing is the established practice of pre-registration as used in empirical research. Naming
+     it gives the eventual implementation a body of existing method to draw on rather than
+     inventing a protocol from first principles, and it makes the discipline auditable: a protocol
+     either was registered before the protected run or it was not, and that is a checkable fact
+     rather than a judgment.
+  2. **A concrete negative control exists for this domain and should be recorded now.** Running the
+     same rules against permuted data, for example entity charts randomly reassigned to entities,
+     or events shifted to random dates, gives an empirical null distribution. If a rule scores as
+     well against shuffled data as against real data, the apparent performance is an artifact of
+     the protocol rather than a property of the rule. This is cheap, and it is one of the few
+     controls available in a domain where a true control group does not exist.
+  3. **The count of agreeing systems is an upper bound, never the answer.** D5's question implies
+     the dependency structure is a graph, and the honest measure is the number of genuinely
+     independent paths through it, which is at most the number of agreeing sources and typically
+     fewer. A convergence layer that reports the raw count is reporting the upper bound as though
+     it were the estimate. How the effective independent count is computed is an open design
+     question; that it must not be the raw count is now decided.
+  4. **D5 makes an existing specification passage normative.** `docs/H8_CONVERGENCE_SPEC.md` s12
+     already stated that unmeasured relationships must not default to independent, as a consequence
+     of ADR-0020 D4. It is now a named principle in its own right, which matters because it applies
+     beyond convergence: it governs how evidence is aggregated anywhere, including any future
+     scoring, weighting or confidence computation.
+  5. **D2 has an immediate consequence for how this project reads its own roadmaps.**
+     `docs/VARGA_CERTIFICATION_ROADMAP.md`, `docs/DASHA_CERTIFICATION_ROADMAP.md` and
+     `docs/PLATFORM_DOMAIN_ARCHITECTURE.md` all state orders and sequences. None of them
+     authorises implementation, all of them say so, and D2 makes that explicit at the register
+     level so the point cannot be lost by reading one document in isolation.
+  6. **D4 defers a real cost rather than avoiding it.** Links are cheaper than entities and are the
+     right starting point. The promotion criteria matter because relationships in this domain
+     genuinely can acquire their own lifecycle: a marriage has a start, an end, its own events and
+     arguably its own chart. The criteria are recorded so promotion is a decision rather than a
+     drift.
+  7. **D3's extensibility is not a licence for silent growth.** A new entity kind changes which
+     rules are applicable and therefore what the system may claim, so it takes an architectural
+     decision, exactly as a new varga or a new identifier family does.
+  8. **NO IMPLEMENTATION IS AUTHORISED** by this entry: not panchanga, rise/set, Muhurta,
+     Varshaphal, Prashna, Mundane, BTR, interpretation or convergence.
+
+- **Evidence:** `docs/VALIDATION_STANDARD.md` s4 and s5, `docs/H2_HISTORICAL_EVENT_LEDGER_SPEC.md`
+  s9, `docs/H0_ENTITY_MODEL_SPEC.md` s9.1, `docs/H8_CONVERGENCE_SPEC.md` s14,
+  `docs/OPEN_QUESTIONS.md` Q8 closure criteria. Default gate 404 passed and the identifier
   governance gate PASS at the time of recording, with zero changes under `engine/`, `legacy/`,
   `scripts/`, any validator or any certification artifact.
 
