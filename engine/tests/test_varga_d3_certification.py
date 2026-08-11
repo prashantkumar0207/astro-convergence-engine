@@ -17,7 +17,8 @@ def test_artifact_exists_and_claims_pass():
     assert ARTIFACT.exists(), "run scripts/certify_d3.py"
     report = json.loads(ARTIFACT.read_text())
     assert report["schema"] == "varga_d3_v1_certification"
-    assert report["adr"] == "ADR-VARGA-D3-001"
+    assert report["adr"] == "ADR-0009"
+    assert report["supersedes_provisional_id"] == "ADR-VARGA-D3-001"
     assert report["result"] == "PASS"
     gates = report["gates"]
     assert gates["A_table_integrity"] == {"cells": 36, "mismatches": 0}

@@ -277,7 +277,7 @@ def test_registry_refuses_certified_divisions():
 
 def test_unsupported_school_lookup_raises():
     # REPLACED (was: (7, parashara) unregistered): D7 is certified
-    # (ADR-VARGA-D7-001); an unregistered (division, school) pair
+    # (ADR-0011); an unregistered (division, school) pair
     # must still raise.
     with pytest.raises(UnsupportedVargaError):
         get_varga_rule(16, "parashara")

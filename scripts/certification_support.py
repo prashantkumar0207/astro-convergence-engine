@@ -126,6 +126,15 @@ def _render(report: dict) -> str:
         "docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.",
         "",
         f"- Decision entry: {report.get('adr', 'n/a')}",
+    ]
+    # ADR-0014: traceability for the retired provisional identifiers. Emitted only
+    # when the runner declares one, so artifacts that never carried a provisional
+    # identifier render byte-identically to before.
+    if report.get("supersedes_provisional_id"):
+        lines.append(
+            f"- Supersedes provisional identifier: {report['supersedes_provisional_id']}"
+        )
+    lines += [
         f"- Date: {report.get('date', 'n/a')}",
         f"- Scope: {report.get('scope', 'n/a')}",
         f"- Result: **{report.get('result', 'n/a')}**",

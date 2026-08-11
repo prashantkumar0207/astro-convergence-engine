@@ -1,4 +1,4 @@
-"""Independent D12 Dwadasamsa holdout validator (ADR-VARGA-D12-001).
+"""Independent D12 Dwadasamsa holdout validator (ADR-0010).
 
 Validates the production D12 classification against a reference built
 INDEPENDENTLY inside this file: target sign computed by counting

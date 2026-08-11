@@ -1,4 +1,4 @@
-"""Independent D3 Drekkana holdout validator (Gate 5 of ADR-VARGA-D3-001).
+"""Independent D3 Drekkana holdout validator (Gate 5 of ADR-0009).
 
 Validates the production D3 classification (generic framework +
 registered Parashara rule) against a reference built INDEPENDENTLY

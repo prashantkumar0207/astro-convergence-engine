@@ -1,5 +1,5 @@
 """
-D7 Saptamsa: production varga (VARGA_D7_V1, ADR-VARGA-D7-001).
+D7 Saptamsa: production varga (VARGA_D7_V1, ADR-0011).
 
 Classical source (Decision VB-A): Brihat Parashara Hora Shastra,
 saptamsa description: each sign divides into seven parts of 30/7

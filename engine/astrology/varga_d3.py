@@ -1,6 +1,6 @@
 """
 D3 Drekkana: first production varga through the generic registry
-(VARGA_D3_V1, ADR-VARGA-D3-001).
+(VARGA_D3_V1, ADR-0009).
 
 Classical source (Decision VD-A): Brihat Parashara Hora Shastra,
 drekkana description: each sign divides into three equal parts of 10

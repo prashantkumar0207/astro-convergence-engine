@@ -1,5 +1,5 @@
 """
-D30 Trimsamsa: production varga (VARGA_D30_V1, ADR-VARGA-D30-001).
+D30 Trimsamsa: production varga (VARGA_D30_V1, ADR-0011).
 
 Classical source (Decision VB-A): Brihat Parashara Hora Shastra,
 trimsamsa description. The five tara grahas rule unequal parts, no

@@ -1,5 +1,5 @@
 """
-VARGA_D12_V1 gates 1, 2, 4 (ADR-VARGA-D12-001).
+VARGA_D12_V1 gates 1, 2, 4 (ADR-0010).
 """
 
 import math

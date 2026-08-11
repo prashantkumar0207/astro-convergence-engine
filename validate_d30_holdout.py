@@ -1,4 +1,4 @@
-"""Independent D30 Trimsamsa holdout validator (ADR-VARGA-D30-001).
+"""Independent D30 Trimsamsa holdout validator (ADR-0011).
 
 Validates the production D30 Trimsamsa classification against a reference
 built INDEPENDENTLY inside this file (by-name lookup construction).

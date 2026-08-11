@@ -1,4 +1,4 @@
-"""VARGA_D12_V1 CERTIFICATION RUNNER (ADR-VARGA-D12-001).
+"""VARGA_D12_V1 CERTIFICATION RUNNER (ADR-0010).
 
 Regenerates certification/VARGA_D3_V1_certification.json FROM SCRATCH
 on every run; the stored JSON is never accepted as proof.
@@ -166,7 +166,8 @@ def main():
     preconditions = support.preflight()
     report = {
         "schema": "varga_d12_v1_certification",
-        "adr": "ADR-VARGA-D12-001",
+        "adr": "ADR-0010",
+        "supersedes_provisional_id": "ADR-VARGA-D12-001",
         "date": str(date.today()),
         "scope": "D12 Dwadasamsa (Parashara variant); first production use of the CyclicVargaRule path",
         "rule": {

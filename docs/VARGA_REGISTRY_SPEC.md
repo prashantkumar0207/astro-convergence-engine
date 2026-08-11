@@ -108,7 +108,7 @@ Decision V12-C, non-invasiveness: same discipline as D3. After registration the 
 
 ## 4. Certification gates
 
-Same six-gate template as ADR-VARGA-D3-001, now production-proven: table integrity (second transcription + re-derivation), 51,429-point dense sweep against an independently coded rule, full ULP boundary battery, PyJHora pure-math oracle (its Parasara dwadasamsa function) with zero categorical tolerance, framework non-invasiveness with cross-commit D9/D10 hashes, independent by-name validator (validate_d12_holdout.py), regenerated certification artifact (certification/VARGA_D12_V1_certification.json) with collected pinning test and additive README update. Full existing battery (315 tests, six validators, five certifiers) must pass untouched.
+Same six-gate template as ADR-0009, now production-proven: table integrity (second transcription + re-derivation), 51,429-point dense sweep against an independently coded rule, full ULP boundary battery, PyJHora pure-math oracle (its Parasara dwadasamsa function) with zero categorical tolerance, framework non-invasiveness with cross-commit D9/D10 hashes, independent by-name validator (validate_d12_holdout.py), regenerated certification artifact (certification/VARGA_D12_V1_certification.json) with collected pinning test and additive README update. Full existing battery (315 tests, six validators, five certifiers) must pass untouched.
 
 ## 5. Implementation order and risks
 

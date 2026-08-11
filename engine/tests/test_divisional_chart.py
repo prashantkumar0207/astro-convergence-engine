@@ -73,7 +73,7 @@ def test_divisional_chart_rejects_unsupported_divisions():
     snapshot = make_snapshot()
 
     # REPLACED (was: included 12): D12 is a certified registry entry
-    # (ADR-VARGA-D12-001); the remaining divisions must still refuse.
+    # (ADR-0010); the remaining divisions must still refuse.
     for division in (4, 16, 27, 60):
         with pytest.raises(UnsupportedVargaError):
             divisional_chart(snapshot, division=division)

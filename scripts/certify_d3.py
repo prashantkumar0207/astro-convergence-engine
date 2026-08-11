@@ -1,4 +1,4 @@
-"""VARGA_D3_V1 CERTIFICATION RUNNER (ADR-VARGA-D3-001).
+"""VARGA_D3_V1 CERTIFICATION RUNNER (ADR-0009).
 
 Regenerates certification/VARGA_D3_V1_certification.json FROM SCRATCH
 on every run; the stored JSON is never accepted as proof.
@@ -170,7 +170,8 @@ def main():
     preconditions = support.preflight()
     report = {
         "schema": "varga_d3_v1_certification",
-        "adr": "ADR-VARGA-D3-001",
+        "adr": "ADR-0009",
+        "supersedes_provisional_id": "ADR-VARGA-D3-001",
         "date": str(date.today()),
         "scope": "D3 Drekkana (Parashara variant) as the generic registry's first production entry",
         "rule": {

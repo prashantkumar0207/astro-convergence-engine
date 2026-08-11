@@ -1,4 +1,4 @@
-"""Independent D7 Saptamsa holdout validator (ADR-VARGA-D7-001).
+"""Independent D7 Saptamsa holdout validator (ADR-0011).
 
 Validates the production D7 Saptamsa classification against a reference
 built INDEPENDENTLY inside this file (by-name lookup construction).

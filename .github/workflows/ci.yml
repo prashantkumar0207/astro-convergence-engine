@@ -17,11 +17,10 @@
 # Nothing here uses continue-on-error and no step converts a failure into a
 # warning.
 #
-# A third `governance` job is specified in the approved Phase G plan and is
-# deliberately NOT added in this commit: its primary check is the retired
-# identifier search, which cannot pass until Phase G commit 2 (G1) removes the
-# 70 remaining occurrences. Adding it now would either break CI or require
-# disabling its real checks, both of which the plan forbids. It lands with G1.
+#   governance : identifier-family conformance and governance-document
+#              structure. Added by ADR-0014, having been deliberately deferred
+#              by ADR-0018 until G1 removed the 70 retired-identifier
+#              occurrences that would have made it fail.
 
 name: engine-ci
 
@@ -186,3 +185,123 @@ jobs:
             reports/certification/*.report.md
             reports/certification/*.console.txt
           if-no-files-found: error
+
+  governance:
+    name: governance gate (identifier families, document structure)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # No third-party dependency: these checks read files and run regexes.
+      - name: Identifier-family conformance (ADR-0014)
+        run: python scripts/check_retired_identifiers.py
+
+      - name: Negative control, the identifier gate must actually fail
+        run: |
+          set +e
+          # The probe string is ASSEMBLED at run time rather than written
+          # literally. A literal here would be a real violation inside a
+          # tracked file, and the gate would flag this workflow itself.
+          # Found the hard way: the gate caught exactly that on first run.
+          python -c "open('_governance_probe.py','w').write('# planted: ' + 'ADR-' + 'VARGA' + '-D3-001' + chr(10))"
+          git add -N _governance_probe.py
+          python scripts/check_retired_identifiers.py > /dev/null 2>&1
+          rc=$?
+          git rm -q --cached --force _governance_probe.py 2>/dev/null
+          rm -f _governance_probe.py
+          set -e
+          if [ "$rc" -eq 0 ]; then
+            echo "identifier gate did NOT flag a planted retired identifier;"
+            echo "the PASS above is therefore worthless"
+            exit 1
+          fi
+          echo "negative control passed: planted violation was caught (exit $rc)"
+
+      - name: ADR numbering is unique and monotonic
+        run: |
+          python - <<'PY'
+          import re, sys
+          from pathlib import Path
+          text = Path("docs/DECISION_LOG.md").read_text()
+          nums = [int(m) for m in re.findall(r"^## ADR-(\d{4}) ", text, re.M)]
+          errors = []
+          if len(nums) != len(set(nums)):
+              dupes = sorted({n for n in nums if nums.count(n) > 1})
+              errors.append(f"duplicate ADR numbers: {dupes}")
+          if nums != sorted(nums):
+              errors.append(f"ADR numbers not monotonic: {nums}")
+          if errors:
+              for e in errors:
+                  print("FAIL:", e)
+              sys.exit(1)
+          print(f"PASS: {len(nums)} ADR entries, unique and monotonic: "
+                f"ADR-{nums[0]:04d}..ADR-{nums[-1]:04d}")
+          PY
+
+      - name: Governing documents carry a status header
+        run: |
+          python - <<'PY'
+          import sys
+          from pathlib import Path
+          # DOCUMENTATION_STANDARD.md s2.1 requires a status header table on
+          # governing documents. Applied to the documents this project has
+          # brought under that rule; pre-existing HLKG-era documents are not
+          # retro-fitted here, that is G7 work.
+          REQUIRED = [
+              "docs/DECISION_LOG.md",
+              "docs/CI_AND_ORACLE_REPRODUCIBILITY_SPEC.md",
+              "docs/ENGINE_STATUS.md",
+              "docs/VARGA_REGISTRY_SPEC.md",
+              "docs/VIMSHOTTARI_DASHA_SPEC.md",
+              "docs/TRANSIT_ENGINE_SPEC.md",
+              "docs/KP_CHAIN_SPEC.md",
+              "docs/PARASHARI_DRISHTI_SPEC.md",
+              "docs/SIGN_CONVENTION_SPEC.md",
+          ]
+          FIELDS = ("Status", "Version", "Owner", "Last updated")
+          errors = []
+          for rel in REQUIRED:
+              head = "\n".join(Path(rel).read_text().splitlines()[:12])
+              missing = [f for f in FIELDS if f"| {f} |" not in head]
+              if missing:
+                  errors.append(f"{rel}: missing header fields {missing}")
+          if errors:
+              for e in errors:
+                  print("FAIL:", e)
+              sys.exit(1)
+          print(f"PASS: {len(REQUIRED)} governing documents carry a complete status header")
+          PY
+
+      - name: Certified varga registry matches its declared constant
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.lock
+          python - <<'PY'
+          import json, sys
+          from pathlib import Path
+          import engine.astrology as ast
+          declared = set(tuple(x) for x in ast.CERTIFIED_PRODUCTION_VARGAS)
+          # Every certified varga must have an artifact, and every varga
+          # artifact must correspond to a certified registry entry.
+          artifacts = {p.name for p in Path("certification").glob("VARGA_D*_V1_certification.json")}
+          expected = {f"VARGA_D{d}_V1_certification.json" for d, _ in declared}
+          errors = []
+          if artifacts != expected:
+              errors.append(f"artifact set {sorted(artifacts)} != declared {sorted(expected)}")
+          for name in sorted(artifacts & expected):
+              report = json.loads((Path("certification") / name).read_text())
+              if report.get("result") != "PASS":
+                  errors.append(f"{name}: result is not PASS")
+              if not report.get("adr", "").startswith("ADR-"):
+                  errors.append(f"{name}: missing or malformed adr field")
+          if errors:
+              for e in errors:
+                  print("FAIL:", e)
+              sys.exit(1)
+          print(f"PASS: {len(declared)} certified vargas, each with a PASS artifact "
+                f"citing a compliant decision entry")
+          PY

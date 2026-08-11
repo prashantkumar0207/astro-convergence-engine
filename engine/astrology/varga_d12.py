@@ -1,6 +1,6 @@
 """
 D12 Dwadasamsa: second production varga through the generic registry
-(VARGA_D12_V1, ADR-VARGA-D12-001).
+(VARGA_D12_V1, ADR-0010).
 
 Classical source (Decision V12-A): Brihat Parashara Hora Shastra,
 dwadasamsa description: each sign divides into twelve parts of 2.5
