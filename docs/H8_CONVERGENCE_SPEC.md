@@ -121,9 +121,28 @@ principle. Tajika aspects must not be merged into Parashari drishti, Mudda dasha
 into Vimshottari, and Prashna rules must not be applied to natal charts, in each case regardless of
 terminological overlap.
 
-## 11. Change history
+## 12. Dependency-aware convergence (ADR-0020 D4, additive)
+
+Convergence MUST NOT treat every agreeing analytical output as independent evidence. It must
+classify the relationship between contributing evidence using the five classes in
+`docs/H4_EVIDENCE_MODEL_SPEC.md` section 10, and **explain that classification to the user**.
+
+This turns section 2's requirement from a principle into a mechanism. "Explain why sources agree"
+becomes: state whether they are independent, one derived from another, sharing an origin, merely
+correlated, or in conflict.
+
+The user-facing consequence is the point. "Four systems agree" and "four systems agree, three of
+which are derived from the same natal chart" are different claims, and only the second is honest.
+A convergence layer that cannot draw that distinction will produce its most confident output exactly
+where its evidence is weakest, which is the failure this project exists to avoid.
+
+Unmeasured relationships MUST NOT default to independent. Absent evidence of correlation is not
+evidence of independence.
+
+## 13. Change history
 
 | Version | Date | Change |
 |---|---|---|
 | 1.0.0 | 2026-08-11 | Created in the G1 work package as Phase H preparation. |
 | 1.1.0 | 2026-08-11 | Additive section 10: the cross-domain axis, shared-origin independence, mundane multiple comparisons, and domain isolation. Sections 1 to 9 unmodified. |
+| 1.2.0 | 2026-08-11 | Additive section 12: dependency-aware convergence per ADR-0020 D4, and the prohibition on defaulting unmeasured relationships to independent. Sections 1 to 11 unmodified. |

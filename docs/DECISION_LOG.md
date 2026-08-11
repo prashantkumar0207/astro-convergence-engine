@@ -3,8 +3,8 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | DRAFT - contains accepted entries ADR-0001..0002 and proposed entries ADR-0003..0014, ADR-0018, ADR-0019 (plus the ADR-0018 remote-CI evidence addendum, 2026-08-11) |
-| Version | 0.5.0 |
+| Status | DRAFT - contains accepted entries ADR-0001..0002 and proposed entries ADR-0003..0014, ADR-0018, ADR-0019, ADR-0020 (plus the ADR-0018 remote-CI evidence addendum, 2026-08-11) |
+| Version | 0.6.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 | Last updated | 2026-08-11 |
 | Review cadence | TBD |
@@ -597,6 +597,127 @@ reservation, not a lost entry. Numbers are obtained from this register BEFORE im
   evidence, interpretation, convergence, and domain modules last.
 - **Evidence:** `docs/PLATFORM_DOMAIN_ARCHITECTURE.md`, `docs/H0_ENTITY_MODEL_SPEC.md`, additive
   sections in H1 s9, H4 s8, H7 s11 and H8 s10, and the capability-absence search recorded above.
+
+---
+
+## ADR-0020 - Multi-domain platform: ten ratified architecture decisions
+
+- **Date:** 2026-08-11
+- **Status:** PROPOSED - pending owner ratification (Q1). Recorded on CEO direction following
+  review of ADR-0019. Supersedes no entry; resolves several questions ADR-0019 left open.
+- **Context:** ADR-0019 recorded the multi-domain product identity and deliberately left the
+  consequent architecture questions open. The CEO reviewed the findings and issued ten decisions.
+  This entry records them, records what they resolve, and records the conflicts and residues they
+  create, per PROJECT_CONSTITUTION.md s3.2 which forbids resolving ambiguity silently.
+- **Decision:**
+
+  **D1. Entity architecture: a common abstraction with specialised subject types.** NOT one
+  undifferentiated generic entity. A shared `AstrologicalSubject` and domain abstraction, with
+  specialised types where semantics differ: Person, Organisation/Company, Geographic/National
+  entity, Event, Question. Shared infrastructure without pretending all subject types have
+  identical chart semantics. RESOLVES the open question in `docs/H0_ENTITY_MODEL_SPEC.md` s7,
+  "whether shapes are one type or four", in favour of a common abstraction plus specialisation.
+
+  **D2. Panchanga and rise/set are Tier-0 foundational calculation capabilities.** Not ad-hoc
+  logic inside Muhurta. They will support Muhurta, Prashna, Mundane, panchanga functionality,
+  Rahu Kalam, Yamaganda, Gulika and related time-window calculations. They require INDEPENDENT
+  CERTIFICATION before any dependent production module relies on them.
+
+  **D3. Mundane multi-chart model: no silent chart selection.** Where multiple historically
+  defensible origin charts exist for a country, company or institution, the architecture must
+  permit entity to candidate chart set, with provenance per chart, independent analysis per
+  chart, comparison, and explicit disagreement. The system must be capable of stating that
+  different defensible charts produce different conclusions. RESOLVES the second open question in
+  `docs/H0_ENTITY_MODEL_SPEC.md` s7 in favour of analysing across candidates and surfacing
+  disagreement.
+
+  **D4. Convergence dependency model: five evidence relationship classes.** Convergence MUST NOT
+  treat every agreeing output as independent. The evidence model must preserve dependency and
+  provenance relationships, and the convergence engine must distinguish and explain to the user:
+  INDEPENDENT, DERIVED, SHARED-ORIGIN, CORRELATED, and CONFLICTING evidence. Natal to Varshaphal
+  is a derived relationship and cannot automatically count as two confirmations. EXTENDS
+  `docs/H4_EVIDENCE_MODEL_SPEC.md` s8 and `docs/H8_CONVERGENCE_SPEC.md` s10, which specified
+  shared-origin detection only.
+
+  **D5. H-02 is a potential blocker for Muhurta and must be independently reproduced.** Before
+  any production Muhurta implementation, the reported transit ingress and nakshatra boundary
+  classification defect must be independently reproduced, NOT assumed correct because it appears
+  in an audit. If confirmed, the underlying calculation is repaired and certified before
+  dependent Muhurta work.
+
+  **D6. Preferred domain roadmap**, subject to future CEO review:
+  FOUNDATION, JATAKA, EVIDENCE, INTERPRETATION, CONVERGENCE, VARSHAPHAL, MUHURTA, PRASHNA,
+  MUNDANE. BTR remains an independent evidence-driven capability and MUST NOT become a
+  prerequisite for convergence or a universal explanation for prediction failure.
+
+  **D7. Muhurta: both modes reserved.** General Muhurta may operate without birth details.
+  Personalised Muhurta may incorporate natal chart, relevant vargas, dashas, transits, Moon
+  factors, Tara Bala, Chandra Bala, purpose-specific rules and historical evidence where
+  appropriate. Muhurta is fundamentally a SEARCH AND RANKING problem over candidate moments and
+  MUST expose its search window, candidate space and selection methodology.
+
+  **D8. Varshaphal is a distinct annual-analysis domain**, not another natal interpretation
+  layer: solar return, Varsha Lagna, Muntha, Varshesh, Tajika aspects, Sahams, Mudda Dasha, each
+  subject to later certification.
+
+  **D9. Prashna is a question-driven domain** requiring no birth details: question plus timestamp
+  plus location to Prashna context and chart, applicable rules, analysis, evidence, qualified
+  answer.
+
+  **D10. The repository is the permanent record.** These decisions are recorded here rather than
+  relied upon from conversation.
+
+- **Consequences and residues, stated rather than smoothed:**
+
+  1. **The Tier-0 lock scope is NOT retroactively widened by D2.** ADR-0005 fixes the lock scope
+     as the astronomical kernel, ephemeris handling, frame, calculation profiles, houses,
+     sidereal positions, the JD/time pipeline, and the certified D9/D10 mathematics. Panchanga
+     and rise/set are new capabilities that will require certification at Tier-0 depth; the
+     existing lock covers neither and MUST NOT be read as if it did.
+  2. **A layering nuance worth recording.** Rise/set is astronomy proper: ephemeris plus horizon
+     geometry, with genuine high-latitude edge cases where the concept degrades or fails.
+     Panchanga elements are deterministic CLASSIFICATION over astronomical outputs, structurally
+     closer to a varga than to the kernel. Both are foundational and both need independent
+     certification, which is the substance of D2 and is not in question. Whether they occupy the
+     same tier label is a precision question for the eventual taxonomy work, and it is recorded
+     here rather than decided.
+  3. **Vara depends on rise/set.** The Jyotisha weekday runs sunrise to sunrise, not midnight to
+     midnight, so vara cannot be computed from the civil calendar and inherits every rise/set
+     edge case. Rahu Kalam, Yamaganda and Gulika are eighth-part divisions of the day and night
+     and carry variant assignment tables across traditions. Each variant is a decision to be
+     recorded, never chosen silently, exactly as the varga variants are.
+  4. **Four of D4's five classes are structurally derivable; one is not.** INDEPENDENT, DERIVED,
+     SHARED-ORIGIN and CONFLICTING follow from provenance and chart references recorded at
+     evidence-creation time. CORRELATED is a MEASURED property: knowing that two rules or systems
+     tend to agree beyond their structural relationship requires evidence accumulated in the
+     historical ledger. The taxonomy therefore has two different epistemic sources, and the
+     measured class cannot be populated until the ledger exists and has a defensible sample.
+  5. **D6 partially answers Q8 and does not close it.** Open question Q8 asks for ratified
+     roadmap phases WITH entry and exit criteria. D6 supplies the order; it supplies no criteria.
+     It also supersedes in practice the sequencing in `docs/PROJECT_BACKLOG.md` that placed Phase
+     1 Core Intelligence before Phase 2 Astrology Systems, which is ADR-0013 conflict 7. Whether
+     Q8 is now closed, or remains open pending criteria, is an owner decision.
+  6. **D5's evidence class, stated plainly.** The H-02 percentages, two of twelve Sun sankranti
+     instants and twelve of twenty-eight Moon nakshatra ingress instants, were produced by a
+     delegated read-only audit and relayed in
+     `reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md`. The builder did not personally re-execute
+     that measurement. The CEO's instruction to reproduce independently is therefore correct on
+     the evidence as it stands, and this entry records the gap rather than defending the figure.
+  7. **D7's search-methodology exposure aligns Muhurta with BTR.** Both evaluate many candidates
+     and report the best, so both are bound by the discipline in `docs/H7_BTR_SPEC.md` s11 and
+     `docs/PLATFORM_DOMAIN_ARCHITECTURE.md` s8: record the search space and the candidate count,
+     and never present "best of ten thousand" as "strongly indicated" without its denominator.
+  8. **D3 has no supporting model today.** Nothing in `engine/models/` represents a subject, let
+     alone a subject with competing charts. D3 is a requirement on a layer that does not exist.
+  9. **NO IMPLEMENTATION IS AUTHORISED.** Not panchanga, rise/set, Muhurta, Varshaphal, Prashna,
+     Mundane, BTR, interpretation or convergence. Development priority is unchanged: governance
+     and certification, calculation confidence, evidence, interpretation, convergence, domains.
+
+- **Evidence:** `docs/PLATFORM_DOMAIN_ARCHITECTURE.md` s13, `docs/H0_ENTITY_MODEL_SPEC.md` s10,
+  `docs/H4_EVIDENCE_MODEL_SPEC.md` s10, `docs/H8_CONVERGENCE_SPEC.md` s12, and
+  `certification/ENGINE_CAPABILITY_INVENTORY.json`. Default gate 404 passed and the identifier
+  governance gate PASS at the time of recording, with zero changes under `engine/`, `legacy/`,
+  `scripts/`, any validator or any certification artifact.
 
 ---
 

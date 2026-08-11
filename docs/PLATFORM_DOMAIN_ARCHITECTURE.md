@@ -245,8 +245,36 @@ multiple-comparison discipline is for mundane validation. Whether cross-domain c
 shared-origin sources differently, and how. Whether H-02's resolution is reprioritised given section
 6. And the domain ordering after the current priorities are met.
 
-## 12. Change history
+## 12. Decisions taken (ADR-0020, additive)
+
+Section 11 listed the decisions this document raised. Most are now taken. Recorded here so the
+document does not continue to present settled questions as open.
+
+**Taken.** The entity model is a common `AstrologicalSubject` and domain abstraction with
+specialised subject types, not one undifferentiated type (D1). Panchanga and rise/set are Tier-0
+foundational capabilities requiring independent certification before any dependent production module
+relies on them (D2). Competing mundane charts are analysed independently and their disagreement
+surfaced, with no silent selection (D3). Convergence must classify evidence relationships as
+independent, derived, shared-origin, correlated or conflicting, and explain the classification (D4).
+H-02 must be independently reproduced before production Muhurta, and repaired and certified if
+confirmed (D5). The domain order is FOUNDATION, JATAKA, EVIDENCE, INTERPRETATION, CONVERGENCE,
+VARSHAPHAL, MUHURTA, PRASHNA, MUNDANE, with BTR remaining independent and never a prerequisite for
+convergence (D6). Both Muhurta modes are reserved, and Muhurta must expose its search window,
+candidate space and selection methodology (D7). Varshaphal is a distinct domain rather than a natal
+interpretation layer (D8). Prashna requires no birth details (D9).
+
+**Still open.** The multiple-comparison discipline for mundane validation, which section 4.5
+identifies as the sharpest risk in the strongest evidence source. The entity-kind vocabulary beyond
+the five named types. Whether relationships between entities are modelled as entities or links. And
+whether Q8 is closed by D6, which supplies an order but no entry or exit criteria.
+
+**Two residues recorded in ADR-0020 rather than here**, because they qualify decisions rather than
+raise new ones: the Tier-0 lock scope is not retroactively widened by D2, and vara depends on
+rise/set because the Jyotisha weekday runs sunrise to sunrise rather than midnight to midnight.
+
+## 13. Change history
 
 | Version | Date | Change |
 |---|---|---|
 | 1.0.0 | 2026-08-11 | Created from the CEO multi-domain platform vision. Architecture clarification only. |
+| 1.1.0 | 2026-08-11 | Additive section 12: records the ten ADR-0020 decisions against the questions section 11 raised, and what remains open. Sections 1 to 11 unmodified. |

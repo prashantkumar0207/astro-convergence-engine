@@ -125,8 +125,33 @@ Immutability enforcement. A negative test proving analytical content cannot be s
 BTR refusal where origin certainty is documented. Competing-chart round-trip with attribution
 preserved. Shape-invalid operation rejection, for example attempting rectification on a query moment.
 
-## 9. Change history
+## 9. Decisions taken (ADR-0020, additive)
+
+Two questions this document listed as open in section 7 are now decided.
+
+**Shape representation, D1.** Not one undifferentiated generic entity. A common
+`AstrologicalSubject` and domain abstraction, with **specialised subject types** where semantics
+differ: Person, Organisation/Company, Geographic/National entity, Event, Question. The point of the
+decision is stated in the decision itself and is worth repeating: shared infrastructure without
+pretending that all subject types have identical chart semantics.
+
+Section 3's four shapes remain the analytical basis for which operations are valid. They are not
+superseded by D1; they describe behaviour, while D1 decides representation.
+
+**Competing charts, D3.** No silent chart selection. Entity to candidate chart set, provenance per
+chart, independent analysis per chart, then comparison and explicit disagreement. The system must be
+able to say that different defensible charts produce different conclusions. This is the more
+expensive of the two options section 7 offered, and it was chosen deliberately.
+
+One consequence worth naming: D3 is a requirement on a layer that does not exist. Nothing in
+`engine/models/` represents a subject today, let alone a subject carrying competing charts.
+
+Still open from section 7: the identifier family and pattern, the entity-kind vocabulary beyond the
+five named types, and whether relationships between entities are modelled as entities or as links.
+
+## 10. Change history
 
 | Version | Date | Change |
 |---|---|---|
 | 1.0.0 | 2026-08-11 | Created from the CEO multi-domain platform vision, as the abstraction beneath H1 through H8. |
+| 1.1.0 | 2026-08-11 | Additive section 10: records ADR-0020 D1 and D3, which decide two of the section 7 open questions. Sections 1 to 9 unmodified. |

@@ -133,9 +133,36 @@ sources, and it would systematically overstate confidence in precisely the combi
 most wants to present. This is the same trap section 2 of `docs/H8_CONVERGENCE_SPEC.md` records for
 two systems sharing a Moon position, in a sharper form.
 
-## 9. Change history
+## 10. Evidence relationship classes (ADR-0020 D4, additive)
+
+Section 8 added a chart reference to make shared-origin detection possible. ADR-0020 D4 extends that
+into a required taxonomy. Evidence must carry enough dependency and provenance information for
+convergence to classify any pair or group as:
+
+**INDEPENDENT.** Different systems, different derivation paths, no shared origin.
+**DERIVED.** One is computed from the other. Natal to Varshaphal is the canonical case.
+**SHARED-ORIGIN.** Not derived from each other, but both computed from the same underlying fact, for
+example two systems both keyed on the same Moon position.
+**CORRELATED.** Structurally independent, yet observed to agree more often than independence would
+predict.
+**CONFLICTING.** Disagreeing, which is a result and not a failure.
+
+**Four of these are structural; one is not, and the difference matters.** INDEPENDENT, DERIVED,
+SHARED-ORIGIN and CONFLICTING are all derivable at evidence-creation time from provenance, chart
+references and derivation links. CORRELATED is a **measured** property: it can only be established
+from accumulated history in `docs/H2_HISTORICAL_EVENT_LEDGER_SPEC.md`, and it therefore cannot be
+populated until that ledger exists and holds a defensible sample.
+
+The practical consequence is that the evidence model must record the structural relationships from
+the start, because they are cheap and unrecoverable later, while leaving the correlated class
+explicitly absent rather than defaulting it to independent. Defaulting an unmeasured relationship to
+independent is the failure mode: it would overstate confidence in exactly the situations where
+correlation is most likely.
+
+## 11. Change history
 
 | Version | Date | Change |
 |---|---|---|
 | 1.0.0 | 2026-08-11 | Created in the G1 work package as Phase H preparation. |
 | 1.1.0 | 2026-08-11 | Additive section 8: entity, domain and chart reference, and the shared-origin rationale. Sections 1 to 7 unmodified. |
+| 1.2.0 | 2026-08-11 | Additive section 10: the five evidence relationship classes per ADR-0020 D4, and the structural-versus-measured distinction. Sections 1 to 9 unmodified. |
