@@ -3,10 +3,10 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | DRAFT - contains accepted entries ADR-0001..0002 and proposed entries ADR-0003..0013, ADR-0018 |
-| Version | 0.3.0 |
+| Status | DRAFT - contains accepted entries ADR-0001..0002 and proposed entries ADR-0003..0013, ADR-0018 (plus the ADR-0018 remote-CI evidence addendum, 2026-08-11) |
+| Version | 0.3.1 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-10 |
+| Last updated | 2026-08-11 |
 | Review cadence | TBD |
 
 # Decision Log (ADR register)
@@ -425,6 +425,43 @@ entry. Numbers are obtained from this register BEFORE implementation, per ADR-00
   identical results; the negative control fails with `NoNetworkError` and exit code 1.
   `scripts/check_oracle_environment.py` returns 0 in the reproduced environment and 1 in a
   non-matching one. Specification: `docs/CI_AND_ORACLE_REPRODUCIBILITY_SPEC.md`.
+
+---
+
+## ADR-0018 EVIDENCE ADDENDUM - remote CI validation (2026-08-11)
+
+- **Status:** ADDITIVE EVIDENCE. This addendum does NOT edit ADR-0018 above; that entry and its
+  original evidence paragraph stand unmodified as dated record. ADR-0018 remains PROPOSED.
+- **Context:** ADR-0018's original evidence was entirely local: clean-environment reproduction
+  inside the container that authored the lock. The stated purpose of G6 was to prove the oracle
+  environment reproducible OUTSIDE that sandbox, so the decision was not fully evidenced until the
+  workflow ran on foreign hardware.
+- **New evidence:** The `engine-ci` workflow executed on GitHub-hosted runners for commit
+  `a460ba2b7e4eac55f8ac2f51b9e9eb9a35607fda` on branch `phase-g-governance`. Reported results:
+  `hermetic` PASS on Python 3.11; `hermetic` PASS on Python 3.12; `oracle` PASS; overall workflow
+  SUCCESS; `oracle-certification-evidence` artifact produced. `requirements-oracle.lock` therefore
+  installed under `--require-hashes` on foreign hardware, the environment identity assertion passed
+  there, and all eight oracle certification runners passed there. The predicted wheel-hash
+  portability risk did not materialize. No hash was relaxed, no dependency version changed, and the
+  lock was not regenerated.
+- **Evidence class, stated exactly:** CEO_REPORTED. These remote results were observed by the
+  CEO/technical auditor and reported to the builder. The builder has no network access to the
+  Actions API and did NOT independently observe them. Run URL, run id, runner image and pip version
+  were not supplied and are recorded as null rather than guessed. Per this register's own
+  anti-circularity discipline, a PASS without a resolvable run identifier is weaker evidence than
+  the project standard requires, and completing it by additive amendment remains an open item.
+- **Determination:** G6 = PASS, on CEO authority, 2026-08-11. This is a REPRODUCIBILITY and
+  INFRASTRUCTURE determination only. It certifies no calculation, promotes no component's
+  certification level, and is not a C4 or C5 claim about any astrological method.
+- **Technical debt recorded, not fixed:** TD-CI-001 GitHub Actions Node.js 20 deprecation warnings
+  (non-blocking; the G6 commit must not be altered merely to silence them); TD-CI-002 oracle tier
+  bound to CPython 3.11 linux x86_64, never to be resolved by relaxing hashes; TD-CI-003
+  `scripts/certify_tier0.py` still broken, disposition belongs to Phase G commit 6 (G7).
+- **Machine-readable record:** `certification/G6_REMOTE_CI_VALIDATION.json`. Human-readable record:
+  `reports/G6_COMPLETION_RECORD.md`. Specification update: `docs/CI_AND_ORACLE_REPRODUCIBILITY_SPEC.md`
+  section 7.1, version 1.1.0.
+- **State:** `phase-g-governance` is NOT merged into `main`. `main` remains at `1f861f6`. Phase G
+  commit 2 (G1) has not started and awaits CEO approval.
 
 ---
 

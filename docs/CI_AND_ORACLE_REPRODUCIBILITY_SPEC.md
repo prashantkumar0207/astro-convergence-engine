@@ -191,6 +191,34 @@ created with no system site-packages:
 - `scripts/check_oracle_environment.py` returns 0 in the reproduced environment
   and 1 in a non-matching environment.
 
+### 7.1 Remote verification on GitHub Actions, 2026-08-11
+
+Section 7 above is the LOCAL verification and is preserved unchanged as dated
+evidence. This subsection records the independent remote verification that
+closed G6's remaining gap: proving the oracle environment reproducible outside
+the sandbox that created it.
+
+The `engine-ci` workflow executed on GitHub-hosted runners for commit
+`a460ba2b7e4eac55f8ac2f51b9e9eb9a35607fda` on branch `phase-g-governance`.
+Reported results: `hermetic` PASS on Python 3.11, `hermetic` PASS on Python
+3.12, `oracle` PASS, overall workflow SUCCESS, and the
+`oracle-certification-evidence` artifact produced.
+
+This means `requirements-oracle.lock` installed with `--require-hashes` on
+foreign hardware, the environment identity assertion passed there, and all
+eight oracle certification runners passed there. The predicted risk that a
+GitHub runner might resolve different wheels than the authoring container did
+not materialize. No hash was relaxed, no dependency version changed, and the
+lock was not regenerated.
+
+Evidence class, stated exactly: these remote results were observed by the
+CEO/technical auditor and reported to the builder. The builder has no network
+access to the Actions API and did NOT independently observe them. The run URL,
+run id, runner image and pip version were not supplied and are recorded as null
+in `certification/G6_REMOTE_CI_VALIDATION.json` rather than guessed. That file
+is the machine-readable record of this validation, including the per-item
+evidence class for every claim.
+
 ## 8. Known limitations
 
 The recorded identity is exact for CPython 3.11 on linux x86_64 and for no
@@ -208,8 +236,22 @@ Hash pinning protects integrity, not availability: if an index removes a
 version, the job fails loudly rather than silently installing something else.
 That is the intended behavior.
 
+GitHub Actions emits Node.js 20 deprecation warnings for the action versions
+this workflow pins. They are non-blocking and do not affect gate outcomes.
+Recorded as technical debt `TD-CI-001` in
+`certification/G6_REMOTE_CI_VALIDATION.json` by CEO direction. The G6 commit
+MUST NOT be altered merely to silence them; they are addressed by a dedicated
+CI-maintenance task with its own decision entry.
+
+The GitHub Actions run identity for the 2026-08-11 validation is incomplete:
+run URL, run id, runner image and pip version were not supplied to the builder.
+Until they are added by additive amendment, the repository's record of that run
+carries no resolvable pointer to it, which is a weaker evidence class than this
+project's standard requires.
+
 ## 9. Change history
 
 | Version | Date | Change |
 |---|---|---|
 | 1.0.0 | 2026-08-10 | Created with Phase G commit 1 (G6). Records the two-tier CI split, the oracle environment identity, the hash-pinned lock, and the clean-environment reproducibility proof. |
+| 1.1.0 | 2026-08-11 | Additive: section 7.1 records the remote GitHub Actions verification and its evidence class; section 8 gains the Node.js 20 deprecation technical debt and the incomplete run-identity limitation. Section 7 and all prior text are unmodified. |
