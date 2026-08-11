@@ -41,6 +41,20 @@ No roadmap document in this repository authorises implementation. `docs/PROJECT_
 `docs/PLATFORM_DOMAIN_ARCHITECTURE.md` each state orders or sequences and each says so; this note
 records it at register level so the point survives reading any one of them in isolation.
 
+## Decision papers and design proposals drafted (2026-08-11)
+
+Drafted on CEO direction. Each presents options; none decides. All four matters remain OPEN.
+
+| Matter | Document | Status |
+|---|---|---|
+| Entity identifier family and pattern | `docs/decisions/DP-008-entity-identifier-family.md` | OPEN, options presented, recommendation labelled |
+| Tier classification for panchanga and rise/set | `docs/decisions/DP-009-panchanga-riseset-tier.md` | OPEN, options presented, recommendation labelled |
+| Independent evidence-path representation and computation | `docs/EVIDENCE_INDEPENDENCE_DESIGN.md` | OPEN, design proposal; convergence must not be implemented on it |
+| Q8 phase criteria | `docs/Q8_CLOSURE_MATRIX.md` | **Q8 REMAINS OPEN**; candidate matrix for ratification |
+
+`docs/decisions/README.md` indexes the paper series and records that DP-001 through DP-007 are
+reserved for the Phase G governance round and are not yet drafted.
+
 ## Resolution log
 | ID | Resolved by | Date | Decision link |
 |---|---|---|---|
