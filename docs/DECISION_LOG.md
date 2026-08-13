@@ -3,8 +3,8 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | ACTIVE REGISTER. ADR-0001 and ADR-0002 carry `Status: Accepted`, dated 2026-07-11; whether that acceptance was an owner act is not evidenced by the repository either way, and the ambiguity is recorded as ADR-0028 finding C-06 rather than resolved. Every other entry, ADR-0003 through ADR-0014 and ADR-0018 through ADR-0031, is PROPOSED and none can currently be Accepted, because Q1 (named owners) is open and PROJECT_CONSTITUTION.md s11 reserves ratification to the owner. Includes the ADR-0018 remote-CI evidence addendum (2026-08-11). |
-| Version | 0.10.0 |
+| Status | ACTIVE REGISTER. ADR-0001 and ADR-0002 carry `Status: Accepted`, dated 2026-07-11; whether that acceptance was an owner act is not evidenced by the repository either way, and the ambiguity is recorded as ADR-0028 finding C-06 rather than resolved. Every other entry, ADR-0003 through ADR-0014 and ADR-0018 through ADR-0032, is PROPOSED and none can currently be Accepted, because Q1 (named owners) is open and PROJECT_CONSTITUTION.md s11 reserves ratification to the owner. Includes the ADR-0018 remote-CI evidence addendum (2026-08-11). |
+| Version | 0.11.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 | Last updated | 2026-08-13 |
 | Review cadence | TBD |
@@ -1382,6 +1382,103 @@ makes no change to any calculation, test, certification artifact or gate.
   files unchanged. Default gate 415 passed, up from 404 by the 11 new agreement tests. Fresh
   extracted-tree run reproduced the certification from one command with all three evidence files
   regenerated from nothing.
+
+---
+
+## ADR-0032 - Tier-0 ephemeris integrity (resolves Q16), and the certification evidence provenance protocol
+
+- **Date:** 2026-08-13
+- **Status:** PROPOSED - pending owner ratification (Q1).
+- **Context:** Two matters arising from the C-03 repair recorded in ADR-0031. First, the evidence
+  committed at `7582407` records `source_revision: 4c14c05` and `working_tree_dirty: True`, which is
+  not the commit that carries it, and the CEO required this be proven rather than explained away.
+  Second, Q16 recorded that the Tier-0 runner verified the swetest binary's version but not the
+  integrity of the ephemeris data.
+
+### Decision 1. Evidence provenance: case A, proven, and a protocol so it stops recurring
+
+**The evidence was NOT stale.** It represents the working tree that became `7582407`, and the
+proof is a chain of three checked facts rather than a recollection:
+
+  1. The certification run stamped `2026-08-13T08:03:44Z`. The commit `7582407` is timestamped
+     `2026-08-13T08:04:39Z`, fifty-five seconds later.
+  2. Every source file the certification depends on has a filesystem mtime EARLIER than the run:
+     the runner at 07:59:45, the shared emitter at 08:02:40, and every engine module, the swetest
+     binary and all three ephemeris files at 2026-08-10. **No source was modified after the run.**
+  3. The working tree was clean at `7582407`, so the on-disk files equal the committed blobs.
+
+  From (3) the committed blobs equal the on-disk files; from (2) the on-disk files at commit time
+  equal those at run time; therefore **the committed tree contains exactly the implementation that
+  was certified**. `working_tree_dirty: True` was truthful: at run time the tree differed from
+  `4c14c05`, which is precisely what that field exists to say.
+
+**Why this is nevertheless unsatisfactory, and the protocol that fixes it.** A reader should not
+have to reconstruct mtimes to learn which commit was certified. The cause is structural: a run
+must precede the commit that carries its output, so `HEAD` at run time is always the PREVIOUS
+commit.
+
+  **PROTOCOL, from this entry onward. Certification evidence is committed in two steps.**
+  **Step 1** commits the implementation. **Step 2** re-runs the certifier against that clean
+  committed tree and commits ONLY the regenerated evidence files. The evidence then records a real
+  commit SHA with `working_tree_dirty: false`, and that SHA names the commit holding the certified
+  implementation. The step-2 commit MUST change no implementation file, which is verifiable by
+  diffing the two commits.
+
+  This is bookkeeping discipline, not a redesign. Nothing in the runner changes to support it.
+
+### Decision 2. Q16: ephemeris integrity is verified, using the existing mechanism
+
+**The finding, stated precisely because the distinction is the whole point.** `resolve_swetest()`
+executes the bundled binary and asserts the string `version 2.10.03`. That proves the ORACLE is the
+pinned build. **It proves nothing whatsoever about the ephemeris DATA**, which is what both the
+oracle and the engine actually read, and which is where a silent corruption would move every
+number in the run while every version check still passed.
+
+  1. **The runner calls `certification_support.preflight()` before anything else**, and records its
+     result as `report["preconditions"]`, which the emitter already renders. No checksum logic is
+     duplicated: this is the same `verify_data_assets()` the other nine certifiers use, and the same
+     `CHECKSUMS.sha256` manifest.
+  2. **Coverage is exact and is now asserted, not assumed.** `CHECKSUMS.sha256` lists
+     `seas_18.se1`, `semo_18.se1` and `sepl_18.se1`. `engine.astronomy.ephemeris.REQUIRED_FILES`
+     declares those same three, and `default_ephemeris_path()` resolves to the repository root,
+     which is also the `-edir` the runner passes to swetest. **The engine and the independent oracle
+     read the same three verified files.** A test asserts this correspondence so it cannot rot if
+     either list changes.
+  3. A precondition failure routes through `fail()`, exiting 3 with a legible message, matching the
+     runner's existing convention rather than raising a traceback.
+  4. The anti-fitting scan arrives with `preflight()` as a consequence, closing VALIDATION_STANDARD
+     section 2 rule 6 for this runner at the same time as rule 4. 146 production modules scanned,
+     zero findings.
+  5. **The Tier-0 exemption in `engine/tests/test_certification_preconditions.py` is withdrawn.**
+     That list carried the comment that Tier-0 "predates this requirement and is exempt until its
+     runner is wired". It is wired, so the artifact is now held to the same standard as the other
+     ten.
+- **Negative controls.** Three committed, plus two demonstrated end to end.
+  Committed: a copy-based control that corrupts one byte of a COPY of an ephemeris file and requires
+  `CertificationFailure`; a control that deletes a copied asset and requires the same; and the
+  coverage assertion above. Each verifies the copies PASS first, so the control cannot pass
+  vacuously. Demonstrated: corrupting one byte of `semo_18.se1` in a full extracted copy made the
+  certifier exit 3 with the expected and actual digests printed, and deleting `sepl_18.se1` made it
+  exit 3 reporting the missing asset. **The real bundled reference data was never modified**, proven
+  by a combined SHA-256 over the three ephemeris files and the manifest, identical before and after.
+- **Consequences:**
+  - **Zero numerical change.** Summary, tolerance, ayanamsa profile check and every per-case value
+    are identical to the pre-C-03 committed artifact at `4c14c05`. 264 planet and 264 cusp
+    comparisons; maxima 0.00017942695649253437, 0.00017634032474234118 and 0.0001795366415535682
+    arcsec; zero Moshier fallbacks; PASS. Tolerance still 0.5 arcsec. The 11-case holdout, both
+    profiles, and every calculation path are untouched.
+  - Default gate 420 passed, from 415: three new precondition tests and two parametrised cases
+    gained by withdrawing the Tier-0 exemption.
+  - **Constitution section 12 is unaffected by this entry.** Condition 3 was repaired by ADR-0031;
+    this closes a VALIDATION_STANDARD section 2 gap. **Condition 4 remains unmet and Tier-0 remains
+    correctly described as "reported", not "Locked"**, because ADR-0005 is PROPOSED while Q1 is open.
+    ADR-0005's status is not changed by this entry.
+  - **Q15 remains OPEN and is deliberately not addressed.** The artifact is still not
+    byte-reproducible, because each case records `swetest_cmd` containing the run's temporary
+    directory and the checkout's absolute path.
+- **Evidence:** mtime and commit-timestamp chain above; `CHECKSUMS.sha256` compared against
+  `REQUIRED_FILES`; end-to-end controls exiting 3 with correct diagnostics; combined ephemeris
+  hash unchanged; full gate 420 passed.
 
 ---
 

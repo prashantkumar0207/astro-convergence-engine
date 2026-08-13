@@ -9,7 +9,9 @@ certification artifact carry the preconditions it was produced under,
 so a claim cannot be published without them.
 """
 
+import hashlib
 import json
+import shutil
 import sys
 from pathlib import Path
 
@@ -20,9 +22,11 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 import certification_support as support  # noqa: E402
 
-#: Every artifact that must carry preconditions. The Tier-0 artifact
-#: predates this requirement and is exempt until its runner is wired.
+#: Every artifact that must carry preconditions. The Tier-0 artifact was
+#: exempt until its runner was wired; Q16 wired it, so the exemption is
+#: withdrawn and it is now held to the same standard as the rest.
 ARTIFACTS = (
+    "current_engine_certification.json",
     "KP_CHAIN_V1_certification.json",
     "VIMSHOTTARI_V1_certification.json",
     "TRANSIT_V1_certification.json",
@@ -46,6 +50,105 @@ def test_anti_fitting_scan_is_clean():
     result = support.scan_for_fitting()
     assert result["findings"] == [], result["findings"]
     assert result["modules_scanned"] > 100
+
+
+def test_checksum_manifest_covers_every_required_ephemeris_file():
+    """Q16 coverage proof: the manifest guards the data actually read.
+
+    Verifying the swetest binary's version proves the ORACLE is the pinned
+    one. It proves nothing about the ephemeris DATA. This test asserts that
+    the manifest covers exactly the files
+    `engine.astronomy.ephemeris.REQUIRED_FILES` declares, resolved at the
+    path the engine configures, so that coverage cannot silently rot if
+    either list changes.
+    """
+
+    from engine.astronomy.ephemeris import REQUIRED_FILES, default_ephemeris_path
+
+    manifest_names = {
+        line.split()[-1]
+        for line in support.CHECKSUM_MANIFEST.read_text().splitlines()
+        if line.strip()
+    }
+    missing = set(REQUIRED_FILES) - manifest_names
+    assert not missing, (
+        f"ephemeris files required by the engine but absent from "
+        f"CHECKSUMS.sha256: {sorted(missing)}. Their integrity is unverified."
+    )
+    # The manifest is relative to the repository root, which is also where
+    # the engine points Swiss Ephemeris and where the runner points swetest.
+    assert default_ephemeris_path() == ROOT
+    for name in REQUIRED_FILES:
+        assert (ROOT / name).is_file()
+
+
+def test_checksum_verification_detects_a_corrupted_asset(tmp_path):
+    """Ephemeris-integrity negative control. Copy-based; real data untouched.
+
+    A gate that cannot fail is not a gate. This corrupts a COPY and proves
+    the verification refuses it.
+    """
+
+    import certification_support as module
+
+    from engine.astronomy.ephemeris import REQUIRED_FILES
+
+    for name in REQUIRED_FILES:
+        shutil.copy2(ROOT / name, tmp_path / name)
+    manifest = tmp_path / "CHECKSUMS.sha256"
+    manifest.write_text(
+        "".join(
+            f"{hashlib.sha256((tmp_path / n).read_bytes()).hexdigest()}  {n}\n"
+            for n in REQUIRED_FILES
+        )
+    )
+
+    original_root, original_manifest = module.ROOT, module.CHECKSUM_MANIFEST
+    try:
+        module.ROOT, module.CHECKSUM_MANIFEST = tmp_path, manifest
+        # Positive: the copies verify, so the control is meaningful.
+        assert module.verify_data_assets()["assets_verified"] == len(REQUIRED_FILES)
+
+        # Corrupt one byte of one copy.
+        victim = tmp_path / REQUIRED_FILES[0]
+        data = bytearray(victim.read_bytes())
+        data[len(data) // 2] ^= 0xFF
+        victim.write_bytes(bytes(data))
+
+        with pytest.raises(module.CertificationFailure) as caught:
+            module.verify_data_assets()
+        assert "checksum mismatch" in str(caught.value)
+    finally:
+        module.ROOT, module.CHECKSUM_MANIFEST = original_root, original_manifest
+
+    # The real bundled data was never touched.
+    assert support.verify_data_assets()["assets_verified"] >= 3
+
+
+def test_checksum_verification_detects_a_missing_asset(tmp_path):
+    """The other half of the failure mode: absent, not merely altered."""
+
+    import certification_support as module
+
+    from engine.astronomy.ephemeris import REQUIRED_FILES
+
+    name = REQUIRED_FILES[0]
+    shutil.copy2(ROOT / name, tmp_path / name)
+    manifest = tmp_path / "CHECKSUMS.sha256"
+    manifest.write_text(
+        f"{hashlib.sha256((tmp_path / name).read_bytes()).hexdigest()}  {name}\n"
+    )
+
+    original_root, original_manifest = module.ROOT, module.CHECKSUM_MANIFEST
+    try:
+        module.ROOT, module.CHECKSUM_MANIFEST = tmp_path, manifest
+        assert module.verify_data_assets()["assets_verified"] == 1
+        (tmp_path / name).unlink()
+        with pytest.raises(module.CertificationFailure) as caught:
+            module.verify_data_assets()
+        assert "missing" in str(caught.value)
+    finally:
+        module.ROOT, module.CHECKSUM_MANIFEST = original_root, original_manifest
 
 
 def test_anti_fitting_scan_actually_detects_violations(tmp_path):
@@ -89,5 +192,11 @@ def test_human_readable_report_and_transcript_retained(name):
     assert transcript.exists(), f"no console transcript for {slug}"
     # console/report agreement: the report states the same verdict the
     # console printed, because both derive from one dict.
-    assert report["result"] in rendered.read_text()
-    assert report["result"] in transcript.read_text()
+    # The Tier-0 runner records its verdict inside `summary` alongside the
+    # failure list that produced it; the others set it at top level. Read
+    # both through the shared helper rather than duplicating the verdict
+    # into the artifact purely so this assertion can find it.
+    verdict = support._result_of(report)
+    assert verdict != "n/a", f"{slug} declares no verdict anywhere"
+    assert verdict in rendered.read_text()
+    assert verdict in transcript.read_text()

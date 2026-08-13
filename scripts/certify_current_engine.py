@@ -228,6 +228,19 @@ def main():
     # transcript is the whole run rather than the part after setup.
     tee = support.start_transcript()
 
+    # Q16 / VALIDATION_STANDARD s2 rules 4 and 6. Verifying the swetest
+    # binary's version string proves the ORACLE is the pinned one; it proves
+    # nothing about the ephemeris DATA that both the oracle and the engine
+    # read. Both resolve to the repository root, and CHECKSUMS.sha256 covers
+    # exactly the three files engine.astronomy.ephemeris.REQUIRED_FILES
+    # declares, so this is the integrity check for the data the run depends
+    # on. It runs FIRST: a certification claim over unverified reference data
+    # is worth nothing, however good the numbers look.
+    try:
+        preconditions = support.preflight()
+    except support.CertificationFailure as exc:
+        fail(f"precondition failed, refusing to certify: {exc}")
+
     binary = resolve_swetest()
     revision = source_revision()
 
@@ -244,6 +257,7 @@ def main():
         "reference": "Astrodienst swetest v2.10.03 (independent C binary, "
                      "bundled, version-verified at runtime)",
         "tolerance_arcsec": TOLERANCE_ARCSEC,
+        "preconditions": preconditions,
         "run": {
             "source_revision": revision["commit"],
             "working_tree_dirty": revision["dirty"],
@@ -391,6 +405,10 @@ def main():
     print("=" * 64)
     print("CURRENT-ENGINE HOLDOUT CERTIFICATION")
     print("=" * 64)
+    print(f"ephemeris verified: {preconditions['data_assets']['assets_verified']} "
+          "assets against CHECKSUMS.sha256")
+    print(f"anti-fitting scan : {preconditions['anti_fitting']['modules_scanned']} "
+          f"modules, {len(preconditions['anti_fitting']['findings'])} findings")
     print(f"profiles          : {', '.join(PROFILES)}")
     print(f"cases per profile : {s['cases_per_profile']}")
     print(f"planet comparisons: {s['total_planet_comparisons']}")

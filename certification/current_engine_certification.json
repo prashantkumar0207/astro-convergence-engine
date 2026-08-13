@@ -6,11 +6,26 @@
  "engine": "engine/ (modular), version from engine/version.py",
  "reference": "Astrodienst swetest v2.10.03 (independent C binary, bundled, version-verified at runtime)",
  "tolerance_arcsec": 0.5,
+ "preconditions": {
+  "data_assets": {
+   "assets_verified": 3,
+   "sha256": {
+    "seas_18.se1": "a2cd8fc33807c78ca9a700c91c2e042258b12fc4796519e00781440b5ad8b2e2",
+    "semo_18.se1": "1ca07bd67c24374d77226180c20a4f9996cba013697894810518e7eb582ca4f7",
+    "sepl_18.se1": "ca1393ceab3a44fbc895887cf789c68819ae6a1cbc9b22225872dbe4ccd99a66"
+   }
+  },
+  "anti_fitting": {
+   "modules_scanned": 146,
+   "findings": [],
+   "justified_exceptions": []
+  }
+ },
  "run": {
-  "source_revision": "4c14c055619ea9e7aad171a0776202610ded2d52",
+  "source_revision": "7582407a732ca7f06458f83881fa0ca3ea6a36b9",
   "working_tree_dirty": true,
   "engine_version": "0.3.0",
-  "executed_utc": "2026-08-13T08:03:44Z",
+  "executed_utc": "2026-08-13T08:10:52Z",
   "python": "3.11.15",
   "holdout_cases": "H1_london_1823, H2_newyork_1900, H3_sydney_1946, H4_delhi_1979, H5_reykjavik_1992, H6_quito_2010, H7_tokyo_2033, H8_mumbai_2077, H9_paris_2350, H10_boundary_moon_a, H11_boundary_moon_b",
   "reference_binary": "swetest 2.10.03 (bundled, version-verified at runtime)"
@@ -21,7 +36,7 @@
    "cases": [
     {
      "id": "H1_london_1823",
-     "swetest_cmd": "/tmp/swetest_vszletsm/swetest -edir/home/claude/ace -b17.4.1823 -ut03:21:07 -p0123456789m -eswe -sid1 -house-0.1278,51.5074,P -fPl -g, -head",
+     "swetest_cmd": "/tmp/swetest_o0tz58ov/swetest -edir/home/claude/ace -b17.4.1823 -ut03:21:07 -p0123456789m -eswe -sid1 -house-0.1278,51.5074,P -fPl -g, -head",
      "ayanamsa_value_deg": 21.389647504999317,
      "provenance": {
       "profile": "parashari_lahiri",
@@ -64,7 +79,7 @@
     },
     {
      "id": "H2_newyork_1900",
-     "swetest_cmd": "/tmp/swetest_vszletsm/swetest -edir/home/claude/ace -b1.1.1900 -ut00:00:00 -p0123456789m -eswe -sid1 -house-74.006,40.7128,P -fPl -g, -head",
+     "swetest_cmd": "/tmp/swetest_o0tz58ov/swetest -edir/home/claude/ace -b1.1.1900 -ut00:00:00 -p0123456789m -eswe -sid1 -house-74.006,40.7128,P -fPl -g, -head",
      "ayanamsa_value_deg": 22.46053059240471,
      "provenance": {
       "profile": "parashari_lahiri",
@@ -107,7 +122,7 @@
     },
     {
      "id": "H3_sydney_1946",
-     "swetest_cmd": "/tmp/swetest_vszletsm/swetest -edir/home/claude/ace -b14.6.1946 -ut21:47:53 -p0123456789m -eswe -sid1 -house151.2093,-33.8688,P -fPl -g, -head",
+     "swetest_cmd": "/tmp/swetest_o0tz58ov/swetest -edir/home/claude/ace -b14.6.1946 -ut21:47:53 -p0123456789m -eswe -sid1 -house151.2093,-33.8688,P -fPl -g, -head",
      "ayanamsa_value_deg": 23.109167777659305,
      "provenance": {
       "profile": "parashari_lahiri",
@@ -150,7 +165,7 @@
     },
     {
      "id": "H4_delhi_1979",
-     "swetest_cmd": "/tmp/swetest_vszletsm/swetest -edir/home/claude/ace -b11.11.1979 -ut17:41:37 -p0123456789m -eswe -sid1 -house77.2167,28.6667,P -fPl -g, -head",
+     "swetest_cmd": "/tmp/swetest_o0tz58ov/swetest -edir/home/claude/ace -b11.11.1979 -ut17:41:37 -p0123456789m -eswe -sid1 -house77.2167,28.6667,P -fPl -g, -head",
      "ayanamsa_value_deg": 23.57578580839362,
      "provenance": {
       "profile": "parashari_lahiri",
@@ -193,7 +208,7 @@
     },
     {
      "id": "H5_reykjavik_1992",
-     "swetest_cmd": "/tmp/swetest_vszletsm/swetest -edir/home/claude/ace -b29.2.1992 -ut23:59:59 -p0123456789m -eswe -sid1 -house-21.9426,64.1466,P -fPl -g, -head",
+     "swetest_cmd": "/tmp/swetest_o0tz58ov/swetest -edir/home/claude/ace -b29.2.1992 -ut23:59:59 -p0123456789m -eswe -sid1 -house-21.9426,64.1466,P -fPl -g, -head",
      "ayanamsa_value_deg": 23.7476187621574,
      "provenance": {
       "profile": "parashari_lahiri",
@@ -236,7 +251,7 @@
     },
     {
      "id": "H6_quito_2010",
-     "swetest_cmd": "/tmp/swetest_vszletsm/swetest -edir/home/claude/ace -b21.7.2010 -ut05:05:05 -p0123456789m -eswe -sid1 -house-78.4678,-0.1807,P -fPl -g, -head",
+     "swetest_cmd": "/tmp/swetest_o0tz58ov/swetest -edir/home/claude/ace -b21.7.2010 -ut05:05:05 -p0123456789m -eswe -sid1 -house-78.4678,-0.1807,P -fPl -g, -head",
      "ayanamsa_value_deg": 24.004479856093212,
      "provenance": {
       "profile": "parashari_lahiri",
@@ -279,7 +294,7 @@
     },
     {
      "id": "H7_tokyo_2033",
-     "swetest_cmd": "/tmp/swetest_vszletsm/swetest -edir/home/claude/ace -b3.9.2033 -ut11:11:11 -p0123456789m -eswe -sid1 -house139.6503,35.6762,P -fPl -g, -head",
+     "swetest_cmd": "/tmp/swetest_o0tz58ov/swetest -edir/home/claude/ace -b3.9.2033 -ut11:11:11 -p0123456789m -eswe -sid1 -house139.6503,35.6762,P -fPl -g, -head",
      "ayanamsa_value_deg": 24.327497537222655,
      "provenance": {
       "profile": "parashari_lahiri",
@@ -322,7 +337,7 @@
     },
     {
      "id": "H8_mumbai_2077",
-     "swetest_cmd": "/tmp/swetest_vszletsm/swetest -edir/home/claude/ace -b3.12.2077 -ut14:30:27 -p0123456789m -eswe -sid1 -house72.8777,19.076,P -fPl -g, -head",
+     "swetest_cmd": "/tmp/swetest_o0tz58ov/swetest -edir/home/claude/ace -b3.12.2077 -ut14:30:27 -p0123456789m -eswe -sid1 -house72.8777,19.076,P -fPl -g, -head",
      "ayanamsa_value_deg": 24.945765443532764,
      "provenance": {
       "profile": "parashari_lahiri",
@@ -365,7 +380,7 @@
     },
     {
      "id": "H9_paris_2350",
-     "swetest_cmd": "/tmp/swetest_vszletsm/swetest -edir/home/claude/ace -b15.1.2350 -ut06:06:06 -p0123456789m -eswe -sid1 -house2.3522,48.8566,P -fPl -g, -head",
+     "swetest_cmd": "/tmp/swetest_o0tz58ov/swetest -edir/home/claude/ace -b15.1.2350 -ut06:06:06 -p0123456789m -eswe -sid1 -house2.3522,48.8566,P -fPl -g, -head",
      "ayanamsa_value_deg": 28.75039257821544,
      "provenance": {
       "profile": "parashari_lahiri",
@@ -408,7 +423,7 @@
     },
     {
      "id": "H10_boundary_moon_a",
-     "swetest_cmd": "/tmp/swetest_vszletsm/swetest -edir/home/claude/ace -b1.3.2025 -ut16:21:00 -p0123456789m -eswe -sid1 -house77.2167,28.6667,P -fPl -g, -head",
+     "swetest_cmd": "/tmp/swetest_o0tz58ov/swetest -edir/home/claude/ace -b1.3.2025 -ut16:21:00 -p0123456789m -eswe -sid1 -house77.2167,28.6667,P -fPl -g, -head",
      "ayanamsa_value_deg": 24.208625840247237,
      "provenance": {
       "profile": "parashari_lahiri",
@@ -463,7 +478,7 @@
     },
     {
      "id": "H11_boundary_moon_b",
-     "swetest_cmd": "/tmp/swetest_vszletsm/swetest -edir/home/claude/ace -b2.3.2025 -ut11:38:00 -p0123456789m -eswe -sid1 -house77.2167,28.6667,P -fPl -g, -head",
+     "swetest_cmd": "/tmp/swetest_o0tz58ov/swetest -edir/home/claude/ace -b2.3.2025 -ut11:38:00 -p0123456789m -eswe -sid1 -house77.2167,28.6667,P -fPl -g, -head",
      "ayanamsa_value_deg": 24.208656572207303,
      "provenance": {
       "profile": "parashari_lahiri",
@@ -528,7 +543,7 @@
    "cases": [
     {
      "id": "H1_london_1823",
-     "swetest_cmd": "/tmp/swetest_vszletsm/swetest -edir/home/claude/ace -b17.4.1823 -ut03:21:07 -p0123456789m -eswe -sid5 -house-0.1278,51.5074,P -fPl -g, -head",
+     "swetest_cmd": "/tmp/swetest_o0tz58ov/swetest -edir/home/claude/ace -b17.4.1823 -ut03:21:07 -p0123456789m -eswe -sid5 -house-0.1278,51.5074,P -fPl -g, -head",
      "ayanamsa_value_deg": 21.29279487571442,
      "provenance": {
       "profile": "kp_krishnamurti",
@@ -571,7 +586,7 @@
     },
     {
      "id": "H2_newyork_1900",
-     "swetest_cmd": "/tmp/swetest_vszletsm/swetest -edir/home/claude/ace -b1.1.1900 -ut00:00:00 -p0123456789m -eswe -sid5 -house-74.006,40.7128,P -fPl -g, -head",
+     "swetest_cmd": "/tmp/swetest_o0tz58ov/swetest -edir/home/claude/ace -b1.1.1900 -ut00:00:00 -p0123456789m -eswe -sid5 -house-74.006,40.7128,P -fPl -g, -head",
      "ayanamsa_value_deg": 22.36367812560286,
      "provenance": {
       "profile": "kp_krishnamurti",
@@ -614,7 +629,7 @@
     },
     {
      "id": "H3_sydney_1946",
-     "swetest_cmd": "/tmp/swetest_vszletsm/swetest -edir/home/claude/ace -b14.6.1946 -ut21:47:53 -p0123456789m -eswe -sid5 -house151.2093,-33.8688,P -fPl -g, -head",
+     "swetest_cmd": "/tmp/swetest_o0tz58ov/swetest -edir/home/claude/ace -b14.6.1946 -ut21:47:53 -p0123456789m -eswe -sid5 -house151.2093,-33.8688,P -fPl -g, -head",
      "ayanamsa_value_deg": 23.012315390390427,
      "provenance": {
       "profile": "kp_krishnamurti",
@@ -657,7 +672,7 @@
     },
     {
      "id": "H4_delhi_1979",
-     "swetest_cmd": "/tmp/swetest_vszletsm/swetest -edir/home/claude/ace -b11.11.1979 -ut17:41:37 -p0123456789m -eswe -sid5 -house77.2167,28.6667,P -fPl -g, -head",
+     "swetest_cmd": "/tmp/swetest_o0tz58ov/swetest -edir/home/claude/ace -b11.11.1979 -ut17:41:37 -p0123456789m -eswe -sid5 -house77.2167,28.6667,P -fPl -g, -head",
      "ayanamsa_value_deg": 23.478933469467563,
      "provenance": {
       "profile": "kp_krishnamurti",
@@ -700,7 +715,7 @@
     },
     {
      "id": "H5_reykjavik_1992",
-     "swetest_cmd": "/tmp/swetest_vszletsm/swetest -edir/home/claude/ace -b29.2.1992 -ut23:59:59 -p0123456789m -eswe -sid5 -house-21.9426,64.1466,P -fPl -g, -head",
+     "swetest_cmd": "/tmp/swetest_o0tz58ov/swetest -edir/home/claude/ace -b29.2.1992 -ut23:59:59 -p0123456789m -eswe -sid5 -house-21.9426,64.1466,P -fPl -g, -head",
      "ayanamsa_value_deg": 23.650766439156826,
      "provenance": {
       "profile": "kp_krishnamurti",
@@ -743,7 +758,7 @@
     },
     {
      "id": "H6_quito_2010",
-     "swetest_cmd": "/tmp/swetest_vszletsm/swetest -edir/home/claude/ace -b21.7.2010 -ut05:05:05 -p0123456789m -eswe -sid5 -house-78.4678,-0.1807,P -fPl -g, -head",
+     "swetest_cmd": "/tmp/swetest_o0tz58ov/swetest -edir/home/claude/ace -b21.7.2010 -ut05:05:05 -p0123456789m -eswe -sid5 -house-78.4678,-0.1807,P -fPl -g, -head",
      "ayanamsa_value_deg": 23.90762755501072,
      "provenance": {
       "profile": "kp_krishnamurti",
@@ -786,7 +801,7 @@
     },
     {
      "id": "H7_tokyo_2033",
-     "swetest_cmd": "/tmp/swetest_vszletsm/swetest -edir/home/claude/ace -b3.9.2033 -ut11:11:11 -p0123456789m -eswe -sid5 -house139.6503,35.6762,P -fPl -g, -head",
+     "swetest_cmd": "/tmp/swetest_o0tz58ov/swetest -edir/home/claude/ace -b3.9.2033 -ut11:11:11 -p0123456789m -eswe -sid5 -house139.6503,35.6762,P -fPl -g, -head",
      "ayanamsa_value_deg": 24.230645260486767,
      "provenance": {
       "profile": "kp_krishnamurti",
@@ -829,7 +844,7 @@
     },
     {
      "id": "H8_mumbai_2077",
-     "swetest_cmd": "/tmp/swetest_vszletsm/swetest -edir/home/claude/ace -b3.12.2077 -ut14:30:27 -p0123456789m -eswe -sid5 -house72.8777,19.076,P -fPl -g, -head",
+     "swetest_cmd": "/tmp/swetest_o0tz58ov/swetest -edir/home/claude/ace -b3.12.2077 -ut14:30:27 -p0123456789m -eswe -sid5 -house72.8777,19.076,P -fPl -g, -head",
      "ayanamsa_value_deg": 24.84891320338079,
      "provenance": {
       "profile": "kp_krishnamurti",
@@ -872,7 +887,7 @@
     },
     {
      "id": "H9_paris_2350",
-     "swetest_cmd": "/tmp/swetest_vszletsm/swetest -edir/home/claude/ace -b15.1.2350 -ut06:06:06 -p0123456789m -eswe -sid5 -house2.3522,48.8566,P -fPl -g, -head",
+     "swetest_cmd": "/tmp/swetest_o0tz58ov/swetest -edir/home/claude/ace -b15.1.2350 -ut06:06:06 -p0123456789m -eswe -sid5 -house2.3522,48.8566,P -fPl -g, -head",
      "ayanamsa_value_deg": 28.653540272249757,
      "provenance": {
       "profile": "kp_krishnamurti",
@@ -915,7 +930,7 @@
     },
     {
      "id": "H10_boundary_moon_a",
-     "swetest_cmd": "/tmp/swetest_vszletsm/swetest -edir/home/claude/ace -b1.3.2025 -ut16:21:00 -p0123456789m -eswe -sid5 -house77.2167,28.6667,P -fPl -g, -head",
+     "swetest_cmd": "/tmp/swetest_o0tz58ov/swetest -edir/home/claude/ace -b1.3.2025 -ut16:21:00 -p0123456789m -eswe -sid5 -house77.2167,28.6667,P -fPl -g, -head",
      "ayanamsa_value_deg": 24.111773554968806,
      "provenance": {
       "profile": "kp_krishnamurti",
@@ -970,7 +985,7 @@
     },
     {
      "id": "H11_boundary_moon_b",
-     "swetest_cmd": "/tmp/swetest_vszletsm/swetest -edir/home/claude/ace -b2.3.2025 -ut11:38:00 -p0123456789m -eswe -sid5 -house77.2167,28.6667,P -fPl -g, -head",
+     "swetest_cmd": "/tmp/swetest_o0tz58ov/swetest -edir/home/claude/ace -b2.3.2025 -ut11:38:00 -p0123456789m -eswe -sid5 -house77.2167,28.6667,P -fPl -g, -head",
      "ayanamsa_value_deg": 24.111804286931147,
      "provenance": {
       "profile": "kp_krishnamurti",
