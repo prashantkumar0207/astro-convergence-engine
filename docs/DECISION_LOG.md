@@ -3,8 +3,8 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | ACTIVE REGISTER. **ACCEPTED: ADR-0001, ADR-0002, ADR-0005, ADR-0009, ADR-0010, ADR-0011, ADR-0033, ADR-0034 and ADR-0035**, all owner-ratified by Prashant Kumar on 2026-08-13. ADR-0005's ratification satisfied Constitution s12 condition 4, so **Tier-0 is FORMALLY LOCKED** (ADR-0034). The registry vargas D2, D3, D7, D12 and D30 are **owner-ratified CERTIFIED but NOT Locked**, because no entry declares a lock over them (ADR-0035 D3). **Every other entry, ADR-0003, ADR-0004, ADR-0006, ADR-0007, ADR-0008, ADR-0012, ADR-0013, ADR-0014 and ADR-0018 through ADR-0032, remains PROPOSED.** Ratification is now possible, because Q1 named an owner; ratification is per-entry, and an owner existing is not the register being ratified. Includes the ADR-0018 remote-CI evidence addendum (2026-08-11). |
-| Version | 1.2.0 |
+| Status | ACTIVE REGISTER. **ACCEPTED (11): ADR-0001, ADR-0002, ADR-0005, ADR-0009, ADR-0010, ADR-0011, ADR-0012, ADR-0033, ADR-0034, ADR-0035, ADR-0036**, all owner-ratified by Prashant Kumar on 2026-08-13. Tier-0 is **FORMALLY LOCKED** (ADR-0034), the only s12 Locked artifact. The registry vargas and the sign conventions are **owner-ratified but NOT s12 Locked** (ADR-0035 D3, ADR-0036 D3). **Still PROPOSED: ADR-0003, ADR-0004, ADR-0006, ADR-0007, ADR-0008, ADR-0013, ADR-0014 and ADR-0018 through ADR-0032.** Ratification is now possible, because Q1 named an owner; ratification is per-entry, and an owner existing is not the register being ratified. Includes the ADR-0018 remote-CI evidence addendum (2026-08-11). |
+| Version | 1.3.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 | Last updated | 2026-08-13 |
 | Review cadence | TBD |
@@ -322,7 +322,12 @@ at 0015..0017 is a reservation, not a lost entry, and a gap is not a monotonicit
 ## ADR-0012 - Parashari graha drishti; sign-convention enforcement (supersedes provisional ADR-ASPECT-PAR-001, ADR-CONVENTION-001)
 
 - **Date:** 2026-08-09
-- **Status:** PROPOSED - pending owner ratification (Q1).
+- **Status:** **ACCEPTED. RATIFIED BY THE OWNER, Prashant Kumar, 2026-08-13**, on the ratification
+  recorded in ADR-0036. Ratified EXACTLY AS WRITTEN: both decisions, the locked sign conventions,
+  the declaration gate, the recorded non-claims and the explicit substitution of
+  ARCHITECTURE_STATUS.md item 5 all stand unaltered. **This ratification closes the asymmetry
+  ADR-0035 D4 recorded**, since the convention the ratified registry vargas emit is now itself
+  owner-ratified. **It does NOT declare a Constitution s12 Locked artifact**; see ADR-0036 D3.
 - **Decision (a), aspects:** Open `engine/parashari/` as the first school layer above the
   shared primitives and implement full (purna) graha drishti facts only: every graha aspects
   the seventh, Mars additionally the fourth and eighth, Jupiter the fifth and ninth, Saturn
@@ -1859,6 +1864,119 @@ producing these until the register is either fully ratified or the gaps are deli
   `VARGA_D30_V1_certification.json` confirmed present, each PASS, each citing a compliant decision
   identifier; all five certifiers confirmed to call both `preflight()` and `emit()`; register
   searched for any varga lock declaration, none found.
+
+---
+
+## ADR-0036 - Owner ratification of ADR-0012: Parashari graha drishti and the locked sign conventions
+
+- **Date:** 2026-08-13
+- **Status:** **ACCEPTED**, on the owner's ratification of 2026-08-13.
+- **Context:** ADR-0035 D4 recorded an asymmetry created by per-entry ratification: the five registry
+  vargas had been ratified, while ADR-0012, the entry that fixes the sign convention their outputs
+  are read under, remained PROPOSED. The recommendation was to put ADR-0012 to the owner. The owner
+  has now ratified it exactly as written.
+
+### Decision 1. What is ratified
+
+**Decision (a), aspects.** `engine/parashari/` as the first school layer above the shared primitives,
+implementing full (purna) graha drishti facts only: every graha aspects the seventh, Mars
+additionally the fourth and eighth, Jupiter the fifth and ninth, Saturn the third and tenth, by
+inclusive whole-sign counting. **Node-cast aspects remain excluded from certified behaviour because
+traditions genuinely disagree**, and the variant is recorded rather than chosen silently. Fractional
+sputa drishti, Jaimini rashi drishti, Western aspects, yogas, strengths and interpretation remain
+non-claims.
+
+**Decision (b), sign conventions.** Do NOT renumber. **Every varga sign output is 0-based, including
+certified D9/D10 and all registry vargas; every rashi-level output is 1-based. Both are locked.** The
+inert `Sign` value type, the additive opposite-convention accessors, and the
+`engine.astrology.sign_conventions` declaration with a collected gate that fails on any undeclared
+field are all ratified.
+
+Ratified **as written**. No rule, convention, gate, non-claim or certification figure is altered, and
+**no calculation code or certification artifact is touched by this entry**.
+
+### Decision 2. The asymmetry ADR-0035 D4 recorded is CLOSED
+
+The registry vargas D2, D3, D7, D12 and D30 are owner-ratified, and the convention under which their
+sign outputs are read is now owner-ratified too. **A reader can now answer "by what authority is a
+ratified varga's output index read 0-based" by pointing at a ratified entry.**
+
+Two things this does NOT close, stated so the closure is not over-read:
+
+- **ADR-0006, ADR-0007 and ADR-0008 remain PROPOSED**, so the KP chain, Vimshottari and transit
+  layers are certified but not owner-ratified. They are the remaining certified production layers.
+- **The ADR-0001 versus ADR-0003 tension recorded in ADR-0033 D2 is untouched.** Ratified ADR-0001
+  still fixes a top-level folder set that unratified ADR-0003 reconciled away.
+
+### Decision 3. Constitution s12 evaluated. NOT declared Locked, and the reason is deliberate
+
+This entry needs a more careful evaluation than ADR-0035 did, because **ADR-0012 decision (b)
+actually contains the words "Both are locked"**. Unlike the varga certification entries, there is a
+lock claim here for a decision entry to record. So the question is live rather than trivially
+answered, and it is answered as follows.
+
+| # | Condition | State for the sign conventions |
+|---|---|---|
+| 1 | Written specification or frozen profile | **MET.** `docs/SIGN_CONVENTION_SPEC.md` |
+| 2 | Reproducible verification run | **MET.** `scripts/certify_sign_convention.py` runs from one command and calls `preflight()`, so ephemeris integrity and the anti-fitting scan gate it |
+| 3 | Same-run machine and human evidence, agreeing | **MET.** Routes through `certification_support.emit()`; covered by the byte-equality agreement gate |
+| 4 | A decision log entry records the lock, **its version** and its evidence | **ARGUABLY MET, NOT DECLARED** |
+
+**Condition 4 is not asserted, for two independent reasons, either of which is sufficient.**
+
+**First, no lock authorisation was given.** When Tier-0 was locked the owner supplied a separate,
+explicit instruction: "I approve formally locking Tier-0." The present instruction ratifies ADR-0012
+and says nothing about locking. Ratification and lock authorisation have been kept as distinct owner
+acts throughout, and inferring the second from the first would be manufacturing an owner act. That is
+the one thing this register exists to prevent.
+
+**Second, ADR-0012 does not state a version.** Condition 4 requires the entry to record the lock,
+**its version**, and its evidence. ADR-0005 recorded engine 0.3.0. ADR-0012 records the lock and the
+evidence but no version for the locked convention. On a strict reading condition 4 is therefore not
+satisfied on its own terms, independently of the authorisation point.
+
+**Consequently the sign conventions are OWNER-RATIFIED and LOCKED IN BEHAVIOUR, but are NOT a
+Constitution s12 Locked artifact, and MUST NOT be described as one.** The distinction is not
+pedantry: "locked" in ADR-0012 means the numbering will not be changed and a gate enforces it, which
+is true and mechanically verified. "Locked" in section 12 is a formal status with four conditions and
+a change-control consequence. Tier-0 holds the second. The sign conventions hold the first.
+
+Recorded as new question **Q18**, because ADR-0012 is unlikely to be the only ratified entry
+containing lock language, and whether such entries become s12 Locked artifacts should be decided once
+rather than case by case.
+
+### Decision 4. What the ratification accepts that is easy to miss
+
+**The explicit substitution of ARCHITECTURE_STATUS.md item 5.** That document required the sign
+conventions be *unified*. ADR-0012 declined, on the grounds that renumbering would reopen locked
+behaviour, and said so openly. **Ratifying as written accepts the substitution**: the requirement to
+unify is superseded, and dual conventions with a declaration gate are the ratified design.
+`ARCHITECTURE_STATUS.md` is not edited by this entry; its item 5 stands as dated record, superseded
+by ratified ADR-0012.
+
+**Node-cast aspects are excluded by decision, not by omission.** Ratifying decision (a) ratifies that
+exclusion. Any future node-aspect work is a new decision with its own school attribution, not a gap
+to be quietly filled.
+
+- **Consequences:**
+  - Accepted entries become **eleven**: ADR-0001, ADR-0002, ADR-0005, ADR-0009, ADR-0010, ADR-0011,
+    ADR-0012, ADR-0033, ADR-0034, ADR-0035 and this entry. Still PROPOSED: ADR-0003, ADR-0004,
+    ADR-0006, ADR-0007, ADR-0008, ADR-0013, ADR-0014 and ADR-0018 through ADR-0032.
+  - **Every certified varga layer and its governing convention are now owner-ratified together.**
+    That is the substantive gain: the varga stack no longer rests on an unratified foundation.
+  - The Tier-0 lock, ADR-0005, ADR-0034 and `certification/CURRENT_ENGINE_LOCK.json` are untouched,
+    and no certified numerical evidence is regenerated.
+  - **C4 is not C5.** Ratifying a drishti certification says the aspect facts are computed correctly
+    by the stated rule. It says nothing about what an aspect means or predicts.
+  - **Recommended next ratifications, not taken here:** ADR-0006, ADR-0007 and ADR-0008, the three
+    remaining certified production layers, and then ADR-0003, whose tension with ratified ADR-0001 is
+    the oldest unresolved governance asymmetry in the register.
+- **Evidence:** ADR-0012 re-read in full before ratification; `docs/SIGN_CONVENTION_SPEC.md` and
+  `docs/PARASHARI_DRISHTI_SPEC.md` confirmed present;
+  `certification/PARASHARI_DRISHTI_V1_certification.json` and
+  `certification/SIGN_CONVENTION_V1_certification.json` confirmed present and PASS; both certifiers
+  confirmed to call `preflight()` and `emit()`; `ARCHITECTURE_STATUS.md` confirmed present at the
+  repository root, so the substitution ADR-0012 records is a substitution of a live document.
 
 ---
 

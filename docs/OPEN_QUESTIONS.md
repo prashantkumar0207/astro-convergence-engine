@@ -3,8 +3,8 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | ACTIVE REGISTER. Seventeen questions. **Owner ratifications of 2026-08-13: Q13 resolved; Q1 and Q8 ratified in part (ADR-0033); ADR-0005 ratified, making Tier-0 FORMALLY LOCKED (ADR-0034); ADR-0009/0010/0011 ratified, making the registry vargas owner-ratified CERTIFIED but NOT Locked (ADR-0035).** **Eleven fully open**, three with candidate resolutions awaiting a ratification decision, two ratified in part, one resolved. Nine register entries are now Accepted; ratification is per-entry and the rest are not. |
-| Version | 1.2.0 |
+| Status | ACTIVE REGISTER. Eighteen questions. **Owner ratifications of 2026-08-13: Q13 resolved; Q1 and Q8 ratified in part (ADR-0033); ADR-0005 ratified, making Tier-0 FORMALLY LOCKED (ADR-0034); ADR-0009/0010/0011 ratified, making the registry vargas owner-ratified CERTIFIED but NOT Locked (ADR-0035); ADR-0012 ratified, closing the varga sign-convention asymmetry (ADR-0036).** **Twelve fully open**, three with candidate resolutions awaiting a ratification decision, two ratified in part, one resolved. **Eleven** register entries are now Accepted; ratification is per-entry and the rest are not. |
+| Version | 1.3.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 | Last updated | 2026-08-13 |
 | Review cadence | TBD |
@@ -31,6 +31,7 @@ artifacts listed against it. Resolution = decision log entry + this register upd
 | Q13 | Were ADR-0001 and ADR-0002, both dated 2026-07-11 and both carrying `Status: Accepted`, ratified by the owner, or were they marked Accepted by the authoring agent before the register adopted its current status vocabulary? | They are the only two entries in the register claiming Accepted status, and they fix the canonical top-level folder set that ADR-0003 then reconciled against. If they were owner acts, they bind and ADR-0003 needs owner supersession. If they were not, the register contains two entries claiming an authority no one exercised, which is the exact failure mode ADR-0022 exists to prevent. The repository evidences neither reading, and both retroactively demoting them and retroactively confirming them would falsify the record. | Precedence of ADR-0001/0002 over ADR-0003; integrity of the Accepted status | **RESOLVED, 2026-08-13** (ADR-0033 D2). The owner ratified both entries as written, prospectively. The historical question of what the 2026-07-11 status meant is deliberately left unanswered and unneeded. |
 | Q14 | Should the ADR numbering gate in `.github/workflows/ci.yml` carry a committed negative control, as the identifier gate does? | The identifier gate plants a retired identifier on every CI run and fails the build if the gate does not catch it, so its PASS is evidence. The numbering gate has no such control, so a PASS proves only that the gate ran, not that it can still fail. ADR-0029 corrected a real numbering defect and the gate now passes; without a negative control there is nothing to detect the gate silently breaking later, which is exactly the circularity the project charter section 11 warns against. | Evidential value of the governance job's numbering step | OPEN, raised 2026-08-11. ADR-0029 consequences. Adding it is a workflow change and was not authorised in the pass that raised it. |
 | Q15 | Should `certification/current_engine_certification.json` be made byte-reproducible by recording the swetest invocation without the run's temporary directory and the checkout's absolute path? | Two runs of identical code over identical data currently produce different bytes, because each case records `swetest_cmd` containing `/tmp/swetest_<random>/` and the absolute checkout path. Root D-005 removed exactly this class of environment-specific absolute-path dependency from the legacy Tier-0 package, and it has reappeared here. It does not affect Constitution s12 condition 3, since both evidence files regenerate together and agree, but it means the artifact cannot be diffed across runs to show that nothing changed. | Byte-level reproducibility claims about Tier-0 evidence | OPEN, raised 2026-08-13. ADR-0031 consequences. |
+| Q18 | When a ratified decision entry contains lock language of its own, does that make its subject a Constitution s12 Locked artifact? | ADR-0012 decision (b) says of the sign conventions "Both are locked", and it is now ratified. Conditions 1, 2 and 3 are met for them. ADR-0036 D3 declined to declare s12 Locked status for two independent reasons: no lock authorisation was given, and ADR-0012 records no version, which condition 4 requires. ADR-0012 is unlikely to be the only ratified entry containing lock language, so the rule should be decided once rather than case by case. | Whether s12 Locked status can arise from ratification alone, and how many artifacts currently hold it | OPEN, raised 2026-08-13. ADR-0036 D3. **Owner-answerable in one line.** Related to Q17. |
 | Q17 | Does `PROJECT_CONSTITUTION.md` s12 condition 4 require a **ratified** decision entry, or merely that an entry exists? | ADR-0033 D4 had to decide this in order to evaluate Tier-0's status, and adopted the ratified reading. The textual reading, that an entry merely records the lock, would let the builder satisfy all four Locked conditions with no human act at all, since conditions 1, 2 and 3 are machine-verifiable. That would make the constitution's strongest status its easiest to claim. The reading adopted is therefore the stricter one, but it is a builder interpretation of the owner's constitution and should be confirmed or corrected rather than left as precedent by default. | Governs every FUTURE lock. **No longer blocks Tier-0**: ADR-0005 was ratified on 2026-08-13, so condition 4 is met under either reading (ADR-0034). | OPEN, raised 2026-08-13. ADR-0033 D4; moot for Tier-0 per ADR-0034. **Owner-answerable in one line.** |
 | Q16 | Should `scripts/certify_current_engine.py` call `certification_support.preflight()`, as the other certifiers do? | It verifies the swetest binary version at runtime but does NOT verify the ephemeris checksums against `CHECKSUMS.sha256`, and no anti-fitting scan forms part of this gate. That is VALIDATION_STANDARD s2 rules 4 and 6. The legacy Tier-0 runner did verify ephemeris checksums per root D-005, so this is a capability the current runner lost. Wiring it changes what the gate can reject, which is a scope decision rather than a repair. | VALIDATION_STANDARD s2 rules 4 and 6 for Tier-0 | **RESOLVED PENDING RATIFICATION** (ADR-0032). Implemented: preflight wired, coverage asserted, three committed negative controls. |
 
@@ -47,20 +48,21 @@ artifacts listed against it. Resolution = decision log entry + this register upd
 **This paragraph changed on 2026-08-13 and the change matters.** Q1 previously left the repository
 with no authority that could Accept anything. The owner is now named, so ratification is possible.
 
-**Possible is not done.** Ratification is per-entry. **Nine** entries in `docs/DECISION_LOG.md` are
+**Possible is not done.** Ratification is per-entry. **Eleven** entries in `docs/DECISION_LOG.md` are
 Accepted, all ratified by Prashant Kumar on 2026-08-13: **ADR-0001, ADR-0002, ADR-0005, ADR-0009,
-ADR-0010, ADR-0011, ADR-0033, ADR-0034 and ADR-0035**.
+ADR-0010, ADR-0011, ADR-0012, ADR-0033, ADR-0034, ADR-0035 and ADR-0036**.
 
-**ADR-0003, ADR-0004, ADR-0006, ADR-0007, ADR-0008, ADR-0012, ADR-0013, ADR-0014 and ADR-0018
-through ADR-0032 all remain PROPOSED**, including every entry written to resolve the ADR-0013
-conflicts, to disposition the earlier register, to correct the numbering gate, and to repair and
-complete the Tier-0 certification evidence. A reader must not read "an owner exists" as "the register
-is ratified".
+**ADR-0003, ADR-0004, ADR-0006, ADR-0007, ADR-0008, ADR-0013, ADR-0014 and ADR-0018 through ADR-0032
+all remain PROPOSED**, including every entry written to resolve the ADR-0013 conflicts, to disposition
+the earlier register, to correct the numbering gate, and to repair and complete the Tier-0
+certification evidence. A reader must not read "an owner exists" as "the register is ratified".
 
-Two asymmetries this per-entry ratification has produced are recorded rather than left to be
-discovered: ratified ADR-0001 fixes a top-level folder set that unratified ADR-0003 reconciled away
-(ADR-0033 D2), and the ratified registry vargas emit a sign convention defined by unratified ADR-0012
-(ADR-0035 D4).
+**One asymmetry produced by per-entry ratification has been closed and one remains.** Closed: the
+ratified registry vargas emitted a sign convention defined by then-unratified ADR-0012, which is now
+ratified (ADR-0035 D4, closed by ADR-0036 D2). Remaining: ratified ADR-0001 fixes a top-level folder
+set that unratified ADR-0003 reconciled away (ADR-0033 D2). Also outstanding, though not an
+asymmetry: ADR-0006, ADR-0007 and ADR-0008 are the three certified production layers still
+unratified.
 
 ## Q6 resolution (ADR-0024, strengthened by ADR-0030 clause 1)
 
@@ -124,6 +126,7 @@ alone is sufficient, for the same reason recorded in the status vocabulary above
 | Q15 | `swetest_cmd` records the invocation without the run's temporary directory and without the checkout's absolute path, so two runs over identical data produce identical bytes. **NOT addressed in the ADR-0032 pass, by instruction.** | Engineering, on owner authorisation. |
 | Q16 | RESOLVED PENDING RATIFICATION by ADR-0032: `preflight()` wired, coverage of `REQUIRED_FILES` asserted, corrupted-asset and missing-asset negative controls committed. | Done, pending ratification. |
 | Q17 | The owner states whether s12 condition 4 requires a ratified decision entry or merely an existing one. Tier-0 no longer depends on the answer, since ADR-0005 is now ratified and satisfies it either way; the answer governs every future lock. | **Owner only.** It is an interpretation of the owner's own constitution. |
+| Q18 | The owner states whether ratifying an entry containing lock language confers s12 Locked status, or whether a separate lock authorisation is always required. If the latter, ADR-0036 D3's refusal stands as the pattern. | **Owner only.** Same character as Q17. |
 
 ## Q8 closure criteria (ADR-0021 D2)
 
@@ -192,6 +195,7 @@ records settled matters and a PROPOSED entry settles nothing.
 | Q8, direction only | Prashant Kumar (owner) | 2026-08-13 | ADR-0033 D3. Dependency ordering ratified with five qualifications. Per-phase criteria remain OPEN. |
 | (not a question) Tier-0 formal lock | Prashant Kumar (owner) | 2026-08-13 | ADR-0005 ratified as written; ADR-0034 verifies all four Constitution s12 conditions. **Tier-0 is FORMALLY LOCKED.** Recorded here because it is the first artifact in the repository to meet the constitution's definition. |
 | (not a question) Registry varga ratification | Prashant Kumar (owner) | 2026-08-13 | ADR-0009, ADR-0010 and ADR-0011 ratified as written (ADR-0035). D2, D3, D7, D12 and D30 are owner-ratified CERTIFIED. **NOT Locked**: s12 condition 4 fails because no entry declares a varga lock, and ratifying a certification does not create one. |
+| (not a question) Drishti and sign-convention ratification | Prashant Kumar (owner) | 2026-08-13 | ADR-0012 ratified as written (ADR-0036). **Closes the ADR-0035 D4 asymmetry**: the convention the ratified vargas emit is now itself ratified. Sign conventions are owner-ratified and locked in behaviour, but **NOT an s12 Locked artifact**; see Q18. |
 
 ### Awaiting ratification (not yet resolutions)
 
