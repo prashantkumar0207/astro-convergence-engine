@@ -1,5 +1,5 @@
 """
-VARGA_D3_V1 gates 1, 2, 4 (ADR-VARGA-D3-001): table integrity,
+VARGA_D3_V1 gates 1, 2, 4 (ADR-0009): table integrity,
 mathematical verification, and framework non-invasiveness.
 """
 

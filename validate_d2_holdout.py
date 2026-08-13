@@ -1,4 +1,4 @@
-"""Independent D2 Hora holdout validator (ADR-VARGA-D2-001).
+"""Independent D2 Hora holdout validator (ADR-0011).
 
 Validates the production D2 Hora classification against a reference
 built INDEPENDENTLY inside this file (by-name lookup construction).

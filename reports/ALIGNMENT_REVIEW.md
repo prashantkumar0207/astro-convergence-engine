@@ -1,3 +1,13 @@
+> **SUPERSEDING NOTE (2026-08-11).** Section 8 of this document states that the ADR-0004
+> identifier rewrite covered every reference across 61 files and that all eleven certification
+> artifacts were regenerated. **That completeness claim was false for the varga family.** The
+> rewrite covered the KP, Vimshottari, transit, drishti and sign-convention families only; the
+> compliant numbers were never written into the five varga modules, their runners, their
+> validators, their tests or their artifacts. 38 tracked files carried retired provisional
+> identifiers in 70 occurrences until 2026-08-11. Recorded as audit finding B-3 and completed by
+> `docs/DECISION_LOG.md` ADR-0014. The body below is preserved unmodified as dated evidence,
+> including its own account of the errors it was written to correct.
+
 # ALIGNMENT REVIEW: WHAT WAS EXPECTED, WHAT WAS BUILT, AND HOW TO PROCEED
 
 Date: 2026-08-09

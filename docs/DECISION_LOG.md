@@ -3,10 +3,10 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | DRAFT - contains accepted entries ADR-0001..0002 and proposed entries ADR-0003..0012 |
-| Version | 0.2.0 |
+| Status | ACTIVE REGISTER. **ACCEPTED: ADR-0001, ADR-0002, ADR-0005, ADR-0009, ADR-0010, ADR-0011, ADR-0033, ADR-0034 and ADR-0035**, all owner-ratified by Prashant Kumar on 2026-08-13. ADR-0005's ratification satisfied Constitution s12 condition 4, so **Tier-0 is FORMALLY LOCKED** (ADR-0034). The registry vargas D2, D3, D7, D12 and D30 are **owner-ratified CERTIFIED but NOT Locked**, because no entry declares a lock over them (ADR-0035 D3). **Every other entry, ADR-0003, ADR-0004, ADR-0006, ADR-0007, ADR-0008, ADR-0012, ADR-0013, ADR-0014 and ADR-0018 through ADR-0032, remains PROPOSED.** Ratification is now possible, because Q1 named an owner; ratification is per-entry, and an owner existing is not the register being ratified. Includes the ADR-0018 remote-CI evidence addendum (2026-08-11). |
+| Version | 1.2.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-09 |
+| Last updated | 2026-08-13 |
 | Review cadence | TBD |
 
 # Decision Log (ADR register)
@@ -14,11 +14,27 @@ Document status header - keep current on every edit.
 Append-only. Entries are never edited after acceptance; they are superseded by later entries.
 Template at the bottom. Numbering: ADR-XXXX, monotonically increasing.
 
+ORDERING. Per ADR-0029, this register is ordered by IDENTIFIER, not by append time. A new entry is
+inserted at its numeric position. "Append-only" governs CONTENT: no entry is edited, renumbered or
+deleted after it is written. It does not govern position. An addendum is NOT an entry and uses a
+level-three heading, `### Evidence addendum to ADR-XXXX - <subject>`, so the numbering gate counts
+decisions and only decisions.
+
+RESERVED NUMBERS. ADR-0015 through ADR-0017 are reserved for the remaining Phase G commits
+(0015 charter adoption, 0016 precedence hierarchy and agent workflow, 0017 certification
+taxonomy). ADR-0014 was issued 2026-08-11 with Phase G commit 3. Phase G commit 1 delivered
+G6 first by CEO sequencing decision, so ADR-0018 was ISSUED before ADR-0014 and before the
+reserved 0015..0017. It is nevertheless FILED after ADR-0014, per the ordering rule above. The gap
+at 0015..0017 is a reservation, not a lost entry, and a gap is not a monotonicity failure. Numbers are obtained from this register BEFORE implementation, per ADR-0004.
+
 ---
 
 ## ADR-0001 - Canonical repository structure
 - **Date:** 2026-07-11
-- **Status:** Accepted
+- **Status:** Accepted. **RATIFIED BY THE OWNER, Prashant Kumar, 2026-08-13**, on the
+  ratification instruction recorded in ADR-0033. The ratification is of this entry EXACTLY AS
+  WRITTEN: no word of its context, decision or consequences is changed, and no earlier
+  conversation is claimed retrospectively as the ratification. Resolves Q13 for this entry.
 - **Context:** A long-term project needs a stable, minimal top-level layout that separates
   normative documents, deterministic engine code, governed knowledge, non-normative research,
   verification, tooling and product code.
@@ -31,7 +47,10 @@ Template at the bottom. Numbering: ADR-XXXX, monotonically increasing.
 
 ## ADR-0002 - Foundation additions per M1 repository audit
 - **Date:** 2026-07-11
-- **Status:** Accepted
+- **Status:** Accepted. **RATIFIED BY THE OWNER, Prashant Kumar, 2026-08-13**, on the
+  ratification instruction recorded in ADR-0033. The ratification is of this entry EXACTLY AS
+  WRITTEN: no word of its context, decision or consequences is changed, and no earlier
+  conversation is claimed retrospectively as the ratification. Resolves Q13 for this entry.
 - **Context:** External M1 audit (reviewer: ChatGPT) required five additions before M1
   lock: PROJECT_CONSTITUTION.md, /examples, /assets, LICENSE placeholder, SECURITY.md.
   ADR-0001 requires a superseding ADR for any new top-level folder.
@@ -122,7 +141,12 @@ Template at the bottom. Numbering: ADR-XXXX, monotonically increasing.
 ## ADR-0005 - Current-engine Tier-0 lock
 
 - **Date:** 2026-08-09 (recording a lock established 2026-08-08 at commit bfae088)
-- **Status:** PROPOSED - pending owner ratification (Q1).
+- **Status:** **ACCEPTED. RATIFIED BY THE OWNER, Prashant Kumar, 2026-08-13**, on the lock
+  authorisation recorded in ADR-0034. Ratified EXACTLY AS WRITTEN: the lock's scope, version,
+  ratified profiles, frozen tolerances and evidence are unchanged, and no numerical value is
+  restated or revised. **This ratification is what satisfies PROJECT_CONSTITUTION.md s12
+  condition 4**, and with it Tier-0 is formally LOCKED. See ADR-0034 for the four-condition
+  verification.
 - **Context:** PROJECT_CONSTITUTION.md s12 defines Locked as requiring all four of: a written
   spec or frozen profile; a reproducible verification run per VALIDATION_STANDARD; machine-
   readable results and a human-readable report from that same run, agreeing; and a decision
@@ -222,7 +246,11 @@ Template at the bottom. Numbering: ADR-XXXX, monotonically increasing.
 ## ADR-0009 - Generic Varga framework enters production use; D3 Drekkana (supersedes provisional ADR-VARGA-D3-001)
 
 - **Date:** 2026-08-09
-- **Status:** PROPOSED - pending owner ratification (Q1).
+- **Status:** **ACCEPTED. RATIFIED BY THE OWNER, Prashant Kumar, 2026-08-13**, on the ratification
+  recorded in ADR-0035. Ratified EXACTLY AS WRITTEN: every rule table, boundary convention,
+  school key, non-claim, recorded numerical finding and certification figure stands unaltered.
+  **Ratification of a certification is not a lock**; no varga is Locked, and this entry does not
+  claim otherwise. See ADR-0035.
 - **Context:** The Generic Varga framework existed as certified infrastructure with an empty
   registry. The governing constraint is that it must not replace the certified D9/D10
   production modules without an explicit architectural decision, a full equivalence proof and
@@ -246,7 +274,11 @@ Template at the bottom. Numbering: ADR-XXXX, monotonically increasing.
 ## ADR-0010 - D12 Dwadasamsa; certified-registry constant (supersedes provisional ADR-VARGA-D12-001)
 
 - **Date:** 2026-08-09
-- **Status:** PROPOSED - pending owner ratification (Q1).
+- **Status:** **ACCEPTED. RATIFIED BY THE OWNER, Prashant Kumar, 2026-08-13**, on the ratification
+  recorded in ADR-0035. Ratified EXACTLY AS WRITTEN: every rule table, boundary convention,
+  school key, non-claim, recorded numerical finding and certification figure stands unaltered.
+  **Ratification of a certification is not a lock**; no varga is Locked, and this entry does not
+  claim otherwise. See ADR-0035.
 - **Decision:** Register D12 Dwadasamsa (twelve 2.5-degree parts from the sign itself,
   forward) as frozen `CyclicVargaRule` literals, putting the framework's second and last rule
   contract into production use. Introduce
@@ -264,7 +296,11 @@ Template at the bottom. Numbering: ADR-XXXX, monotonically increasing.
 ## ADR-0011 - D7 Saptamsa, D30 Trimsamsa, D2 Hora (supersedes provisional ADR-VARGA-D7-001, ADR-VARGA-D30-001, ADR-VARGA-D2-001)
 
 - **Date:** 2026-08-09
-- **Status:** PROPOSED - pending owner ratification (Q1).
+- **Status:** **ACCEPTED. RATIFIED BY THE OWNER, Prashant Kumar, 2026-08-13**, on the ratification
+  recorded in ADR-0035. Ratified EXACTLY AS WRITTEN: every rule table, boundary convention,
+  school key, non-claim, recorded numerical finding and certification figure stands unaltered.
+  **Ratification of a certification is not a lock**; no varga is Locked, and this entry does not
+  claim otherwise. See ADR-0035.
 - **Decision:** Register three further Parashara vargas: D7 Saptamsa (odd signs from the sign
   itself, even from the seventh, forward), D30 Trimsamsa (unequal tara-graha segments
   5/5/8/7/5 odd and reversed even, no luminaries), and D2 Hora (two 15-degree halves with a
@@ -346,6 +382,1485 @@ Template at the bottom. Numbering: ADR-XXXX, monotonically increasing.
 - **Consequences:** None of these is resolved by this entry. Each requires an owner decision,
   and several require a superseding ADR once decided.
 
+
+## ADR-0014 - Completion of the ADR-0004 identifier rewrite; varga pinning parity
+
+- **Date:** 2026-08-11
+- **Status:** PROPOSED - pending owner ratification (Q1). Per PROJECT_CONSTITUTION.md s11, an
+  AI-written entry cannot be Accepted by its author.
+- **Context:** ADR-0004 retired ten provisional plan identifiers and stated that module
+  docstrings, certification runners, certification artifacts and pinning tests were updated to
+  the compliant `ADR-\d{4}` numbers. Commit `8a5d56e` claimed the rewrite covered "every
+  reference ... across 61 files" and that "all eleven certification artifacts were regenerated
+  by their own runners". `reports/ALIGNMENT_REVIEW.md` s8 repeated the completeness claim.
+  Independent audit on 2026-08-10 found the claim false for the varga family. `git log --all
+  -S "ADR-0009" -- engine/astrology/varga_d3.py` returns no commits: the compliant number was
+  never written into those modules at all. **38 tracked files carried retired identifiers in 70
+  occurrences**: `ADR-VARGA-D3-001` 14, `ADR-VARGA-D12-001` 12, `ADR-VARGA-D7-001` 11,
+  `ADR-VARGA-D30-001` 10, `ADR-VARGA-D2-001` 10, `ADR-CONVENTION-001` 4, `ADR-KP-001` 3,
+  `ADR-DASHA-001` 2, `ADR-TRANSIT-001` 2, `ADR-ASPECT-PAR-001` 2. Meanwhile README.md and this
+  register cited ADR-0009 through ADR-0012 for the same artifacts, so documentation and
+  artifacts disagreed. Recorded as audit finding B-3, severity MEDIUM: zero calculation impact,
+  but a traceability defect inside the very phase whose purpose was traceability.
+- **Decision:**
+  1. COMPLETE the rewrite. Replacement map: `ADR-VARGA-D3-001` to ADR-0009;
+     `ADR-VARGA-D12-001` to ADR-0010; `ADR-VARGA-D7-001`, `ADR-VARGA-D30-001` and
+     `ADR-VARGA-D2-001` to ADR-0011; `ADR-CONVENTION-001` to ADR-0012.
+  2. RECORD supersession in STRUCTURED FIELDS ONLY, not in free text. Each of the five varga
+     runners emits `"supersedes_provisional_id"` beside `"adr"`, and
+     `scripts/certification_support.py` renders a matching line into the human-readable report
+     when and only when that key is present. Writing the supersession inline in docstrings was
+     considered and REJECTED: it would reintroduce the retired strings across the tree and make
+     the zero-unauthorised-occurrence requirement unverifiable. Traceability is stronger as a
+     queryable field than as prose.
+  3. PRESERVE the two legitimate citations. `docs/DECISION_LOG.md` (this register, 10
+     occurrences in the ADR-0004 retirement list and the ADR-0006/0009/0010/0011/0012 titles)
+     and `reports/ALIGNMENT_REVIEW.md` (1 occurrence in its dated body) cite the retired
+     identifiers AS retired and are unchanged.
+  4. CLOSE the pinning asymmetry. Only D3 and D12 asserted `report["adr"]`, while KP,
+     Vimshottari, transits, drishti and sign convention all did. D2, D7 and D30 had no
+     certification pinning test at all, which is why the batch commit's identifiers went
+     uncaught. Add `test_varga_d2_certification.py`, `test_varga_d7_certification.py` and
+     `test_varga_d30_certification.py`; every varga pinning test now asserts both `adr` and
+     `supersedes_provisional_id`, plus that varga's defining behaviour (D2's two-sign output
+     space, D7's full-zodiac coverage, D30's exclusion of the luminary signs).
+  5. ENFORCE it mechanically. The `governance` CI job deferred by ADR-0018 lands here, running
+     `scripts/check_retired_identifiers.py`: an exact-string search for all ten retired
+     identifiers and a family-regex search for any `ADR-` token not followed by exactly four
+     digits, against a declared allowlist. The family regex is the operative one, because the
+     defect class is an unauthorised identifier family, not these ten strings.
+  6. CORRECT the false completeness claim WITHOUT rewriting evidence.
+     `reports/ALIGNMENT_REVIEW.md` receives a dated superseding note at its head, in the exact
+     pattern already used by FINDINGS_MATRIX.md; its body is untouched. Commit `8a5d56e`'s
+     message is wrong and cannot be corrected: rewriting published history is forbidden, so
+     this entry is the corrective record.
+- **Consequences:** Zero calculation impact, proven rather than asserted (see Evidence).
+  Artifacts for the six non-varga certifications were deliberately NOT committed: regenerating
+  them changed only their run date, and committing date churn for artifacts this ADR did not
+  touch would obscure the diff. That restoration also PROVES the shared `_render` change is
+  inert where the new key is absent. Future phases obtain an ADR number from this register
+  BEFORE implementation, per ADR-0004, and the governance job now fails the build if a
+  non-compliant identifier family appears again.
+  **Corrected count:** an earlier report of this finding said 37 files. The verified figure is
+  38; the occurrence total of 70 was correct. The discrepancy was an arithmetic error in the
+  report, not a change in the tree.
+- **Evidence:** Before-state inventory of 38 files and 70 occurrences reproduced by `git grep`
+  over `git ls-files`. After remediation both searches return zero occurrences outside the
+  declared allowlist. All eleven certification runners regenerate PASS. The five varga
+  artifacts differ from their prior versions in exactly three fields (`adr`,
+  `supersedes_provisional_id`, `date`) and five lines each; every gate value is byte-identical,
+  including the gate D `d9_sweep_sha256` = `ca444f10...` and `d10_sweep_sha256` = `78cd000f...`
+  present before and after. Default gate rises from 395 to 404 tests, the increase being
+  exactly the nine new test functions added by decision 4 (three per artifact gate). Legacy gate 5 of 5. Eleven
+  independent validators PASS. Calculation-impact fingerprints over a 51,429-point dense sweep
+  plus 1e-9 boundary neighbourhoods are identical to a pristine worktree of `1f861f6` for D9
+  sign and longitude, D10 sign and longitude, and all five registry vargas.
+
+---
+
+## ADR-0018 - CI tiering and oracle environment reproducibility
+
+- **Date:** 2026-08-10
+- **Status:** PROPOSED - pending owner ratification (Q1). Per PROJECT_CONSTITUTION.md s11,
+  AI output is proposal, not authority.
+- **Context:** Two conditions violated `docs/VALIDATION_STANDARD.md` s2. (a) CI ran the
+  default gate and two of the eleven independent holdout validators; nine validators, the
+  legacy kernel gate and all eleven certification runners never ran in CI, and three of the
+  four installed dependencies were unpinned, contravening s2 rule 4. (b) More seriously, the
+  oracle environment was not reproducible from the repository. `PyJHora` 4.8.7 declares an
+  EMPTY `Requires-Dist`, so its runtime imports fail one at a time on a clean machine and pip
+  cannot resolve them. The certification artifacts recorded the package version and the Python
+  version and nothing else, so an engineer holding only this repository could not recreate the
+  environment that produced the eight oracle certifications. A certification whose environment
+  cannot be recreated is a report, not proof.
+- **Decision:**
+  1. SPLIT CI into two jobs by external-oracle dependence, verified by inspection that no file
+     under `engine/tests/` and no `validate_*.py` imports `jhora`. `hermetic` runs the default
+     gate, ALL ELEVEN validators, the legacy kernel gate and the three non-oracle certification
+     runners on Python 3.11 and 3.12. `oracle` runs the eight PyJHora runners on Python 3.11.
+     The split is for reproducibility and outage isolation, never for speed: this change ADDED
+     nine validators, the legacy gate and three certification runners to CI and removed
+     nothing. `continue-on-error` is prohibited and absent; no step converts a failure into a
+     warning; no validator or runner is skipped.
+  2. RECORD the oracle environment identity in `certification/ORACLE_ENVIRONMENT.json`: OS and
+     architecture, Python version and implementation, the CPython 3.11 linux x86_64 ABI
+     constraint, PyJHora version with the explicit statement that it declares no dependencies,
+     the six undeclared runtime dependencies (`numpy`, `geocoder`, `pytz`, `timezonefinder`,
+     `geopy`, `python-dateutil`) and the iterative import-failure method by which they were
+     discovered, the Swiss Ephemeris binding and reported library version, the `swetest`
+     reference binary SHA-256 and build provenance, the ephemeris asset checksums, the lock
+     file with its own SHA-256 and full 35-package closure, and the per-runner oracle
+     invocation method including the D-007 Moon-injection methodology for Vimshottari and the
+     per-event derived tolerances for transits with the ~20.5 arcsec oracle Sun divergence
+     recorded NOT VERIFIED.
+  3. PIN the oracle environment in `requirements-oracle.lock`: 35 packages, every one carrying
+     a SHA-256, installed with `--require-hashes`. Self-contained by design so one file plus a
+     clean interpreter reproduces the environment. A different Python minor version or platform
+     requires its own lock and its own recorded identity and MUST NOT be obtained by relaxing
+     hashes.
+  4. ASSERT the identity at run time via `scripts/check_oracle_environment.py`, which fails
+     loudly on any divergence in Python minor version, architecture, PyJHora version, any
+     locked package version, or any ephemeris checksum.
+  5. PROVE hermeticity rather than assert it. `scripts/ci_no_network.py` blocks outbound
+     connection paths in-process without replacing the `socket.socket` class, because `ssl`
+     subclasses it at import time and swapping the class yields a false failure. A negative
+     control step proves the guard still blocks, so a guard that silently stopped working is
+     caught rather than trusted. The guarantee is process-scoped and is documented as such.
+  6. ADD `jsonschema==4.25.0` to `requirements.lock`. It is imported by
+     `engine/knowledge/validator.py` and collected by `engine/tests/test_schema_validator.py`,
+     so the default gate cannot run without it, yet it was absent from this file while
+     `pyproject.toml` and `engine/requirements-lock.txt` both declared it. The three
+     pre-existing pins are unchanged.
+- **Consequences:** The oracle tier is bound to CPython 3.11 linux x86_64 until a second lock
+  exists; the hermetic tier still runs 3.12. Hash pinning protects integrity, not availability:
+  if an index removes a version the job fails loudly rather than installing something else,
+  which is intended. The `governance` job specified in the Phase G plan is deliberately NOT
+  added by this commit, because its primary check is the retired-identifier search that cannot
+  pass until Phase G commit 2 (G1); adding it now would either break CI or require disabling
+  its real checks. `scripts/certify_tier0.py` remains broken and untouched; its disposition is
+  Phase G commit 6 (G7). NO calculation, varga, dasha, interpretation, BTR, validation,
+  convergence, prediction, UI or ML work is included, and no certified logic was refactored.
+- **Evidence:** Executed 2026-08-10 on the baseline tree at `1f861f6` in virtual environments
+  created with no system site-packages. Oracle tier: hash-pinned install from
+  `requirements-oracle.lock` alone, 35 packages, all hashes satisfied; all eight oracle
+  certification runners PASS; regenerated artifacts differ from the committed artifacts in the
+  `date` field ONLY, every gate value byte-identical. Hermetic tier: install from
+  `requirements.lock` alone, 395 tests pass, all eleven validators pass, legacy gate 5 of 5,
+  all three non-oracle certifiers PASS; the same set re-run under the network guard produces
+  identical results; the negative control fails with `NoNetworkError` and exit code 1.
+  `scripts/check_oracle_environment.py` returns 0 in the reproduced environment and 1 in a
+  non-matching one. Specification: `docs/CI_AND_ORACLE_REPRODUCIBILITY_SPEC.md`.
+
+---
+
+### Evidence addendum to ADR-0018 - remote CI validation (2026-08-11)
+
+- **Status:** ADDITIVE EVIDENCE. This addendum does NOT edit ADR-0018 above; that entry and its
+  original evidence paragraph stand unmodified as dated record. ADR-0018 remains PROPOSED.
+- **Context:** ADR-0018's original evidence was entirely local: clean-environment reproduction
+  inside the container that authored the lock. The stated purpose of G6 was to prove the oracle
+  environment reproducible OUTSIDE that sandbox, so the decision was not fully evidenced until the
+  workflow ran on foreign hardware.
+- **New evidence:** The `engine-ci` workflow executed on GitHub-hosted runners for commit
+  `a460ba2b7e4eac55f8ac2f51b9e9eb9a35607fda` on branch `phase-g-governance`. Reported results:
+  `hermetic` PASS on Python 3.11; `hermetic` PASS on Python 3.12; `oracle` PASS; overall workflow
+  SUCCESS; `oracle-certification-evidence` artifact produced. `requirements-oracle.lock` therefore
+  installed under `--require-hashes` on foreign hardware, the environment identity assertion passed
+  there, and all eight oracle certification runners passed there. The predicted wheel-hash
+  portability risk did not materialize. No hash was relaxed, no dependency version changed, and the
+  lock was not regenerated.
+- **Evidence class, stated exactly:** CEO_REPORTED. These remote results were observed by the
+  CEO/technical auditor and reported to the builder. The builder has no network access to the
+  Actions API and did NOT independently observe them. Run URL, run id, runner image and pip version
+  were not supplied and are recorded as null rather than guessed. Per this register's own
+  anti-circularity discipline, a PASS without a resolvable run identifier is weaker evidence than
+  the project standard requires, and completing it by additive amendment remains an open item.
+- **Determination:** G6 = PASS, on CEO authority, 2026-08-11. This is a REPRODUCIBILITY and
+  INFRASTRUCTURE determination only. It certifies no calculation, promotes no component's
+  certification level, and is not a C4 or C5 claim about any astrological method.
+- **Technical debt recorded, not fixed:** TD-CI-001 GitHub Actions Node.js 20 deprecation warnings
+  (non-blocking; the G6 commit must not be altered merely to silence them); TD-CI-002 oracle tier
+  bound to CPython 3.11 linux x86_64, never to be resolved by relaxing hashes; TD-CI-003
+  `scripts/certify_tier0.py` still broken, disposition belongs to Phase G commit 6 (G7).
+- **Machine-readable record:** `certification/G6_REMOTE_CI_VALIDATION.json`. Human-readable record:
+  `reports/G6_COMPLETION_RECORD.md`. Specification update: `docs/CI_AND_ORACLE_REPRODUCIBILITY_SPEC.md`
+  section 7.1, version 1.1.0.
+- **State:** `phase-g-governance` is NOT merged into `main`. `main` remains at `1f861f6`. Phase G
+  commit 2 (G1) has not started and awaits CEO approval.
+
+---
+
+## ADR-0019 - Product identity: multi-domain Jyotisha platform, not a natal application
+
+- **Date:** 2026-08-11
+- **Status:** PROPOSED - pending owner ratification (Q1).
+- **Context:** The repository's specifications, including H1 through H8 written earlier the same day,
+  assumed the subject of analysis is a person with a birth chart. The owner clarified that the
+  long-term product is a multi-domain Jyotisha intelligence platform spanning Jataka, Varshaphal,
+  Muhurta, Prashna and Mundane astrology. Four of those five domains violate the person-plus-birth-
+  chart assumption. Left unrecorded, that assumption would harden into the entity model, the evidence
+  model and the convergence layer, where it would be expensive to remove.
+- **Decision:**
+  1. RECORD the product identity: a transparent, evidence-driven, multi-domain Jyotisha intelligence
+     platform that evaluates analytical methods against historical evidence, measures consistency and
+     confidence, and provides qualified future-oriented analysis through convergence of multiple
+     systems. The USP is unchanged: PAST to TEST to LEARN to CONFIDENCE to FUTURE.
+  2. GENERALISE the core subject from person to **astrological entity**, specified in
+     `docs/H0_ENTITY_MODEL_SPEC.md`, numbered zero because H1 through H8 depend on it.
+  3. RECORD that entities are NOT uniform. Four structurally different shapes exist: origin moment
+     (person, country, company), derived moment (Varshaphal, from a parent chart), query moment
+     (Prashna, where the moment is known by construction), and no entity at all (General Muhurta,
+     which evaluates a candidate moment for a purpose). Generalising "person" to "entity" is necessary
+     but not sufficient, because these differ in which operations are valid.
+  4. RECORD that General Muhurta **inverts the pipeline**: every other domain takes a moment and
+     produces analysis, while General Muhurta takes a purpose and a window and searches for moments.
+     It is the only domain requiring an optimiser, and its output is a ranked set with reasons.
+  5. SCOPE BTR by entity shape and gate it on origin certainty. BTR MUST refuse where the origin
+     moment is `documented`. Rectifying against a registry-timestamped incorporation would be the
+     prohibited reasoning "prediction failed, therefore the time is wrong" in another form.
+  6. ADD entity, domain and chart reference to the evidence model. The chart reference exists to make
+     **shared-origin detection** possible: Varshaphal derives from the natal chart, so natal and
+     Varshaphal agreeing is one source agreeing with itself through a transformation. Without it,
+     convergence would systematically overstate confidence in exactly the combination the product most
+     wants to present.
+  7. ADD the cross-domain axis to convergence, with the requirement that it be able to state whether
+     agreeing sources **could have disagreed**, and with an explicit multiple-comparison discipline for
+     mundane validation, where large samples of publicly dated events make chance agreement likely.
+  8. DECLARE domain isolation as a second axis orthogonal to school isolation. Tajika aspects are not a
+     variant of Parashari drishti; Mudda dasha is not a variant of Vimshottari; Prashna rules are not
+     natal rules. Terminological overlap is not methodological identity.
+- **Consequences:** No code, no calculation change, no new domain implementation. `docs/H0_ENTITY_MODEL_
+  SPEC.md` and `docs/PLATFORM_DOMAIN_ARCHITECTURE.md` are added; H1, H4, H7 and H8 receive additive
+  amendment sections with their prior content unmodified. Two capability gaps are recorded that were
+  not previously visible: **panchanga** (tithi, vara, nakshatra, yoga, karana) is a calculation-layer
+  capability that does not exist, and **rising and setting** does not exist either, which blocks Rahu
+  Kalam, Yamaganda and Gulika and is genuine Tier-0 astronomical work with its own high-latitude edge
+  cases. Verified: `engine/` contains zero occurrences of tithi, vara, karana, panchanga, rahu kalam,
+  yamaganda, gulika, muhurta, varshaphal, muntha, varshesh, saham, tajika, prashna or mundane.
+  Audit finding H-02 is elevated in priority: transit event instants are misclassified by the engine's
+  own classifier at 17 percent of sign ingresses and 43 percent of nakshatra ingresses, and Muhurta is
+  precisely the question "which tithi and nakshatra hold at this candidate moment", evaluated over many
+  candidates of which the marginal ones sit near boundaries. `engine/transits/events.py` `returns()`
+  already implements longitude return and would serve solar return, but appears in no certification
+  artifact. Mudda dasha inherits the whole depth requirement in `docs/DASHA_CERTIFICATION_ROADMAP.md`.
+  Development priority is unchanged: governance and certification, then calculation confidence, then
+  evidence, interpretation, convergence, and domain modules last.
+- **Evidence:** `docs/PLATFORM_DOMAIN_ARCHITECTURE.md`, `docs/H0_ENTITY_MODEL_SPEC.md`, additive
+  sections in H1 s9, H4 s8, H7 s11 and H8 s10, and the capability-absence search recorded above.
+
+---
+
+## ADR-0020 - Multi-domain platform: ten ratified architecture decisions
+
+- **Date:** 2026-08-11
+- **Status:** PROPOSED - pending owner ratification (Q1). Recorded on CEO direction following
+  review of ADR-0019. Supersedes no entry; resolves several questions ADR-0019 left open.
+- **Context:** ADR-0019 recorded the multi-domain product identity and deliberately left the
+  consequent architecture questions open. The CEO reviewed the findings and issued ten decisions.
+  This entry records them, records what they resolve, and records the conflicts and residues they
+  create, per PROJECT_CONSTITUTION.md s3.2 which forbids resolving ambiguity silently.
+- **Decision:**
+
+  **D1. Entity architecture: a common abstraction with specialised subject types.** NOT one
+  undifferentiated generic entity. A shared `AstrologicalSubject` and domain abstraction, with
+  specialised types where semantics differ: Person, Organisation/Company, Geographic/National
+  entity, Event, Question. Shared infrastructure without pretending all subject types have
+  identical chart semantics. RESOLVES the open question in `docs/H0_ENTITY_MODEL_SPEC.md` s7,
+  "whether shapes are one type or four", in favour of a common abstraction plus specialisation.
+
+  **D2. Panchanga and rise/set are Tier-0 foundational calculation capabilities.** Not ad-hoc
+  logic inside Muhurta. They will support Muhurta, Prashna, Mundane, panchanga functionality,
+  Rahu Kalam, Yamaganda, Gulika and related time-window calculations. They require INDEPENDENT
+  CERTIFICATION before any dependent production module relies on them.
+
+  **D3. Mundane multi-chart model: no silent chart selection.** Where multiple historically
+  defensible origin charts exist for a country, company or institution, the architecture must
+  permit entity to candidate chart set, with provenance per chart, independent analysis per
+  chart, comparison, and explicit disagreement. The system must be capable of stating that
+  different defensible charts produce different conclusions. RESOLVES the second open question in
+  `docs/H0_ENTITY_MODEL_SPEC.md` s7 in favour of analysing across candidates and surfacing
+  disagreement.
+
+  **D4. Convergence dependency model: five evidence relationship classes.** Convergence MUST NOT
+  treat every agreeing output as independent. The evidence model must preserve dependency and
+  provenance relationships, and the convergence engine must distinguish and explain to the user:
+  INDEPENDENT, DERIVED, SHARED-ORIGIN, CORRELATED, and CONFLICTING evidence. Natal to Varshaphal
+  is a derived relationship and cannot automatically count as two confirmations. EXTENDS
+  `docs/H4_EVIDENCE_MODEL_SPEC.md` s8 and `docs/H8_CONVERGENCE_SPEC.md` s10, which specified
+  shared-origin detection only.
+
+  **D5. H-02 is a potential blocker for Muhurta and must be independently reproduced.** Before
+  any production Muhurta implementation, the reported transit ingress and nakshatra boundary
+  classification defect must be independently reproduced, NOT assumed correct because it appears
+  in an audit. If confirmed, the underlying calculation is repaired and certified before
+  dependent Muhurta work.
+
+  **D6. Preferred domain roadmap**, subject to future CEO review:
+  FOUNDATION, JATAKA, EVIDENCE, INTERPRETATION, CONVERGENCE, VARSHAPHAL, MUHURTA, PRASHNA,
+  MUNDANE. BTR remains an independent evidence-driven capability and MUST NOT become a
+  prerequisite for convergence or a universal explanation for prediction failure.
+
+  **D7. Muhurta: both modes reserved.** General Muhurta may operate without birth details.
+  Personalised Muhurta may incorporate natal chart, relevant vargas, dashas, transits, Moon
+  factors, Tara Bala, Chandra Bala, purpose-specific rules and historical evidence where
+  appropriate. Muhurta is fundamentally a SEARCH AND RANKING problem over candidate moments and
+  MUST expose its search window, candidate space and selection methodology.
+
+  **D8. Varshaphal is a distinct annual-analysis domain**, not another natal interpretation
+  layer: solar return, Varsha Lagna, Muntha, Varshesh, Tajika aspects, Sahams, Mudda Dasha, each
+  subject to later certification.
+
+  **D9. Prashna is a question-driven domain** requiring no birth details: question plus timestamp
+  plus location to Prashna context and chart, applicable rules, analysis, evidence, qualified
+  answer.
+
+  **D10. The repository is the permanent record.** These decisions are recorded here rather than
+  relied upon from conversation.
+
+- **Consequences and residues, stated rather than smoothed:**
+
+  1. **The Tier-0 lock scope is NOT retroactively widened by D2.** ADR-0005 fixes the lock scope
+     as the astronomical kernel, ephemeris handling, frame, calculation profiles, houses,
+     sidereal positions, the JD/time pipeline, and the certified D9/D10 mathematics. Panchanga
+     and rise/set are new capabilities that will require certification at Tier-0 depth; the
+     existing lock covers neither and MUST NOT be read as if it did.
+  2. **A layering nuance worth recording.** Rise/set is astronomy proper: ephemeris plus horizon
+     geometry, with genuine high-latitude edge cases where the concept degrades or fails.
+     Panchanga elements are deterministic CLASSIFICATION over astronomical outputs, structurally
+     closer to a varga than to the kernel. Both are foundational and both need independent
+     certification, which is the substance of D2 and is not in question. Whether they occupy the
+     same tier label is a precision question for the eventual taxonomy work, and it is recorded
+     here rather than decided.
+  3. **Vara depends on rise/set.** The Jyotisha weekday runs sunrise to sunrise, not midnight to
+     midnight, so vara cannot be computed from the civil calendar and inherits every rise/set
+     edge case. Rahu Kalam, Yamaganda and Gulika are eighth-part divisions of the day and night
+     and carry variant assignment tables across traditions. Each variant is a decision to be
+     recorded, never chosen silently, exactly as the varga variants are.
+  4. **Four of D4's five classes are structurally derivable; one is not.** INDEPENDENT, DERIVED,
+     SHARED-ORIGIN and CONFLICTING follow from provenance and chart references recorded at
+     evidence-creation time. CORRELATED is a MEASURED property: knowing that two rules or systems
+     tend to agree beyond their structural relationship requires evidence accumulated in the
+     historical ledger. The taxonomy therefore has two different epistemic sources, and the
+     measured class cannot be populated until the ledger exists and has a defensible sample.
+  5. **D6 partially answers Q8 and does not close it.** Open question Q8 asks for ratified
+     roadmap phases WITH entry and exit criteria. D6 supplies the order; it supplies no criteria.
+     It also supersedes in practice the sequencing in `docs/PROJECT_BACKLOG.md` that placed Phase
+     1 Core Intelligence before Phase 2 Astrology Systems, which is ADR-0013 conflict 7. Whether
+     Q8 is now closed, or remains open pending criteria, is an owner decision.
+  6. **D5's evidence class, stated plainly.** The H-02 percentages, two of twelve Sun sankranti
+     instants and twelve of twenty-eight Moon nakshatra ingress instants, were produced by a
+     delegated read-only audit and relayed in
+     `reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md`. The builder did not personally re-execute
+     that measurement. The CEO's instruction to reproduce independently is therefore correct on
+     the evidence as it stands, and this entry records the gap rather than defending the figure.
+  7. **D7's search-methodology exposure aligns Muhurta with BTR.** Both evaluate many candidates
+     and report the best, so both are bound by the discipline in `docs/H7_BTR_SPEC.md` s11 and
+     `docs/PLATFORM_DOMAIN_ARCHITECTURE.md` s8: record the search space and the candidate count,
+     and never present "best of ten thousand" as "strongly indicated" without its denominator.
+  8. **D3 has no supporting model today.** Nothing in `engine/models/` represents a subject, let
+     alone a subject with competing charts. D3 is a requirement on a layer that does not exist.
+  9. **NO IMPLEMENTATION IS AUTHORISED.** Not panchanga, rise/set, Muhurta, Varshaphal, Prashna,
+     Mundane, BTR, interpretation or convergence. Development priority is unchanged: governance
+     and certification, calculation confidence, evidence, interpretation, convergence, domains.
+
+- **Evidence:** `docs/PLATFORM_DOMAIN_ARCHITECTURE.md` s13, `docs/H0_ENTITY_MODEL_SPEC.md` s10,
+  `docs/H4_EVIDENCE_MODEL_SPEC.md` s10, `docs/H8_CONVERGENCE_SPEC.md` s12, and
+  `certification/ENGINE_CAPABILITY_INVENTORY.json`. Default gate 404 passed and the identifier
+  governance gate PASS at the time of recording, with zero changes under `engine/`, `legacy/`,
+  `scripts/`, any validator or any certification artifact.
+
+---
+
+## ADR-0021 - Mundane validation discipline, Q8 status, entity vocabulary and relationships, and the independence principle
+
+- **Date:** 2026-08-11
+- **Status:** PROPOSED - pending owner ratification (Q1). Recorded on CEO direction following
+  approval of ADR-0020 as the current architectural baseline.
+- **Context:** ADR-0020 was approved and four of its recorded residues were referred back for
+  decision: the multiple-comparison discipline for mundane validation, the status of Q8, the entity
+  vocabulary, and entity relationships. A fifth item elevates the independence rule from a
+  consequence noted in a specification to a permanent normative principle.
+- **Decision:**
+
+  **D1. Mundane validation is pre-registered, not mined.** Mundane historical validation MUST NOT
+  become a large-scale pattern-mining exercise in which many hypotheses are tested and only the
+  successful-looking results are reported. Before any protected testing, a mundane validation
+  protocol MUST define: event classes; hypotheses and rules; the development or training historical
+  set; the protected holdout historical set; the number of hypotheses tested; the number of events
+  tested; the applicable multiple-comparison methodology; effect-size measures; negative controls
+  where feasible; and replication requirements where feasible.
+
+  Rules MUST NOT be selected, modified or tuned using protected holdout results.
+
+  **Statistical significance MUST NEVER be represented as scientific proof of astrology.** It is
+  evidence about the measured performance of a specified astrological method under a specified
+  validation protocol, and it is to be stated in exactly those terms.
+
+  This is a permanent governance and validation requirement, recorded normatively in
+  `docs/VALIDATION_STANDARD.md` s4 and in `docs/H2_HISTORICAL_EVENT_LEDGER_SPEC.md` s9.
+
+  **D2. Q8 REMAINS OPEN.** ADR-0020 D6 supplies a preferred domain order and does not close Q8. Q8
+  remains open until the roadmap defines, for every implementation phase: prerequisites, entry
+  criteria, implementation scope, certification gates, exit criteria, and CEO approval requirements.
+  **The domain order is NOT authorisation to begin implementation.**
+
+  **D3. The entity vocabulary is provisional and extensible.** Current kinds: Person,
+  Organisation/Company, Geographic/National Entity, Event, Question. The ontology is deliberately NOT
+  frozen at this stage. A new entity kind requires an explicit architectural decision.
+
+  **D4. Relationships are modelled as explicit links, not as entities.** Entity A, relationship,
+  Entity B. For example Person LEADS Organisation, Person CANDIDATE_IN Election, Company OPERATES_IN
+  Country, Event OCCURS_IN GeographicEntity. A relationship MAY later be promoted to an entity only
+  if it requires its own lifecycle, identity, evidence, provenance, temporal state and independent
+  analysis. RESOLVES the third open question in `docs/H0_ENTITY_MODEL_SPEC.md` s7.
+
+  **D5. The independence principle is permanent and normative:**
+
+  > **Absence of measured correlation is not evidence of independence.**
+
+  Therefore, and stated as non-equivalences because each has been assumed in practice elsewhere:
+  unknown relationship is not independent; derived relationship is not independent; shared-origin
+  relationship is not independent; correlated relationship is not independent.
+
+  The convergence architecture must eventually determine AND EXPLAIN the dependency structure
+  between evidence sources, and must answer not "how many systems agree" but **"how many genuinely
+  independent evidence paths support this conclusion"**.
+
+- **Consequences and analysis:**
+
+  1. **D1 is pre-registration, and naming it that is useful.** The list of things to define before
+     testing is the established practice of pre-registration as used in empirical research. Naming
+     it gives the eventual implementation a body of existing method to draw on rather than
+     inventing a protocol from first principles, and it makes the discipline auditable: a protocol
+     either was registered before the protected run or it was not, and that is a checkable fact
+     rather than a judgment.
+  2. **A concrete negative control exists for this domain and should be recorded now.** Running the
+     same rules against permuted data, for example entity charts randomly reassigned to entities,
+     or events shifted to random dates, gives an empirical null distribution. If a rule scores as
+     well against shuffled data as against real data, the apparent performance is an artifact of
+     the protocol rather than a property of the rule. This is cheap, and it is one of the few
+     controls available in a domain where a true control group does not exist.
+  3. **The count of agreeing systems is an upper bound, never the answer.** D5's question implies
+     the dependency structure is a graph, and the honest measure is the number of genuinely
+     independent paths through it, which is at most the number of agreeing sources and typically
+     fewer. A convergence layer that reports the raw count is reporting the upper bound as though
+     it were the estimate. How the effective independent count is computed is an open design
+     question; that it must not be the raw count is now decided.
+  4. **D5 makes an existing specification passage normative.** `docs/H8_CONVERGENCE_SPEC.md` s12
+     already stated that unmeasured relationships must not default to independent, as a consequence
+     of ADR-0020 D4. It is now a named principle in its own right, which matters because it applies
+     beyond convergence: it governs how evidence is aggregated anywhere, including any future
+     scoring, weighting or confidence computation.
+  5. **D2 has an immediate consequence for how this project reads its own roadmaps.**
+     `docs/VARGA_CERTIFICATION_ROADMAP.md`, `docs/DASHA_CERTIFICATION_ROADMAP.md` and
+     `docs/PLATFORM_DOMAIN_ARCHITECTURE.md` all state orders and sequences. None of them
+     authorises implementation, all of them say so, and D2 makes that explicit at the register
+     level so the point cannot be lost by reading one document in isolation.
+  6. **D4 defers a real cost rather than avoiding it.** Links are cheaper than entities and are the
+     right starting point. The promotion criteria matter because relationships in this domain
+     genuinely can acquire their own lifecycle: a marriage has a start, an end, its own events and
+     arguably its own chart. The criteria are recorded so promotion is a decision rather than a
+     drift.
+  7. **D3's extensibility is not a licence for silent growth.** A new entity kind changes which
+     rules are applicable and therefore what the system may claim, so it takes an architectural
+     decision, exactly as a new varga or a new identifier family does.
+  8. **NO IMPLEMENTATION IS AUTHORISED** by this entry: not panchanga, rise/set, Muhurta,
+     Varshaphal, Prashna, Mundane, BTR, interpretation or convergence.
+
+- **Evidence:** `docs/VALIDATION_STANDARD.md` s4 and s5, `docs/H2_HISTORICAL_EVENT_LEDGER_SPEC.md`
+  s9, `docs/H0_ENTITY_MODEL_SPEC.md` s9.1, `docs/H8_CONVERGENCE_SPEC.md` s14,
+  `docs/OPEN_QUESTIONS.md` Q8 closure criteria. Default gate 404 passed and the identifier
+  governance gate PASS at the time of recording, with zero changes under `engine/`, `legacy/`,
+  `scripts/`, any validator or any certification artifact.
+
+---
+
+## ADR-0022 - Governance authority hierarchy; disposition of the root D-00x decision family
+
+- **Date:** 2026-08-11
+- **Status:** PROPOSED - pending owner ratification (Q1). Recorded on CEO direction. Per
+  PROJECT_CONSTITUTION.md s11 an AI-written entry cannot be Accepted by its author, and Q1 (named
+  owners) is open, so **no entry in this register can currently be Accepted by anyone**. That is
+  stated here once and applies to every entry below.
+- **Context:** ADR-0013 conflict 5 records that root `DECISION_LOG.md` (D-001..D-008) and this
+  register (ADR-000x) coexist with no stated precedence. Separately, the repository has never had a
+  single written authority hierarchy, which is what allowed out-of-repository plan documents to
+  govern in-repository code during the 2026-08-08/09 work.
+- **Decision:**
+  1. **NORMATIVE AUTHORITY HIERARCHY**, highest first:
+     `OWNER -> PROJECT CONSTITUTION -> DECISION LOG / ADR -> STANDARDS -> SPECIFICATIONS -> CODE ->
+     CONVERSATION`.
+     The owner is the final ratifying authority. The repository is the permanent project record.
+     Conversation is input material and never permanent authority.
+  2. **D-00x disposition: option A, subordinate classification, not migration.** The root
+     `DECISION_LOG.md` family is classified as **ROOT TECHNICAL DECISIONS**: operative, subordinate
+     to this register in precedence, and **closed to new entries**. All future decisions are issued
+     as ADR-000x from this register only.
+  3. Where a root D-00x entry and an ADR conflict, **the ADR governs**, and the conflict must be
+     recorded rather than resolved silently.
+  4. No root decision is deleted, renumbered or rewritten. Provenance is preserved intact.
+- **Consequences:**
+  - **Correction to the framing in the CEO instruction, made deliberately.** The instruction offered
+    "explicitly classified as historical/root technical decisions". D-001 through D-007 are **not
+    historical**: they are live and actively cited. D-001 fixes swetest as the numerical authority
+    and is cited by the certifiers; D-002 fixes the 0.5 arcsec tolerance; D-003 fixes zero
+    categorical tolerance for the KP hierarchy; D-004 is the anti-fitting rule; D-007 governs how
+    external-oracle divergence is handled and is cited by the transit and Vimshottari certifiers.
+    Labelling them historical would imply they no longer bind, which would be a substantive and
+    unintended weakening. They are therefore recorded as **operative but subordinate and closed**.
+  - Option A was chosen over migration because migration would either renumber operative decisions,
+    breaking every citation in the certifiers, or duplicate them, creating exactly the two-source
+    ambiguity the conflict exists to remove. Option A is the smaller change and preserves provenance
+    completely, which is what the instruction asked for.
+  - D-008 alone carries a sequencing claim rather than a technical constraint and is dealt with
+    separately in ADR-0027.
+  - Root `DECISION_LOG.md` gains a header note recording this classification. Its entries are
+    untouched.
+- **Evidence:** Root `DECISION_LOG.md` D-001..D-008 read in full; D-001, D-002, D-003, D-007 cited
+  live in `scripts/certify_*.py` and in ADR-0006, ADR-0007 and ADR-0008 evidence blocks.
+
+---
+
+## ADR-0023 - Executable normative rule data versus governed knowledge; the Vimshottari duplication; architecture-document precedence
+
+- **Date:** 2026-08-11
+- **Status:** PROPOSED - pending owner ratification (Q1).
+- **Context:** ADR-0013 conflicts 1, 2 and 3 are one problem seen from three angles.
+  Conflict 1: `engineering/ENGINEERING_CONSTITUTION.md` Principle 3 says knowledge belongs in
+  structured knowledge files and business logic in engine modules, while every certified rule table
+  is a Python literal. Conflict 2: `docs/KNOWLEDGE_STANDARDS.md` says a fact shall exist in only one
+  knowledge asset and must never be duplicated, while the Vimshottari lord and year tables exist in
+  three places by deliberate choice. Conflict 3: three architecture documents place the knowledge
+  layer in three incompatible positions, and the only one marked LOCKED is the only one that places
+  prediction and interpretation inside knowledge, which every other document forbids.
+- **Decision:**
+
+  **1. A precise test distinguishing the two categories.** Data is **EXECUTABLE NORMATIVE RULE DATA**
+  if and only if ALL FOUR hold:
+
+  (a) a deterministic certified calculation cannot produce its output without it;
+  (b) changing it changes certified numerical or categorical output;
+  (c) it is covered by that calculation's certification artifact;
+  (d) it is school-scoped, and its classical source and provenance are recorded at the point of use.
+
+  Data failing any of the four is **GOVERNED KNOWLEDGE**.
+
+  Executable normative rule data MAY be colocated with the implementation as frozen literals.
+  Governed knowledge belongs in `knowledge/`, research material in `research/`, and product or
+  application state never becomes calculation truth.
+
+  **2. Principle 3 is narrowed, explicitly, not violated.** A frozen classical rule table is neither
+  knowledge-for-reasoning nor business logic: it is part of the deterministic specification of an
+  algorithm, and it is verified cell by cell as such. Principle 3 therefore **yields for data meeting
+  the four-part test**, and governs everything else unchanged. This is a narrowing recorded by
+  decision rather than a wording rule quietly ignored, which is what conflict 1 objects to.
+
+  The engineering rationale is stated because it is the substance: moving a certified varga table
+  into a loadable asset would make certified output depend on file loading, path resolution and
+  schema validation at runtime. That converts a proven deterministic property into an operational
+  one, weakens certification, and is precisely what the instruction warns against.
+
+  **3. The Vimshottari duplication is PERMITTED, with its reason and its test stated.** The lord and
+  year tables exist in `legacy/kp.py`, `engine/kp/tables.py` and `engine/dasha/tables.py`. Each
+  serves a different school-scoped consumer, each is independently certified, and a cross-import
+  would create a dependency in which a change made for one school silently alters another. School
+  isolation is a charter non-negotiable; single-source-of-truth is a standard. **Where they conflict
+  for executable normative rule data, isolation wins**, and the duplication is tested rather than
+  removed. `KNOWLEDGE_STANDARDS.md` is therefore narrowed to governed knowledge, its proper subject.
+
+  **A gap in the current cross-consistency net is recorded rather than glossed.**
+  `engine/tests/test_vimshottari_consistency.py` asserts `engine/dasha/tables.py` equals
+  `engine/kp/tables.py` without cross-import. **No test compares `engine/kp/tables.py` against
+  `legacy/kp.py` directly.** That leg is covered only behaviourally, by the equivalence sweep. Closing
+  it is required follow-up work, recorded as new question Q11.
+
+  **4. Architecture-document precedence.** `docs/REPOSITORY_ARCHITECTURE.md` is marked `LOCKED`, and
+  that lock fails PROJECT_CONSTITUTION.md s12 condition 4 because no decision entry records it. It is
+  also the only architecture document placing prediction and interpretation inside the knowledge
+  layer. Its LOCKED status is therefore **corrected to a historical status with a superseding note**,
+  as a purely documentary correction of a claim the constitution never supported. Its content is not
+  rewritten. For layering, the authoritative statement is this ADR together with
+  `docs/PLATFORM_DOMAIN_ARCHITECTURE.md`.
+- **Consequences:** No file moves. No calculated value changes. `engine/knowledge/data/` remains
+  implementation-owned rule data under the four-part test, distinct from top-level `knowledge/`, which
+  is governed knowledge; ADR-0024 draws that boundary. New question Q11 records the missing
+  legacy-to-engine table comparison.
+- **Evidence:** Principle 3 text at `engineering/ENGINEERING_CONSTITUTION.md:46-50`;
+  `docs/KNOWLEDGE_STANDARDS.md:13-22`; `docs/REPOSITORY_ARCHITECTURE.md:5` LOCKED status;
+  the three table locations verified present and value-identical; `test_vimshottari_consistency.py`
+  read and its coverage boundary confirmed by inspection.
+
+---
+
+## ADR-0024 - Engine to knowledge boundary (resolves Q6)
+
+- **Date:** 2026-08-11
+- **Status:** PROPOSED - pending owner ratification (Q1).
+- **Context:** Q6 asks whether `engine/` may read `knowledge/` at runtime. ADR-0013 conflict 4
+  records that it was answered in practice rather than by decision.
+- **Decision:**
+  1. **`engine/` MUST NOT depend on top-level `knowledge/` at runtime for certification-critical
+     calculation.** The certified calculation path executes against pinned, versioned,
+     implementation-owned rule contracts only.
+  2. `engine/knowledge/` is **implementation-owned rule and reference data**, not the governed
+     knowledge layer, and is permitted as a runtime dependency of engine code under the ADR-0023
+     four-part test. The name collision with top-level `knowledge/` is unfortunate and is recorded
+     rather than renamed, because renaming a package touches import paths across certified modules
+     for a cosmetic gain.
+  3. Dependency direction: `research / authoritative sources -> governed specifications and knowledge
+     -> implementation -> certification evidence`.
+  4. Future inference, question and convergence layers MAY consume governed knowledge. The
+     calculation engine MUST NOT load arbitrary knowledge assets dynamically. Any future controlled
+     adapter MUST be specified explicitly, with its version pinning and failure behaviour, before use.
+- **Consequences:**
+  - **Empirically verified, and the decision matches reality.** `engine/` contains **zero** runtime
+    imports of top-level `knowledge/`, and zero references to `knowledge/hlkg`. Nothing must change
+    to comply; the decision records and protects an existing property.
+  - **One live dependency is declared rather than discovered later.**
+    `engine/astrology/dignity.py` loads `engine/knowledge/data/dignities.json` through
+    `engine/knowledge/repository.py`. Under the four-part test that is implementation-owned rule data
+    and is permitted. It is named here so the dependency is on the record. Note that dignity data
+    sits **outside** the current Tier-0 lock scope, which covers the kernel and D9/D10 only.
+  - Q6 is recorded as resolved pending ratification; see `docs/OPEN_QUESTIONS.md`.
+- **Evidence:** Repository-wide search: 0 runtime imports of top-level `knowledge/` from `engine/`;
+  `engine/knowledge/repository.py:16,28` and `engine/astrology/dignity.py:5` for the declared
+  dependency.
+
+---
+
+## ADR-0025 - Certified kernel lineage (resolves Q9)
+
+- **Date:** 2026-08-11
+- **Status:** PROPOSED - pending owner ratification (Q1).
+- **Context:** Q9 asks whether the certified kernel should be imported into `engine/` and under what
+  name. It has been open while `engine/` was heavily populated and certified.
+- **Decision:**
+  1. The calculation kernel under `engine/` is the **authoritative production calculation
+     foundation**. It is not reimplemented for architectural aesthetics.
+  2. Its certification lineage is preserved: Tier-0 lock at `bfae088` recorded by ADR-0005, evidenced
+     by `certification/current_engine_certification.json` and
+     `certification/CURRENT_ENGINE_LOCK.json`, with 528 comparisons against the bundled swetest
+     2.10.03 binary under both ratified profiles at a maximum error of 0.000180 arcsec.
+  3. `legacy/` remains a **historical and equivalence reference**. It is NOT retired.
+     `docs/LEGACY_KERNEL_MIGRATION.md` forbids retirement before all certified functionality has
+     migrated, and that condition is not met.
+  4. Any change inside certified scope requires a formal change decision, regression, independent
+     validation, and recertification where applicable.
+- **Consequences:**
+  - **Empirically verified.** `legacy/` is imported by **five test modules only** and by no production
+    module. The single reference inside `engine/kp/intervals.py` is a docstring recording that the
+    mathematics was migrated verbatim; it is not an import. The dependency posture is therefore
+    already correct.
+  - **No retirement is claimed.** `legacy/` continues to serve as the KP equivalence oracle for
+    ADR-0006 and as the historical Tier-0 record described by `LOCK_MANIFEST.json`.
+  - Q9 is recorded as resolved pending ratification.
+- **Evidence:** `grep` over `engine/` for legacy imports returns `test_kp_chart.py:22`,
+  `test_kp_legacy_equivalence.py:16`, `test_kp_certification.py:16`,
+  `test_reference_astronomy.py:120`, and a docstring at `engine/kp/intervals.py:24`.
+
+---
+
+## ADR-0026 - Roadmap reconciliation and the Phase-2-ahead-of-Phase-1 history (ADR-0013 conflict 7; addresses Q8)
+
+- **Date:** 2026-08-11
+- **Status:** PROPOSED - pending owner ratification (Q1). **Q8 is NOT closed by this entry**; see
+  consequences.
+- **Context:** `docs/PROJECT_BACKLOG.md` places Phase 1 Core Intelligence before Phase 2 Astrology
+  Systems. The astrology systems were built first, and all nineteen Phase 1 items remain not started.
+  ADR-0020 D6 later recorded a preferred domain order, and ADR-0021 D2 confirmed that an order alone
+  does not close Q8.
+- **Decision:**
+  1. **The history is recorded, not rewritten.** Certified astrology foundation layers were developed
+     ahead of the originally proposed Phase 1 intelligence layer. That work is valid, certified, and
+     is treated as **completed prerequisite foundation work**. It is not undone and not re-sequenced
+     retrospectively.
+  2. **Certified does not mean ready.** That the calculation layers are certified does NOT imply the
+     intelligence or convergence product is ready. Nineteen Phase 1 items remain not started, and no
+     evidence, interpretation, convergence, validation, API or UI capability exists.
+  3. **Future sequencing is dependency-driven, not historical.** The forward order is: governance
+     baseline; canonical question and input model; knowledge and domain registry; inference and
+     dependency planning; evidence model; system-specific interpretation layers; convergence;
+     historical validation and learning; API; UI; production.
+  4. Astrology system implementation remains modular and school-isolated. **Muhurta, Varshaphal,
+     Prashna and Mundane remain separate domain architectures and are not forced through a natal
+     pipeline** (ADR-0019, ADR-0020).
+  5. `docs/PROJECT_ROADMAP.md` becomes the document distinguishing completed historical work,
+     currently authorised work, future work, and prerequisites. No phase is marked complete without
+     evidence.
+- **Consequences:**
+  - **Q8 remains OPEN, and this is a deliberate conflict with the instruction's step 5 heading.** The
+    instruction asks to resolve Q8. The immediately preceding CEO direction stated "Q8 remains OPEN.
+    Do not close it", and Q8's own closure criteria per ADR-0021 D2 require per-phase prerequisites,
+    entry criteria, scope, certification gates, exit criteria and approval requirements. Those exist
+    as a **candidate matrix** in `docs/Q8_CLOSURE_MATRIX.md`, which is explicitly unratified.
+    Closing Q8 here would be manufacturing approval, which the instruction also forbids. The two
+    directions conflict and the conflict is recorded rather than resolved by picking one silently.
+    Q8 status becomes RESOLUTION DRAFTED, PENDING RATIFICATION.
+  - This entry supersedes the *sequencing implication* of `docs/PROJECT_BACKLOG.md`, not its content.
+    The backlog remains the enumerated item list.
+- **Evidence:** `docs/PROJECT_BACKLOG.md` Phase 1 contains 19 unchecked items, verified by count;
+  `docs/Q8_CLOSURE_MATRIX.md` present in this branch; ADR-0020 D6 and ADR-0021 D2.
+
+---
+
+## ADR-0027 - KP significator scope; clarification of root D-008 (ADR-0013 conflict 6)
+
+- **Date:** 2026-08-11
+- **Status:** PROPOSED - pending owner ratification (Q1).
+- **Context:** Root D-008 names KP_SIGNIFICATOR_V1 as the next engineering tier and requires its
+  methodology specification to be frozen before implementation. It was never superseded, while the
+  2026-08-08/09 work spanned a much wider programme. `LOCK_MANIFEST.json` still records
+  `tier1_kp_significator` as SPECIFICATION_PENDING.
+- **Decision:**
+  1. **D-008 is CLARIFIED, not superseded, and the two halves are separated.** Its **methodology
+     requirement stands in full and is generalised**: a frozen, independently audited specification
+     precedes implementation. Its **sequencing claim**, that KP significators are necessarily the
+     next tier, is superseded by the dependency-driven order in ADR-0026. Nothing about D-008 implies
+     authorisation to implement.
+  2. **KP significators are NOT authorised for implementation.**
+  3. **Four separately scoped items, never one feature.** KP significators; four-step; ruling
+     planets; horary. Each requires its own specification, its own ADR and its own certification.
+     Combining them into one vague feature is prohibited.
+  4. A KP_SIGNIFICATOR specification MUST define, at minimum: exact methodology; source authority;
+     houses considered; star, sub and sub-sub logic; four-step interpretation if applicable; ruling
+     planets if included; cusp handling; retrograde treatment; node treatment; boundary behaviour;
+     school and profile requirements; independent validation protocol; protected holdout; negative
+     controls; acceptance criteria; and explicit non-claims.
+  5. `LOCK_MANIFEST.json` tier entries are **not** edited by this entry. Whether that file is a live
+     register or frozen legacy evidence is unresolved and is recorded as new question Q12.
+- **Consequences:** The KP layer's certified scope remains chains and fact charts only. The boundary
+  convention finding H-07, where the boundary-proximity indicator is blind to the sign boundary, is
+  a prerequisite consideration for any significator work, since significators consume the chain.
+- **Evidence:** Root `DECISION_LOG.md` D-008; `LOCK_MANIFEST.json` tier table;
+  `docs/KP_CHAIN_SPEC.md` non-claims; `reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md` H-07.
+
+---
+
+## ADR-0028 - Disposition of ADR-0003 through ADR-0013, and the repository-wide consistency audit
+
+- **Date:** 2026-08-11
+- **Status:** PROPOSED - pending owner ratification (Q1).
+- **Context:** The governance ratification pass requires an individual disposition for every
+  entry from ADR-0003 to ADR-0013, and a repository-wide consistency audit against the reconciled
+  position. Both are recorded here so that the disposition is a decision record rather than a
+  conversational assertion.
+
+### Decision 1. The available dispositions, and the one that is not available
+
+`PROJECT_CONSTITUTION.md` section 11 reserves ratification to the named owner, and Q1, which names
+the owner, is open. **No entry in this register can currently be Accepted by anyone**, including by
+the author of this entry. "Accept as written" is therefore **not an available disposition**, and
+recording one would be manufacturing approval.
+
+The dispositions used below are:
+
+| Disposition | Meaning |
+|---|---|
+| RETAIN | The entry stands as written. It remains PROPOSED. |
+| RETAIN WITH RECORDED DEFECT | The entry stands, and a specific defect inside it is recorded here rather than corrected, because correcting a committed entry would falsify the append-only record. |
+| SUPERSEDED IN PART | A later entry governs part of its subject. The entry is not withdrawn. |
+| WITHDRAW | Not used. No entry below merits withdrawal. |
+
+No entry is edited, renumbered or deleted by this decision.
+
+### Decision 2. Per-entry disposition
+
+| ADR | Subject | Disposition | Basis |
+|---|---|---|---|
+| 0003 | Structural reconciliation | RETAIN WITH RECORDED DEFECT | Decision 1 and 3 are reflected in the working tree, verified: the top-level set is `assets certification docs engine engineering examples knowledge legacy reports research schemas scripts specs tools`, which matches the entry's consequences exactly, with `app/` and `tests/` absent as decided. **Defect: the entry's own follow-up obligation was never discharged.** It flagged `NAMING_STANDARD.md` section 5 and `VALIDATION_STANDARD.md` section 1 for correction and required the naming conformance sweep to be re-run. Neither was done. See the audit below, findings C-01 and C-02. |
+| 0004 | Identifier family correction | RETAIN | Completed by ADR-0014 and now mechanically enforced by `scripts/check_retired_identifiers.py` with a negative control. Nothing outstanding. |
+| 0005 | Current-engine Tier-0 lock | RETAIN WITH RECORDED DEFECT | The lock, its scope, its version and its evidence stand. **Two defects.** First, its closing sentence states that the unmet `PROJECT_CONSTITUTION.md` section 12 condition 3 is addressed by ADR-0012; ADR-0012 is graha drishti and sign conventions and does not address certification reporting. The cross-reference is wrong. Second, and materially, **condition 3 is still unmet**: `scripts/certify_current_engine.py` writes only the machine-readable artifact and does not call `scripts/certification_support.emit`, so no human-readable report is generated from the same run. Nine of the eleven certifiers do call it; the two that do not are `certify_current_engine.py` and the superseded `certify_tier0.py`. **The one certifier covering the locked Tier-0 kernel is the one that does not meet the condition.** See finding C-03. |
+| 0006 | KP lordship chain layer | SUPERSEDED IN PART | The layer, its scope and its evidence stand. Its reference to root D-008 is now governed by ADR-0027, which clarifies D-008 rather than superseding it and confirms that significators, four-step, ruling planets and horary remain unauthorised. Its stated consequence that `LOCK_MANIFEST.json` requires a KP_CHAIN entry is **not discharged**: that file records only `tier0_numerical_core`, `tier1_kp_significator`, `tier2_four_step` and `tier3_cil`. Whether it should be edited at all is Q12, so the gap is recorded and left open rather than closed by editing possible frozen evidence. See finding C-04. |
+| 0007 | Vimshottari dasha layer | SUPERSEDED IN PART | The layer and its evidence stand. Its recorded three-way table duplication, referred to ADR-0013 conflict 2, is now dispositioned by ADR-0023 D3, which permits the duplication on the stated condition that it is tested rather than removed. The condition is only partly met; the missing legacy-to-engine comparison is new question Q11. |
+| 0008 | Transit event layer | RETAIN | Nothing outstanding at governance level. The layer carries audit findings M-04 and M-05 on provenance, which are engineering findings recorded in `reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md` and are not authorised for remediation. |
+| 0009 | Generic Varga framework; D3 | RETAIN | The framework/production distinction it draws is exactly the distinction the charter requires, and it holds. Note that `certification/ENGINE_CAPABILITY_INVENTORY.json` classifies the framework itself PARTIALLY CERTIFIED while D3 is CERTIFIED; that is consistent with this entry, not in tension with it. |
+| 0010 | D12; certified-registry constant | RETAIN | Nothing outstanding. |
+| 0011 | D7, D30, D2 | RETAIN | Nothing outstanding. The entry itself records that registering three vargas in one commit strained ENGINEERING_CONSTITUTION Principle 10. Self-recorded, not concealed, and no remedy is proposed for a completed commit. |
+| 0012 | Parashari drishti; sign conventions | RETAIN | Both locked conventions stand and are enforced by a declaration gate. The entry's explicit substitution of `ARCHITECTURE_STATUS.md` item 5, which said "unify", is reaffirmed: renumbering would reopen locked behaviour. |
+| 0013 | Open standards conflicts recorded | SUPERSEDED IN PART, and REMAINS OPEN | Each of its seven conflicts now has a disposition entry: 1, 2 and 3 by ADR-0023; 4 by ADR-0024 (Q6) and ADR-0025 (Q9); 5 by ADR-0022; 6 by ADR-0027; 7 by ADR-0026. **ADR-0013 is not closed**, because every disposing entry is itself PROPOSED. It remains the live record of the conflicts until the disposing entries are ratified, and it is the correct thing to read if the ratification does not happen. |
+
+### Decision 3. Repository-wide consistency audit
+
+Findings are recorded, **not corrected**. Each is a documentary or traceability defect. None of them
+changes a calculated value, and none is authorised for remediation by the current task.
+
+| ID | Finding | Verified by | Why it is not corrected here |
+|---|---|---|---|
+| C-01 | `docs/NAMING_STANDARD.md` section 5 states the closed top-level set as `docs/ engine/ knowledge/ research/ tests/ tools/ app/ examples/ assets/ schemas/`, citing ADR-0001..0003. That list contains `tests/` and `app/`, which ADR-0003 decisions 4 and 2 removed, and omits the six folders ADR-0003 decision 3 sanctioned. It is stale against both the tree and the decision it cites. | Line 86-87 of the file read directly; tree listed | NAMING_STANDARD is a STANDARD, above SPECIFICATIONS in the ADR-0022 hierarchy. Editing a standard to match an unratified ADR would give ADR-0003 effect it does not have. Left OPEN. |
+| C-02 | `docs/VALIDATION_STANDARD.md` line 19 defines "Works" as an automated test in `tests/`. No top-level `tests/` exists; `pytest.ini` testpaths point at `engine/tests/`. ADR-0003 flagged this text for correction and it was not corrected. | File read; `pytest.ini` read | Same reason as C-01. Left OPEN. |
+| C-03 | `scripts/certify_current_engine.py`, the certifier for the ADR-0005 Tier-0 lock, does not generate a human-readable report from the same run, so `PROJECT_CONSTITUTION.md` section 12 condition 3 remains unmet for the locked kernel. ADR-0005's claim that ADR-0012 addresses this is incorrect. | `grep` for `certification_support` across all eleven certifiers: 9 hit, `certify_current_engine.py` and `certify_tier0.py` do not; `reports/certification/` contains ten report pairs and none for the current engine | This is a code change to a certification runner inside locked scope. Not authorised, and not a documentation fix. Recommended as the highest-value next remediation. |
+| C-04 | `LOCK_MANIFEST.json` records no KP_CHAIN entry despite ADR-0006 requiring one, and records `tier1_kp_significator` as SPECIFICATION_PENDING under a tier structure later work did not follow. | File read in full | Whether the file is a live register or frozen evidence is unresolved, which is exactly Q12. Editing it under either reading risks a governance violation. Left OPEN. |
+| C-05 | `docs/MASTER_ARCHITECTURE.md` lines 28 and 30 still describe `app/` and top-level `tests/` as layers of the architecture. | File read | Same reason as C-01, and it is the same underlying staleness. Left OPEN. |
+| C-06 | This register's own status header described ADR-0001 and ADR-0002 as "accepted entries". Both do carry `Status: Accepted`, dated 2026-07-11, before Q1 was raised. ADR-0022 states that nothing can currently be Accepted. The two statements are reconcilable only if the 2026-07-11 acceptances were owner acts recorded before the register adopted its current status vocabulary, which the repository does not evidence either way. | Entries and header read | **Recorded as a genuine ambiguity, not resolved.** Retroactively demoting two Accepted entries would rewrite the record; asserting they were owner-ratified would manufacture provenance. The header is updated below to state the ambiguity rather than to assert either reading. |
+| C-07 | The register's numbering is non-monotonic: ADR-0018 appears between ADR-0013 and ADR-0014, and 0015 to 0017 are reserved and unissued. The `governance` CI job fails on this, and the remote branch is RED. | Remote CI run; header note lines 17-21 read | Under standing CEO HOLD. A remediation proposal exists and is **not approved**. Not touched. |
+
+### Decision 4. What this entry does not do
+
+It does not close ADR-0013. It does not ratify anything. It does not correct C-01 through C-07. It
+makes no change to any calculation, test, certification artifact or gate.
+
+- **Consequences:** Seven documentary defects are now on the record with their verification and with
+  a stated reason for non-correction, which converts them from unknown risk into tracked risk. C-03
+  is the one finding of the seven with substantive weight, because it means the constitution's own
+  four-condition definition of Locked is not satisfied for the kernel that everything else depends
+  on. That is recorded plainly rather than softened.
+- **Evidence:** Every claim in the tables above was checked against the working tree at
+  `c5bdd81` during this pass, by reading the cited file or running the cited search. No claim is
+  carried over from an earlier report.
+
+---
+
+## ADR-0029 - Register ordering rule, and correction of the ADR numbering gate failure
+
+- **Date:** 2026-08-11
+- **Status:** PROPOSED - pending owner ratification (Q1).
+- **Context:** The `governance` CI job's numbering step failed on the remote with two errors:
+  `duplicate ADR numbers: [18]` and `ADR numbers not monotonic`, the observed sequence being
+  `1..13, 18, 18, 14, 19..28`. Investigation found two distinct causes, and neither is a numbering
+  error in the sense the gate was written to catch.
+
+  **Cause of the duplicate.** The remote-CI evidence addendum was written with the heading
+  `## ADR-0018 EVIDENCE ADDENDUM - remote CI validation (2026-08-11)`. The gate's regex,
+  `^## ADR-(\d{4}) `, cannot distinguish an addendum from an entry, so it counted ADR-0018 twice.
+  There was never a duplicate decision. An addendum is a child of its entry, and its heading level
+  was wrong.
+
+  **Cause of the non-monotonic order.** ADR-0018 was issued at Phase G commit 1 and ADR-0014 at
+  Phase G commit 3, because the owner sequenced G6 first. Each was appended to the end of the file
+  as it was written. **That is correct append-only behaviour, and it produced a file the gate
+  rejects.** The register's stated rule "Append-only" and the gate's rule "numbers ascend in file
+  order" are in direct conflict whenever a lower number is issued later. The register never stated
+  which governs. That unstated conflict, not carelessness, is what turned the branch red.
+- **Decision:**
+  1. **The register is ordered by IDENTIFIER, not by append time.** A new entry is inserted at its
+     numeric position. "Append-only" governs **content**: no entry is edited, renumbered or deleted
+     after it is written. It does not govern **position**. This resolves the conflict by decision
+     rather than by weakening either rule, and it is stated here because the register was silent.
+  2. **An addendum is not an entry.** Evidence addenda, corrections of fact, and any other material
+     attaching to an existing entry use a level-three heading of the form
+     `### Evidence addendum to ADR-XXXX - <subject>`, so that the numbering gate counts decisions
+     and only decisions.
+  3. **Corrections applied, both purely positional or structural.** The addendum heading was demoted
+     from `##` to `###`, and the ADR-0018 block together with that addendum was relocated to sit
+     after ADR-0014. **No entry was renumbered, edited, deleted, split or merged.**
+  4. **The gate is NOT weakened.** Its regex, its uniqueness assertion and its monotonicity
+     assertion are unchanged. `.github/workflows/ci.yml` is not modified by this entry. The
+     repository was corrected to satisfy the gate; the gate was not adjusted to tolerate the
+     repository.
+  5. The reserved-numbers note stands: ADR-0015 through ADR-0017 remain reserved and unissued for
+     the remaining Phase G commits, and a gap in the sequence is not a monotonicity failure.
+- **Consequences:**
+  - **Byte-identity of the moved content is proven, not asserted.** SHA-256 over the extracted
+    ADR-0014 block is `4af3498012250daa5dd91b4b6a7d6b2aa464a5241c02bfaad9e82e4bf60d51c7` before and
+    after the move; over the ADR-0018 block including its addendum,
+    `10cebd50fdefc4080398cdbb8e553f8560b8ca4a336b4005eb3dc8940673df53` before and after. Total line
+    count is 1171 before and after. The only textual change in the file beyond this entry is the one
+    heading level.
+  - The gate now reports `PASS: 25 ADR entries, unique and monotonic: ADR-0001..ADR-0028`, sequence
+    `1..14, 18..28`.
+  - **ADR-0028 finding C-07 is thereby resolved**, and it is the only one of the seven consistency
+    findings this pass closes. C-01 through C-06 remain open.
+  - **A gap in the gate itself is recorded rather than fixed.** The identifier gate has a committed
+    negative control in `.github/workflows/ci.yml`; the **numbering gate does not**. Its PASS is
+    therefore weaker evidence than the identifier gate's PASS. A negative control was executed
+    manually during this pass and behaved correctly, but a manual run is not a standing gate. Adding
+    one is a workflow change and is not authorised here. Recorded as new question Q14.
+- **Evidence:** Local reproduction of the original failure before correction, exit 1 with both
+  errors; local execution after correction, exit 0; the two block hashes above; a manual negative
+  control planting `## ADR-0018 - duplicate probe`, which the gate rejected with exit 1.
+
+---
+
+## ADR-0030 - Normative strengthening of the Q6 and Q9 decisions, and the complete ADR-0013 mapping
+
+- **Date:** 2026-08-11
+- **Status:** PROPOSED - pending owner ratification (Q1).
+- **Context:** The CEO correction pass required that the Q6 and Q9 decisions read as architectural
+  rules rather than as observations of current behaviour. On re-reading, ADR-0024 and ADR-0025 were
+  found to be **weaker than intended in three specific respects**, recorded below. Because the
+  register is append-only in content, those entries are not edited; this entry states the governing
+  wording and takes precedence over them where they differ.
+- **Decision:**
+
+  **1. Q6, the engine-to-knowledge boundary. The two claims are separated explicitly.**
+
+  *Empirical fact, as at commit `2a4ac9f`:* `engine/` contains **zero** runtime imports of top-level
+  `knowledge/` and zero references to `knowledge/hlkg`. This is an observation. It could change with
+  any commit and it binds nothing.
+
+  *Normative architectural rule, which binds:*
+  > **`engine/` MUST NOT have an uncontrolled runtime dependency on top-level `knowledge/`.**
+  > Such a dependency is PROHIBITED unless and until a future explicit architectural decision
+  > authorises a specific controlled interface, defining at minimum its version pinning, its schema
+  > validation, its failure behaviour, and its effect on certification.
+
+  **The narrowing "for certification-critical calculation" in ADR-0024 D1 is WITHDRAWN.** It left
+  non-certification-critical runtime dependency implicitly permitted, which is not what was
+  intended: a dependency that is harmless today becomes load-bearing the moment anything downstream
+  consumes it, and the boundary would then have been crossed without a decision. The prohibition is
+  unqualified.
+
+  **No such controlled interface is introduced, specified or authorised by this entry.** The
+  permitted case remains exactly what ADR-0024 D2 records: `engine/knowledge/`, which is
+  implementation-owned rule data and a different thing from top-level `knowledge/` despite the name
+  collision.
+
+  **2. Q9, the kernel and the legacy reference. Four clauses, stated normatively.**
+
+  > (a) `engine/` **is** the production calculation foundation. It is authoritative and is not
+  > reimplemented for architectural aesthetics.
+  >
+  > (b) `legacy/` **remains** a historical and equivalence reference. It is the KP equivalence oracle
+  > for ADR-0006 and the historical Tier-0 record.
+  >
+  > (c) **Retirement of `legacy/` REQUIRES an explicit future decision AND the completion of the
+  > migration and certification requirements of `docs/LEGACY_KERNEL_MIGRATION.md`.** Both are
+  > necessary. Neither alone is sufficient. This clause was missing from ADR-0025 D3, which stated
+  > only that the migration condition is unmet; it did not state that a decision is also required.
+  >
+  > (d) **No retirement is implied, scheduled or foreshadowed by the current state**, and in
+  > particular the empirical finding that `legacy/` is imported by five test modules and no
+  > production module MUST NOT be read as evidence that retirement is close at hand or appropriate. A low
+  > dependency count is not a retirement criterion.
+
+  **3. The complete ADR-0013 conflict-to-disposition mapping**, recorded here as a single table
+  because it was previously distributed across six entries and one summary row.
+
+  | ADR-0013 conflict | Subject | Disposing entry |
+  |---|---|---|
+  | 1 | ENGINEERING_CONSTITUTION Principle 3 versus rule tables as Python literals | ADR-0023 |
+  | 2 | KNOWLEDGE_STANDARDS single-source-of-truth versus the three-way Vimshottari duplication | ADR-0023 |
+  | 3 | Three architecture documents placing the knowledge layer differently; the unsupported LOCKED status | ADR-0023 |
+  | 4 | Q6 and Q9 answered in practice rather than by decision | ADR-0024 (Q6) and ADR-0025 (Q9), both strengthened by this entry |
+  | 5 | Root D-00x and ADR-000x coexisting with no stated precedence | ADR-0022 |
+  | 6 | Root D-008 naming KP_SIGNIFICATOR_V1 as the next tier | ADR-0027 |
+  | 7 | PROJECT_BACKLOG Phase 1 before Phase 2 versus what was actually built | ADR-0026 |
+
+  Every conflict maps to exactly one disposing entry, except conflict 4, which maps to two because
+  it recorded two distinct questions in one item. ADR-0023 disposes of three conflicts because
+  conflicts 1, 2 and 3 are one problem seen from three angles, which ADR-0023's context states.
+
+  **4. No feature decision is contained in ADR-0022 through ADR-0030.** Verified by reading every
+  decision clause in the seven prior entries and this one: each is a rule, a classification, a
+  prohibition, a disposition or a documentation obligation. The only clauses that mention
+  implementation do so to **withhold** authorisation: ADR-0027 D2 states that KP significators are
+  not authorised, ADR-0026 D5 states that no phase is marked complete without evidence, and
+  ADR-0024 D4 and this entry's clause 1 both prohibit rather than permit.
+- **Consequences:**
+  - Where ADR-0024 D1 and this entry's clause 1 differ, **this entry governs**, and the difference
+    is a deliberate strengthening rather than a correction of an error of fact.
+  - Where ADR-0025 D3 and this entry's clause 2 differ, **this entry governs**.
+  - Nothing in `engine/`, `legacy/`, `knowledge/` or any test is changed by this entry. The
+    prohibition it states is already satisfied.
+- **Evidence:** Repository-wide search for runtime imports of top-level `knowledge/` from `engine/`,
+  zero results, re-run this pass; the five `legacy/` importers re-confirmed as test modules;
+  every decision clause of ADR-0022 through ADR-0028 re-read for feature content.
+
+---
+
+## ADR-0031 - Tier-0 same-run certification evidence repaired (ADR-0028 finding C-03)
+
+- **Date:** 2026-08-13
+- **Status:** PROPOSED - pending owner ratification (Q1).
+- **Context:** ADR-0028 finding C-03 recorded that `scripts/certify_current_engine.py`, the certifier
+  behind the ADR-0005 Tier-0 lock, wrote only the machine-readable artifact. Nine of the eleven
+  certifiers already routed their output through `certification_support.emit`, which derives the
+  human-readable report from the same dict it serialises; this one and the superseded
+  `certify_tier0.py` did not. `PROJECT_CONSTITUTION.md` section 12 condition 3 was therefore unmet
+  for the locked kernel that every other layer depends on.
+- **Decision:**
+  1. **Route the Tier-0 runner through the existing emitter.** `emit()` now writes the artifact, the
+     human-readable report and the console transcript from THE SAME run and THE SAME result object.
+     No second calculation is performed to produce the report, and no value is copied by hand.
+  2. **The evidence contract is stated and rendered, not implied.** Both files now carry: source
+     revision and working-tree cleanliness, engine version, execution timestamp, Python version,
+     holdout case identity, reference binary, profile set, comparison counts, the three numerical
+     maxima, the frozen tolerance, the Moshier fallback count, the failure list and the PASS/FAIL
+     verdict.
+  3. **Three additive, inert extensions to the shared emitter**, being the smallest change that
+     renders the contract: an optional tolerance line, an optional run-metadata section, and an
+     optional summary section, plus a verdict lookup that reads `summary.result` when no top-level
+     `result` exists. **All four are no-ops for every artifact that predates this change**, which is
+     proven rather than assumed: all ten existing reports re-render byte-identically.
+     The verdict lookup exists specifically so the verdict is NOT duplicated into the artifact
+     merely so the report can display it, which would create two places for it to be wrong.
+  4. **A standing agreement gate with a real negative control**,
+     `engine/tests/test_certification_evidence_agreement.py`. It re-derives every report from its
+     artifact and demands byte equality across all eleven pairs, names the Tier-0 pair explicitly so
+     discovery cannot silently drop it, asserts a floor of eleven pairs so a discovery bug cannot
+     turn the gate into a no-op, and asserts that the Tier-0 report actually contains the contract
+     fields, because agreement with an empty report would be worthless agreement. Six parametrised
+     negative controls corrupt an in-memory copy and require the comparison to fail.
+  5. **`source_revision` is observed, never asserted.** Where git is unavailable the fields read
+     `unavailable` rather than being guessed. `working_tree_dirty` is recorded because a run over a
+     modified tree is evidence about that tree and not about the named commit.
+- **Consequences:**
+  - **Constitution section 12 condition 3 is now satisfied technically. Formal Locked status is NOT
+    thereby established.** Condition 4 requires a decision entry recording the lock, and ADR-0005 is
+    PROPOSED because Q1 is open. **The correct description of Tier-0 remains "reported", not
+    "Locked"**, and this entry does not change ADR-0005's status.
+  - **Zero numerical change, proven three ways.** The committed pre-change artifact, a re-run in the
+    repository, and a run in a fresh extracted tree with the evidence deleted first all produce
+    identical per-case values, identical summaries, identical tolerance and an identical ayanamsa
+    profile check. Comparisons 264 planets and 264 cusps per the two profiles combined; maximum
+    planet error 0.00017942695649253437 arcsec; maximum ascendant error 0.00017634032474234118;
+    maximum cusp error 0.0001795366415535682; Moshier fallbacks 0; result PASS.
+  - **The artifact's serialisation changed from two-space to one-space indent**, because `emit()`
+    writes at indent 1 as it does for the other ten artifacts, and it gained the `_artifact_name`
+    and `_slug` keys the emitter records. No value changed. The artifact is regenerated current
+    evidence by its own declared contract, not immutable historical evidence, so regenerating it is
+    correct rather than a rewrite of protected material.
+  - **A separate defect is recorded, not fixed: the artifact is not byte-reproducible.** Each case
+    records `swetest_cmd` containing the run's temporary directory and the checkout's absolute path,
+    so two runs of identical code on identical data produce different bytes. That is the same class
+    of defect root D-005 removed from the legacy Tier-0 package. It does not affect condition 3,
+    because both evidence files regenerate together and agree. Recorded as new question Q15.
+  - **A second gap is recorded, not fixed:** this runner still does not call `preflight()`, so it
+    verifies the swetest binary version but not the ephemeris checksums, and no anti-fitting scan
+    forms part of this gate. That is VALIDATION_STANDARD section 2 rules 4 and 6, not section 12
+    condition 3, and wiring it changes what the gate can reject. Recorded as new question Q16.
+- **Evidence:** Live negative controls executed against the real on-disk evidence, not only in
+  memory: hand-editing the report produced 3 test failures, altering the artifact produced 4, and
+  after restoration both files hashed identically to their pre-control values, with the two source
+  files unchanged. Default gate 415 passed, up from 404 by the 11 new agreement tests. Fresh
+  extracted-tree run reproduced the certification from one command with all three evidence files
+  regenerated from nothing.
+
+---
+
+## ADR-0032 - Tier-0 ephemeris integrity (resolves Q16), and the certification evidence provenance protocol
+
+- **Date:** 2026-08-13
+- **Status:** PROPOSED - pending owner ratification (Q1).
+- **Context:** Two matters arising from the C-03 repair recorded in ADR-0031. First, the evidence
+  committed at `7582407` records `source_revision: 4c14c05` and `working_tree_dirty: True`, which is
+  not the commit that carries it, and the CEO required this be proven rather than explained away.
+  Second, Q16 recorded that the Tier-0 runner verified the swetest binary's version but not the
+  integrity of the ephemeris data.
+
+### Decision 1. Evidence provenance: case A, proven, and a protocol so it stops recurring
+
+**The evidence was NOT stale.** It represents the working tree that became `7582407`, and the
+proof is a chain of three checked facts rather than a recollection:
+
+  1. The certification run stamped `2026-08-13T08:03:44Z`. The commit `7582407` is timestamped
+     `2026-08-13T08:04:39Z`, fifty-five seconds later.
+  2. Every source file the certification depends on has a filesystem mtime EARLIER than the run:
+     the runner at 07:59:45, the shared emitter at 08:02:40, and every engine module, the swetest
+     binary and all three ephemeris files at 2026-08-10. **No source was modified after the run.**
+  3. The working tree was clean at `7582407`, so the on-disk files equal the committed blobs.
+
+  From (3) the committed blobs equal the on-disk files; from (2) the on-disk files at commit time
+  equal those at run time; therefore **the committed tree contains exactly the implementation that
+  was certified**. `working_tree_dirty: True` was truthful: at run time the tree differed from
+  `4c14c05`, which is precisely what that field exists to say.
+
+**Why this is nevertheless unsatisfactory, and the protocol that fixes it.** A reader should not
+have to reconstruct mtimes to learn which commit was certified. The cause is structural: a run
+must precede the commit that carries its output, so `HEAD` at run time is always the PREVIOUS
+commit.
+
+  **PROTOCOL, from this entry onward. Certification evidence is committed in two steps.**
+  **Step 1** commits the implementation. **Step 2** re-runs the certifier against that clean
+  committed tree and commits ONLY the regenerated evidence files. The evidence then records a real
+  commit SHA with `working_tree_dirty: false`, and that SHA names the commit holding the certified
+  implementation. The step-2 commit MUST change no implementation file, which is verifiable by
+  diffing the two commits.
+
+  This is bookkeeping discipline, not a redesign. Nothing in the runner changes to support it.
+
+### Decision 2. Q16: ephemeris integrity is verified, using the existing mechanism
+
+**The finding, stated precisely because the distinction is the whole point.** `resolve_swetest()`
+executes the bundled binary and asserts the string `version 2.10.03`. That proves the ORACLE is the
+pinned build. **It proves nothing whatsoever about the ephemeris DATA**, which is what both the
+oracle and the engine actually read, and which is where a silent corruption would move every
+number in the run while every version check still passed.
+
+  1. **The runner calls `certification_support.preflight()` before anything else**, and records its
+     result as `report["preconditions"]`, which the emitter already renders. No checksum logic is
+     duplicated: this is the same `verify_data_assets()` the other nine certifiers use, and the same
+     `CHECKSUMS.sha256` manifest.
+  2. **Coverage is exact and is now asserted, not assumed.** `CHECKSUMS.sha256` lists
+     `seas_18.se1`, `semo_18.se1` and `sepl_18.se1`. `engine.astronomy.ephemeris.REQUIRED_FILES`
+     declares those same three, and `default_ephemeris_path()` resolves to the repository root,
+     which is also the `-edir` the runner passes to swetest. **The engine and the independent oracle
+     read the same three verified files.** A test asserts this correspondence so it cannot rot if
+     either list changes.
+  3. A precondition failure routes through `fail()`, exiting 3 with a legible message, matching the
+     runner's existing convention rather than raising a traceback.
+  4. The anti-fitting scan arrives with `preflight()` as a consequence, closing VALIDATION_STANDARD
+     section 2 rule 6 for this runner at the same time as rule 4. 146 production modules scanned,
+     zero findings.
+  5. **The Tier-0 exemption in `engine/tests/test_certification_preconditions.py` is withdrawn.**
+     That list carried the comment that Tier-0 "predates this requirement and is exempt until its
+     runner is wired". It is wired, so the artifact is now held to the same standard as the other
+     ten.
+- **Negative controls.** Three committed, plus two demonstrated end to end.
+  Committed: a copy-based control that corrupts one byte of a COPY of an ephemeris file and requires
+  `CertificationFailure`; a control that deletes a copied asset and requires the same; and the
+  coverage assertion above. Each verifies the copies PASS first, so the control cannot pass
+  vacuously. Demonstrated: corrupting one byte of `semo_18.se1` in a full extracted copy made the
+  certifier exit 3 with the expected and actual digests printed, and deleting `sepl_18.se1` made it
+  exit 3 reporting the missing asset. **The real bundled reference data was never modified**, proven
+  by a combined SHA-256 over the three ephemeris files and the manifest, identical before and after.
+- **Consequences:**
+  - **Zero numerical change.** Summary, tolerance, ayanamsa profile check and every per-case value
+    are identical to the pre-C-03 committed artifact at `4c14c05`. 264 planet and 264 cusp
+    comparisons; maxima 0.00017942695649253437, 0.00017634032474234118 and 0.0001795366415535682
+    arcsec; zero Moshier fallbacks; PASS. Tolerance still 0.5 arcsec. The 11-case holdout, both
+    profiles, and every calculation path are untouched.
+  - Default gate 420 passed, from 415: three new precondition tests and two parametrised cases
+    gained by withdrawing the Tier-0 exemption.
+  - **Constitution section 12 is unaffected by this entry.** Condition 3 was repaired by ADR-0031;
+    this closes a VALIDATION_STANDARD section 2 gap. **Condition 4 remains unmet and Tier-0 remains
+    correctly described as "reported", not "Locked"**, because ADR-0005 is PROPOSED while Q1 is open.
+    ADR-0005's status is not changed by this entry.
+  - **Q15 remains OPEN and is deliberately not addressed.** The artifact is still not
+    byte-reproducible, because each case records `swetest_cmd` containing the run's temporary
+    directory and the checkout's absolute path.
+- **Evidence:** mtime and commit-timestamp chain above; `CHECKSUMS.sha256` compared against
+  `REQUIRED_FILES`; end-to-end controls exiting 3 with correct diagnostics; combined ephemeris
+  hash unchanged; full gate 420 passed.
+
+---
+
+## ADR-0033 - Owner ratification: governance roles (Q1), ADR-0001 and ADR-0002 (Q13), and roadmap direction (Q8)
+
+- **Date:** 2026-08-13
+- **Status:** **ACCEPTED. This is the first owner-ratified entry issued by this register**, and it is
+  the entry that makes ratification possible at all. It is accepted because the owner supplied the
+  decisions below as an explicit ratification instruction, not because its author judged it correct.
+- **Context:** Q1 asked who the named owners are. It has been open since 2026-07-11 and has blocked
+  every other ratification: `PROJECT_CONSTITUTION.md` section 11 reserves ratification to the owner,
+  so with no owner named, **no entry in this register could be Accepted by anyone**, and ADR-0022
+  recorded that plainly. The owner has now supplied a ratification package covering Q1, Q13 and the
+  direction half of Q8.
+
+### Decision 1. Governance roles (Q1, ratified in part)
+
+| Role | Holder |
+|---|---|
+| Project Owner, final ratifying authority | **Prashant Kumar** |
+| Builder, researcher, executor | **Claude** |
+| Independent CEO and technical auditor | **ChatGPT** |
+
+Also ratified:
+
+- The **repository** is the authoritative permanent project record for implementation, governance,
+  specifications, certification and decision history.
+- **Conversation is input material only and is never permanent authority.** This ratification is
+  itself an instance of the rule: it was given in conversation, and it becomes authority only
+  because it is written here.
+- **Significant phase work MUST NOT be merged to main without CEO audit and owner authorisation.**
+
+**Q1 is ratified IN PART and REMAINS OPEN in part.** Q1 asked for a docs owner, an engine owner and
+a release owner. The package designated none of the three, and the instruction was explicit that a
+required maintainer who has not been designated is left OPEN rather than guessed. **No additional
+maintainer is invented.** Consequently the `| Owner | TBD (see Q1) |` field in all 42 document
+status headers is left unchanged: those fields name a document maintainer, which is one of the three
+undesignated roles, and filling them with the project owner's name would assert a delegation that
+was not made.
+
+**How this ratification is evidenced, stated rather than glossed.** It reached the repository through
+a working session, and the repository has no mechanism to authenticate who issued it. That is a
+real limitation of the current process, not a defect in this record. If the owner wants ratification
+to be independently verifiable later, the durable forms are a signed commit or an owner-signed file
+in the repository; neither is created here, because neither was requested.
+
+### Decision 2. ADR-0001 and ADR-0002 ratified as written (Q13, resolved)
+
+The owner ratifies **ADR-0001** and **ADR-0002** exactly as currently recorded. Their status lines
+now record the ratification date, the ratifying owner, and that no substantive content changed. Not
+one word of their context, decision or consequences is altered.
+
+**No earlier conversation is claimed as the ratification.** Q13 asked whether their pre-existing
+`Accepted` status was an owner act or an authoring artifact. That question is **not** answered by
+this entry and does not need to be: the status is now legitimate prospectively, from 2026-08-13,
+whatever its earlier provenance was. Q13 is resolved on that basis and the historical ambiguity is
+left recorded rather than retrospectively decided.
+
+A consequence worth naming: ADR-0001 fixes the canonical top-level folder set, and **ADR-0003
+reconciled the tree against it and is still PROPOSED**. Ratifying ADR-0001 as written therefore
+leaves a live tension, because the tree currently on disk is ADR-0003's, not ADR-0001's. This does
+not require action now; it requires that ADR-0003 be ratified or rejected before anyone treats
+either folder list as settled. Recorded so it is not discovered later.
+
+### Decision 3. Roadmap direction ratified; Q8 NOT closed
+
+The owner ratifies this dependency ordering:
+
+> Foundation and Certification -> Question and Input Architecture -> Knowledge and Rule Architecture
+> -> Dependency and Inference Architecture -> Evidence Architecture -> System-specific Interpretation
+> -> Convergence -> Historical Validation and Learning -> API -> UI and Production
+
+With five ratified qualifications:
+
+1. **The ordering is dependency guidance, NOT automatic implementation authorisation.** Nothing in it
+   authorises work to begin.
+2. Existing certified astrology foundation work remains **valid historical foundation work**.
+3. Astrology systems remain **independently implemented and independently evaluated**.
+4. Convergence MUST preserve **provenance, dependency, correlation and uncertainty**.
+5. **Structurally different domains MUST NOT be forced through one natal pipeline.**
+
+**Q8 becomes OWNER-RATIFIED DIRECTION, FULL RESOLUTION STILL OPEN.** Full closure continues to
+require, for every phase: prerequisites, entry criteria, scope, certification gates, exit criteria
+and CEO approval requirements. Those exist only as the unratified candidate matrix in
+`docs/Q8_CLOSURE_MATRIX.md`.
+
+### Decision 4. PROJECT_CONSTITUTION section 12 condition 4, evaluated explicitly for ADR-0005
+
+The instruction required this be evaluated rather than assumed, so the reasoning is set out in full.
+
+Condition 4 reads: *"A decision log entry records the lock, its version, and its evidence."*
+**ADR-0005 does record all three**: scope, engine 0.3.0, the two ratified profiles, and the 528
+comparisons at a maximum error of 0.000180 arcsec. On a purely textual reading, condition 4 is met
+by the entry's existence.
+
+**That reading is rejected, and deliberately.** If a PROPOSED entry satisfied condition 4, then the
+AI builder could satisfy every condition of "Locked" without any human act, since conditions 1, 2
+and 3 are all machine-verifiable. "Locked" would become self-certifiable, which contradicts
+`PROJECT_CONSTITUTION.md` section 11, contradicts the charter's anti-circularity rule, and would make
+the constitution's own strongest status the easiest to claim. The governing reading is therefore that
+condition 4 requires a **ratified** entry.
+
+**Applying that reading: ADR-0005 was NOT included in this ratification package.** The owner ratified
+ADR-0001, ADR-0002 and the Q8 direction. ADR-0005 remains PROPOSED.
+
+**Therefore Tier-0 is NOT Locked, and MUST continue to be described as "reported".** The status is
+unchanged by this entry.
+
+What HAS changed is the nature of the blocker, and the change is substantial. Before this entry the
+obstacle was that no ratifying authority existed. Now one does, and the remaining conditions stand
+as follows: condition 1 met, a frozen profile and specification exist; condition 2 met, a fresh
+extracted tree reproduces the certification from one command with zero skips; condition 3 met by
+ADR-0031, machine-readable and human-readable evidence generated by the same run and agreeing
+byte-for-byte, defended by a gate with working negative controls; condition 4 **unmet, and now
+unmet for exactly one reason: ADR-0005 has not been ratified.**
+
+**Tier-0 is one owner decision away from Locked.** That decision is not taken here and MUST NOT be
+inferred from this entry.
+
+The textual ambiguity in condition 4 is recorded as new question Q17, because the reading adopted
+above is a governing interpretation made by the builder and should be confirmed or corrected by the
+owner rather than left as precedent by default.
+
+- **Consequences:**
+  - **ADR-0022's statement that no entry can currently be Accepted by anyone is superseded from this
+    date.** An authority now exists. **Every other entry in this register nevertheless remains
+    PROPOSED**, because ratification is per-entry and only ADR-0001, ADR-0002 and this entry have
+    received it. A reader must not read "an owner exists" as "the register is ratified".
+  - Q1 resolved in part, Q13 resolved, Q8 direction ratified with full closure still open, Q17 raised.
+  - Nothing else changes. No code, no calculation, no certification artifact, no gate, no workflow.
+  - Explicitly NOT addressed, by instruction: Q11, Q12, Q14, Q15, and consistency findings C-01,
+    C-02, C-04, C-05, C-06.
+- **Evidence:** The owner's ratification instruction of 2026-08-13; `PROJECT_CONSTITUTION.md`
+  sections 11 and 12 read in full; ADR-0005 re-read for what it does and does not record;
+  `certification/current_engine_certification.json` and
+  `reports/certification/current_engine.report.md` at `d951caf` for the condition 1, 2 and 3
+  assessment.
+
+---
+
+## ADR-0034 - Tier-0 formally LOCKED: owner ratification of ADR-0005 and verification of all four Constitution s12 conditions
+
+- **Date:** 2026-08-13
+- **Status:** **ACCEPTED**, on the owner's lock authorisation of 2026-08-13.
+- **Context:** ADR-0033 D4 evaluated `PROJECT_CONSTITUTION.md` section 12 for Tier-0 and found
+  conditions 1, 2 and 3 met and condition 4 unmet for exactly one reason: ADR-0005 had not been
+  ratified. It recorded that Tier-0 was one owner decision away from Locked, and that the decision
+  must not be inferred. The owner has now taken it.
+
+### Decision 1. ADR-0005 is ratified, and Tier-0 is formally LOCKED
+
+The owner ratifies **ADR-0005 exactly as written**. Its scope, version, ratified profiles, frozen
+tolerances and evidence are unchanged. **No numerical value is restated, revised or re-derived by
+this entry.**
+
+**TIER-0 IS FORMALLY LOCKED as of 2026-08-13.**
+
+### Decision 2. The four conditions, verified individually
+
+The constitution requires ALL four. Each is stated with what actually satisfies it, because a lock
+asserted without this table is the defect ADR-0005 was written to correct in the first place.
+
+| # | Condition | Status | What satisfies it |
+|---|---|---|---|
+| 1 | A written specification or frozen profile exists | **MET** | Two frozen `CalculationProfile` definitions, `parashari_lahiri` (SIDM 1) and `kp_krishnamurti` (SIDM 5), owner-signed 2026-08-08; frozen numerical authority and tolerances at root D-001 to D-004; `certification/CURRENT_ENGINE_LOCK.json` |
+| 2 | A reproducible verification run passes per VALIDATION_STANDARD: fresh environment, one command, zero skips, independent reference | **MET** | `python3 scripts/certify_current_engine.py` reproduced from a freshly extracted tree with all evidence deleted first, exit 0; default gate 420 passed, **zero skipped**; independent reference is the bundled Astrodienst swetest 2.10.03 C binary, version-asserted at runtime; ephemeris integrity verified against `CHECKSUMS.sha256` per ADR-0032 |
+| 3 | Machine-readable results and a human-readable report generated by that same run, agreeing exactly | **MET** | Repaired by ADR-0031. `certification_support.emit()` writes `certification/current_engine_certification.json`, `reports/certification/current_engine.report.md` and the console transcript from one run and one dict. Defended by `engine/tests/test_certification_evidence_agreement.py`, which re-derives every report from its artifact and demands byte equality, with six in-memory and two live negative controls proven to fail on disagreement |
+| 4 | A decision log entry records the lock, its version and its evidence | **MET, AS OF THIS ENTRY** | ADR-0005 records the lock, engine version 0.3.0, scope and evidence, and is now **owner-ratified**. Decision 1 above is what changed |
+
+**Condition 4 and the Q17 interpretation.** ADR-0033 D4 had to decide whether condition 4 requires a
+*ratified* entry or merely an *existing* one, and adopted the stricter reading so that "Locked" could
+not be self-certified by the builder. **That question is now moot for Tier-0: under either reading,
+condition 4 is met**, because ADR-0005 both exists and is ratified. **Q17 nevertheless remains OPEN**
+as a general interpretive question, since it will govern every future lock, and the stricter reading
+should be confirmed by the owner rather than inherited as precedent from this case.
+
+### Decision 3. The certified tree, identified exactly
+
+The evidence in the repository was produced by a run against commit
+`d951caf941d832aca17d77e8807c8cbf7a72a049` with a clean working tree, per the ADR-0032 provenance
+protocol. Two commits have followed. **Neither touched a single implementation file**, and that is
+proven by git tree hashes rather than asserted:
+
+| Path | `d951caf` | `e203320` |
+|---|---|---|
+| `engine/` | `0790a968aaa9ed0f8691efb498cbae1d0bec3861` | identical |
+| `scripts/` | `cf098034318e74beba15cef1653eccb0cf621eda` | identical |
+| `legacy/` | `7b9fc652cdb03e0c09294c49611a3964041ecd75` | identical |
+| `CHECKSUMS.sha256` | `0885f0446ba4306c7afa78eef06a0be2e7b6c5a7` | identical |
+| `seas_18.se1` | `8f900cab7e557e4c41f758a6bf3a3c3967e7e3db` | identical |
+| `semo_18.se1` | `5427d9f885fd6cb9489584ade37e52c6abb4d407` | identical |
+| `sepl_18.se1` | `786702cd04506371ee6223af1ebac02d54c848b8` | identical |
+| `swetest` | `1829dd062a09dde15711a9ae5f4fb070952e02c1` | identical |
+
+The five files changed since `d951caf` are three governance documents and the two evidence files
+regenerated by the protocol's own second step.
+
+Per that protocol a confirming run is executed against the clean tree at the commit carrying this
+entry, and its evidence is committed immediately after, so the locked commit and the evidence's
+recorded `source_revision` are the same SHA. **That run confirms; it does not re-derive.** If it had
+produced any different number the lock would not have been recorded, and the divergence would have
+been reported instead.
+
+### Decision 4. The locked numbers, restated for the record and unchanged
+
+Frozen tolerance 0.5 arcsec (root D-002), categorical tolerance zero (root D-003). 11-case holdout
+across both ratified profiles: 264 planet comparisons and 264 cusp comparisons, 528 in total.
+Maximum planet error 0.00017942695649253437 arcsec, maximum ascendant error
+0.00017634032474234118 arcsec, maximum cusp error 0.0001795366415535682 arcsec. Ayanamsa separation
+between the two profiles 5.811157757093781 arcmin. Zero Moshier fallback events, zero failures,
+result PASS.
+
+These are the values already in the artifact. **Nothing here recomputes or rounds them.**
+
+- **Consequences:**
+  - **Change control tightens immediately.** Any change inside the locked scope, being the
+    astronomical calculation kernel and the certified D9/D10 divisional mathematics, now requires a
+    formal change decision, regression, independent validation and recertification, plus a further
+    ADR. The lock is not a badge; it is a constraint on future edits.
+  - **Three statements in committed entries are superseded from this date, and are NOT edited**,
+    because the register is append-only in content: ADR-0031's and ADR-0032's consequence blocks and
+    ADR-0033 D4 each state that Tier-0 remains "reported", not "Locked". Each was true when written.
+    **This entry supersedes all three**, and a reader encountering them must read them as dated
+    record. `docs/PROJECT_ROADMAP.md`, being a living summary rather than a dated decision, is
+    updated in place.
+  - **What is NOT locked, restated because a lock invites over-reading.** The lock covers the
+    astronomical kernel and the certified D9/D10 mathematics **only**. It does not cover the registry
+    vargas D2, D3, D7, D12 and D30, which have their own certifications; nor the KP, dasha, transit
+    or drishti layers, which have theirs; nor dignity data, which sits outside lock scope; nor
+    polar-circle house behaviour beyond 64.1 degrees north, which remains NOT VERIFIED; nor any of
+    the absent capabilities listed in `certification/ENGINE_CAPABILITY_INVENTORY.json`. Panchanga and
+    rise/set are Tier-0 by ADR-0020 D2 and are **not** retroactively brought inside this lock.
+  - **C4 is not C5.** Tier-0 being Locked means the calculations are certified against an independent
+    numerical authority. It says nothing about astrological validity, and MUST NEVER be represented
+    as prediction validation.
+  - **Q15 is unaffected and remains OPEN.** The artifact is still not byte-reproducible across runs,
+    because `swetest_cmd` records the run's temporary directory and the checkout's absolute path.
+    That is a reproducibility annoyance, not a condition-2 failure: condition 2 requires the run to
+    reproduce, and it does, with every number identical.
+  - **A finding bearing on Q12, recorded but not resolving it.**
+    `certification/CURRENT_ENGINE_LOCK.json` states that `LOCK_MANIFEST.json` is deliberately left
+    untouched because it describes the LEGACY kernel exclusively, per audit finding F-17. That is
+    material evidence for Q12 and was not visible when Q12 was raised. Q12 asks what the file is FOR
+    and whether it is live or frozen, which this does not answer, so **Q12 stays OPEN** and
+    `LOCK_MANIFEST.json` is not edited.
+- **Evidence:** Owner's lock authorisation of 2026-08-13; `PROJECT_CONSTITUTION.md` section 12 read
+  in full and evaluated condition by condition; git tree hashes above; ADR-0031 and ADR-0032 for
+  conditions 3 and 2; `certification/current_engine_certification.json` and
+  `reports/certification/current_engine.report.md`, same-run and byte-agreeing.
+
+---
+
+## ADR-0035 - Owner ratification of ADR-0009, ADR-0010 and ADR-0011: the registry vargas
+
+- **Date:** 2026-08-13
+- **Status:** **ACCEPTED**, on the owner's ratification of 2026-08-13.
+- **Context:** ADR-0009, ADR-0010 and ADR-0011 record the Generic Varga framework entering production
+  use and the five registry vargas built on it. All three had been PROPOSED since 2026-08-09, blocked
+  first by Q1 and then simply by not having been put to the owner. The owner has now ratified all
+  three exactly as written.
+
+### Decision 1. What is ratified
+
+| Entry | Subject ratified |
+|---|---|
+| **ADR-0009** | The Generic Varga framework enters production use. **D3 Drekkana**, Parashara variant (the sign itself, the 5th, the 9th), under the `parashara` school key, expressed as frozen `SegmentVargaRule` literals because `CyclicVargaRule` cannot express the drekkana's four-sign jumps. D9 and D10 are **NOT** migrated and the registry continues to refuse those divisions by contract |
+| **ADR-0010** | **D12 Dwadasamsa**, twelve 2.5-degree parts from the sign itself forward, as frozen `CyclicVargaRule` literals; and `engine.astrology.CERTIFIED_PRODUCTION_VARGAS` as the single source of truth for sanctioned registry state |
+| **ADR-0011** | **D7 Saptamsa** (odd signs from the sign itself, even from the seventh, forward), **D30 Trimsamsa** (unequal tara-graha segments 5/5/8/7/5 odd and reversed even, no luminaries), **D2 Hora** (two 15-degree halves with a deliberately two-sign Leo/Cancer output space) |
+
+Ratified **as written**. Every rule table, boundary convention, school key, non-claim and
+certification figure stands unaltered. **No implementation, calculation, rule table, tolerance or
+certification artifact is touched by this entry**, and no certification is re-run or re-derived.
+
+### Decision 2. Three things the owner is accepting that are easy to miss
+
+Stated explicitly because ratifying "as written" means ratifying the caveats the entries recorded
+about themselves, and those caveats should not pass silently into an approval.
+
+**1. The D7 ULP finding.** ADR-0011 records that D7's 30/7-degree segment widths are not
+binary-representable, that six points of the 51,429-point sweep land one ULP below a boundary, and
+that the locked promote-up convention governs there, with the independent references carrying that
+tolerance explicitly. **That numerical caveat is now owner-accepted**, not resolved. It is the
+correct treatment, and it remains a documented edge in the D7 rule rather than an absence of one.
+
+**2. ADR-0011's self-recorded process exception.** That entry registered three vargas in a single
+commit and says so, noting it strains `engineering/ENGINEERING_CONSTITUTION.md` Principle 10, one
+logical change per commit, and the README's own "one at a time" rule. Ratifying as written accepts
+that exception for that historical commit. **It sets no precedent**: future vargas follow
+`docs/NEW_VARGA_IMPLEMENTATION_TEMPLATE.md` and Principle 10.
+
+**3. Framework certification is still not per-varga certification.** ADR-0009's central constraint is
+ratified along with the rest: the framework is infrastructure. `ENGINE_CAPABILITY_INVENTORY.json`
+classifies the framework itself PARTIALLY CERTIFIED while each registered varga is CERTIFIED
+individually, and those two statements are consistent rather than in tension.
+
+### Decision 3. Constitution s12 evaluated for the registry vargas. They are NOT Locked
+
+Evaluated explicitly rather than assumed, because Tier-0's lock followed a ratification and the
+pattern invites the inference that this one does too. **It does not.**
+
+| # | Condition | State for D2, D3, D7, D12, D30 |
+|---|---|---|
+| 1 | Written specification or frozen profile | **MET.** Frozen rule literals plus `docs/VARGA_REGISTRY_SPEC.md` |
+| 2 | Reproducible verification run | **MET.** Each certifier reproduces from one command; each calls `preflight()`, so ephemeris integrity and the anti-fitting scan are part of every gate |
+| 3 | Same-run machine and human evidence, agreeing | **MET.** All five certifiers route through `certification_support.emit()`, and `engine/tests/test_certification_evidence_agreement.py` re-derives each report from its artifact and demands byte equality |
+| 4 | A decision log entry records **the lock**, its version and its evidence | **NOT MET.** |
+
+**Condition 4 fails for a reason that ratification cannot fix.** ADR-0009, ADR-0010 and ADR-0011
+record **certifications**, not locks. No entry in this register declares a lock over any registry
+varga, so there is no lock for a decision entry to record. Ratifying a certification entry makes the
+certification owner-endorsed; it does not manufacture a lock that was never declared.
+
+**Therefore no registry varga is Locked, and none may be described as such.** D2, D3, D7, D12 and D30
+are **owner-ratified CERTIFIED**, which is a real and useful status and is not the same status
+Tier-0 now holds. Locking any of them would require a fresh decision entry declaring the lock, its
+scope and its evidence, and a separate owner authorisation. Neither exists and neither is implied
+here.
+
+### Decision 4. A dependency tension, recorded rather than left to be discovered
+
+**ADR-0012 is NOT in this ratification package and remains PROPOSED**, and it is the entry that fixes
+the sign convention these vargas emit: "every varga sign output is 0-based, including certified
+D9/D10 and all registry vargas", enforced by the `SIGN_FIELD_CONVENTIONS` declaration gate.
+
+So the five vargas ratified here produce outputs whose **interpretation convention is defined by an
+unratified entry**. Nothing is wrong in the code, and the certifications are unaffected: the
+convention is locked in behaviour and mechanically enforced. But the governance record is
+asymmetric, and a reader could reasonably ask by what authority a ratified varga's output index is
+read 0-based. **The clean resolution is to put ADR-0012 to the owner**; it is recommended and not
+assumed.
+
+This is the same class of tension ADR-0033 D2 recorded between ratified ADR-0001 and unratified
+ADR-0003, and it is recorded for the same reason: ratification proceeding entry by entry will keep
+producing these until the register is either fully ratified or the gaps are deliberate and known.
+
+- **Consequences:**
+  - Accepted entries in this register become **eight**: ADR-0001, ADR-0002, ADR-0005, ADR-0009,
+    ADR-0010, ADR-0011, ADR-0033, ADR-0034, and this entry makes nine. Everything else remains
+    PROPOSED, and in particular ADR-0003, ADR-0004, ADR-0006, ADR-0007, ADR-0008, ADR-0012,
+    ADR-0013, ADR-0014 and ADR-0018 through ADR-0032 are not ratified by this entry.
+  - **The Tier-0 lock is untouched.** ADR-0005, ADR-0034 and
+    `certification/CURRENT_ENGINE_LOCK.json` are not modified, and the certified numerical evidence
+    for Tier-0 is not regenerated. The registry vargas sit **outside** the Tier-0 lock scope, which
+    ADR-0034 restated as the kernel and the certified D9/D10 mathematics only.
+  - **C4 is not C5**, restated because ratification of five certifications in one act is exactly
+    where that slippage would start. These vargas are certified as calculations against independent
+    references. Nothing here says any varga predicts anything.
+  - The vargas that remain **ABSENT** are unaffected and unchanged: D4, D16, D20, D24, D27, D40, D45
+    and D60 do not exist, and ratifying the framework does not bring them any closer to existing.
+  - **Recommended next ratification, not taken here: ADR-0012**, for the reason in Decision 4, and
+    then ADR-0006, ADR-0007 and ADR-0008, which are the remaining certified production layers.
+- **Evidence:** ADR-0009, ADR-0010 and ADR-0011 re-read in full before ratification;
+  `certification/VARGA_D2_V1_certification.json`, `VARGA_D3_V1_certification.json`,
+  `VARGA_D7_V1_certification.json`, `VARGA_D12_V1_certification.json` and
+  `VARGA_D30_V1_certification.json` confirmed present, each PASS, each citing a compliant decision
+  identifier; all five certifiers confirmed to call both `preflight()` and `emit()`; register
+  searched for any varga lock declaration, none found.
+
+---
 
 ## ADR template (copy, do not edit above the line)
 

@@ -1,0 +1,411 @@
+{
+  "schema": "engine_capability_inventory_v1",
+  "date": "2026-08-11",
+  "status": "PROPOSED - pending owner ratification (docs/OPEN_QUESTIONS.md Q1)",
+  "commit": "c5a2712ff4a3c5c3145730bfc1e4e5bc9f41c260",
+  "method": "Compiled by reading the repository, not by reading its documents. A capability is IMPLEMENTED only if code executes it; CERTIFIED only if a regenerable artifact and a reproducible runner exist and were executed; PARTIALLY CERTIFIED where the artifact exists but the audit of 2026-08-11 found the gate proves less than claimed.",
+  "classification_scale": {
+    "CERTIFIED": "regenerable artifact plus reproducible runner, executed and PASS, gate proves what it claims",
+    "PARTIALLY_CERTIFIED": "artifact exists and passes, but a recorded finding shows the gate proves less than documented",
+    "IMPLEMENTED": "code executes; no certification artifact",
+    "SPECIFIED": "a resident specification exists; no implementation",
+    "PLANNED": "named in a decision or roadmap; no specification",
+    "ABSENT": "does not exist in any form"
+  },
+  "capabilities": {
+    "astronomical_kernel": {
+      "ephemeris_strict_swieph": {
+        "status": "CERTIFIED",
+        "evidence": "certification/current_engine_certification.json",
+        "note": "return-flag inspection is on planets only; houses and ayanamsa are unchecked (finding M-07)"
+      },
+      "sidereal_frame": {
+        "status": "CERTIFIED",
+        "evidence": "528 comparisons vs swetest, max 0.000180 arcsec"
+      },
+      "calculation_profiles": {
+        "status": "CERTIFIED",
+        "evidence": "two ratified profiles, 5.811 arcmin separation proven mechanically"
+      },
+      "iana_time_pipeline": {
+        "status": "CERTIFIED",
+        "evidence": "DST, fold, historical offsets tested"
+      },
+      "julian_day": {
+        "status": "CERTIFIED",
+        "evidence": "GREG_CAL explicit, J2000 anchor exact"
+      },
+      "provenance": {
+        "status": "IMPLEMENTED",
+        "evidence": "engine/models/provenance.py",
+        "note": "ephemeris_mode asserted not observed (M-07); no birth-data record (BTR obstacle)"
+      },
+      "houses_placidus": {
+        "status": "PARTIALLY_CERTIFIED",
+        "note": "exercised to 64.1N only; polar behaviour NOT VERIFIED and undefined"
+      }
+    },
+    "divisional_charts": {
+      "D1_rashi": {
+        "status": "CERTIFIED",
+        "house_rule": "whole-sign, documented decision"
+      },
+      "D9_navamsa": {
+        "status": "CERTIFIED",
+        "path": "dedicated module, never via registry"
+      },
+      "D10_dashamsa": {
+        "status": "CERTIFIED",
+        "path": "dedicated module, never via registry"
+      },
+      "D2_hora": {
+        "status": "CERTIFIED",
+        "path": "registry, parashara"
+      },
+      "D3_drekkana": {
+        "status": "CERTIFIED",
+        "path": "registry, parashara"
+      },
+      "D7_saptamsa": {
+        "status": "CERTIFIED",
+        "path": "registry, parashara",
+        "note": "width not binary-representable; ULP finding recorded in ADR-0011"
+      },
+      "D12_dwadasamsa": {
+        "status": "CERTIFIED",
+        "path": "registry, parashara"
+      },
+      "D30_trimsamsa": {
+        "status": "CERTIFIED",
+        "path": "registry, parashara"
+      },
+      "D4_D16_D20_D24_D27_D40_D45_D60": {
+        "status": "ABSENT",
+        "behaviour": "UnsupportedVargaError by design",
+        "note": "expressibility analysed in docs/VARGA_CERTIFICATION_ROADMAP.md"
+      },
+      "generic_varga_framework": {
+        "status": "PARTIALLY_CERTIFIED",
+        "note": "findings B-01 and B-02: registry does not validate rule/division agreement and cannot detect rule substitution"
+      }
+    },
+    "dasha": {
+      "vimshottari_maha": {
+        "status": "CERTIFIED"
+      },
+      "vimshottari_antar": {
+        "status": "CERTIFIED",
+        "evidence": "1782 oracle rows, zero lord mismatches"
+      },
+      "vimshottari_pratyantar": {
+        "status": "PARTIALLY_CERTIFIED",
+        "note": "finding H-04: never oracle-compared despite two documents stating it was; in-repo closed-form validator only"
+      },
+      "vimshottari_deeper_levels": {
+        "status": "ABSENT",
+        "behaviour": "depth outside (1,2,3) rejected"
+      },
+      "other_dasha_systems": {
+        "status": "ABSENT"
+      },
+      "alternative_year_conventions": {
+        "status": "ABSENT",
+        "note": "finding H-06: no allow-list, so an uncertified convention is silently accepted"
+      },
+      "dasha_calendar_rendering": {
+        "status": "ABSENT",
+        "note": "JD is never converted to civil dates anywhere; leap-year and midnight behaviour is structurally unreachable until it is"
+      }
+    },
+    "kp": {
+      "lordship_chain_SL_NL_SB_SS": {
+        "status": "CERTIFIED",
+        "oracle": "our own certified legacy kernel, not external"
+      },
+      "kp_fact_charts": {
+        "status": "CERTIFIED"
+      },
+      "boundary_proximity_indicator": {
+        "status": "IMPLEMENTED",
+        "note": "finding H-07: blind to the sign boundary while documented as all levels"
+      },
+      "significators_four_step_ruling_planets_horary": {
+        "status": "ABSENT",
+        "gate": "root D-008 requires a frozen independently audited specification first"
+      }
+    },
+    "transits": {
+      "longitude_crossing_primitive": {
+        "status": "CERTIFIED"
+      },
+      "sign_and_nakshatra_ingresses": {
+        "status": "PARTIALLY_CERTIFIED",
+        "note": "findings H-02 seam misclassification, M-12 advertised completeness gate absent"
+      },
+      "returns_and_natal_conjunctions": {
+        "status": "IMPLEMENTED",
+        "note": "in no certified artifact"
+      },
+      "true_node_path": {
+        "status": "IMPLEMENTED",
+        "note": "finding H-01: silently incomplete; supported but uncertified and untested"
+      },
+      "aspect_system_events": {
+        "status": "ABSENT"
+      },
+      "dasha_transit_convergence": {
+        "status": "ABSENT"
+      }
+    },
+    "aspects": {
+      "parashari_full_graha_drishti": {
+        "status": "CERTIFIED",
+        "note": "finding M-13: oracle tests integer arithmetic only; rule content never checked against a classical source"
+      },
+      "sputa_drishti_node_aspects_jaimini_rashi_drishti_western": {
+        "status": "ABSENT"
+      }
+    },
+    "conventions": {
+      "sign_index_conventions": {
+        "status": "CERTIFIED",
+        "note": "finding M-08: VargaClassification.d_sign undeclared; finding B-03: pinning reads stored artifact"
+      },
+      "boundary_convention": {
+        "status": "PARTIALLY_CERTIFIED",
+        "note": "finding M-10: no independent external attestation; M-09: D1 vs varga disagree inside the window"
+      }
+    },
+    "strength_and_yogas": {
+      "shadbala": {
+        "status": "ABSENT",
+        "behaviour": "NotImplementedError by design"
+      },
+      "yogas": {
+        "status": "ABSENT"
+      }
+    },
+    "other_schools": {
+      "jaimini": {
+        "status": "ABSENT"
+      },
+      "bnn_nadi": {
+        "status": "ABSENT"
+      },
+      "cil": {
+        "status": "ABSENT"
+      },
+      "umang_taneja_nakshatra_nadi": {
+        "status": "ABSENT"
+      },
+      "numerology": {
+        "status": "ABSENT"
+      },
+      "lal_kitab": {
+        "status": "ABSENT"
+      }
+    },
+    "product_layers": {
+      "event_model": {
+        "status": "SPECIFIED",
+        "evidence": "docs/H1_EVENT_MODEL_SPEC.md"
+      },
+      "historical_event_ledger": {
+        "status": "SPECIFIED",
+        "evidence": "docs/H2_HISTORICAL_EVENT_LEDGER_SPEC.md"
+      },
+      "question_engine": {
+        "status": "SPECIFIED",
+        "evidence": "docs/H3_QUESTION_ENGINE_SPEC.md; HLKG career substrate drafted but unconsumed"
+      },
+      "evidence_model": {
+        "status": "SPECIFIED",
+        "evidence": "docs/H4_EVIDENCE_MODEL_SPEC.md"
+      },
+      "interpretation_rule_registry": {
+        "status": "SPECIFIED",
+        "evidence": "docs/H5_INTERPRETATION_RULE_REGISTRY_SPEC.md"
+      },
+      "prediction_ledger": {
+        "status": "SPECIFIED",
+        "evidence": "docs/H6_PREDICTION_LEDGER_SPEC.md"
+      },
+      "btr": {
+        "status": "SPECIFIED",
+        "evidence": "docs/H7_BTR_SPEC.md"
+      },
+      "convergence": {
+        "status": "SPECIFIED",
+        "evidence": "docs/H8_CONVERGENCE_SPEC.md"
+      },
+      "historical_validation": {
+        "status": "SPECIFIED",
+        "evidence": "H2 and H6; PAST-TEST-LEARN-CONFIDENCE-FUTURE chain"
+      },
+      "interpretation_engine": {
+        "status": "PLANNED"
+      },
+      "api_beyond_demo": {
+        "status": "ABSENT"
+      },
+      "ui": {
+        "status": "ABSENT",
+        "note": "Flutter stub deleted in 5ae8ee7; returns at backlog Phase 5"
+      },
+      "machine_learning": {
+        "status": "ABSENT",
+        "note": "prohibited in Phase G and Phase H"
+      },
+      "entity_model": {
+        "status": "SPECIFIED",
+        "evidence": "docs/H0_ENTITY_MODEL_SPEC.md",
+        "note": "ADR-0020 D1: common AstrologicalSubject plus specialised types (Person, Organisation, Geographic/National, Event, Question). D3: competing charts analysed independently, no silent selection."
+      }
+    },
+    "infrastructure": {
+      "certification_harness": {
+        "status": "IMPLEMENTED",
+        "note": "finding M-03: anti-fitting scan does not cover scripts/ or validators"
+      },
+      "oracle_reproducibility": {
+        "status": "CERTIFIED",
+        "evidence": "ADR-0018, remote CI validated 2026-08-11"
+      },
+      "ci_hermetic_oracle_governance": {
+        "status": "IMPLEMENTED",
+        "note": "governance job added by ADR-0014; remote validation of that job pending"
+      },
+      "identifier_family_conformance": {
+        "status": "CERTIFIED",
+        "evidence": "scripts/check_retired_identifiers.py with negative control"
+      },
+      "legacy_kernel": {
+        "status": "CERTIFIED",
+        "note": "historical; retained as KP migration oracle"
+      },
+      "scripts_certify_tier0": {
+        "status": "ABSENT",
+        "note": "broken: ModuleNotFoundError astro_kernel; superseded; disposition is G7"
+      }
+    },
+    "panchanga": {
+      "tithi": {
+        "status": "ABSENT"
+      },
+      "vara": {
+        "status": "ABSENT",
+        "blocked_by": "rising_and_setting (the Jyotisha weekday runs sunrise to sunrise, not midnight to midnight)"
+      },
+      "nakshatra_as_panchanga_element": {
+        "status": "IMPLEMENTED",
+        "note": "nakshatra classification exists and is certified; its panchanga role does not"
+      },
+      "yoga": {
+        "status": "ABSENT"
+      },
+      "karana": {
+        "status": "ABSENT"
+      },
+      "_note": "Panchanga is a CALCULATION-layer capability, not a Muhurta feature (ADR-0019). Deterministic from Sun and Moon longitudes; must be certified like a varga. Prashna needs it as immediately as Muhurta does.",
+      "_tier": "Tier-0 foundational per ADR-0020 D2; requires independent certification before any dependent production module"
+    },
+    "rising_and_setting": {
+      "sunrise_sunset": {
+        "status": "ABSENT",
+        "note": "genuine Tier-0 astronomical gap with high-latitude edge cases where the concept degrades"
+      },
+      "rahu_kalam": {
+        "status": "ABSENT",
+        "blocked_by": "sunrise_sunset",
+        "note": "eighth-part day division; variant assignment tables exist across traditions and each is a decision to record, never a silent choice"
+      },
+      "yamaganda": {
+        "status": "ABSENT",
+        "blocked_by": "sunrise_sunset"
+      },
+      "gulika": {
+        "status": "ABSENT",
+        "blocked_by": "sunrise_sunset"
+      },
+      "_tier": "Tier-0 foundational per ADR-0020 D2; NOT covered by the existing ADR-0005 Tier-0 lock, which is not retroactively widened"
+    },
+    "domains": {
+      "jataka_natal": {
+        "status": "IMPLEMENTED",
+        "note": "the only domain with certified capability; gaps in the two roadmaps and the 2026-08-11 audit"
+      },
+      "varshaphal_annual": {
+        "status": "PLANNED",
+        "components": {
+          "solar_return": {
+            "status": "IMPLEMENTED",
+            "note": "engine/transits/events.py returns() exists but appears in NO certification artifact"
+          },
+          "varsha_lagna": {
+            "status": "ABSENT"
+          },
+          "muntha": {
+            "status": "ABSENT"
+          },
+          "varshesh": {
+            "status": "ABSENT"
+          },
+          "tajika_aspects": {
+            "status": "ABSENT",
+            "note": "a DIFFERENT aspect system from Parashari drishti; must be school-isolated, never routed through it"
+          },
+          "sahams": {
+            "status": "ABSENT"
+          },
+          "mudda_dasha": {
+            "status": "ABSENT",
+            "note": "a NEW dasha system; inherits the whole depth requirement in docs/DASHA_CERTIFICATION_ROADMAP.md"
+          }
+        }
+      },
+      "muhurta_electional": {
+        "status": "PLANNED",
+        "note": "inverts the pipeline: searches for moments rather than analysing one; the only domain needing an optimiser",
+        "components": {
+          "general_muhurta": {
+            "status": "ABSENT",
+            "blocked_by": [
+              "panchanga",
+              "rising_and_setting"
+            ]
+          },
+          "personalised_muhurta": {
+            "status": "ABSENT",
+            "blocked_by": [
+              "general_muhurta",
+              "tara_bala",
+              "chandra_bala"
+            ]
+          },
+          "tara_bala": {
+            "status": "ABSENT"
+          },
+          "chandra_bala": {
+            "status": "ABSENT"
+          }
+        },
+        "elevated_finding": "H-02 is close to blocking for this domain: transit instants misclassify at 17 percent of sign and 43 percent of nakshatra ingresses, and Muhurta is exactly the question of which tithi and nakshatra hold at a candidate moment",
+        "gate": "ADR-0020 D5: H-02 must be independently reproduced, and repaired and certified if confirmed, before production Muhurta"
+      },
+      "prashna_horary": {
+        "status": "PLANNED",
+        "note": "question is itself an entity; question model and entity model meet here. BTR never applies: the moment is known by construction"
+      },
+      "mundane": {
+        "status": "PLANNED",
+        "note": "strongest and most dangerous evidence source: public dated record in volume, but disputed entity charts and severe multiple-comparison risk",
+        "multi_chart": "required by ADR-0020 D3; no supporting model exists in engine/models/ today"
+      }
+    }
+  },
+  "counts_note": "Counts are deliberately omitted. A tally invites the impression that certified capabilities are comparable units, which they are not: D2 and the Tier-0 kernel carry very different weight.",
+  "audit_reference": "reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md",
+  "version": "1.2.0",
+  "product_identity": "Multi-domain Jyotisha intelligence platform (ADR-0019), not a natal application. Five domains: Jataka, Varshaphal, Muhurta, Prashna, Mundane.",
+  "ratified_architecture_decisions": "ADR-0020: ten multi-domain architecture decisions (PROPOSED, pending Q1)"
+}

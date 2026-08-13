@@ -19,9 +19,9 @@ from engine.astrology import varga_d30  # noqa: F401  (registers D30)
 #: returns them. Every addition requires its own approved ADR and
 #: certification artifact.
 CERTIFIED_PRODUCTION_VARGAS = (
-    (2, "parashara"),    # ADR-VARGA-D2-001, VARGA_D2_V1
-    (3, "parashara"),    # ADR-VARGA-D3-001, VARGA_D3_V1
-    (7, "parashara"),    # ADR-VARGA-D7-001, VARGA_D7_V1
-    (12, "parashara"),   # ADR-VARGA-D12-001, VARGA_D12_V1
-    (30, "parashara"),   # ADR-VARGA-D30-001, VARGA_D30_V1
+    (2, "parashara"),    # ADR-0011, VARGA_D2_V1
+    (3, "parashara"),    # ADR-0009, VARGA_D3_V1
+    (7, "parashara"),    # ADR-0011, VARGA_D7_V1
+    (12, "parashara"),   # ADR-0010, VARGA_D12_V1
+    (30, "parashara"),   # ADR-0011, VARGA_D30_V1
 )

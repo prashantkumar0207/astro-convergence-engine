@@ -116,6 +116,37 @@ def scan_for_fitting(targets=("engine",)) -> dict:
     return {"modules_scanned": scanned, "findings": [], "justified_exceptions": []}
 
 
+def _scalar(value) -> str:
+    """Render one value for the human-readable report, without truncation.
+
+    Lists become comma-separated text, and an empty list renders as ``none``
+    rather than as an empty string, so that "zero failures" is stated rather
+    than merely implied by an absent line.
+    """
+
+    if isinstance(value, list):
+        return ", ".join(str(item) for item in value) if value else "none"
+    return str(value)
+
+
+def _result_of(report: dict) -> str:
+    """The run's PASS/FAIL verdict, wherever the runner records it.
+
+    Most runners set a top-level ``result``. The Tier-0 runner records its
+    verdict inside ``summary`` alongside the failure list that produced it.
+    Reading both avoids duplicating the verdict in the artifact purely so
+    that the report can render it, which would create two places for it to
+    be wrong.
+    """
+
+    if report.get("result"):
+        return str(report["result"])
+    summary = report.get("summary")
+    if isinstance(summary, dict) and summary.get("result"):
+        return str(summary["result"])
+    return "n/a"
+
+
 def _render(report: dict) -> str:
     """Human-readable report derived from the machine-readable dict."""
 
@@ -126,11 +157,35 @@ def _render(report: dict) -> str:
         "docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.",
         "",
         f"- Decision entry: {report.get('adr', 'n/a')}",
+    ]
+    # ADR-0014: traceability for the retired provisional identifiers. Emitted only
+    # when the runner declares one, so artifacts that never carried a provisional
+    # identifier render byte-identically to before.
+    if report.get("supersedes_provisional_id"):
+        lines.append(
+            f"- Supersedes provisional identifier: {report['supersedes_provisional_id']}"
+        )
+    lines += [
         f"- Date: {report.get('date', 'n/a')}",
         f"- Scope: {report.get('scope', 'n/a')}",
-        f"- Result: **{report.get('result', 'n/a')}**",
+    ]
+    # C-03: the Tier-0 runner declares its frozen tolerance at top level rather
+    # than inside a gate block. Rendered when present so the human-readable
+    # evidence states the tolerance the run was judged against. Inert for every
+    # artifact that does not declare one.
+    if "tolerance_arcsec" in report:
+        lines.append(f"- Tolerance: {report['tolerance_arcsec']} arcsec")
+    lines += [
+        f"- Result: **{_result_of(report)}**",
         "",
     ]
+    # C-03: run metadata (source revision, engine version, execution stamp).
+    # Inert for artifacts that do not declare a run block.
+    run = report.get("run")
+    if isinstance(run, dict) and run:
+        lines += ["## Run metadata", ""]
+        lines += [f"- {key}: {_scalar(value)}" for key, value in run.items()]
+        lines.append("")
     preconditions = report.get("preconditions")
     if preconditions:
         lines += ["## Preconditions", ""]
@@ -154,6 +209,16 @@ def _render(report: dict) -> str:
             else:
                 summary = str(value)
             lines.append(f"- **{name}**: {summary or 'see machine-readable results'}")
+        lines.append("")
+    # C-03: the summary block carries the numbers a reader needs in order to
+    # check the claim: comparison counts, numerical maxima, fallback count,
+    # failures and result. Rendered from the SAME dict that is serialised, so
+    # the two evidence files cannot disagree. Inert for artifacts with no
+    # summary block, which is every artifact predating this change.
+    summary = report.get("summary")
+    if isinstance(summary, dict) and summary:
+        lines += ["## Summary", ""]
+        lines += [f"- **{key}**: {_scalar(value)}" for key, value in summary.items()]
         lines.append("")
     non_claims = report.get("explicit_non_claims")
     if non_claims:
@@ -206,6 +271,10 @@ def emit(report: dict, artifact_name: str, slug: str, tee=None) -> Path:
     report["_artifact_name"] = artifact_name
     report["_slug"] = slug
     artifact = ROOT / "certification" / artifact_name
+    # Inert where the directory is tracked, which is every current case. Kept
+    # so that routing a runner through emit() cannot lose the directory
+    # creation that runner did for itself.
+    artifact.parent.mkdir(parents=True, exist_ok=True)
     artifact.write_text(json.dumps(report, indent=1) + "\n")
 
     reports_dir = ROOT / "reports" / "certification"

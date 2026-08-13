@@ -1,5 +1,5 @@
 """
-D2 Hora: production varga (VARGA_D2_V1, ADR-VARGA-D2-001).
+D2 Hora: production varga (VARGA_D2_V1, ADR-0011).
 
 Classical source (Decision VB-A): Brihat Parashara Hora Shastra,
 hora description: each sign divides into two 15 degree halves; in

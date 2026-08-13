@@ -1,0 +1,135 @@
+{
+  "schema": "oracle_environment_v1",
+  "adr": "ADR-0018",
+  "status": "PROPOSED - pending owner ratification (docs/OPEN_QUESTIONS.md Q1)",
+  "date": "2026-08-10",
+  "purpose": "Records the exact reproducibility environment identity for the eight external-oracle certification runners. VALIDATION_STANDARD.md s2 rule 4 requires pinned dependencies and checksummed data assets; PyJHora declares no dependencies, so the repository must record the closure itself.",
+  "runtime": {
+    "os": "Ubuntu 24.04.4 LTS",
+    "kernel_platform": "Linux x86_64",
+    "python": "3.11.15",
+    "python_implementation": "CPython",
+    "abi_constraint": "Lock hashes are CPython 3.11 linux x86_64 wheels. Another Python minor version or platform requires its own lock and its own recorded identity; it MUST NOT be obtained by relaxing hashes.",
+    "network_required_at_runtime": false
+  },
+  "oracle": {
+    "package": "PyJHora",
+    "version": "4.8.7",
+    "declares_dependencies": false,
+    "undeclared_runtime_dependencies": [
+      "numpy",
+      "geocoder",
+      "pytz",
+      "timezonefinder",
+      "geopy",
+      "python-dateutil"
+    ],
+    "discovery_method": "Iterative import-failure resolution inside an isolated venv with no system site-packages, 2026-08-10. Each missing module was installed and the runner re-invoked until it completed.",
+    "authority_note": "PyJHora is a comparison oracle, never astronomical ground truth. Root D-001 fixes the numerical authority as swetest 2.10.03; root D-007 governs how oracle divergence is handled."
+  },
+  "swiss_ephemeris": {
+    "python_binding": "pyswisseph==2.10.3.2",
+    "reported_library_version": "2.10.03",
+    "reference_binary": "swetest",
+    "reference_binary_sha256": "f53943bb6ede1575974270e0a01aff9affdabe58315c1cf69ed4d4738346dac5",
+    "reference_binary_provenance": "Built from https://github.com/aloistr/swisseph tag v2.10.03 per BUILD_INFO.txt",
+    "ephemeris_mode": "strict SWIEPH; silent Moshier fallback raises"
+  },
+  "ephemeris_assets": {
+    "manifest": "CHECKSUMS.sha256",
+    "manifest_sha256": "74de363ec1d335ecce26e891634ca9358a4ac198c56c226f22c3d6b4c3401ad1",
+    "verified_before_every_run_by": "scripts/certification_support.py preflight() -> verify_data_assets()",
+    "files": {
+      "seas_18.se1": "a2cd8fc33807c78ca9a700c91c2e042258b12fc4796519e00781440b5ad8b2e2",
+      "semo_18.se1": "1ca07bd67c24374d77226180c20a4f9996cba013697894810518e7eb582ca4f7",
+      "sepl_18.se1": "ca1393ceab3a44fbc895887cf789c68819ae6a1cbc9b22225872dbe4ccd99a66"
+    }
+  },
+  "dependency_lock": {
+    "file": "requirements-oracle.lock",
+    "sha256": "dcd5e7c20f0767f15f50cbc3cc427bdd0190cf84c786a297a822f123d93b354b",
+    "install_command": "python -m pip install --require-hashes -r requirements-oracle.lock",
+    "hash_algorithm": "sha256",
+    "packages_pinned": 35,
+    "packages_with_hashes": 35,
+    "closure": [
+      "attrs==26.1.0",
+      "certifi==2026.7.22",
+      "cffi==2.1.1",
+      "charset-normalizer==3.4.9",
+      "click==8.4.2",
+      "decorator==5.3.1",
+      "flatbuffers==25.12.19",
+      "future==1.0.0",
+      "geocoder==1.38.1",
+      "geographiclib==2.1",
+      "geopy==2.5.0",
+      "h3==4.5.0",
+      "idna==3.18",
+      "iniconfig==2.3.0",
+      "jsonschema==4.25.0",
+      "jsonschema-specifications==2025.9.1",
+      "numpy==2.4.6",
+      "packaging==26.3",
+      "pluggy==1.6.0",
+      "pycparser==3.0",
+      "pygments==2.20.0",
+      "pyjhora==4.8.7",
+      "pyswisseph==2.10.3.2",
+      "pytest==9.1.1",
+      "python-dateutil==2.9.0.post0",
+      "pytz==2026.3.post1",
+      "ratelim==0.1.6",
+      "referencing==0.37.0",
+      "requests==2.34.2",
+      "rpds-py==2026.6.3",
+      "six==1.17.0",
+      "timezonefinder==8.2.5",
+      "typing-extensions==4.16.0",
+      "tzdata==2025.2",
+      "urllib3==2.7.0"
+    ]
+  },
+  "oracle_invocation": {
+    "certify_d2.py": {
+      "artifact": "VARGA_D2_V1_certification.json",
+      "function": "hora_chart method 2 Traditional Parasara (pure longitude math)"
+    },
+    "certify_d3.py": {
+      "artifact": "VARGA_D3_V1_certification.json",
+      "function": "_drekkana_chart_parasara (pure longitude math)"
+    },
+    "certify_d7.py": {
+      "artifact": "VARGA_D7_V1_certification.json",
+      "function": "saptamsa_chart method 1 Traditional Parasara (pure longitude math)"
+    },
+    "certify_d12.py": {
+      "artifact": "VARGA_D12_V1_certification.json",
+      "function": "dwadasamsa_chart method 1 Traditional Parasara (pure longitude math)"
+    },
+    "certify_d30.py": {
+      "artifact": "VARGA_D30_V1_certification.json",
+      "function": "trimsamsa_chart method 1 Traditional Parasara (pure longitude math)"
+    },
+    "certify_parashari_drishti.py": {
+      "artifact": "PARASHARI_DRISHTI_V1_certification.json",
+      "function": "graha_drishti_from_chart (pure combinatorics on our certified placements)"
+    },
+    "certify_vimshottari.py": {
+      "artifact": "VIMSHOTTARI_V1_certification.json",
+      "methodology": "D-007 Moon injection",
+      "detail": "The oracle's own Moon longitude is injected into this engine's timeline so the comparison isolates timeline mathematics from oracle astronomy. The engine Moon remains swetest-certified per D-001. Per-case Moon deltas are recorded in the artifact."
+    },
+    "certify_transits.py": {
+      "artifact": "TRANSIT_V1_certification.json",
+      "methodology": "D-007 per-event derived tolerances",
+      "detail": "Oracle Sun differs from the certified Sun by ~20.5 arcsec at compared instants; the magnitude is consistent with aberration-handling differences and the CAUSE IS NOT VERIFIED. Oracle ingress search carries ~1 min slop. Tolerances are derived per event from measured deltas and are never assumed or widened to absorb the divergence."
+    }
+  },
+  "hermetic_tier_note": "The default pytest gate, all eleven independent holdout validators, and the three non-oracle certifiers (certify_current_engine, certify_kp_chain, certify_sign_convention) import no oracle and require no network. Verified by grep: no file under engine/tests/ and no validate_*.py imports jhora.",
+  "verification_2026_08_10": {
+    "method": "Fresh venv with no system site-packages; install from requirements-oracle.lock alone with --require-hashes; run all eight oracle certifiers.",
+    "result": "8 of 8 PASS",
+    "artifact_content_delta": "Only the 'date' field changed (run date). All gate values byte-identical."
+  }
+}

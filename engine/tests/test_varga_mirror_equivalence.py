@@ -246,7 +246,7 @@ def test_mirrors_are_not_registered_and_dispatcher_unchanged():
     from engine.astrology.varga_registry import registered_vargas
 
     # REPLACED (was: registry empty): D3 Drekkana is a certified
-    # production entry (ADR-VARGA-D3-001). The mirror guard is that
+    # production entry (ADR-0009). The mirror guard is that
     # D9/D10 keys are NOT in the registry under any school and the
     # certified modules still serve them.
     from engine.astrology import CERTIFIED_PRODUCTION_VARGAS

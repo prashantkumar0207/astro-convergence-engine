@@ -1,0 +1,169 @@
+{
+  "schema": "g6_remote_ci_validation_v1",
+  "adr": "ADR-0018",
+  "date": "2026-08-11",
+  "status": "PROPOSED - pending owner ratification (docs/OPEN_QUESTIONS.md Q1)",
+  "purpose": "Preserves the remote continuous-integration validation of Phase G commit 1 (G6) in the repository, so the decision and its evidence do not exist only in conversation. G6's stated purpose was to prove the oracle environment is reproducible OUTSIDE the sandbox that created it.",
+  "subject_commit": {
+    "branch": "phase-g-governance",
+    "commit": "a460ba2b7e4eac55f8ac2f51b9e9eb9a35607fda",
+    "parent": "1f861f67bb143bebb2c35c0b9da4c67624c340d6",
+    "files_changed": 8,
+    "insertions": 888,
+    "deletions": 12
+  },
+  "evidence_classes": {
+    "EXECUTED_LOCAL": "Run by the builder in this container and directly observed.",
+    "CEO_REPORTED": "Observed by the CEO/technical auditor on GitHub Actions and reported to the builder. NOT independently observed by the builder, which has no network access to the Actions API. Recorded at this evidence class deliberately."
+  },
+  "local_clean_environment_verification": {
+    "evidence_class": "EXECUTED_LOCAL",
+    "date": "2026-08-10",
+    "method": "Virtual environments created with python3 -m venv and no system site-packages; isolation asserted before use (jhora and numpy both invisible).",
+    "oracle_tier": {
+      "install": "pip install --require-hashes -r requirements-oracle.lock (lock alone, nothing else)",
+      "packages_installed": 35,
+      "hashes_satisfied": 35,
+      "oracle_certifiers_passed": "8/8",
+      "artifact_delta_vs_committed": "date field only; every gate value byte-identical"
+    },
+    "hermetic_tier": {
+      "install": "pip install -r requirements.lock (alone)",
+      "default_gate": "395 passed",
+      "legacy_gate": "5/5 passed",
+      "independent_holdout_validators": "11/11 PASS",
+      "non_oracle_certifiers": "3/3 PASS",
+      "network_blocked_rerun": "identical results under scripts/ci_no_network.py",
+      "negative_network_control": "exit 1, connection correctly blocked"
+    },
+    "environment_identity_check": {
+      "matching_environment": "exit 0",
+      "non_matching_environment": "exit 1"
+    }
+  },
+  "dependency_lock": {
+    "evidence_class": "EXECUTED_LOCAL",
+    "file": "requirements-oracle.lock",
+    "sha256": "dcd5e7c20f0767f15f50cbc3cc427bdd0190cf84c786a297a822f123d93b354b",
+    "packages_pinned": 35,
+    "packages_with_sha256": 35,
+    "install_command": "python -m pip install --require-hashes -r requirements-oracle.lock",
+    "oracle_package": "PyJHora==4.8.7",
+    "oracle_declares_dependencies": false,
+    "undeclared_runtime_dependencies": [
+      "numpy",
+      "geocoder",
+      "pytz",
+      "timezonefinder",
+      "geopy",
+      "python-dateutil"
+    ],
+    "environment_identity_record": "certification/ORACLE_ENVIRONMENT.json",
+    "environment_identity_sha256": "2e2d21ba774927c7e506538274b49ee07cebfb7a42bcd20b7508afb2a6078aac"
+  },
+  "github_actions_run": {
+    "evidence_class": "CEO_REPORTED",
+    "workflow": "engine-ci",
+    "branch": "phase-g-governance",
+    "commit": "a460ba2b7e4eac55f8ac2f51b9e9eb9a35607fda",
+    "overall_result": "SUCCESS",
+    "run_url": null,
+    "run_id": null,
+    "runner_image": null,
+    "runner_os_version": null,
+    "pip_version": null,
+    "identity_gap_note": "Run URL, run id, runner image and pip version were NOT supplied to the builder and are recorded as null rather than guessed. They should be added by additive amendment so this record carries a resolvable pointer to the run. A PASS without a run identifier is a weaker evidence class than this project's standard requires."
+  },
+  "job_results": {
+    "evidence_class": "CEO_REPORTED",
+    "hermetic_python_3_11": "PASS",
+    "hermetic_python_3_12": "PASS",
+    "oracle_pyjhora_hash_pinned": "PASS",
+    "per_step_outputs_available_to_builder": false
+  },
+  "artifact_evidence": {
+    "evidence_class": "CEO_REPORTED",
+    "artifact_name": "oracle-certification-evidence",
+    "produced": true,
+    "declared_contents": [
+      "certification/*.json",
+      "reports/certification/*.report.md",
+      "reports/certification/*.console.txt"
+    ],
+    "digest_recorded": false,
+    "note": "Artifact contents were not transferred to the builder, so no digest comparison against the locally regenerated artifacts was performed."
+  },
+  "zero_calculation_impact": {
+    "evidence_class": "EXECUTED_LOCAL",
+    "diff_lines_in_calculation_paths": 0,
+    "paths_checked": [
+      "engine/",
+      "legacy/",
+      "validate_*.py",
+      "scripts/certify_*",
+      "certification/*_certification.json"
+    ],
+    "protected_asset_diff": "EMPTY",
+    "method": "Beyond the diff, SHA-256 fingerprints were computed over a 51,429-point dense sweep plus 1e-9 neighbourhoods of every 0.25 degree boundary, on a pristine git worktree of the baseline and on the committed tree, using the same interpreter.",
+    "fingerprints_identical_baseline_vs_commit": true,
+    "fingerprints": {
+      "D9_sign": "deb45a544f04fd44a8c2dffb1663dbd02a2d645f8136877cf293acb8cd23c592",
+      "D9_long": "f2077f416d3ce9e562f504d48ff15fe1f8e12bc3d08500070aeac95e06d62c18",
+      "D10_sign": "3d842088953bf5513274ecbfe6c07056ac1205e85c2109a8b75d39a72d8a92b2",
+      "D10_long": "5621f6f83e4613fcc111e2797f9436a06935b26e0830bdd6199ce100daa36747",
+      "D2_sign": "99bbd30eeb8f7663b11aa7ffa6965b2759682dc061792cbe403c93da84e2a489",
+      "D3_sign": "6473ca0260fddfd6d1b953c8fb1bc375ade1ecccc4e2f4cdca1163b7de4c9b26",
+      "D7_sign": "7163e8853f06af3a5b4095d1be0d5b6a0ee72c1bbf98567f46913504b65416bf",
+      "D12_sign": "dbf62dbba1e4a03cc9000ddce2f09ba2f63f0d0a218533824be7e686df838fa2",
+      "D30_sign": "baf2af799a02fc3b202e5a0922800170dc8472e73fafad3baf3673b7777cf1a2"
+    }
+  },
+  "deviations_from_plan": [
+    "O-1 governance CI job deferred to Phase G commit 2 (G1); its primary check is the retired-identifier search, which cannot pass until the 70 remaining occurrences are removed.",
+    "O-2 requirements.lock gained jsonschema==4.25.0; the three pre-existing pins are unchanged.",
+    "O-3 two helper scripts added as the mechanisms for plan-mandated behaviour (ci_no_network.py, check_oracle_environment.py).",
+    "O-4 requirements-oracle.lock is self-contained rather than layered, because --require-hashes rejects unhashed requirements.",
+    "O-5 decision register header corrected (claimed ADR-0003..0012 while ADR-0013 existed) and a reserved-numbers note added."
+  ],
+  "technical_debt": [
+    {
+      "id": "TD-CI-001",
+      "title": "GitHub Actions Node.js 20 deprecation warnings",
+      "observed": "2026-08-11 on the engine-ci run for a460ba2",
+      "evidence_class": "CEO_REPORTED",
+      "severity": "LOW",
+      "blocking": false,
+      "detail": "Actions runtime deprecation warnings emitted by the action versions pinned in the workflow (actions/checkout, actions/setup-python, actions/upload-artifact). They do not affect gate outcomes.",
+      "decision": "Recorded as technical debt by CEO direction. The G6 commit MUST NOT be altered merely to silence them. Address in a dedicated CI-maintenance task with its own decision entry."
+    },
+    {
+      "id": "TD-CI-002",
+      "title": "Oracle tier bound to CPython 3.11 linux x86_64",
+      "severity": "LOW",
+      "blocking": false,
+      "detail": "requirements-oracle.lock carries cp311 linux x86_64 wheel hashes, so the oracle job cannot run on 3.12 until a second lock and a second recorded identity exist. The hermetic tier already runs 3.12.",
+      "decision": "Recorded, not fixed. Must never be resolved by relaxing hashes."
+    },
+    {
+      "id": "TD-CI-003",
+      "title": "scripts/certify_tier0.py remains broken",
+      "severity": "LOW",
+      "blocking": false,
+      "detail": "Fails with ModuleNotFoundError: astro_kernel; targets the historical packaging and is superseded by the current gates. Not referenced by the workflow.",
+      "decision": "Disposition belongs to Phase G commit 6 (G7): repair, quarantine, or removal by decision."
+    }
+  ],
+  "open_items_not_closed_by_g6": [
+    "The transit oracle Sun divergence of approximately 20.5 arcsec remains recorded NOT VERIFIED. G6 recorded it more precisely; it did not explain it.",
+    "ADR-0018 is PROPOSED and cannot be Accepted while docs/OPEN_QUESTIONS.md Q1 (named owners) is open.",
+    "GitHub Actions run identity fields are null pending supply."
+  ],
+  "determination": {
+    "result": "G6 = PASS",
+    "authority": "CEO/technical auditor verdict, 2026-08-11",
+    "basis": "Local clean-environment reproduction observed by the builder, plus independent execution on GitHub-hosted runners observed by the CEO. The G6 objective, proving the oracle environment reproducible outside the sandbox that created it, is met.",
+    "scope_limits": "This is a REPRODUCIBILITY and INFRASTRUCTURE determination. It certifies no calculation, promotes no component's certification level, and is not a C4 or C5 claim about any astrological method.",
+    "merged_to_main": false,
+    "next_gate": "Phase G commit 2 (G1), the B-3 identifier reconciliation, NOT STARTED and awaiting CEO approval."
+  }
+}

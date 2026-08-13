@@ -1,4 +1,4 @@
-"""VARGA_D7_V1 CERTIFICATION RUNNER (ADR-VARGA-D7-001).
+"""VARGA_D7_V1 CERTIFICATION RUNNER (ADR-0011).
 
 Regenerates certification/VARGA_D3_V1_certification.json FROM SCRATCH
 on every run; the stored JSON is never accepted as proof.
@@ -170,7 +170,8 @@ def main():
     preconditions = support.preflight()
     report = {
         "schema": "varga_d7_v1_certification",
-        "adr": "ADR-VARGA-D7-001",
+        "adr": "ADR-0011",
+        "supersedes_provisional_id": "ADR-VARGA-D7-001",
         "date": str(date.today()),
         "scope": "D7 Saptamsa (Parashara variant): first non-identity start table on the cyclic path",
         "rule": {

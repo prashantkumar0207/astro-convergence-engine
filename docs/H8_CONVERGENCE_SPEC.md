@@ -1,0 +1,176 @@
+<!--
+Document status header - keep current on every edit.
+-->
+| Field | Value |
+|---|---|
+| Status | PROPOSED, C0 RESEARCH. Specification only. No implementation is authorised by this document. Pending owner ratification (docs/OPEN_QUESTIONS.md Q1). |
+| Version | 1.0.0 |
+| Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
+| Last updated | 2026-08-11 |
+| Review cadence | TBD |
+
+# H8. Convergence
+
+## 1. Purpose
+
+Convergence combines independently produced evidence from isolated analytical systems, preserves
+their agreement and disagreement, and explains why they agree or disagree.
+
+## 2. Convergence is not a confidence score
+
+This is the central design constraint. A number that says 73 percent tells the user nothing they can
+check, nothing they can argue with, and nothing that would let them notice the system is wrong.
+
+Every convergent claim MUST retain and expose: the producing system, the rule, the calculation
+provenance, where systems agree, where they disagree, evidence strength, the historical performance
+of each contributing system for this event class and timing context, uncertainty, timing context,
+and source provenance.
+
+**The output MUST be able to explain WHY systems agree or disagree.** Not merely report that they
+did. Two systems agreeing because they both derive from the same Moon position is a materially
+weaker signal than two systems agreeing from independent significators, and a design that cannot
+tell those apart is producing a number that means different things at different times.
+
+## 3. Isolation before combination
+
+Each system produces its evidence independently, with no visibility of any other system's output. A
+result from one system MUST NOT become an input, a target, a weight or a hint for another. Cross-system
+comparison happens only after each applicable system's result is frozen.
+
+This is enforced today in the calculation layers by profile guarding, and the audit found that
+enforcement inconsistent: drishti checks profile name and ayanamsa, the transit view checks name
+only, and the primary transit event API checks nothing. Convergence will magnify any such leak,
+because it is the layer that joins facts across systems.
+
+## 4. Disagreement is a result, not a problem
+
+The reporting vocabulary MUST include: strong convergence, moderate convergence, conflict,
+insufficient evidence, and unresolved birth-data uncertainty. Conflict is a legitimate final answer
+and must be presentable as one.
+
+Suppressing disagreement to produce a cleaner answer is the single most damaging thing this layer
+could do, because the disagreement is the honest signal.
+
+## 5. Relationship to BTR
+
+```
+                     EVIDENCE
+                        |
+        +---------------+---------------+
+        |               |               |
+       BTR          PREDICTION      CONVERGENCE
+```
+
+Convergence MAY consume birth-data consistency information from BTR as one input among several. It
+MUST NOT depend on BTR, and MUST produce a result when BTR has not run or is inconclusive. Making
+convergence downstream of BTR would let a birth-time hypothesis silently gate all cross-system
+analysis, which is precisely the failure the charter's BTR prohibition exists to prevent.
+
+## 6. Prerequisites already satisfied, and one not
+
+Satisfied: the sign-index conventions are explicit and machine-enforced, which was the documented
+prerequisite for joining facts across layers, and school isolation is enforced in code at the
+profile level.
+
+Not satisfied, and recorded in the 2026-08-11 audit: D1 and the varga layers disagree about the
+source sign inside the boundary-tolerance window, and both sign-convention gates step around that
+seam by construction. Transit events carry no provenance object. Drishti provenance mislabels its own
+house convention. Every one of these is a seam, and convergence is made entirely of seams. They
+should be closed before convergence is implemented, not after.
+
+## 7. Open questions requiring an owner decision
+
+How weights are derived from measured historical performance, and whether weighting is permitted at
+all before a defensible sample exists. Whether an unmeasured system contributes at all. How
+convergence is reported when systems disagree and none has a track record. Whether the user sees
+per-system detail by default.
+
+## 8. Verification strategy
+
+Isolation enforcement: a test that fails if one system's output can reach another's input.
+Explanation completeness: every convergent claim decomposes into its contributing evidence.
+Disagreement preservation across aggregation. A test that convergence produces a result with BTR
+absent. Vocabulary coverage including conflict and insufficient evidence.
+
+## 10. Multi-domain amendment (2026-08-11, additive)
+
+Convergence now has **two axes**: across systems, as specified above, and across **domains**.
+
+A business question may draw on natal structure, Varshaphal annual themes, Muhurta launch timing and
+current transits. Combining them is the point of the platform. Combining them naively would be its
+most persuasive failure mode.
+
+**Cross-domain agreement is not automatically independent evidence.** Varshaphal is derived from the
+natal chart by construction. Natal and Varshaphal agreeing is one source agreeing with itself through
+a transformation, and no amount of presentation makes it two. The section 2 rule, that the output must
+explain WHY sources agree, therefore extends to a stronger requirement here: convergence MUST be able
+to state whether the agreeing sources **could have disagreed**.
+
+Mechanically this needs the chart reference added to evidence by `docs/H4_EVIDENCE_MODEL_SPEC.md`
+section 8. Shared origin is detectable only if evidence records which chart it came from.
+
+**Mundane multiple comparisons.** Mundane validation offers large samples of publicly verifiable
+dated events, which is genuinely the strongest evidence source available to the platform. It also
+offers enough entities, event classes and rules that agreement will appear by chance. A convergence
+layer reporting confidence from mundane performance MUST carry the multiple-comparison discipline
+recorded in `docs/H2_HISTORICAL_EVENT_LEDGER_SPEC.md`, or it will produce its most confident and
+least justified claims exactly where the data looks best.
+
+**Domain isolation.** School isolation and domain isolation are two orthogonal axes of the same
+principle. Tajika aspects must not be merged into Parashari drishti, Mudda dasha must not be merged
+into Vimshottari, and Prashna rules must not be applied to natal charts, in each case regardless of
+terminological overlap.
+
+## 12. Dependency-aware convergence (ADR-0020 D4, additive)
+
+Convergence MUST NOT treat every agreeing analytical output as independent evidence. It must
+classify the relationship between contributing evidence using the five classes in
+`docs/H4_EVIDENCE_MODEL_SPEC.md` section 10, and **explain that classification to the user**.
+
+This turns section 2's requirement from a principle into a mechanism. "Explain why sources agree"
+becomes: state whether they are independent, one derived from another, sharing an origin, merely
+correlated, or in conflict.
+
+The user-facing consequence is the point. "Four systems agree" and "four systems agree, three of
+which are derived from the same natal chart" are different claims, and only the second is honest.
+A convergence layer that cannot draw that distinction will produce its most confident output exactly
+where its evidence is weakest, which is the failure this project exists to avoid.
+
+Unmeasured relationships MUST NOT default to independent. Absent evidence of correlation is not
+evidence of independence.
+
+## 14. The independence principle (ADR-0021 D5, normative)
+
+> **Absence of measured correlation is not evidence of independence.**
+
+Section 12 derived this as a consequence. It is now a named principle in its own right, recorded
+normatively in `docs/VALIDATION_STANDARD.md` section 6, and it governs evidence aggregation anywhere
+in the system rather than only here.
+
+Four non-equivalences: unknown is not independent, derived is not independent, shared-origin is not
+independent, correlated is not independent.
+
+**The question convergence must eventually answer is not "how many systems agree" but "how many
+genuinely independent evidence paths support this conclusion".** These differ, and the difference is
+the whole value of the layer. Four agreeing systems, three of which derive from one natal chart,
+constitute two independent paths at most, and reporting four would be the most persuasive wrong
+answer this system could produce.
+
+The dependency structure between evidence sources is a graph. The count of agreeing sources is an
+**upper bound** on the number of independent paths through it and never an estimate. How the
+effective independent count is computed is an open design question; that it must not be the raw
+count is decided.
+
+## 15. Change history
+
+| Version | Date | Change |
+|---|---|---|
+| 1.0.0 | 2026-08-11 | Created in the G1 work package as Phase H preparation. |
+| 1.1.0 | 2026-08-11 | Additive section 10: the cross-domain axis, shared-origin independence, mundane multiple comparisons, and domain isolation. Sections 1 to 9 unmodified. |
+| 1.2.0 | 2026-08-11 | Additive section 12: dependency-aware convergence per ADR-0020 D4, and the prohibition on defaulting unmeasured relationships to independent. Sections 1 to 11 unmodified. |
+| 1.3.0 | 2026-08-11 | Additive section 14: the independence principle as a named normative rule per ADR-0021 D5, and the independent-evidence-paths question. Sections 1 to 13 unmodified. |
+
+Numbering note: section numbers in this document are STABLE and the gaps at 9, 11 and 13 are
+deliberate. Each marks a change-history heading that a later additive section replaced. Renumbering
+would falsify the change-history rows above, which cite section numbers, and would break the
+cross-references in ADR-0020 and ADR-0021. Do not tidy them.

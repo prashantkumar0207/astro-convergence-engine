@@ -1,4 +1,4 @@
-"""VARGA_D30_V1 CERTIFICATION RUNNER (ADR-VARGA-D30-001).
+"""VARGA_D30_V1 CERTIFICATION RUNNER (ADR-0011).
 
 Regenerates certification/VARGA_D3_V1_certification.json FROM SCRATCH
 on every run; the stored JSON is never accepted as proof.
@@ -175,7 +175,8 @@ def main():
     preconditions = support.preflight()
     report = {
         "schema": "varga_d30_v1_certification",
-        "adr": "ADR-VARGA-D30-001",
+        "adr": "ADR-0011",
+        "supersedes_provisional_id": "ADR-VARGA-D30-001",
         "date": str(date.today()),
         "scope": "D30 Trimsamsa (Parashara variant): unequal tara-graha segments",
         "rule": {

@@ -13,13 +13,18 @@ engine's strict mode raises), or if any comparison exceeds the frozen
 0.5 arcsecond tolerance (DECISION_LOG D-002).
 
 Results are archived machine-readably in
-certification/current_engine_certification.json. Stored JSON is never
-accepted as proof: every run regenerates everything from scratch.
+certification/current_engine_certification.json, human-readably in
+reports/certification/current_engine.report.md, and the exact console
+transcript in reports/certification/current_engine.console.txt. All three
+are written by certification_support.emit() from THE SAME run and THE SAME
+result dict, satisfying PROJECT_CONSTITUTION.md s12 condition 3 (audit
+finding C-03). Stored JSON is never accepted as proof: every run
+regenerates everything from scratch.
 
 Usage: python scripts/certify_current_engine.py
 """
 
-import json
+import datetime
 import os
 import re
 import shutil
@@ -31,7 +36,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "scripts"))
 
+import certification_support as support  # noqa: E402
 import swisseph as swe  # noqa: E402
 
 from engine.astronomy.profile import (  # noqa: E402
@@ -40,6 +47,7 @@ from engine.astronomy.profile import (  # noqa: E402
 )
 from engine.calculations.calculations import calculate  # noqa: E402
 from engine.models.birth_data import BirthData  # noqa: E402
+from engine.version import ENGINE_VERSION  # noqa: E402
 
 TOLERANCE_ARCSEC = 0.5
 
@@ -71,6 +79,34 @@ HOLDOUT = [
 def fail(msg: str):
     print("CERTIFICATION FAIL:", msg)
     sys.exit(3)
+
+
+def source_revision() -> dict:
+    """The revision this run executed against, observed, never asserted.
+
+    Recorded so that the two evidence files state what was actually
+    verified. `dirty` matters more than the hash: a certification run over
+    a modified working tree is evidence about that tree and not about the
+    named commit, and the report must say so rather than imply otherwise.
+    If git is unavailable the fields say `unavailable`; they are never
+    guessed.
+    """
+
+    def git(*args) -> str:
+        try:
+            done = subprocess.run(
+                ["git", "-C", str(ROOT), *args],
+                capture_output=True, text=True, check=True,
+            )
+        except (OSError, subprocess.CalledProcessError):
+            return "unavailable"
+        return done.stdout.strip()
+
+    head = git("rev-parse", "HEAD")
+    status = git("status", "--porcelain")
+    if head == "unavailable" or status == "unavailable":
+        return {"commit": "unavailable", "dirty": "unavailable"}
+    return {"commit": head, "dirty": bool(status)}
 
 
 def arcsec(a: float, b: float) -> float:
@@ -188,14 +224,51 @@ def exact_nakshatra_reference(longitude: float) -> dict:
 
 
 def main():
+    # Capture the console transcript from the first line, so the retained
+    # transcript is the whole run rather than the part after setup.
+    tee = support.start_transcript()
+
+    # Q16 / VALIDATION_STANDARD s2 rules 4 and 6. Verifying the swetest
+    # binary's version string proves the ORACLE is the pinned one; it proves
+    # nothing about the ephemeris DATA that both the oracle and the engine
+    # read. Both resolve to the repository root, and CHECKSUMS.sha256 covers
+    # exactly the three files engine.astronomy.ephemeris.REQUIRED_FILES
+    # declares, so this is the integrity check for the data the run depends
+    # on. It runs FIRST: a certification claim over unverified reference data
+    # is worth nothing, however good the numbers look.
+    try:
+        preconditions = support.preflight()
+    except support.CertificationFailure as exc:
+        fail(f"precondition failed, refusing to certify: {exc}")
+
     binary = resolve_swetest()
+    revision = source_revision()
 
     report = {
         "schema": "current_engine_certification_v1",
+        "adr": "ADR-0005",
+        "date": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d"),
+        "scope": "Current modular engine, Tier-0 astronomical kernel: sidereal "
+                 "planetary longitudes, Ascendant and 12 Placidus cusps, under "
+                 "both ratified calculation profiles, against the bundled "
+                 "independent swetest 2.10.03 binary over the frozen 11-case "
+                 "holdout.",
         "engine": "engine/ (modular), version from engine/version.py",
         "reference": "Astrodienst swetest v2.10.03 (independent C binary, "
                      "bundled, version-verified at runtime)",
         "tolerance_arcsec": TOLERANCE_ARCSEC,
+        "preconditions": preconditions,
+        "run": {
+            "source_revision": revision["commit"],
+            "working_tree_dirty": revision["dirty"],
+            "engine_version": ENGINE_VERSION,
+            "executed_utc": datetime.datetime.now(
+                datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "python": sys.version.split()[0],
+            "holdout_cases": ", ".join(case["id"] for case in HOLDOUT),
+            "reference_binary": "swetest 2.10.03 (bundled, version-verified "
+                                "at runtime)",
+        },
         "profiles": {},
     }
 
@@ -316,15 +389,26 @@ def main():
         "result": "PASS" if not failures else "FAIL",
     }
 
-    outdir = ROOT / "certification"
-    outdir.mkdir(exist_ok=True)
-    outfile = outdir / "current_engine_certification.json"
-    outfile.write_text(json.dumps(report, indent=2) + "\n")
+    # PROJECT_CONSTITUTION.md s12 condition 3, audit finding C-03: the
+    # machine-readable artifact, the human-readable report and the console
+    # transcript are all produced here, by this run, from THIS dict. The
+    # report is derived from the serialised object rather than written
+    # alongside it, so the two cannot drift apart.
+    outfile = support.emit(
+        report,
+        artifact_name="current_engine_certification.json",
+        slug="current_engine",
+        tee=tee,
+    )
 
     s = report["summary"]
     print("=" * 64)
     print("CURRENT-ENGINE HOLDOUT CERTIFICATION")
     print("=" * 64)
+    print(f"ephemeris verified: {preconditions['data_assets']['assets_verified']} "
+          "assets against CHECKSUMS.sha256")
+    print(f"anti-fitting scan : {preconditions['anti_fitting']['modules_scanned']} "
+          f"modules, {len(preconditions['anti_fitting']['findings'])} findings")
     print(f"profiles          : {', '.join(PROFILES)}")
     print(f"cases per profile : {s['cases_per_profile']}")
     print(f"planet comparisons: {s['total_planet_comparisons']}")

@@ -2,8 +2,41 @@
 **Project:** Astro Convergence Engine
 
 Version: 1.0  
-Status: LOCKED  
-Last Updated: 17 July 2026
+Status: HISTORICAL (superseded in part). Previously marked LOCKED; that lock is corrected below.  
+Last Updated: 17 July 2026 (content). 2026-08-11 (status correction only).
+
+---
+
+# Status correction (ADR-0023 decision 4, PROPOSED, pending owner ratification)
+
+This document was marked `LOCKED`. That status is **corrected to HISTORICAL** for two reasons, and
+the correction is purely documentary. **No architectural rule in this document is rewritten, and no
+code, test, certification artifact or calculated value changes because of it.**
+
+**Reason 1: the lock was never recorded.** `PROJECT_CONSTITUTION.md` section 12 condition 4 requires
+that a locked artifact be recorded by a decision entry. No entry in either decision register records
+a lock on this document. A LOCKED marker that no decision supports is a claim the constitution does
+not support, so it is withdrawn rather than retroactively justified.
+
+**Reason 2: it conflicts with every other architecture document on one point.** This is the only
+architecture document that places prediction and interpretation **inside** the knowledge layer.
+`docs/MASTER_ARCHITECTURE.md`, `docs/ASTROLOGY_ARCHITECTURE.md` and
+`docs/PLATFORM_DOMAIN_ARCHITECTURE.md` each separate them. Under the CALCULATION / RULE /
+INTERPRETATION / EVIDENCE separation that the project charter treats as non-negotiable, that
+placement is wrong, and leaving it LOCKED would give the wrong statement the strongest status in the
+repository.
+
+**What is authoritative for layering.** `docs/DECISION_LOG.md` ADR-0023 and ADR-0024, together with
+`docs/PLATFORM_DOMAIN_ARCHITECTURE.md`. Where this document and those disagree about the position of
+the knowledge, interpretation or prediction layers, **those govern**.
+
+**What in this document remains useful and is not superseded.** The repository layout, the five
+design principles, the module responsibility rules, the naming and commit conventions, and the
+directory responsibilities. Those are unaffected by the correction and continue to describe the
+repository accurately.
+
+The section titled "Architecture Lock" below is read subject to this correction: it describes an
+intent to keep the structure stable, which stands, and not a ratified lock, which never existed.
 
 ---
 
