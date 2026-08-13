@@ -3,8 +3,8 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | ACTIVE REGISTER. ADR-0001 and ADR-0002 carry `Status: Accepted`, dated 2026-07-11; whether that acceptance was an owner act is not evidenced by the repository either way, and the ambiguity is recorded as ADR-0028 finding C-06 rather than resolved. Every other entry, ADR-0003 through ADR-0014 and ADR-0018 through ADR-0032, is PROPOSED and none can currently be Accepted, because Q1 (named owners) is open and PROJECT_CONSTITUTION.md s11 reserves ratification to the owner. Includes the ADR-0018 remote-CI evidence addendum (2026-08-11). |
-| Version | 0.11.0 |
+| Status | ACTIVE REGISTER. **ACCEPTED: ADR-0001, ADR-0002 and ADR-0033 only**, all ratified by the owner, Prashant Kumar, on 2026-08-13 per ADR-0033. **Every other entry, ADR-0003 through ADR-0014 and ADR-0018 through ADR-0032, remains PROPOSED.** Ratification is now possible, because Q1 named an owner; ratification is per-entry, and an owner existing is not the register being ratified. Includes the ADR-0018 remote-CI evidence addendum (2026-08-11). |
+| Version | 1.0.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 | Last updated | 2026-08-13 |
 | Review cadence | TBD |
@@ -31,7 +31,10 @@ at 0015..0017 is a reservation, not a lost entry, and a gap is not a monotonicit
 
 ## ADR-0001 - Canonical repository structure
 - **Date:** 2026-07-11
-- **Status:** Accepted
+- **Status:** Accepted. **RATIFIED BY THE OWNER, Prashant Kumar, 2026-08-13**, on the
+  ratification instruction recorded in ADR-0033. The ratification is of this entry EXACTLY AS
+  WRITTEN: no word of its context, decision or consequences is changed, and no earlier
+  conversation is claimed retrospectively as the ratification. Resolves Q13 for this entry.
 - **Context:** A long-term project needs a stable, minimal top-level layout that separates
   normative documents, deterministic engine code, governed knowledge, non-normative research,
   verification, tooling and product code.
@@ -44,7 +47,10 @@ at 0015..0017 is a reservation, not a lost entry, and a gap is not a monotonicit
 
 ## ADR-0002 - Foundation additions per M1 repository audit
 - **Date:** 2026-07-11
-- **Status:** Accepted
+- **Status:** Accepted. **RATIFIED BY THE OWNER, Prashant Kumar, 2026-08-13**, on the
+  ratification instruction recorded in ADR-0033. The ratification is of this entry EXACTLY AS
+  WRITTEN: no word of its context, decision or consequences is changed, and no earlier
+  conversation is claimed retrospectively as the ratification. Resolves Q13 for this entry.
 - **Context:** External M1 audit (reviewer: ChatGPT) required five additions before M1
   lock: PROJECT_CONSTITUTION.md, /examples, /assets, LICENSE placeholder, SECURITY.md.
   ADR-0001 requires a superseding ADR for any new top-level folder.
@@ -1479,6 +1485,143 @@ number in the run while every version check still passed.
 - **Evidence:** mtime and commit-timestamp chain above; `CHECKSUMS.sha256` compared against
   `REQUIRED_FILES`; end-to-end controls exiting 3 with correct diagnostics; combined ephemeris
   hash unchanged; full gate 420 passed.
+
+---
+
+## ADR-0033 - Owner ratification: governance roles (Q1), ADR-0001 and ADR-0002 (Q13), and roadmap direction (Q8)
+
+- **Date:** 2026-08-13
+- **Status:** **ACCEPTED. This is the first owner-ratified entry issued by this register**, and it is
+  the entry that makes ratification possible at all. It is accepted because the owner supplied the
+  decisions below as an explicit ratification instruction, not because its author judged it correct.
+- **Context:** Q1 asked who the named owners are. It has been open since 2026-07-11 and has blocked
+  every other ratification: `PROJECT_CONSTITUTION.md` section 11 reserves ratification to the owner,
+  so with no owner named, **no entry in this register could be Accepted by anyone**, and ADR-0022
+  recorded that plainly. The owner has now supplied a ratification package covering Q1, Q13 and the
+  direction half of Q8.
+
+### Decision 1. Governance roles (Q1, ratified in part)
+
+| Role | Holder |
+|---|---|
+| Project Owner, final ratifying authority | **Prashant Kumar** |
+| Builder, researcher, executor | **Claude** |
+| Independent CEO and technical auditor | **ChatGPT** |
+
+Also ratified:
+
+- The **repository** is the authoritative permanent project record for implementation, governance,
+  specifications, certification and decision history.
+- **Conversation is input material only and is never permanent authority.** This ratification is
+  itself an instance of the rule: it was given in conversation, and it becomes authority only
+  because it is written here.
+- **Significant phase work MUST NOT be merged to main without CEO audit and owner authorisation.**
+
+**Q1 is ratified IN PART and REMAINS OPEN in part.** Q1 asked for a docs owner, an engine owner and
+a release owner. The package designated none of the three, and the instruction was explicit that a
+required maintainer who has not been designated is left OPEN rather than guessed. **No additional
+maintainer is invented.** Consequently the `| Owner | TBD (see Q1) |` field in all 42 document
+status headers is left unchanged: those fields name a document maintainer, which is one of the three
+undesignated roles, and filling them with the project owner's name would assert a delegation that
+was not made.
+
+**How this ratification is evidenced, stated rather than glossed.** It reached the repository through
+a working session, and the repository has no mechanism to authenticate who issued it. That is a
+real limitation of the current process, not a defect in this record. If the owner wants ratification
+to be independently verifiable later, the durable forms are a signed commit or an owner-signed file
+in the repository; neither is created here, because neither was requested.
+
+### Decision 2. ADR-0001 and ADR-0002 ratified as written (Q13, resolved)
+
+The owner ratifies **ADR-0001** and **ADR-0002** exactly as currently recorded. Their status lines
+now record the ratification date, the ratifying owner, and that no substantive content changed. Not
+one word of their context, decision or consequences is altered.
+
+**No earlier conversation is claimed as the ratification.** Q13 asked whether their pre-existing
+`Accepted` status was an owner act or an authoring artifact. That question is **not** answered by
+this entry and does not need to be: the status is now legitimate prospectively, from 2026-08-13,
+whatever its earlier provenance was. Q13 is resolved on that basis and the historical ambiguity is
+left recorded rather than retrospectively decided.
+
+A consequence worth naming: ADR-0001 fixes the canonical top-level folder set, and **ADR-0003
+reconciled the tree against it and is still PROPOSED**. Ratifying ADR-0001 as written therefore
+leaves a live tension, because the tree currently on disk is ADR-0003's, not ADR-0001's. This does
+not require action now; it requires that ADR-0003 be ratified or rejected before anyone treats
+either folder list as settled. Recorded so it is not discovered later.
+
+### Decision 3. Roadmap direction ratified; Q8 NOT closed
+
+The owner ratifies this dependency ordering:
+
+> Foundation and Certification -> Question and Input Architecture -> Knowledge and Rule Architecture
+> -> Dependency and Inference Architecture -> Evidence Architecture -> System-specific Interpretation
+> -> Convergence -> Historical Validation and Learning -> API -> UI and Production
+
+With five ratified qualifications:
+
+1. **The ordering is dependency guidance, NOT automatic implementation authorisation.** Nothing in it
+   authorises work to begin.
+2. Existing certified astrology foundation work remains **valid historical foundation work**.
+3. Astrology systems remain **independently implemented and independently evaluated**.
+4. Convergence MUST preserve **provenance, dependency, correlation and uncertainty**.
+5. **Structurally different domains MUST NOT be forced through one natal pipeline.**
+
+**Q8 becomes OWNER-RATIFIED DIRECTION, FULL RESOLUTION STILL OPEN.** Full closure continues to
+require, for every phase: prerequisites, entry criteria, scope, certification gates, exit criteria
+and CEO approval requirements. Those exist only as the unratified candidate matrix in
+`docs/Q8_CLOSURE_MATRIX.md`.
+
+### Decision 4. PROJECT_CONSTITUTION section 12 condition 4, evaluated explicitly for ADR-0005
+
+The instruction required this be evaluated rather than assumed, so the reasoning is set out in full.
+
+Condition 4 reads: *"A decision log entry records the lock, its version, and its evidence."*
+**ADR-0005 does record all three**: scope, engine 0.3.0, the two ratified profiles, and the 528
+comparisons at a maximum error of 0.000180 arcsec. On a purely textual reading, condition 4 is met
+by the entry's existence.
+
+**That reading is rejected, and deliberately.** If a PROPOSED entry satisfied condition 4, then the
+AI builder could satisfy every condition of "Locked" without any human act, since conditions 1, 2
+and 3 are all machine-verifiable. "Locked" would become self-certifiable, which contradicts
+`PROJECT_CONSTITUTION.md` section 11, contradicts the charter's anti-circularity rule, and would make
+the constitution's own strongest status the easiest to claim. The governing reading is therefore that
+condition 4 requires a **ratified** entry.
+
+**Applying that reading: ADR-0005 was NOT included in this ratification package.** The owner ratified
+ADR-0001, ADR-0002 and the Q8 direction. ADR-0005 remains PROPOSED.
+
+**Therefore Tier-0 is NOT Locked, and MUST continue to be described as "reported".** The status is
+unchanged by this entry.
+
+What HAS changed is the nature of the blocker, and the change is substantial. Before this entry the
+obstacle was that no ratifying authority existed. Now one does, and the remaining conditions stand
+as follows: condition 1 met, a frozen profile and specification exist; condition 2 met, a fresh
+extracted tree reproduces the certification from one command with zero skips; condition 3 met by
+ADR-0031, machine-readable and human-readable evidence generated by the same run and agreeing
+byte-for-byte, defended by a gate with working negative controls; condition 4 **unmet, and now
+unmet for exactly one reason: ADR-0005 has not been ratified.**
+
+**Tier-0 is one owner decision away from Locked.** That decision is not taken here and MUST NOT be
+inferred from this entry.
+
+The textual ambiguity in condition 4 is recorded as new question Q17, because the reading adopted
+above is a governing interpretation made by the builder and should be confirmed or corrected by the
+owner rather than left as precedent by default.
+
+- **Consequences:**
+  - **ADR-0022's statement that no entry can currently be Accepted by anyone is superseded from this
+    date.** An authority now exists. **Every other entry in this register nevertheless remains
+    PROPOSED**, because ratification is per-entry and only ADR-0001, ADR-0002 and this entry have
+    received it. A reader must not read "an owner exists" as "the register is ratified".
+  - Q1 resolved in part, Q13 resolved, Q8 direction ratified with full closure still open, Q17 raised.
+  - Nothing else changes. No code, no calculation, no certification artifact, no gate, no workflow.
+  - Explicitly NOT addressed, by instruction: Q11, Q12, Q14, Q15, and consistency findings C-01,
+    C-02, C-04, C-05, C-06.
+- **Evidence:** The owner's ratification instruction of 2026-08-13; `PROJECT_CONSTITUTION.md`
+  sections 11 and 12 read in full; ADR-0005 re-read for what it does and does not record;
+  `certification/current_engine_certification.json` and
+  `reports/certification/current_engine.report.md` at `d951caf` for the condition 1, 2 and 3
+  assessment.
 
 ---
 
