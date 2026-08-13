@@ -3,8 +3,8 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | ACTIVE REGISTER. **ACCEPTED: ADR-0001, ADR-0002, ADR-0005, ADR-0033 and ADR-0034**, all owner-ratified by Prashant Kumar on 2026-08-13. ADR-0005's ratification satisfied Constitution s12 condition 4, so **Tier-0 is FORMALLY LOCKED** (ADR-0034). **Every other entry, ADR-0003, ADR-0004, ADR-0006 through ADR-0014 and ADR-0018 through ADR-0032, remains PROPOSED.** Ratification is now possible, because Q1 named an owner; ratification is per-entry, and an owner existing is not the register being ratified. Includes the ADR-0018 remote-CI evidence addendum (2026-08-11). |
-| Version | 1.1.0 |
+| Status | ACTIVE REGISTER. **ACCEPTED: ADR-0001, ADR-0002, ADR-0005, ADR-0009, ADR-0010, ADR-0011, ADR-0033, ADR-0034 and ADR-0035**, all owner-ratified by Prashant Kumar on 2026-08-13. ADR-0005's ratification satisfied Constitution s12 condition 4, so **Tier-0 is FORMALLY LOCKED** (ADR-0034). The registry vargas D2, D3, D7, D12 and D30 are **owner-ratified CERTIFIED but NOT Locked**, because no entry declares a lock over them (ADR-0035 D3). **Every other entry, ADR-0003, ADR-0004, ADR-0006, ADR-0007, ADR-0008, ADR-0012, ADR-0013, ADR-0014 and ADR-0018 through ADR-0032, remains PROPOSED.** Ratification is now possible, because Q1 named an owner; ratification is per-entry, and an owner existing is not the register being ratified. Includes the ADR-0018 remote-CI evidence addendum (2026-08-11). |
+| Version | 1.2.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 | Last updated | 2026-08-13 |
 | Review cadence | TBD |
@@ -246,7 +246,11 @@ at 0015..0017 is a reservation, not a lost entry, and a gap is not a monotonicit
 ## ADR-0009 - Generic Varga framework enters production use; D3 Drekkana (supersedes provisional ADR-VARGA-D3-001)
 
 - **Date:** 2026-08-09
-- **Status:** PROPOSED - pending owner ratification (Q1).
+- **Status:** **ACCEPTED. RATIFIED BY THE OWNER, Prashant Kumar, 2026-08-13**, on the ratification
+  recorded in ADR-0035. Ratified EXACTLY AS WRITTEN: every rule table, boundary convention,
+  school key, non-claim, recorded numerical finding and certification figure stands unaltered.
+  **Ratification of a certification is not a lock**; no varga is Locked, and this entry does not
+  claim otherwise. See ADR-0035.
 - **Context:** The Generic Varga framework existed as certified infrastructure with an empty
   registry. The governing constraint is that it must not replace the certified D9/D10
   production modules without an explicit architectural decision, a full equivalence proof and
@@ -270,7 +274,11 @@ at 0015..0017 is a reservation, not a lost entry, and a gap is not a monotonicit
 ## ADR-0010 - D12 Dwadasamsa; certified-registry constant (supersedes provisional ADR-VARGA-D12-001)
 
 - **Date:** 2026-08-09
-- **Status:** PROPOSED - pending owner ratification (Q1).
+- **Status:** **ACCEPTED. RATIFIED BY THE OWNER, Prashant Kumar, 2026-08-13**, on the ratification
+  recorded in ADR-0035. Ratified EXACTLY AS WRITTEN: every rule table, boundary convention,
+  school key, non-claim, recorded numerical finding and certification figure stands unaltered.
+  **Ratification of a certification is not a lock**; no varga is Locked, and this entry does not
+  claim otherwise. See ADR-0035.
 - **Decision:** Register D12 Dwadasamsa (twelve 2.5-degree parts from the sign itself,
   forward) as frozen `CyclicVargaRule` literals, putting the framework's second and last rule
   contract into production use. Introduce
@@ -288,7 +296,11 @@ at 0015..0017 is a reservation, not a lost entry, and a gap is not a monotonicit
 ## ADR-0011 - D7 Saptamsa, D30 Trimsamsa, D2 Hora (supersedes provisional ADR-VARGA-D7-001, ADR-VARGA-D30-001, ADR-VARGA-D2-001)
 
 - **Date:** 2026-08-09
-- **Status:** PROPOSED - pending owner ratification (Q1).
+- **Status:** **ACCEPTED. RATIFIED BY THE OWNER, Prashant Kumar, 2026-08-13**, on the ratification
+  recorded in ADR-0035. Ratified EXACTLY AS WRITTEN: every rule table, boundary convention,
+  school key, non-claim, recorded numerical finding and certification figure stands unaltered.
+  **Ratification of a certification is not a lock**; no varga is Locked, and this entry does not
+  claim otherwise. See ADR-0035.
 - **Decision:** Register three further Parashara vargas: D7 Saptamsa (odd signs from the sign
   itself, even from the seventh, forward), D30 Trimsamsa (unequal tara-graha segments
   5/5/8/7/5 odd and reversed even, no luminaries), and D2 Hora (two 15-degree halves with a
@@ -1739,6 +1751,114 @@ These are the values already in the artifact. **Nothing here recomputes or round
   in full and evaluated condition by condition; git tree hashes above; ADR-0031 and ADR-0032 for
   conditions 3 and 2; `certification/current_engine_certification.json` and
   `reports/certification/current_engine.report.md`, same-run and byte-agreeing.
+
+---
+
+## ADR-0035 - Owner ratification of ADR-0009, ADR-0010 and ADR-0011: the registry vargas
+
+- **Date:** 2026-08-13
+- **Status:** **ACCEPTED**, on the owner's ratification of 2026-08-13.
+- **Context:** ADR-0009, ADR-0010 and ADR-0011 record the Generic Varga framework entering production
+  use and the five registry vargas built on it. All three had been PROPOSED since 2026-08-09, blocked
+  first by Q1 and then simply by not having been put to the owner. The owner has now ratified all
+  three exactly as written.
+
+### Decision 1. What is ratified
+
+| Entry | Subject ratified |
+|---|---|
+| **ADR-0009** | The Generic Varga framework enters production use. **D3 Drekkana**, Parashara variant (the sign itself, the 5th, the 9th), under the `parashara` school key, expressed as frozen `SegmentVargaRule` literals because `CyclicVargaRule` cannot express the drekkana's four-sign jumps. D9 and D10 are **NOT** migrated and the registry continues to refuse those divisions by contract |
+| **ADR-0010** | **D12 Dwadasamsa**, twelve 2.5-degree parts from the sign itself forward, as frozen `CyclicVargaRule` literals; and `engine.astrology.CERTIFIED_PRODUCTION_VARGAS` as the single source of truth for sanctioned registry state |
+| **ADR-0011** | **D7 Saptamsa** (odd signs from the sign itself, even from the seventh, forward), **D30 Trimsamsa** (unequal tara-graha segments 5/5/8/7/5 odd and reversed even, no luminaries), **D2 Hora** (two 15-degree halves with a deliberately two-sign Leo/Cancer output space) |
+
+Ratified **as written**. Every rule table, boundary convention, school key, non-claim and
+certification figure stands unaltered. **No implementation, calculation, rule table, tolerance or
+certification artifact is touched by this entry**, and no certification is re-run or re-derived.
+
+### Decision 2. Three things the owner is accepting that are easy to miss
+
+Stated explicitly because ratifying "as written" means ratifying the caveats the entries recorded
+about themselves, and those caveats should not pass silently into an approval.
+
+**1. The D7 ULP finding.** ADR-0011 records that D7's 30/7-degree segment widths are not
+binary-representable, that six points of the 51,429-point sweep land one ULP below a boundary, and
+that the locked promote-up convention governs there, with the independent references carrying that
+tolerance explicitly. **That numerical caveat is now owner-accepted**, not resolved. It is the
+correct treatment, and it remains a documented edge in the D7 rule rather than an absence of one.
+
+**2. ADR-0011's self-recorded process exception.** That entry registered three vargas in a single
+commit and says so, noting it strains `engineering/ENGINEERING_CONSTITUTION.md` Principle 10, one
+logical change per commit, and the README's own "one at a time" rule. Ratifying as written accepts
+that exception for that historical commit. **It sets no precedent**: future vargas follow
+`docs/NEW_VARGA_IMPLEMENTATION_TEMPLATE.md` and Principle 10.
+
+**3. Framework certification is still not per-varga certification.** ADR-0009's central constraint is
+ratified along with the rest: the framework is infrastructure. `ENGINE_CAPABILITY_INVENTORY.json`
+classifies the framework itself PARTIALLY CERTIFIED while each registered varga is CERTIFIED
+individually, and those two statements are consistent rather than in tension.
+
+### Decision 3. Constitution s12 evaluated for the registry vargas. They are NOT Locked
+
+Evaluated explicitly rather than assumed, because Tier-0's lock followed a ratification and the
+pattern invites the inference that this one does too. **It does not.**
+
+| # | Condition | State for D2, D3, D7, D12, D30 |
+|---|---|---|
+| 1 | Written specification or frozen profile | **MET.** Frozen rule literals plus `docs/VARGA_REGISTRY_SPEC.md` |
+| 2 | Reproducible verification run | **MET.** Each certifier reproduces from one command; each calls `preflight()`, so ephemeris integrity and the anti-fitting scan are part of every gate |
+| 3 | Same-run machine and human evidence, agreeing | **MET.** All five certifiers route through `certification_support.emit()`, and `engine/tests/test_certification_evidence_agreement.py` re-derives each report from its artifact and demands byte equality |
+| 4 | A decision log entry records **the lock**, its version and its evidence | **NOT MET.** |
+
+**Condition 4 fails for a reason that ratification cannot fix.** ADR-0009, ADR-0010 and ADR-0011
+record **certifications**, not locks. No entry in this register declares a lock over any registry
+varga, so there is no lock for a decision entry to record. Ratifying a certification entry makes the
+certification owner-endorsed; it does not manufacture a lock that was never declared.
+
+**Therefore no registry varga is Locked, and none may be described as such.** D2, D3, D7, D12 and D30
+are **owner-ratified CERTIFIED**, which is a real and useful status and is not the same status
+Tier-0 now holds. Locking any of them would require a fresh decision entry declaring the lock, its
+scope and its evidence, and a separate owner authorisation. Neither exists and neither is implied
+here.
+
+### Decision 4. A dependency tension, recorded rather than left to be discovered
+
+**ADR-0012 is NOT in this ratification package and remains PROPOSED**, and it is the entry that fixes
+the sign convention these vargas emit: "every varga sign output is 0-based, including certified
+D9/D10 and all registry vargas", enforced by the `SIGN_FIELD_CONVENTIONS` declaration gate.
+
+So the five vargas ratified here produce outputs whose **interpretation convention is defined by an
+unratified entry**. Nothing is wrong in the code, and the certifications are unaffected: the
+convention is locked in behaviour and mechanically enforced. But the governance record is
+asymmetric, and a reader could reasonably ask by what authority a ratified varga's output index is
+read 0-based. **The clean resolution is to put ADR-0012 to the owner**; it is recommended and not
+assumed.
+
+This is the same class of tension ADR-0033 D2 recorded between ratified ADR-0001 and unratified
+ADR-0003, and it is recorded for the same reason: ratification proceeding entry by entry will keep
+producing these until the register is either fully ratified or the gaps are deliberate and known.
+
+- **Consequences:**
+  - Accepted entries in this register become **eight**: ADR-0001, ADR-0002, ADR-0005, ADR-0009,
+    ADR-0010, ADR-0011, ADR-0033, ADR-0034, and this entry makes nine. Everything else remains
+    PROPOSED, and in particular ADR-0003, ADR-0004, ADR-0006, ADR-0007, ADR-0008, ADR-0012,
+    ADR-0013, ADR-0014 and ADR-0018 through ADR-0032 are not ratified by this entry.
+  - **The Tier-0 lock is untouched.** ADR-0005, ADR-0034 and
+    `certification/CURRENT_ENGINE_LOCK.json` are not modified, and the certified numerical evidence
+    for Tier-0 is not regenerated. The registry vargas sit **outside** the Tier-0 lock scope, which
+    ADR-0034 restated as the kernel and the certified D9/D10 mathematics only.
+  - **C4 is not C5**, restated because ratification of five certifications in one act is exactly
+    where that slippage would start. These vargas are certified as calculations against independent
+    references. Nothing here says any varga predicts anything.
+  - The vargas that remain **ABSENT** are unaffected and unchanged: D4, D16, D20, D24, D27, D40, D45
+    and D60 do not exist, and ratifying the framework does not bring them any closer to existing.
+  - **Recommended next ratification, not taken here: ADR-0012**, for the reason in Decision 4, and
+    then ADR-0006, ADR-0007 and ADR-0008, which are the remaining certified production layers.
+- **Evidence:** ADR-0009, ADR-0010 and ADR-0011 re-read in full before ratification;
+  `certification/VARGA_D2_V1_certification.json`, `VARGA_D3_V1_certification.json`,
+  `VARGA_D7_V1_certification.json`, `VARGA_D12_V1_certification.json` and
+  `VARGA_D30_V1_certification.json` confirmed present, each PASS, each citing a compliant decision
+  identifier; all five certifiers confirmed to call both `preflight()` and `emit()`; register
+  searched for any varga lock declaration, none found.
 
 ---
 

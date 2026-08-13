@@ -3,8 +3,8 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | ACTIVE REGISTER. Seventeen questions. **Owner ratifications of 2026-08-13: Q13 resolved; Q1 and Q8 ratified in part (ADR-0033); ADR-0005 ratified, making Tier-0 FORMALLY LOCKED (ADR-0034).** Twelve fully open, three with candidate resolutions awaiting a ratification decision, two ratified in part. An owner now exists, so ratification is possible; it is per-entry and has been given three times only. |
-| Version | 1.1.0 |
+| Status | ACTIVE REGISTER. Seventeen questions. **Owner ratifications of 2026-08-13: Q13 resolved; Q1 and Q8 ratified in part (ADR-0033); ADR-0005 ratified, making Tier-0 FORMALLY LOCKED (ADR-0034); ADR-0009/0010/0011 ratified, making the registry vargas owner-ratified CERTIFIED but NOT Locked (ADR-0035).** **Eleven fully open**, three with candidate resolutions awaiting a ratification decision, two ratified in part, one resolved. Nine register entries are now Accepted; ratification is per-entry and the rest are not. |
+| Version | 1.2.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 | Last updated | 2026-08-13 |
 | Review cadence | TBD |
@@ -47,12 +47,20 @@ artifacts listed against it. Resolution = decision log entry + this register upd
 **This paragraph changed on 2026-08-13 and the change matters.** Q1 previously left the repository
 with no authority that could Accept anything. The owner is now named, so ratification is possible.
 
-**Possible is not done.** Ratification is per-entry. Exactly three entries in `docs/DECISION_LOG.md`
-are Accepted: **ADR-0001, ADR-0002 and ADR-0033**, all ratified by Prashant Kumar on 2026-08-13.
-**ADR-0003 through ADR-0014 and ADR-0018 through ADR-0032 all remain PROPOSED**, including every
-entry written to resolve the ADR-0013 conflicts, to disposition the earlier register, to correct the
-numbering gate, and to repair and complete the Tier-0 certification evidence. A reader must not read
-"an owner exists" as "the register is ratified".
+**Possible is not done.** Ratification is per-entry. **Nine** entries in `docs/DECISION_LOG.md` are
+Accepted, all ratified by Prashant Kumar on 2026-08-13: **ADR-0001, ADR-0002, ADR-0005, ADR-0009,
+ADR-0010, ADR-0011, ADR-0033, ADR-0034 and ADR-0035**.
+
+**ADR-0003, ADR-0004, ADR-0006, ADR-0007, ADR-0008, ADR-0012, ADR-0013, ADR-0014 and ADR-0018
+through ADR-0032 all remain PROPOSED**, including every entry written to resolve the ADR-0013
+conflicts, to disposition the earlier register, to correct the numbering gate, and to repair and
+complete the Tier-0 certification evidence. A reader must not read "an owner exists" as "the register
+is ratified".
+
+Two asymmetries this per-entry ratification has produced are recorded rather than left to be
+discovered: ratified ADR-0001 fixes a top-level folder set that unratified ADR-0003 reconciled away
+(ADR-0033 D2), and the ratified registry vargas emit a sign convention defined by unratified ADR-0012
+(ADR-0035 D4).
 
 ## Q6 resolution (ADR-0024, strengthened by ADR-0030 clause 1)
 
@@ -183,6 +191,7 @@ records settled matters and a PROPOSED entry settles nothing.
 | Q1, in part | Prashant Kumar (owner) | 2026-08-13 | ADR-0033 D1. Owner, builder and auditor roles named. Docs, engine and release owners NOT designated and remain OPEN. |
 | Q8, direction only | Prashant Kumar (owner) | 2026-08-13 | ADR-0033 D3. Dependency ordering ratified with five qualifications. Per-phase criteria remain OPEN. |
 | (not a question) Tier-0 formal lock | Prashant Kumar (owner) | 2026-08-13 | ADR-0005 ratified as written; ADR-0034 verifies all four Constitution s12 conditions. **Tier-0 is FORMALLY LOCKED.** Recorded here because it is the first artifact in the repository to meet the constitution's definition. |
+| (not a question) Registry varga ratification | Prashant Kumar (owner) | 2026-08-13 | ADR-0009, ADR-0010 and ADR-0011 ratified as written (ADR-0035). D2, D3, D7, D12 and D30 are owner-ratified CERTIFIED. **NOT Locked**: s12 condition 4 fails because no entry declares a varga lock, and ratifying a certification does not create one. |
 
 ### Awaiting ratification (not yet resolutions)
 

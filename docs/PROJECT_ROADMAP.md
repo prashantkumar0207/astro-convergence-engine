@@ -4,7 +4,7 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | ACTIVE. **Section 3's dependency ordering is OWNER-RATIFIED (2026-08-13, ADR-0033 D3), and Tier-0 is FORMALLY LOCKED (2026-08-13, ADR-0034); every other section remains unratified.** This document distinguishes completed historical work, currently authorised work, future work and prerequisites, per ADR-0026 D5. It does NOT authorise implementation, and Q8's per-phase criteria remain OPEN. |
-| Version | 0.4.0 |
+| Version | 0.5.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 | Last updated | 2026-08-13 |
 | Review cadence | TBD |
@@ -58,15 +58,16 @@ disagree, the inventory governs and the disagreement is a defect to be reported.
 | KP lordship chain and fact charts | CERTIFIED, chains and fact charts only | ADR-0006; `certification/KP_CHAIN_V1_certification.json`; `docs/KP_CHAIN_SPEC.md` non-claims |
 | Vimshottari maha and antar | CERTIFIED. Pratyantar PARTIALLY CERTIFIED | ADR-0007; `certification/VIMSHOTTARI_V1_certification.json` |
 | Transit longitude-crossing primitive | CERTIFIED. Ingresses PARTIALLY CERTIFIED | ADR-0008; `certification/TRANSIT_V1_certification.json` |
-| Generic varga framework and D3 | Framework PARTIALLY CERTIFIED; D3 CERTIFIED | ADR-0009; `certification/VARGA_D3_V1_certification.json`. Infrastructure is not certification of any individual varga |
-| D12 | CERTIFIED | ADR-0010; `certification/VARGA_D12_V1_certification.json` |
-| D7, D30, D2 | CERTIFIED | ADR-0011; the three matching `certification/VARGA_*_V1_certification.json` artifacts |
+| Generic varga framework and D3 | Framework PARTIALLY CERTIFIED; D3 CERTIFIED. **ADR-0009 owner-ratified 2026-08-13** | ADR-0009, **owner-ratified** (ADR-0035); `certification/VARGA_D3_V1_certification.json`. Infrastructure is not certification of any individual varga |
+| D12 | CERTIFIED. **ADR-0010 owner-ratified 2026-08-13** | ADR-0010, **owner-ratified** (ADR-0035); `certification/VARGA_D12_V1_certification.json` |
+| D7, D30, D2 | CERTIFIED. **ADR-0011 owner-ratified 2026-08-13.** D7 carries an owner-accepted ULP finding: its 30/7-degree widths are not binary-representable | ADR-0011, **owner-ratified** (ADR-0035); the three matching `certification/VARGA_*_V1_certification.json` artifacts |
 | Parashari graha drishti and sign-convention enforcement | CERTIFIED | ADR-0012; `certification/PARASHARI_DRISHTI_V1_certification.json`; `certification/SIGN_CONVENTION_V1_certification.json` |
 | Oracle reproducibility and CI tiering (G6) | Oracle reproducibility CERTIFIED; CI jobs IMPLEMENTED | ADR-0018 and its evidence addendum; `certification/ORACLE_ENVIRONMENT.json`; `certification/G6_REMOTE_CI_VALIDATION.json` |
 | Retired-identifier enforcement (B-3) | CLOSED, mechanically enforced with a negative control | ADR-0014; `scripts/check_retired_identifiers.py` |
 | Governance reconciliation of the ADR-0013 conflicts | DRAFTED, unratified | ADR-0022 through ADR-0027, all PROPOSED |
 | Owner ratification checkpoint | **ACCEPTED 2026-08-13** | ADR-0033: governance roles (Q1, in part), ADR-0001 and ADR-0002 ratified as written (Q13), roadmap direction ratified (Q8, direction only) |
 | Tier-0 formal lock | **ACCEPTED 2026-08-13** | ADR-0034: ADR-0005 ratified; all four s12 conditions verified; Tier-0 is the first artifact in the repository to satisfy the constitution's definition of Locked |
+| Registry varga ratification | **ACCEPTED 2026-08-13** | ADR-0035: ADR-0009, ADR-0010 and ADR-0011 ratified as written. D2, D3, D7, D12, D30 owner-ratified CERTIFIED. **Not Locked**, and ADR-0012, which fixes their sign convention, is still PROPOSED |
 
 **Not complete, despite adjacent certification.** D4, D16, D20, D24, D27, D40, D45 and D60 are
 ABSENT, not merely uncertified. Deeper dasha levels and every other dasha system are absent. KP
@@ -185,3 +186,4 @@ validation.
 | 0.2.0 | 2026-08-11 | ADR-0026 D5: separated completed historical work, currently authorised work, future dependency order and prerequisite gates. Original horizon, milestone, out-of-scope and risk sections retained and renumbered to 5 through 8. No phase marked complete without evidence. Does not close Q8. |
 | 0.3.0 | 2026-08-13 | ADR-0033 D3: section 3 replaced by the owner-ratified dependency ordering and its five binding qualifications. Q1 gate row updated to reflect partial clearance. Q8 remains open as to per-phase criteria. No other section is ratified. |
 | 0.4.0 | 2026-08-13 | ADR-0034: Tier-0 row corrected from "reported" to FORMALLY LOCKED after owner ratification of ADR-0005 satisfied s12 condition 4. Lock scope restated as kernel plus certified D9/D10 only. No numerical value changed. |
+| 0.5.0 | 2026-08-13 | ADR-0035: varga rows annotated as owner-ratified. Recorded that they are CERTIFIED, not Locked, and that ADR-0012, which defines their sign convention, remains PROPOSED. No numerical value changed. |
