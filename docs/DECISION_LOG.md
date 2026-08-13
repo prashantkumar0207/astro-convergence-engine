@@ -3,8 +3,8 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | ACTIVE REGISTER. ADR-0001 and ADR-0002 carry `Status: Accepted`, dated 2026-07-11; whether that acceptance was an owner act is not evidenced by the repository either way, and the ambiguity is recorded as ADR-0028 finding C-06 rather than resolved. Every other entry, ADR-0003 through ADR-0014 and ADR-0018 through ADR-0028, is PROPOSED and none can currently be Accepted, because Q1 (named owners) is open and PROJECT_CONSTITUTION.md s11 reserves ratification to the owner. Includes the ADR-0018 remote-CI evidence addendum (2026-08-11). |
-| Version | 0.8.0 |
+| Status | ACTIVE REGISTER. ADR-0001 and ADR-0002 carry `Status: Accepted`, dated 2026-07-11; whether that acceptance was an owner act is not evidenced by the repository either way, and the ambiguity is recorded as ADR-0028 finding C-06 rather than resolved. Every other entry, ADR-0003 through ADR-0014 and ADR-0018 through ADR-0030, is PROPOSED and none can currently be Accepted, because Q1 (named owners) is open and PROJECT_CONSTITUTION.md s11 reserves ratification to the owner. Includes the ADR-0018 remote-CI evidence addendum (2026-08-11). |
+| Version | 0.9.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 | Last updated | 2026-08-11 |
 | Review cadence | TBD |
@@ -14,11 +14,18 @@ Document status header - keep current on every edit.
 Append-only. Entries are never edited after acceptance; they are superseded by later entries.
 Template at the bottom. Numbering: ADR-XXXX, monotonically increasing.
 
+ORDERING. Per ADR-0029, this register is ordered by IDENTIFIER, not by append time. A new entry is
+inserted at its numeric position. "Append-only" governs CONTENT: no entry is edited, renumbered or
+deleted after it is written. It does not govern position. An addendum is NOT an entry and uses a
+level-three heading, `### Evidence addendum to ADR-XXXX - <subject>`, so the numbering gate counts
+decisions and only decisions.
+
 RESERVED NUMBERS. ADR-0015 through ADR-0017 are reserved for the remaining Phase G commits
 (0015 charter adoption, 0016 precedence hierarchy and agent workflow, 0017 certification
 taxonomy). ADR-0014 was issued 2026-08-11 with Phase G commit 3. Phase G commit 1 delivered
-G6 first by CEO sequencing decision, so ADR-0018 exists before ADR-0015..0017. The gap is a
-reservation, not a lost entry. Numbers are obtained from this register BEFORE implementation, per ADR-0004.
+G6 first by CEO sequencing decision, so ADR-0018 was ISSUED before ADR-0014 and before the
+reserved 0015..0017. It is nevertheless FILED after ADR-0014, per the ordering rule above. The gap
+at 0015..0017 is a reservation, not a lost entry, and a gap is not a monotonicity failure. Numbers are obtained from this register BEFORE implementation, per ADR-0004.
 
 ---
 
@@ -353,6 +360,81 @@ reservation, not a lost entry. Numbers are obtained from this register BEFORE im
   and several require a superseding ADR once decided.
 
 
+## ADR-0014 - Completion of the ADR-0004 identifier rewrite; varga pinning parity
+
+- **Date:** 2026-08-11
+- **Status:** PROPOSED - pending owner ratification (Q1). Per PROJECT_CONSTITUTION.md s11, an
+  AI-written entry cannot be Accepted by its author.
+- **Context:** ADR-0004 retired ten provisional plan identifiers and stated that module
+  docstrings, certification runners, certification artifacts and pinning tests were updated to
+  the compliant `ADR-\d{4}` numbers. Commit `8a5d56e` claimed the rewrite covered "every
+  reference ... across 61 files" and that "all eleven certification artifacts were regenerated
+  by their own runners". `reports/ALIGNMENT_REVIEW.md` s8 repeated the completeness claim.
+  Independent audit on 2026-08-10 found the claim false for the varga family. `git log --all
+  -S "ADR-0009" -- engine/astrology/varga_d3.py` returns no commits: the compliant number was
+  never written into those modules at all. **38 tracked files carried retired identifiers in 70
+  occurrences**: `ADR-VARGA-D3-001` 14, `ADR-VARGA-D12-001` 12, `ADR-VARGA-D7-001` 11,
+  `ADR-VARGA-D30-001` 10, `ADR-VARGA-D2-001` 10, `ADR-CONVENTION-001` 4, `ADR-KP-001` 3,
+  `ADR-DASHA-001` 2, `ADR-TRANSIT-001` 2, `ADR-ASPECT-PAR-001` 2. Meanwhile README.md and this
+  register cited ADR-0009 through ADR-0012 for the same artifacts, so documentation and
+  artifacts disagreed. Recorded as audit finding B-3, severity MEDIUM: zero calculation impact,
+  but a traceability defect inside the very phase whose purpose was traceability.
+- **Decision:**
+  1. COMPLETE the rewrite. Replacement map: `ADR-VARGA-D3-001` to ADR-0009;
+     `ADR-VARGA-D12-001` to ADR-0010; `ADR-VARGA-D7-001`, `ADR-VARGA-D30-001` and
+     `ADR-VARGA-D2-001` to ADR-0011; `ADR-CONVENTION-001` to ADR-0012.
+  2. RECORD supersession in STRUCTURED FIELDS ONLY, not in free text. Each of the five varga
+     runners emits `"supersedes_provisional_id"` beside `"adr"`, and
+     `scripts/certification_support.py` renders a matching line into the human-readable report
+     when and only when that key is present. Writing the supersession inline in docstrings was
+     considered and REJECTED: it would reintroduce the retired strings across the tree and make
+     the zero-unauthorised-occurrence requirement unverifiable. Traceability is stronger as a
+     queryable field than as prose.
+  3. PRESERVE the two legitimate citations. `docs/DECISION_LOG.md` (this register, 10
+     occurrences in the ADR-0004 retirement list and the ADR-0006/0009/0010/0011/0012 titles)
+     and `reports/ALIGNMENT_REVIEW.md` (1 occurrence in its dated body) cite the retired
+     identifiers AS retired and are unchanged.
+  4. CLOSE the pinning asymmetry. Only D3 and D12 asserted `report["adr"]`, while KP,
+     Vimshottari, transits, drishti and sign convention all did. D2, D7 and D30 had no
+     certification pinning test at all, which is why the batch commit's identifiers went
+     uncaught. Add `test_varga_d2_certification.py`, `test_varga_d7_certification.py` and
+     `test_varga_d30_certification.py`; every varga pinning test now asserts both `adr` and
+     `supersedes_provisional_id`, plus that varga's defining behaviour (D2's two-sign output
+     space, D7's full-zodiac coverage, D30's exclusion of the luminary signs).
+  5. ENFORCE it mechanically. The `governance` CI job deferred by ADR-0018 lands here, running
+     `scripts/check_retired_identifiers.py`: an exact-string search for all ten retired
+     identifiers and a family-regex search for any `ADR-` token not followed by exactly four
+     digits, against a declared allowlist. The family regex is the operative one, because the
+     defect class is an unauthorised identifier family, not these ten strings.
+  6. CORRECT the false completeness claim WITHOUT rewriting evidence.
+     `reports/ALIGNMENT_REVIEW.md` receives a dated superseding note at its head, in the exact
+     pattern already used by FINDINGS_MATRIX.md; its body is untouched. Commit `8a5d56e`'s
+     message is wrong and cannot be corrected: rewriting published history is forbidden, so
+     this entry is the corrective record.
+- **Consequences:** Zero calculation impact, proven rather than asserted (see Evidence).
+  Artifacts for the six non-varga certifications were deliberately NOT committed: regenerating
+  them changed only their run date, and committing date churn for artifacts this ADR did not
+  touch would obscure the diff. That restoration also PROVES the shared `_render` change is
+  inert where the new key is absent. Future phases obtain an ADR number from this register
+  BEFORE implementation, per ADR-0004, and the governance job now fails the build if a
+  non-compliant identifier family appears again.
+  **Corrected count:** an earlier report of this finding said 37 files. The verified figure is
+  38; the occurrence total of 70 was correct. The discrepancy was an arithmetic error in the
+  report, not a change in the tree.
+- **Evidence:** Before-state inventory of 38 files and 70 occurrences reproduced by `git grep`
+  over `git ls-files`. After remediation both searches return zero occurrences outside the
+  declared allowlist. All eleven certification runners regenerate PASS. The five varga
+  artifacts differ from their prior versions in exactly three fields (`adr`,
+  `supersedes_provisional_id`, `date`) and five lines each; every gate value is byte-identical,
+  including the gate D `d9_sweep_sha256` = `ca444f10...` and `d10_sweep_sha256` = `78cd000f...`
+  present before and after. Default gate rises from 395 to 404 tests, the increase being
+  exactly the nine new test functions added by decision 4 (three per artifact gate). Legacy gate 5 of 5. Eleven
+  independent validators PASS. Calculation-impact fingerprints over a 51,429-point dense sweep
+  plus 1e-9 boundary neighbourhoods are identical to a pristine worktree of `1f861f6` for D9
+  sign and longitude, D10 sign and longitude, and all five registry vargas.
+
+---
+
 ## ADR-0018 - CI tiering and oracle environment reproducibility
 
 - **Date:** 2026-08-10
@@ -428,7 +510,7 @@ reservation, not a lost entry. Numbers are obtained from this register BEFORE im
 
 ---
 
-## ADR-0018 EVIDENCE ADDENDUM - remote CI validation (2026-08-11)
+### Evidence addendum to ADR-0018 - remote CI validation (2026-08-11)
 
 - **Status:** ADDITIVE EVIDENCE. This addendum does NOT edit ADR-0018 above; that entry and its
   original evidence paragraph stand unmodified as dated record. ADR-0018 remains PROPOSED.
@@ -462,81 +544,6 @@ reservation, not a lost entry. Numbers are obtained from this register BEFORE im
   section 7.1, version 1.1.0.
 - **State:** `phase-g-governance` is NOT merged into `main`. `main` remains at `1f861f6`. Phase G
   commit 2 (G1) has not started and awaits CEO approval.
-
----
-
-## ADR-0014 - Completion of the ADR-0004 identifier rewrite; varga pinning parity
-
-- **Date:** 2026-08-11
-- **Status:** PROPOSED - pending owner ratification (Q1). Per PROJECT_CONSTITUTION.md s11, an
-  AI-written entry cannot be Accepted by its author.
-- **Context:** ADR-0004 retired ten provisional plan identifiers and stated that module
-  docstrings, certification runners, certification artifacts and pinning tests were updated to
-  the compliant `ADR-\d{4}` numbers. Commit `8a5d56e` claimed the rewrite covered "every
-  reference ... across 61 files" and that "all eleven certification artifacts were regenerated
-  by their own runners". `reports/ALIGNMENT_REVIEW.md` s8 repeated the completeness claim.
-  Independent audit on 2026-08-10 found the claim false for the varga family. `git log --all
-  -S "ADR-0009" -- engine/astrology/varga_d3.py` returns no commits: the compliant number was
-  never written into those modules at all. **38 tracked files carried retired identifiers in 70
-  occurrences**: `ADR-VARGA-D3-001` 14, `ADR-VARGA-D12-001` 12, `ADR-VARGA-D7-001` 11,
-  `ADR-VARGA-D30-001` 10, `ADR-VARGA-D2-001` 10, `ADR-CONVENTION-001` 4, `ADR-KP-001` 3,
-  `ADR-DASHA-001` 2, `ADR-TRANSIT-001` 2, `ADR-ASPECT-PAR-001` 2. Meanwhile README.md and this
-  register cited ADR-0009 through ADR-0012 for the same artifacts, so documentation and
-  artifacts disagreed. Recorded as audit finding B-3, severity MEDIUM: zero calculation impact,
-  but a traceability defect inside the very phase whose purpose was traceability.
-- **Decision:**
-  1. COMPLETE the rewrite. Replacement map: `ADR-VARGA-D3-001` to ADR-0009;
-     `ADR-VARGA-D12-001` to ADR-0010; `ADR-VARGA-D7-001`, `ADR-VARGA-D30-001` and
-     `ADR-VARGA-D2-001` to ADR-0011; `ADR-CONVENTION-001` to ADR-0012.
-  2. RECORD supersession in STRUCTURED FIELDS ONLY, not in free text. Each of the five varga
-     runners emits `"supersedes_provisional_id"` beside `"adr"`, and
-     `scripts/certification_support.py` renders a matching line into the human-readable report
-     when and only when that key is present. Writing the supersession inline in docstrings was
-     considered and REJECTED: it would reintroduce the retired strings across the tree and make
-     the zero-unauthorised-occurrence requirement unverifiable. Traceability is stronger as a
-     queryable field than as prose.
-  3. PRESERVE the two legitimate citations. `docs/DECISION_LOG.md` (this register, 10
-     occurrences in the ADR-0004 retirement list and the ADR-0006/0009/0010/0011/0012 titles)
-     and `reports/ALIGNMENT_REVIEW.md` (1 occurrence in its dated body) cite the retired
-     identifiers AS retired and are unchanged.
-  4. CLOSE the pinning asymmetry. Only D3 and D12 asserted `report["adr"]`, while KP,
-     Vimshottari, transits, drishti and sign convention all did. D2, D7 and D30 had no
-     certification pinning test at all, which is why the batch commit's identifiers went
-     uncaught. Add `test_varga_d2_certification.py`, `test_varga_d7_certification.py` and
-     `test_varga_d30_certification.py`; every varga pinning test now asserts both `adr` and
-     `supersedes_provisional_id`, plus that varga's defining behaviour (D2's two-sign output
-     space, D7's full-zodiac coverage, D30's exclusion of the luminary signs).
-  5. ENFORCE it mechanically. The `governance` CI job deferred by ADR-0018 lands here, running
-     `scripts/check_retired_identifiers.py`: an exact-string search for all ten retired
-     identifiers and a family-regex search for any `ADR-` token not followed by exactly four
-     digits, against a declared allowlist. The family regex is the operative one, because the
-     defect class is an unauthorised identifier family, not these ten strings.
-  6. CORRECT the false completeness claim WITHOUT rewriting evidence.
-     `reports/ALIGNMENT_REVIEW.md` receives a dated superseding note at its head, in the exact
-     pattern already used by FINDINGS_MATRIX.md; its body is untouched. Commit `8a5d56e`'s
-     message is wrong and cannot be corrected: rewriting published history is forbidden, so
-     this entry is the corrective record.
-- **Consequences:** Zero calculation impact, proven rather than asserted (see Evidence).
-  Artifacts for the six non-varga certifications were deliberately NOT committed: regenerating
-  them changed only their run date, and committing date churn for artifacts this ADR did not
-  touch would obscure the diff. That restoration also PROVES the shared `_render` change is
-  inert where the new key is absent. Future phases obtain an ADR number from this register
-  BEFORE implementation, per ADR-0004, and the governance job now fails the build if a
-  non-compliant identifier family appears again.
-  **Corrected count:** an earlier report of this finding said 37 files. The verified figure is
-  38; the occurrence total of 70 was correct. The discrepancy was an arithmetic error in the
-  report, not a change in the tree.
-- **Evidence:** Before-state inventory of 38 files and 70 occurrences reproduced by `git grep`
-  over `git ls-files`. After remediation both searches return zero occurrences outside the
-  declared allowlist. All eleven certification runners regenerate PASS. The five varga
-  artifacts differ from their prior versions in exactly three fields (`adr`,
-  `supersedes_provisional_id`, `date`) and five lines each; every gate value is byte-identical,
-  including the gate D `d9_sweep_sha256` = `ca444f10...` and `d10_sweep_sha256` = `78cd000f...`
-  present before and after. Default gate rises from 395 to 404 tests, the increase being
-  exactly the nine new test functions added by decision 4 (three per artifact gate). Legacy gate 5 of 5. Eleven
-  independent validators PASS. Calculation-impact fingerprints over a 51,429-point dense sweep
-  plus 1e-9 boundary neighbourhoods are identical to a pristine worktree of `1f861f6` for D9
-  sign and longitude, D10 sign and longitude, and all five registry vargas.
 
 ---
 
@@ -1157,6 +1164,154 @@ makes no change to any calculation, test, certification artifact or gate.
 - **Evidence:** Every claim in the tables above was checked against the working tree at
   `c5bdd81` during this pass, by reading the cited file or running the cited search. No claim is
   carried over from an earlier report.
+
+---
+
+## ADR-0029 - Register ordering rule, and correction of the ADR numbering gate failure
+
+- **Date:** 2026-08-11
+- **Status:** PROPOSED - pending owner ratification (Q1).
+- **Context:** The `governance` CI job's numbering step failed on the remote with two errors:
+  `duplicate ADR numbers: [18]` and `ADR numbers not monotonic`, the observed sequence being
+  `1..13, 18, 18, 14, 19..28`. Investigation found two distinct causes, and neither is a numbering
+  error in the sense the gate was written to catch.
+
+  **Cause of the duplicate.** The remote-CI evidence addendum was written with the heading
+  `## ADR-0018 EVIDENCE ADDENDUM - remote CI validation (2026-08-11)`. The gate's regex,
+  `^## ADR-(\d{4}) `, cannot distinguish an addendum from an entry, so it counted ADR-0018 twice.
+  There was never a duplicate decision. An addendum is a child of its entry, and its heading level
+  was wrong.
+
+  **Cause of the non-monotonic order.** ADR-0018 was issued at Phase G commit 1 and ADR-0014 at
+  Phase G commit 3, because the owner sequenced G6 first. Each was appended to the end of the file
+  as it was written. **That is correct append-only behaviour, and it produced a file the gate
+  rejects.** The register's stated rule "Append-only" and the gate's rule "numbers ascend in file
+  order" are in direct conflict whenever a lower number is issued later. The register never stated
+  which governs. That unstated conflict, not carelessness, is what turned the branch red.
+- **Decision:**
+  1. **The register is ordered by IDENTIFIER, not by append time.** A new entry is inserted at its
+     numeric position. "Append-only" governs **content**: no entry is edited, renumbered or deleted
+     after it is written. It does not govern **position**. This resolves the conflict by decision
+     rather than by weakening either rule, and it is stated here because the register was silent.
+  2. **An addendum is not an entry.** Evidence addenda, corrections of fact, and any other material
+     attaching to an existing entry use a level-three heading of the form
+     `### Evidence addendum to ADR-XXXX - <subject>`, so that the numbering gate counts decisions
+     and only decisions.
+  3. **Corrections applied, both purely positional or structural.** The addendum heading was demoted
+     from `##` to `###`, and the ADR-0018 block together with that addendum was relocated to sit
+     after ADR-0014. **No entry was renumbered, edited, deleted, split or merged.**
+  4. **The gate is NOT weakened.** Its regex, its uniqueness assertion and its monotonicity
+     assertion are unchanged. `.github/workflows/ci.yml` is not modified by this entry. The
+     repository was corrected to satisfy the gate; the gate was not adjusted to tolerate the
+     repository.
+  5. The reserved-numbers note stands: ADR-0015 through ADR-0017 remain reserved and unissued for
+     the remaining Phase G commits, and a gap in the sequence is not a monotonicity failure.
+- **Consequences:**
+  - **Byte-identity of the moved content is proven, not asserted.** SHA-256 over the extracted
+    ADR-0014 block is `4af3498012250daa5dd91b4b6a7d6b2aa464a5241c02bfaad9e82e4bf60d51c7` before and
+    after the move; over the ADR-0018 block including its addendum,
+    `10cebd50fdefc4080398cdbb8e553f8560b8ca4a336b4005eb3dc8940673df53` before and after. Total line
+    count is 1171 before and after. The only textual change in the file beyond this entry is the one
+    heading level.
+  - The gate now reports `PASS: 25 ADR entries, unique and monotonic: ADR-0001..ADR-0028`, sequence
+    `1..14, 18..28`.
+  - **ADR-0028 finding C-07 is thereby resolved**, and it is the only one of the seven consistency
+    findings this pass closes. C-01 through C-06 remain open.
+  - **A gap in the gate itself is recorded rather than fixed.** The identifier gate has a committed
+    negative control in `.github/workflows/ci.yml`; the **numbering gate does not**. Its PASS is
+    therefore weaker evidence than the identifier gate's PASS. A negative control was executed
+    manually during this pass and behaved correctly, but a manual run is not a standing gate. Adding
+    one is a workflow change and is not authorised here. Recorded as new question Q14.
+- **Evidence:** Local reproduction of the original failure before correction, exit 1 with both
+  errors; local execution after correction, exit 0; the two block hashes above; a manual negative
+  control planting `## ADR-0018 - duplicate probe`, which the gate rejected with exit 1.
+
+---
+
+## ADR-0030 - Normative strengthening of the Q6 and Q9 decisions, and the complete ADR-0013 mapping
+
+- **Date:** 2026-08-11
+- **Status:** PROPOSED - pending owner ratification (Q1).
+- **Context:** The CEO correction pass required that the Q6 and Q9 decisions read as architectural
+  rules rather than as observations of current behaviour. On re-reading, ADR-0024 and ADR-0025 were
+  found to be **weaker than intended in three specific respects**, recorded below. Because the
+  register is append-only in content, those entries are not edited; this entry states the governing
+  wording and takes precedence over them where they differ.
+- **Decision:**
+
+  **1. Q6, the engine-to-knowledge boundary. The two claims are separated explicitly.**
+
+  *Empirical fact, as at commit `2a4ac9f`:* `engine/` contains **zero** runtime imports of top-level
+  `knowledge/` and zero references to `knowledge/hlkg`. This is an observation. It could change with
+  any commit and it binds nothing.
+
+  *Normative architectural rule, which binds:*
+  > **`engine/` MUST NOT have an uncontrolled runtime dependency on top-level `knowledge/`.**
+  > Such a dependency is PROHIBITED unless and until a future explicit architectural decision
+  > authorises a specific controlled interface, defining at minimum its version pinning, its schema
+  > validation, its failure behaviour, and its effect on certification.
+
+  **The narrowing "for certification-critical calculation" in ADR-0024 D1 is WITHDRAWN.** It left
+  non-certification-critical runtime dependency implicitly permitted, which is not what was
+  intended: a dependency that is harmless today becomes load-bearing the moment anything downstream
+  consumes it, and the boundary would then have been crossed without a decision. The prohibition is
+  unqualified.
+
+  **No such controlled interface is introduced, specified or authorised by this entry.** The
+  permitted case remains exactly what ADR-0024 D2 records: `engine/knowledge/`, which is
+  implementation-owned rule data and a different thing from top-level `knowledge/` despite the name
+  collision.
+
+  **2. Q9, the kernel and the legacy reference. Four clauses, stated normatively.**
+
+  > (a) `engine/` **is** the production calculation foundation. It is authoritative and is not
+  > reimplemented for architectural aesthetics.
+  >
+  > (b) `legacy/` **remains** a historical and equivalence reference. It is the KP equivalence oracle
+  > for ADR-0006 and the historical Tier-0 record.
+  >
+  > (c) **Retirement of `legacy/` REQUIRES an explicit future decision AND the completion of the
+  > migration and certification requirements of `docs/LEGACY_KERNEL_MIGRATION.md`.** Both are
+  > necessary. Neither alone is sufficient. This clause was missing from ADR-0025 D3, which stated
+  > only that the migration condition is unmet; it did not state that a decision is also required.
+  >
+  > (d) **No retirement is implied, scheduled or foreshadowed by the current state**, and in
+  > particular the empirical finding that `legacy/` is imported by five test modules and no
+  > production module MUST NOT be read as evidence that retirement is close at hand or appropriate. A low
+  > dependency count is not a retirement criterion.
+
+  **3. The complete ADR-0013 conflict-to-disposition mapping**, recorded here as a single table
+  because it was previously distributed across six entries and one summary row.
+
+  | ADR-0013 conflict | Subject | Disposing entry |
+  |---|---|---|
+  | 1 | ENGINEERING_CONSTITUTION Principle 3 versus rule tables as Python literals | ADR-0023 |
+  | 2 | KNOWLEDGE_STANDARDS single-source-of-truth versus the three-way Vimshottari duplication | ADR-0023 |
+  | 3 | Three architecture documents placing the knowledge layer differently; the unsupported LOCKED status | ADR-0023 |
+  | 4 | Q6 and Q9 answered in practice rather than by decision | ADR-0024 (Q6) and ADR-0025 (Q9), both strengthened by this entry |
+  | 5 | Root D-00x and ADR-000x coexisting with no stated precedence | ADR-0022 |
+  | 6 | Root D-008 naming KP_SIGNIFICATOR_V1 as the next tier | ADR-0027 |
+  | 7 | PROJECT_BACKLOG Phase 1 before Phase 2 versus what was actually built | ADR-0026 |
+
+  Every conflict maps to exactly one disposing entry, except conflict 4, which maps to two because
+  it recorded two distinct questions in one item. ADR-0023 disposes of three conflicts because
+  conflicts 1, 2 and 3 are one problem seen from three angles, which ADR-0023's context states.
+
+  **4. No feature decision is contained in ADR-0022 through ADR-0030.** Verified by reading every
+  decision clause in the seven prior entries and this one: each is a rule, a classification, a
+  prohibition, a disposition or a documentation obligation. The only clauses that mention
+  implementation do so to **withhold** authorisation: ADR-0027 D2 states that KP significators are
+  not authorised, ADR-0026 D5 states that no phase is marked complete without evidence, and
+  ADR-0024 D4 and this entry's clause 1 both prohibit rather than permit.
+- **Consequences:**
+  - Where ADR-0024 D1 and this entry's clause 1 differ, **this entry governs**, and the difference
+    is a deliberate strengthening rather than a correction of an error of fact.
+  - Where ADR-0025 D3 and this entry's clause 2 differ, **this entry governs**.
+  - Nothing in `engine/`, `legacy/`, `knowledge/` or any test is changed by this entry. The
+    prohibition it states is already satisfied.
+- **Evidence:** Repository-wide search for runtime imports of top-level `knowledge/` from `engine/`,
+  zero results, re-run this pass; the five `legacy/` importers re-confirmed as test modules;
+  every decision clause of ADR-0022 through ADR-0028 re-read for feature content.
 
 ---
 
