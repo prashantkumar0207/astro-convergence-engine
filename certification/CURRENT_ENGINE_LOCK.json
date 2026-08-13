@@ -59,7 +59,24 @@
       "ADR-0011",
       "ADR-0012"
     ],
-    "note": "PROJECT_CONSTITUTION.md s12 condition 4 requires a decision entry for a lock; ADR-0005 records this one. Entries are PROPOSED pending owner ratification (Q1)."
+    "note": "PROJECT_CONSTITUTION.md s12 condition 4 requires a decision entry for a lock; ADR-0005 records this one and was RATIFIED BY THE OWNER on 2026-08-13 (ADR-0034), which is what satisfies condition 4. The layer entries listed above remain PROPOSED; ratification is per-entry."
   },
-  "lock_scope_note": "This record locks the CURRENT ENGINE only. LOCK_MANIFEST.json is deliberately left untouched: it describes the LEGACY kernel exclusively, and keeping the two separate is the substance of audit finding F-17."
+  "lock_scope_note": "This record locks the CURRENT ENGINE only. LOCK_MANIFEST.json is deliberately left untouched: it describes the LEGACY kernel exclusively, and keeping the two separate is the substance of audit finding F-17.",
+  "ratification": {
+    "status": "FORMALLY LOCKED",
+    "ratified_by": "Prashant Kumar (Project Owner, ADR-0033 D1)",
+    "ratification_date": "2026-08-13",
+    "ratifying_entries": [
+      "ADR-0005 (ratified as written)",
+      "ADR-0034 (records the lock and the four-condition verification)"
+    ],
+    "constitution_s12_conditions": {
+      "1_written_spec_or_frozen_profile": "MET",
+      "2_reproducible_verification_run": "MET",
+      "3_same_run_machine_and_human_evidence_agreeing": "MET (ADR-0031)",
+      "4_decision_log_entry_recording_the_lock": "MET as of 2026-08-13 (ADR-0005 ratified)"
+    },
+    "certified_tree": "d951caf941d832aca17d77e8807c8cbf7a72a049; every implementation path proven identical at the lock commit by git tree hash",
+    "note": "This record locks the CURRENT ENGINE astronomical kernel and the certified D9/D10 mathematics ONLY. It is C4 production certification of calculation, NOT C5 prediction validation, and MUST NEVER be represented as the latter."
+  }
 }

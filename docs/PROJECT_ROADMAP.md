@@ -3,8 +3,8 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | ACTIVE. **Section 3's dependency ordering is OWNER-RATIFIED (2026-08-13, ADR-0033 D3); every other section remains unratified.** This document distinguishes completed historical work, currently authorised work, future work and prerequisites, per ADR-0026 D5. It does NOT authorise implementation, and Q8's per-phase criteria remain OPEN. |
-| Version | 0.3.0 |
+| Status | ACTIVE. **Section 3's dependency ordering is OWNER-RATIFIED (2026-08-13, ADR-0033 D3), and Tier-0 is FORMALLY LOCKED (2026-08-13, ADR-0034); every other section remains unratified.** This document distinguishes completed historical work, currently authorised work, future work and prerequisites, per ADR-0026 D5. It does NOT authorise implementation, and Q8's per-phase criteria remain OPEN. |
+| Version | 0.4.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 | Last updated | 2026-08-13 |
 | Review cadence | TBD |
@@ -53,7 +53,7 @@ disagree, the inventory governs and the disagreement is a defect to be reported.
 | Area | State | Evidence |
 |---|---|---|
 | Repository foundation and governing skeletons | DONE 2026-07-11 | Phase 0 commit |
-| Tier-0 astronomical kernel, both ratified profiles | CERTIFIED. **NOT "Locked" in the Constitution s12 sense: correctly described as "reported".** Conditions 1, 2 and 3 are met; condition 4 is unmet because ADR-0005 is still PROPOSED (ADR-0033 D4). The lock was established at `bfae088` | ADR-0005; ADR-0031; ADR-0033 D4; `certification/current_engine_certification.json` and `reports/certification/current_engine.report.md`, same-run and agreeing; `certification/CURRENT_ENGINE_LOCK.json`; 528 comparisons against bundled swetest 2.10.03, max error 0.000180 arcsec |
+| Tier-0 astronomical kernel, both ratified profiles | **FORMALLY LOCKED, 2026-08-13.** All four Constitution s12 conditions verified individually in ADR-0034. Scope is the kernel and the certified D9/D10 mathematics ONLY. Changes inside that scope now require a formal change decision, regression, independent validation, recertification and a further ADR | ADR-0005, **owner-ratified**; ADR-0034 (four-condition verification); ADR-0031 (same-run evidence); ADR-0032 (ephemeris integrity); `certification/CURRENT_ENGINE_LOCK.json`; `certification/current_engine_certification.json` and `reports/certification/current_engine.report.md`, same-run and byte-agreeing; 528 comparisons against bundled swetest 2.10.03, max error 0.000180 arcsec |
 | D1, D9, D10 | CERTIFIED. D9 and D10 by dedicated modules, never via the registry | Inside the ADR-0005 Tier-0 lock scope, which covers the kernel and D9/D10 only |
 | KP lordship chain and fact charts | CERTIFIED, chains and fact charts only | ADR-0006; `certification/KP_CHAIN_V1_certification.json`; `docs/KP_CHAIN_SPEC.md` non-claims |
 | Vimshottari maha and antar | CERTIFIED. Pratyantar PARTIALLY CERTIFIED | ADR-0007; `certification/VIMSHOTTARI_V1_certification.json` |
@@ -66,6 +66,7 @@ disagree, the inventory governs and the disagreement is a defect to be reported.
 | Retired-identifier enforcement (B-3) | CLOSED, mechanically enforced with a negative control | ADR-0014; `scripts/check_retired_identifiers.py` |
 | Governance reconciliation of the ADR-0013 conflicts | DRAFTED, unratified | ADR-0022 through ADR-0027, all PROPOSED |
 | Owner ratification checkpoint | **ACCEPTED 2026-08-13** | ADR-0033: governance roles (Q1, in part), ADR-0001 and ADR-0002 ratified as written (Q13), roadmap direction ratified (Q8, direction only) |
+| Tier-0 formal lock | **ACCEPTED 2026-08-13** | ADR-0034: ADR-0005 ratified; all four s12 conditions verified; Tier-0 is the first artifact in the repository to satisfy the constitution's definition of Locked |
 
 **Not complete, despite adjacent certification.** D4, D16, D20, D24, D27, D40, D45 and D60 are
 ABSENT, not merely uncertified. Deeper dasha levels and every other dasha system are absent. KP
@@ -183,3 +184,4 @@ validation.
 | 0.1.0 | 2026-07-11 | Skeleton created |
 | 0.2.0 | 2026-08-11 | ADR-0026 D5: separated completed historical work, currently authorised work, future dependency order and prerequisite gates. Original horizon, milestone, out-of-scope and risk sections retained and renumbered to 5 through 8. No phase marked complete without evidence. Does not close Q8. |
 | 0.3.0 | 2026-08-13 | ADR-0033 D3: section 3 replaced by the owner-ratified dependency ordering and its five binding qualifications. Q1 gate row updated to reflect partial clearance. Q8 remains open as to per-phase criteria. No other section is ratified. |
+| 0.4.0 | 2026-08-13 | ADR-0034: Tier-0 row corrected from "reported" to FORMALLY LOCKED after owner ratification of ADR-0005 satisfied s12 condition 4. Lock scope restated as kernel plus certified D9/D10 only. No numerical value changed. |
