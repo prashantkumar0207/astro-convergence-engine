@@ -1,0 +1,13 @@
+================================================================
+CURRENT-ENGINE HOLDOUT CERTIFICATION
+================================================================
+profiles          : parashari_lahiri, kp_krishnamurti
+cases per profile : 11
+planet comparisons: 264
+cusp comparisons  : 264
+max planet error  : 0.000179 arcsec
+max asc error     : 0.000176 arcsec
+max cusp error    : 0.000180 arcsec
+ayanamsa Lahiri/KP: 5.811 arcmin apart
+archived          : certification/current_engine_certification.json
+RESULT            : PASS

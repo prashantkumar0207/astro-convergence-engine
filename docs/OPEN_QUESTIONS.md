@@ -3,10 +3,10 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | ACTIVE REGISTER. Fourteen questions: twelve open, two with candidate resolutions awaiting ratification. Nothing in this register is ratified, because Q1 is itself open. |
-| Version | 0.4.0 |
+| Status | ACTIVE REGISTER. Sixteen questions: fourteen open, two with candidate resolutions awaiting ratification. Nothing in this register is ratified, because Q1 is itself open. |
+| Version | 0.5.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-11 |
+| Last updated | 2026-08-13 |
 | Review cadence | TBD |
 
 # Open Questions Register
@@ -30,6 +30,8 @@ artifacts listed against it. Resolution = decision log entry + this register upd
 | Q12 | Is `LOCK_MANIFEST.json` a live register that must be kept current, or frozen historical evidence of the Tier-0 lock? | It records `tier1_kp_significator` as SPECIFICATION_PENDING and describes a tier structure that later work did not follow. If it is live it is stale and misleading; if it is frozen evidence it must say so, because a reader cannot currently tell which, and editing frozen certification evidence would be a governance violation while leaving a live register stale would be a documentation defect. ADR-0027 D5 declined to edit it for exactly this reason. | LOCK_MANIFEST.json, certification status reporting | OPEN, raised 2026-08-11 |
 | Q13 | Were ADR-0001 and ADR-0002, both dated 2026-07-11 and both carrying `Status: Accepted`, ratified by the owner, or were they marked Accepted by the authoring agent before the register adopted its current status vocabulary? | They are the only two entries in the register claiming Accepted status, and they fix the canonical top-level folder set that ADR-0003 then reconciled against. If they were owner acts, they bind and ADR-0003 needs owner supersession. If they were not, the register contains two entries claiming an authority no one exercised, which is the exact failure mode ADR-0022 exists to prevent. The repository evidences neither reading, and both retroactively demoting them and retroactively confirming them would falsify the record. | Precedence of ADR-0001/0002 over ADR-0003; integrity of the Accepted status | OPEN, raised 2026-08-11. ADR-0028 finding C-06. **Only the owner can answer this one.** |
 | Q14 | Should the ADR numbering gate in `.github/workflows/ci.yml` carry a committed negative control, as the identifier gate does? | The identifier gate plants a retired identifier on every CI run and fails the build if the gate does not catch it, so its PASS is evidence. The numbering gate has no such control, so a PASS proves only that the gate ran, not that it can still fail. ADR-0029 corrected a real numbering defect and the gate now passes; without a negative control there is nothing to detect the gate silently breaking later, which is exactly the circularity the project charter section 11 warns against. | Evidential value of the governance job's numbering step | OPEN, raised 2026-08-11. ADR-0029 consequences. Adding it is a workflow change and was not authorised in the pass that raised it. |
+| Q15 | Should `certification/current_engine_certification.json` be made byte-reproducible by recording the swetest invocation without the run's temporary directory and the checkout's absolute path? | Two runs of identical code over identical data currently produce different bytes, because each case records `swetest_cmd` containing `/tmp/swetest_<random>/` and the absolute checkout path. Root D-005 removed exactly this class of environment-specific absolute-path dependency from the legacy Tier-0 package, and it has reappeared here. It does not affect Constitution s12 condition 3, since both evidence files regenerate together and agree, but it means the artifact cannot be diffed across runs to show that nothing changed. | Byte-level reproducibility claims about Tier-0 evidence | OPEN, raised 2026-08-13. ADR-0031 consequences. |
+| Q16 | Should `scripts/certify_current_engine.py` call `certification_support.preflight()`, as the other certifiers do? | It verifies the swetest binary version at runtime but does NOT verify the ephemeris checksums against `CHECKSUMS.sha256`, and no anti-fitting scan forms part of this gate. That is VALIDATION_STANDARD s2 rules 4 and 6. The legacy Tier-0 runner did verify ephemeris checksums per root D-005, so this is a capability the current runner lost. Wiring it changes what the gate can reject, which is a scope decision rather than a repair. | VALIDATION_STANDARD s2 rules 4 and 6 for Tier-0 | OPEN, raised 2026-08-13. ADR-0031 consequences. |
 
 ## Status vocabulary used in this register
 
@@ -42,9 +44,9 @@ artifacts listed against it. Resolution = decision log entry + this register upd
 
 The distinction matters and is not bookkeeping. Q1, the named owners, is itself open, so there is at
 present **no authority in the repository that can Accept anything**. Every ADR in
-`docs/DECISION_LOG.md`, including ADR-0022 through ADR-0030 which were written to resolve the
-ADR-0013 conflicts, to disposition the earlier register, and to correct the numbering gate, is
-PROPOSED. A reader must not treat any entry below as settled.
+`docs/DECISION_LOG.md`, including ADR-0022 through ADR-0031 which were written to resolve the
+ADR-0013 conflicts, to disposition the earlier register, to correct the numbering gate, and to
+repair the Tier-0 same-run evidence, is PROPOSED. A reader must not treat any entry below as settled.
 
 The two entries that carry `Status: Accepted`, ADR-0001 and ADR-0002, are the subject of Q13 and are
 not evidence that ratification has ever occurred.

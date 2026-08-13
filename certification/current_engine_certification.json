@@ -1,1046 +1,1060 @@
 {
-  "schema": "current_engine_certification_v1",
-  "engine": "engine/ (modular), version from engine/version.py",
-  "reference": "Astrodienst swetest v2.10.03 (independent C binary, bundled, version-verified at runtime)",
-  "tolerance_arcsec": 0.5,
-  "profiles": {
-    "parashari_lahiri": {
-      "sid_mode": 1,
-      "cases": [
-        {
-          "id": "H1_london_1823",
-          "swetest_cmd": "/tmp/swetest_b3ie5b1c/swetest -edir/home/claude/ace-conv-verify -b17.4.1823 -ut03:21:07 -p0123456789m -eswe -sid1 -house-0.1278,51.5074,P -fPl -g, -head",
-          "ayanamsa_value_deg": 21.389647504999317,
-          "provenance": {
-            "profile": "parashari_lahiri",
-            "frame": "sidereal",
-            "ephemeris_mode": "swieph",
-            "house_system": "P",
-            "node_policy": "mean"
-          },
-          "max_planet_error_arcsec": 0.00017738386759447167,
-          "ascendant_error_arcsec": 0.00016778847111709183,
-          "max_cusp_error_arcsec": 0.0001795366415535682,
-          "planet_errors_arcsec": {
-            "Sun": 9.319710443378426e-05,
-            "Moon": 1.2065868304489413e-05,
-            "Mercury": 5.732067620556336e-05,
-            "Venus": 0.0001054266817845928,
-            "Mars": 0.00010005855983763468,
-            "Jupiter": 0.00013509495602193056,
-            "Saturn": 8.028414413274731e-05,
-            "Uranus": 0.00017738386759447167,
-            "Neptune": 3.452071268839063e-05,
-            "Pluto": 9.675695764599368e-05,
-            "Rahu": 5.5637337936786935e-05,
-            "Ketu": 5.5637337936786935e-05
-          },
-          "cusp_errors_arcsec": {
-            "1": 0.00016778847111709183,
-            "2": 0.00017953653923541424,
-            "3": 0.00017155623481812654,
-            "4": 6.957194500500918e-05,
-            "5": 2.0439483705558814e-05,
-            "6": 6.844388735771645e-05,
-            "7": 0.00016778847111709183,
-            "8": 0.0001795366415535682,
-            "9": 0.00017155623481812654,
-            "10": 6.957194500500918e-05,
-            "11": 2.0439586023712764e-05,
-            "12": 6.844368272140855e-05
-          }
-        },
-        {
-          "id": "H2_newyork_1900",
-          "swetest_cmd": "/tmp/swetest_b3ie5b1c/swetest -edir/home/claude/ace-conv-verify -b1.1.1900 -ut00:00:00 -p0123456789m -eswe -sid1 -house-74.006,40.7128,P -fPl -g, -head",
-          "ayanamsa_value_deg": 22.46053059240471,
-          "provenance": {
-            "profile": "parashari_lahiri",
-            "frame": "sidereal",
-            "ephemeris_mode": "swieph",
-            "house_system": "P",
-            "node_policy": "mean"
-          },
-          "max_planet_error_arcsec": 0.0001732915507091093,
-          "ascendant_error_arcsec": 2.3764414436300285e-06,
-          "max_cusp_error_arcsec": 0.00017588449736649636,
-          "planet_errors_arcsec": {
-            "Sun": 8.287709079013439e-05,
-            "Moon": 0.00013516504395738593,
-            "Mercury": 5.781354275313788e-05,
-            "Venus": 0.0001613236008779495,
-            "Mars": 0.00012198452168377116,
-            "Jupiter": 0.00011076646160290693,
-            "Saturn": 0.00010141683333131368,
-            "Uranus": 6.652941237916821e-05,
-            "Neptune": 0.0001732915507091093,
-            "Pluto": 3.267387000960298e-05,
-            "Rahu": 0.0001221178422383673,
-            "Ketu": 0.00012211794455652125
-          },
-          "cusp_errors_arcsec": {
-            "1": 2.3764414436300285e-06,
-            "2": 0.00012294201496843016,
-            "3": 0.00017588449736649636,
-            "4": 0.00011717587540260865,
-            "5": 1.1022530088666826e-05,
-            "6": 0.00015878181329753716,
-            "7": 2.3764414436300285e-06,
-            "8": 0.00012294221960473806,
-            "9": 0.00017588429273018846,
-            "10": 0.00011717587540260865,
-            "11": 1.1022530088666826e-05,
-            "12": 0.00015878181329753716
-          }
-        },
-        {
-          "id": "H3_sydney_1946",
-          "swetest_cmd": "/tmp/swetest_b3ie5b1c/swetest -edir/home/claude/ace-conv-verify -b14.6.1946 -ut21:47:53 -p0123456789m -eswe -sid1 -house151.2093,-33.8688,P -fPl -g, -head",
-          "ayanamsa_value_deg": 23.109167777659305,
-          "provenance": {
-            "profile": "parashari_lahiri",
-            "frame": "sidereal",
-            "ephemeris_mode": "swieph",
-            "house_system": "P",
-            "node_policy": "mean"
-          },
-          "max_planet_error_arcsec": 0.00015872062704147538,
-          "ascendant_error_arcsec": 8.67191374709364e-05,
-          "max_cusp_error_arcsec": 0.00016087810763565358,
-          "planet_errors_arcsec": {
-            "Sun": 0.00013944132888354943,
-            "Moon": 3.293416739325039e-06,
-            "Mercury": 2.203053099947283e-05,
-            "Venus": 1.054183940141229e-06,
-            "Mars": 5.409090135799488e-05,
-            "Jupiter": 0.00011606879297687556,
-            "Saturn": 7.570499747089343e-05,
-            "Uranus": 5.6873341236496344e-05,
-            "Neptune": 2.084333345919731e-05,
-            "Pluto": 0.00014558236216544174,
-            "Rahu": 0.00015872062704147538,
-            "Ketu": 0.00015872052472332143
-          },
-          "cusp_errors_arcsec": {
-            "1": 8.67191374709364e-05,
-            "2": 0.00015617843018844724,
-            "3": 4.4236742269276874e-05,
-            "4": 9.84795860858867e-05,
-            "5": 8.532812216799357e-05,
-            "6": 0.00016087810763565358,
-            "7": 8.671923978909035e-05,
-            "8": 0.00015617843018844724,
-            "9": 4.4236639951122925e-05,
-            "10": 9.84795860858867e-05,
-            "11": 8.532812216799357e-05,
-            "12": 0.00016087810763565358
-          }
-        },
-        {
-          "id": "H4_delhi_1979",
-          "swetest_cmd": "/tmp/swetest_b3ie5b1c/swetest -edir/home/claude/ace-conv-verify -b11.11.1979 -ut17:41:37 -p0123456789m -eswe -sid1 -house77.2167,28.6667,P -fPl -g, -head",
-          "ayanamsa_value_deg": 23.57578580839362,
-          "provenance": {
-            "profile": "parashari_lahiri",
-            "frame": "sidereal",
-            "ephemeris_mode": "swieph",
-            "house_system": "P",
-            "node_policy": "mean"
-          },
-          "max_planet_error_arcsec": 0.00017814112425185158,
-          "ascendant_error_arcsec": 0.00012363736914267065,
-          "max_cusp_error_arcsec": 0.00015564514797006268,
-          "planet_errors_arcsec": {
-            "Sun": 4.2145359202550026e-05,
-            "Moon": 0.00017814112425185158,
-            "Mercury": 8.1833343301696e-05,
-            "Venus": 0.00015513887774432078,
-            "Mars": 0.00015928869743220275,
-            "Jupiter": 0.00015774706980664632,
-            "Saturn": 9.32263674258138e-05,
-            "Uranus": 0.00016310649471051875,
-            "Neptune": 0.00016694291389285354,
-            "Pluto": 0.00017447424625061103,
-            "Rahu": 6.868586979180691e-05,
-            "Ketu": 6.868576747365296e-05
-          },
-          "cusp_errors_arcsec": {
-            "1": 0.00012363736914267065,
-            "2": 5.726808467443334e-05,
-            "3": 0.00015113711242520367,
-            "4": 6.55648591418867e-05,
-            "5": 9.745845090947114e-05,
-            "6": 0.00015564514797006268,
-            "7": 0.00012363716450636275,
-            "8": 5.726808467443334e-05,
-            "9": 0.00015113721474335762,
-            "10": 6.556496146004065e-05,
-            "11": 9.745845090947114e-05,
-            "12": 0.00015564484101560083
-          }
-        },
-        {
-          "id": "H5_reykjavik_1992",
-          "swetest_cmd": "/tmp/swetest_b3ie5b1c/swetest -edir/home/claude/ace-conv-verify -b29.2.1992 -ut23:59:59 -p0123456789m -eswe -sid1 -house-21.9426,64.1466,P -fPl -g, -head",
-          "ayanamsa_value_deg": 23.7476187621574,
-          "provenance": {
-            "profile": "parashari_lahiri",
-            "frame": "sidereal",
-            "ephemeris_mode": "swieph",
-            "house_system": "P",
-            "node_policy": "mean"
-          },
-          "max_planet_error_arcsec": 0.00016861172298376914,
-          "ascendant_error_arcsec": 5.582959374805796e-05,
-          "max_cusp_error_arcsec": 0.00016287597190967062,
-          "planet_errors_arcsec": {
-            "Sun": 0.00014520112472382607,
-            "Moon": 0.00014757142707821913,
-            "Mercury": 9.777093055163277e-05,
-            "Venus": 6.9916450229357e-05,
-            "Mars": 6.486970960395411e-06,
-            "Jupiter": 0.00010188770147578907,
-            "Saturn": 4.763339802593691e-05,
-            "Uranus": 0.0001267400648430339,
-            "Neptune": 0.00013794185633742018,
-            "Pluto": 0.00014219471040632925,
-            "Rahu": 0.00016861172298376914,
-            "Ketu": 0.00016861172298376914
-          },
-          "cusp_errors_arcsec": {
-            "1": 5.582959374805796e-05,
-            "2": 2.670217327249702e-05,
-            "3": 6.314083975667018e-05,
-            "4": 0.00014885736163705587,
-            "5": 1.4292822925199289e-05,
-            "6": 0.00016287597190967062,
-            "7": 5.582969606621191e-05,
-            "8": 2.670217327249702e-05,
-            "9": 6.314083975667018e-05,
-            "10": 0.00014885715700074797,
-            "11": 1.4292925243353238e-05,
-            "12": 0.00016287576727336273
-          }
-        },
-        {
-          "id": "H6_quito_2010",
-          "swetest_cmd": "/tmp/swetest_b3ie5b1c/swetest -edir/home/claude/ace-conv-verify -b21.7.2010 -ut05:05:05 -p0123456789m -eswe -sid1 -house-78.4678,-0.1807,P -fPl -g, -head",
-          "ayanamsa_value_deg": 24.004479856093212,
-          "provenance": {
-            "profile": "parashari_lahiri",
-            "frame": "sidereal",
-            "ephemeris_mode": "swieph",
-            "house_system": "P",
-            "node_policy": "mean"
-          },
-          "max_planet_error_arcsec": 0.00015710973002569517,
-          "ascendant_error_arcsec": 0.0001638818616811477,
-          "max_cusp_error_arcsec": 0.00016388196399930166,
-          "planet_errors_arcsec": {
-            "Sun": 0.0001329325641563628,
-            "Moon": 2.5212318632839015e-05,
-            "Mercury": 5.196227448323043e-05,
-            "Venus": 9.057653187483083e-05,
-            "Mars": 4.0530676415073685e-05,
-            "Jupiter": 0.00011871136393892812,
-            "Saturn": 2.4234668671851978e-05,
-            "Uranus": 3.6436517802940216e-05,
-            "Neptune": 0.00015710973002569517,
-            "Pluto": 0.00011665753163470072,
-            "Rahu": 2.7693431547959335e-05,
-            "Ketu": 2.7693431547959335e-05
-          },
-          "cusp_errors_arcsec": {
-            "1": 0.0001638818616811477,
-            "2": 4.237874691170873e-05,
-            "3": 4.1367331959918374e-05,
-            "4": 0.00010708955642257934,
-            "5": 0.00011463500868558185,
-            "6": 0.00013982430573378224,
-            "7": 0.00016388196399930166,
-            "8": 4.237874691170873e-05,
-            "9": 4.1367331959918374e-05,
-            "10": 0.00010708965874073328,
-            "11": 0.00011463500868558185,
-            "12": 0.00013982410109747434
-          }
-        },
-        {
-          "id": "H7_tokyo_2033",
-          "swetest_cmd": "/tmp/swetest_b3ie5b1c/swetest -edir/home/claude/ace-conv-verify -b3.9.2033 -ut11:11:11 -p0123456789m -eswe -sid1 -house139.6503,35.6762,P -fPl -g, -head",
-          "ayanamsa_value_deg": 24.327497537222655,
-          "provenance": {
-            "profile": "parashari_lahiri",
-            "frame": "sidereal",
-            "ephemeris_mode": "swieph",
-            "house_system": "P",
-            "node_policy": "mean"
-          },
-          "max_planet_error_arcsec": 0.00016461231098219287,
-          "ascendant_error_arcsec": 9.929976840794552e-06,
-          "max_cusp_error_arcsec": 0.0001330625082118786,
-          "planet_errors_arcsec": {
-            "Sun": 0.00016461231098219287,
-            "Moon": 5.301697001414141e-05,
-            "Mercury": 0.00010556266261119163,
-            "Venus": 0.00011481795354484348,
-            "Mars": 1.8710613858274883e-05,
-            "Jupiter": 0.0001620537432245328,
-            "Saturn": 0.00014611840697398293,
-            "Uranus": 0.00015631328551535262,
-            "Neptune": 0.00011860904578497866,
-            "Pluto": 4.742446435557213e-05,
-            "Rahu": 0.00010572033488642774,
-            "Ketu": 0.00010572043720458169
-          },
-          "cusp_errors_arcsec": {
-            "1": 9.929976840794552e-06,
-            "2": 0.0001148610294876562,
-            "3": 2.5872475362120895e-05,
-            "4": 0.00011308284229016863,
-            "5": 1.4325974007078912e-05,
-            "6": 0.0001330623035755707,
-            "7": 9.930079158948502e-06,
-            "8": 0.0001148610294876562,
-            "9": 2.5872475362120895e-05,
-            "10": 0.00011308284229016863,
-            "11": 1.4325974007078912e-05,
-            "12": 0.0001330625082118786
-          }
-        },
-        {
-          "id": "H8_mumbai_2077",
-          "swetest_cmd": "/tmp/swetest_b3ie5b1c/swetest -edir/home/claude/ace-conv-verify -b3.12.2077 -ut14:30:27 -p0123456789m -eswe -sid1 -house72.8777,19.076,P -fPl -g, -head",
-          "ayanamsa_value_deg": 24.945765443532764,
-          "provenance": {
-            "profile": "parashari_lahiri",
-            "frame": "sidereal",
-            "ephemeris_mode": "swieph",
-            "house_system": "P",
-            "node_policy": "mean"
-          },
-          "max_planet_error_arcsec": 0.00016885626337170834,
-          "ascendant_error_arcsec": 0.00015656642062822357,
-          "max_cusp_error_arcsec": 0.00015656642062822357,
-          "planet_errors_arcsec": {
-            "Sun": 5.88511511523393e-05,
-            "Moon": 0.00016885626337170834,
-            "Mercury": 0.00014697378674100037,
-            "Venus": 0.00016600803292021737,
-            "Mars": 7.485637070203666e-05,
-            "Jupiter": 0.00010279659363732208,
-            "Saturn": 6.518679356304347e-05,
-            "Uranus": 3.881950760842301e-05,
-            "Neptune": 0.00010220151125395205,
-            "Pluto": 0.00013498342923412565,
-            "Rahu": 0.00012866835277236532,
-            "Ketu": 0.00012866845509051927
-          },
-          "cusp_errors_arcsec": {
-            "1": 0.00015656642062822357,
-            "2": 0.00014024473102836055,
-            "3": 0.0001320290948569891,
-            "4": 1.3072781257505994e-05,
-            "5": 2.2499864371638978e-05,
-            "6": 0.00010047878049590508,
-            "7": 0.00015656642062822357,
-            "8": 0.0001402448333465145,
-            "9": 0.0001320288902206812,
-            "10": 1.3072781257505994e-05,
-            "11": 2.249976205348503e-05,
-            "12": 0.00010047867817775114
-          }
-        },
-        {
-          "id": "H9_paris_2350",
-          "swetest_cmd": "/tmp/swetest_b3ie5b1c/swetest -edir/home/claude/ace-conv-verify -b15.1.2350 -ut06:06:06 -p0123456789m -eswe -sid1 -house2.3522,48.8566,P -fPl -g, -head",
-          "ayanamsa_value_deg": 28.75039257821544,
-          "provenance": {
-            "profile": "parashari_lahiri",
-            "frame": "sidereal",
-            "ephemeris_mode": "swieph",
-            "house_system": "P",
-            "node_policy": "mean"
-          },
-          "max_planet_error_arcsec": 0.00013331236914382316,
-          "ascendant_error_arcsec": 0.00010683191931093461,
-          "max_cusp_error_arcsec": 0.00016906458313314943,
-          "planet_errors_arcsec": {
-            "Sun": 0.00013331236914382316,
-            "Moon": 8.811946372588864e-05,
-            "Mercury": 2.0830748326261528e-05,
-            "Venus": 4.2409851630509365e-05,
-            "Mars": 9.544196473143529e-05,
-            "Jupiter": 0.0001035989726005937,
-            "Saturn": 2.2332164917315822e-05,
-            "Uranus": 5.981805770716164e-05,
-            "Neptune": 0.00010536682566453237,
-            "Pluto": 1.1020586043741787e-05,
-            "Rahu": 0.00013011052715228288,
-            "Ketu": 0.00013011062947043683
-          },
-          "cusp_errors_arcsec": {
-            "1": 0.00010683191931093461,
-            "2": 0.00012420503026078222,
-            "3": 0.00013698620477953227,
-            "4": 0.00011161242809976102,
-            "5": 0.00016906458313314943,
-            "6": 0.00015471988490389776,
-            "7": 0.00010683191931093461,
-            "8": 0.00012420503026078222,
-            "9": 0.00013698610246137832,
-            "10": 0.00011161253041791497,
-            "11": 0.00016906448081499548,
-            "12": 0.00015471988490389776
-          }
-        },
-        {
-          "id": "H10_boundary_moon_a",
-          "swetest_cmd": "/tmp/swetest_b3ie5b1c/swetest -edir/home/claude/ace-conv-verify -b1.3.2025 -ut16:21:00 -p0123456789m -eswe -sid1 -house77.2167,28.6667,P -fPl -g, -head",
-          "ayanamsa_value_deg": 24.208625840247237,
-          "provenance": {
-            "profile": "parashari_lahiri",
-            "frame": "sidereal",
-            "ephemeris_mode": "swieph",
-            "house_system": "P",
-            "node_policy": "mean"
-          },
-          "max_planet_error_arcsec": 0.0001543641246826155,
-          "ascendant_error_arcsec": 8.010242709133308e-05,
-          "max_cusp_error_arcsec": 0.00016362289443350164,
-          "planet_errors_arcsec": {
-            "Sun": 0.0001543641246826155,
-            "Moon": 0.0001508382410975173,
-            "Mercury": 0.000139004941956955,
-            "Venus": 7.84104940976249e-06,
-            "Mars": 2.771665776890586e-05,
-            "Jupiter": 5.625370249617845e-05,
-            "Saturn": 2.9330726647458505e-05,
-            "Uranus": 0.00011902660617124639,
-            "Neptune": 0.0001357037490379298,
-            "Pluto": 2.207166289736051e-05,
-            "Rahu": 5.139031600265298e-05,
-            "Ketu": 5.139031600265298e-05
-          },
-          "cusp_errors_arcsec": {
-            "1": 8.010242709133308e-05,
-            "2": 0.0001300242729485035,
-            "3": 9.431093985767802e-05,
-            "4": 0.00014545344129146542,
-            "5": 0.00016362289443350164,
-            "6": 6.264551757340087e-05,
-            "7": 8.010252940948703e-05,
-            "8": 0.0001300242729485035,
-            "9": 9.431093985767802e-05,
-            "10": 0.00014545323665515753,
-            "11": 0.00016362289443350164,
-            "12": 6.264572220970877e-05
-          },
-          "moon_boundary_check": {
-            "engine": {
-              "longitude": 339.7919880418995,
-              "nakshatra": 26,
-              "nakshatra_pada": 2
-            },
-            "exact_reference_on_swetest_moon": {
-              "nakshatra": 26,
-              "nakshatra_pada": 2
-            },
-            "agrees": true
-          }
-        },
-        {
-          "id": "H11_boundary_moon_b",
-          "swetest_cmd": "/tmp/swetest_b3ie5b1c/swetest -edir/home/claude/ace-conv-verify -b2.3.2025 -ut11:38:00 -p0123456789m -eswe -sid1 -house77.2167,28.6667,P -fPl -g, -head",
-          "ayanamsa_value_deg": 24.208656572207303,
-          "provenance": {
-            "profile": "parashari_lahiri",
-            "frame": "sidereal",
-            "ephemeris_mode": "swieph",
-            "house_system": "P",
-            "node_policy": "mean"
-          },
-          "max_planet_error_arcsec": 0.00016301512459904188,
-          "ascendant_error_arcsec": 0.00017634032474234118,
-          "max_cusp_error_arcsec": 0.00017634042706049513,
-          "planet_errors_arcsec": {
-            "Sun": 6.816394488851074e-05,
-            "Moon": 5.532936029339908e-05,
-            "Mercury": 0.0001626387984288158,
-            "Venus": 9.895495622913586e-05,
-            "Mars": 8.529292472303496e-05,
-            "Jupiter": 2.6628606519807363e-05,
-            "Saturn": 0.0001051167600962799,
-            "Uranus": 2.636687668200466e-05,
-            "Neptune": 1.1410520528443158e-06,
-            "Pluto": 0.00016301512459904188,
-            "Rahu": 9.0282674136688e-05,
-            "Ketu": 9.02822648640722e-05
-          },
-          "cusp_errors_arcsec": {
-            "1": 0.00017634032474234118,
-            "2": 5.410164476415957e-05,
-            "3": 5.515204293260467e-05,
-            "4": 0.0001037289166561095,
-            "5": 3.1534352729067905e-05,
-            "6": 0.00015658258689654758,
-            "7": 0.00017634042706049513,
-            "8": 5.410174708231352e-05,
-            "9": 5.515194061445072e-05,
-            "10": 0.0001037289166561095,
-            "11": 3.1534250410913955e-05,
-            "12": 0.00015658268921470153
-          },
-          "moon_boundary_check": {
-            "engine": {
-              "longitude": 351.6864032846307,
-              "nakshatra": 27,
-              "nakshatra_pada": 2
-            },
-            "exact_reference_on_swetest_moon": {
-              "nakshatra": 27,
-              "nakshatra_pada": 2
-            },
-            "agrees": true
-          }
-        }
-      ],
-      "max_planet_error_arcsec": 0.00017814112425185158,
-      "max_ascendant_error_arcsec": 0.00017634032474234118,
-      "max_cusp_error_arcsec": 0.0001795366415535682,
-      "planet_comparisons": 132,
-      "cusp_comparisons": 132
+ "schema": "current_engine_certification_v1",
+ "adr": "ADR-0005",
+ "date": "2026-08-13",
+ "scope": "Current modular engine, Tier-0 astronomical kernel: sidereal planetary longitudes, Ascendant and 12 Placidus cusps, under both ratified calculation profiles, against the bundled independent swetest 2.10.03 binary over the frozen 11-case holdout.",
+ "engine": "engine/ (modular), version from engine/version.py",
+ "reference": "Astrodienst swetest v2.10.03 (independent C binary, bundled, version-verified at runtime)",
+ "tolerance_arcsec": 0.5,
+ "run": {
+  "source_revision": "4c14c055619ea9e7aad171a0776202610ded2d52",
+  "working_tree_dirty": true,
+  "engine_version": "0.3.0",
+  "executed_utc": "2026-08-13T08:03:44Z",
+  "python": "3.11.15",
+  "holdout_cases": "H1_london_1823, H2_newyork_1900, H3_sydney_1946, H4_delhi_1979, H5_reykjavik_1992, H6_quito_2010, H7_tokyo_2033, H8_mumbai_2077, H9_paris_2350, H10_boundary_moon_a, H11_boundary_moon_b",
+  "reference_binary": "swetest 2.10.03 (bundled, version-verified at runtime)"
+ },
+ "profiles": {
+  "parashari_lahiri": {
+   "sid_mode": 1,
+   "cases": [
+    {
+     "id": "H1_london_1823",
+     "swetest_cmd": "/tmp/swetest_vszletsm/swetest -edir/home/claude/ace -b17.4.1823 -ut03:21:07 -p0123456789m -eswe -sid1 -house-0.1278,51.5074,P -fPl -g, -head",
+     "ayanamsa_value_deg": 21.389647504999317,
+     "provenance": {
+      "profile": "parashari_lahiri",
+      "frame": "sidereal",
+      "ephemeris_mode": "swieph",
+      "house_system": "P",
+      "node_policy": "mean"
+     },
+     "max_planet_error_arcsec": 0.00017738386759447167,
+     "ascendant_error_arcsec": 0.00016778847111709183,
+     "max_cusp_error_arcsec": 0.0001795366415535682,
+     "planet_errors_arcsec": {
+      "Sun": 9.319710443378426e-05,
+      "Moon": 1.2065868304489413e-05,
+      "Mercury": 5.732067620556336e-05,
+      "Venus": 0.0001054266817845928,
+      "Mars": 0.00010005855983763468,
+      "Jupiter": 0.00013509495602193056,
+      "Saturn": 8.028414413274731e-05,
+      "Uranus": 0.00017738386759447167,
+      "Neptune": 3.452071268839063e-05,
+      "Pluto": 9.675695764599368e-05,
+      "Rahu": 5.5637337936786935e-05,
+      "Ketu": 5.5637337936786935e-05
+     },
+     "cusp_errors_arcsec": {
+      "1": 0.00016778847111709183,
+      "2": 0.00017953653923541424,
+      "3": 0.00017155623481812654,
+      "4": 6.957194500500918e-05,
+      "5": 2.0439483705558814e-05,
+      "6": 6.844388735771645e-05,
+      "7": 0.00016778847111709183,
+      "8": 0.0001795366415535682,
+      "9": 0.00017155623481812654,
+      "10": 6.957194500500918e-05,
+      "11": 2.0439586023712764e-05,
+      "12": 6.844368272140855e-05
+     }
     },
-    "kp_krishnamurti": {
-      "sid_mode": 5,
-      "cases": [
-        {
-          "id": "H1_london_1823",
-          "swetest_cmd": "/tmp/swetest_b3ie5b1c/swetest -edir/home/claude/ace-conv-verify -b17.4.1823 -ut03:21:07 -p0123456789m -eswe -sid5 -house-0.1278,51.5074,P -fPl -g, -head",
-          "ayanamsa_value_deg": 21.29279487571442,
-          "provenance": {
-            "profile": "kp_krishnamurti",
-            "frame": "sidereal",
-            "ephemeris_mode": "swieph",
-            "house_system": "P",
-            "node_policy": "mean"
-          },
-          "max_planet_error_arcsec": 0.00017429017589165596,
-          "ascendant_error_arcsec": 6.236291483219247e-05,
-          "max_cusp_error_arcsec": 0.00012586524462676607,
-          "planet_errors_arcsec": {
-            "Sun": 0.00016137721559061902,
-            "Moon": 0.00011749152690754272,
-            "Mercury": 0.00016274643712677062,
-            "Venus": 0.00014914763823981048,
-            "Mars": 5.3669964472646825e-06,
-            "Jupiter": 2.96693997370312e-05,
-            "Saturn": 0.00017429017589165596,
-            "Uranus": 7.719045242993161e-05,
-            "Neptune": 7.090484359650873e-05,
-            "Pluto": 8.669007911521476e-06,
-            "Rahu": 0.0001610628942216863,
-            "Ketu": 0.0001610628942216863
-          },
-          "cusp_errors_arcsec": {
-            "1": 6.236291483219247e-05,
-            "2": 7.503778078898904e-05,
-            "3": 8.301808520627674e-05,
-            "4": 3.5853713598044124e-05,
-            "5": 0.00012586524462676607,
-            "6": 3.698177124533686e-05,
-            "7": 6.236291483219247e-05,
-            "8": 7.503778078898904e-05,
-            "9": 8.301808520627674e-05,
-            "10": 3.5853713598044124e-05,
-            "11": 0.00012586514230861212,
-            "12": 3.698166892718291e-05
-          }
-        },
-        {
-          "id": "H2_newyork_1900",
-          "swetest_cmd": "/tmp/swetest_b3ie5b1c/swetest -edir/home/claude/ace-conv-verify -b1.1.1900 -ut00:00:00 -p0123456789m -eswe -sid5 -house-74.006,40.7128,P -fPl -g, -head",
-          "ayanamsa_value_deg": 22.36367812560286,
-          "provenance": {
-            "profile": "kp_krishnamurti",
-            "frame": "sidereal",
-            "ephemeris_mode": "swieph",
-            "house_system": "P",
-            "node_policy": "mean"
-          },
-          "max_planet_error_arcsec": 0.00017395723261870444,
-          "ascendant_error_arcsec": 0.00012188977507321397,
-          "max_cusp_error_arcsec": 0.000123310769595264,
-          "planet_errors_arcsec": {
-            "Sun": 0.0001576096565258922,
-            "Moon": 0.00010532160104048671,
-            "Mercury": 6.170009783090791e-05,
-            "Venus": 4.181026724836556e-05,
-            "Mars": 0.00011850202099594753,
-            "Jupiter": 8.74687202667701e-06,
-            "Saturn": 0.000139069709348405,
-            "Uranus": 0.00017395723261870444,
-            "Neptune": 5.377821707952535e-05,
-            "Pluto": 0.00015218730595734087,
-            "Rahu": 0.00011836859812319744,
-            "Ketu": 0.00011836859812319744
-          },
-          "cusp_errors_arcsec": {
-            "1": 0.00012188977507321397,
-            "2": 0.00011754452771128854,
-            "3": 5.637095910060452e-05,
-            "4": 0.00012331066727711004,
-            "5": 0.00010849100817722501,
-            "6": 8.170493401848944e-05,
-            "7": 0.00012188977507321397,
-            "8": 0.00011754452771128854,
-            "9": 5.637095910060452e-05,
-            "10": 0.000123310769595264,
-            "11": 0.00010849090585907106,
-            "12": 8.170472938218154e-05
-          }
-        },
-        {
-          "id": "H3_sydney_1946",
-          "swetest_cmd": "/tmp/swetest_b3ie5b1c/swetest -edir/home/claude/ace-conv-verify -b14.6.1946 -ut21:47:53 -p0123456789m -eswe -sid5 -house151.2093,-33.8688,P -fPl -g, -head",
-          "ayanamsa_value_deg": 23.012315390390427,
-          "provenance": {
-            "profile": "kp_krishnamurti",
-            "frame": "sidereal",
-            "ephemeris_mode": "swieph",
-            "house_system": "P",
-            "node_policy": "mean"
-          },
-          "max_planet_error_arcsec": 0.00016858552953635808,
-          "ascendant_error_arcsec": 0.00013255132671474712,
-          "max_cusp_error_arcsec": 0.00015798946151335258,
-          "planet_errors_arcsec": {
-            "Sun": 9.360924195789266e-05,
-            "Moon": 4.912550366498181e-05,
-            "Mercury": 2.3801453608029988e-05,
-            "Venus": 4.477790298551554e-05,
-            "Mars": 9.99228859654977e-05,
-            "Jupiter": 7.023680836937274e-05,
-            "Saturn": 2.9873012863390613e-05,
-            "Uranus": 0.00010270542816215311,
-            "Neptune": 2.4988753466459457e-05,
-            "Pluto": 0.00016858552953635808,
-            "Rahu": 0.00015544736697847839,
-            "Ketu": 0.00015544736697847839
-          },
-          "cusp_errors_arcsec": {
-            "1": 0.00013255132671474712,
-            "2": 0.00015798935919519863,
-            "3": 9.006893151308759e-05,
-            "4": 0.0001443117753296974,
-            "5": 0.0001311603114118043,
-            "6": 0.00011504581607368891,
-            "7": 0.00013255142903290107,
-            "8": 0.00015798946151335258,
-            "9": 9.006882919493364e-05,
-            "10": 0.0001443117753296974,
-            "11": 0.00013116041372995824,
-            "12": 0.00011504591839184286
-          }
-        },
-        {
-          "id": "H4_delhi_1979",
-          "swetest_cmd": "/tmp/swetest_b3ie5b1c/swetest -edir/home/claude/ace-conv-verify -b11.11.1979 -ut17:41:37 -p0123456789m -eswe -sid5 -house77.2167,28.6667,P -fPl -g, -head",
-          "ayanamsa_value_deg": 23.478933469467563,
-          "provenance": {
-            "profile": "kp_krishnamurti",
-            "frame": "sidereal",
-            "ephemeris_mode": "swieph",
-            "house_system": "P",
-            "node_policy": "mean"
-          },
-          "max_planet_error_arcsec": 0.00017772080127542722,
-          "ascendant_error_arcsec": 1.649634668865474e-05,
-          "max_cusp_error_arcsec": 0.00015430130133609055,
-          "planet_errors_arcsec": {
-            "Sun": 0.00017772080127542722,
-            "Moon": 3.800730610237224e-05,
-            "Mercury": 5.8300474847783335e-05,
-            "Venus": 1.5005059594841441e-05,
-            "Mars": 1.9154776964569464e-05,
-            "Jupiter": 1.7613149339013034e-05,
-            "Saturn": 4.6907450723665534e-05,
-            "Uranus": 5.675976808561245e-05,
-            "Neptune": 2.680899342522025e-05,
-            "Pluto": 3.434032578297774e-05,
-            "Rahu": 0.00015118029068617034,
-            "Ketu": 0.0001511803930043243
-          },
-          "cusp_errors_arcsec": {
-            "1": 1.649634668865474e-05,
-            "2": 8.2865733475046e-05,
-            "3": 6.872904805277358e-05,
-            "4": 0.00015430130133609055,
-            "5": 0.0001224077095685061,
-            "6": 6.422121714422246e-05,
-            "7": 1.649655132496264e-05,
-            "8": 8.286563115689205e-05,
-            "9": 6.872894573461963e-05,
-            "10": 0.00015430130133609055,
-            "11": 0.0001224077095685061,
-            "12": 6.422131946237641e-05
-          }
-        },
-        {
-          "id": "H5_reykjavik_1992",
-          "swetest_cmd": "/tmp/swetest_b3ie5b1c/swetest -edir/home/claude/ace-conv-verify -b29.2.1992 -ut23:59:59 -p0123456789m -eswe -sid5 -house-21.9426,64.1466,P -fPl -g, -head",
-          "ayanamsa_value_deg": 23.650766439156826,
-          "provenance": {
-            "profile": "kp_krishnamurti",
-            "frame": "sidereal",
-            "ephemeris_mode": "swieph",
-            "house_system": "P",
-            "node_policy": "mean"
-          },
-          "max_planet_error_arcsec": 0.00017942695649253437,
-          "ascendant_error_arcsec": 2.697249783523148e-05,
-          "max_cusp_error_arcsec": 0.00010950426485578646,
-          "planet_errors_arcsec": {
-            "Sun": 0.00013199696695664898,
-            "Moon": 6.476923317677574e-05,
-            "Mercury": 0.00017942695649253437,
-            "Venus": 1.2885743672086392e-05,
-            "Mars": 8.92889602255309e-05,
-            "Jupiter": 1.9085507574345684e-05,
-            "Saturn": 0.0001304353872910724,
-            "Uranus": 0.00015045802683744114,
-            "Neptune": 5.513986707228469e-05,
-            "Pluto": 0.0001350031766378379,
-            "Rahu": 8.58096314004797e-05,
-            "Ketu": 8.580973371863365e-05
-          },
-          "cusp_errors_arcsec": {
-            "1": 2.697249783523148e-05,
-            "2": 0.00010950426485578646,
-            "3": 1.9661251826619264e-05,
-            "4": 6.605537237192038e-05,
-            "5": 9.709481219033478e-05,
-            "6": 8.007377800822724e-05,
-            "7": 2.697239551707753e-05,
-            "8": 0.00010950426485578646,
-            "9": 1.9661251826619264e-05,
-            "10": 6.605516773561249e-05,
-            "11": 9.709501682664268e-05,
-            "12": 8.007367569007329e-05
-          }
-        },
-        {
-          "id": "H6_quito_2010",
-          "swetest_cmd": "/tmp/swetest_b3ie5b1c/swetest -edir/home/claude/ace-conv-verify -b21.7.2010 -ut05:05:05 -p0123456789m -eswe -sid5 -house-78.4678,-0.1807,P -fPl -g, -head",
-          "ayanamsa_value_deg": 23.90762755501072,
-          "provenance": {
-            "profile": "kp_krishnamurti",
-            "frame": "sidereal",
-            "ephemeris_mode": "swieph",
-            "house_system": "P",
-            "node_policy": "mean"
-          },
-          "max_planet_error_arcsec": 0.000161006823873322,
-          "ascendant_error_arcsec": 0.00016777885321062058,
-          "max_cusp_error_arcsec": 0.00016777895552877453,
-          "planet_errors_arcsec": {
-            "Sun": 0.00012903567494504387,
-            "Moon": 2.1315327103366144e-05,
-            "Mercury": 4.806528295375756e-05,
-            "Venus": 9.44735234043037e-05,
-            "Mars": 3.6633787203754764e-05,
-            "Jupiter": 0.00012260845778655494,
-            "Saturn": 2.813166020132485e-05,
-            "Uranus": 3.2539423955313396e-05,
-            "Neptune": 0.000161006823873322,
-            "Pluto": 0.00012055462548232754,
-            "Rahu": 3.1590525395586155e-05,
-            "Ketu": 3.1590525395586155e-05
-          },
-          "cusp_errors_arcsec": {
-            "1": 0.00016777885321062058,
-            "2": 3.848175538223586e-05,
-            "3": 4.5264323489391245e-05,
-            "4": 0.00010319256489310646,
-            "5": 0.00011853200021505472,
-            "6": 0.00013592741652246332,
-            "7": 0.00016777895552877453,
-            "8": 3.848175538223586e-05,
-            "9": 4.5264323489391245e-05,
-            "10": 0.00010319256489310646,
-            "11": 0.00011853210253320867,
-            "12": 0.00013592721188615542
-          }
-        },
-        {
-          "id": "H7_tokyo_2033",
-          "swetest_cmd": "/tmp/swetest_b3ie5b1c/swetest -edir/home/claude/ace-conv-verify -b3.9.2033 -ut11:11:11 -p0123456789m -eswe -sid5 -house139.6503,35.6762,P -fPl -g, -head",
-          "ayanamsa_value_deg": 24.230645260486767,
-          "provenance": {
-            "profile": "kp_krishnamurti",
-            "frame": "sidereal",
-            "ephemeris_mode": "swieph",
-            "house_system": "P",
-            "node_policy": "mean"
-          },
-          "max_planet_error_arcsec": 0.00017068642819140223,
-          "ascendant_error_arcsec": 7.382080866591423e-05,
-          "max_cusp_error_arcsec": 0.00016316635083057918,
-          "planet_errors_arcsec": {
-            "Sun": 8.086152547548409e-05,
-            "Moon": 0.00013676765320269624,
-            "Mercury": 0.00017068642819140223,
-            "Venus": 3.1067065719980747e-05,
-            "Mars": 0.00010246129704682971,
-            "Jupiter": 0.000114195449896215,
-            "Saturn": 6.236762146727415e-05,
-            "Uranus": 7.256239769048989e-05,
-            "Neptune": 3.485836259642383e-05,
-            "Pluto": 3.6326218832982704e-05,
-            "Rahu": 0.00017052885823432007,
-            "Ketu": 0.00017052896055247402
-          },
-          "cusp_errors_arcsec": {
-            "1": 7.382080866591423e-05,
-            "2": 3.1110243980947416e-05,
-            "3": 0.00010962326086882968,
-            "4": 0.00016316635083057918,
-            "5": 6.942491381778382e-05,
-            "6": 0.0001431868895451771,
-            "7": 7.382080866591423e-05,
-            "8": 3.1110243980947416e-05,
-            "9": 0.00010962326086882968,
-            "10": 0.00016316635083057918,
-            "11": 6.942470918147592e-05,
-            "12": 0.0001431866849088692
-          }
-        },
-        {
-          "id": "H8_mumbai_2077",
-          "swetest_cmd": "/tmp/swetest_b3ie5b1c/swetest -edir/home/claude/ace-conv-verify -b3.12.2077 -ut14:30:27 -p0123456789m -eswe -sid5 -house72.8777,19.076,P -fPl -g, -head",
-          "ayanamsa_value_deg": 24.84891320338079,
-          "provenance": {
-            "profile": "kp_krishnamurti",
-            "frame": "sidereal",
-            "ephemeris_mode": "swieph",
-            "house_system": "P",
-            "node_policy": "mean"
-          },
-          "max_planet_error_arcsec": 0.00017663326161709847,
-          "ascendant_error_arcsec": 5.888655323360581e-05,
-          "max_cusp_error_arcsec": 0.00015761988834128715,
-          "planet_errors_arcsec": {
-            "Sun": 8.569595593144186e-05,
-            "Moon": 2.430915628792718e-05,
-            "Mercury": 6.847898248452111e-05,
-            "Venus": 2.1460925836436218e-05,
-            "Mars": 6.96907363817445e-05,
-            "Jupiter": 4.175051344645908e-05,
-            "Saturn": 0.000150265975662478,
-            "Uranus": 0.00017663326161709847,
-            "Neptune": 0.00011325146260787733,
-            "Pluto": 9.563882485963404e-06,
-            "Rahu": 8.678441645315615e-05,
-            "Ketu": 8.678441645315615e-05
-          },
-          "cusp_errors_arcsec": {
-            "1": 5.888655323360581e-05,
-            "2": 7.520814051531488e-05,
-            "3": 1.2518012226792052e-05,
-            "4": 0.00015761988834128715,
-            "5": 0.00012204724271214218,
-            "6": 0.00011497419336592429,
-            "7": 5.888655323360581e-05,
-            "8": 7.520814051531488e-05,
-            "9": 1.2518216863099951e-05,
-            "10": 0.00015761988834128715,
-            "11": 0.00012204734503029613,
-            "12": 0.00011497429568407824
-          }
-        },
-        {
-          "id": "H9_paris_2350",
-          "swetest_cmd": "/tmp/swetest_b3ie5b1c/swetest -edir/home/claude/ace-conv-verify -b15.1.2350 -ut06:06:06 -p0123456789m -eswe -sid5 -house2.3522,48.8566,P -fPl -g, -head",
-          "ayanamsa_value_deg": 28.653540272249757,
-          "provenance": {
-            "profile": "kp_krishnamurti",
-            "frame": "sidereal",
-            "ephemeris_mode": "swieph",
-            "house_system": "P",
-            "node_policy": "mean"
-          },
-          "max_planet_error_arcsec": 0.00015478874502150575,
-          "ascendant_error_arcsec": 8.535544111509807e-05,
-          "max_cusp_error_arcsec": 0.0001761963630997343,
-          "planet_errors_arcsec": {
-            "Sun": 0.00015478874502150575,
-            "Moon": 0.00010959604423987912,
-            "Mercury": 6.458321877289563e-07,
-            "Venus": 6.388643214449985e-05,
-            "Mars": 0.00011691834060911788,
-            "Jupiter": 0.00012507555311458418,
-            "Saturn": 4.380854079499841e-05,
-            "Uranus": 8.129463822115213e-05,
-            "Neptune": 0.00012684299690590706,
-            "Pluto": 1.0455892152094748e-05,
-            "Rahu": 0.00015158700534811942,
-            "Ketu": 0.00015158680071181152
-          },
-          "cusp_errors_arcsec": {
-            "1": 8.535544111509807e-05,
-            "2": 0.00010272844974679174,
-            "3": 0.00015846278529352276,
-            "4": 9.013594990392448e-05,
-            "5": 0.00016945891729847062,
-            "6": 0.0001761963630997343,
-            "7": 8.535544111509807e-05,
-            "8": 0.00010272855206494569,
-            "9": 0.0001584624783390609,
-            "10": 9.013615454023238e-05,
-            "11": 0.00016945901961662457,
-            "12": 0.0001761963630997343
-          }
-        },
-        {
-          "id": "H10_boundary_moon_a",
-          "swetest_cmd": "/tmp/swetest_b3ie5b1c/swetest -edir/home/claude/ace-conv-verify -b1.3.2025 -ut16:21:00 -p0123456789m -eswe -sid5 -house77.2167,28.6667,P -fPl -g, -head",
-          "ayanamsa_value_deg": 24.111773554968806,
-          "provenance": {
-            "profile": "kp_krishnamurti",
-            "frame": "sidereal",
-            "ephemeris_mode": "swieph",
-            "house_system": "P",
-            "node_policy": "mean"
-          },
-          "max_planet_error_arcsec": 0.0001013663904814166,
-          "ascendant_error_arcsec": 2.7104795208288124e-05,
-          "max_cusp_error_arcsec": 0.00014730857174072298,
-          "planet_errors_arcsec": {
-            "Sun": 0.0001013663904814166,
-            "Moon": 9.78405068963184e-05,
-            "Mercury": 8.60072077557561e-05,
-            "Venus": 6.08385789746535e-05,
-            "Mars": 2.52809741141391e-05,
-            "Jupiter": 3.2560706131334882e-06,
-            "Saturn": 8.232866548496531e-05,
-            "Uranus": 6.602897428820143e-05,
-            "Neptune": 8.27060148367309e-05,
-            "Pluto": 7.506919246225152e-05,
-            "Rahu": 1.607418198545929e-06,
-            "Ketu": 1.6072135622380301e-06
-          },
-          "cusp_errors_arcsec": {
-            "1": 2.7104795208288124e-05,
-            "2": 7.702664106545853e-05,
-            "3": 0.00014730857174072298,
-            "4": 9.245570709026651e-05,
-            "5": 0.00011062536486861063,
-            "6": 0.00011564304713829188,
-            "7": 2.7104897526442073e-05,
-            "8": 7.702664106545853e-05,
-            "9": 0.00014730857174072298,
-            "10": 9.245550245395862e-05,
-            "11": 0.00011062526255045668,
-            "12": 0.00011564335409275373
-          },
-          "moon_boundary_check": {
-            "engine": {
-              "longitude": 339.88884032717795,
-              "nakshatra": 26,
-              "nakshatra_pada": 2
-            },
-            "exact_reference_on_swetest_moon": {
-              "nakshatra": 26,
-              "nakshatra_pada": 2
-            },
-            "agrees": true
-          }
-        },
-        {
-          "id": "H11_boundary_moon_b",
-          "swetest_cmd": "/tmp/swetest_b3ie5b1c/swetest -edir/home/claude/ace-conv-verify -b2.3.2025 -ut11:38:00 -p0123456789m -eswe -sid5 -house77.2167,28.6667,P -fPl -g, -head",
-          "ayanamsa_value_deg": 24.111804286931147,
-          "provenance": {
-            "profile": "kp_krishnamurti",
-            "frame": "sidereal",
-            "ephemeris_mode": "swieph",
-            "house_system": "P",
-            "node_policy": "mean"
-          },
-          "max_planet_error_arcsec": 0.00015812267974979477,
-          "ascendant_error_arcsec": 0.0001306538365497545,
-          "max_cusp_error_arcsec": 0.00015673483630962437,
-          "planet_errors_arcsec": {
-            "Sun": 0.0001211700691783335,
-            "Moon": 0.00010833527994691394,
-            "Mercury": 0.00010963308341160882,
-            "Venus": 4.594944584823679e-05,
-            "Mars": 3.228710738767404e-05,
-            "Jupiter": 7.963442385516828e-05,
-            "Saturn": 0.00015812267974979477,
-            "Uranus": 2.6638940653356258e-05,
-            "Neptune": 5.414676707005128e-05,
-            "Pluto": 0.00014397903669305379,
-            "Rahu": 3.727654984686524e-05,
-            "Ketu": 3.727654984686524e-05
-          },
-          "cusp_errors_arcsec": {
-            "1": 0.0001306538365497545,
-            "2": 0.00010710746209952049,
-            "3": 0.00010815786026796559,
-            "4": 0.00015673483630962437,
-            "5": 8.454017006442882e-05,
-            "6": 0.00010357687187934062,
-            "7": 0.00013065393886790844,
-            "8": 0.00010710746209952049,
-            "9": 0.00010815806490427349,
-            "10": 0.00015673473399147042,
-            "11": 8.454017006442882e-05,
-            "12": 0.00010357687187934062
-          },
-          "moon_boundary_check": {
-            "engine": {
-              "longitude": 351.7832555699069,
-              "nakshatra": 27,
-              "nakshatra_pada": 2
-            },
-            "exact_reference_on_swetest_moon": {
-              "nakshatra": 27,
-              "nakshatra_pada": 2
-            },
-            "agrees": true
-          }
-        }
-      ],
-      "max_planet_error_arcsec": 0.00017942695649253437,
-      "max_ascendant_error_arcsec": 0.00016777885321062058,
-      "max_cusp_error_arcsec": 0.0001761963630997343,
-      "planet_comparisons": 132,
-      "cusp_comparisons": 132
+    {
+     "id": "H2_newyork_1900",
+     "swetest_cmd": "/tmp/swetest_vszletsm/swetest -edir/home/claude/ace -b1.1.1900 -ut00:00:00 -p0123456789m -eswe -sid1 -house-74.006,40.7128,P -fPl -g, -head",
+     "ayanamsa_value_deg": 22.46053059240471,
+     "provenance": {
+      "profile": "parashari_lahiri",
+      "frame": "sidereal",
+      "ephemeris_mode": "swieph",
+      "house_system": "P",
+      "node_policy": "mean"
+     },
+     "max_planet_error_arcsec": 0.0001732915507091093,
+     "ascendant_error_arcsec": 2.3764414436300285e-06,
+     "max_cusp_error_arcsec": 0.00017588449736649636,
+     "planet_errors_arcsec": {
+      "Sun": 8.287709079013439e-05,
+      "Moon": 0.00013516504395738593,
+      "Mercury": 5.781354275313788e-05,
+      "Venus": 0.0001613236008779495,
+      "Mars": 0.00012198452168377116,
+      "Jupiter": 0.00011076646160290693,
+      "Saturn": 0.00010141683333131368,
+      "Uranus": 6.652941237916821e-05,
+      "Neptune": 0.0001732915507091093,
+      "Pluto": 3.267387000960298e-05,
+      "Rahu": 0.0001221178422383673,
+      "Ketu": 0.00012211794455652125
+     },
+     "cusp_errors_arcsec": {
+      "1": 2.3764414436300285e-06,
+      "2": 0.00012294201496843016,
+      "3": 0.00017588449736649636,
+      "4": 0.00011717587540260865,
+      "5": 1.1022530088666826e-05,
+      "6": 0.00015878181329753716,
+      "7": 2.3764414436300285e-06,
+      "8": 0.00012294221960473806,
+      "9": 0.00017588429273018846,
+      "10": 0.00011717587540260865,
+      "11": 1.1022530088666826e-05,
+      "12": 0.00015878181329753716
+     }
+    },
+    {
+     "id": "H3_sydney_1946",
+     "swetest_cmd": "/tmp/swetest_vszletsm/swetest -edir/home/claude/ace -b14.6.1946 -ut21:47:53 -p0123456789m -eswe -sid1 -house151.2093,-33.8688,P -fPl -g, -head",
+     "ayanamsa_value_deg": 23.109167777659305,
+     "provenance": {
+      "profile": "parashari_lahiri",
+      "frame": "sidereal",
+      "ephemeris_mode": "swieph",
+      "house_system": "P",
+      "node_policy": "mean"
+     },
+     "max_planet_error_arcsec": 0.00015872062704147538,
+     "ascendant_error_arcsec": 8.67191374709364e-05,
+     "max_cusp_error_arcsec": 0.00016087810763565358,
+     "planet_errors_arcsec": {
+      "Sun": 0.00013944132888354943,
+      "Moon": 3.293416739325039e-06,
+      "Mercury": 2.203053099947283e-05,
+      "Venus": 1.054183940141229e-06,
+      "Mars": 5.409090135799488e-05,
+      "Jupiter": 0.00011606879297687556,
+      "Saturn": 7.570499747089343e-05,
+      "Uranus": 5.6873341236496344e-05,
+      "Neptune": 2.084333345919731e-05,
+      "Pluto": 0.00014558236216544174,
+      "Rahu": 0.00015872062704147538,
+      "Ketu": 0.00015872052472332143
+     },
+     "cusp_errors_arcsec": {
+      "1": 8.67191374709364e-05,
+      "2": 0.00015617843018844724,
+      "3": 4.4236742269276874e-05,
+      "4": 9.84795860858867e-05,
+      "5": 8.532812216799357e-05,
+      "6": 0.00016087810763565358,
+      "7": 8.671923978909035e-05,
+      "8": 0.00015617843018844724,
+      "9": 4.4236639951122925e-05,
+      "10": 9.84795860858867e-05,
+      "11": 8.532812216799357e-05,
+      "12": 0.00016087810763565358
+     }
+    },
+    {
+     "id": "H4_delhi_1979",
+     "swetest_cmd": "/tmp/swetest_vszletsm/swetest -edir/home/claude/ace -b11.11.1979 -ut17:41:37 -p0123456789m -eswe -sid1 -house77.2167,28.6667,P -fPl -g, -head",
+     "ayanamsa_value_deg": 23.57578580839362,
+     "provenance": {
+      "profile": "parashari_lahiri",
+      "frame": "sidereal",
+      "ephemeris_mode": "swieph",
+      "house_system": "P",
+      "node_policy": "mean"
+     },
+     "max_planet_error_arcsec": 0.00017814112425185158,
+     "ascendant_error_arcsec": 0.00012363736914267065,
+     "max_cusp_error_arcsec": 0.00015564514797006268,
+     "planet_errors_arcsec": {
+      "Sun": 4.2145359202550026e-05,
+      "Moon": 0.00017814112425185158,
+      "Mercury": 8.1833343301696e-05,
+      "Venus": 0.00015513887774432078,
+      "Mars": 0.00015928869743220275,
+      "Jupiter": 0.00015774706980664632,
+      "Saturn": 9.32263674258138e-05,
+      "Uranus": 0.00016310649471051875,
+      "Neptune": 0.00016694291389285354,
+      "Pluto": 0.00017447424625061103,
+      "Rahu": 6.868586979180691e-05,
+      "Ketu": 6.868576747365296e-05
+     },
+     "cusp_errors_arcsec": {
+      "1": 0.00012363736914267065,
+      "2": 5.726808467443334e-05,
+      "3": 0.00015113711242520367,
+      "4": 6.55648591418867e-05,
+      "5": 9.745845090947114e-05,
+      "6": 0.00015564514797006268,
+      "7": 0.00012363716450636275,
+      "8": 5.726808467443334e-05,
+      "9": 0.00015113721474335762,
+      "10": 6.556496146004065e-05,
+      "11": 9.745845090947114e-05,
+      "12": 0.00015564484101560083
+     }
+    },
+    {
+     "id": "H5_reykjavik_1992",
+     "swetest_cmd": "/tmp/swetest_vszletsm/swetest -edir/home/claude/ace -b29.2.1992 -ut23:59:59 -p0123456789m -eswe -sid1 -house-21.9426,64.1466,P -fPl -g, -head",
+     "ayanamsa_value_deg": 23.7476187621574,
+     "provenance": {
+      "profile": "parashari_lahiri",
+      "frame": "sidereal",
+      "ephemeris_mode": "swieph",
+      "house_system": "P",
+      "node_policy": "mean"
+     },
+     "max_planet_error_arcsec": 0.00016861172298376914,
+     "ascendant_error_arcsec": 5.582959374805796e-05,
+     "max_cusp_error_arcsec": 0.00016287597190967062,
+     "planet_errors_arcsec": {
+      "Sun": 0.00014520112472382607,
+      "Moon": 0.00014757142707821913,
+      "Mercury": 9.777093055163277e-05,
+      "Venus": 6.9916450229357e-05,
+      "Mars": 6.486970960395411e-06,
+      "Jupiter": 0.00010188770147578907,
+      "Saturn": 4.763339802593691e-05,
+      "Uranus": 0.0001267400648430339,
+      "Neptune": 0.00013794185633742018,
+      "Pluto": 0.00014219471040632925,
+      "Rahu": 0.00016861172298376914,
+      "Ketu": 0.00016861172298376914
+     },
+     "cusp_errors_arcsec": {
+      "1": 5.582959374805796e-05,
+      "2": 2.670217327249702e-05,
+      "3": 6.314083975667018e-05,
+      "4": 0.00014885736163705587,
+      "5": 1.4292822925199289e-05,
+      "6": 0.00016287597190967062,
+      "7": 5.582969606621191e-05,
+      "8": 2.670217327249702e-05,
+      "9": 6.314083975667018e-05,
+      "10": 0.00014885715700074797,
+      "11": 1.4292925243353238e-05,
+      "12": 0.00016287576727336273
+     }
+    },
+    {
+     "id": "H6_quito_2010",
+     "swetest_cmd": "/tmp/swetest_vszletsm/swetest -edir/home/claude/ace -b21.7.2010 -ut05:05:05 -p0123456789m -eswe -sid1 -house-78.4678,-0.1807,P -fPl -g, -head",
+     "ayanamsa_value_deg": 24.004479856093212,
+     "provenance": {
+      "profile": "parashari_lahiri",
+      "frame": "sidereal",
+      "ephemeris_mode": "swieph",
+      "house_system": "P",
+      "node_policy": "mean"
+     },
+     "max_planet_error_arcsec": 0.00015710973002569517,
+     "ascendant_error_arcsec": 0.0001638818616811477,
+     "max_cusp_error_arcsec": 0.00016388196399930166,
+     "planet_errors_arcsec": {
+      "Sun": 0.0001329325641563628,
+      "Moon": 2.5212318632839015e-05,
+      "Mercury": 5.196227448323043e-05,
+      "Venus": 9.057653187483083e-05,
+      "Mars": 4.0530676415073685e-05,
+      "Jupiter": 0.00011871136393892812,
+      "Saturn": 2.4234668671851978e-05,
+      "Uranus": 3.6436517802940216e-05,
+      "Neptune": 0.00015710973002569517,
+      "Pluto": 0.00011665753163470072,
+      "Rahu": 2.7693431547959335e-05,
+      "Ketu": 2.7693431547959335e-05
+     },
+     "cusp_errors_arcsec": {
+      "1": 0.0001638818616811477,
+      "2": 4.237874691170873e-05,
+      "3": 4.1367331959918374e-05,
+      "4": 0.00010708955642257934,
+      "5": 0.00011463500868558185,
+      "6": 0.00013982430573378224,
+      "7": 0.00016388196399930166,
+      "8": 4.237874691170873e-05,
+      "9": 4.1367331959918374e-05,
+      "10": 0.00010708965874073328,
+      "11": 0.00011463500868558185,
+      "12": 0.00013982410109747434
+     }
+    },
+    {
+     "id": "H7_tokyo_2033",
+     "swetest_cmd": "/tmp/swetest_vszletsm/swetest -edir/home/claude/ace -b3.9.2033 -ut11:11:11 -p0123456789m -eswe -sid1 -house139.6503,35.6762,P -fPl -g, -head",
+     "ayanamsa_value_deg": 24.327497537222655,
+     "provenance": {
+      "profile": "parashari_lahiri",
+      "frame": "sidereal",
+      "ephemeris_mode": "swieph",
+      "house_system": "P",
+      "node_policy": "mean"
+     },
+     "max_planet_error_arcsec": 0.00016461231098219287,
+     "ascendant_error_arcsec": 9.929976840794552e-06,
+     "max_cusp_error_arcsec": 0.0001330625082118786,
+     "planet_errors_arcsec": {
+      "Sun": 0.00016461231098219287,
+      "Moon": 5.301697001414141e-05,
+      "Mercury": 0.00010556266261119163,
+      "Venus": 0.00011481795354484348,
+      "Mars": 1.8710613858274883e-05,
+      "Jupiter": 0.0001620537432245328,
+      "Saturn": 0.00014611840697398293,
+      "Uranus": 0.00015631328551535262,
+      "Neptune": 0.00011860904578497866,
+      "Pluto": 4.742446435557213e-05,
+      "Rahu": 0.00010572033488642774,
+      "Ketu": 0.00010572043720458169
+     },
+     "cusp_errors_arcsec": {
+      "1": 9.929976840794552e-06,
+      "2": 0.0001148610294876562,
+      "3": 2.5872475362120895e-05,
+      "4": 0.00011308284229016863,
+      "5": 1.4325974007078912e-05,
+      "6": 0.0001330623035755707,
+      "7": 9.930079158948502e-06,
+      "8": 0.0001148610294876562,
+      "9": 2.5872475362120895e-05,
+      "10": 0.00011308284229016863,
+      "11": 1.4325974007078912e-05,
+      "12": 0.0001330625082118786
+     }
+    },
+    {
+     "id": "H8_mumbai_2077",
+     "swetest_cmd": "/tmp/swetest_vszletsm/swetest -edir/home/claude/ace -b3.12.2077 -ut14:30:27 -p0123456789m -eswe -sid1 -house72.8777,19.076,P -fPl -g, -head",
+     "ayanamsa_value_deg": 24.945765443532764,
+     "provenance": {
+      "profile": "parashari_lahiri",
+      "frame": "sidereal",
+      "ephemeris_mode": "swieph",
+      "house_system": "P",
+      "node_policy": "mean"
+     },
+     "max_planet_error_arcsec": 0.00016885626337170834,
+     "ascendant_error_arcsec": 0.00015656642062822357,
+     "max_cusp_error_arcsec": 0.00015656642062822357,
+     "planet_errors_arcsec": {
+      "Sun": 5.88511511523393e-05,
+      "Moon": 0.00016885626337170834,
+      "Mercury": 0.00014697378674100037,
+      "Venus": 0.00016600803292021737,
+      "Mars": 7.485637070203666e-05,
+      "Jupiter": 0.00010279659363732208,
+      "Saturn": 6.518679356304347e-05,
+      "Uranus": 3.881950760842301e-05,
+      "Neptune": 0.00010220151125395205,
+      "Pluto": 0.00013498342923412565,
+      "Rahu": 0.00012866835277236532,
+      "Ketu": 0.00012866845509051927
+     },
+     "cusp_errors_arcsec": {
+      "1": 0.00015656642062822357,
+      "2": 0.00014024473102836055,
+      "3": 0.0001320290948569891,
+      "4": 1.3072781257505994e-05,
+      "5": 2.2499864371638978e-05,
+      "6": 0.00010047878049590508,
+      "7": 0.00015656642062822357,
+      "8": 0.0001402448333465145,
+      "9": 0.0001320288902206812,
+      "10": 1.3072781257505994e-05,
+      "11": 2.249976205348503e-05,
+      "12": 0.00010047867817775114
+     }
+    },
+    {
+     "id": "H9_paris_2350",
+     "swetest_cmd": "/tmp/swetest_vszletsm/swetest -edir/home/claude/ace -b15.1.2350 -ut06:06:06 -p0123456789m -eswe -sid1 -house2.3522,48.8566,P -fPl -g, -head",
+     "ayanamsa_value_deg": 28.75039257821544,
+     "provenance": {
+      "profile": "parashari_lahiri",
+      "frame": "sidereal",
+      "ephemeris_mode": "swieph",
+      "house_system": "P",
+      "node_policy": "mean"
+     },
+     "max_planet_error_arcsec": 0.00013331236914382316,
+     "ascendant_error_arcsec": 0.00010683191931093461,
+     "max_cusp_error_arcsec": 0.00016906458313314943,
+     "planet_errors_arcsec": {
+      "Sun": 0.00013331236914382316,
+      "Moon": 8.811946372588864e-05,
+      "Mercury": 2.0830748326261528e-05,
+      "Venus": 4.2409851630509365e-05,
+      "Mars": 9.544196473143529e-05,
+      "Jupiter": 0.0001035989726005937,
+      "Saturn": 2.2332164917315822e-05,
+      "Uranus": 5.981805770716164e-05,
+      "Neptune": 0.00010536682566453237,
+      "Pluto": 1.1020586043741787e-05,
+      "Rahu": 0.00013011052715228288,
+      "Ketu": 0.00013011062947043683
+     },
+     "cusp_errors_arcsec": {
+      "1": 0.00010683191931093461,
+      "2": 0.00012420503026078222,
+      "3": 0.00013698620477953227,
+      "4": 0.00011161242809976102,
+      "5": 0.00016906458313314943,
+      "6": 0.00015471988490389776,
+      "7": 0.00010683191931093461,
+      "8": 0.00012420503026078222,
+      "9": 0.00013698610246137832,
+      "10": 0.00011161253041791497,
+      "11": 0.00016906448081499548,
+      "12": 0.00015471988490389776
+     }
+    },
+    {
+     "id": "H10_boundary_moon_a",
+     "swetest_cmd": "/tmp/swetest_vszletsm/swetest -edir/home/claude/ace -b1.3.2025 -ut16:21:00 -p0123456789m -eswe -sid1 -house77.2167,28.6667,P -fPl -g, -head",
+     "ayanamsa_value_deg": 24.208625840247237,
+     "provenance": {
+      "profile": "parashari_lahiri",
+      "frame": "sidereal",
+      "ephemeris_mode": "swieph",
+      "house_system": "P",
+      "node_policy": "mean"
+     },
+     "max_planet_error_arcsec": 0.0001543641246826155,
+     "ascendant_error_arcsec": 8.010242709133308e-05,
+     "max_cusp_error_arcsec": 0.00016362289443350164,
+     "planet_errors_arcsec": {
+      "Sun": 0.0001543641246826155,
+      "Moon": 0.0001508382410975173,
+      "Mercury": 0.000139004941956955,
+      "Venus": 7.84104940976249e-06,
+      "Mars": 2.771665776890586e-05,
+      "Jupiter": 5.625370249617845e-05,
+      "Saturn": 2.9330726647458505e-05,
+      "Uranus": 0.00011902660617124639,
+      "Neptune": 0.0001357037490379298,
+      "Pluto": 2.207166289736051e-05,
+      "Rahu": 5.139031600265298e-05,
+      "Ketu": 5.139031600265298e-05
+     },
+     "cusp_errors_arcsec": {
+      "1": 8.010242709133308e-05,
+      "2": 0.0001300242729485035,
+      "3": 9.431093985767802e-05,
+      "4": 0.00014545344129146542,
+      "5": 0.00016362289443350164,
+      "6": 6.264551757340087e-05,
+      "7": 8.010252940948703e-05,
+      "8": 0.0001300242729485035,
+      "9": 9.431093985767802e-05,
+      "10": 0.00014545323665515753,
+      "11": 0.00016362289443350164,
+      "12": 6.264572220970877e-05
+     },
+     "moon_boundary_check": {
+      "engine": {
+       "longitude": 339.7919880418995,
+       "nakshatra": 26,
+       "nakshatra_pada": 2
+      },
+      "exact_reference_on_swetest_moon": {
+       "nakshatra": 26,
+       "nakshatra_pada": 2
+      },
+      "agrees": true
+     }
+    },
+    {
+     "id": "H11_boundary_moon_b",
+     "swetest_cmd": "/tmp/swetest_vszletsm/swetest -edir/home/claude/ace -b2.3.2025 -ut11:38:00 -p0123456789m -eswe -sid1 -house77.2167,28.6667,P -fPl -g, -head",
+     "ayanamsa_value_deg": 24.208656572207303,
+     "provenance": {
+      "profile": "parashari_lahiri",
+      "frame": "sidereal",
+      "ephemeris_mode": "swieph",
+      "house_system": "P",
+      "node_policy": "mean"
+     },
+     "max_planet_error_arcsec": 0.00016301512459904188,
+     "ascendant_error_arcsec": 0.00017634032474234118,
+     "max_cusp_error_arcsec": 0.00017634042706049513,
+     "planet_errors_arcsec": {
+      "Sun": 6.816394488851074e-05,
+      "Moon": 5.532936029339908e-05,
+      "Mercury": 0.0001626387984288158,
+      "Venus": 9.895495622913586e-05,
+      "Mars": 8.529292472303496e-05,
+      "Jupiter": 2.6628606519807363e-05,
+      "Saturn": 0.0001051167600962799,
+      "Uranus": 2.636687668200466e-05,
+      "Neptune": 1.1410520528443158e-06,
+      "Pluto": 0.00016301512459904188,
+      "Rahu": 9.0282674136688e-05,
+      "Ketu": 9.02822648640722e-05
+     },
+     "cusp_errors_arcsec": {
+      "1": 0.00017634032474234118,
+      "2": 5.410164476415957e-05,
+      "3": 5.515204293260467e-05,
+      "4": 0.0001037289166561095,
+      "5": 3.1534352729067905e-05,
+      "6": 0.00015658258689654758,
+      "7": 0.00017634042706049513,
+      "8": 5.410174708231352e-05,
+      "9": 5.515194061445072e-05,
+      "10": 0.0001037289166561095,
+      "11": 3.1534250410913955e-05,
+      "12": 0.00015658268921470153
+     },
+     "moon_boundary_check": {
+      "engine": {
+       "longitude": 351.6864032846307,
+       "nakshatra": 27,
+       "nakshatra_pada": 2
+      },
+      "exact_reference_on_swetest_moon": {
+       "nakshatra": 27,
+       "nakshatra_pada": 2
+      },
+      "agrees": true
+     }
     }
+   ],
+   "max_planet_error_arcsec": 0.00017814112425185158,
+   "max_ascendant_error_arcsec": 0.00017634032474234118,
+   "max_cusp_error_arcsec": 0.0001795366415535682,
+   "planet_comparisons": 132,
+   "cusp_comparisons": 132
   },
-  "ayanamsa_profile_check": {
-    "lahiri_value_deg_H1": 21.389647504999317,
-    "krishnamurti_value_deg_H1": 21.29279487571442,
-    "difference_arcmin": 5.811157757093781,
-    "expected_band_arcmin": [
-      3.0,
-      10.0
-    ]
-  },
-  "summary": {
-    "cases_per_profile": 11,
-    "profiles_certified": [
-      "parashari_lahiri",
-      "kp_krishnamurti"
-    ],
-    "total_planet_comparisons": 264,
-    "total_cusp_comparisons": 264,
-    "max_planet_error_arcsec": 0.00017942695649253437,
-    "max_ascendant_error_arcsec": 0.00017634032474234118,
-    "max_cusp_error_arcsec": 0.0001795366415535682,
-    "moshier_fallback_events": 0,
-    "failures": [],
-    "result": "PASS"
+  "kp_krishnamurti": {
+   "sid_mode": 5,
+   "cases": [
+    {
+     "id": "H1_london_1823",
+     "swetest_cmd": "/tmp/swetest_vszletsm/swetest -edir/home/claude/ace -b17.4.1823 -ut03:21:07 -p0123456789m -eswe -sid5 -house-0.1278,51.5074,P -fPl -g, -head",
+     "ayanamsa_value_deg": 21.29279487571442,
+     "provenance": {
+      "profile": "kp_krishnamurti",
+      "frame": "sidereal",
+      "ephemeris_mode": "swieph",
+      "house_system": "P",
+      "node_policy": "mean"
+     },
+     "max_planet_error_arcsec": 0.00017429017589165596,
+     "ascendant_error_arcsec": 6.236291483219247e-05,
+     "max_cusp_error_arcsec": 0.00012586524462676607,
+     "planet_errors_arcsec": {
+      "Sun": 0.00016137721559061902,
+      "Moon": 0.00011749152690754272,
+      "Mercury": 0.00016274643712677062,
+      "Venus": 0.00014914763823981048,
+      "Mars": 5.3669964472646825e-06,
+      "Jupiter": 2.96693997370312e-05,
+      "Saturn": 0.00017429017589165596,
+      "Uranus": 7.719045242993161e-05,
+      "Neptune": 7.090484359650873e-05,
+      "Pluto": 8.669007911521476e-06,
+      "Rahu": 0.0001610628942216863,
+      "Ketu": 0.0001610628942216863
+     },
+     "cusp_errors_arcsec": {
+      "1": 6.236291483219247e-05,
+      "2": 7.503778078898904e-05,
+      "3": 8.301808520627674e-05,
+      "4": 3.5853713598044124e-05,
+      "5": 0.00012586524462676607,
+      "6": 3.698177124533686e-05,
+      "7": 6.236291483219247e-05,
+      "8": 7.503778078898904e-05,
+      "9": 8.301808520627674e-05,
+      "10": 3.5853713598044124e-05,
+      "11": 0.00012586514230861212,
+      "12": 3.698166892718291e-05
+     }
+    },
+    {
+     "id": "H2_newyork_1900",
+     "swetest_cmd": "/tmp/swetest_vszletsm/swetest -edir/home/claude/ace -b1.1.1900 -ut00:00:00 -p0123456789m -eswe -sid5 -house-74.006,40.7128,P -fPl -g, -head",
+     "ayanamsa_value_deg": 22.36367812560286,
+     "provenance": {
+      "profile": "kp_krishnamurti",
+      "frame": "sidereal",
+      "ephemeris_mode": "swieph",
+      "house_system": "P",
+      "node_policy": "mean"
+     },
+     "max_planet_error_arcsec": 0.00017395723261870444,
+     "ascendant_error_arcsec": 0.00012188977507321397,
+     "max_cusp_error_arcsec": 0.000123310769595264,
+     "planet_errors_arcsec": {
+      "Sun": 0.0001576096565258922,
+      "Moon": 0.00010532160104048671,
+      "Mercury": 6.170009783090791e-05,
+      "Venus": 4.181026724836556e-05,
+      "Mars": 0.00011850202099594753,
+      "Jupiter": 8.74687202667701e-06,
+      "Saturn": 0.000139069709348405,
+      "Uranus": 0.00017395723261870444,
+      "Neptune": 5.377821707952535e-05,
+      "Pluto": 0.00015218730595734087,
+      "Rahu": 0.00011836859812319744,
+      "Ketu": 0.00011836859812319744
+     },
+     "cusp_errors_arcsec": {
+      "1": 0.00012188977507321397,
+      "2": 0.00011754452771128854,
+      "3": 5.637095910060452e-05,
+      "4": 0.00012331066727711004,
+      "5": 0.00010849100817722501,
+      "6": 8.170493401848944e-05,
+      "7": 0.00012188977507321397,
+      "8": 0.00011754452771128854,
+      "9": 5.637095910060452e-05,
+      "10": 0.000123310769595264,
+      "11": 0.00010849090585907106,
+      "12": 8.170472938218154e-05
+     }
+    },
+    {
+     "id": "H3_sydney_1946",
+     "swetest_cmd": "/tmp/swetest_vszletsm/swetest -edir/home/claude/ace -b14.6.1946 -ut21:47:53 -p0123456789m -eswe -sid5 -house151.2093,-33.8688,P -fPl -g, -head",
+     "ayanamsa_value_deg": 23.012315390390427,
+     "provenance": {
+      "profile": "kp_krishnamurti",
+      "frame": "sidereal",
+      "ephemeris_mode": "swieph",
+      "house_system": "P",
+      "node_policy": "mean"
+     },
+     "max_planet_error_arcsec": 0.00016858552953635808,
+     "ascendant_error_arcsec": 0.00013255132671474712,
+     "max_cusp_error_arcsec": 0.00015798946151335258,
+     "planet_errors_arcsec": {
+      "Sun": 9.360924195789266e-05,
+      "Moon": 4.912550366498181e-05,
+      "Mercury": 2.3801453608029988e-05,
+      "Venus": 4.477790298551554e-05,
+      "Mars": 9.99228859654977e-05,
+      "Jupiter": 7.023680836937274e-05,
+      "Saturn": 2.9873012863390613e-05,
+      "Uranus": 0.00010270542816215311,
+      "Neptune": 2.4988753466459457e-05,
+      "Pluto": 0.00016858552953635808,
+      "Rahu": 0.00015544736697847839,
+      "Ketu": 0.00015544736697847839
+     },
+     "cusp_errors_arcsec": {
+      "1": 0.00013255132671474712,
+      "2": 0.00015798935919519863,
+      "3": 9.006893151308759e-05,
+      "4": 0.0001443117753296974,
+      "5": 0.0001311603114118043,
+      "6": 0.00011504581607368891,
+      "7": 0.00013255142903290107,
+      "8": 0.00015798946151335258,
+      "9": 9.006882919493364e-05,
+      "10": 0.0001443117753296974,
+      "11": 0.00013116041372995824,
+      "12": 0.00011504591839184286
+     }
+    },
+    {
+     "id": "H4_delhi_1979",
+     "swetest_cmd": "/tmp/swetest_vszletsm/swetest -edir/home/claude/ace -b11.11.1979 -ut17:41:37 -p0123456789m -eswe -sid5 -house77.2167,28.6667,P -fPl -g, -head",
+     "ayanamsa_value_deg": 23.478933469467563,
+     "provenance": {
+      "profile": "kp_krishnamurti",
+      "frame": "sidereal",
+      "ephemeris_mode": "swieph",
+      "house_system": "P",
+      "node_policy": "mean"
+     },
+     "max_planet_error_arcsec": 0.00017772080127542722,
+     "ascendant_error_arcsec": 1.649634668865474e-05,
+     "max_cusp_error_arcsec": 0.00015430130133609055,
+     "planet_errors_arcsec": {
+      "Sun": 0.00017772080127542722,
+      "Moon": 3.800730610237224e-05,
+      "Mercury": 5.8300474847783335e-05,
+      "Venus": 1.5005059594841441e-05,
+      "Mars": 1.9154776964569464e-05,
+      "Jupiter": 1.7613149339013034e-05,
+      "Saturn": 4.6907450723665534e-05,
+      "Uranus": 5.675976808561245e-05,
+      "Neptune": 2.680899342522025e-05,
+      "Pluto": 3.434032578297774e-05,
+      "Rahu": 0.00015118029068617034,
+      "Ketu": 0.0001511803930043243
+     },
+     "cusp_errors_arcsec": {
+      "1": 1.649634668865474e-05,
+      "2": 8.2865733475046e-05,
+      "3": 6.872904805277358e-05,
+      "4": 0.00015430130133609055,
+      "5": 0.0001224077095685061,
+      "6": 6.422121714422246e-05,
+      "7": 1.649655132496264e-05,
+      "8": 8.286563115689205e-05,
+      "9": 6.872894573461963e-05,
+      "10": 0.00015430130133609055,
+      "11": 0.0001224077095685061,
+      "12": 6.422131946237641e-05
+     }
+    },
+    {
+     "id": "H5_reykjavik_1992",
+     "swetest_cmd": "/tmp/swetest_vszletsm/swetest -edir/home/claude/ace -b29.2.1992 -ut23:59:59 -p0123456789m -eswe -sid5 -house-21.9426,64.1466,P -fPl -g, -head",
+     "ayanamsa_value_deg": 23.650766439156826,
+     "provenance": {
+      "profile": "kp_krishnamurti",
+      "frame": "sidereal",
+      "ephemeris_mode": "swieph",
+      "house_system": "P",
+      "node_policy": "mean"
+     },
+     "max_planet_error_arcsec": 0.00017942695649253437,
+     "ascendant_error_arcsec": 2.697249783523148e-05,
+     "max_cusp_error_arcsec": 0.00010950426485578646,
+     "planet_errors_arcsec": {
+      "Sun": 0.00013199696695664898,
+      "Moon": 6.476923317677574e-05,
+      "Mercury": 0.00017942695649253437,
+      "Venus": 1.2885743672086392e-05,
+      "Mars": 8.92889602255309e-05,
+      "Jupiter": 1.9085507574345684e-05,
+      "Saturn": 0.0001304353872910724,
+      "Uranus": 0.00015045802683744114,
+      "Neptune": 5.513986707228469e-05,
+      "Pluto": 0.0001350031766378379,
+      "Rahu": 8.58096314004797e-05,
+      "Ketu": 8.580973371863365e-05
+     },
+     "cusp_errors_arcsec": {
+      "1": 2.697249783523148e-05,
+      "2": 0.00010950426485578646,
+      "3": 1.9661251826619264e-05,
+      "4": 6.605537237192038e-05,
+      "5": 9.709481219033478e-05,
+      "6": 8.007377800822724e-05,
+      "7": 2.697239551707753e-05,
+      "8": 0.00010950426485578646,
+      "9": 1.9661251826619264e-05,
+      "10": 6.605516773561249e-05,
+      "11": 9.709501682664268e-05,
+      "12": 8.007367569007329e-05
+     }
+    },
+    {
+     "id": "H6_quito_2010",
+     "swetest_cmd": "/tmp/swetest_vszletsm/swetest -edir/home/claude/ace -b21.7.2010 -ut05:05:05 -p0123456789m -eswe -sid5 -house-78.4678,-0.1807,P -fPl -g, -head",
+     "ayanamsa_value_deg": 23.90762755501072,
+     "provenance": {
+      "profile": "kp_krishnamurti",
+      "frame": "sidereal",
+      "ephemeris_mode": "swieph",
+      "house_system": "P",
+      "node_policy": "mean"
+     },
+     "max_planet_error_arcsec": 0.000161006823873322,
+     "ascendant_error_arcsec": 0.00016777885321062058,
+     "max_cusp_error_arcsec": 0.00016777895552877453,
+     "planet_errors_arcsec": {
+      "Sun": 0.00012903567494504387,
+      "Moon": 2.1315327103366144e-05,
+      "Mercury": 4.806528295375756e-05,
+      "Venus": 9.44735234043037e-05,
+      "Mars": 3.6633787203754764e-05,
+      "Jupiter": 0.00012260845778655494,
+      "Saturn": 2.813166020132485e-05,
+      "Uranus": 3.2539423955313396e-05,
+      "Neptune": 0.000161006823873322,
+      "Pluto": 0.00012055462548232754,
+      "Rahu": 3.1590525395586155e-05,
+      "Ketu": 3.1590525395586155e-05
+     },
+     "cusp_errors_arcsec": {
+      "1": 0.00016777885321062058,
+      "2": 3.848175538223586e-05,
+      "3": 4.5264323489391245e-05,
+      "4": 0.00010319256489310646,
+      "5": 0.00011853200021505472,
+      "6": 0.00013592741652246332,
+      "7": 0.00016777895552877453,
+      "8": 3.848175538223586e-05,
+      "9": 4.5264323489391245e-05,
+      "10": 0.00010319256489310646,
+      "11": 0.00011853210253320867,
+      "12": 0.00013592721188615542
+     }
+    },
+    {
+     "id": "H7_tokyo_2033",
+     "swetest_cmd": "/tmp/swetest_vszletsm/swetest -edir/home/claude/ace -b3.9.2033 -ut11:11:11 -p0123456789m -eswe -sid5 -house139.6503,35.6762,P -fPl -g, -head",
+     "ayanamsa_value_deg": 24.230645260486767,
+     "provenance": {
+      "profile": "kp_krishnamurti",
+      "frame": "sidereal",
+      "ephemeris_mode": "swieph",
+      "house_system": "P",
+      "node_policy": "mean"
+     },
+     "max_planet_error_arcsec": 0.00017068642819140223,
+     "ascendant_error_arcsec": 7.382080866591423e-05,
+     "max_cusp_error_arcsec": 0.00016316635083057918,
+     "planet_errors_arcsec": {
+      "Sun": 8.086152547548409e-05,
+      "Moon": 0.00013676765320269624,
+      "Mercury": 0.00017068642819140223,
+      "Venus": 3.1067065719980747e-05,
+      "Mars": 0.00010246129704682971,
+      "Jupiter": 0.000114195449896215,
+      "Saturn": 6.236762146727415e-05,
+      "Uranus": 7.256239769048989e-05,
+      "Neptune": 3.485836259642383e-05,
+      "Pluto": 3.6326218832982704e-05,
+      "Rahu": 0.00017052885823432007,
+      "Ketu": 0.00017052896055247402
+     },
+     "cusp_errors_arcsec": {
+      "1": 7.382080866591423e-05,
+      "2": 3.1110243980947416e-05,
+      "3": 0.00010962326086882968,
+      "4": 0.00016316635083057918,
+      "5": 6.942491381778382e-05,
+      "6": 0.0001431868895451771,
+      "7": 7.382080866591423e-05,
+      "8": 3.1110243980947416e-05,
+      "9": 0.00010962326086882968,
+      "10": 0.00016316635083057918,
+      "11": 6.942470918147592e-05,
+      "12": 0.0001431866849088692
+     }
+    },
+    {
+     "id": "H8_mumbai_2077",
+     "swetest_cmd": "/tmp/swetest_vszletsm/swetest -edir/home/claude/ace -b3.12.2077 -ut14:30:27 -p0123456789m -eswe -sid5 -house72.8777,19.076,P -fPl -g, -head",
+     "ayanamsa_value_deg": 24.84891320338079,
+     "provenance": {
+      "profile": "kp_krishnamurti",
+      "frame": "sidereal",
+      "ephemeris_mode": "swieph",
+      "house_system": "P",
+      "node_policy": "mean"
+     },
+     "max_planet_error_arcsec": 0.00017663326161709847,
+     "ascendant_error_arcsec": 5.888655323360581e-05,
+     "max_cusp_error_arcsec": 0.00015761988834128715,
+     "planet_errors_arcsec": {
+      "Sun": 8.569595593144186e-05,
+      "Moon": 2.430915628792718e-05,
+      "Mercury": 6.847898248452111e-05,
+      "Venus": 2.1460925836436218e-05,
+      "Mars": 6.96907363817445e-05,
+      "Jupiter": 4.175051344645908e-05,
+      "Saturn": 0.000150265975662478,
+      "Uranus": 0.00017663326161709847,
+      "Neptune": 0.00011325146260787733,
+      "Pluto": 9.563882485963404e-06,
+      "Rahu": 8.678441645315615e-05,
+      "Ketu": 8.678441645315615e-05
+     },
+     "cusp_errors_arcsec": {
+      "1": 5.888655323360581e-05,
+      "2": 7.520814051531488e-05,
+      "3": 1.2518012226792052e-05,
+      "4": 0.00015761988834128715,
+      "5": 0.00012204724271214218,
+      "6": 0.00011497419336592429,
+      "7": 5.888655323360581e-05,
+      "8": 7.520814051531488e-05,
+      "9": 1.2518216863099951e-05,
+      "10": 0.00015761988834128715,
+      "11": 0.00012204734503029613,
+      "12": 0.00011497429568407824
+     }
+    },
+    {
+     "id": "H9_paris_2350",
+     "swetest_cmd": "/tmp/swetest_vszletsm/swetest -edir/home/claude/ace -b15.1.2350 -ut06:06:06 -p0123456789m -eswe -sid5 -house2.3522,48.8566,P -fPl -g, -head",
+     "ayanamsa_value_deg": 28.653540272249757,
+     "provenance": {
+      "profile": "kp_krishnamurti",
+      "frame": "sidereal",
+      "ephemeris_mode": "swieph",
+      "house_system": "P",
+      "node_policy": "mean"
+     },
+     "max_planet_error_arcsec": 0.00015478874502150575,
+     "ascendant_error_arcsec": 8.535544111509807e-05,
+     "max_cusp_error_arcsec": 0.0001761963630997343,
+     "planet_errors_arcsec": {
+      "Sun": 0.00015478874502150575,
+      "Moon": 0.00010959604423987912,
+      "Mercury": 6.458321877289563e-07,
+      "Venus": 6.388643214449985e-05,
+      "Mars": 0.00011691834060911788,
+      "Jupiter": 0.00012507555311458418,
+      "Saturn": 4.380854079499841e-05,
+      "Uranus": 8.129463822115213e-05,
+      "Neptune": 0.00012684299690590706,
+      "Pluto": 1.0455892152094748e-05,
+      "Rahu": 0.00015158700534811942,
+      "Ketu": 0.00015158680071181152
+     },
+     "cusp_errors_arcsec": {
+      "1": 8.535544111509807e-05,
+      "2": 0.00010272844974679174,
+      "3": 0.00015846278529352276,
+      "4": 9.013594990392448e-05,
+      "5": 0.00016945891729847062,
+      "6": 0.0001761963630997343,
+      "7": 8.535544111509807e-05,
+      "8": 0.00010272855206494569,
+      "9": 0.0001584624783390609,
+      "10": 9.013615454023238e-05,
+      "11": 0.00016945901961662457,
+      "12": 0.0001761963630997343
+     }
+    },
+    {
+     "id": "H10_boundary_moon_a",
+     "swetest_cmd": "/tmp/swetest_vszletsm/swetest -edir/home/claude/ace -b1.3.2025 -ut16:21:00 -p0123456789m -eswe -sid5 -house77.2167,28.6667,P -fPl -g, -head",
+     "ayanamsa_value_deg": 24.111773554968806,
+     "provenance": {
+      "profile": "kp_krishnamurti",
+      "frame": "sidereal",
+      "ephemeris_mode": "swieph",
+      "house_system": "P",
+      "node_policy": "mean"
+     },
+     "max_planet_error_arcsec": 0.0001013663904814166,
+     "ascendant_error_arcsec": 2.7104795208288124e-05,
+     "max_cusp_error_arcsec": 0.00014730857174072298,
+     "planet_errors_arcsec": {
+      "Sun": 0.0001013663904814166,
+      "Moon": 9.78405068963184e-05,
+      "Mercury": 8.60072077557561e-05,
+      "Venus": 6.08385789746535e-05,
+      "Mars": 2.52809741141391e-05,
+      "Jupiter": 3.2560706131334882e-06,
+      "Saturn": 8.232866548496531e-05,
+      "Uranus": 6.602897428820143e-05,
+      "Neptune": 8.27060148367309e-05,
+      "Pluto": 7.506919246225152e-05,
+      "Rahu": 1.607418198545929e-06,
+      "Ketu": 1.6072135622380301e-06
+     },
+     "cusp_errors_arcsec": {
+      "1": 2.7104795208288124e-05,
+      "2": 7.702664106545853e-05,
+      "3": 0.00014730857174072298,
+      "4": 9.245570709026651e-05,
+      "5": 0.00011062536486861063,
+      "6": 0.00011564304713829188,
+      "7": 2.7104897526442073e-05,
+      "8": 7.702664106545853e-05,
+      "9": 0.00014730857174072298,
+      "10": 9.245550245395862e-05,
+      "11": 0.00011062526255045668,
+      "12": 0.00011564335409275373
+     },
+     "moon_boundary_check": {
+      "engine": {
+       "longitude": 339.88884032717795,
+       "nakshatra": 26,
+       "nakshatra_pada": 2
+      },
+      "exact_reference_on_swetest_moon": {
+       "nakshatra": 26,
+       "nakshatra_pada": 2
+      },
+      "agrees": true
+     }
+    },
+    {
+     "id": "H11_boundary_moon_b",
+     "swetest_cmd": "/tmp/swetest_vszletsm/swetest -edir/home/claude/ace -b2.3.2025 -ut11:38:00 -p0123456789m -eswe -sid5 -house77.2167,28.6667,P -fPl -g, -head",
+     "ayanamsa_value_deg": 24.111804286931147,
+     "provenance": {
+      "profile": "kp_krishnamurti",
+      "frame": "sidereal",
+      "ephemeris_mode": "swieph",
+      "house_system": "P",
+      "node_policy": "mean"
+     },
+     "max_planet_error_arcsec": 0.00015812267974979477,
+     "ascendant_error_arcsec": 0.0001306538365497545,
+     "max_cusp_error_arcsec": 0.00015673483630962437,
+     "planet_errors_arcsec": {
+      "Sun": 0.0001211700691783335,
+      "Moon": 0.00010833527994691394,
+      "Mercury": 0.00010963308341160882,
+      "Venus": 4.594944584823679e-05,
+      "Mars": 3.228710738767404e-05,
+      "Jupiter": 7.963442385516828e-05,
+      "Saturn": 0.00015812267974979477,
+      "Uranus": 2.6638940653356258e-05,
+      "Neptune": 5.414676707005128e-05,
+      "Pluto": 0.00014397903669305379,
+      "Rahu": 3.727654984686524e-05,
+      "Ketu": 3.727654984686524e-05
+     },
+     "cusp_errors_arcsec": {
+      "1": 0.0001306538365497545,
+      "2": 0.00010710746209952049,
+      "3": 0.00010815786026796559,
+      "4": 0.00015673483630962437,
+      "5": 8.454017006442882e-05,
+      "6": 0.00010357687187934062,
+      "7": 0.00013065393886790844,
+      "8": 0.00010710746209952049,
+      "9": 0.00010815806490427349,
+      "10": 0.00015673473399147042,
+      "11": 8.454017006442882e-05,
+      "12": 0.00010357687187934062
+     },
+     "moon_boundary_check": {
+      "engine": {
+       "longitude": 351.7832555699069,
+       "nakshatra": 27,
+       "nakshatra_pada": 2
+      },
+      "exact_reference_on_swetest_moon": {
+       "nakshatra": 27,
+       "nakshatra_pada": 2
+      },
+      "agrees": true
+     }
+    }
+   ],
+   "max_planet_error_arcsec": 0.00017942695649253437,
+   "max_ascendant_error_arcsec": 0.00016777885321062058,
+   "max_cusp_error_arcsec": 0.0001761963630997343,
+   "planet_comparisons": 132,
+   "cusp_comparisons": 132
   }
+ },
+ "ayanamsa_profile_check": {
+  "lahiri_value_deg_H1": 21.389647504999317,
+  "krishnamurti_value_deg_H1": 21.29279487571442,
+  "difference_arcmin": 5.811157757093781,
+  "expected_band_arcmin": [
+   3.0,
+   10.0
+  ]
+ },
+ "summary": {
+  "cases_per_profile": 11,
+  "profiles_certified": [
+   "parashari_lahiri",
+   "kp_krishnamurti"
+  ],
+  "total_planet_comparisons": 264,
+  "total_cusp_comparisons": 264,
+  "max_planet_error_arcsec": 0.00017942695649253437,
+  "max_ascendant_error_arcsec": 0.00017634032474234118,
+  "max_cusp_error_arcsec": 0.0001795366415535682,
+  "moshier_fallback_events": 0,
+  "failures": [],
+  "result": "PASS"
+ },
+ "_artifact_name": "current_engine_certification.json",
+ "_slug": "current_engine"
 }

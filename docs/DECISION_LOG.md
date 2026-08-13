@@ -3,10 +3,10 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | ACTIVE REGISTER. ADR-0001 and ADR-0002 carry `Status: Accepted`, dated 2026-07-11; whether that acceptance was an owner act is not evidenced by the repository either way, and the ambiguity is recorded as ADR-0028 finding C-06 rather than resolved. Every other entry, ADR-0003 through ADR-0014 and ADR-0018 through ADR-0030, is PROPOSED and none can currently be Accepted, because Q1 (named owners) is open and PROJECT_CONSTITUTION.md s11 reserves ratification to the owner. Includes the ADR-0018 remote-CI evidence addendum (2026-08-11). |
-| Version | 0.9.0 |
+| Status | ACTIVE REGISTER. ADR-0001 and ADR-0002 carry `Status: Accepted`, dated 2026-07-11; whether that acceptance was an owner act is not evidenced by the repository either way, and the ambiguity is recorded as ADR-0028 finding C-06 rather than resolved. Every other entry, ADR-0003 through ADR-0014 and ADR-0018 through ADR-0031, is PROPOSED and none can currently be Accepted, because Q1 (named owners) is open and PROJECT_CONSTITUTION.md s11 reserves ratification to the owner. Includes the ADR-0018 remote-CI evidence addendum (2026-08-11). |
+| Version | 0.10.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-11 |
+| Last updated | 2026-08-13 |
 | Review cadence | TBD |
 
 # Decision Log (ADR register)
@@ -1312,6 +1312,76 @@ makes no change to any calculation, test, certification artifact or gate.
 - **Evidence:** Repository-wide search for runtime imports of top-level `knowledge/` from `engine/`,
   zero results, re-run this pass; the five `legacy/` importers re-confirmed as test modules;
   every decision clause of ADR-0022 through ADR-0028 re-read for feature content.
+
+---
+
+## ADR-0031 - Tier-0 same-run certification evidence repaired (ADR-0028 finding C-03)
+
+- **Date:** 2026-08-13
+- **Status:** PROPOSED - pending owner ratification (Q1).
+- **Context:** ADR-0028 finding C-03 recorded that `scripts/certify_current_engine.py`, the certifier
+  behind the ADR-0005 Tier-0 lock, wrote only the machine-readable artifact. Nine of the eleven
+  certifiers already routed their output through `certification_support.emit`, which derives the
+  human-readable report from the same dict it serialises; this one and the superseded
+  `certify_tier0.py` did not. `PROJECT_CONSTITUTION.md` section 12 condition 3 was therefore unmet
+  for the locked kernel that every other layer depends on.
+- **Decision:**
+  1. **Route the Tier-0 runner through the existing emitter.** `emit()` now writes the artifact, the
+     human-readable report and the console transcript from THE SAME run and THE SAME result object.
+     No second calculation is performed to produce the report, and no value is copied by hand.
+  2. **The evidence contract is stated and rendered, not implied.** Both files now carry: source
+     revision and working-tree cleanliness, engine version, execution timestamp, Python version,
+     holdout case identity, reference binary, profile set, comparison counts, the three numerical
+     maxima, the frozen tolerance, the Moshier fallback count, the failure list and the PASS/FAIL
+     verdict.
+  3. **Three additive, inert extensions to the shared emitter**, being the smallest change that
+     renders the contract: an optional tolerance line, an optional run-metadata section, and an
+     optional summary section, plus a verdict lookup that reads `summary.result` when no top-level
+     `result` exists. **All four are no-ops for every artifact that predates this change**, which is
+     proven rather than assumed: all ten existing reports re-render byte-identically.
+     The verdict lookup exists specifically so the verdict is NOT duplicated into the artifact
+     merely so the report can display it, which would create two places for it to be wrong.
+  4. **A standing agreement gate with a real negative control**,
+     `engine/tests/test_certification_evidence_agreement.py`. It re-derives every report from its
+     artifact and demands byte equality across all eleven pairs, names the Tier-0 pair explicitly so
+     discovery cannot silently drop it, asserts a floor of eleven pairs so a discovery bug cannot
+     turn the gate into a no-op, and asserts that the Tier-0 report actually contains the contract
+     fields, because agreement with an empty report would be worthless agreement. Six parametrised
+     negative controls corrupt an in-memory copy and require the comparison to fail.
+  5. **`source_revision` is observed, never asserted.** Where git is unavailable the fields read
+     `unavailable` rather than being guessed. `working_tree_dirty` is recorded because a run over a
+     modified tree is evidence about that tree and not about the named commit.
+- **Consequences:**
+  - **Constitution section 12 condition 3 is now satisfied technically. Formal Locked status is NOT
+    thereby established.** Condition 4 requires a decision entry recording the lock, and ADR-0005 is
+    PROPOSED because Q1 is open. **The correct description of Tier-0 remains "reported", not
+    "Locked"**, and this entry does not change ADR-0005's status.
+  - **Zero numerical change, proven three ways.** The committed pre-change artifact, a re-run in the
+    repository, and a run in a fresh extracted tree with the evidence deleted first all produce
+    identical per-case values, identical summaries, identical tolerance and an identical ayanamsa
+    profile check. Comparisons 264 planets and 264 cusps per the two profiles combined; maximum
+    planet error 0.00017942695649253437 arcsec; maximum ascendant error 0.00017634032474234118;
+    maximum cusp error 0.0001795366415535682; Moshier fallbacks 0; result PASS.
+  - **The artifact's serialisation changed from two-space to one-space indent**, because `emit()`
+    writes at indent 1 as it does for the other ten artifacts, and it gained the `_artifact_name`
+    and `_slug` keys the emitter records. No value changed. The artifact is regenerated current
+    evidence by its own declared contract, not immutable historical evidence, so regenerating it is
+    correct rather than a rewrite of protected material.
+  - **A separate defect is recorded, not fixed: the artifact is not byte-reproducible.** Each case
+    records `swetest_cmd` containing the run's temporary directory and the checkout's absolute path,
+    so two runs of identical code on identical data produce different bytes. That is the same class
+    of defect root D-005 removed from the legacy Tier-0 package. It does not affect condition 3,
+    because both evidence files regenerate together and agree. Recorded as new question Q15.
+  - **A second gap is recorded, not fixed:** this runner still does not call `preflight()`, so it
+    verifies the swetest binary version but not the ephemeris checksums, and no anti-fitting scan
+    forms part of this gate. That is VALIDATION_STANDARD section 2 rules 4 and 6, not section 12
+    condition 3, and wiring it changes what the gate can reject. Recorded as new question Q16.
+- **Evidence:** Live negative controls executed against the real on-disk evidence, not only in
+  memory: hand-editing the report produced 3 test failures, altering the artifact produced 4, and
+  after restoration both files hashed identically to their pre-control values, with the two source
+  files unchanged. Default gate 415 passed, up from 404 by the 11 new agreement tests. Fresh
+  extracted-tree run reproduced the certification from one command with all three evidence files
+  regenerated from nothing.
 
 ---
 
