@@ -34,6 +34,7 @@ BASELINE = {
         "working_tree_dirty": False,
         "executed_utc": "2026-08-13T08:00:00Z",
         "engine_version": "0.3.0",
+        "python": "3.11.15",
     },
     "profiles": {
         "parashari_lahiri": {
@@ -75,10 +76,19 @@ def test_identical_artifacts_show_no_drift():
         (lambda d: d["run"].__setitem__("executed_utc", "1999-01-01T00:00:00Z"), "run.executed_utc"),
         (lambda d: d["run"].__setitem__("source_revision", "b" * 40), "run.source_revision"),
         (lambda d: d["run"].__setitem__("working_tree_dirty", True), "run.working_tree_dirty"),
+        (lambda d: d["run"].__setitem__("python", "3.12.13"), "run.python"),
     ],
 )
 def test_volatile_fields_are_ignored(mutate, description):
     assert _drift(mutate) == [], f"{description} should be permitted to differ"
+
+
+def test_environment_python_is_volatile():
+    """KP_CHAIN and SIGN_CONVENTION record the field under `environment`, not `run`."""
+
+    committed = {"environment": {"python": "3.11.15"}}
+    regenerated = {"environment": {"python": "3.12.13"}}
+    assert gate._differences(gate._prune(committed), gate._prune(regenerated)) == []
 
 
 def test_the_volatile_list_is_exactly_what_is_documented():
@@ -89,6 +99,8 @@ def test_the_volatile_list_is_exactly_what_is_documented():
         "run.executed_utc",
         "run.source_revision",
         "run.working_tree_dirty",
+        "run.python",
+        "environment.python",
     )
 
 
@@ -166,6 +178,7 @@ REPORT = """\
 - working_tree_dirty: False
 - executed_utc: 2026-08-13T08:00:00Z
 - engine_version: 0.3.0
+- python: 3.11.15
 
 ## Summary
 
@@ -188,6 +201,7 @@ def _text_drift(mutate):
             ("- executed_utc: 2026-08-13T08:00:00Z", "- executed_utc: 1999-01-01T00:00:00Z"),
             "timestamp line",
         ),
+        (("- python: 3.11.15", "- python: 3.12.13"), "python version line"),
     ],
 )
 def test_volatile_report_lines_are_ignored(replacement, description):
@@ -225,6 +239,7 @@ def test_the_volatile_line_prefixes_are_exactly_what_is_documented():
         "- source_revision:",
         "- working_tree_dirty:",
         "- executed_utc:",
+        "- python:",
     )
 
 
