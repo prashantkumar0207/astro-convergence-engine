@@ -6,6 +6,8 @@ This document defines the standards governing every knowledge asset used by the 
 
 Knowledge assets contain canonical astrological facts only. They must remain independent from calculations, interpretations, and prediction logic.
 
+**Scope boundary:** This standard governs top-level governed knowledge. It does not prohibit school-scoped executable normative rule data that satisfies the four-part test ratified in ADR-0042. Such rule data may remain with certified implementation; it is not treated as governed knowledge and must retain explicit source and provenance.
+
 ---
 
 # Core Principles

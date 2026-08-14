@@ -3,10 +3,10 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | ACTIVE REGISTER. **ACCEPTED (11): ADR-0001, ADR-0002, ADR-0005, ADR-0009, ADR-0010, ADR-0011, ADR-0012, ADR-0033 through ADR-0036**, all owner-ratified by Prashant Kumar on 2026-08-13. Tier-0 is **FORMALLY LOCKED** (ADR-0034), the only s12 Locked artifact. The registry vargas and the sign conventions are **owner-ratified but NOT s12 Locked** (ADR-0035 D3, ADR-0036 D3). **Still PROPOSED: ADR-0003, ADR-0004, ADR-0006, ADR-0007, ADR-0008, ADR-0013, ADR-0014 and ADR-0018 through ADR-0032.** Ratification is now possible, because Q1 named an owner; ratification is per-entry, and an owner existing is not the register being ratified. Includes the ADR-0018 remote-CI evidence addendum (2026-08-11). |
+| Status | ACTIVE REGISTER. **ACCEPTED (19): ADR-0001, ADR-0002, ADR-0005, ADR-0006, ADR-0007, ADR-0008, ADR-0009, ADR-0010, ADR-0011, ADR-0012, ADR-0033 through ADR-0037, and ADR-0039 through ADR-0042**, owner-ratified across 2026-08-13 and 2026-08-14. Tier-0 is **FORMALLY LOCKED** (ADR-0034), the only s12 Locked artifact. The registry vargas and the sign conventions are **owner-ratified but NOT s12 Locked** (ADR-0035 D3, ADR-0036 D3). **Still PROPOSED: ADR-0003, ADR-0004, ADR-0013, ADR-0014, ADR-0018 through ADR-0032, and ADR-0038.** Ratification is now possible, because Q1 named an owner; ratification is per-entry, and an owner existing is not the register being ratified. Includes the ADR-0018 remote-CI evidence addendum (2026-08-11). |
 | Version | 1.5.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-13 |
+| Last updated | 2026-08-14 |
 | Review cadence | TBD |
 
 # Decision Log (ADR register)
@@ -2212,6 +2212,71 @@ the two gates added under ADR-0037.
   the network guard and the retired-identifier scope; corruption and restoration of three real
   rendered evidence files; the empty-repository probe; `git diff --check` clean; 521 passed, zero
   skipped.
+
+---
+
+## ADR-0039 - Owner resolutions of Q17 and Q18: Constitution s12 lock semantics
+
+- **Date:** 2026-08-14
+- **Status:** **ACCEPTED**, on the owner's explicit approval of the Q17-Q21 decision batch.
+- **Context:** Q17 asks whether Constitution s12 condition 4 requires a ratified decision entry or merely an entry that records the lock. Q18 asks whether lock language inside a ratified decision entry itself creates s12 Locked status.
+- **Decision:**
+  1. **Q17 — a Constitution s12 Locked artifact requires condition 4 to be satisfied by a decision entry that is itself owner-ratified.** Mere existence of an ADR is insufficient.
+  2. **Q18 — lock language inside a ratified decision does not by itself create s12 Locked status.** The four s12 conditions remain conjunctive; formal lock status requires the complete s12 record, including version/evidence and the required owner authorisation.
+  3. **Ratification and lock authorisation remain distinct owner acts.** They may be combined only when the owner explicitly authorises both.
+- **Consequences:** Q17 and Q18 are resolved for future locks. Tier-0 remains formally Locked under ADR-0034. The sign conventions remain owner-ratified but not s12 Locked under ADR-0036.
+- **Evidence:** Owner approval of the Q17-Q21 decision batch on 2026-08-14; ADR-0034 and ADR-0036 re-read against Constitution s12.
+
+---
+
+## ADR-0040 - Owner resolution of Q19: DP-NNN decision-paper identifier family
+
+- **Date:** 2026-08-14
+- **Status:** **ACCEPTED**, on the owner's explicit approval of the Q17-Q21 decision batch.
+- **Context:** `DP-NNN` is already used by `docs/decisions/DP-008`, `DP-009` and the decision-paper index, but it was absent from the Naming Standard's ID-Families table and had no mechanical family check.
+- **Decision:** Register `DP-NNN` as a repository decision-paper identifier family:
+  - Pattern: `DP-\d{3}`.
+  - Width: 3.
+  - Scope: repository-wide decision papers.
+  - Issuer: `docs/decisions/README.md`.
+  - Source of law: `docs/NAMING_STANDARD.md` section 2 and this ADR.
+  - Existing IDs `DP-008` and `DP-009` remain valid; `DP-001` through `DP-007` remain reserved.
+  - New decision papers MUST be allocated in the index before drafting.
+  - The governance gate MUST scan tracked files for `DP-\d{3}` tokens, reject unregistered tokens, and reject duplicate index allocation.
+- **Consequences:** Q19 is resolved. Decision papers remain proposals; decisions still live only in the ADR register.
+- **Evidence:** `docs/decisions/README.md`; `docs/NAMING_STANDARD.md`; `scripts/check_identifier_families.py`; committed governance negative controls.
+
+---
+
+## ADR-0041 - Owner resolution of Q20: canonical repository top-level structure
+
+- **Date:** 2026-08-14
+- **Status:** **ACCEPTED**, on the owner's explicit approval of the Q17-Q21 decision batch.
+- **Context:** Ratified ADR-0001 says the top-level folder set is exact, while the actual repository contains `.github/`, `schemas/`, and later-sanctioned governance/certification folders.
+- **Decision:** **Supersede ADR-0001's top-level-folder list** with the actual governed repository structure:
+  `.github/`, `assets/`, `certification/`, `docs/`, `engine/`, `engineering/`, `examples/`, `knowledge/`, `legacy/`, `reports/`, `research/`, `schemas/`, `scripts/`, `specs/`, `tools/`.
+  `app/` and top-level `tests/` are not part of the current set; tests remain under `engine/tests/`. `.github/` is the repository governance/CI layer and `schemas/` is the normative schema layer.
+  Any future top-level folder addition, removal or semantic repurposing requires a superseding ADR.
+- **Consequences:** Q20 is resolved. ADR-0003 remains a dated proposed reconciliation record; this entry governs the canonical set where it conflicts with ADR-0003's proposed consequences.
+- **Evidence:** Repository tree at `98cc2bd`; ADR-0001; ADR-0002; ADR-0003; current CI and schema paths.
+
+---
+
+## ADR-0042 - Owner resolution of Q21: authority hierarchy and executable normative rule data
+
+- **Date:** 2026-08-14
+- **Status:** **ACCEPTED**, on the owner's explicit approval of the Q17-Q21 decision batch.
+- **Context:** ADR-0023 is PROPOSED and claims to narrow `engineering/ENGINEERING_CONSTITUTION.md` Principle 3 and `docs/KNOWLEDGE_STANDARDS.md`, while those documents do not delegate that authority. `docs/ARCHITECTURE.md` also independently prohibits duplication.
+- **Decision:**
+  1. The authority hierarchy is explicitly: **OWNER -> PROJECT CONSTITUTION -> ENGINEERING CONSTITUTION -> DECISION LOG / ADR -> STANDARDS -> SPECIFICATIONS -> CODE -> CONVERSATION**.
+  2. **An ADR does not itself narrow a higher-level constitution or standard.** Any exception MUST first be written into that governing document through its own change-control/ratification process, then may be referenced by an ADR.
+  3. The project explicitly permits **executable normative rule data** to be colocated with certified implementation when all four ADR-0023 criteria are met: deterministic necessity, output-changing effect, certification coverage, and school-scoped provenance.
+  4. `docs/KNOWLEDGE_STANDARDS.md` is narrowed to governed knowledge; its single-source-of-truth rule does not prohibit separately school-scoped executable normative rule data when the four-part test is met.
+  5. `engineering/ENGINEERING_CONSTITUTION.md` Principle 3 is clarified to preserve its general rule while explicitly permitting the same four-part exception.
+  6. `docs/ARCHITECTURE.md` is clarified consistently: governed knowledge belongs in `knowledge/`; executable normative rule data may remain with certified implementation when the four-part test is met; interpretation and prediction logic remain outside the knowledge layer.
+  7. ADR-0023 remains a dated proposed record. Its exception is authoritative because the governing documents now explicitly state it, not because ADR-0023 silently overrode them.
+- **Consequences:** Q21 is resolved. Future standards conflicts cannot be silently resolved by an ADR. The Vimshottari three-way table isolation remains subject to direct identity testing and school-specific certification.
+- **Evidence:** ADR-0022; ADR-0023; `engineering/ENGINEERING_CONSTITUTION.md`; `docs/KNOWLEDGE_STANDARDS.md`; `docs/ARCHITECTURE.md`; owner approval of Q17-Q21.
 
 ---
 

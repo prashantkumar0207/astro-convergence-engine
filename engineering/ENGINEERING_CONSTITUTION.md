@@ -1,7 +1,7 @@
 # Astro Convergence Engine
 # Engineering Constitution
 
-Version: 1.0.0
+Version: 1.1.0
 
 Status: ACTIVE
 
@@ -50,6 +50,8 @@ Knowledge belongs in structured knowledge files.
 Business logic belongs in engine modules.
 
 Knowledge must never be hardcoded into algorithms.
+
+**Explicit exception — executable normative rule data:** A deterministic, school-scoped rule table may be colocated with certified implementation when (1) the calculation cannot produce its certified output without it, (2) changing it changes certified numerical or categorical output, (3) the data is covered by the calculation's certification artifact, and (4) the classical source and provenance are recorded at the point of use. This exception is not permission to place interpretation, prediction logic, or general governed knowledge in engine code. It is subject to the authority hierarchy in ADR-0042 and must not be inferred for data that fails any of the four tests.
 
 ---
 

@@ -100,7 +100,7 @@ Examples:
 - KP metadata
 - Jaimini metadata
 
-Python modules must never duplicate knowledge data.
+Python modules must never duplicate governed knowledge data. School-scoped executable normative rule data may be duplicated across isolated implementations only when it satisfies the four-part test in ADR-0042 and each copy is independently certified and directly identity-tested. Interpretation and prediction logic remain outside the knowledge layer.
 
 ---
 

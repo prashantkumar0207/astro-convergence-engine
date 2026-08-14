@@ -6,7 +6,7 @@ Document status header - keep current on every edit.
 | Status | PROPOSED - index of decision papers. Papers present options; they decide nothing. |
 | Version | 1.0.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-11 |
+| Last updated | 2026-08-14 |
 | Review cadence | TBD |
 
 # Decision Papers
@@ -20,7 +20,7 @@ owner. A paper that resolves its own question has failed.
 
 ## Numbering
 
-`DP-NNN`, allocated in this index before drafting.
+`DP-NNN`, allocated in this index before drafting. The family is governed by `docs/NAMING_STANDARD.md` s2 and ADR-0040; duplicate allocation is prohibited and mechanically checked by `scripts/check_identifier_families.py`.
 
 **DP-001 through DP-007 are RESERVED** for the Phase G governance decision round planned in the
 approved Phase G plan section 8: ownership and ratification, licensing, roadmap and build order,
