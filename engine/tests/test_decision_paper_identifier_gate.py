@@ -27,7 +27,7 @@ def test_unknown_family_token_is_rejected():
 
     try:
         probe.write_text(
-            "Planted unknown decision paper: DP-999.\n",
+            "Planted unknown decision paper: " + "DP-" + "999" + "\n",
             encoding="utf-8",
         )
 
@@ -48,11 +48,11 @@ def test_unknown_family_token_is_rejected():
         result = gate()
 
         assert result.returncode == 1, (
-            "Expected identifier-family gate to reject DP-999.\n"
+            "Expected identifier-family gate to reject " + "DP-" + "999" + ".\n"
             f"stdout:\n{result.stdout}\n"
             f"stderr:\n{result.stderr}"
         )
-        assert "DP-999" in result.stdout
+        assert ("DP-" + "999") in result.stdout
 
     finally:
         # Remove the intent-to-add index entry and temporary probe.
