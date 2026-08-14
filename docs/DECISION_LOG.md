@@ -174,7 +174,11 @@ at 0015..0017 is a reservation, not a lost entry, and a gap is not a monotonicit
 ## ADR-0006 - KP lordship chain layer (supersedes provisional ADR-KP-001)
 
 - **Date:** 2026-08-09
-- **Status:** PROPOSED - pending owner ratification (Q1).
+- **Status:** **ACCEPTED. RATIFIED BY THE OWNER, Prashant Kumar, 2026-08-13**, on the ratification
+  recorded in ADR-0037. Ratified EXACTLY AS WRITTEN: every scope boundary, numeric contract,
+  boundary convention, profile restriction, non-claim and certification figure stands unaltered.
+  **Ratification of a certification is not a lock**; this layer is NOT a Constitution s12 Locked
+  artifact. See ADR-0037.
 - **Context:** legacy/kp.py held the certified KP interval mathematics. LEGACY_KERNEL_
   MIGRATION.md requires per-module migration with validation against the certified legacy
   implementation before any retirement, and root D-003 sets zero categorical tolerance for
@@ -198,7 +202,11 @@ at 0015..0017 is a reservation, not a lost entry, and a gap is not a monotonicit
 ## ADR-0007 - Vimshottari dasha layer (supersedes provisional ADR-DASHA-001)
 
 - **Date:** 2026-08-09
-- **Status:** PROPOSED - pending owner ratification (Q1).
+- **Status:** **ACCEPTED. RATIFIED BY THE OWNER, Prashant Kumar, 2026-08-13**, on the ratification
+  recorded in ADR-0037. Ratified EXACTLY AS WRITTEN: every scope boundary, numeric contract,
+  boundary convention, profile restriction, non-claim and certification figure stands unaltered.
+  **Ratification of a certification is not a lock**; this layer is NOT a Constitution s12 Locked
+  artifact. See ADR-0037.
 - **Context:** Dasha year length is a genuinely open classical convention (mean sidereal,
   true sidereal, tropical, savana, lunar), and the choice moves period boundaries by days to
   months over a lifetime. No in-repository oracle exists for dashas.
@@ -224,7 +232,11 @@ at 0015..0017 is a reservation, not a lost entry, and a gap is not a monotonicit
 ## ADR-0008 - Transit event layer (supersedes provisional ADR-TRANSIT-001)
 
 - **Date:** 2026-08-09
-- **Status:** PROPOSED - pending owner ratification (Q1).
+- **Status:** **ACCEPTED. RATIFIED BY THE OWNER, Prashant Kumar, 2026-08-13**, on the ratification
+  recorded in ADR-0037. Ratified EXACTLY AS WRITTEN: every scope boundary, numeric contract,
+  boundary convention, profile restriction, non-claim and certification figure stands unaltered.
+  **Ratification of a certification is not a lock**; this layer is NOT a Constitution s12 Locked
+  artifact. See ADR-0037.
 - **Decision:** Add an isolated `engine/transits/` package finding longitude-crossing events
   by station-aware bisection on the certified position pipeline, so event instants inherit the
   Tier-0 certification. Cover sign and nakshatra ingresses, returns and natal conjunctions,
@@ -1977,6 +1989,146 @@ to be quietly filled.
   `certification/SIGN_CONVENTION_V1_certification.json` confirmed present and PASS; both certifiers
   confirmed to call `preflight()` and `emit()`; `ARCHITECTURE_STATUS.md` confirmed present at the
   repository root, so the substitution ADR-0012 records is a substitution of a live document.
+
+---
+
+## ADR-0037 - Owner ratification of ADR-0006, ADR-0007 and ADR-0008; Phase G audit; authorised remediation
+
+- **Date:** 2026-08-13
+- **Status:** **ACCEPTED as to Decision 1**, on the owner's ratification of 2026-08-13.
+  **PROPOSED as to Decisions 2 through 5**, which are the builder's audit findings and remediation.
+- **Context:** The owner ratified ADR-0006, ADR-0007 and ADR-0008 and directed a single end-to-end
+  audit of the remaining Phase G governance and certification state, with remediation of whatever
+  existing decisions already authorise, so that the same ground is not re-covered repeatedly.
+
+### Decision 1. ADR-0006, ADR-0007 and ADR-0008 ratified as written
+
+| Entry | Subject ratified |
+|---|---|
+| **ADR-0006** | The isolated `engine/kp/` package: exact-rational lordship chains and KP fact charts under the `kp_krishnamurti` profile **only**; the legacy `Decimal(str(x))` conversion rule and `[start, end)` interval ownership preserved verbatim as the KP layer's documented numeric contract, deliberately differing from the engine-wide 1e-10 promote-up convention; mean node asserted; nothing retired from `legacy/` |
+| **ADR-0007** | The isolated `engine/dasha/` package: Vimshottari maha, antar and pratyantar in exact rational arithmetic; **year length an EXPLICIT field with no hidden default**, certified against the mean sidereal year 91314091/250000 days exactly; school-explicit seeding recorded in provenance; depths 1 to 3 only |
+| **ADR-0008** | The isolated `engine/transits/` package: longitude-crossing events by station-aware bisection on the certified position pipeline; sign and nakshatra ingresses, returns and natal conjunctions; retrograde multiplicity reported and direction flagged; a natal-relative view that **refuses mixed-profile comparison**; event-time guarantee 1e-6 day, residual bound 1e-4 arcsec |
+
+Ratified as written. Every scope boundary, numeric contract, boundary convention, profile
+restriction and non-claim stands unaltered.
+
+**Two caveats the ratification carries, named so they do not pass silently.** ADR-0007 ratifies a
+genuinely contested classical convention: dasha year length has five defensible values and the
+choice moves period boundaries by days to months over a lifetime. What is ratified is that the
+choice is **explicit and certified**, not that it is the only right one; other conventions remain
+non-claims each needing its own entry. ADR-0008 ratifies an evidence position that records its own
+limit: the 24 sankranti anchors were compared under per-event tolerances derived from a measured
+~20.5 arcsec oracle Sun divergence **whose cause is recorded NOT VERIFIED**, per root D-007. That
+divergence is accepted as handled, not as explained.
+
+**These layers are NOT Constitution s12 Locked**, for the same reason ADR-0035 D3 gave: they record
+certifications, not locks, so condition 4 has no lock to record. `certification/` carries no lock
+artifact for KP, dasha or transits. Ratified CERTIFIED is a real status and is not the status
+Tier-0 holds.
+
+### Decision 2. The audit, and where its findings live
+
+Two independent read-only audits were run by separate agents, one over the CI workflow and one over
+every entry from ADR-0013 to ADR-0036, both instructed to find over-claiming rather than to confirm.
+The full record is `reports/PHASE_G_GOVERNANCE_AUDIT_2026-08-13.md`.
+
+**Verdict: no BLOCKER.** No calculation, tolerance, holdout, certified artifact or gate produces a
+wrong result. Every finding is governance, traceability or evidence scope.
+
+**The finding that matters most is where the defects clustered.** They are concentrated in the
+*evidence citations of the governance entries*, ADR-0022 through ADR-0028, and in three CI step
+names. They are not in the certification entries. **Governance prose was written to a lower
+evidential standard than the certification work it governs**, which is the wrong way round, and it
+was not found by re-reading those entries: it took independent agents checking every citation
+against the tree.
+
+**Corrections to committed entries, recorded here and NOT edited into them**, because the register
+is append-only in content:
+
+- **ADR-0022's evidence is wrong in part.** "D-001, D-002, D-003, D-007 cited live in
+  `scripts/certify_*.py`": `D-003` and `D-004` appear **zero** times under `scripts/`. D-003 is cited
+  live, but in `engine/kp/intervals.py`, `engine/kp/tables.py` and two KP tests. The substantive
+  claim, that D-001 to D-007 are operative rather than historical, stands. The cited proof does not.
+- **ADR-0025 and ADR-0030's `legacy/` importer claim is wrong as worded.** The set is **seven**, not
+  five: the four `engine/tests/` modules named, plus root-level `test_tier0_certification.py`, plus
+  **`scripts/certify_kp_chain.py`, which is a certification runner and not a test module**. The claim
+  was phrased repo-wide and evidenced `engine/`-scoped. What survives, and it is the part that
+  matters, is that **no production module imports `legacy/`**.
+- **ADR-0028's row for ADR-0003 is wrong.** It asserts the tree "matches the entry's consequences
+  exactly". It does not: the consequences omit `schemas/`, which exists, and nothing declares
+  `.github/`, which exists and holds the entire CI apparatus. See Q20.
+- **ADR-0014's preserved-citation counts are wrong.** `reports/ALIGNMENT_REVIEW.md` has three
+  occurrences on one line, not one; the entry switched from counting occurrences to counting lines
+  mid-paragraph. The register's own count has grown from 10 to 36 and the allowlist bounds nothing.
+- **ADR-0032 counts three committed ephemeris negative controls; two exist.** The third is a
+  positive coverage assertion. Both real controls are properly constructed.
+- **ADR-0035 D2.1 ratifies a D7 caveat that is not in the D7 artifact.** The "six sweep points, one
+  ULP" finding lives in the varga registry spec, the roadmap and a test comment, not in
+  `certification/VARGA_D7_V1_certification.json`.
+
+### Decision 3. Remediation executed, because existing decisions already authorise it
+
+| Item | What was done | Verification |
+|---|---|---|
+| **Q11** | Direct value-identity of all three Vimshottari tables, `legacy/kp.py`, `engine/kp/tables.py`, `engine/dasha/tables.py`, with **no cross-import**, closing the leg ADR-0023 D3's permission depends on. Each table is additionally compared against an **independently transcribed classical sequence**, because three identical wrong tables would pass a mutual comparison | 24 tests, including 7 perturbation controls that each assert the mutation is real before requiring detection, plus a control proving a one-year drift breaks the 120-year total |
+| **Q14** | The numbering check moved out of inline YAML into `scripts/check_adr_numbering.py`, so **the gate and its negative control run the same code** rather than the control duplicating the rule. CI plants a duplicate and an out-of-order entry into a copy and requires both to be rejected | 15 committed tests including 4 negative controls, one of which is the exact defect ADR-0029 corrected, an addendum promoted to a level-two heading. CI control simulated locally: duplicate exit 1, out-of-order exit 1, register untouched |
+| **Q15** | The recorded swetest invocation is normalised to `<bundled>/swetest` and `-edir<repo-root>`. The command **executed** is unchanged; only the recorded string is normalised, and every argument affecting the computation is recorded verbatim | Two consecutive runs are now identical except `run.executed_utc`. Zero absolute paths remain in the artifact. **Every number identical to the pre-change committed artifact**: summary, tolerance, ayanamsa check, preconditions and all per-case values |
+| **H-2**, the gate hole | `SUPERSESSION_FIELD_RE` now validates the value against the ten retired strings, and where a division can be read off the path it must be the identifier ADR-0014 D1's map assigns to that division. The division map is **derived from `RETIRED`** rather than written out, so it cannot drift | 5 probes in an isolated copy: invented family CAUGHT, wrong division CAUGHT, wrong layer CAUGHT, correct division PASSES, unauthorised position CAUGHT. 18 committed tests |
+| **H-4**, the CI loophole | `scripts/check_artifact_drift.py` replaces a `git diff` that always exited 0 under a step name asserting a byte-level invariant. Difference is permitted **only** in `date`, `run.executed_utc`, `run.source_revision`, `run.working_tree_dirty` | 13 negative controls, each verified to be detected, plus 4 asserting the volatile fields do **not** trip it, plus a test pinning the volatile list against silent widening |
+| **M-1**, false CI claims | The job renamed from "hermetic (no oracle, no network)" and the header now states the real scope: full egress, a five-symbol in-process guard on six of fifteen invocations, child processes not sandboxed, `requirements.lock` version-pinned but not hash-pinned, `pip` upgraded unpinned | Documentation. YAML re-parsed, three jobs, no `continue-on-error` |
+| **M-2**, weak network control | The control now runs the probe **unguarded first and requires success**, proving egress exists, then requires the guarded run to fail **with `NoNetworkError` named in the output**. It previously asserted only a nonzero exit, which a missing probe, a renamed guard or a runner with no egress all satisfy | Both halves executed locally: unguarded reached pypi, guarded exited 1 with `NoNetworkError` |
+| **M-3**, evidence destroyed | Drift is now checked **before** `git checkout -- certification/ reports/` restores them, and the immutability path list extends to `docs/`, root `*.py`, `CHECKSUMS.sha256`, both lock files, `.github/`, the ephemeris files and the `swetest` binary | The step no longer swallows `git status`'s own exit status |
+| **M-8**, stale lock record | `CURRENT_ENGINE_LOCK.json` `certified_tree` now points at the artifact's `run.source_revision` as the single source of truth instead of duplicating a SHA maintained by hand, which had already gone stale one commit after the provenance protocol was adopted. A note records that the block's rounded maxima are superseded in precision by the artifact | No numerical value changed; the trees were already hash-identical |
+
+**Nothing was weakened to obtain a PASS.** Every change above either adds a check, narrows an
+exemption, or corrects a claim. Where a check could not be strengthened without an owner decision it
+was left and recorded.
+
+### Decision 4. What was NOT done, and the exact blocker for each
+
+| Finding | Blocker |
+|---|---|
+| **H-1**, the `DP-NNN` family | Registering an identifier family changes `docs/NAMING_STANDARD.md`, a STANDARD, which sits above SPECIFICATIONS in ADR-0022's hierarchy. Extending the gate to flag `DP-` would turn CI red immediately. **Q19** |
+| **H-3**, `.github/` undeclared | **Ratified** ADR-0001 fixes the top-level set with the word "exactly". A ratified decision cannot be amended by the builder, and inventing a superseding entry would be manufacturing authority. **Q20** |
+| **M-5 and M-6**, the narrowed standards | This is precisely what the directive's item H.4 anticipated: an **unratified** ADR must not silently override a higher-level standard. ADR-0023 is PROPOSED, and `engineering/ENGINEERING_CONSTITUTION.md` is not even placed in ADR-0022's hierarchy, so it is not established that an ADR can narrow it. **Q21** |
+| **L-12**, agreement-gate circularity | The gate compares each report against the function that produced it. Closing this needs an independent renderer or a schema-level check, which is new verification design rather than remediation. **Q22** |
+| **L-5**, hermetic lock not hash-pinned | Hash-pinning `requirements.lock` changes the dependency contract for two jobs. Documented in the workflow header; the decision is the owner's. **Q23** |
+| **L-6, L-7**, unverified oracle assets | The `swetest` binary's recorded SHA-256 is read by nothing, and `CHECKSUMS.sha256` is itself unverified, so a coordinated edit passes both mechanisms. Adding these checks touches the D-001 numerical authority's verification path. **Q24** |
+| **C-01, C-02, C-05**, stale standards | Unchanged from ADR-0028. Same blocker as M-5. Additionally, ADR-0003's obligation to re-run the naming conformance sweep **cannot be discharged**: no sweep script exists, and `NAMING_STANDARD.md` NS-2 still proposes creating one |
+| **C-04**, `LOCK_MANIFEST.json` | Q12, unchanged. New evidence recorded in ADR-0034 narrowed it |
+| **C-06**, ADR-0001/0002 acceptance | Resolved by ADR-0033 D2 |
+| **L-4**, `certify_tier0.py` broken | Its disposition was assigned to G7 and G7 has not been authorised |
+| **Remote CI evidence staleness** | The only remote-CI record in the repository attests the **two-job** workflow at `a460ba2`. No run record exists for the three-job workflow, and this batch changed the workflow again. **The repository cannot prove CI passes at HEAD**, and this entry does not claim it does. **Q25** |
+
+### Decision 5. Domain and architecture separation re-verified (directive item F)
+
+Re-checked against the tree, not against the entries: **Panchanga and rise/set remain Tier-0-scoped
+and ABSENT**, and are **not** inside the ADR-0005 lock, which ADR-0034 restated as the kernel and the
+certified D9/D10 mathematics only. **Muhurta, Varshaphal, Prashna and Mundane remain PLANNED, each a
+separate domain architecture**, with no implementation and no natal pipeline reuse. The absence sweep
+across all fifteen domain terms returns zero hits in `engine/`. **No product feature is authorised
+by anything in this batch**, and the four ratified layers gain no new scope from being ratified.
+
+- **Consequences:**
+  - Accepted entries become **fourteen**: ADR-0001, ADR-0002, ADR-0005, ADR-0006, ADR-0007,
+    ADR-0008, ADR-0009, ADR-0010, ADR-0011, ADR-0012, ADR-0033, ADR-0034, ADR-0035, ADR-0036, plus
+    Decision 1 of this entry. Still PROPOSED: ADR-0003, ADR-0004, ADR-0013, ADR-0014, ADR-0018
+    through ADR-0032, and Decisions 2 to 5 of this entry.
+  - **Every certified production layer is now owner-ratified**: Tier-0, KP chains, Vimshottari,
+    transits, the five registry vargas, drishti and the sign conventions. That was the point of the
+    batch, and it is the first time the certification stack rests entirely on ratified decisions.
+  - Seven new questions, Q19 to Q25, all owner-answerable, prepared as one batch in
+    `docs/OPEN_QUESTIONS.md`.
+  - Default gate rises from **420 to 496**, seventy-six new tests across four modules, of
+    which **thirty-four are negative controls** that each require a deliberate corruption to be
+    detected. Nothing existing was removed or relaxed.
+  - **The Tier-0 lock is untouched.** No tolerance, profile, holdout case, kernel calculation or
+    D9/D10 mathematics changed. Q15 changed a recorded string and no computed value, proven against
+    the pre-change artifact field by field.
+- **Evidence:** `reports/PHASE_G_GOVERNANCE_AUDIT_2026-08-13.md`; the four new test modules;
+  `scripts/check_adr_numbering.py`, `scripts/check_artifact_drift.py`, and the corrected
+  `scripts/check_retired_identifiers.py`; the probe matrices executed in isolated copies; the
+  regenerated Tier-0 evidence compared field by field against its pre-change committed version.
 
 ---
 

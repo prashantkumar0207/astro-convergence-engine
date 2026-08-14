@@ -134,6 +134,37 @@ def resolve_swetest() -> Path:
     return target
 
 
+#: Q15. Placeholders substituted into the RECORDED command so the artifact is
+#: byte-reproducible across runs, machines and checkouts. The command actually
+#: EXECUTED is unchanged; only the recorded string is normalised. Root D-005
+#: removed exactly this class of environment-specific absolute-path dependency
+#: from the legacy Tier-0 package, and it had reappeared here.
+BUNDLED_BINARY_PLACEHOLDER = "<bundled>/swetest"
+REPO_ROOT_PLACEHOLDER = "<repo-root>"
+
+
+def recorded_command(cmd: list[str], binary: Path) -> str:
+    """The invocation, with the run's temp dir and the checkout path removed.
+
+    Two runs of identical code over identical data must produce identical
+    bytes, otherwise the artifact cannot be diffed across runs to show that
+    nothing changed. Substitution is exact-string and applied only to the two
+    volatile components, so every argument that affects the computation, the
+    date, the time, the body list, the sidereal mode and the house
+    specification, is recorded verbatim.
+    """
+
+    normalised = []
+    for argument in cmd:
+        if argument == str(binary):
+            normalised.append(BUNDLED_BINARY_PLACEHOLDER)
+        elif argument == f"-edir{ROOT}":
+            normalised.append(f"-edir{REPO_ROOT_PLACEHOLDER}")
+        else:
+            normalised.append(argument)
+    return " ".join(normalised)
+
+
 def run_swetest(binary: Path, case: dict, sid: str) -> dict:
     d = case["date"].split("-")
     bdate = f"{int(d[2])}.{int(d[1])}.{d[0]}"
@@ -167,8 +198,8 @@ def run_swetest(binary: Path, case: dict, sid: str) -> dict:
         fail(f"swetest output incomplete for {case['id']} sid{sid}")
 
     planets["Ketu"] = (planets["Rahu"] + 180.0) % 360.0
-    return {"cmd": " ".join(cmd), "planets": planets, "cusps": cusps,
-            "ascendant": asc}
+    return {"cmd": recorded_command(cmd, binary), "planets": planets,
+            "cusps": cusps, "ascendant": asc}
 
 
 def engine_case(case: dict, profile) -> dict:
