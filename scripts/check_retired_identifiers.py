@@ -80,7 +80,7 @@ ALLOWED_TOKENS = {
 _RETIRED_ALTERNATION = "|".join(re.escape(name) for name in RETIRED)
 
 SUPERSESSION_FIELD_RE = re.compile(
-    r'supersedes_provisional_id"?\]?\s*(?::|==)\s*"(?P<json>'
+    r'(?<![A-Za-z0-9_])supersedes_provisional_id"?\]?\s*(?::|==)\s*"(?P<json>'
     + _RETIRED_ALTERNATION
     + r')"'
     r"|- Supersedes provisional identifier: (?P<prose>"
@@ -111,22 +111,30 @@ for _retired_name in RETIRED:
         _VARGA_BY_DIVISION[int(_parts[2][1:])] = _retired_name
 
 
-def authorised_supersession(rel: str) -> str | None:
-    """The one retired identifier this file may claim to supersede, if known.
+#: Sentinels, so that "no division in the path" and "division present but not in
+#: the replacement map" are DIFFERENT answers. Collapsing them to None was the
+#: first form of this fix, and it meant a D9 or D10 file could claim to supersede
+#: any retired identifier at all, since neither division is in the map.
+ANY_RETIRED = "ANY_RETIRED"
+NOTHING_AUTHORISED = "NOTHING_AUTHORISED"
 
-    ADR-0014 D1 fixed a replacement map, division by division. Permitting any
-    retired identifier in the authorised position would let a D3 artifact claim
-    it superseded the D12 provisional entry, which is a traceability error the
-    gate exists to catch. Where a division can be read off the path, the claim
-    is bound to it. Where it cannot, any retired identifier is permitted, which
-    is the pre-existing behaviour and is reported as such rather than silently
-    relaxed.
+
+def authorised_supersession(rel: str) -> str:
+    """What this file may claim to supersede.
+
+    Returns a specific retired identifier where ADR-0014 D1's replacement map
+    assigns one to the file's division; `ANY_RETIRED` where the path carries no
+    division token, which is the pre-existing behaviour for the layer runners;
+    and `NOTHING_AUTHORISED` where a division IS present but has no provisional
+    identifier, which is the D9 and D10 case. Failing closed there matters:
+    they are the two flagship certified vargas and neither ever had a
+    provisional identifier to supersede.
     """
 
     match = _DIVISION_RE.search(Path(rel).name)
     if not match:
-        return None
-    return _VARGA_BY_DIVISION.get(int(match.group(1)))
+        return ANY_RETIRED
+    return _VARGA_BY_DIVISION.get(int(match.group(1)), NOTHING_AUTHORISED)
 
 
 def scrub_supersession(rel: str, line: str) -> str:
@@ -141,8 +149,10 @@ def scrub_supersession(rel: str, line: str) -> str:
 
     def replace(match: "re.Match[str]") -> str:
         claimed = match.group("json") or match.group("prose")
-        if expected is not None and claimed != expected:
-            return match.group(0)  # wrong division: leave it to be flagged
+        if expected is ANY_RETIRED:
+            return ""
+        if expected is NOTHING_AUTHORISED or claimed != expected:
+            return match.group(0)  # not authorised here: leave it to be flagged
         return ""
 
     return SUPERSESSION_FIELD_RE.sub(replace, line)

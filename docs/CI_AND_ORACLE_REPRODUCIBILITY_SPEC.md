@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | PROPOSED - descriptive of the implementation delivered in Phase G commit 1; ADR-0018 is the normative record. Pending owner ratification (docs/OPEN_QUESTIONS.md Q1). |
-| Version | 1.0.0 |
+| Version | 1.2.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-10 |
+| Last updated | 2026-08-13 |
 | Review cadence | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 
 # CI and Oracle Reproducibility Specification
@@ -46,7 +46,11 @@ The gates partition cleanly, verified by inspection: no file under
 **Hermetic tier.** The default pytest gate, all eleven independent holdout
 validators, the legacy kernel gate, and three certification runners
 (`certify_current_engine.py`, `certify_kp_chain.py`,
-`certify_sign_convention.py`). No external oracle, no network. Their references
+`certify_sign_convention.py`). No external oracle. **NOT network isolated**,
+corrected 2026-08-13: the runner has full egress, which it must in order to
+`pip install`. An in-process guard (`scripts/ci_no_network.py`) patches five
+socket entry points and is applied to a representative subset of invocations,
+not to all of them, and child processes are not sandboxed. Their references
 are the bundled `swetest` binary, the certified legacy kernel, and
 independently constructed in-file reference implementations.
 
@@ -114,7 +118,17 @@ or by dropping `--require-hashes`.
 
 ## 5. CI workflow
 
-`.github/workflows/ci.yml` defines two jobs.
+`.github/workflows/ci.yml` defines **three** jobs, corrected 2026-08-13. The
+third, `governance`, was added by ADR-0014 and enforces identifier-family
+conformance, ADR numbering, governing-document status headers and certified
+varga registry consistency. Sections below that describe two jobs predate it.
+
+Two gates added 2026-08-13 under ADR-0037 are also not described below:
+`scripts/check_adr_numbering.py`, which carries the numbering rule so that its
+negative control runs the same code rather than a copy, and
+`scripts/check_artifact_drift.py`, which enforces the "regenerated artifacts
+differ only in the volatile fields" claim that section 7 previously asserted and
+nothing checked.
 
 `hermetic` runs on Python 3.11 and 3.12. It installs from `requirements.lock`,
 records the environment, verifies ephemeris checksums against
@@ -254,4 +268,5 @@ project's standard requires.
 | Version | Date | Change |
 |---|---|---|
 | 1.0.0 | 2026-08-10 | Created with Phase G commit 1 (G6). Records the two-tier CI split, the oracle environment identity, the hash-pinned lock, and the clean-environment reproducibility proof. |
+| 1.2.0 | 2026-08-13 | ADR-0037 and ADR-0038: corrected the "no network" and "two jobs" claims, which were false as written; recorded the governance job and the two new gates. No procedure changed by this edit. |
 | 1.1.0 | 2026-08-11 | Additive: section 7.1 records the remote GitHub Actions verification and its evidence class; section 8 gains the Node.js 20 deprecation technical debt and the incomplete run-identity limitation. Section 7 and all prior text are unmodified. |

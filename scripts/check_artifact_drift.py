@@ -27,11 +27,21 @@ precondition digest and the PASS/FAIL verdict.
 `swetest_cmd` is NOT on the volatile list. Q15 made it deterministic precisely so
 that it could be held to this standard.
 
-Usage:
-    python scripts/check_artifact_drift.py [artifact ...]
+SCOPE, corrected 2026-08-13 after an independent audit. The first form checked
+only `certification/*.json` and only those git reported as MODIFIED. That left
+two holes: `reports/certification/`, whose contents the oracle job uploads as
+certification evidence, was diffed by the step above and enforced by nothing; and
+a run that regenerated NOTHING printed a PASS that read as "regenerated and
+identical". Both are closed here. Every tracked evidence file is compared, whether
+or not git thinks it changed, and the count is reported.
 
-With no arguments, checks every `certification/*.json` that git reports as
-modified. Exit 0 clean, 1 on drift, 2 on a usage or git error.
+Usage:
+    python scripts/check_artifact_drift.py [path ...]
+
+With no arguments, compares EVERY tracked `certification/*.json`,
+`reports/certification/*.report.md` and `reports/certification/*.console.txt`
+against its committed version. Exit 0 clean, 1 on drift, 2 on a usage or git
+error.
 """
 
 from __future__ import annotations
@@ -43,12 +53,22 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 
-#: Dotted paths permitted to differ. Anything not listed must be identical.
+#: Dotted paths permitted to differ in a JSON artifact. Anything not listed must
+#: be identical.
 VOLATILE = (
     "date",
     "run.executed_utc",
     "run.source_revision",
     "run.working_tree_dirty",
+)
+
+#: Line prefixes permitted to differ in a rendered report or console transcript.
+#: These are the text renderings of the VOLATILE fields above and nothing else.
+VOLATILE_LINE_PREFIXES = (
+    "- Date:",
+    "- source_revision:",
+    "- working_tree_dirty:",
+    "- executed_utc:",
 )
 
 
@@ -105,17 +125,56 @@ def committed_version(relative: str) -> dict | None:
     return json.loads(done.stdout)
 
 
-def modified_artifacts() -> list[str]:
+def tracked_evidence() -> list[str]:
+    """Every tracked evidence file, whether or not git reports it modified.
+
+    Checking only modified files meant a run that regenerated nothing produced a
+    PASS indistinguishable from a run that regenerated everything identically.
+    """
+
     done = subprocess.run(
-        ["git", "-C", str(ROOT), "status", "--porcelain", "--", "certification/"],
+        ["git", "-C", str(ROOT), "ls-files",
+         "certification/*.json", "reports/certification/*"],
         capture_output=True,
         text=True,
         check=True,
     )
+    return sorted(line for line in done.stdout.splitlines() if line.strip())
+
+
+def _normalise_text(body: str) -> list[str]:
     return [
-        line[3:].strip()
-        for line in done.stdout.splitlines()
-        if line.strip().endswith(".json")
+        line
+        for line in body.splitlines()
+        if not any(line.startswith(prefix) for prefix in VOLATILE_LINE_PREFIXES)
+    ]
+
+
+def check_text(relative: str) -> list[str]:
+    """Compare a rendered report or console transcript, line by line."""
+
+    done = subprocess.run(
+        ["git", "-C", str(ROOT), "show", f"HEAD:{relative}"],
+        capture_output=True,
+        text=True,
+    )
+    if done.returncode != 0:
+        return [f"{relative}: not tracked at HEAD, so drift cannot be assessed"]
+    try:
+        current = (ROOT / relative).read_text()
+    except OSError as exc:
+        return [f"{relative}: unreadable: {exc}"]
+
+    committed_lines = _normalise_text(done.stdout)
+    current_lines = _normalise_text(current)
+    if committed_lines == current_lines:
+        return []
+    for index, (left, right) in enumerate(zip(committed_lines, current_lines), start=1):
+        if left != right:
+            return [f"{relative}: line {index}: {left!r} -> {right!r}"]
+    return [
+        f"{relative}: length {len(committed_lines)} -> {len(current_lines)} lines "
+        "after removing the volatile lines"
     ]
 
 
@@ -134,14 +193,15 @@ def check(relative: str) -> list[str]:
 
 
 def main(argv: list[str]) -> int:
-    targets = argv[1:] or modified_artifacts()
+    targets = argv[1:] or tracked_evidence()
     if not targets:
-        print("PASS: no regenerated certification artifact differs from its committed version")
-        return 0
+        print("FAIL: no tracked certification evidence found; this gate is")
+        print("      checking nothing, which is not the same as finding nothing wrong")
+        return 1
 
     drift: list[str] = []
     for relative in targets:
-        drift += check(relative)
+        drift += check(relative) if relative.endswith(".json") else check_text(relative)
 
     if drift:
         print("FAIL: certification artifact drift outside the volatile fields")
@@ -156,12 +216,12 @@ def main(argv: list[str]) -> int:
         print("change decision and recertification.")
         return 1
 
+    jsons = sum(1 for name in targets if name.endswith(".json"))
     print(
-        f"PASS: {len(targets)} regenerated artifact(s) identical to the committed "
-        "version outside the volatile fields"
+        f"PASS: {len(targets)} evidence file(s) identical to the committed version "
+        f"outside the volatile fields ({jsons} machine-readable, "
+        f"{len(targets) - jsons} rendered)"
     )
-    for relative in targets:
-        print(f"    {relative}")
     return 0
 
 

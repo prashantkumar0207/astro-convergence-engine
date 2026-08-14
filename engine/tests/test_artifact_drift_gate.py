@@ -146,3 +146,93 @@ def test_swetest_cmd_is_not_volatile():
     """Q15 made it deterministic precisely so it could be held to this gate."""
 
     assert not any(entry.endswith("swetest_cmd") for entry in gate.VOLATILE)
+
+
+# --------------------------------------------------------------------------
+# Rendered evidence: reports and console transcripts (added after an audit
+# found `reports/certification/` was diffed by CI and enforced by nothing).
+# --------------------------------------------------------------------------
+
+REPORT = """\
+# certification - HUMAN-READABLE REPORT
+
+- Decision entry: ADR-0005
+- Date: 2026-08-13
+- Result: **PASS**
+
+## Run metadata
+
+- source_revision: aaaa
+- working_tree_dirty: False
+- executed_utc: 2026-08-13T08:00:00Z
+- engine_version: 0.3.0
+
+## Summary
+
+- **max_planet_error_arcsec**: 0.00017942695649253437
+- **result**: PASS
+"""
+
+
+def _text_drift(mutate):
+    return gate._normalise_text(REPORT) != gate._normalise_text(mutate(REPORT))
+
+
+@pytest.mark.parametrize(
+    "replacement, description",
+    [
+        (("- Date: 2026-08-13", "- Date: 1999-01-01"), "date line"),
+        (("- source_revision: aaaa", "- source_revision: bbbb"), "source revision line"),
+        (("- working_tree_dirty: False", "- working_tree_dirty: True"), "dirty flag line"),
+        (
+            ("- executed_utc: 2026-08-13T08:00:00Z", "- executed_utc: 1999-01-01T00:00:00Z"),
+            "timestamp line",
+        ),
+    ],
+)
+def test_volatile_report_lines_are_ignored(replacement, description):
+    old, new = replacement
+    assert not _text_drift(lambda t: t.replace(old, new)), f"{description} should be volatile"
+
+
+@pytest.mark.parametrize(
+    "replacement, description",
+    [
+        (("- **result**: PASS", "- **result**: FAIL"), "verdict flipped"),
+        (("- Result: **PASS**", "- Result: **FAIL**"), "headline verdict flipped"),
+        (
+            ("0.00017942695649253437", "0.4"),
+            "numerical maximum altered",
+        ),
+        (("- Decision entry: ADR-0005", "- Decision entry: ADR-9999"), "entry reattributed"),
+        (("- engine_version: 0.3.0", "- engine_version: 0.4.0"), "engine version changed"),
+    ],
+)
+def test_negative_control_report_drift_is_detected(replacement, description):
+    old, new = replacement
+    assert _text_drift(lambda t: t.replace(old, new)), (
+        f"report drift NOT detected: {description}; the gate cannot fail on rendered evidence"
+    )
+
+
+def test_negative_control_a_removed_report_line_is_detected():
+    assert _text_drift(lambda t: t.replace("- **result**: PASS\n", ""))
+
+
+def test_the_volatile_line_prefixes_are_exactly_what_is_documented():
+    assert gate.VOLATILE_LINE_PREFIXES == (
+        "- Date:",
+        "- source_revision:",
+        "- working_tree_dirty:",
+        "- executed_utc:",
+    )
+
+
+def test_rendered_evidence_is_actually_in_scope():
+    """The audit finding: reports were diffed by CI and enforced by nothing."""
+
+    tracked = gate.tracked_evidence()
+    assert any(name.endswith(".report.md") for name in tracked), "no report in scope"
+    assert any(name.endswith(".console.txt") for name in tracked), "no transcript in scope"
+    assert any(name.endswith(".json") for name in tracked), "no artifact in scope"
+    assert len(tracked) >= 30, f"only {len(tracked)} evidence files discovered"

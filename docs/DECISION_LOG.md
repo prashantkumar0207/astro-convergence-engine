@@ -3,8 +3,8 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | ACTIVE REGISTER. **ACCEPTED (11): ADR-0001, ADR-0002, ADR-0005, ADR-0009, ADR-0010, ADR-0011, ADR-0012, ADR-0033, ADR-0034, ADR-0035, ADR-0036**, all owner-ratified by Prashant Kumar on 2026-08-13. Tier-0 is **FORMALLY LOCKED** (ADR-0034), the only s12 Locked artifact. The registry vargas and the sign conventions are **owner-ratified but NOT s12 Locked** (ADR-0035 D3, ADR-0036 D3). **Still PROPOSED: ADR-0003, ADR-0004, ADR-0006, ADR-0007, ADR-0008, ADR-0013, ADR-0014 and ADR-0018 through ADR-0032.** Ratification is now possible, because Q1 named an owner; ratification is per-entry, and an owner existing is not the register being ratified. Includes the ADR-0018 remote-CI evidence addendum (2026-08-11). |
-| Version | 1.3.0 |
+| Status | ACTIVE REGISTER. **ACCEPTED (11): ADR-0001, ADR-0002, ADR-0005, ADR-0009, ADR-0010, ADR-0011, ADR-0012, ADR-0033 through ADR-0036**, all owner-ratified by Prashant Kumar on 2026-08-13. Tier-0 is **FORMALLY LOCKED** (ADR-0034), the only s12 Locked artifact. The registry vargas and the sign conventions are **owner-ratified but NOT s12 Locked** (ADR-0035 D3, ADR-0036 D3). **Still PROPOSED: ADR-0003, ADR-0004, ADR-0006, ADR-0007, ADR-0008, ADR-0013, ADR-0014 and ADR-0018 through ADR-0032.** Ratification is now possible, because Q1 named an owner; ratification is per-entry, and an owner existing is not the register being ratified. Includes the ADR-0018 remote-CI evidence addendum (2026-08-11). |
+| Version | 1.5.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 | Last updated | 2026-08-13 |
 | Review cadence | TBD |
@@ -2129,6 +2129,89 @@ by anything in this batch**, and the four ratified layers gain no new scope from
   `scripts/check_adr_numbering.py`, `scripts/check_artifact_drift.py`, and the corrected
   `scripts/check_retired_identifiers.py`; the probe matrices executed in isolated copies; the
   regenerated Tier-0 evidence compared field by field against its pre-change committed version.
+
+---
+
+## ADR-0038 - The ADR-0037 batch broke the default gate; second-round audit and repair
+
+- **Date:** 2026-08-13
+- **Status:** PROPOSED - pending owner ratification (Q1).
+- **Context:** A verification audit was run against the tree ADR-0037 produced, by an independent
+  agent instructed not to assume the fixes worked. It found a **BLOCKER caused by the remediation
+  itself**, plus five weaknesses in the new controls. This entry records the failure plainly and the
+  repair.
+
+### Decision 1. The self-inflicted blocker, recorded without softening
+
+`engine/tests/test_retired_identifier_gate_scope.py`, added by ADR-0037 to prove the identifier
+gate's exemption had been narrowed, **wrote the ten retired identifiers as literal strings in a
+tracked file that was not on the gate's allowlist**. The result:
+
+- `scripts/check_retired_identifiers.py` reported 19 Pattern A and 19 Pattern B violations;
+- the `governance` job would have died at its first step;
+- the default gate failed, on the module's own self-check that the real tree still passes.
+
+**Three things about this are worth stating rather than burying.**
+
+First, **it passed pre-commit and failed post-commit**, because the gate reads `git ls-files`. While
+the file was untracked it was invisible to the gate. The commit that tracked it is what broke it.
+Any gate scoped to tracked files has this property, and the batch's own validation did not account
+for it.
+
+Second, **`.github/workflows/ci.yml` already records this exact lesson**, in the comment explaining
+why its probe string is assembled at run time: "A literal here would be a real violation inside a
+tracked file, and the gate would flag this workflow itself. Found the hard way." The lesson was
+applied to the YAML and not to the test module written in the same batch.
+
+Third, **ADR-0037 asserted "Nothing was weakened to obtain a PASS" and reported the gate count
+rising to 496, without noticing that one of the 496 was failing.** The count was right and the
+conclusion was wrong. That is the sharpest illustration available of the finding ADR-0037 D2 itself
+recorded: governance prose written to a lower evidential standard than the work it governs.
+
+**Repair.** The module now assembles every identifier at run time from `gate.RETIRED`, the single
+source of truth, and carries a self-enforcing test asserting that no retired identifier literal
+appears in its own text.
+
+### Decision 2. Five weaknesses in the ADR-0037 controls, all repaired
+
+| Finding | What was wrong | Repair, and how it was verified |
+|---|---|---|
+| **Unmapped divisions failed open** | `authorised_supersession()` returned the same permissive answer for "no division in the path" and "division present but not in the replacement map". **D9 and D10 are in the second class**, so a D9 or D10 file could have claimed to supersede any retired identifier at all. They are the two flagship certified vargas | Two distinct sentinels, `ANY_RETIRED` and `NOTHING_AUTHORISED`. An unmapped division now authorises nothing. Probed both directions |
+| **Look-alike keys inherited the exemption** | The key was matched as a substring, so `xyzsupersedes_provisional_id` was exempt | A left boundary on the key. Three prefix probes committed |
+| **Rendered evidence was unenforced** | The drift gate covered `certification/*.json` only, while the CI step diffed `reports/certification/` and the next step uploaded it as certification evidence. Flipping every PASS to FAIL in a report passed | The gate now compares reports and console transcripts line by line, ignoring only the text renderings of the four volatile fields. Verified by corrupting three real evidence files and restoring them |
+| **A vacuous PASS** | With nothing modified, the gate compared zero files and printed a PASS that read as "regenerated and identical" | It now compares **every tracked evidence file** regardless of git status, reports the count, and **fails** if it finds none to check. Verified in an empty repository |
+| **The numbering control proved neither rule** | Both probes used already-issued numbers, so the out-of-order probe tripped the uniqueness rule too. Deleting **either** assertion left the control passing | The ordering probe now uses **ADR-0016**, which is reserved and unissued, so it is out of order without being a duplicate. Mutation-tested: with uniqueness deleted the ordering probe still fires, and with ordering deleted the duplicate probe still fires |
+| **The network control proved one patch of five** | One probe exercising three calls short-circuits on whichever patched symbol it reaches first. With two patches deleted it still raised `NoNetworkError` and still passed | **Five separate probes, each run twice**: unguarded it must succeed, guarded it must fail with `NoNetworkError`. Mutation matrix run: removing `socket.socket.connect`, `connect_ex`, `getaddrinfo` or `gethostbyname` now each fails its own probe |
+| **The immutability message over-claimed** | The pathspec omitted `LOCK_MANIFEST.json`, `schemas/`, `knowledge/`, `pyproject.toml`, `pytest.ini` and root documents, while the step printed "no tracked source file was modified" | The step now checks the **whole tree** after restoring `certification/` and `reports/`. Any pathspec, however long, omits something |
+
+**One residual is recorded rather than fixed, because it cannot be fixed.** `create_connection`
+cannot be isolated by any probe: it delegates to `getaddrinfo` internally, so removing its patch
+alone leaves the call blocked by the `getaddrinfo` patch. It is defence in depth over a path already
+covered. Four of the guard's five symbols are individually detected; the fifth is stated in
+`.github/workflows/ci.yml` rather than claimed.
+
+### Decision 3. `docs/CI_AND_ORACLE_REPRODUCIBILITY_SPEC.md` corrected
+
+It still said "No external oracle, no network" and "defines two jobs", and its status header read
+version 1.0.0 while its own change history recorded 1.1.0. All three corrected. **No procedure
+changed**; the document now describes the workflow that exists, including the `governance` job and
+the two gates added under ADR-0037.
+
+- **Consequences:**
+  - Default gate **496 to 521**. The 496 included one failure; the 521 do not.
+  - **The lesson generalises and is worth carrying forward: a gate scoped to tracked files cannot be
+    validated before the files are tracked.** Any future gate of this shape should be exercised
+    against a staged tree, not a working tree.
+  - Every ADR-0037 remediation now has a control that has been mutation-tested rather than merely
+    executed. That distinction is the whole difference between a gate and a decoration, and ADR-0037
+    did not draw it consistently.
+  - Findings NOT repaired remain as ADR-0037 D4 recorded them, and Q19 to Q25 are unchanged.
+  - **Tier-0 untouched.** No tolerance, profile, holdout case, kernel calculation or D9/D10
+    mathematics changed by this entry.
+- **Evidence:** The independent verification audit; the mutation matrices for the numbering control,
+  the network guard and the retired-identifier scope; corruption and restoration of three real
+  rendered evidence files; the empty-repository probe; `git diff --check` clean; 521 passed, zero
+  skipped.
 
 ---
 

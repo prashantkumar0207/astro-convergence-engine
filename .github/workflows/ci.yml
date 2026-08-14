@@ -116,34 +116,63 @@ jobs:
 
       - name: Assert the network guard actually blocks (negative control)
         run: |
-          # STRENGTHENED 2026-08-13. The previous form asserted only that the
-          # guarded probe exited nonzero, which three unrelated conditions also
-          # satisfy: a missing probe file, a renamed guard, or a runner with no
-          # egress at all. It could not distinguish "guard blocked" from
-          # "network unavailable". This form establishes the baseline first.
-          printf "import socket\nsocket.create_connection(('pypi.org', 443), timeout=10)\nprint('reached pypi')\n" > /tmp/netprobe.py
-          test -s /tmp/netprobe.py
+          # STRENGTHENED 2026-08-13, twice. The original asserted only a nonzero
+          # exit, which a missing probe, a renamed guard or a runner with no
+          # egress all satisfy. The first strengthening established a baseline
+          # but used ONE probe exercising three calls, which short-circuits on
+          # whichever patched symbol it reaches first: with two of the five
+          # patches deleted it still raised NoNetworkError and still "passed".
+          #
+          # SEPARATE PROBES, one per entry point, each run twice. Unguarded it
+          # must SUCCEED, proving egress exists and the probe is well formed;
+          # guarded it must FAIL with NoNetworkError. A patch silently removed
+          # from the guard now fails its own probe.
+          mkdir -p /tmp/netprobes
 
-          # 1. WITHOUT the guard the probe must SUCCEED, proving egress exists
-          #    and therefore that the guarded failure below means something.
-          python /tmp/netprobe.py
+          printf 'import socket\nsocket.getaddrinfo("pypi.org", 443)\nprint("ok")\n' \
+            > /tmp/netprobes/getaddrinfo.py
+          printf 'import socket\nsocket.create_connection(("pypi.org", 443), 10)\nprint("ok")\n' \
+            > /tmp/netprobes/create_connection.py
+          # Raw IP, so this probe does not depend on DNS and therefore isolates
+          # socket.socket.connect from the getaddrinfo patch.
+          printf 'import socket\ns=socket.socket()\ns.settimeout(10)\ns.connect(("151.101.0.223", 443))\ns.close()\nprint("ok")\n' \
+            > /tmp/netprobes/connect_raw_ip.py
+          printf 'import socket\nimport sys\ns=socket.socket()\ns.settimeout(10)\nsys.exit(0 if s.connect_ex(("151.101.0.223", 443)) == 0 else 1)\n' \
+            > /tmp/netprobes/connect_ex_raw_ip.py
+          printf 'import socket\nsocket.gethostbyname("pypi.org")\nprint("ok")\n' \
+            > /tmp/netprobes/gethostbyname.py
+          # COVERAGE, stated honestly: four of the guard's five patched symbols
+          # are isolated by these probes. create_connection cannot be isolated,
+          # because it delegates to getaddrinfo internally, so removing its patch
+          # alone leaves the call blocked by the getaddrinfo patch. It is
+          # defence in depth over a path already covered, and that is why its
+          # probe is retained rather than dropped.
 
-          # 2. WITH the guard it must fail, and specifically with NoNetworkError.
-          set +e
-          out=$(python scripts/ci_no_network.py /tmp/netprobe.py 2>&1)
-          rc=$?
-          set -e
-          echo "$out"
-          if [ "$rc" -eq 0 ]; then
-            echo "network guard did NOT block; the subset re-run above is worthless"
-            exit 1
-          fi
-          if ! echo "$out" | grep -q "NoNetworkError"; then
-            echo "guarded probe failed, but NOT with NoNetworkError; the failure"
-            echo "cannot be attributed to the guard, so this control proves nothing"
-            exit 1
-          fi
-          echo "negative control passed: egress exists, and the guard blocked it with NoNetworkError"
+          for probe in /tmp/netprobes/*.py; do
+            name=$(basename "$probe")
+            echo "::group::network probe $name"
+            # 1. unguarded: MUST succeed, or the control proves nothing.
+            python "$probe"
+
+            # 2. guarded: MUST fail, and specifically with NoNetworkError.
+            set +e
+            out=$(python scripts/ci_no_network.py "$probe" 2>&1)
+            rc=$?
+            set -e
+            echo "$out"
+            if [ "$rc" -eq 0 ]; then
+              echo "network guard did NOT block $name"
+              exit 1
+            fi
+            if ! echo "$out" | grep -q "NoNetworkError"; then
+              echo "$name failed, but NOT with NoNetworkError; the failure cannot"
+              echo "be attributed to the guard, so this control proves nothing"
+              exit 1
+            fi
+            echo "::endgroup::"
+            echo "  $name: egress confirmed, guard blocked it with NoNetworkError"
+          done
+          rm -rf /tmp/netprobes
 
       - name: Assert regenerated artifacts did not drift, then that no source changed
         run: |
@@ -153,9 +182,13 @@ jobs:
           # this tier was discarded rather than asserted.
           python scripts/check_artifact_drift.py
           git checkout -- certification/ reports/
-          git status --porcelain -- engine/ scripts/ legacy/ validate_*.py \
-            docs/ CHECKSUMS.sha256 requirements.lock requirements-oracle.lock \
-            .github/ *.py *.se1 swetest > /tmp/source_drift.txt
+          # WHOLE TREE, corrected 2026-08-13. An explicit pathspec, however long,
+          # always omits something: the previous list missed LOCK_MANIFEST.json,
+          # schemas/, knowledge/, pyproject.toml, pytest.ini and root-level
+          # documents, while the step's own message claimed "no tracked source
+          # file was modified". certification/ and reports/ are restored above,
+          # so anything remaining is genuine unexpected drift.
+          git status --porcelain > /tmp/source_drift.txt
           if [ -s /tmp/source_drift.txt ]; then
             echo "a certification run modified tracked source:"
             cat /tmp/source_drift.txt
@@ -287,7 +320,11 @@ jobs:
           python scripts/check_adr_numbering.py /tmp/register_probe.md > /dev/null 2>&1
           dup=$?
           cp docs/DECISION_LOG.md /tmp/register_probe.md
-          printf '\n## ADR-0002 - planted out-of-order probe\nbody\n' >> /tmp/register_probe.md
+          # ADR-0016 is RESERVED and unissued, so appending it at the end is
+          # out-of-order WITHOUT also being a duplicate. Using an already-issued
+          # number here would trip the uniqueness rule too, and the control would
+          # pass even if the ordering assertion were deleted outright.
+          printf '\n## ADR-0016 - planted out-of-order probe\nbody\n' >> /tmp/register_probe.md
           python scripts/check_adr_numbering.py /tmp/register_probe.md > /dev/null 2>&1
           ooo=$?
           rm -f /tmp/register_probe.md
