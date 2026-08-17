@@ -29,7 +29,9 @@ def test_artifact_exists_and_claims_pass():
     assert report["year_convention"]["days"] == "91314091/250000"  # 365.256364 exact
     gates = report["gates"]
     assert gates["oracle_lord_mismatches"] == 0
-    assert gates["oracle_bhukti_rows_compared"] == 1782
+    # H-04 (ADR-0053): the oracle comparison now runs at pratyantar depth
+    # (3), not antardasha depth (2). 2 profiles x 11 cases x 729 rows/case.
+    assert gates["oracle_pratyantar_rows_compared"] == 16038
     assert gates["oracle_max_start_delta_days"] <= gates["start_tolerance_days"]
     assert gates["independent_validator"] == "PASS"
     # Oracle astronomy divergence is recorded, bounded, and does not

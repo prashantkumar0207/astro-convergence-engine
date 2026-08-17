@@ -1,7 +1,7 @@
 {
  "schema": "vimshottari_v1_certification",
  "adr": "ADR-0007",
- "date": "2026-08-09",
+ "date": "2026-08-17",
  "scope": "Vimshottari maha/antar/pratyantar timelines, school-explicit seeding",
  "year_convention": {
   "profile": "vimshottari_mean_sidereal_year",
@@ -15,9 +15,9 @@
   "max_oracle_moon_delta_arcsec": 0.745776
  },
  "gates": {
-  "oracle_bhukti_rows_compared": 1782,
+  "oracle_pratyantar_rows_compared": 16038,
   "oracle_lord_mismatches": 0,
-  "oracle_max_start_delta_days": 1.3969838619232178e-09,
+  "oracle_max_start_delta_days": 1.862645149230957e-09,
   "start_tolerance_days": 1e-05,
   "independent_validator": "PASS",
   "cases": {
@@ -25,158 +25,158 @@
     {
      "case": "H1_london_1823",
      "moon_delta_vs_oracle_arcsec": 0.727501,
-     "bhukti_rows": 81,
+     "pratyantar_rows": 729,
      "lord_mismatches": 0,
-     "max_start_delta_days": 9.313225746154785e-10
+     "max_start_delta_days": 1.3969838619232178e-09
     },
     {
      "case": "H2_newyork_1900",
      "moon_delta_vs_oracle_arcsec": 0.733448,
-     "bhukti_rows": 81,
+     "pratyantar_rows": 729,
      "lord_mismatches": 0,
-     "max_start_delta_days": 1.3969838619232178e-09
+     "max_start_delta_days": 1.862645149230957e-09
     },
     {
      "case": "H3_sydney_1946",
      "moon_delta_vs_oracle_arcsec": 0.668716,
-     "bhukti_rows": 81,
+     "pratyantar_rows": 729,
      "lord_mismatches": 0,
-     "max_start_delta_days": 1.3969838619232178e-09
+     "max_start_delta_days": 1.862645149230957e-09
     },
     {
      "case": "H4_delhi_1979",
      "moon_delta_vs_oracle_arcsec": 0.665488,
-     "bhukti_rows": 81,
+     "pratyantar_rows": 729,
      "lord_mismatches": 0,
-     "max_start_delta_days": 1.3969838619232178e-09
+     "max_start_delta_days": 1.862645149230957e-09
     },
     {
      "case": "H5_reykjavik_1992",
      "moon_delta_vs_oracle_arcsec": 0.664223,
-     "bhukti_rows": 81,
+     "pratyantar_rows": 729,
      "lord_mismatches": 0,
-     "max_start_delta_days": 9.313225746154785e-10
+     "max_start_delta_days": 1.3969838619232178e-09
     },
     {
      "case": "H6_quito_2010",
      "moon_delta_vs_oracle_arcsec": 0.695028,
-     "bhukti_rows": 81,
+     "pratyantar_rows": 729,
      "lord_mismatches": 0,
-     "max_start_delta_days": 9.313225746154785e-10
+     "max_start_delta_days": 1.3969838619232178e-09
     },
     {
      "case": "H7_tokyo_2033",
      "moon_delta_vs_oracle_arcsec": 0.69574,
-     "bhukti_rows": 81,
+     "pratyantar_rows": 729,
      "lord_mismatches": 0,
-     "max_start_delta_days": 1.3969838619232178e-09
+     "max_start_delta_days": 1.862645149230957e-09
     },
     {
      "case": "H8_mumbai_2077",
      "moon_delta_vs_oracle_arcsec": 0.703176,
-     "bhukti_rows": 81,
+     "pratyantar_rows": 729,
      "lord_mismatches": 0,
-     "max_start_delta_days": 9.313225746154785e-10
+     "max_start_delta_days": 1.3969838619232178e-09
     },
     {
      "case": "H9_paris_2350",
      "moon_delta_vs_oracle_arcsec": 0.700659,
-     "bhukti_rows": 81,
+     "pratyantar_rows": 729,
      "lord_mismatches": 0,
-     "max_start_delta_days": 9.313225746154785e-10
+     "max_start_delta_days": 1.3969838619232178e-09
     },
     {
      "case": "H10_boundary_moon_a",
      "moon_delta_vs_oracle_arcsec": 0.745776,
-     "bhukti_rows": 81,
+     "pratyantar_rows": 729,
      "lord_mismatches": 0,
-     "max_start_delta_days": 9.313225746154785e-10
+     "max_start_delta_days": 1.3969838619232178e-09
     },
     {
      "case": "H11_boundary_moon_b",
      "moon_delta_vs_oracle_arcsec": 0.744763,
-     "bhukti_rows": 81,
+     "pratyantar_rows": 729,
      "lord_mismatches": 0,
-     "max_start_delta_days": 1.3969838619232178e-09
+     "max_start_delta_days": 1.862645149230957e-09
     }
    ],
    "kp_krishnamurti": [
     {
      "case": "H1_london_1823",
      "moon_delta_vs_oracle_arcsec": 0.727501,
-     "bhukti_rows": 81,
+     "pratyantar_rows": 729,
      "lord_mismatches": 0,
-     "max_start_delta_days": 9.313225746154785e-10
+     "max_start_delta_days": 1.3969838619232178e-09
     },
     {
      "case": "H2_newyork_1900",
      "moon_delta_vs_oracle_arcsec": 0.733448,
-     "bhukti_rows": 81,
+     "pratyantar_rows": 729,
      "lord_mismatches": 0,
-     "max_start_delta_days": 1.3969838619232178e-09
+     "max_start_delta_days": 1.862645149230957e-09
     },
     {
      "case": "H3_sydney_1946",
      "moon_delta_vs_oracle_arcsec": 0.668716,
-     "bhukti_rows": 81,
+     "pratyantar_rows": 729,
      "lord_mismatches": 0,
-     "max_start_delta_days": 1.3969838619232178e-09
+     "max_start_delta_days": 1.862645149230957e-09
     },
     {
      "case": "H4_delhi_1979",
      "moon_delta_vs_oracle_arcsec": 0.665488,
-     "bhukti_rows": 81,
+     "pratyantar_rows": 729,
      "lord_mismatches": 0,
-     "max_start_delta_days": 1.3969838619232178e-09
+     "max_start_delta_days": 1.862645149230957e-09
     },
     {
      "case": "H5_reykjavik_1992",
      "moon_delta_vs_oracle_arcsec": 0.664223,
-     "bhukti_rows": 81,
+     "pratyantar_rows": 729,
      "lord_mismatches": 0,
-     "max_start_delta_days": 9.313225746154785e-10
+     "max_start_delta_days": 1.3969838619232178e-09
     },
     {
      "case": "H6_quito_2010",
      "moon_delta_vs_oracle_arcsec": 0.695028,
-     "bhukti_rows": 81,
+     "pratyantar_rows": 729,
      "lord_mismatches": 0,
-     "max_start_delta_days": 9.313225746154785e-10
+     "max_start_delta_days": 1.3969838619232178e-09
     },
     {
      "case": "H7_tokyo_2033",
      "moon_delta_vs_oracle_arcsec": 0.69574,
-     "bhukti_rows": 81,
+     "pratyantar_rows": 729,
      "lord_mismatches": 0,
-     "max_start_delta_days": 1.3969838619232178e-09
+     "max_start_delta_days": 1.862645149230957e-09
     },
     {
      "case": "H8_mumbai_2077",
      "moon_delta_vs_oracle_arcsec": 0.703176,
-     "bhukti_rows": 81,
+     "pratyantar_rows": 729,
      "lord_mismatches": 0,
-     "max_start_delta_days": 9.313225746154785e-10
+     "max_start_delta_days": 1.3969838619232178e-09
     },
     {
      "case": "H9_paris_2350",
      "moon_delta_vs_oracle_arcsec": 0.700659,
-     "bhukti_rows": 81,
+     "pratyantar_rows": 729,
      "lord_mismatches": 0,
-     "max_start_delta_days": 9.313225746154785e-10
+     "max_start_delta_days": 1.3969838619232178e-09
     },
     {
      "case": "H10_boundary_moon_a",
      "moon_delta_vs_oracle_arcsec": 0.745776,
-     "bhukti_rows": 81,
+     "pratyantar_rows": 729,
      "lord_mismatches": 0,
-     "max_start_delta_days": 9.313225746154785e-10
+     "max_start_delta_days": 1.3969838619232178e-09
     },
     {
      "case": "H11_boundary_moon_b",
      "moon_delta_vs_oracle_arcsec": 0.744763,
-     "bhukti_rows": 81,
+     "pratyantar_rows": 729,
      "lord_mismatches": 0,
-     "max_start_delta_days": 1.3969838619232178e-09
+     "max_start_delta_days": 1.862645149230957e-09
     }
    ]
   }
@@ -200,9 +200,11 @@
    }
   },
   "anti_fitting": {
-   "modules_scanned": 146,
+   "modules_scanned": 170,
    "findings": [],
-   "justified_exceptions": []
+   "justified_exceptions": [
+    "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."
+   ]
   }
  },
  "result": "PASS",
