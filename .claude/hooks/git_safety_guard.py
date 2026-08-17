@@ -24,6 +24,10 @@ _HEREDOC_RE = re.compile(r"<<-?\s*['\"]?(\w+)['\"]?.*?\n\1\b", re.DOTALL)
 # text inside `-m "..."` or similar is stripped the same way.
 _DQUOTE_RE = re.compile(r'"(?:[^"\\]|\\.)*"')
 _SQUOTE_RE = re.compile(r"'(?:[^'\\]|\\.)*'")
+# Splits a sanitized command into individual shell statements on &&, ||, ;, |, and newlines, so a
+# check for one statement (e.g. "does this push target main") cannot be satisfied by a word that
+# appears only in a different, unrelated statement in the same multi-line Bash call.
+_SEGMENT_SPLIT_RE = re.compile(r"&&|\|\||;|\n|\|")
 
 
 def _sanitize(command: str) -> str:
@@ -33,6 +37,10 @@ def _sanitize(command: str) -> str:
     sanitized = _DQUOTE_RE.sub('""', sanitized)
     sanitized = _SQUOTE_RE.sub("''", sanitized)
     return sanitized
+
+
+def _segments(command: str) -> list[str]:
+    return [s.strip() for s in _SEGMENT_SPLIT_RE.split(command) if s.strip()]
 
 
 def current_branch() -> str:
@@ -48,6 +56,42 @@ def current_branch() -> str:
         return ""
 
 
+def _check_segment(segment: str) -> str | None:
+    """Apply every rule to a single shell statement. Never looks outside `segment`."""
+
+    if "git" not in segment:
+        return None
+
+    if re.search(r"--no-verify|--no-gpg-sign", segment):
+        return "--no-verify / --no-gpg-sign bypasses hooks or commit signing."
+
+    if re.search(r"\bgit\b.*\bpush\b.*(--force-with-lease\b|--force\b|(?<!\S)-f(?!\S))", segment):
+        return "force-push (--force / -f / --force-with-lease) can overwrite remote history."
+
+    if re.search(r"\bgit\b.*\breset\b.*--hard\b", segment):
+        return "git reset --hard discards uncommitted work irreversibly."
+
+    if re.search(r"\bgit\b.*\bclean\b.*-[a-zA-Z]*f", segment):
+        return "git clean -f (any variant) irreversibly deletes untracked files."
+
+    if re.search(r"\bgit\b.*\bbranch\b.*(-D\b|--delete\s+--force\b)", segment):
+        return "git branch -D force-deletes a branch, discarding unmerged commits."
+
+    if re.search(r"\bgit\b.*\bpush\b", segment):
+        if re.search(r"\bmain\b", segment):
+            return "direct push targeting 'main' requires explicit owner authorization."
+        if current_branch() == "main" and not re.search(r":\s*\S+\s*$", segment):
+            return "pushing while checked out on 'main' with no explicit non-main refspec."
+
+    if re.search(r"\bgit\b.*\bmerge\b", segment) and current_branch() == "main":
+        return "merging while checked out on 'main' requires explicit owner authorization."
+
+    if re.search(r"\bgit\b.*\bcommit\b", segment) and current_branch() == "main":
+        return "committing directly on 'main' requires explicit owner authorization."
+
+    return None
+
+
 def blocked_reason(raw_command: str) -> str | None:
     if "git" not in raw_command:
         return None
@@ -58,32 +102,13 @@ def blocked_reason(raw_command: str) -> str | None:
         # describing a git command) - nothing was actually invoked.
         return None
 
-    if re.search(r"--no-verify|--no-gpg-sign", command):
-        return "--no-verify / --no-gpg-sign bypasses hooks or commit signing."
-
-    if re.search(r"\bgit\b.*\bpush\b.*(--force-with-lease\b|--force\b|(?<!\S)-f(?!\S))", command):
-        return "force-push (--force / -f / --force-with-lease) can overwrite remote history."
-
-    if re.search(r"\bgit\b.*\breset\b.*--hard\b", command):
-        return "git reset --hard discards uncommitted work irreversibly."
-
-    if re.search(r"\bgit\b.*\bclean\b.*-[a-zA-Z]*f", command):
-        return "git clean -f (any variant) irreversibly deletes untracked files."
-
-    if re.search(r"\bgit\b.*\bbranch\b.*(-D\b|--delete\s+--force\b)", command):
-        return "git branch -D force-deletes a branch, discarding unmerged commits."
-
-    if re.search(r"\bgit\b.*\bpush\b", command):
-        if re.search(r"\bmain\b", command):
-            return "direct push targeting 'main' requires explicit owner authorization."
-        if current_branch() == "main" and not re.search(r":\s*\S+\s*$", command.strip()):
-            return "pushing while checked out on 'main' with no explicit non-main refspec."
-
-    if re.search(r"\bgit\b.*\bmerge\b", command) and current_branch() == "main":
-        return "merging while checked out on 'main' requires explicit owner authorization."
-
-    if re.search(r"\bgit\b.*\bcommit\b", command) and current_branch() == "main":
-        return "committing directly on 'main' requires explicit owner authorization."
+    # Checked per-segment, not against the whole (possibly multi-statement, multi-line) command:
+    # otherwise a word from one statement (e.g. "origin/main" in an unrelated `git rev-parse`) can
+    # satisfy a pattern that was only ever meant to match within a single statement (e.g. `git push`).
+    for segment in _segments(command):
+        reason = _check_segment(segment)
+        if reason:
+            return reason
 
     return None
 
