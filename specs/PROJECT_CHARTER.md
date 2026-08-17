@@ -3,8 +3,8 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | PROPOSED - candidate Project Charter under `docs/DECISION_LOG.md` `ADR-0015`, not yet owner-adopted. Header added administratively (`ADR-0015`); substantive text below is unedited. |
-| Version | 1.0.0 |
+| Status | **ACCEPTED - adopted as the ACE Project Charter, `ADR-0015`/`ADR-0051` (owner-ratified 2026-08-17).** Subordinate to, and does not replace or supersede, `docs/PROJECT_CONSTITUTION.md`, which remains the governing constitution. Substantive text below is unedited by adoption. |
+| Version | 1.1.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 | Last updated | 2026-08-17 |
 | Review cadence | TBD |
@@ -31,4 +31,5 @@ Astrology and numerology are interpretive systems and are not scientifically val
 
 | Version | Date | Change |
 |---|---|---|
+| 1.1.0 | 2026-08-17 | `ADR-0051`: owner-adopted as the ACE Project Charter, subordinate to `docs/PROJECT_CONSTITUTION.md`. Sections above unedited. |
 | 1.0.0 | 2026-08-17 | `ADR-0015` (PROPOSED): added the mandatory status header, absent since the bootstrap era. Sections above unedited. |

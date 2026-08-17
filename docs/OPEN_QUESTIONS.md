@@ -3,8 +3,8 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | ACTIVE REGISTER. Twenty-five questions. **Owner ratifications of 2026-08-13: Q13 resolved; Q1 and Q8 ratified in part (ADR-0033); ADR-0005 ratified, making Tier-0 FORMALLY LOCKED (ADR-0034); ADR-0009/0010/0011 ratified, making the registry vargas owner-ratified CERTIFIED but NOT Locked (ADR-0035); ADR-0012 ratified, closing the varga sign-convention asymmetry (ADR-0036).** **Owner ratification of 2026-08-17: Q8 fully RESOLVED (ADR-0048) - the Q8 Closure Matrix, `docs/Q8_CLOSURE_MATRIX.md`, is ratified as written; per-phase criteria now exist; no phase is thereby authorised.** **Eleven fully open** (Q2, Q3, Q4, Q5, Q7, Q10, Q12, Q22, Q23, Q24, Q25), **six with candidate resolutions awaiting a ratification decision** (Q6, Q9, Q11, Q14, Q15, Q16), one ratified in part (Q1), two resolved (Q13, Q8). Ratification is per-entry; the rest are not ratified merely because Q1 and Q8 are. |
-| Version | 2.2.0 |
+| Status | ACTIVE REGISTER. Twenty-five questions. **Owner ratifications of 2026-08-13: Q13 resolved; Q1 and Q8 ratified in part (ADR-0033); ADR-0005 ratified, making Tier-0 FORMALLY LOCKED (ADR-0034); ADR-0009/0010/0011 ratified, making the registry vargas owner-ratified CERTIFIED but NOT Locked (ADR-0035); ADR-0012 ratified, closing the varga sign-convention asymmetry (ADR-0036).** **Owner ratification of 2026-08-17: Q8 fully RESOLVED (ADR-0048).** **Owner ratification of 2026-08-17 (later batch): Q1 fully RESOLVED (ADR-0051 D4, accepting DP-001 Option B) - docs/engine/release-owner roles interim-designated to the Project Owner pending explicit delegation; no longer "ratified in part".** **Eleven fully open** (Q2, Q3, Q4, Q5, Q7, Q10, Q12, Q22, Q23, Q24, Q25), **six with candidate resolutions awaiting a ratification decision** (Q6, Q9, Q11, Q14, Q15, Q16), **three resolved (Q13, Q8, Q1)**. Ratification is per-entry; the rest are not ratified merely because Q1 and Q8 are. |
+| Version | 2.3.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 | Last updated | 2026-08-17 |
 | Review cadence | TBD |
@@ -16,7 +16,7 @@ artifacts listed against it. Resolution = decision log entry + this register upd
 
 | ID | Question | Why it matters | Blocks | Status |
 |---|---|---|---|---|
-| Q1 | Who are the named owners/maintainers (docs owner, engine owner, release owner)? | Accountability for a 10+ year artifact | All status headers | **RATIFIED IN PART, 2026-08-13** (ADR-0033 D1). Project Owner: Prashant Kumar. Builder: Claude. Independent auditor: ChatGPT. **STILL OPEN:** the docs owner, engine owner and release owner were not designated and are not invented. |
+| Q1 | Who are the named owners/maintainers (docs owner, engine owner, release owner)? | Accountability for a 10+ year artifact | All status headers | **RATIFIED, 2026-08-13 in part / 2026-08-17 in full** (ADR-0033 D1; ADR-0051 D4, DP-001 Option B). Project Owner: Prashant Kumar. Builder: Claude. Independent auditor: ChatGPT. **Docs owner, engine owner and release owner: interim-designated to the Project Owner, 2026-08-17 (ADR-0051), until explicitly delegated** - not invented; a named, dated owner decision. |
 | Q2 | Branch/review model (trunk-based vs GitFlow; required reviewers; protection rules)? | Merge discipline | CONTRIBUTING.md | OPEN |
 | Q3 | Versioning and release policy (repo-wide semver vs per-component; tagging; changelog scope)? | Long-term compatibility management | CHANGELOG.md, engine releases | OPEN |
 | Q4 | Authoritative expansion, scope and mutual boundary of **HLKG** and **AKG**? | Two specification skeletons cannot be filled without inventing meaning | HLKG_SPEC.md, AKG_SPEC.md, knowledge/ layout | OPEN |
@@ -197,10 +197,11 @@ Drafted on CEO direction. Each presents options; none decides. All four matters 
 
 `docs/decisions/README.md` indexes the paper series and records that DP-002 through DP-007 are
 reserved for the Phase G governance round and are not yet drafted. **DP-001 was drafted 2026-08-17**
-(`docs/decisions/DP-001-owner-ratification-and-mechanism.md`, OPEN) - it separates the named-owners
-question, still open for the docs/engine/release-owner roles, from the ratification-mechanism
-question, for which it proposes citing `ADR-0033` D1 and the practice it established as sufficient.
-The paper decides neither; both await an owner disposition.
+(`docs/decisions/DP-001-owner-ratification-and-mechanism.md`) and **ADDRESSED by `ADR-0051`, same
+date**, accepting the paper's Option B: the ratification-mechanism question answered in part by
+`ADR-0033` D1 and the practice it established; the named-owners question resolved by interim-
+designating the Project Owner as docs/engine/release owner. The paper itself is unedited and remains
+on record as the options considered, per this repository's practice for `DP-010`/`ADR-0044`.
 
 ## CONSOLIDATED OWNER-DECISION BATCH, prepared 2026-08-13
 
@@ -256,6 +257,7 @@ records settled matters and a PROPOSED entry settles nothing.
 |---|---|---|---|
 | Q13 | Prashant Kumar (owner) | 2026-08-13 | ADR-0033 D2; ADR-0001 and ADR-0002 ratified as written |
 | Q1, in part | Prashant Kumar (owner) | 2026-08-13 | ADR-0033 D1. Owner, builder and auditor roles named. Docs, engine and release owners NOT designated and remain OPEN. |
+| Q1, remaining roles | Prashant Kumar (owner) | 2026-08-17 | ADR-0051 D4, accepting DP-001 Option B. Docs, engine and release owner roles interim-designated to the Project Owner until explicitly delegated. No additional person invented. |
 | Q8, direction only | Prashant Kumar (owner) | 2026-08-13 | ADR-0033 D3. Dependency ordering ratified with five qualifications. Per-phase criteria remain OPEN. |
 | Q8, full closure | Prashant Kumar (owner) | 2026-08-17 | ADR-0048. `docs/Q8_CLOSURE_MATRIX.md` ratified as written. Framework only; no phase entry authorised; Phase G's own exit criteria separately noted as not independently confirmed met. |
 | (not a question) Tier-0 formal lock | Prashant Kumar (owner) | 2026-08-13 | ADR-0005 ratified as written; ADR-0034 verifies all four Constitution s12 conditions. **Tier-0 is FORMALLY LOCKED.** Recorded here because it is the first artifact in the repository to meet the constitution's definition. |
