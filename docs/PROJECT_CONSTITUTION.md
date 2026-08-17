@@ -1,9 +1,9 @@
 | Field | Value |
 |---|---|
 | Status | DRAFT - pending owner ratification |
-| Version | 0.1.0 |
+| Version | 0.1.1 |
 | Owner | TBD (docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-07-11 |
+| Last updated | 2026-08-17 |
 | Review cadence | TBD |
 
 # Project Constitution
@@ -63,6 +63,14 @@ Independent references, untouched holdouts, skips-are-failures, anti-fitting sca
 stored-results-are-history-not-proof (docs/VALIDATION_STANDARD.md governs mechanics).
 
 ## 11. AI Collaboration Model
+*Status note (G7 repair, `docs/Q8_CLOSURE_MATRIX.md` s3): this document is still `DRAFT` while
+`engineering/ENGINEERING_CONSTITUTION.md` carries `Status: ACTIVE` - a subordinate document should not
+read as more settled than the one that governs it. `ADR-0042` (`docs/DECISION_LOG.md`) ratified the
+authority hierarchy **OWNER -> PROJECT CONSTITUTION -> ENGINEERING CONSTITUTION -> ...**, so this
+document governs `engineering/ENGINEERING_CONSTITUTION.md` regardless of either document's own status
+label. `ADR-0042` ratifies the *hierarchy*, not this constitution's own content, which remains
+unratified pending Q5 (`docs/OPEN_QUESTIONS.md`).*
+
 Two AI collaborators operate under human ownership:
 - **Reviewer/auditor (ChatGPT):** issues audit findings, correction iterations, and lock
   criteria; challenges claims; defines acceptance tests.
@@ -100,4 +108,5 @@ Anything short of all four is, at most, "reported" - and must be labelled so.
 ## 15. Change history
 | Version | Date | Change |
 |---|---|---|
+| 0.1.1 | 2026-08-17 | G7 documentation repair (`docs/Q8_CLOSURE_MATRIX.md` s3): added a status-precedence cross-reference note to s11 citing `ADR-0042`'s authority hierarchy, so this document's own `DRAFT` status is not misread against `engineering/ENGINEERING_CONSTITUTION.md`'s `ACTIVE` status. No substantive content changed. |
 | 0.1.0 | 2026-07-11 | Initial constitution (vision/mission/scope pending Q5) |

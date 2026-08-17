@@ -1,9 +1,17 @@
 # Astro Convergence Engine
 # Engineering Constitution
 
-Version: 1.1.0
+Version: 1.1.1
 
 Status: ACTIVE
+
+*Status note (G7 repair, `docs/Q8_CLOSURE_MATRIX.md` s3): "ACTIVE" describes this document's own
+in-force operational status, not precedence over `docs/PROJECT_CONSTITUTION.md`. `ADR-0042`
+(`docs/DECISION_LOG.md`) ratified the authority hierarchy **OWNER -> PROJECT CONSTITUTION ->
+ENGINEERING CONSTITUTION -> DECISION LOG / ADR -> STANDARDS -> SPECIFICATIONS -> CODE ->
+CONVERSATION**: this document is subordinate to `docs/PROJECT_CONSTITUTION.md` regardless of that
+document's own `DRAFT` status, and does not narrow it. Where the two conflict, the senior document
+governs, per `docs/PROJECT_CONSTITUTION.md`'s own text.*
 
 ---
 
