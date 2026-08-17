@@ -4,7 +4,7 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | PROPOSED - index of decision papers. Papers present options; they decide nothing. |
-| Version | 1.4.0 |
+| Version | 1.5.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 | Last updated | 2026-08-17 |
 | Review cadence | TBD |
@@ -40,13 +40,14 @@ register uses for ADR-0015 through ADR-0017.
 | DP-006 | precedence between the two decision registers | every future decision entry | RESERVED, not drafted |
 | DP-007 | root D-008 disposition | KP tier sequencing | RESERVED, not drafted |
 | DP-008 | entity identifier family and pattern | H0 implementation | OPEN, drafted |
-| DP-009 | tier classification for panchanga and rise/set | panchanga and rise/set certification | OPEN, drafted |
+| DP-009 | tier classification for panchanga and rise/set | panchanga and rise/set certification | **ADDRESSED by ADR-0052** (2026-08-17), accepting Option B: rise/set Tier-0; panchanga Tier-1; vara explicitly straddles the boundary. The paper remains unedited as the options record. |
 | DP-010 | in-repo AI collaboration scaffolding (CLAUDE.md / skills) and repair of stale AI-role documents | `docs/PROJECT_CONSTITUTION.md` s11; `specs/CLAUDE_WORKFLOW.md`; `docs/PROJECT_MASTER.md`; the transfer-bundle handoff convention | ADDRESSED by ADR-0044, narrower than this paper's recommendation (no skills/agents/MCP; the three named stale documents were not repaired, by owner instruction) |
 
 ## Change history
 
 | Version | Date | Change |
 |---|---|---|
+| 1.5.0 | 2026-08-17 | DP-009 marked ADDRESSED by `ADR-0052` (Option B accepted). |
 | 1.4.0 | 2026-08-17 | DP-001 marked ADDRESSED by `ADR-0051` (Option B accepted). |
 | 1.3.0 | 2026-08-17 | DP-001 drafted (`DP-001-owner-ratification-and-mechanism.md`), status RESERVED -> OPEN, drafted. |
 | 1.2.0 | 2026-08-17 | DP-010 marked ADDRESSED by ADR-0044. |

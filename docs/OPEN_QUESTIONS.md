@@ -186,12 +186,13 @@ records it at register level so the point survives reading any one of them in is
 
 ## Decision papers and design proposals drafted (2026-08-11)
 
-Drafted on CEO direction. Each presents options; none decides. All four matters remain OPEN.
+Drafted on CEO direction. Each paper presents options and never decides itself; its associated
+question remains open until a separately recorded ADR disposition.
 
 | Matter | Document | Status |
 |---|---|---|
 | Entity identifier family and pattern | `docs/decisions/DP-008-entity-identifier-family.md` | OPEN, options presented, recommendation labelled |
-| Tier classification for panchanga and rise/set | `docs/decisions/DP-009-panchanga-riseset-tier.md` | OPEN, options presented, recommendation labelled |
+| Tier classification for panchanga and rise/set | `docs/decisions/DP-009-panchanga-riseset-tier.md` | **ADDRESSED, 2026-08-17** (`ADR-0052`): Option B accepted - rise/set Tier-0; panchanga Tier-1; vara explicitly documented as straddling the boundary. No capability implementation authorised. |
 | Independent evidence-path representation and computation | `docs/EVIDENCE_INDEPENDENCE_DESIGN.md` | OPEN, design proposal; convergence must not be implemented on it |
 | Q8 phase criteria | `docs/Q8_CLOSURE_MATRIX.md` | **RATIFIED, 2026-08-17** (ADR-0048); no longer a candidate. Framework only - no phase entry authorised. |
 
