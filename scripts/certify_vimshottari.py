@@ -103,7 +103,7 @@ def run_case(case, engine_profile, jhora_ayanamsa):
     _, bhukthis = jhora_vim.get_vimsottari_dhasa_bhukthi(
         jd_local, place,
         dhasa_duration_type=jhora_const.DHASA_YEAR_DURATION.MEAN_SIDEREAL_YEAR,
-        dhasa_level_index=jhora_const.MAHA_DHASA_DEPTH.PRATHYANTARA,
+        dhasa_level_index=jhora_const.MAHA_DHASA_DEPTH.PRATYANTARA,
     )
 
     # Inject the ORACLE'S Moon into OUR timeline mathematics.
