@@ -4,13 +4,19 @@ pytest).
 """
 
 import json
+import sys
 from pathlib import Path
+
+import pytest
 
 from engine.astrology.sign import Sign
 from engine.astrology.sign_conventions import SIGN_FIELD_CONVENTIONS
 
 ROOT = Path(__file__).resolve().parents[2]
 ARTIFACT = ROOT / "certification" / "SIGN_CONVENTION_V1_certification.json"
+
+sys.path.insert(0, str(ROOT / "scripts"))
+import certify_sign_convention as certifier  # noqa: E402
 
 #: Certified sweep hashes, verified EQUAL at published main 7d170f8 and
 #: at the commit introducing this phase, proving no certified value
@@ -50,12 +56,60 @@ def test_artifact_records_the_declaration_registry_as_evidence():
 
 
 def test_non_invasiveness_hashes_match_published_main():
-    report = json.loads(ARTIFACT.read_text())
-    gate = report["gates"]["A_non_invasiveness"]
+    """
+    B-03 (`reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md`): this gate used
+    to compare the stored artifact against these same constants, which
+    proves the artifact matches itself, not that the certified
+    functions still produce these values. It now RECOMPUTES the sweep
+    live, via the certifier's own `gate_a_non_invasiveness()` (the same
+    code `scripts/certify_sign_convention.py` uses to produce the
+    artifact in the first place), and compares the fresh result
+    directly against the pinned constants. The stored artifact is not
+    read by this test at all; `docs/VALIDATION_STANDARD.md` s2 rule 8:
+    stored results are history, not proof - recompute.
+    """
+
+    gate = certifier.gate_a_non_invasiveness()
     assert gate["d9_sweep_sha256"] == CERTIFIED_SWEEP_HASHES["d9"]
     assert gate["d10_sweep_sha256"] == CERTIFIED_SWEEP_HASHES["d10"]
     for key, digest in gate["registry_varga_sweep_sha256"].items():
         assert digest == CERTIFIED_SWEEP_HASHES[key], key
+
+
+def test_negative_control_a_mutated_certified_function_is_detected(monkeypatch):
+    """
+    Prove the recomputing gate above can actually fail (B-03's second
+    requirement). Temporarily mutates the certified `navamsa_sign`
+    (D9) as the certifier module sees it, re-derives the sweep, and
+    confirms the D9 hash no longer matches. Uses pytest's `monkeypatch`
+    so the substitution is automatically undone at the end of this
+    test regardless of outcome - nothing in `engine/astrology/` is
+    touched, and no certification artifact is read or written by this
+    test, so there is nothing here for the mutation to contaminate.
+    """
+
+    real_navamsa_sign = certifier.navamsa_sign
+
+    def wrong_navamsa_sign(longitude):
+        # Off-by-one sign for every input: certainly different from
+        # the certified function for at least one certified swept
+        # point, which is all the negative control needs to prove.
+        return (real_navamsa_sign(longitude) + 1) % 12
+
+    monkeypatch.setattr(certifier, "navamsa_sign", wrong_navamsa_sign)
+
+    mutated = certifier.gate_a_non_invasiveness()
+    assert mutated["d9_sweep_sha256"] != CERTIFIED_SWEEP_HASHES["d9"], (
+        "mutating the certified D9 sign function did not change the "
+        "recomputed hash; the gate cannot fail and is not evidence"
+    )
+
+    # monkeypatch only restores at test teardown, not mid-test - undo
+    # explicitly here so this test can itself verify the mutation was
+    # fully reversible rather than merely asserting it will be later.
+    monkeypatch.undo()
+    restored = certifier.gate_a_non_invasiveness()
+    assert restored["d9_sweep_sha256"] == CERTIFIED_SWEEP_HASHES["d9"]
 
 
 def test_every_declared_field_proven_by_discriminating_witness():

@@ -23,10 +23,13 @@ _CANCER = 3
 _ODD = ((15.0, _LEO), (15.0, _CANCER))
 _EVEN = ((15.0, _CANCER), (15.0, _LEO))
 
-D2_PARASHARA = SegmentVargaRule(segments=(
-    _ODD, _EVEN, _ODD, _EVEN, _ODD, _EVEN,
-    _ODD, _EVEN, _ODD, _EVEN, _ODD, _EVEN,
-))
+D2_PARASHARA = SegmentVargaRule(
+    segments=(
+        _ODD, _EVEN, _ODD, _EVEN, _ODD, _EVEN,
+        _ODD, _EVEN, _ODD, _EVEN, _ODD, _EVEN,
+    ),
+    division=2,
+)
 
 D2_SCHOOL = "parashara"
 

@@ -13,9 +13,12 @@ from engine.astrology.varga_classifier import classify
 from engine.astrology.varga_d3 import D3_PARASHARA, D3_SCHOOL, ensure_registered
 from engine.astrology.varga_registry import (
     UnsupportedVargaError,
+    get_varga_rule,
     register_varga_rule,
     registered_vargas,
+    unregister_varga_rule,
 )
+from engine.astrology.varga_rules import rule_content_sha256
 from engine.astronomy.profile import PARASHARI_LAHIRI
 from engine.calculations.calculations import calculate
 from engine.models.birth_data import BirthData
@@ -169,3 +172,63 @@ def test_reregistration_refused_and_certified_divisions_blocked():
     for division in (1, 9, 10):
         with pytest.raises(ValueError):
             register_varga_rule(division, D3_SCHOOL, D3_PARASHARA)
+
+
+# ------------------------------------------------------- Gate 4, B-02
+# reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md: a certified rule could be
+# swapped at runtime while every non-invasiveness gate stayed green,
+# because nothing checked object identity or content, only registry
+# keys. These two checks close that; the negative control after them
+# proves both can actually fail.
+
+#: Content fingerprint of the certified D3 table, pinned. Any edit to
+#: the literals in varga_d3.py that is not accompanied by updating
+#: this constant (and recertifying) makes this test fail.
+CERTIFIED_D3_CONTENT_SHA256 = (
+    "11c561c05413ebc9d8b791c0c22e42e6a91efe2cbdaceaa1f6eeac66d9e957f4"
+)
+
+
+def test_registered_rule_identity_is_the_certified_object():
+    ensure_registered()
+    assert get_varga_rule(3, D3_SCHOOL) is D3_PARASHARA
+
+
+def test_registered_rule_content_hash_matches_pinned_value():
+    assert rule_content_sha256(D3_PARASHARA) == CERTIFIED_D3_CONTENT_SHA256
+
+
+def test_negative_control_substituted_rule_is_detected():
+    """Prove the identity and content checks above can actually fail."""
+
+    import dataclasses
+
+    # A single-cell edit: Aries' first segment now targets Taurus (1)
+    # instead of Aries (0). Still a structurally valid SegmentVargaRule
+    # (widths still sum to 30), so only B-02's checks catch it - B-01's
+    # invariant is division/cardinality, not per-cell content.
+    tampered_segments = (
+        ((10.0, 1), (10.0, 4), (10.0, 8)),
+    ) + D3_PARASHARA.segments[1:]
+    tampered = dataclasses.replace(D3_PARASHARA, segments=tampered_segments)
+    assert tampered.division == 3  # still a legitimate D3 registration
+
+    unregister_varga_rule(3, D3_SCHOOL)
+    try:
+        register_varga_rule(3, D3_SCHOOL, tampered)
+
+        # Identity check now fails: a different object is registered.
+        assert get_varga_rule(3, D3_SCHOOL) is not D3_PARASHARA
+
+        # Content check now fails: the tampered table hashes differently.
+        assert (
+            rule_content_sha256(get_varga_rule(3, D3_SCHOOL))
+            != CERTIFIED_D3_CONTENT_SHA256
+        )
+    finally:
+        unregister_varga_rule(3, D3_SCHOOL)
+        register_varga_rule(3, D3_SCHOOL, D3_PARASHARA)
+
+    # State fully restored: both checks pass again.
+    assert get_varga_rule(3, D3_SCHOOL) is D3_PARASHARA
+    assert rule_content_sha256(D3_PARASHARA) == CERTIFIED_D3_CONTENT_SHA256

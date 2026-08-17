@@ -38,7 +38,7 @@ from engine.astrology.varga_rules import SegmentVargaRule
 #: 0-based signs: 0 Aries, 1 Taurus, 2 Gemini, 3 Cancer, 4 Leo,
 #: 5 Virgo, 6 Libra, 7 Scorpio, 8 Sagittarius, 9 Capricorn,
 #: 10 Aquarius, 11 Pisces.
-D3_PARASHARA = SegmentVargaRule(segments=(
+D3_PARASHARA = SegmentVargaRule(division=3, segments=(
     ((10.0, 0), (10.0, 4), (10.0, 8)),    # Aries: Aries, Leo, Sagittarius
     ((10.0, 1), (10.0, 5), (10.0, 9)),    # Taurus: Taurus, Virgo, Capricorn
     ((10.0, 2), (10.0, 6), (10.0, 10)),   # Gemini: Gemini, Libra, Aquarius

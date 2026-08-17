@@ -36,8 +36,10 @@ from engine.astrology.varga_classifier import classify  # noqa: E402
 from engine.astrology.varga_d30 import D30_PARASHARA  # noqa: E402
 from engine.astrology.varga_registry import (  # noqa: E402
     UnsupportedVargaError,
+    get_varga_rule,
     registered_vargas,
 )
+from engine.astrology.varga_rules import rule_content_sha256  # noqa: E402
 from engine.astronomy.profile import PARASHARI_LAHIRI  # noqa: E402
 from engine.calculations.calculations import calculate  # noqa: E402
 from engine.models.birth_data import BirthData  # noqa: E402
@@ -116,6 +118,10 @@ def gate_d_non_invasiveness():
     if (30, "parashara") not in registered_vargas():
         fail("D30 not registered")
 
+    # B-01/B-02 (reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md).
+    if get_varga_rule(30, "parashara") is not D30_PARASHARA:
+        fail("registered D30 rule is not the certified module object")
+
     snapshot = calculate(
         BirthData(1985, 12, 21, 14, 40, 0.0, 25.6, 85.1333, "Asia/Kolkata"),
         profile=PARASHARI_LAHIRI,
@@ -155,6 +161,8 @@ def gate_d_non_invasiveness():
         "registry": [list(entry) for entry in registered_vargas()],
         "certified_dispatch": "intact",
         "refusals": "intact",
+        "registered_rule_identity": "is D30_PARASHARA",
+        "rule_content_sha256": rule_content_sha256(D30_PARASHARA),
         "d9_d10_sweep_points": count,
         "d9_sweep_sha256": h9.hexdigest(),
         "d10_sweep_sha256": h10.hexdigest(),

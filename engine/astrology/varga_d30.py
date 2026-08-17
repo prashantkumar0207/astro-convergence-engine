@@ -22,20 +22,23 @@ from engine.astrology.varga_rules import SegmentVargaRule
 _ODD = ((5.0, 0), (5.0, 10), (8.0, 8), (7.0, 2), (5.0, 6))
 _EVEN = ((5.0, 1), (7.0, 5), (8.0, 11), (5.0, 9), (5.0, 7))
 
-D30_PARASHARA = SegmentVargaRule(segments=(
-    _ODD,    # Aries
-    _EVEN,   # Taurus
-    _ODD,    # Gemini
-    _EVEN,   # Cancer
-    _ODD,    # Leo
-    _EVEN,   # Virgo
-    _ODD,    # Libra
-    _EVEN,   # Scorpio
-    _ODD,    # Sagittarius
-    _EVEN,   # Capricorn
-    _ODD,    # Aquarius
-    _EVEN,   # Pisces
-))
+D30_PARASHARA = SegmentVargaRule(
+    segments=(
+        _ODD,    # Aries
+        _EVEN,   # Taurus
+        _ODD,    # Gemini
+        _EVEN,   # Cancer
+        _ODD,    # Leo
+        _EVEN,   # Virgo
+        _ODD,    # Libra
+        _EVEN,   # Scorpio
+        _ODD,    # Sagittarius
+        _EVEN,   # Capricorn
+        _ODD,    # Aquarius
+        _EVEN,   # Pisces
+    ),
+    division=30,
+)
 
 D30_SCHOOL = "parashara"
 

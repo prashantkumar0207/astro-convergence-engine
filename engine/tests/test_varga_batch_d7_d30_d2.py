@@ -13,7 +13,14 @@ from engine.astrology.varga_classifier import classify
 from engine.astrology.varga_d2 import D2_PARASHARA
 from engine.astrology.varga_d7 import D7_PARASHARA
 from engine.astrology.varga_d30 import D30_PARASHARA
-from engine.astrology.varga_registry import UnsupportedVargaError, registered_vargas
+from engine.astrology.varga_registry import (
+    UnsupportedVargaError,
+    get_varga_rule,
+    register_varga_rule,
+    registered_vargas,
+    unregister_varga_rule,
+)
+from engine.astrology.varga_rules import CyclicVargaRule, rule_content_sha256
 from engine.calculations.calculations import calculate
 from engine.models.birth_data import BirthData
 
@@ -226,3 +233,71 @@ def test_batch_vargas_served_with_provenance():
         assert chart.varga == division
         assert chart.school == "parashara"
         assert chart.provenance is snapshot.provenance
+
+
+# ------------------------------------------------------- Gate 4, B-02
+# reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md.
+
+#: Content fingerprints of the certified D7/D30/D2 tables, pinned.
+CERTIFIED_CONTENT_SHA256 = {
+    7: "42c0f474138d98a37e1a9963866a2d0f86621fa67c73069e897fef48024aeead",
+    30: "deacd958cf19b7641c4f8cb086ad27d8a5efaeb6e38b594dc0cd4113a25794d3",
+    2: "b78745de5d815b6635cca62d9d872c6dd7acd0a8cdbc5e5ecf53a0bc78ee1859",
+}
+
+_PRODUCTION_RULES = {7: D7_PARASHARA, 30: D30_PARASHARA, 2: D2_PARASHARA}
+
+
+@pytest.mark.parametrize("division", [7, 30, 2])
+def test_registered_rule_identity_is_the_certified_object(division):
+    assert get_varga_rule(division, "parashara") is _PRODUCTION_RULES[division]
+
+
+@pytest.mark.parametrize("division", [7, 30, 2])
+def test_registered_rule_content_hash_matches_pinned_value(division):
+    rule = _PRODUCTION_RULES[division]
+    assert rule_content_sha256(rule) == CERTIFIED_CONTENT_SHA256[division]
+
+
+def _tampered(rule):
+    import dataclasses
+
+    if isinstance(rule, CyclicVargaRule):
+        tampered_start = ((rule.start_sign[0] + 1) % 12,) + rule.start_sign[1:]
+        return dataclasses.replace(rule, start_sign=tampered_start)
+    tampered_segments = (
+        ((rule.segments[0][0][0], (rule.segments[0][0][1] + 1) % 12),)
+        + rule.segments[0][1:],
+    ) + rule.segments[1:]
+    return dataclasses.replace(rule, segments=tampered_segments)
+
+
+@pytest.mark.parametrize("division", [7, 30, 2])
+def test_negative_control_substituted_rule_is_detected(division):
+    """Prove the identity and content checks above can actually fail."""
+
+    certified = _PRODUCTION_RULES[division]
+    tampered = _tampered(certified)
+    # Still a structurally valid, legitimately-registrable rule for
+    # this division (only a target/start-sign cell changed, not the
+    # division identity) - only B-02's checks catch the substitution.
+    if isinstance(certified, CyclicVargaRule):
+        assert tampered.divisions == division
+    else:
+        assert tampered.division == division
+
+    unregister_varga_rule(division, "parashara")
+    try:
+        register_varga_rule(division, "parashara", tampered)
+
+        assert get_varga_rule(division, "parashara") is not certified
+        assert (
+            rule_content_sha256(get_varga_rule(division, "parashara"))
+            != CERTIFIED_CONTENT_SHA256[division]
+        )
+    finally:
+        unregister_varga_rule(division, "parashara")
+        register_varga_rule(division, "parashara", certified)
+
+    assert get_varga_rule(division, "parashara") is certified
+    assert rule_content_sha256(certified) == CERTIFIED_CONTENT_SHA256[division]
