@@ -3,10 +3,10 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | ACTIVE REGISTER. Twenty-five questions. **Owner ratifications of 2026-08-13: Q13 resolved; Q1 and Q8 ratified in part (ADR-0033); ADR-0005 ratified, making Tier-0 FORMALLY LOCKED (ADR-0034); ADR-0009/0010/0011 ratified, making the registry vargas owner-ratified CERTIFIED but NOT Locked (ADR-0035); ADR-0012 ratified, closing the varga sign-convention asymmetry (ADR-0036).** **Eleven fully open** (Q2, Q3, Q4, Q5, Q7, Q10, Q12, Q22, Q23, Q24, Q25), **six with candidate resolutions awaiting a ratification decision** (Q6, Q9, Q11, Q14, Q15, Q16), two ratified in part (Q1, Q8), one resolved (Q13). **Nineteen** register entries are now Accepted; ratification is per-entry and the rest are not. |
-| Version | 2.0.0 |
+| Status | ACTIVE REGISTER. Twenty-five questions. **Owner ratifications of 2026-08-13: Q13 resolved; Q1 and Q8 ratified in part (ADR-0033); ADR-0005 ratified, making Tier-0 FORMALLY LOCKED (ADR-0034); ADR-0009/0010/0011 ratified, making the registry vargas owner-ratified CERTIFIED but NOT Locked (ADR-0035); ADR-0012 ratified, closing the varga sign-convention asymmetry (ADR-0036).** **Owner ratification of 2026-08-17: Q8 fully RESOLVED (ADR-0048) - the Q8 Closure Matrix, `docs/Q8_CLOSURE_MATRIX.md`, is ratified as written; per-phase criteria now exist; no phase is thereby authorised.** **Eleven fully open** (Q2, Q3, Q4, Q5, Q7, Q10, Q12, Q22, Q23, Q24, Q25), **six with candidate resolutions awaiting a ratification decision** (Q6, Q9, Q11, Q14, Q15, Q16), one ratified in part (Q1), two resolved (Q13, Q8). Ratification is per-entry; the rest are not ratified merely because Q1 and Q8 are. |
+| Version | 2.1.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-14 |
+| Last updated | 2026-08-17 |
 | Review cadence | TBD |
 
 # Open Questions Register
@@ -23,7 +23,7 @@ artifacts listed against it. Resolution = decision log entry + this register upd
 | Q5 | One-paragraph ratified project mission (what the system is and is not)? | Anchors MASTER_ARCHITECTURE section 1 | MASTER_ARCHITECTURE.md | OPEN |
 | Q6 | May `engine/` ever read `knowledge/` at runtime, or is knowledge strictly an app-layer concern? | Hard dependency rule | MASTER_ARCHITECTURE.md section 4 | **RESOLVED PENDING RATIFICATION** (ADR-0024) |
 | Q7 | Repository license, given upstream dual-licensed dependencies (e.g. AGPL-3.0 Swiss Ephemeris) and possible commercial deployment? | Legal viability of the whole repo | LICENSE (intentionally absent until decided) | OPEN |
-| Q8 | Ratified roadmap phases with entry/exit criteria? | Prevents narrative-driven "done" | PROJECT_ROADMAP.md | **OWNER-RATIFIED DIRECTION, 2026-08-13; FULL RESOLUTION STILL OPEN** (ADR-0033 D3). The dependency ordering is ratified. Per-phase criteria are not. |
+| Q8 | Ratified roadmap phases with entry/exit criteria? | Prevents narrative-driven "done" | PROJECT_ROADMAP.md | **RESOLVED, 2026-08-17** (ADR-0048). `docs/Q8_CLOSURE_MATRIX.md` ratified as written: prerequisites, entry criteria, implementation scope, certification gates, exit criteria and CEO approval requirements now exist for every phase. Ratification is of the governance framework only; it does not authorise entry into any phase, and `ADR-0048` records that Phase G's own exit criteria are not independently confirmed met. |
 | Q9 | Should the existing certified calculation kernel (astro_kernel v1.3, Tier-0 portably certified) be imported into `engine/` as-is as the first component, and under what module name? | Avoids re-implementation; preserves certification lineage | engine/ population | **RESOLVED PENDING RATIFICATION** (ADR-0025) |
 | Q10 | CI provider and mandatory pipeline stages (validation standard is CI-ready but no provider is chosen)? | Automation of the gates | tools/, repository settings | OPEN |
 | Q11 | Should a direct value-comparison test assert that `legacy/kp.py` and `engine/kp/tables.py` hold identical Vimshottari lord and year tables? | ADR-0023 D3 permits the three-way duplication on condition it is tested rather than removed. `engine/tests/test_vimshottari_consistency.py` compares `engine/dasha/tables.py` against `engine/kp/tables.py` only. The legacy-to-engine leg is covered behaviourally by the equivalence sweep and not by direct table comparison, so a divergence introduced in one table could in principle survive until a behavioural case happened to exercise it. | Completeness of the ADR-0023 D3 condition | **RESOLVED PENDING RATIFICATION, 2026-08-13** (ADR-0037 D3). `engine/tests/test_vimshottari_table_identity.py`: all three pairs compared directly, no cross-import, 7 perturbation controls, plus comparison against an independently transcribed classical sequence. |
@@ -137,7 +137,16 @@ alone is sufficient, for the same reason recorded in the status vocabulary above
 
 ## Q8 closure criteria (ADR-0021 D2)
 
-**Status as at 2026-08-13: OWNER-RATIFIED DIRECTION, FULL RESOLUTION STILL OPEN** (ADR-0033 D3).
+**Status as at 2026-08-17: RESOLVED** (`ADR-0048`). `docs/Q8_CLOSURE_MATRIX.md` is ratified as written,
+supplying prerequisites, entry criteria, implementation scope, certification gates, exit criteria and
+CEO approval requirements for every phase - the exact criteria the text below, preserved unchanged
+from 2026-08-13, describes as still missing. **Ratification is of the framework only.** It does not
+assert any phase's entry criteria are currently met; `ADR-0048` separately records that Phase G's own
+stated exit criteria are not independently confirmed satisfied as of this date. The 2026-08-13 status
+block immediately below, and everything after it in this section, is preserved as the historical record
+of the question's state before this resolution and is not edited further.
+
+**Status as at 2026-08-13 (historical, preserved): OWNER-RATIFIED DIRECTION, FULL RESOLUTION STILL OPEN** (ADR-0033 D3).
 
 The owner has ratified the dependency ordering, and the ratification carries five qualifications
 that bind: the ordering is **guidance, not implementation authorisation**; existing certified
@@ -184,7 +193,7 @@ Drafted on CEO direction. Each presents options; none decides. All four matters 
 | Entity identifier family and pattern | `docs/decisions/DP-008-entity-identifier-family.md` | OPEN, options presented, recommendation labelled |
 | Tier classification for panchanga and rise/set | `docs/decisions/DP-009-panchanga-riseset-tier.md` | OPEN, options presented, recommendation labelled |
 | Independent evidence-path representation and computation | `docs/EVIDENCE_INDEPENDENCE_DESIGN.md` | OPEN, design proposal; convergence must not be implemented on it |
-| Q8 phase criteria | `docs/Q8_CLOSURE_MATRIX.md` | **Q8 REMAINS OPEN**; candidate matrix for ratification |
+| Q8 phase criteria | `docs/Q8_CLOSURE_MATRIX.md` | **RATIFIED, 2026-08-17** (ADR-0048); no longer a candidate. Framework only - no phase entry authorised. |
 
 `docs/decisions/README.md` indexes the paper series and records that DP-001 through DP-007 are
 reserved for the Phase G governance round and are not yet drafted.
@@ -244,6 +253,7 @@ records settled matters and a PROPOSED entry settles nothing.
 | Q13 | Prashant Kumar (owner) | 2026-08-13 | ADR-0033 D2; ADR-0001 and ADR-0002 ratified as written |
 | Q1, in part | Prashant Kumar (owner) | 2026-08-13 | ADR-0033 D1. Owner, builder and auditor roles named. Docs, engine and release owners NOT designated and remain OPEN. |
 | Q8, direction only | Prashant Kumar (owner) | 2026-08-13 | ADR-0033 D3. Dependency ordering ratified with five qualifications. Per-phase criteria remain OPEN. |
+| Q8, full closure | Prashant Kumar (owner) | 2026-08-17 | ADR-0048. `docs/Q8_CLOSURE_MATRIX.md` ratified as written. Framework only; no phase entry authorised; Phase G's own exit criteria separately noted as not independently confirmed met. |
 | (not a question) Tier-0 formal lock | Prashant Kumar (owner) | 2026-08-13 | ADR-0005 ratified as written; ADR-0034 verifies all four Constitution s12 conditions. **Tier-0 is FORMALLY LOCKED.** Recorded here because it is the first artifact in the repository to meet the constitution's definition. |
 | (not a question) Registry varga ratification | Prashant Kumar (owner) | 2026-08-13 | ADR-0009, ADR-0010 and ADR-0011 ratified as written (ADR-0035). D2, D3, D7, D12 and D30 are owner-ratified CERTIFIED. **NOT Locked**: s12 condition 4 fails because no entry declares a varga lock, and ratifying a certification does not create one. |
 | (not a question) Drishti and sign-convention ratification | Prashant Kumar (owner) | 2026-08-13 | ADR-0012 ratified as written (ADR-0036). **Closes the ADR-0035 D4 asymmetry**: the convention the ratified vargas emit is now itself ratified. Sign conventions are owner-ratified and locked in behaviour, but **NOT an s12 Locked artifact**; see Q18. |
@@ -255,4 +265,6 @@ records settled matters and a PROPOSED entry settles nothing.
 | Q6 | ADR-0024, strengthened by ADR-0030 clause 1 | 2026-08-11 | Both ADRs PROPOSED. **The blocker changed on 2026-08-13: an owner now exists, so this awaits a ratification decision rather than the absence of an authority.** |
 | Q9 | ADR-0025, strengthened by ADR-0030 clause 2 | 2026-08-11 | Both ADRs PROPOSED. Same changed blocker as Q6. |
 | Q16 | ADR-0032, implemented and gated | 2026-08-13 | ADR is PROPOSED. Same changed blocker as Q6. |
-| Q8, per-phase criteria | ADR-0026 plus `docs/Q8_CLOSURE_MATRIX.md` | 2026-08-11 | Closure criteria not met; matrix unratified. The DIRECTION half is now ratified; this row covers only the criteria half. |
+
+Q8's per-phase-criteria row is removed from this table as of 2026-08-17: it is no longer awaiting
+ratification, it is ratified. See the Resolution log above ("Q8, full closure").

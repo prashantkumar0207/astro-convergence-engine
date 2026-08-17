@@ -3,10 +3,10 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | ACTIVE. **Section 3's dependency ordering is OWNER-RATIFIED (2026-08-13, ADR-0033 D3), and Tier-0 is FORMALLY LOCKED (2026-08-13, ADR-0034); every other section remains unratified.** This document distinguishes completed historical work, currently authorised work, future work and prerequisites, per ADR-0026 D5. It does NOT authorise implementation, and Q8's per-phase criteria remain OPEN. |
-| Version | 0.6.0 |
+| Status | ACTIVE. **Section 3's dependency ordering is OWNER-RATIFIED (2026-08-13, ADR-0033 D3), Tier-0 is FORMALLY LOCKED (2026-08-13, ADR-0034), and Q8 is CLOSED (2026-08-17, ADR-0048: `docs/Q8_CLOSURE_MATRIX.md` ratified as written); every other section remains unratified.** This document distinguishes completed historical work, currently authorised work, future work and prerequisites, per ADR-0026 D5. It does NOT authorise implementation. Q8's ratification is of the governance framework only - no phase entry is authorised by it, and `ADR-0048` records that Phase G's own exit criteria are not independently confirmed met. |
+| Version | 0.7.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-13 |
+| Last updated | 2026-08-17 |
 | Review cadence | TBD |
 
 # Project Roadmap
@@ -24,13 +24,16 @@ planned, and the prerequisites that gate each of them.
 of appearing here. Authorisation is a separate act by the owner, per `PROJECT_CONSTITUTION.md`
 section 11.
 
-**Q8's direction is ratified; its criteria are not.** On 2026-08-13 the owner ratified the
-dependency ordering now recorded in section 3 (ADR-0033 D3), so that ordering binds. ADR-0021 D2's
-closure criteria are untouched by it: prerequisites, entry criteria, implementation scope,
-certification gates, exit criteria and approval requirements, for every implementation phase. A
-candidate matrix meeting those criteria exists at `docs/Q8_CLOSURE_MATRIX.md` and is explicitly
-unratified. **Until it is, no phase can be declared entered or exited by criteria**, and the ratified
-ordering remains guidance rather than authorisation.
+**Q8 is closed: both its direction and its criteria are now ratified.** On 2026-08-13 the owner
+ratified the dependency ordering now recorded in section 3 (ADR-0033 D3). On 2026-08-17 the owner
+ratified `docs/Q8_CLOSURE_MATRIX.md` as written (ADR-0048), supplying ADR-0021 D2's remaining closure
+criteria - prerequisites, entry criteria, implementation scope, certification gates, exit criteria and
+approval requirements - for every implementation phase. **A phase can now be declared entered or
+exited by criteria, per that matrix.** Ratification is of the framework only: it does not itself
+declare any phase entered, and `ADR-0048` records that Phase G's own stated exit criteria are not
+independently confirmed met as of ratification. The ratified ordering therefore remains guidance for
+sequencing; phase-by-phase authorisation is still the separate act the matrix and section 0 both
+require.
 
 **Certified does not mean ready.** ADR-0026 D2. The calculation layers are certified to C2 or C4 in
 several places. No evidence, interpretation, convergence, historical-validation, BTR, API or UI
@@ -126,10 +129,12 @@ are engineering fact and are **not** part of the ratification.
 | 9 | API | Everything it would expose being certified |
 | 10 | UI and Production | Item 9 |
 
-**Q8 is not closed by this ratification.** The direction is ratified; the per-phase prerequisites,
-entry criteria, scope, certification gates, exit criteria and approval requirements are not. Until
-those exist and are ratified, no phase can be declared entered or exited by criteria. Q8's status is
-**OWNER-RATIFIED DIRECTION, FULL RESOLUTION STILL OPEN.**
+**This ratification (ADR-0033 D3, 2026-08-13) covered direction only; Q8 was not closed by it alone.**
+The per-phase prerequisites, entry criteria, scope, certification gates, exit criteria and approval
+requirements were supplied separately on 2026-08-17 when the owner ratified `docs/Q8_CLOSURE_MATRIX.md`
+as written (`ADR-0048`). **Q8's status is now RESOLVED / CLOSED.** A phase can be declared entered or
+exited by criteria, per that matrix; ratification of the framework does not itself declare any phase
+entered.
 
 Astrology system implementation remains modular and school-isolated throughout. Muhurta,
 Varshaphal, Prashna and Mundane remain separate domain architectures and are **not** forced through
@@ -145,7 +150,7 @@ and neither authorises implementation.
 |---|---|
 | Q1, named owners | **PARTLY CLEARED 2026-08-13.** An owner exists, so ratification is possible. Three entries are Accepted: ADR-0001, ADR-0002, ADR-0033. Everything else remains PROPOSED, and the docs, engine and release owner roles are still undesignated. |
 | Q7, repository license | Legal viability of commercial deployment is undetermined, given AGPL-3.0 upstream dependencies |
-| Q8 closure criteria | No phase can be declared entered or exited by criteria, because no ratified criteria exist |
+| Q8 closure criteria | **CLEARED, 2026-08-17 (ADR-0048).** Ratified criteria now exist in `docs/Q8_CLOSURE_MATRIX.md`. A phase may now be declared entered or exited by criteria; none is declared entered by this clearance itself, and Phase G's own exit criteria are separately noted as unconfirmed. |
 | Provenance completeness | Blocks the evidence model, and therefore convergence. G1 audit M-04, M-05, M-09 |
 | Three BLOCKER and eight HIGH audit findings | Recorded in `reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md`, unfixed by instruction |
 | CI governance job RED on remote | The gate itself is failing on ADR numbering. Fix proposed, not approved |
@@ -189,3 +194,4 @@ validation.
 | 0.4.0 | 2026-08-13 | ADR-0034: Tier-0 row corrected from "reported" to FORMALLY LOCKED after owner ratification of ADR-0005 satisfied s12 condition 4. Lock scope restated as kernel plus certified D9/D10 only. No numerical value changed. |
 | 0.5.0 | 2026-08-13 | ADR-0035: varga rows annotated as owner-ratified. Recorded that they are CERTIFIED, not Locked, and that ADR-0012, which defines their sign convention, remains PROPOSED. No numerical value changed. |
 | 0.6.0 | 2026-08-13 | ADR-0036: ADR-0012 ratified, closing the sign-convention asymmetry. Drishti row annotated; recorded that the conventions are locked in behaviour but not an s12 Locked artifact. No numerical value changed. |
+| 0.7.0 | 2026-08-17 | ADR-0048: `docs/Q8_CLOSURE_MATRIX.md` ratified as written. Q8 CLOSED. Status header, section 3's two Q8 status paragraphs, and section 4's Q8 gate row updated to reflect closure; the ratified ordering itself (unchanged since 0.3.0) is not altered. No phase declared entered; Phase G's own exit criteria separately noted as not independently confirmed met. No numerical value changed. |
