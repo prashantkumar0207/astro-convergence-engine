@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | EVIDENCE - implementation record. Reports what was built, tested, and committed. |
-| Version | 1.1.0 |
+| Version | 1.2.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-17 (post-merge correction) |
+| Last updated | 2026-08-17 (documentation synchronization after ADR-0046) |
 | Review cadence | TBD |
 
 # AI collaboration architecture: implementation report
@@ -43,6 +43,29 @@ of their own moment and neither is edited to hide that.
 Current branch as of this correction: `phase-g-governance`, HEAD `d53787e75048dbadc1a2e3559cf42405c1d56661`
 (before this correction's own commit is added). See `reports/AI_HANDOFF_CURRENT.md` for the
 navigation-only snapshot; `docs/DECISION_LOG.md` remains authoritative over both.
+
+*(The line above was accurate when this "Post-merge update" section was written, immediately before
+`ADR-0045`'s correction commit was added. It is preserved unedited; see the section immediately below
+for what happened next.)*
+
+## Second post-merge update (2026-08-17, ADR-0046 correction) - supersedes only the "current HEAD" claim above
+
+After the "Post-merge update" section above was written, two more commits landed on `phase-g-governance`,
+neither a merge: `83acf44af29480c4bb1d80afa39462a34412ed08` (`ADR-0045`, the three-defect correction that
+section describes) and `f3bec7f3e35d0eef93e115796ddb79ffea242723` (`ADR-0046`, a narrow repair of a second
+false positive found in `.claude/hooks/git_safety_guard.py` while pushing `ADR-0045`). GitHub CI run
+`32011431848` succeeded on `f3bec7f` (all four jobs green). `main` remains untouched, still at
+`a3692e7191aa8f9debd2e9e9f0a9383d65096d37`; neither `83acf44` nor `f3bec7f` is an ancestor of it.
+
+**The full chain, oldest to newest, each link distinct and not to be conflated:** `d53787e` is the **PR #2
+merge commit** - it merged the already-complete `phase-g-q17-q21` implementation branch
+(`a866ba0` + `990cd60`) into `phase-g-governance` and changed no file itself. `83acf44` is the **`ADR-0045`
+correction commit** - it fixed the staleness this report and `reports/AI_HANDOFF_CURRENT.md` had accumulated
+since the merge, plus one hook gap. `f3bec7f` is the **`ADR-0046` correction commit** - a same-day follow-up
+fixing a second, unrelated false positive in the same hook file, found only because pushing `83acf44`
+exercised it. **Current HEAD, as of this documentation-synchronization pass, is `f3bec7f`, with parent
+`83acf44`.** This synchronization pass's own commit will be a further child of `f3bec7f` once made; that
+commit's SHA is not guessable in advance and is not stated here as a prediction.
 
 ---
 
@@ -197,5 +220,6 @@ future, separately-authorized pass, not follow-on work implied by this one.
 
 | Version | Date | Change |
 |---|---|---|
+| 1.2.0 | 2026-08-17 | Documentation synchronization (CEO audit, no new architectural decision): added the "Second post-merge update" section recording `ADR-0045` (`83acf44`) and `ADR-0046` (`f3bec7f`) as the two commits since the prior correction, current HEAD `f3bec7f` with parent `83acf44`, and green CI run `32011431848`. The original "Post-merge update" section's text, including its now-superseded "current HEAD" line, is preserved unedited with a pointer to the new section. |
 | 1.1.0 | 2026-08-17 | Post-merge correction (CEO audit): added the "Post-merge update" section recording the push, PR #2 merge (`d53787e75048dbadc1a2e3559cf42405c1d56661`), and green CI run `32007363289`; annotated the now-superseded "Working tree / branch state" and "Next authorized step" sections without editing their original text. No historical fact was rewritten. |
 | 1.0.0 | 2026-08-17 | Implementation completed, verified, and committed as `a866ba0`; report written against that commit. |

@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 1.1.0 |
+| Version | 1.2.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-17 (post-merge refresh) |
+| Last updated | 2026-08-17 (refreshed after ADR-0046) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -44,19 +44,22 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
   are certified and under which ADR).
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
-## Snapshot as of the last update to this file (2026-08-17, post-merge) - verify before relying on any of this
+## Snapshot as of the last update to this file (2026-08-17, refreshed after ADR-0046) - verify before relying on any of this
 
-- Branch: `phase-g-governance`. **Not merged to `main`.** The prior implementation branch,
-  `phase-g-q17-q21`, was merged into `phase-g-governance` via PR #2, merge commit
-  `d53787e75048dbadc1a2e3559cf42405c1d56661`. GitHub CI run `32007363289` succeeded on that exact
-  merge commit (all four jobs: `no-oracle` 3.11, `no-oracle` 3.12, `governance`, `oracle`).
-- Most recent decisions: ADR-0039 through ADR-0044 (Q17-Q21 governance batch, the certification
-  drift-gate fix, and the in-repo AI-collaboration architecture). Highest issued ADR at last check:
-  `ADR-0044`, status **ACCEPTED**.
+- Branch: `phase-g-governance`, current HEAD `f3bec7f3e35d0eef93e115796ddb79ffea242723`. **Not merged
+  to `main`**, and `main` remains untouched. The prior implementation branch, `phase-g-q17-q21`, was
+  merged into `phase-g-governance` via PR #2 - merge commit `d53787e75048dbadc1a2e3559cf42405c1d56661`
+  - which remains the historical merge point, not the current HEAD; two further non-merge commits have
+  since landed on top of it (`ADR-0045`'s correction, then `ADR-0046`'s). GitHub CI run `32011431848`
+  succeeded against `f3bec7f` (all four jobs: `no-oracle` 3.11, `no-oracle` 3.12, `governance`, `oracle`).
+- Most recent decisions: ADR-0039 through ADR-0046. **`ADR-0044`, `ADR-0045`, and `ADR-0046` are all
+  ACCEPTED.** Highest issued and current latest decision: `ADR-0046` (a narrow repair of a second false
+  positive in `.claude/hooks/git_safety_guard.py`, found while pushing `ADR-0045`).
 - `docs/decisions/DP-010-ai-collaboration-scaffolding.md` presented options for `CLAUDE.md` and
   `.claude/rules/`; marked `ADDRESSED by ADR-0044` in `docs/decisions/README.md`.
 - `reports/AI_COLLABORATION_INSPECTION.md` and `reports/AI_COLLABORATION_IMPLEMENTATION.md` record the
-  inspection and implementation that produced `CLAUDE.md` / `.claude/rules/` / the two hooks.
+  inspection and implementation that produced `CLAUDE.md` / `.claude/rules/` / the two hooks, and the
+  two post-merge corrections (`ADR-0045`, `ADR-0046`) since.
 - Known, permanent limitation: `swetest`-dependent certifiers cannot run on a Windows host. Not a
   regression if encountered there.
 - Tier-0 is formally Locked per `ADR-0034`. Do not assume anything else carries that status without
@@ -72,5 +75,6 @@ session, not a governance act.
 
 | Version | Date | Change |
 |---|---|---|
+| 1.2.0 | 2026-08-17 | Snapshot refreshed after ADR-0046: HEAD `f3bec7f3e35d0eef93e115796ddb79ffea242723`, merge commit `d53787e` now noted as historical rather than current, CI run `32011431848` green, highest and latest ADR `ADR-0046` (ADR-0044/0045/0046 all ACCEPTED). Navigation/status sections unchanged. |
 | 1.1.0 | 2026-08-17 | Snapshot refreshed post-merge: branch `phase-g-governance`, merge commit `d53787e75048dbadc1a2e3559cf42405c1d56661`, CI run `32007363289` green, highest ADR `ADR-0044` (ACCEPTED). Navigation/status sections unchanged. |
 | 1.0.0 | 2026-08-17 | Created as part of the minimum AI-collaboration architecture implementation. |
