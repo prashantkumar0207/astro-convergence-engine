@@ -4,7 +4,7 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | PROPOSED - index of decision papers. Papers present options; they decide nothing. |
-| Version | 1.2.0 |
+| Version | 1.3.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 | Last updated | 2026-08-17 |
 | Review cadence | TBD |
@@ -32,7 +32,7 @@ register uses for ADR-0015 through ADR-0017.
 
 | ID | Question | Blocks | Status |
 |---|---|---|---|
-| DP-001 | Q1 named owners and the ratification mechanism | every status header; ratification of all PROPOSED ADRs | RESERVED, not drafted |
+| DP-001 | Q1 named owners and the ratification mechanism | every status header; docs/engine/release-owner designation | OPEN, drafted 2026-08-17. Separates two bundled questions: the ratification-mechanism half has a cited, working precedent (`ADR-0033` D1 plus 25 subsequent ratifications) proposed as sufficient; the named-owners half stays open for the undesignated docs/engine/release-owner roles. Decides nothing. |
 | DP-002 | Q7 repository licensing given AGPL Swiss Ephemeris | distribution and hosted deployment | RESERVED, not drafted |
 | DP-003 | Q8 roadmap and build order | Phase H sequencing | RESERVED, superseded in part by ADR-0020 D6 and `docs/Q8_CLOSURE_MATRIX.md` |
 | DP-004 | Q5 ratified mission | constitution sections 1, 2, 4 | RESERVED, not drafted |
@@ -47,6 +47,7 @@ register uses for ADR-0015 through ADR-0017.
 
 | Version | Date | Change |
 |---|---|---|
+| 1.3.0 | 2026-08-17 | DP-001 drafted (`DP-001-owner-ratification-and-mechanism.md`), status RESERVED -> OPEN, drafted. |
 | 1.2.0 | 2026-08-17 | DP-010 marked ADDRESSED by ADR-0044. |
 | 1.1.0 | 2026-08-14 | Allocated DP-010 before drafting, per s2's before-first-use rule. |
 | 1.0.0 | 2026-08-11 | Created with DP-008 and DP-009 on CEO direction. |

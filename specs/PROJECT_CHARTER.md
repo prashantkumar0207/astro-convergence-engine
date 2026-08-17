@@ -1,3 +1,14 @@
+<!--
+Document status header - keep current on every edit.
+-->
+| Field | Value |
+|---|---|
+| Status | PROPOSED - candidate Project Charter under `docs/DECISION_LOG.md` `ADR-0015`, not yet owner-adopted. Header added administratively (`ADR-0015`); substantive text below is unedited. |
+| Version | 1.0.0 |
+| Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
+| Last updated | 2026-08-17 |
+| Review cadence | TBD |
+
 # Project Charter
 
 ## Product motive
@@ -15,3 +26,9 @@ Each methodology starts from the same validated raw data but must derive its res
 ## Scientific limitation
 
 Astrology and numerology are interpretive systems and are not scientifically validated predictive methods. Engineering certification in this repository refers to reproducibility and correctness against a frozen calculation specification, not proof of predictive validity.
+
+## Change history
+
+| Version | Date | Change |
+|---|---|---|
+| 1.0.0 | 2026-08-17 | `ADR-0015` (PROPOSED): added the mandatory status header, absent since the bootstrap era. Sections above unedited. |
