@@ -3,10 +3,10 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | ACTIVE REGISTER. **ACCEPTED (11): ADR-0001, ADR-0002, ADR-0005, ADR-0009, ADR-0010, ADR-0011, ADR-0012, ADR-0033 through ADR-0036**, all owner-ratified by Prashant Kumar on 2026-08-13. Tier-0 is **FORMALLY LOCKED** (ADR-0034), the only s12 Locked artifact. The registry vargas and the sign conventions are **owner-ratified but NOT s12 Locked** (ADR-0035 D3, ADR-0036 D3). **Still PROPOSED: ADR-0003, ADR-0004, ADR-0006, ADR-0007, ADR-0008, ADR-0013, ADR-0014 and ADR-0018 through ADR-0032.** Ratification is now possible, because Q1 named an owner; ratification is per-entry, and an owner existing is not the register being ratified. Includes the ADR-0018 remote-CI evidence addendum (2026-08-11). |
-| Version | 1.5.0 |
+| Status | ACTIVE REGISTER. **ACCEPTED (20): ADR-0001, ADR-0002, ADR-0005, ADR-0006, ADR-0007, ADR-0008, ADR-0009, ADR-0010, ADR-0011, ADR-0012, ADR-0033 through ADR-0037, ADR-0039 through ADR-0042, and ADR-0044**, owner-ratified across 2026-08-13, 2026-08-14 and 2026-08-17. Tier-0 is **FORMALLY LOCKED** (ADR-0034), the only s12 Locked artifact. The registry vargas and the sign conventions are **owner-ratified but NOT s12 Locked** (ADR-0035 D3, ADR-0036 D3). **Still PROPOSED: ADR-0003, ADR-0004, ADR-0013, ADR-0014, ADR-0018 through ADR-0032, ADR-0038, and ADR-0043.** Ratification is now possible, because Q1 named an owner; ratification is per-entry, and an owner existing is not the register being ratified. Includes the ADR-0018 remote-CI evidence addendum (2026-08-11). |
+| Version | 1.6.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-13 |
+| Last updated | 2026-08-17 |
 | Review cadence | TBD |
 
 # Decision Log (ADR register)
@@ -2212,6 +2212,101 @@ the two gates added under ADR-0037.
   the network guard and the retired-identifier scope; corruption and restoration of three real
   rendered evidence files; the empty-repository probe; `git diff --check` clean; 521 passed, zero
   skipped.
+
+---
+
+## ADR-0039 - Owner resolutions of Q17 and Q18: Constitution s12 lock semantics
+
+- **Date:** 2026-08-14
+- **Status:** **ACCEPTED**, on the owner's explicit approval of the Q17-Q21 decision batch.
+- **Context:** Q17 asks whether Constitution s12 condition 4 requires a ratified decision entry or merely an entry that records the lock. Q18 asks whether lock language inside a ratified decision entry itself creates s12 Locked status.
+- **Decision:**
+  1. **Q17 — a Constitution s12 Locked artifact requires condition 4 to be satisfied by a decision entry that is itself owner-ratified.** Mere existence of an ADR is insufficient.
+  2. **Q18 — lock language inside a ratified decision does not by itself create s12 Locked status.** The four s12 conditions remain conjunctive; formal lock status requires the complete s12 record, including version/evidence and the required owner authorisation.
+  3. **Ratification and lock authorisation remain distinct owner acts.** They may be combined only when the owner explicitly authorises both.
+- **Consequences:** Q17 and Q18 are resolved for future locks. Tier-0 remains formally Locked under ADR-0034. The sign conventions remain owner-ratified but not s12 Locked under ADR-0036.
+- **Evidence:** Owner approval of the Q17-Q21 decision batch on 2026-08-14; ADR-0034 and ADR-0036 re-read against Constitution s12.
+
+---
+
+## ADR-0040 - Owner resolution of Q19: DP-NNN decision-paper identifier family
+
+- **Date:** 2026-08-14
+- **Status:** **ACCEPTED**, on the owner's explicit approval of the Q17-Q21 decision batch.
+- **Context:** `DP-NNN` is already used by `docs/decisions/DP-008`, `DP-009` and the decision-paper index, but it was absent from the Naming Standard's ID-Families table and had no mechanical family check.
+- **Decision:** Register `DP-NNN` as a repository decision-paper identifier family:
+  - Pattern: `DP-\d{3}`.
+  - Width: 3.
+  - Scope: repository-wide decision papers.
+  - Issuer: `docs/decisions/README.md`.
+  - Source of law: `docs/NAMING_STANDARD.md` section 2 and this ADR.
+  - Existing IDs `DP-008` and `DP-009` remain valid; `DP-001` through `DP-007` remain reserved.
+  - New decision papers MUST be allocated in the index before drafting.
+  - The governance gate MUST scan tracked files for `DP-\d{3}` tokens, reject unregistered tokens, and reject duplicate index allocation.
+- **Consequences:** Q19 is resolved. Decision papers remain proposals; decisions still live only in the ADR register.
+- **Evidence:** `docs/decisions/README.md`; `docs/NAMING_STANDARD.md`; `scripts/check_identifier_families.py`; committed governance negative controls.
+
+---
+
+## ADR-0041 - Owner resolution of Q20: canonical repository top-level structure
+
+- **Date:** 2026-08-14
+- **Status:** **ACCEPTED**, on the owner's explicit approval of the Q17-Q21 decision batch.
+- **Context:** Ratified ADR-0001 says the top-level folder set is exact, while the actual repository contains `.github/`, `schemas/`, and later-sanctioned governance/certification folders.
+- **Decision:** **Supersede ADR-0001's top-level-folder list** with the actual governed repository structure:
+  `.github/`, `assets/`, `certification/`, `docs/`, `engine/`, `engineering/`, `examples/`, `knowledge/`, `legacy/`, `reports/`, `research/`, `schemas/`, `scripts/`, `specs/`, `tools/`.
+  `app/` and top-level `tests/` are not part of the current set; tests remain under `engine/tests/`. `.github/` is the repository governance/CI layer and `schemas/` is the normative schema layer.
+  Any future top-level folder addition, removal or semantic repurposing requires a superseding ADR.
+- **Consequences:** Q20 is resolved. ADR-0003 remains a dated proposed reconciliation record; this entry governs the canonical set where it conflicts with ADR-0003's proposed consequences.
+- **Evidence:** Repository tree at `98cc2bd`; ADR-0001; ADR-0002; ADR-0003; current CI and schema paths.
+
+---
+
+## ADR-0042 - Owner resolution of Q21: authority hierarchy and executable normative rule data
+
+- **Date:** 2026-08-14
+- **Status:** **ACCEPTED**, on the owner's explicit approval of the Q17-Q21 decision batch.
+- **Context:** ADR-0023 is PROPOSED and claims to narrow `engineering/ENGINEERING_CONSTITUTION.md` Principle 3 and `docs/KNOWLEDGE_STANDARDS.md`, while those documents do not delegate that authority. `docs/ARCHITECTURE.md` also independently prohibits duplication.
+- **Decision:**
+  1. The authority hierarchy is explicitly: **OWNER -> PROJECT CONSTITUTION -> ENGINEERING CONSTITUTION -> DECISION LOG / ADR -> STANDARDS -> SPECIFICATIONS -> CODE -> CONVERSATION**.
+  2. **An ADR does not itself narrow a higher-level constitution or standard.** Any exception MUST first be written into that governing document through its own change-control/ratification process, then may be referenced by an ADR.
+  3. The project explicitly permits **executable normative rule data** to be colocated with certified implementation when all four ADR-0023 criteria are met: deterministic necessity, output-changing effect, certification coverage, and school-scoped provenance.
+  4. `docs/KNOWLEDGE_STANDARDS.md` is narrowed to governed knowledge; its single-source-of-truth rule does not prohibit separately school-scoped executable normative rule data when the four-part test is met.
+  5. `engineering/ENGINEERING_CONSTITUTION.md` Principle 3 is clarified to preserve its general rule while explicitly permitting the same four-part exception.
+  6. `docs/ARCHITECTURE.md` is clarified consistently: governed knowledge belongs in `knowledge/`; executable normative rule data may remain with certified implementation when the four-part test is met; interpretation and prediction logic remain outside the knowledge layer.
+  7. ADR-0023 remains a dated proposed record. Its exception is authoritative because the governing documents now explicitly state it, not because ADR-0023 silently overrode them.
+- **Consequences:** Q21 is resolved. Future standards conflicts cannot be silently resolved by an ADR. The Vimshottari three-way table isolation remains subject to direct identity testing and school-specific certification.
+- **Evidence:** ADR-0022; ADR-0023; `engineering/ENGINEERING_CONSTITUTION.md`; `docs/KNOWLEDGE_STANDARDS.md`; `docs/ARCHITECTURE.md`; owner approval of Q17-Q21.
+
+---
+
+## ADR-0043 - Repair a false-positive in the certification artifact drift gate: interpreter identity is volatile
+
+- **Date:** 2026-08-14
+- **Status:** PROPOSED. The builder cannot self-ratify (`PROJECT_CONSTITUTION.md` s11); recorded so the fix is not undocumented code.
+- **Context:** CI run `31796327555` on branch `phase-g-q17-q21` (PR "Phase G governance Q17-Q21 remediation — CEO review") failed at the `hermetic` job's Python 3.12 leg, in the step "Assert regenerated artifacts did not drift, then that no source changed". `scripts/check_artifact_drift.py` reported genuine-looking drift in `certification/KP_CHAIN_V1_certification.json` (`environment.python`), `certification/SIGN_CONVENTION_V1_certification.json` (`environment.python`), `certification/current_engine_certification.json` (`run.python`) and `reports/certification/current_engine.report.md` (the rendered `- python:` line): each `'3.11.15' -> '3.12.13'`. `docs/CI_AND_ORACLE_REPRODUCIBILITY_SPEC.md` s5 runs the three non-oracle certifiers (`certify_current_engine.py`, `certify_kp_chain.py`, `certify_sign_convention.py`) on **both** Python 3.11 and 3.12 by design, and the committed artifacts were last regenerated and archived by whichever leg ran last, so the interpreter-identity field the certifier records as run metadata now legitimately differs from the other leg's interpreter without any calculated value changing. The drift gate's `VOLATILE` list (added by ADR-0037, extended by ADR-0038) did not yet include this field, so it was treated as a substantive drift, correctly by the gate's existing rules but incorrectly given the spec's own dual-interpreter design. An uncommitted, unauthored working-tree edit to `.github/workflows/ci.yml` found at the start of this session had attempted to route around the failure by gating the non-oracle certification runners and the drift-assertion step to the 3.11 leg only. That would have silently dropped 3.12 coverage of three certification runners and the drift gate itself, which `CI_AND_ORACLE_REPRODUCIBILITY_SPEC.md` s2 explicitly prohibits ("MUST NOT be used to reduce coverage") and which the project charter's rule against weakening gates to obtain green CI forbids outright. That edit was discarded, not committed, and is not part of this entry.
+- **Decision:** `run.python` and `environment.python` are added to `scripts/check_artifact_drift.py`'s `VOLATILE` tuple, and the rendered-report line prefix `- python:` is added to `VOLATILE_LINE_PREFIXES`, following the same reasoning already applied to `date`, `run.executed_utc`, `run.source_revision` and `run.working_tree_dirty`: the interpreter patch version a run executed under is run metadata, not a certified numerical claim, and both interpreter legs are required to produce byte-identical **calculated content** (every comparison count, numerical maximum, tolerance, case identifier and PASS/FAIL verdict remain strictly compared; only the interpreter-version field is exempted). `.github/workflows/ci.yml` is left unchanged: both Python 3.11 and 3.12 continue to run the full non-oracle certification and drift-assertion steps, preserving the coverage the spec requires.
+- **Consequences:** The `hermetic` job's 3.12 leg can now regenerate and archive a non-oracle certification artifact without a false-positive drift failure on the interpreter-version field alone. No certified tolerance, holdout case, gate value or PASS/FAIL verdict changed. `engine/tests/test_artifact_drift_gate.py`'s closed-list guard tests (`test_the_volatile_list_is_exactly_what_is_documented`, `test_the_volatile_line_prefixes_are_exactly_what_is_documented`) were updated in the same commit, so a future silent widening of either list is still caught. A companion positive test (`test_environment_python_is_volatile`) and two new parametrized cases prove the widening does what it claims rather than merely existing.
+- **Evidence:** CI run `31796327555` (failed, before this fix) and its predecessor `31796101445` (failed on the unrelated DP identifier self-reference bug, repaired separately by commit `190612a`). Locally reproduced on CPython 3.12.10: regenerating `certify_kp_chain.py` and `certify_sign_convention.py` and running `scripts/check_artifact_drift.py` reproduced the identical `environment.python` drift reported by CI; after the fix, `python scripts/check_artifact_drift.py <the four affected files>` returns `PASS: 4 evidence file(s) identical to the committed version outside the volatile fields`; the regenerated artifacts were then restored via `git checkout` and the working tree left clean. `certify_current_engine.py` could not be run locally (the bundled `swetest` reference binary is a Linux ELF binary; this machine is Windows), so the `run.python` / current-engine leg of the fix is verified by code symmetry with the `environment.python` leg and by the CI log's identical failure shape, not by local re-execution; CI on the actual Linux runners is the pending confirmation. Full local default gate: 527 passed (524 baseline plus 3 new tests), zero skipped, zero failed.
+
+---
+
+## ADR-0044 - In-repo AI collaboration scaffolding: CLAUDE.md, .claude/rules/, bounded permissions, hooks, and AI_HANDOFF_CURRENT.md
+
+- **Date:** 2026-08-17
+- **Status:** ACCEPTED, on the owner's explicit direction in the session that reviewed `reports/AI_COLLABORATION_INSPECTION.md` and instructed implementation of a specific minimum architecture.
+- **Context:** `reports/AI_COLLABORATION_INSPECTION.md` (2026-08-17) found no `CLAUDE.md`, no `.claude/rules/`, no hooks, and no `reports/AI_HANDOFF_CURRENT.md` anywhere in the repository or this machine's Claude Code configuration; `.claude/settings.json` and `.claude/settings.local.json` existed but were entirely untracked, and the latter contained one-off literal permission rules rather than an authored policy. The same inspection found `docs/decisions/DP-010-ai-collaboration-scaffolding.md` (drafted the prior session, unratified, committed alongside this entry) analysing this exact question in options form. The owner reviewed that inspection and directed implementation of a specific architecture, narrower in one respect than DP-010's own recommendation: no skills, agents, or MCP servers, and no repair of the stale/inconsistent documents the inspection found (`docs/PROJECT_CONSTITUTION.md` s11's DRAFT status versus `engineering/ENGINEERING_CONSTITUTION.md`'s ACTIVE status; `specs/CLAUDE_WORKFLOW.md`'s missing status header; `docs/PROJECT_MASTER.md`'s stale, unflagged contradiction of ADR-0041) - the owner's explicit instruction was to record those as open issues rather than silently rewrite existing authoritative documents in the same pass.
+- **Decision:**
+  1. Add a root `CLAUDE.md` that operationalizes `docs/PROJECT_CONSTITUTION.md` s11 for tooling, citing rather than restating the constitution, `docs/DECISION_LOG.md`, and `docs/OPEN_QUESTIONS.md` as the actual authority, and stating plainly that `docs/PROJECT_CONSTITUTION.md` is itself `Status: DRAFT`.
+  2. Add `.claude/rules/governance.md`, `.claude/rules/certification.md`, `.claude/rules/git-safety.md`, `.claude/rules/validation.md`, imported into `CLAUDE.md` via explicit `@` references (Claude Code does not auto-scan an arbitrary `rules/` directory).
+  3. Replace the untracked, ad hoc `.claude/settings.local.json` one-off rules with a curated, **tracked** `.claude/settings.json` carrying a bounded allow-list (safe reads, test/gate execution, `git add`/`commit`/`checkout -- `/`restore --staged`) that deliberately excludes `git push` and all destructive git verbs, so those continue to prompt. No `permissions.mode` override is set; `bypassPermissions` is not used. `.claude/settings.local.json` is cleared to an empty allow-list and added to `.gitignore` as the personal/local override layer.
+  4. Add two hooks, wired in `.claude/settings.json`: `.claude/hooks/git_safety_guard.py` (`PreToolUse` on `Bash`) blocks force-push, `reset --hard`, `clean -f` (any variant), `branch -D`, direct push/merge to `main`, and `--no-verify`/`--no-gpg-sign`; `.claude/hooks/governance_gate_check.py` (`PostToolUse` on `Edit`/`Write`) re-runs the existing `check_adr_numbering.py` / `check_retired_identifiers.py` / `check_identifier_families.py` / `check_artifact_drift.py` gates immediately after an edit to the files they cover, reusing those scripts rather than reimplementing their logic, and scoped away from the `swetest`-dependent certifiers that cannot run on this Windows host.
+  5. Add `reports/AI_HANDOFF_CURRENT.md`, explicitly headed "INDEX ONLY - navigation aid, not evidence", pointing to `docs/DECISION_LOG.md` / `docs/OPEN_QUESTIONS.md` / `README.md` rather than restating their content as fact.
+  6. State the Claude auto-memory boundary (convenience only; never authoritative; never citable as evidence) as one line in `CLAUDE.md`, since the memory mechanism already exists (confirmed empty for this project at inspection time) and needed a written boundary, not a new file.
+  7. `docs/PROJECT_CONSTITUTION.md`, `engineering/ENGINEERING_CONSTITUTION.md`, `specs/CLAUDE_WORKFLOW.md`, and `docs/PROJECT_MASTER.md` are **not modified** by this entry. Their staleness and inconsistency, recorded in `reports/AI_COLLABORATION_INSPECTION.md` s2.8 and s4, remain open and are cited as such (DRAFT status, missing header, stale content) rather than silently repaired.
+  8. This entry closes `docs/decisions/DP-010-ai-collaboration-scaffolding.md`'s question. The decision taken is narrower than DP-010's own recommendation (no skills/agents/MCP); that narrowing is the owner's choice, not a correction of the paper.
+- **Consequences:** No calculation-engine, certification-artifact, locked Tier-0, or product-domain file was touched. `main` still carries no GitHub branch-protection rule and the new `PreToolUse` hook is a session-local, Bash-tool-only control - both limitations are stated in `.claude/rules/git-safety.md` rather than implied away. `docs/decisions/DP-010-ai-collaboration-scaffolding.md` remains on disk as the record of the options considered; it is superseded in effect by this entry, not deleted. The three stale/inconsistent documents named above remain exactly as stale as `reports/AI_COLLABORATION_INSPECTION.md` found them, by explicit instruction, and are not to be read as repaired by this entry.
+- **Evidence:** `reports/AI_COLLABORATION_INSPECTION.md`; `docs/decisions/DP-010-ai-collaboration-scaffolding.md`; the owner's explicit implementation instruction in the session of 2026-08-17. Verification performed before this entry was written: `python -m pytest -q` - 527 passed, 0 failed, 0 skipped; `scripts/check_adr_numbering.py`, `scripts/check_retired_identifiers.py`, `scripts/check_identifier_families.py` - all PASS; `git diff --check` - clean; both hooks smoke-tested directly against the documented stdin/exit-code contract - `git_safety_guard.py` correctly blocked six destructive-command cases (force-push, `reset --hard`, `clean -fd`, `branch -D`, push to `main`, `--no-verify`) and correctly allowed six safe ones (push to the current feature branch, `git status`, a normal commit, a non-`Bash` tool call, a command containing a bare `-f`-free filename, a `pytest -k` filter string containing the word "git"); `governance_gate_check.py` correctly passed on the current (valid) `docs/DECISION_LOG.md` and `docs/decisions/README.md`, correctly no-op'd on an unrelated file and on a non-`PostToolUse` event, and, as a negative control, correctly detected (exit 2) a deliberately duplicated ADR heading number, temporarily injected into a working copy of `docs/DECISION_LOG.md`, which was then restored and re-verified clean (`check_adr_numbering.py` PASS, `git diff --stat` empty) before this entry was written. **A real defect was found and fixed during implementation, not merely during isolated smoke-testing:** the first actual commit attempt of this batch was itself blocked by `git_safety_guard.py`, because the commit message's own descriptive prose (naming `--no-verify` and `--no-gpg-sign` as things the hook blocks) was pattern-matched as if those were live flags - the same self-reference defect class this repository has hit before (the retired-identifier gate's literal-string self-reference, `docs/DECISION_LOG.md`, prior sessions). The hook was corrected to strip heredoc bodies and quoted-string contents before scanning for dangerous flags, re-verified against all eleven original smoke-test cases plus three new cases targeting the fixed defect specifically (a heredoc commit message mentioning both blocked flags in prose: allowed; the same flag passed for real outside quotes: still blocked; a quoted message mentioning `--force` in prose: allowed), then the actual commit succeeded. Full detail in `reports/AI_COLLABORATION_IMPLEMENTATION.md`.
 
 ---
 

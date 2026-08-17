@@ -18,7 +18,17 @@ WHAT IS LEGITIMATELY VOLATILE, and why each one is:
   run.executed_utc         the run's timestamp;
   run.source_revision      the commit the run executed against, which is
                            necessarily the previous commit (ADR-0032 D1);
-  run.working_tree_dirty   true before the evidence commit, false after it.
+  run.working_tree_dirty   true before the evidence commit, false after it;
+  run.python               the CPython patch version the run executed under;
+  environment.python       same field, under the KP_CHAIN and SIGN_CONVENTION
+                           artifacts' `environment` object instead of `run`.
+                           CI_AND_ORACLE_REPRODUCIBILITY_SPEC.md s5 runs the
+                           non-oracle certifiers on Python 3.11 AND 3.12 by
+                           design (ADR-0043): the calculated content is
+                           required to be identical across interpreters, the
+                           interpreter identity recording itself is not, and
+                           the committed artifact records whichever leg last
+                           regenerated it.
 
 Everything else must match byte for byte, including every comparison count,
 every numerical maximum, every tolerance, every case identifier, every
@@ -60,6 +70,8 @@ VOLATILE = (
     "run.executed_utc",
     "run.source_revision",
     "run.working_tree_dirty",
+    "run.python",
+    "environment.python",
 )
 
 #: Line prefixes permitted to differ in a rendered report or console transcript.
@@ -69,6 +81,7 @@ VOLATILE_LINE_PREFIXES = (
     "- source_revision:",
     "- working_tree_dirty:",
     "- executed_utc:",
+    "- python:",
 )
 
 

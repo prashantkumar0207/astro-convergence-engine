@@ -284,6 +284,9 @@ jobs:
       - name: Identifier-family conformance (ADR-0014)
         run: python scripts/check_retired_identifiers.py
 
+      - name: Decision-paper identifier-family conformance (ADR-0040)
+        run: python scripts/check_identifier_families.py
+
       - name: Negative control, the identifier gate must actually fail
         run: |
           set +e

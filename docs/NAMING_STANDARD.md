@@ -39,9 +39,10 @@ of times and written once, so every rule here optimises for the reader, the diff
 | Outcome | `OC-CAR-\d{3}` | 3 | domain-local (career) | Domain outcome registry | Outcome Registry s.1; OCR-1 open |
 | Test scenario | `TC-CAR-\d{3}` | 3 | fixture-local | Test dataset generator | tests/fixtures |
 | Decision | `ADR-\d{4}` | 4 | repository-wide | Decision log | DECISION_LOG.md |
+| Decision paper | `DP-\d{3}` | 3 | repository-wide | Decision-paper index | docs/decisions/README.md; ADR-0040 |
 
 Rules:
-- **Zero-padded, monotone, immutable, never reused** - all families, no exceptions.
+- **Zero-padded, monotone, immutable, never reused** - all families, no exceptions. `DP-NNN` uses three digits as its registered width.
 - **Width encodes expected cardinality** (questions: up to 999,999 per QQ-8; domains: tens;
   events/outcomes per domain: dozens-to-hundreds). Width changes are MAJOR events with a
   migration map - so choose generously at family creation.
@@ -83,8 +84,9 @@ version inside the file, never in the filename (filenames are stable references)
 
 ## 5. Folder Naming
 
-- Top-level set is closed and ADR-governed (ADR-0001..0003): `docs/ engine/ knowledge/
-  research/ tests/ tools/ app/ examples/ assets/ schemas/`. New top-level = superseding ADR.
+The current canonical top-level set is governed by ADR-0041: `.github/ assets/ certification/ docs/ engine/ engineering/ examples/ knowledge/ legacy/ reports/ research/ schemas/ scripts/ specs/ tools/`. `app/` and top-level `tests/` are not current folders; tests live under `engine/tests/`.
+
+- Top-level set is closed and ADR-governed by the current canonical structure in ADR-0041: `.github/ assets/ certification/ docs/ engine/ engineering/ examples/ knowledge/ legacy/ reports/ research/ schemas/ scripts/ specs/ tools/`. New top-level folder addition, removal, or semantic repurposing requires a superseding ADR.
 - All folders lowercase, singular-or-collective English words, `[a-z0-9_]`, no dates.
 - Knowledge domain path shape is fixed: `knowledge/hlkg/domains/<domain_slug>/`.
 - Fixtures: `tests/fixtures/`; future suites `tests/<suite_name>/`.

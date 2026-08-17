@@ -20,6 +20,9 @@ htmlcov/
 .vscode/
 .idea/
 
+# Claude Code local overrides (personal, machine-specific; .claude/settings.json is the tracked policy)
+.claude/settings.local.json
+
 # OS
 .DS_Store
 Thumbs.db
