@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 1.0.0 |
+| Version | 1.1.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-17 |
+| Last updated | 2026-08-17 (post-merge refresh) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -44,15 +44,19 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
   are certified and under which ADR).
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
-## Snapshot as of the last update to this file (2026-08-17) - verify before relying on any of this
+## Snapshot as of the last update to this file (2026-08-17, post-merge) - verify before relying on any of this
 
-- Branch: `phase-g-q17-q21`. Not merged to `main`.
-- Most recent decisions: ADR-0039 through ADR-0043 (Q17-Q21 governance batch and the certification
-  drift-gate fix). Highest issued ADR at last check: `ADR-0043`.
-- `docs/decisions/DP-010-ai-collaboration-scaffolding.md` presented options for this file, `CLAUDE.md`,
-  and `.claude/rules/`. See `docs/DECISION_LOG.md` for whether and how it was closed.
-- `reports/AI_COLLABORATION_INSPECTION.md` records the inspection that preceded the `CLAUDE.md` /
-  `.claude/rules/` / hooks implementation.
+- Branch: `phase-g-governance`. **Not merged to `main`.** The prior implementation branch,
+  `phase-g-q17-q21`, was merged into `phase-g-governance` via PR #2, merge commit
+  `d53787e75048dbadc1a2e3559cf42405c1d56661`. GitHub CI run `32007363289` succeeded on that exact
+  merge commit (all four jobs: `no-oracle` 3.11, `no-oracle` 3.12, `governance`, `oracle`).
+- Most recent decisions: ADR-0039 through ADR-0044 (Q17-Q21 governance batch, the certification
+  drift-gate fix, and the in-repo AI-collaboration architecture). Highest issued ADR at last check:
+  `ADR-0044`, status **ACCEPTED**.
+- `docs/decisions/DP-010-ai-collaboration-scaffolding.md` presented options for `CLAUDE.md` and
+  `.claude/rules/`; marked `ADDRESSED by ADR-0044` in `docs/decisions/README.md`.
+- `reports/AI_COLLABORATION_INSPECTION.md` and `reports/AI_COLLABORATION_IMPLEMENTATION.md` record the
+  inspection and implementation that produced `CLAUDE.md` / `.claude/rules/` / the two hooks.
 - Known, permanent limitation: `swetest`-dependent certifiers cannot run on a Windows host. Not a
   regression if encountered there.
 - Tier-0 is formally Locked per `ADR-0034`. Do not assume anything else carries that status without
@@ -68,4 +72,5 @@ session, not a governance act.
 
 | Version | Date | Change |
 |---|---|---|
+| 1.1.0 | 2026-08-17 | Snapshot refreshed post-merge: branch `phase-g-governance`, merge commit `d53787e75048dbadc1a2e3559cf42405c1d56661`, CI run `32007363289` green, highest ADR `ADR-0044` (ACCEPTED). Navigation/status sections unchanged. |
 | 1.0.0 | 2026-08-17 | Created as part of the minimum AI-collaboration architecture implementation. |

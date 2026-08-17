@@ -82,6 +82,9 @@ def blocked_reason(raw_command: str) -> str | None:
     if re.search(r"\bgit\b.*\bmerge\b", command) and current_branch() == "main":
         return "merging while checked out on 'main' requires explicit owner authorization."
 
+    if re.search(r"\bgit\b.*\bcommit\b", command) and current_branch() == "main":
+        return "committing directly on 'main' requires explicit owner authorization."
+
     return None
 
 

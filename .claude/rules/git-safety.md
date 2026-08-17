@@ -14,7 +14,7 @@
   (`checkout`/`restore`/`reset`/`clean`), and check whether what's there is deliberate in-progress work
   before touching it.
 - **A `PreToolUse` hook (`.claude/hooks/git_safety_guard.py`) mechanically blocks the clearest cases of
-  the above** (force-push, `reset --hard`, `clean -f`, `branch -D`, direct push/merge to `main`,
+  the above** (force-push, `reset --hard`, `clean -f`, `branch -D`, direct push/merge/commit on `main`,
   `--no-verify`/`--no-gpg-sign`) for `Bash` commands in this session. Treat it as a backstop, not the
   actual control - it only covers this tool, this session, this host. `main` currently has **no**
   GitHub branch-protection rule (confirmed in `reports/AI_COLLABORATION_INSPECTION.md` s2.7); nothing

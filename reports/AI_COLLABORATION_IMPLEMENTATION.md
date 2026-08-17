@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | EVIDENCE - implementation record. Reports what was built, tested, and committed. |
-| Version | 1.0.0 |
+| Version | 1.1.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-17 |
+| Last updated | 2026-08-17 (post-merge correction) |
 | Review cadence | TBD |
 
 # AI collaboration architecture: implementation report
@@ -16,10 +16,42 @@ directed explicitly by the owner in the session of 2026-08-17, recorded as `ADR-
 `docs/DECISION_LOG.md`. This report is the human-readable summary of that entry; `ADR-0044` is the
 normative record if the two ever disagree.
 
+## Post-merge update (2026-08-17) - read this first
+
+Everything below "Exact HEAD SHA" through "Change history" (version 1.0.0) is the **original report as
+written at implementation time**, preserved unmodified as the historical record of that commit. It is
+**not** rewritten here merely to look current; where it has since been superseded, that is stated
+explicitly rather than silently.
+
+**What actually happened after the original report was written:** commits `a866ba0` (the architecture
+implementation) and `990cd60` (this report itself, added as a small follow-up commit - see its own
+"Exact HEAD SHA" text below) were pushed to `origin/phase-g-q17-q21`. That branch was then merged via
+PR #2 into `phase-g-governance` at merge commit `d53787e75048dbadc1a2e3559cf42405c1d56661`. GitHub CI
+run `32007363289` succeeded on that exact merge commit (`no-oracle` 3.11, `no-oracle` 3.12,
+`governance`, `oracle` - all four jobs green). `main` was not touched: `d53787e` is not an ancestor of
+`origin/main`.
+
+**Distinguishing the two commits, since both matter and they are not the same thing:** `a866ba0` is the
+**original implementation commit** - the one that actually created `CLAUDE.md`, `.claude/rules/`, the
+two hooks, and `.claude/settings.json`, and that `ADR-0044` describes. `d53787e` is the **later merge
+commit** - it did not add or change any of those files itself; it is the point where the already-complete
+implementation (via `990cd60`, `a866ba0`'s child) became part of `phase-g-governance`'s history. Citing
+`d53787e` as if it were the implementation commit would be wrong; citing `a866ba0` as if it were still
+unpushed or unmerged, as the original text below literally says, is now stale. Both statements are true
+of their own moment and neither is edited to hide that.
+
+Current branch as of this correction: `phase-g-governance`, HEAD `d53787e75048dbadc1a2e3559cf42405c1d56661`
+(before this correction's own commit is added). See `reports/AI_HANDOFF_CURRENT.md` for the
+navigation-only snapshot; `docs/DECISION_LOG.md` remains authoritative over both.
+
+---
+
 ## Exact HEAD SHA
 
 `a866ba0723a342bd9b7cd0531260daf24ff595be`, branch `phase-g-q17-q21`.
 Parent: `e53be83260b74b947ea9b4b2fad477ba089c10ff` (the prior session's inspection-report commit).
+
+*(Original, as recorded at implementation time - see "Post-merge update" above for what happened since.)*
 
 ## Exact files changed
 
@@ -141,6 +173,9 @@ Full rationale is in `ADR-0044`'s Context/Decision/Consequences; summarized per 
 
 ## Working tree / branch state
 
+*(As recorded at implementation time. Superseded - see "Post-merge update" at the top of this
+document. Preserved unedited below.)*
+
 - Working tree: **not fully clean** - the pre-existing, previously-flagged-and-explicitly-left-alone
   untracked bundle/scratch files from the Q17-Q21 session remain (listed above). No tracked file is
   modified or staged beyond this commit; `git status` shows only those untracked files.
@@ -151,6 +186,9 @@ Full rationale is in `ADR-0044`'s Context/Decision/Consequences; summarized per 
 
 ## Next authorized step
 
+*(As recorded at implementation time - this step has since been completed; see "Post-merge update" at
+the top of this document. Preserved unedited below.)*
+
 Confirm whether to push `a866ba0723a342bd9b7cd0531260daf24ff595be` to `origin/phase-g-q17-q21`. No
 other action is implied by this report; the three unresolved-issue items above are candidates for a
 future, separately-authorized pass, not follow-on work implied by this one.
@@ -159,4 +197,5 @@ future, separately-authorized pass, not follow-on work implied by this one.
 
 | Version | Date | Change |
 |---|---|---|
+| 1.1.0 | 2026-08-17 | Post-merge correction (CEO audit): added the "Post-merge update" section recording the push, PR #2 merge (`d53787e75048dbadc1a2e3559cf42405c1d56661`), and green CI run `32007363289`; annotated the now-superseded "Working tree / branch state" and "Next authorized step" sections without editing their original text. No historical fact was rewritten. |
 | 1.0.0 | 2026-08-17 | Implementation completed, verified, and committed as `a866ba0`; report written against that commit. |
