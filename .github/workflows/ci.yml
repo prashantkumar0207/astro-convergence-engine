@@ -174,6 +174,26 @@ jobs:
           done
           rm -rf /tmp/netprobes
 
+      - name: Upload regenerated non-oracle artifacts, reports and transcripts
+        # ADR-0053: this tier regenerates current_engine/KP_CHAIN/SIGN_CONVENTION
+        # on Linux successfully, but nothing previously retrieved that evidence -
+        # a legitimate drift failure (e.g. after a source change like M-03) left
+        # the regenerated artifacts unrecoverable, forcing reliance on a
+        # non-reproducing Windows regeneration. Placed AFTER the network-guard
+        # re-run (which regenerates the same three files again) and BEFORE the
+        # drift assertion, so the upload captures exactly what that assertion
+        # examines, and `if: always()` so a legitimate drift failure still
+        # uploads for forensic inspection rather than being discarded.
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hermetic-certification-evidence-${{ matrix.python-version }}
+          path: |
+            certification/*.json
+            reports/certification/*.report.md
+            reports/certification/*.console.txt
+          if-no-files-found: error
+
       - name: Assert regenerated artifacts did not drift, then that no source changed
         run: |
           # ORDER MATTERS, corrected 2026-08-13. The previous form ran
