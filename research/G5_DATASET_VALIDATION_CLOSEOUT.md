@@ -3,8 +3,8 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | RESEARCH CLOSEOUT, **CORRECTED 2026-08-18**. Non-normative per `docs/DOCUMENTATION_STANDARD.md` s1 ("Research notes... lightweight"). The originally-reported completion accounting (section 4) was subsequently identified as incorrect and **must not be relied upon as verified evidence**; section 4a is the corrected executed state. Neither the original nor the corrected counts have been independently reproduced or re-derived by the builder from primary data, because no per-person worksheet or underlying dataset file is currently present in this repository. See "Evidence provenance and reproducibility" (s8) before relying on any count in this document. Companion decision record: `docs/DECISION_LOG.md` `ADR-0047` (PROPOSED, not ratified) and its 2026-08-18 corrective addendum. |
-| Version | 2.0.0 |
+| Status | RESEARCH CLOSEOUT, **RESTORED 2026-08-18**. Non-normative per `docs/DOCUMENTATION_STANDARD.md` s1 ("Research notes... lightweight"). Section 4's original 22/22 accounting was briefly, and erroneously, superseded by section 4a's "12/22" figure on 2026-08-18; owner-directed forensic reconciliation the same day found section 4a's figure itself rested on a conflation with an unrelated 5-person pilot, and **section 4b restores the original 22/22 accounting as authoritative**, marking section 4a SUPERSEDED/RETRACTED in turn. None of the three accountings (section 4, 4a, or 4b) has been independently reproduced or re-derived by the builder from primary data within this repository. See "Evidence provenance and reproducibility" (s8) before relying on any count in this document. Companion decision record: `docs/DECISION_LOG.md` `ADR-0047` (PROPOSED, not ratified) and its two 2026-08-18 corrective addenda. |
+| Version | 3.0.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 | Last updated | 2026-08-18 |
 | Review cadence | TBD |
@@ -61,12 +61,14 @@ question rather than an astrological-evidence-relationship question:
   confirmation of either.
 - Every event counted as evidence requires an **exact day**, not an approximate date, to be eligible.
 
-## 4. SUPERSEDED / INCORRECTLY REPORTED CLOSEOUT (as reported 2026-08-17)
+## 4. ORIGINAL CLOSEOUT (as reported 2026-08-17) - RESTORED AS AUTHORITATIVE (2026-08-18, see section 4b)
 
-> **This section is superseded and must not be relied upon as verified evidence.** The completion
-> count below was subsequently identified as incorrect: the sample was **not** 22/22 complete. It is
-> preserved here unedited, exactly as originally recorded, so the audit trail shows what was reported
-> and later found wrong - not silently converted to the corrected figures. **Use section 4a instead.**
+> **This section was briefly marked superseded on 2026-08-18 (by a "12/22" correction, section 4a) and
+> is now restored as authoritative the same day**, after forensic reconciliation found section 4a's
+> figure itself rested on a conflation with an unrelated 5-person pilot (see section 4b for the full
+> restoration and explanation). The bulleted figures below are preserved exactly as originally recorded
+> throughout - never edited by either correction. **See section 4b for the authoritative statement and
+> the reason the intervening "12/22" correction (section 4a) does not stand.**
 
 - **22 / 22** of the pre-registered sample were completed (no attrition).
 - **16** people were classified independent of ADB, under the rules in section 3.
@@ -76,7 +78,16 @@ question rather than an astrological-evidence-relationship question:
 - **14** genuinely independent, exact-day events were identified across the 16 independent people (not
   one event per person; some people contributed zero eligible events, some contributed more than one).
 
-## 4a. CORRECTED EXECUTED STATE (2026-08-18)
+## 4a. SUPERSEDED / RETRACTED CORRECTION (as reported 2026-08-18, retracted later the same day)
+
+> **This section is itself superseded and retracted - do not rely on it.** Owner-directed forensic
+> reconciliation on 2026-08-18 established that the "12/22 attempted" figure below rests on
+> `NEXT_CORPUS_REPORT.md`, an external file that conflated this 22-person sample with an unrelated,
+> separately-run 5-person "bridging pilot" (Maldini, Impanis, Mounicq, Del Prete, Charpentier), and that
+> mischaracterized four of this sample's people (Scaroni, Bacchelli, Prinzhorn, Ellinger) as never
+> ADB-checked when the primary 22-person record shows all four as checked (NONMATCH). It is preserved
+> here unedited, exactly as originally recorded, so the audit trail shows what was reported and later
+> retracted - not silently removed. **Use section 4b instead.**
 
 **The pre-registered sample was 22 people. Only 12 of those 22 were actually attempted. The sample is
 NOT 22/22 complete and must never again be described as such.**
@@ -111,11 +122,43 @@ Explicitly, per the correction instruction:
   corrected 22-person sample.
 - **No predictive-accuracy claim follows from this research**, in its original or corrected form.
 
-## 5. Event-domain coverage observed (SUPERSEDED - see section 4a)
+## 4b. RESTORED AUTHORITATIVE STATE (2026-08-18, forensic reconciliation)
 
-> This section describes domain coverage for the 14-events/16-independent-people figures that section 4a
-> supersedes. It is preserved unedited as historical record. No corrected event-domain breakdown is
-> available; none is invented here.
+**The pre-registered 22-person sample was completed in full: 22/22. Section 4a's "12/22 attempted"
+figure was itself an error and is retracted (see the banner on section 4a). The original section 4
+accounting, below, is restored as authoritative.**
+
+| Category | Count | Named |
+|---|---|---|
+| Attempted | 22 / 22 | - |
+| Independent of ADB | 16 | - |
+| ADB_MATCH (not independent) | 4 | Fichera, Aimar, Serantoni, Bobet |
+| Unresolved identity | 2 | Veen, Perquier |
+| Independent, exact-day events | 14 | across the 16 independent people |
+
+**Separate five-person bridging pilot, excluded from the counts above:** Maldini, Impanis, Mounicq, Del
+Prete, Charpentier. This is a distinct piece of research with its own separate result; it was never
+part of the pre-registered 22-person G5 sample, and the primary record for the 22-person sample states
+explicitly that the pilot is "not merged into any count."
+
+**How the error occurred:** an external file (`NEXT_CORPUS_REPORT.md`, not committed to this
+repository) produced after both the 22-person closeout and the bridging-pilot report, and postdating
+both, incorrectly folded two of the pilot's names (Impanis, Del Prete) into the 22-person sample's
+"attempted" count and mischaracterized four of the 22-person sample's own people (Scaroni, Bacchelli,
+Prinzhorn, Ellinger) as never ADB-checked, when the primary 22-person record shows all four checked
+with an ADB result of NONMATCH. That file's account was the source of section 4a and the corresponding
+`ADR-0047` addendum, both now retracted.
+
+**Evidence class, unchanged:** this restoration, like sections 4 and 4a before it, is **reported, not
+independently reproduced by the builder from primary records within this repository** - see section 8.
+The external files reconciled to reach this restoration are not themselves added to this repository by
+this correction.
+
+## 5. Event-domain coverage observed (RESTORED - see section 4b)
+
+> This section describes domain coverage for the 14-events/16-independent-people figures, which section
+> 4b restores as authoritative after section 4a's "12/22" figure (which had superseded this section) was
+> itself retracted. It is preserved unedited as historical record throughout.
 
 The 14 independent exact-day events covered a **limited** set of domains:
 
@@ -130,13 +173,13 @@ are absent from the full G5 population (see section 7).
 
 ## 6. Finding and decision
 
-> **Correction note (2026-08-18):** the paragraph immediately below cites the now-superseded "fourteen
-> independent events... 22-person sample" figures from section 4. It is preserved unedited as the
-> historical record of the original finding's stated reasoning. The corrected sample (section 4a: 12/22
-> attempted, 4 confirmed independent) is smaller than what this paragraph describes, which supports the
-> same conclusion at least as strongly - a smaller confirmed-independent sample is weaker, not stronger,
-> grounds for treating G5 as a primary benchmark. The conclusion itself (G5 = SUPPLEMENT ONLY) is
-> unchanged by this correction; see `docs/DECISION_LOG.md` `ADR-0047`'s 2026-08-18 evidence addendum.
+> **Correction note (2026-08-18, updated 2026-08-18):** the paragraph immediately below cites "fourteen
+> independent events... 22-person sample," which was briefly superseded by section 4a's "12/22" figure
+> and has since been **restored as authoritative** by section 4b, after forensic reconciliation found
+> section 4a's figure itself rested on a conflation with an unrelated 5-person pilot. The paragraph below
+> therefore again reflects the authoritative figures directly, with no downward adjustment needed. The
+> conclusion (G5 = SUPPLEMENT ONLY) was unchanged throughout both corrections; see `docs/DECISION_LOG.md`
+> `ADR-0047`'s two 2026-08-18 evidence addenda.
 
 **The research did not establish sufficient independent, exact-day, multi-domain event coverage for G5
 to serve as ACE's primary historical-validation benchmark.** Fourteen independent events across five
@@ -151,35 +194,42 @@ evidentiary basis; this document is the supporting research record, not the deci
 
 ## 7. Limitations
 
-- **Corrected 2026-08-18: the 22-person sample was only 12/22 attempted, not complete.** Neither the
-  attempted 12 nor the full pre-registered 22 may be extrapolated to the full G5 population. See
-  section 4a.
-- **Domain coverage is limited to what section 5 lists, and section 5 is itself superseded (section
-  4a).** No corrected domain-coverage inference is available; none should be drawn from either the
-  original or the corrected counts.
-- *(Superseded original bullet, preserved as historical record - see section 4a for the corrected
-  categories instead):* "The 2 unresolved identities remain unresolved, not independent, not matched.
-  Resolving them is future work, not assumed in either direction."
-- **Of the corrected categories (section 4a), the 4 identity-resolved-but-ADB-unchecked people
-  (Scaroni, Bacchelli, Prinzhorn, Ellinger) remain unresolved as to independence** - UNKNOWN, not
-  independent, not matched. `Mounicq` (NO_MATCH) and `Charpentier` (AMBIGUOUS) are their own distinct,
-  separately-named outcomes, not merged into "unresolved." Resolving any of these is future work, not
-  assumed in either direction.
+- **The 22-person sample is complete: 22/22, restored (section 4b) after a brief, erroneous "12/22"
+  correction (section 4a, retracted).** The full pre-registered 22 may not be extrapolated to the full
+  G5 population.
+- **Domain coverage is limited to what section 5 lists (restored, section 4b).** No claim is made about
+  domains not listed there.
+- The 2 unresolved identities (Veen, Perquier) remain unresolved, not independent, not matched.
+  Resolving them is future work, not assumed in either direction.
+- *(Bullets from the retracted section 4a correction, preserved as historical record only - do not
+  rely on them):* "Of the corrected categories (section 4a), the 4 identity-resolved-but-ADB-unchecked
+  people (Scaroni, Bacchelli, Prinzhorn, Ellinger) remain unresolved as to independence... `Mounicq`
+  (NO_MATCH) and `Charpentier` (AMBIGUOUS) are their own distinct, separately-named outcomes." These
+  four names and the NO_MATCH/AMBIGUOUS outcomes belonged to the conflated, retracted "12/22" accounting
+  (section 4a); per section 4b, Scaroni, Bacchelli, Prinzhorn, and Ellinger are ADB-checked with a
+  NONMATCH result in the restored 22-person record, and Mounicq/Charpentier are not part of the
+  22-person sample at all.
 - **This document does not establish, and must not be cited as, evidence of predictive accuracy** for
-  any ACE calculation, rule, or methodology, under either the original or the corrected accounting. It
+  any ACE calculation, rule, or methodology, under any of the three accountings (sections 4, 4a, 4b). It
   is a corpus-suitability finding only.
 
 ## 8. Evidence provenance and reproducibility
 
 **No per-person worksheet, source-record list, or raw dataset file for this research is currently
-present in this repository**, under `research/` or elsewhere, as of this document's creation, **and
-this remains true after the 2026-08-18 correction** - the corrected counts in section 4a are of the
-same evidence class as the original, superseded counts in sections 4-5: reported, not reproduced. The
-counts in sections 4-5 are recorded here as **reported to the builder** in the session that produced
-this closeout (2026-08-17), later identified as an incorrect completion accounting; the counts in
-section 4a are recorded as reported in the correcting session (2026-08-18). Neither has been
-independently reproduced, recomputed, or spot-checked by the builder against primary source records,
-for the direct reason that those records are not available in this environment.
+committed to this repository**, under `research/` or elsewhere, as of this document's creation, **and
+this remains true after both 2026-08-18 corrections** - the counts in section 4b are of the same
+evidence class as sections 4 and 4a before them: reported, not reproduced from data committed to this
+repository. The counts in sections 4-5 were recorded as **reported to the builder** in the session that
+produced this closeout (2026-08-17); the counts in section 4a were reported in a correcting session
+later found to be itself in error (2026-08-18); the restoration in section 4b was reached the same day
+by owner-directed forensic reconciliation against primary-evidence files supplied outside this
+repository (`FINAL_CLOSEOUT_22_SAMPLE.md`, `BRIDGING_MISSION_FINAL_REPORT_v2.md`,
+`NEXT_CORPUS_REPORT.md`, and the `G5_CENSUS_REPORT.md` checkpoint series) - a stronger evidentiary basis
+than either prior accounting, since it identifies and reads an actual itemized per-person primary
+record rather than relying on a summary figure alone, but that record itself remains uncommitted to
+this repository. None of the three accountings has been independently reproduced, recomputed, or
+spot-checked by the builder against data committed to this repository, because that data is not present
+here.
 
 This evidence class is stated explicitly, following the precedent already established in this
 repository for reported-but-not-independently-observed evidence (see
@@ -198,5 +248,6 @@ section 4's superseded ones.
 
 | Version | Date | Change |
 |---|---|---|
-| 2.0.0 | 2026-08-18 | **Correction.** The 2026-08-17 completion accounting (section 4: 22/22 complete, 16 independent, 4 ADB matches, 2 unresolved, 14 independent events) was identified as an incorrect completion count and must not be relied upon as verified evidence. Section 4 is preserved unedited and marked SUPERSEDED, not deleted or silently rewritten. New section 4a records the corrected executed state: 12/22 attempted, 4 confirmed independent (Impanis, Del Prete, Painleve, Esclangon), 2 ADB_MATCH (Maldini, Bobet), 1 NO_MATCH (Mounicq), 1 AMBIGUOUS (Charpentier), 4 identity-resolved-but-ADB-unchecked and therefore NOT independent (Scaroni, Bacchelli, Prinzhorn, Ellinger), 15 unattempted. Section 5 (event-domain coverage) marked superseded in step with section 4, since it was derived from the same wrong figures; no corrected event-level data was supplied or invented. Sections 6-8 annotated with corrective pointers, original text preserved. Decision (G5 = SUPPLEMENT ONLY) and companion `ADR-0047` (PROPOSED, not ratified) are unchanged in substance; `ADR-0047` gained its own dated corrective addendum, not an edit to its original text. |
+| 3.0.0 | 2026-08-18 | **Restoration, retracting version 2.0.0's correction.** Owner-directed forensic reconciliation against primary-evidence files supplied outside this repository (`FINAL_CLOSEOUT_22_SAMPLE.md`, `BRIDGING_MISSION_FINAL_REPORT_v2.md`, `NEXT_CORPUS_REPORT.md`, `G5_CENSUS_REPORT.md` series) established that version 2.0.0's "12/22 attempted" figure (section 4a) was itself incorrect: its source, `NEXT_CORPUS_REPORT.md`, conflated this 22-person sample with an unrelated, separately-run 5-person bridging pilot (Maldini, Impanis, Mounicq, Del Prete, Charpentier), and mischaracterized four of this sample's own people (Scaroni, Bacchelli, Prinzhorn, Ellinger) as never ADB-checked when the primary record shows all four checked (NONMATCH). Section 4a is preserved unedited and marked SUPERSEDED/RETRACTED, not deleted. New section 4b restores the original section-4 accounting as authoritative: 22/22 attempted, 16 independent, 4 ADB_MATCH (Fichera, Aimar, Serantoni, Bobet), 2 unresolved (Veen, Perquier), 14 independent exact-day events; the 5-person bridging pilot is explicitly named as separate and excluded from these counts. Section 5 (event-domain coverage) restored in step with section 4b. Sections 6-8 updated with corrective pointers reflecting the restoration; original text throughout preserved, nothing silently rewritten. Decision (G5 = SUPPLEMENT ONLY) and companion `ADR-0047` (PROPOSED, not ratified) are unchanged in substance; `ADR-0047` gained a second dated corrective addendum, not an edit to any prior text. |
+| 2.0.0 | 2026-08-18 | **Correction (later found erroneous - see 3.0.0).** The 2026-08-17 completion accounting (section 4: 22/22 complete, 16 independent, 4 ADB matches, 2 unresolved, 14 independent events) was reported as an incorrect completion count; this was itself wrong. Section 4 was preserved unedited and marked SUPERSEDED (later restored, 3.0.0). New section 4a recorded a "corrected" executed state: 12/22 attempted, 4 confirmed independent (Impanis, Del Prete, Painleve, Esclangon), 2 ADB_MATCH (Maldini, Bobet), 1 NO_MATCH (Mounicq), 1 AMBIGUOUS (Charpentier), 4 identity-resolved-but-ADB-unchecked (Scaroni, Bacchelli, Prinzhorn, Ellinger), 15 unattempted - now itself superseded/retracted by 3.0.0. Section 5 marked superseded in step with section 4 (also later restored). Sections 6-8 annotated with corrective pointers, original text preserved. Decision (G5 = SUPPLEMENT ONLY) and companion `ADR-0047` (PROPOSED, not ratified) were unchanged in substance; `ADR-0047` gained its own dated corrective addendum, not an edit to its original text. |
 | 1.0.0 | 2026-08-17 | Closeout recorded on request. Findings reported to the builder, not independently reproduced (section 8). Companion decision: `ADR-0047` (PROPOSED). |
