@@ -28,6 +28,16 @@ import swisseph as swe
 NODE_POLICY_MEAN = "mean"
 NODE_POLICY_TRUE = "true"
 
+#: ADR-0054: the only currently-ratified rise/set disc reference.
+#: Named (rather than a bare bool) so a future variant has somewhere
+#: to go without renaming this one.
+RISE_SET_DISC_UPPER_LIMB = "upper_limb"
+
+#: ADR-0054: the only currently-ratified rise/set refraction
+#: convention - standard atmosphere, auto-derived from observer
+#: elevation (Swiss Ephemeris default when atpress/attemp are 0).
+RISE_SET_REFRACTION_STANDARD = "standard_atmosphere"
+
 
 @dataclass(frozen=True)
 class CalculationProfile:
@@ -48,6 +58,15 @@ class CalculationProfile:
     strict_ephemeris
         When True, silent ephemeris fallback raises instead of
         returning mislabelled data (see engine.astronomy.ephemeris).
+    rise_set_disc_reference
+        ADR-0054: which point of the solar disc defines "risen"/"set".
+        Only `RISE_SET_DISC_UPPER_LIMB` is implemented;
+        `engine.astronomy.rise_set` raises on any other value rather
+        than silently applying a convention nothing has ratified.
+    rise_set_refraction
+        ADR-0054: the atmospheric refraction convention. Only
+        `RISE_SET_REFRACTION_STANDARD` is implemented, for the same
+        reason.
     """
 
     name: str
@@ -55,6 +74,8 @@ class CalculationProfile:
     house_system: bytes
     node_policy: str
     strict_ephemeris: bool = True
+    rise_set_disc_reference: str = RISE_SET_DISC_UPPER_LIMB
+    rise_set_refraction: str = RISE_SET_REFRACTION_STANDARD
 
 
 PARASHARI_LAHIRI = CalculationProfile(

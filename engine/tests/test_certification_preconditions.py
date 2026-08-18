@@ -49,14 +49,14 @@ def test_data_assets_verify_against_the_manifest():
 def test_anti_fitting_scan_is_clean():
     result = support.scan_for_fitting()
     assert result["findings"] == [], result["findings"]
-    assert result["modules_scanned"] >= 170
+    assert result["modules_scanned"] >= 173
 
 
 def test_anti_fitting_scan_covers_every_declared_certification_source():
     """M-03: additions or removals from the certification surface are explicit."""
 
-    assert len(support.CERTIFIER_SOURCES) == 12
-    assert len(support.VALIDATOR_SOURCES) == 11
+    assert len(support.CERTIFIER_SOURCES) == 13
+    assert len(support.VALIDATOR_SOURCES) == 12
     assert support.FIXTURE_SOURCES == ("brihat_fixtures.py",)
     discovered_certifiers = {
         str(path.relative_to(ROOT)).replace("\\", "/")

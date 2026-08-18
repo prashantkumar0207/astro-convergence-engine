@@ -1,0 +1,10 @@
+============================================================
+RISE_SET_V1 CERTIFICATION
+============================================================
+A_convention_integrity: {'disc_reference': 'upper_limb', 'refraction': 'standard_atmosphere', 'profiles_checked': ['parashari_lahiri', 'kp_krishnamurti'], 'unratified_convention_rejected': True}
+B_dense_sweep: {'cases': 11, 'comparisons': 22, 'mismatches': 0, 'tolerance_seconds': 60.0}
+C_independent_reference: {'circumpolar_cases_checked': 2, 'elevation_cases': 2, 'elevation_comparisons': 4, 'elevation_tolerance_seconds': 150.0, 'mismatches': 0, 'reference_method': 'closed-form hour-angle/altitude bisection, independent of swe.rise_trans*'}
+D_non_invasiveness: {'ayanamsa_modes_unchanged': True, 'house_systems_unchanged': True, 'strict_fallback_guard_verified': True}
+E_independent_validator: PASS
+archived          : certification\RISE_SET_V1_certification.json
+RESULT            : PASS

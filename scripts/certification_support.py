@@ -50,21 +50,22 @@ _FORBIDDEN_IMPORTS = re.compile(
 # M-03: all source locations that can shape a certification claim are scanned,
 # not merely the production package. The historical audit named eleven
 # certifiers; the current tree contains the later current-engine runner too.
+# ADR-0054 adds a thirteenth (rise/set).
 CERTIFIER_SOURCES = (
     "scripts/certify_current_engine.py", "scripts/certify_d12.py",
     "scripts/certify_d2.py", "scripts/certify_d3.py", "scripts/certify_d30.py",
     "scripts/certify_d7.py", "scripts/certify_kp_chain.py",
-    "scripts/certify_parashari_drishti.py", "scripts/certify_sign_convention.py",
-    "scripts/certify_tier0.py", "scripts/certify_transits.py",
-    "scripts/certify_vimshottari.py",
+    "scripts/certify_parashari_drishti.py", "scripts/certify_rise_set.py",
+    "scripts/certify_sign_convention.py", "scripts/certify_tier0.py",
+    "scripts/certify_transits.py", "scripts/certify_vimshottari.py",
 )
 VALIDATOR_SOURCES = (
     "validate_d10_holdout.py", "validate_d12_holdout.py",
     "validate_d2_holdout.py", "validate_d3_holdout.py",
     "validate_d30_holdout.py", "validate_d7_holdout.py",
     "validate_d9_holdout.py", "validate_kp_holdout.py",
-    "validate_parashari_drishti_holdout.py", "validate_transits_holdout.py",
-    "validate_vimshottari_holdout.py",
+    "validate_parashari_drishti_holdout.py", "validate_rise_set_holdout.py",
+    "validate_transits_holdout.py", "validate_vimshottari_holdout.py",
 )
 FIXTURE_SOURCES = ("brihat_fixtures.py",)
 SCAN_TARGETS = ("engine", *CERTIFIER_SOURCES, *VALIDATOR_SOURCES, *FIXTURE_SOURCES)

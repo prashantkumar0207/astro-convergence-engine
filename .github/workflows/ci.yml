@@ -75,7 +75,7 @@ jobs:
       - name: Default gate (engine/tests)
         run: python -m pytest -q
 
-      - name: Independent holdout validators (all eleven)
+      - name: Independent holdout validators (all twelve)
         run: |
           set -e
           for v in validate_d9_holdout.py \
@@ -88,7 +88,8 @@ jobs:
                    validate_kp_holdout.py \
                    validate_vimshottari_holdout.py \
                    validate_transits_holdout.py \
-                   validate_parashari_drishti_holdout.py; do
+                   validate_parashari_drishti_holdout.py \
+                   validate_rise_set_holdout.py; do
             echo "::group::$v"
             python "$v"
             echo "::endgroup::"
@@ -103,6 +104,7 @@ jobs:
           python scripts/certify_current_engine.py
           python scripts/certify_kp_chain.py
           python scripts/certify_sign_convention.py
+          python scripts/certify_rise_set.py
 
       - name: Re-run a representative subset under the in-process network guard
         run: |
@@ -113,6 +115,7 @@ jobs:
           python scripts/ci_no_network.py scripts/certify_current_engine.py
           python scripts/ci_no_network.py scripts/certify_kp_chain.py
           python scripts/ci_no_network.py scripts/certify_sign_convention.py
+          python scripts/ci_no_network.py scripts/certify_rise_set.py
 
       - name: Assert the network guard actually blocks (negative control)
         run: |
