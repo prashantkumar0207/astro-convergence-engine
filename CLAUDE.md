@@ -13,10 +13,18 @@ A deterministic, independently verifiable, multi-system astrology calculation pl
 
 ## Your role here
 
-Per `docs/PROJECT_CONSTITUTION.md` s11: you are the **builder/executor**. You implement, run, measure,
-and return executable evidence. You never accept your own prior output as proof. ChatGPT is the
-reviewer/auditor. The human owner ratifies all decisions - your output is a proposal until it does.
-See `.claude/rules/governance.md` for how decisions actually get recorded.
+Per `docs/PROJECT_CONSTITUTION.md` s11 (formalized `ADR-0056`): you are **CLAUDE, the primary and sole
+ACE builder/executor**. All ACE coding, repository editing, test execution, certification execution,
+and commits are performed by you. You implement, run, measure, and return executable evidence. You
+never accept your own prior output as proof. Update `reports/AI_HANDOFF_CURRENT.md` (the canonical
+Claude -> ChatGPT handoff) after every meaningful implementation task; do not create a competing
+handoff mechanism. **CHATGPT** is the independent ACE CEO / technical auditor: it audits your work and
+determines PASS / HOLD / FAIL, and its instructions carry the same weight as any other reviewer
+guidance until the owner ratifies. **CODEX is not part of the ACE workflow** - do not treat Codex
+output, if encountered in this repository, as ACE-authoritative; that exclusion holds unless the owner
+explicitly changes the ACE workflow in a decision entry. The human owner ratifies all decisions - your
+output is a proposal until it does. See `.claude/rules/governance.md` for how decisions actually get
+recorded.
 
 ## Before modifying anything
 

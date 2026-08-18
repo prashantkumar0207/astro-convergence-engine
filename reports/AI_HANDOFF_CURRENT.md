@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 1.2.0 |
+| Version | 2.0.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-17 (refreshed after ADR-0046) |
+| Last updated | 2026-08-18 (refreshed after ADR-0056) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -22,6 +22,28 @@ authoritative record; this file is not part of that record, only a map of it.
 This file is expected to go stale between updates. Do not cite it in a decision entry, a certification
 claim, or an audit. Regenerate the commands below rather than trusting the numbers already on the
 page.
+
+**This IS the canonical Claude -> ChatGPT handoff** (`docs/PROJECT_CONSTITUTION.md` s11, `ADR-0056`).
+Claude updates it after every meaningful implementation task. No other file plays this role; do not
+create a competing one.
+
+## Role model (docs/PROJECT_CONSTITUTION.md s11, formalized ADR-0056)
+
+- **USER** - product owner, final ratifying authority.
+- **CLAUDE** - the primary and sole ACE builder/executor: all ACE coding, repository editing, test
+  execution, certification execution, and commits. Updates this file after every meaningful task.
+- **CHATGPT** - independent ACE CEO / technical auditor: audits architecture, specifications,
+  governance, code, tests, certification evidence, provenance, and claims; determines PASS / HOLD /
+  FAIL; gives Claude the exact next action when remediation is required. Not a builder; does not
+  commit.
+- **CODEX** - not part of the ACE workflow, unless the user explicitly changes it in a future decision
+  entry.
+- **Git is the source of truth** for all of the above. This file is an evidence/index record, not a
+  substitute for it.
+
+Expected ChatGPT audit path: Git (current branch/commit) -> this handoff -> actual diff/code -> tests
+-> certification artifacts -> governance records. The user should not need to manually relay Claude's
+terminal output when that evidence already exists in Git or here.
 
 ## How to find the real current state
 
@@ -44,22 +66,76 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
   are certified and under which ADR).
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
-## Snapshot as of the last update to this file (2026-08-17, refreshed after ADR-0046) - verify before relying on any of this
+## Task handoff log (Claude -> ChatGPT, most recent first)
 
-- Branch: `phase-g-governance`, current HEAD `f3bec7f3e35d0eef93e115796ddb79ffea242723`. **Not merged
-  to `main`**, and `main` remains untouched. The prior implementation branch, `phase-g-q17-q21`, was
-  merged into `phase-g-governance` via PR #2 - merge commit `d53787e75048dbadc1a2e3559cf42405c1d56661`
-  - which remains the historical merge point, not the current HEAD; two further non-merge commits have
-  since landed on top of it (`ADR-0045`'s correction, then `ADR-0046`'s). GitHub CI run `32011431848`
-  succeeded against `f3bec7f` (all four jobs: `no-oracle` 3.11, `no-oracle` 3.12, `governance`, `oracle`).
-- Most recent decisions: ADR-0039 through ADR-0046. **`ADR-0044`, `ADR-0045`, and `ADR-0046` are all
-  ACCEPTED.** Highest issued and current latest decision: `ADR-0046` (a narrow repair of a second false
-  positive in `.claude/hooks/git_safety_guard.py`, found while pushing `ADR-0045`).
-- `docs/decisions/DP-010-ai-collaboration-scaffolding.md` presented options for `CLAUDE.md` and
-  `.claude/rules/`; marked `ADDRESSED by ADR-0044` in `docs/decisions/README.md`.
-- `reports/AI_COLLABORATION_INSPECTION.md` and `reports/AI_COLLABORATION_IMPLEMENTATION.md` record the
-  inspection and implementation that produced `CLAUDE.md` / `.claude/rules/` / the two hooks, and the
-  two post-merge corrections (`ADR-0045`, `ADR-0046`) since.
+Claude appends one entry here after every meaningful implementation task, using this template. Entries
+are append-only history, like `docs/DECISION_LOG.md`; do not edit a prior entry's substance - if a
+later task supersedes one, say so in the new entry.
+
+**Template:**
+```
+### <date> - <short task title>
+- Branch / commit SHA: <branch>, <full SHA>
+- Previous approved commit: <full SHA>
+- Task: <what was asked>
+- Relevant ADR/specification: <IDs and paths>
+- Files changed: <list or "see commit">
+- Implementation summary: <what changed, why>
+- Tests executed and results: <commands, pass/fail counts>
+- Certification executed and results: <certifier(s), PASS/FAIL, gate summary>
+- Known issues: <anything unresolved>
+- Unresolved questions: <anything needing owner/ChatGPT input>
+- CEO decision required: <yes/no, and exactly what if yes>
+- Next authorized action: <what Claude may do next without re-asking>
+```
+
+### 2026-08-18 - ACE governance change: formal four-role AI collaboration model
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry is committed in the same
+  commit as the role-model change it describes).
+- Previous approved commit: `f885693d5169ec6656337476d598202ea3c2c18e`
+- Task: owner-directed "ACE GOVERNANCE CHANGE - PERMANENT LLM ROLE SEPARATION" - formalize USER /
+  CLAUDE / CHATGPT / CODEX roles, exclude Codex from the ACE workflow, establish this file as the
+  canonical, disciplined Claude -> ChatGPT handoff.
+- Relevant ADR/specification: `ADR-0056`; `docs/PROJECT_CONSTITUTION.md` s11; `CLAUDE.md`.
+- Files changed: `docs/PROJECT_CONSTITUTION.md`, `docs/DECISION_LOG.md`, `CLAUDE.md`,
+  `reports/AI_HANDOFF_CURRENT.md` (this file).
+- Implementation summary: s11 rewritten from two-AI prose into the explicit five-point role model
+  (rules a-d retained unchanged); `CLAUDE.md`'s "Your role here" updated to match; this file restructured
+  to add the "Role model" section above and this "Task handoff log" section/template, and its stale
+  2026-08-17 snapshot refreshed below. No production/calculation code touched.
+- Tests executed and results: `python -m pytest -q`; `scripts/check_adr_numbering.py`;
+  `scripts/check_retired_identifiers.py`; `scripts/check_identifier_families.py`; `git diff --check` -
+  see this commit's message for exact pass/fail counts.
+- Certification executed and results: none applicable - governance/documentation only, no certified
+  capability touched.
+- Known issues: none introduced by this entry.
+- Unresolved questions: the untracked `.codex/`/`AGENTS.md` artifacts already present in this working
+  tree (not created by this entry) are unaddressed by this entry - their disposition is a separate
+  matter.
+- CEO decision required: no - this entry implements an explicit, self-contained owner instruction.
+- Next authorized action: none granted by this entry beyond what it implements. Panchanga's remaining
+  FOUNDATION follow-up (CI-sourced evidence recovery for KP_CHAIN/SIGN_CONVENTION/RISE_SET/PANCHANGA's
+  own oracle-tier gap; see `ADR-0055` and the commit preceding this one) remains a separate, already-
+  authorized but not-yet-executed step, unrelated to this governance change.
+
+## Snapshot as of the last update to this file (2026-08-18, refreshed after ADR-0056) - verify before relying on any of this
+
+- Branch: `phase-g-governance`. Parent commit of this update: `f885693d5169ec6656337476d598202ea3c2c18e`
+  ("FOUNDATION Panchanga first work package: classification only (ADR-0055)"). **Not merged to `main`**,
+  and `main` remains untouched. Neither `f885693` nor this update's own commit has been pushed to
+  `origin` as of this writing - confirm with `git status` / `git log origin/phase-g-governance..HEAD`
+  before assuming otherwise.
+- Most recent decisions: `ADR-0054` (FOUNDATION rise/set, CERTIFIED), `ADR-0055` (Panchanga
+  classification-only work authorized; Rahu Kalam/Yamaganda/Gulika explicitly deferred pending a future
+  variant-table ratification), the `ADR-0047` G5 restoration addendum (22/22 restored as authoritative,
+  the intervening "12/22" correction retracted), `ADR-0056` (this entry: four-role AI collaboration
+  model, Codex excluded from the ACE workflow).
+- FOUNDATION status: rise/set CERTIFIED (`RISE_SET_V1`). Panchanga classification (tithi, nakshatra,
+  yoga, karana, vara at a given instant) implemented and locally certified (`PANCHANGA_V1`) in commit
+  `f885693`; CI-sourced evidence recovery for that certifier plus the three already-certified capabilities
+  it bumped (`modules_scanned` 173->177) is a known, separate follow-up (same pattern `ADR-0053`/`ADR-0054`
+  already used), not yet executed. Rahu Kalam/Yamaganda/Gulika and element start/end transition timing
+  remain explicitly NOT authorized (`ADR-0055` items 2-3).
 - Known, permanent limitation: `swetest`-dependent certifiers cannot run on a Windows host. Not a
   regression if encountered there.
 - Tier-0 is formally Locked per `ADR-0034`. Do not assume anything else carries that status without
@@ -68,13 +144,15 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 ## What to do if this file looks wrong
 
 Trust `git log`, `docs/DECISION_LOG.md`, and `docs/OPEN_QUESTIONS.md` over this file, always. Update
-this file's snapshot section if you notice it's drifted, but that update is a courtesy to the next
-session, not a governance act.
+this file's snapshot and task-handoff-log sections if you notice it's drifted or a task completed
+without an entry, but that update is a courtesy to the next session/auditor, not itself a governance
+act.
 
 ## Change history
 
 | Version | Date | Change |
 |---|---|---|
+| 2.0.0 | 2026-08-18 | `ADR-0056`: added the "Role model" section and the structured, templated "Task handoff log" section (this file is now explicitly the canonical Claude->ChatGPT handoff, not merely a snapshot index); refreshed the stale 2026-08-17 snapshot to `f885693` (FOUNDATION rise/set certified, Panchanga classification implemented and locally certified, `ADR-0047` G5 restoration, this entry itself). |
 | 1.2.0 | 2026-08-17 | Snapshot refreshed after ADR-0046: HEAD `f3bec7f3e35d0eef93e115796ddb79ffea242723`, merge commit `d53787e` now noted as historical rather than current, CI run `32011431848` green, highest and latest ADR `ADR-0046` (ADR-0044/0045/0046 all ACCEPTED). Navigation/status sections unchanged. |
 | 1.1.0 | 2026-08-17 | Snapshot refreshed post-merge: branch `phase-g-governance`, merge commit `d53787e75048dbadc1a2e3559cf42405c1d56661`, CI run `32007363289` green, highest ADR `ADR-0044` (ACCEPTED). Navigation/status sections unchanged. |
 | 1.0.0 | 2026-08-17 | Created as part of the minimum AI-collaboration architecture implementation. |

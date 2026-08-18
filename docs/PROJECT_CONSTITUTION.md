@@ -1,9 +1,9 @@
 | Field | Value |
 |---|---|
 | Status | DRAFT - pending owner ratification |
-| Version | 0.1.1 |
+| Version | 0.1.2 |
 | Owner | TBD (docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-17 |
+| Last updated | 2026-08-18 |
 | Review cadence | TBD |
 
 # Project Constitution
@@ -71,14 +71,42 @@ document governs `engineering/ENGINEERING_CONSTITUTION.md` regardless of either 
 label. `ADR-0042` ratifies the *hierarchy*, not this constitution's own content, which remains
 unratified pending Q5 (`docs/OPEN_QUESTIONS.md`).*
 
-Two AI collaborators operate under human ownership:
-- **Reviewer/auditor (ChatGPT):** issues audit findings, correction iterations, and lock
-  criteria; challenges claims; defines acceptance tests.
-- **Builder/executor (Claude):** implements, runs, measures, and returns executable
-  evidence; never accepts its own prior outputs as proof.
-Rules: (a) the human owner ratifies all decisions - AI output is proposal, not authority;
-(b) audit findings are verified against the artifact, not trusted; (c) each iteration is
-narrow, evidenced, and recorded; (d) neither AI may weaken targets or redefine "done".
+*Status note (`ADR-0056`, 2026-08-18): the role model below formalizes, on explicit owner instruction,
+the two-AI prose this section previously carried. The four roles restate and sharpen what was already
+true (builder/executor, reviewer/auditor, owner ratification); rules (a)-(d) at the end are unchanged
+and remain the governing principles the roles below operationalize.*
+
+Four parties operate under human ownership. **Git - this repository's commits, tests, certification
+artifacts, and governance records - is the single source of truth for all of them** (section 7).
+Conversation text with any AI collaborator is input material, never authoritative project memory,
+however detailed or confident.
+
+1. **USER - product owner, final ratifying authority.** Significant architectural, certification,
+   phase, and governance decisions require the user's approval wherever this constitution or
+   `docs/DECISION_LOG.md` requires it. No AI collaborator ratifies on the user's behalf.
+2. **CLAUDE - the primary and sole ACE builder/executor.** All ACE coding, repository editing, test
+   execution, certification execution, and commits are performed by Claude. Claude implements, runs,
+   measures, and returns executable evidence; it never accepts its own prior output as proof. Claude
+   updates the canonical Claude -> ChatGPT handoff (`reports/AI_HANDOFF_CURRENT.md`, or its successor
+   only if a future decision entry renames it) after every meaningful implementation task, and must
+   not create a competing handoff mechanism.
+3. **CHATGPT - independent ACE CEO / technical auditor.** Reviews Claude's work independently: audits
+   architecture, specifications, governance, code, tests, certification evidence, provenance, and
+   claims; determines PASS / HOLD / FAIL; and, when remediation is required, provides the exact next
+   action/instruction for Claude. ChatGPT is **not** an ACE implementation/builder and does not commit
+   to this repository. ChatGPT must not require the user to manually relay Claude's terminal output or
+   responses when the needed evidence already exists in Git or the canonical handoff - the expected
+   audit path is Git -> current branch/commit -> canonical handoff -> actual diff/code -> tests ->
+   certification artifacts -> governance records, not the user acting as message courier between the
+   two AI collaborators.
+4. **CODEX - not part of the ACE workflow.** ACE implementation is Claude's; ACE auditing is ChatGPT's.
+   No third AI worker is introduced into ACE building or auditing under this section. This exclusion
+   holds unless the user explicitly changes the ACE workflow in a future decision entry.
+
+Rules (unchanged, read together with the four roles above): (a) the human owner ratifies all
+decisions - AI output is proposal, not authority; (b) audit findings are verified against the artifact,
+not trusted; (c) each iteration is narrow, evidenced, and recorded; (d) neither AI may weaken targets or
+redefine "done".
 
 ## 12. Definition of "Locked"
 An artifact is **Locked** only when ALL hold:
@@ -108,5 +136,6 @@ Anything short of all four is, at most, "reported" - and must be labelled so.
 ## 15. Change history
 | Version | Date | Change |
 |---|---|---|
+| 0.1.2 | 2026-08-18 | `ADR-0056`: formalized s11's AI Collaboration Model into an explicit four-role structure (USER, CLAUDE, CHATGPT, CODEX), stated Git as the single source of truth for all AI collaborators, and excluded Codex from the ACE workflow unless a future decision entry changes it. Rules (a)-(d) unchanged; the roles operationalize them, do not replace them. |
 | 0.1.1 | 2026-08-17 | G7 documentation repair (`docs/Q8_CLOSURE_MATRIX.md` s3): added a status-precedence cross-reference note to s11 citing `ADR-0042`'s authority hierarchy, so this document's own `DRAFT` status is not misread against `engineering/ENGINEERING_CONSTITUTION.md`'s `ACTIVE` status. No substantive content changed. |
 | 0.1.0 | 2026-07-11 | Initial constitution (vision/mission/scope pending Q5) |
