@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 2.0.0 |
+| Version | 2.1.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-18 (refreshed after ADR-0056) |
+| Last updated | 2026-08-18 (refreshed after ADR-0057) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -89,6 +89,39 @@ later task supersedes one, say so in the new entry.
 - Next authorized action: <what Claude may do next without re-asking>
 ```
 
+### 2026-08-18 - CEO-audit HOLD remediation: ACE interaction mode and mandatory session-start audit
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry is committed in the same
+  commit as the remediation it describes).
+- Previous approved commit: `00319b7c6e249a36d675e5c3cf06f0576fe2aab8`
+- Task: owner-relayed "ACE CEO AUDIT RESULT: HOLD" - three required protections not yet permanently
+  encoded. Inspection found four of the six required rules already encoded by `ADR-0056`; the two
+  genuinely missing were an ACE interaction/response mode for ChatGPT and a mandatory, shared
+  session-start audit checklist. Explicit instruction: use the existing `specs/CLAUDE_WORKFLOW.md` /
+  `CLAUDE.md` / `reports/AI_HANDOFF_CURRENT.md` / ADR governance, do not create a competing workflow.
+- Relevant ADR/specification: `ADR-0057`; `specs/CLAUDE_WORKFLOW.md` (new "ACE interaction mode" and
+  "Session-start audit (mandatory)" sections); `docs/PROJECT_CONSTITUTION.md` s11 / `ADR-0056`
+  (cross-referenced for the role model, not reopened).
+- Files changed: `specs/CLAUDE_WORKFLOW.md`, `docs/DECISION_LOG.md`, `reports/AI_HANDOFF_CURRENT.md`
+  (this file). `docs/PROJECT_CONSTITUTION.md` and `CLAUDE.md` deliberately **not** touched - already
+  correct per `ADR-0056`, not reopened.
+- Implementation summary: `specs/CLAUDE_WORKFLOW.md` (1.1.0 -> 1.2.0) gained "ACE interaction mode"
+  (execution/audit-first default, explanation only on request, use existing Git/handoff evidence
+  rather than the owner relaying Claude's output, state genuine blockers briefly) and "Session-start
+  audit (mandatory)" (branch, HEAD, working tree, relevant spec/ADR, this handoff file, last approved
+  decision, unresolved questions - never infer approval), both cross-referencing `ADR-0056`'s role
+  model rather than duplicating it. Original six-step per-tier workflow unedited.
+- Tests executed and results: `python -m pytest -q` - 778 passed. `scripts/check_adr_numbering.py` -
+  PASS, 57 entries. `scripts/check_retired_identifiers.py`, `scripts/check_identifier_families.py` -
+  PASS. `scripts/check_artifact_drift.py` - PASS, 43 files unaffected. `git diff --check` - clean.
+- Certification executed and results: none applicable - governance/documentation only; confirmed via
+  the drift check above that no certification artifact changed.
+- Known issues: none introduced by this entry.
+- Unresolved questions: none raised by this entry. The untracked `.codex/`/`AGENTS.md` disposition
+  noted in the prior entry remains open and unrelated to this remediation.
+- CEO decision required: no - this entry implements an explicit CEO audit result the owner relayed.
+- Next authorized action: none granted by this entry beyond what it implements. Panchanga's CI-sourced
+  evidence-recovery follow-up (noted in the prior entry) remains separate and not yet executed.
+
 ### 2026-08-18 - ACE governance change: formal four-role AI collaboration model
 - Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry is committed in the same
   commit as the role-model change it describes).
@@ -118,18 +151,20 @@ later task supersedes one, say so in the new entry.
   own oracle-tier gap; see `ADR-0055` and the commit preceding this one) remains a separate, already-
   authorized but not-yet-executed step, unrelated to this governance change.
 
-## Snapshot as of the last update to this file (2026-08-18, refreshed after ADR-0056) - verify before relying on any of this
+## Snapshot as of the last update to this file (2026-08-18, refreshed after ADR-0057) - verify before relying on any of this
 
-- Branch: `phase-g-governance`. Parent commit of this update: `f885693d5169ec6656337476d598202ea3c2c18e`
+- Branch: `phase-g-governance`. Parent commit of this update: `00319b7c6e249a36d675e5c3cf06f0576fe2aab8`
+  ("Formalize four-role AI collaboration model... (ADR-0056)"), itself on top of `f885693`
   ("FOUNDATION Panchanga first work package: classification only (ADR-0055)"). **Not merged to `main`**,
-  and `main` remains untouched. Neither `f885693` nor this update's own commit has been pushed to
-  `origin` as of this writing - confirm with `git status` / `git log origin/phase-g-governance..HEAD`
-  before assuming otherwise.
+  and `main` remains untouched. None of `f885693`, `00319b7`, or this update's own commit has been
+  pushed to `origin` as of this writing - confirm with `git status` /
+  `git log origin/phase-g-governance..HEAD` before assuming otherwise.
 - Most recent decisions: `ADR-0054` (FOUNDATION rise/set, CERTIFIED), `ADR-0055` (Panchanga
   classification-only work authorized; Rahu Kalam/Yamaganda/Gulika explicitly deferred pending a future
   variant-table ratification), the `ADR-0047` G5 restoration addendum (22/22 restored as authoritative,
-  the intervening "12/22" correction retracted), `ADR-0056` (this entry: four-role AI collaboration
-  model, Codex excluded from the ACE workflow).
+  the intervening "12/22" correction retracted), `ADR-0056` (four-role AI collaboration model, Codex
+  excluded from the ACE workflow), `ADR-0057` (this entry: CEO-audit HOLD remediation - ACE interaction
+  mode and mandatory session-start audit added to `specs/CLAUDE_WORKFLOW.md`).
 - FOUNDATION status: rise/set CERTIFIED (`RISE_SET_V1`). Panchanga classification (tithi, nakshatra,
   yoga, karana, vara at a given instant) implemented and locally certified (`PANCHANGA_V1`) in commit
   `f885693`; CI-sourced evidence recovery for that certifier plus the three already-certified capabilities
@@ -152,6 +187,7 @@ act.
 
 | Version | Date | Change |
 |---|---|---|
+| 2.1.0 | 2026-08-18 | `ADR-0057` (CEO-audit HOLD remediation): added this task's "Task handoff log" entry; refreshed the snapshot to `00319b7` (on top of `f885693`). "INDEX ONLY" status and role-model/task-log structure from 2.0.0 unchanged - this entry is itself an application of that discipline, not a structural change to it. |
 | 2.0.0 | 2026-08-18 | `ADR-0056`: added the "Role model" section and the structured, templated "Task handoff log" section (this file is now explicitly the canonical Claude->ChatGPT handoff, not merely a snapshot index); refreshed the stale 2026-08-17 snapshot to `f885693` (FOUNDATION rise/set certified, Panchanga classification implemented and locally certified, `ADR-0047` G5 restoration, this entry itself). |
 | 1.2.0 | 2026-08-17 | Snapshot refreshed after ADR-0046: HEAD `f3bec7f3e35d0eef93e115796ddb79ffea242723`, merge commit `d53787e` now noted as historical rather than current, CI run `32011431848` green, highest and latest ADR `ADR-0046` (ADR-0044/0045/0046 all ACCEPTED). Navigation/status sections unchanged. |
 | 1.1.0 | 2026-08-17 | Snapshot refreshed post-merge: branch `phase-g-governance`, merge commit `d53787e75048dbadc1a2e3559cf42405c1d56661`, CI run `32007363289` green, highest ADR `ADR-0044` (ACCEPTED). Navigation/status sections unchanged. |
