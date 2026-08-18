@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 2.1.0 |
+| Version | 2.2.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-18 (refreshed after ADR-0057) |
+| Last updated | 2026-08-18 (refreshed after Panchanga CI evidence recovery, commit 695c387) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -89,6 +89,52 @@ later task supersedes one, say so in the new entry.
 - Next authorized action: <what Claude may do next without re-asking>
 ```
 
+### 2026-08-18 - Panchanga CI evidence recovery (KP_CHAIN/SIGN_CONVENTION/RISE_SET/PANCHANGA + oracle-tier)
+- Branch / commit SHA: `phase-g-governance`, `695c387564cbd55e0908a730cc8b94f36ae41659`
+- Previous approved commit: `389b98cc20e715edc8f9656a200b9e7f0d4bfb8c`
+- Task: close the CI-sourced evidence-recovery follow-up for `KP_CHAIN_V1`, `SIGN_CONVENTION_V1`,
+  `RISE_SET_V1`, `PANCHANGA_V1`, using the `ADR-0053`/`ADR-0054` evidence-recovery pattern.
+- Relevant ADR/specification: `ADR-0053`, `ADR-0054`, `ADR-0055` (cited in the commit; no new ADR -
+  matches the precedent commit `bd71e0d`, itself a plain evidence commit, not a new decision).
+- Files changed: 26 files - 12 `certification/*.json` (`current_engine`, `KP_CHAIN_V1`,
+  `SIGN_CONVENTION_V1`, `RISE_SET_V1`, `PANCHANGA_V1`, `VARGA_D2/D3/D7/D12/D30_V1`, `VIMSHOTTARI_V1`,
+  `PARASHARI_DRISHTI_V1`, `TRANSIT_V1`) and their `reports/certification/*.console.txt`/`*.report.md`
+  companions where those actually differed. No source code, no `.github/workflows/ci.yml`.
+- Implementation summary: pushing `389b98c` surfaced (CI run `32136604550`) that Panchanga's addition
+  legitimately grew M-03's anti-fitting scan surface `173 -> 177`, so every existing certification
+  artifact's `preconditions.anti_fitting.modules_scanned` differed from committed HEAD - the same
+  expected drift class `ADR-0053`/`ADR-0054` already documented. Downloaded
+  `hermetic-certification-evidence-3.11`/`-3.12` and `oracle-certification-evidence` from that run;
+  cross-compared 3.11 vs 3.12 (byte-identical outside volatile fields); diffed each against committed
+  HEAD (identical except that one field, nothing else) before committing. Task named 4 artifacts; the
+  8 oracle-tier artifacts share the identical cause/fix and were already downloaded, so recovered in
+  the same commit rather than left CI-red - same already-ratified procedure, not new scope.
+  `PANCHANGA_V1`'s own local (Windows) evidence was independently confirmed byte-identical to the
+  CI-regenerated version before being replaced with the CI-sourced copy anyway, per instruction not to
+  treat local-Windows as equivalent by assumption.
+- Tests executed and results: `python -m pytest -q` - 778 passed, 0 failed, 0 skipped.
+- Certification executed and results: none re-run in this task (evidence-recovery only, no code
+  changed); `scripts/check_adr_numbering.py`, `scripts/check_retired_identifiers.py`,
+  `scripts/check_identifier_families.py` - all PASS; `git diff --check` - clean.
+- CI run identifier/evidence: GitHub Actions run `32136604550` (commit `389b98c`,
+  `https://github.com/prashantkumar0207/astro-convergence-engine/actions/runs/32136604550`) - governance
+  gate PASS; both hermetic-job legs (3.11, 3.12) and the oracle job passed every step except their
+  drift-assertion step, which failed exactly and only on the expected `173 -> 177` field across all
+  twelve artifacts (confirmed by direct log inspection, not assumed). Artifacts
+  `hermetic-certification-evidence-3.11` (sha256 `43bbeaa0...`), `hermetic-certification-evidence-3.12`
+  (sha256 `116e7007...`), `oracle-certification-evidence` (sha256 `04fb382f...`) downloaded and used as
+  the source of the evidence committed here.
+- Known issues: none introduced. `695c387` has not yet been pushed to `origin` as of this entry -
+  pushing it will very likely produce a CI run whose drift-assertion steps now PASS (not yet directly
+  confirmed by a green CI run against `695c387`, since that requires the push).
+- Unresolved questions: none raised by this task.
+- CEO decision required: **NO.**
+- Next authorized action: push `695c387` to `origin/phase-g-governance` (not yet done - requires its
+  own push authorization per this repository's git-safety rules) and confirm the resulting CI run is
+  fully green, closing this follow-up with directly-observed evidence rather than inference. No new
+  FOUNDATION capability (Rahu Kalam, Yamaganda, Gulika, element transition timing, or any later phase)
+  is authorized by this entry.
+
 ### 2026-08-18 - CEO-audit HOLD remediation: ACE interaction mode and mandatory session-start audit
 - Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry is committed in the same
   commit as the remediation it describes).
@@ -151,26 +197,30 @@ later task supersedes one, say so in the new entry.
   own oracle-tier gap; see `ADR-0055` and the commit preceding this one) remains a separate, already-
   authorized but not-yet-executed step, unrelated to this governance change.
 
-## Snapshot as of the last update to this file (2026-08-18, refreshed after ADR-0057) - verify before relying on any of this
+## Snapshot as of the last update to this file (2026-08-18, refreshed after the Panchanga CI evidence recovery) - verify before relying on any of this
 
-- Branch: `phase-g-governance`. Parent commit of this update: `00319b7c6e249a36d675e5c3cf06f0576fe2aab8`
-  ("Formalize four-role AI collaboration model... (ADR-0056)"), itself on top of `f885693`
-  ("FOUNDATION Panchanga first work package: classification only (ADR-0055)"). **Not merged to `main`**,
-  and `main` remains untouched. None of `f885693`, `00319b7`, or this update's own commit has been
-  pushed to `origin` as of this writing - confirm with `git status` /
-  `git log origin/phase-g-governance..HEAD` before assuming otherwise.
+- Branch: `phase-g-governance`. Parent commit of this update: `695c387564cbd55e0908a730cc8b94f36ae41659`
+  ("Commit CI-sourced evidence recovery for KP_CHAIN/SIGN_CONVENTION/RISE_SET/PANCHANGA and the eight
+  oracle-tier certifiers"), on top of `389b98c` (ADR-0057), `00319b7` (ADR-0056), `f885693` (ADR-0055).
+  **Not merged to `main`**, and `main` remains untouched. `389b98c` and everything before it is pushed to
+  `origin/phase-g-governance`; `695c387` and this update's own commit are **not yet pushed** as of this
+  writing - confirm with `git status` / `git log origin/phase-g-governance..HEAD` before assuming
+  otherwise.
 - Most recent decisions: `ADR-0054` (FOUNDATION rise/set, CERTIFIED), `ADR-0055` (Panchanga
   classification-only work authorized; Rahu Kalam/Yamaganda/Gulika explicitly deferred pending a future
   variant-table ratification), the `ADR-0047` G5 restoration addendum (22/22 restored as authoritative,
   the intervening "12/22" correction retracted), `ADR-0056` (four-role AI collaboration model, Codex
-  excluded from the ACE workflow), `ADR-0057` (this entry: CEO-audit HOLD remediation - ACE interaction
-  mode and mandatory session-start audit added to `specs/CLAUDE_WORKFLOW.md`).
+  excluded from the ACE workflow), `ADR-0057` (ACE interaction mode and mandatory session-start audit
+  added to `specs/CLAUDE_WORKFLOW.md`). No new ADR for the evidence-recovery commit itself (matches the
+  `bd71e0d` precedent: a plain evidence commit citing existing ADRs, not a new decision).
 - FOUNDATION status: rise/set CERTIFIED (`RISE_SET_V1`). Panchanga classification (tithi, nakshatra,
-  yoga, karana, vara at a given instant) implemented and locally certified (`PANCHANGA_V1`) in commit
-  `f885693`; CI-sourced evidence recovery for that certifier plus the three already-certified capabilities
-  it bumped (`modules_scanned` 173->177) is a known, separate follow-up (same pattern `ADR-0053`/`ADR-0054`
-  already used), not yet executed. Rahu Kalam/Yamaganda/Gulika and element start/end transition timing
-  remain explicitly NOT authorized (`ADR-0055` items 2-3).
+  yoga, karana, vara at a given instant) implemented and certified (`PANCHANGA_V1`), now with CI-sourced
+  evidence (commit `695c387`, CI run `32136604550`) - the "known, separate follow-up" the previous
+  snapshot flagged is now closed for all twelve affected artifacts (`current_engine`, `KP_CHAIN_V1`,
+  `SIGN_CONVENTION_V1`, `RISE_SET_V1`, `PANCHANGA_V1`, `VARGA_D2/D3/D7/D12/D30_V1`, `VIMSHOTTARI_V1`,
+  `PARASHARI_DRISHTI_V1`, `TRANSIT_V1`), all at `modules_scanned: 177`. Not yet directly confirmed by a
+  green CI run against `695c387` itself, since it has not been pushed. Rahu Kalam/Yamaganda/Gulika and
+  element start/end transition timing remain explicitly NOT authorized (`ADR-0055` items 2-3).
 - Known, permanent limitation: `swetest`-dependent certifiers cannot run on a Windows host. Not a
   regression if encountered there.
 - Tier-0 is formally Locked per `ADR-0034`. Do not assume anything else carries that status without
@@ -187,6 +237,7 @@ act.
 
 | Version | Date | Change |
 |---|---|---|
+| 2.2.0 | 2026-08-18 | Panchanga CI evidence recovery: added this task's "Task handoff log" entry; refreshed the snapshot to `695c387`. Structure/status from 2.0.0 unchanged. |
 | 2.1.0 | 2026-08-18 | `ADR-0057` (CEO-audit HOLD remediation): added this task's "Task handoff log" entry; refreshed the snapshot to `00319b7` (on top of `f885693`). "INDEX ONLY" status and role-model/task-log structure from 2.0.0 unchanged - this entry is itself an application of that discipline, not a structural change to it. |
 | 2.0.0 | 2026-08-18 | `ADR-0056`: added the "Role model" section and the structured, templated "Task handoff log" section (this file is now explicitly the canonical Claude->ChatGPT handoff, not merely a snapshot index); refreshed the stale 2026-08-17 snapshot to `f885693` (FOUNDATION rise/set certified, Panchanga classification implemented and locally certified, `ADR-0047` G5 restoration, this entry itself). |
 | 1.2.0 | 2026-08-17 | Snapshot refreshed after ADR-0046: HEAD `f3bec7f3e35d0eef93e115796ddb79ffea242723`, merge commit `d53787e` now noted as historical rather than current, CI run `32011431848` green, highest and latest ADR `ADR-0046` (ADR-0044/0045/0046 all ACCEPTED). Navigation/status sections unchanged. |
