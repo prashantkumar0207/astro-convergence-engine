@@ -3,10 +3,10 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | RESEARCH CLOSEOUT, REPORTED. Non-normative per `docs/DOCUMENTATION_STANDARD.md` s1 ("Research notes... lightweight"). The findings below are recorded as reported to the builder in the session that closed this research; they have **not** been independently reproduced or re-derived by the builder from primary data, because no per-person worksheet or underlying dataset file is currently present in this repository. See "Evidence provenance and reproducibility" below before relying on any count in this document. |
-| Version | 1.0.0 |
+| Status | RESEARCH CLOSEOUT, **CORRECTED 2026-08-18**. Non-normative per `docs/DOCUMENTATION_STANDARD.md` s1 ("Research notes... lightweight"). The originally-reported completion accounting (section 4) was subsequently identified as incorrect and **must not be relied upon as verified evidence**; section 4a is the corrected executed state. Neither the original nor the corrected counts have been independently reproduced or re-derived by the builder from primary data, because no per-person worksheet or underlying dataset file is currently present in this repository. See "Evidence provenance and reproducibility" (s8) before relying on any count in this document. Companion decision record: `docs/DECISION_LOG.md` `ADR-0047` (PROPOSED, not ratified) and its 2026-08-18 corrective addendum. |
+| Version | 2.0.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-17 |
+| Last updated | 2026-08-18 |
 | Review cadence | TBD |
 
 # G5 dataset: historical-validation suitability research, closeout
@@ -61,7 +61,12 @@ question rather than an astrological-evidence-relationship question:
   confirmation of either.
 - Every event counted as evidence requires an **exact day**, not an approximate date, to be eligible.
 
-## 4. Final counts, as reported
+## 4. SUPERSEDED / INCORRECTLY REPORTED CLOSEOUT (as reported 2026-08-17)
+
+> **This section is superseded and must not be relied upon as verified evidence.** The completion
+> count below was subsequently identified as incorrect: the sample was **not** 22/22 complete. It is
+> preserved here unedited, exactly as originally recorded, so the audit trail shows what was reported
+> and later found wrong - not silently converted to the corrected figures. **Use section 4a instead.**
 
 - **22 / 22** of the pre-registered sample were completed (no attrition).
 - **16** people were classified independent of ADB, under the rules in section 3.
@@ -71,7 +76,46 @@ question rather than an astrological-evidence-relationship question:
 - **14** genuinely independent, exact-day events were identified across the 16 independent people (not
   one event per person; some people contributed zero eligible events, some contributed more than one).
 
-## 5. Event-domain coverage observed
+## 4a. CORRECTED EXECUTED STATE (2026-08-18)
+
+**The pre-registered sample was 22 people. Only 12 of those 22 were actually attempted. The sample is
+NOT 22/22 complete and must never again be described as such.**
+
+| Category | Count | Named |
+|---|---|---|
+| Attempted | 12 / 22 | - |
+| Confirmed independent of ADB | 4 | Impanis, Del Prete, Painleve, Esclangon |
+| ADB_MATCH (not independent) | 2 | Maldini, Bobet |
+| NO_MATCH | 1 | Mounicq |
+| AMBIGUOUS | 1 | Charpentier |
+| Identity-resolved, ADB never checked | 4 | Scaroni, Bacchelli, Prinzhorn, Ellinger |
+| Unattempted | 15 | - |
+
+**The four identity-resolved-but-ADB-unchecked people (Scaroni, Bacchelli, Prinzhorn, Ellinger) are NOT
+independent.** Per section 3's own rule, an unmeasured/unchecked relationship is UNKNOWN, never
+independent by default. They must not be added to the confirmed-independent count of 4 for any purpose.
+
+**No event-level data accompanies this correction.** The prior "14 independent exact-day events" figure
+(section 4) was derived from the now-superseded 16-independent-people figure and does not survive this
+correction; no corrected event count or event-domain breakdown was supplied, and none is invented here.
+Section 5 below is therefore also superseded, not merely section 4.
+
+Explicitly, per the correction instruction:
+
+- **The per-person worksheet is not currently present in this repository** (unchanged from the original
+  closeout - see section 8).
+- **These corrected counts remain research-reported, not independently reproduced from underlying raw
+  data**, by the builder, from primary source records - the identical evidence-class limitation section
+  8 already states for the original (now-superseded) figures.
+- **No population-level G5 independence rate may be inferred** from either the original or the
+  corrected 22-person sample.
+- **No predictive-accuracy claim follows from this research**, in its original or corrected form.
+
+## 5. Event-domain coverage observed (SUPERSEDED - see section 4a)
+
+> This section describes domain coverage for the 14-events/16-independent-people figures that section 4a
+> supersedes. It is preserved unedited as historical record. No corrected event-domain breakdown is
+> available; none is invented here.
 
 The 14 independent exact-day events covered a **limited** set of domains:
 
@@ -86,6 +130,14 @@ are absent from the full G5 population (see section 7).
 
 ## 6. Finding and decision
 
+> **Correction note (2026-08-18):** the paragraph immediately below cites the now-superseded "fourteen
+> independent events... 22-person sample" figures from section 4. It is preserved unedited as the
+> historical record of the original finding's stated reasoning. The corrected sample (section 4a: 12/22
+> attempted, 4 confirmed independent) is smaller than what this paragraph describes, which supports the
+> same conclusion at least as strongly - a smaller confirmed-independent sample is weaker, not stronger,
+> grounds for treating G5 as a primary benchmark. The conclusion itself (G5 = SUPPLEMENT ONLY) is
+> unchanged by this correction; see `docs/DECISION_LOG.md` `ADR-0047`'s 2026-08-18 evidence addendum.
+
 **The research did not establish sufficient independent, exact-day, multi-domain event coverage for G5
 to serve as ACE's primary historical-validation benchmark.** Fourteen independent events across five
 domain categories, drawn from a 22-person sample, is evidence of *some* independent signal, not of the
@@ -93,29 +145,41 @@ breadth and density a primary protected-validation corpus requires under
 `docs/VALIDATION_STANDARD.md`.
 
 **Decision: G5 = SUPPLEMENT ONLY.** Recorded normatively in `docs/DECISION_LOG.md` ADR-0047 (status
-PROPOSED at the time of this closeout - see that entry for the binding decision text, permitted uses,
-and prohibited uses; this document is the supporting research record, not the decision itself).
+PROPOSED - not owner-ratified, not a certification decision - see that entry and its 2026-08-18
+corrective addendum for the binding decision text, permitted uses, prohibited uses, and the corrected
+evidentiary basis; this document is the supporting research record, not the decision itself).
 
 ## 7. Limitations
 
-- **The 22-person sample must not be extrapolated to the full G5 population.** It establishes what was
-  found in this specific pre-registered sample, not a population-level independence or event-density
-  rate.
-- **Domain coverage is limited to what section 5 lists.** No inference should be drawn about domains
-  outside that list.
-- **The 2 unresolved identities remain unresolved**, not independent, not matched. Resolving them is
-  future work, not assumed in either direction.
+- **Corrected 2026-08-18: the 22-person sample was only 12/22 attempted, not complete.** Neither the
+  attempted 12 nor the full pre-registered 22 may be extrapolated to the full G5 population. See
+  section 4a.
+- **Domain coverage is limited to what section 5 lists, and section 5 is itself superseded (section
+  4a).** No corrected domain-coverage inference is available; none should be drawn from either the
+  original or the corrected counts.
+- *(Superseded original bullet, preserved as historical record - see section 4a for the corrected
+  categories instead):* "The 2 unresolved identities remain unresolved, not independent, not matched.
+  Resolving them is future work, not assumed in either direction."
+- **Of the corrected categories (section 4a), the 4 identity-resolved-but-ADB-unchecked people
+  (Scaroni, Bacchelli, Prinzhorn, Ellinger) remain unresolved as to independence** - UNKNOWN, not
+  independent, not matched. `Mounicq` (NO_MATCH) and `Charpentier` (AMBIGUOUS) are their own distinct,
+  separately-named outcomes, not merged into "unresolved." Resolving any of these is future work, not
+  assumed in either direction.
 - **This document does not establish, and must not be cited as, evidence of predictive accuracy** for
-  any ACE calculation, rule, or methodology. It is a corpus-suitability finding only.
+  any ACE calculation, rule, or methodology, under either the original or the corrected accounting. It
+  is a corpus-suitability finding only.
 
 ## 8. Evidence provenance and reproducibility
 
 **No per-person worksheet, source-record list, or raw dataset file for this research is currently
-present in this repository**, under `research/` or elsewhere, as of this document's creation. The
+present in this repository**, under `research/` or elsewhere, as of this document's creation, **and
+this remains true after the 2026-08-18 correction** - the corrected counts in section 4a are of the
+same evidence class as the original, superseded counts in sections 4-5: reported, not reproduced. The
 counts in sections 4-5 are recorded here as **reported to the builder** in the session that produced
-this closeout (2026-08-17) and have **not** been independently reproduced, recomputed, or spot-checked
-by the builder against primary source records, for the direct reason that those records are not
-available in this environment.
+this closeout (2026-08-17), later identified as an incorrect completion accounting; the counts in
+section 4a are recorded as reported in the correcting session (2026-08-18). Neither has been
+independently reproduced, recomputed, or spot-checked by the builder against primary source records,
+for the direct reason that those records are not available in this environment.
 
 This evidence class is stated explicitly, following the precedent already established in this
 repository for reported-but-not-independently-observed evidence (see
@@ -125,12 +189,14 @@ statement of what this repository can and cannot currently verify about it.
 
 **If the underlying per-person worksheet exists outside this repository, it should be added under
 `research/` alongside this document**, so a future independent auditor (per
-`docs/PROJECT_CONSTITUTION.md` s11) can re-derive sections 4-5 rather than take them on report. Until
+`docs/PROJECT_CONSTITUTION.md` s11) can re-derive sections 4a/5 rather than take them on report. Until
 then, any use of this document as evidence in a certification or decision context should cite it as
-**reported, not reproduced**.
+**reported, not reproduced** - and, as of 2026-08-18, must cite section 4a's corrected counts, not
+section 4's superseded ones.
 
 ## 9. Change history
 
 | Version | Date | Change |
 |---|---|---|
+| 2.0.0 | 2026-08-18 | **Correction.** The 2026-08-17 completion accounting (section 4: 22/22 complete, 16 independent, 4 ADB matches, 2 unresolved, 14 independent events) was identified as an incorrect completion count and must not be relied upon as verified evidence. Section 4 is preserved unedited and marked SUPERSEDED, not deleted or silently rewritten. New section 4a records the corrected executed state: 12/22 attempted, 4 confirmed independent (Impanis, Del Prete, Painleve, Esclangon), 2 ADB_MATCH (Maldini, Bobet), 1 NO_MATCH (Mounicq), 1 AMBIGUOUS (Charpentier), 4 identity-resolved-but-ADB-unchecked and therefore NOT independent (Scaroni, Bacchelli, Prinzhorn, Ellinger), 15 unattempted. Section 5 (event-domain coverage) marked superseded in step with section 4, since it was derived from the same wrong figures; no corrected event-level data was supplied or invented. Sections 6-8 annotated with corrective pointers, original text preserved. Decision (G5 = SUPPLEMENT ONLY) and companion `ADR-0047` (PROPOSED, not ratified) are unchanged in substance; `ADR-0047` gained its own dated corrective addendum, not an edit to its original text. |
 | 1.0.0 | 2026-08-17 | Closeout recorded on request. Findings reported to the builder, not independently reproduced (section 8). Companion decision: `ADR-0047` (PROPOSED). |
