@@ -100,13 +100,16 @@ jobs:
         run: python -m pytest -q test_tier0_certification.py test_official_swetest_reference.py
 
       - name: Non-oracle certification runners
+        # certify_panchanga.py moved to the oracle job (below): it now
+        # requires PyJHora unconditionally for Gate F (genuine external-
+        # oracle comparison, CEO-approved 2026-08-19), matching every one
+        # of the oracle-tier runners' own import-guard pattern exactly.
         run: |
           set -e
           python scripts/certify_current_engine.py
           python scripts/certify_kp_chain.py
           python scripts/certify_sign_convention.py
           python scripts/certify_rise_set.py
-          python scripts/certify_panchanga.py
 
       - name: Re-run a representative subset under the in-process network guard
         run: |
@@ -118,7 +121,6 @@ jobs:
           python scripts/ci_no_network.py scripts/certify_kp_chain.py
           python scripts/ci_no_network.py scripts/certify_sign_convention.py
           python scripts/ci_no_network.py scripts/certify_rise_set.py
-          python scripts/ci_no_network.py scripts/certify_panchanga.py
 
       - name: Assert the network guard actually blocks (negative control)
         run: |
@@ -259,7 +261,7 @@ jobs:
       - name: Verify ephemeris asset checksums
         run: sha256sum --check CHECKSUMS.sha256
 
-      - name: Oracle certification runners (all eight)
+      - name: Oracle certification runners (all nine)
         run: |
           set -e
           for c in scripts/certify_d2.py \
@@ -269,7 +271,8 @@ jobs:
                    scripts/certify_d30.py \
                    scripts/certify_vimshottari.py \
                    scripts/certify_transits.py \
-                   scripts/certify_parashari_drishti.py; do
+                   scripts/certify_parashari_drishti.py \
+                   scripts/certify_panchanga.py; do
             echo "::group::$c"
             python "$c"
             echo "::endgroup::"

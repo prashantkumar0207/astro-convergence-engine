@@ -1,7 +1,7 @@
 {
  "schema": "panchanga_v1_certification",
  "adr": "ADR-0055",
- "date": "2026-08-18",
+ "date": "2026-08-19",
  "scope": "Classification only, at a given instant: tithi, nakshatra (reused), yoga, karana, vara. FOUNDATION Panchanga first work package.",
  "conventions": {
   "boundary": "engine-wide 1e-10 promote-up, [start, end), applied uniformly to both certified profiles",
@@ -9,6 +9,11 @@
   "yoga": "13.333333333333334 deg x 27",
   "karana": "6.0 deg x 60",
   "vara": "sunrise-to-sunrise, consuming certified Tier-0 rise_set"
+ },
+ "oracle": {
+  "package": "PyJHora",
+  "version": "4.8.7",
+  "function": "jhora.panchanga.drik.tithi/yogam/karana, ayanamsa aligned per profile via drik.set_ayanamsa_mode (same convention as certify_vimshottari.py / certify_transits.py)"
  },
  "gates": {
   "A_convention_integrity": {
@@ -38,17 +43,30 @@
   },
   "E_independent_validator": {
    "result": "PASS"
+  },
+  "F_external_oracle": {
+   "cases": 11,
+   "profiles": 2,
+   "elements": [
+    "tithi",
+    "yoga",
+    "karana"
+   ],
+   "comparisons": 66,
+   "mismatches": 0,
+   "negative_control_verified": true,
+   "nakshatra_excluded_reason": "already Tier-0-certified reuse, not new code introduced by this work package; proven identical to the certified nakshatra() in Gate D; out of the scope this gate was authorized to close"
   }
  },
  "explicit_non_claims": [
   "element start/end transition timing (deferred, ADR-0055 item 3)",
   "Rahu Kalam, Yamaganda, Gulika (deferred pending a variant-table ratification, ADR-0055 item 2)",
-  "PyJHora oracle cross-check (not verified reachable in this environment; see module docstring)",
+  "nakshatra external-oracle cross-check (already Tier-0-certified reuse, not new code; see Gate F's nakshatra_excluded_reason)",
   "vara's weekday label for observers whose local civil date differs from the UT calendar date of their sunrise (see engine.astrology.panchanga.vara docstring)",
   "any other varga, dasha, or certified layer"
  ],
  "environment": {
-  "python": "3.11.15"
+  "python": "3.12.10"
  },
  "preconditions": {
   "data_assets": {

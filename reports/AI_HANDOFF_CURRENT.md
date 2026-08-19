@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 2.3.0 |
+| Version | 2.5.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-19 (ADR-0058 drafted; specs/CLAUDE_WORKFLOW.md edit pending commit authorization) |
+| Last updated | 2026-08-19 (PANCHANGA_V1 Gate F implemented and locally verified; CI push/verification pending) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -89,9 +89,171 @@ later task supersedes one, say so in the new entry.
 - Next authorized action: <what Claude may do next without re-asking>
 ```
 
-### 2026-08-19 - Execution continuity rule drafted (ADR-0058) - NOT YET COMMITTED
-- Branch / commit SHA: `phase-g-governance`, working tree only - **no commit made**, per this task's own
-  explicit "do NOT commit or push unless explicitly authorized by the USER."
+### 2026-08-19 - PANCHANGA_V1 external-oracle Gate F implemented (ADR-0059), locally verified, CI pending
+- Branch / commit SHA: `phase-g-governance`, working tree only - **no commit made**, per this task's
+  explicit "Do not commit or push unless separately authorized by CEO/user."
+- Previous approved commit: `20a9589e3d567bbf86e36b13bf2d61ca734e728e`
+- Task: CEO-approved "ACE EXECUTION CONTINUITY - PANCHANGA PYJHORA EXTERNAL-ORACLE GATE" - close the
+  gap the prior checkpoint found (no external-oracle gate for tithi/yoga/karana) by implementing and
+  CI-verifying a genuine PyJHora oracle gate, Option (b) of that checkpoint's two remedies.
+- Relevant ADR/specification: `ADR-0059` (this implementation); `ADR-0055` (Panchanga scope, unchanged);
+  `ADR-0052`/`DP-009` s5 (the methodology this closes); `ADR-0054` (the analogous rise/set precedent,
+  cited for why the CI-job-move design was chosen); the existing oracle mechanism in `certify_d2.py`,
+  `certify_vimshottari.py`, `certify_transits.py` (reused, not reinvented).
+- Files changed (working tree, uncommitted): `scripts/certify_panchanga.py` (new Gate F -
+  `gate_f_external_oracle()` - plus a module-level unconditional PyJHora import guard, an `oracle`
+  report block, and an updated `explicit_non_claims` entry replacing the old "not verified reachable"
+  line); `.github/workflows/ci.yml` (moved `certify_panchanga.py` from the `hermetic` job's non-oracle
+  runners and network-guard list to the `oracle` job's runner list, now nine); `certification/
+  PANCHANGA_V1_certification.json` and its `reports/certification/panchanga.report.md`/`.console.txt`
+  companions (regenerated, genuinely including Gate F's real PyJHora results); `docs/DECISION_LOG.md`
+  (new `ADR-0059`, register header updated); this file.
+- Implementation summary: `jhora.panchanga.drik.tithi(jd, place)[0]`/`yogam(...)`[0]`/`karana(...)[0]`
+  located and empirically verified this session (an isolated, throwaway, unpinned exploration venv,
+  distinct from the hash-pinned `requirements-oracle.lock`) to be 1-based and identical in convention to
+  this module's own indices; `place.timezone` fixed at `0.0` uniformly (empirically shown irrelevant to
+  the result at that setting across the full holdout, after one arbitrary large offset was observed to
+  change a result in exploratory testing - not left as an unexamined default). Gate F runs 66
+  comparisons (11 H1-H11 holdout cases x 2 profiles x 3 elements: tithi/yoga/karana), using
+  `drik.set_ayanamsa_mode("LAHIRI"|"KP")` to align PyJHora with each profile, matching the exact
+  convention `certify_vimshottari.py`/`certify_transits.py` already use. A genuine negative control
+  (temporarily replaces the real `tithi_index` with a function guaranteed to disagree with the real
+  oracle value, confirms the SAME comparison logic flags it, restores, re-verifies agreement) mirrors
+  `test_panchanga.py`'s own established pattern. Nakshatra is deliberately excluded (already
+  Tier-0-certified reuse, not new code; scoped out by the prior checkpoint) - recorded in the gate's own
+  `nakshatra_excluded_reason` field, not silently omitted. `certify_panchanga.py`'s PyJHora import is now
+  unconditional (hard `sys.exit(3)` if unavailable), matching every one of the eight existing oracle
+  certifiers exactly - so the certifier moved from the `hermetic` job to the `oracle` job's runner list.
+  This was a deliberate, reasoned choice: `scripts/check_artifact_drift.py` compares one committed
+  artifact per file against whatever regenerated it, with no per-job "oracle executed" exception: running
+  Gate F conditionally in two jobs would make the canonical artifact legitimately differ by job, which is
+  exactly the calculated-content drift `.claude/rules/certification.md` forbids treating as volatile
+  without its own decision. `validate_panchanga_holdout.py` (Gate E) needs no PyJHora and stays in the
+  `hermetic` job's validator list, unchanged. Gates A-E's own logic and results are untouched.
+- Tests executed and results: `python -m pytest -q` - 778 passed, 0 failed (unchanged from baseline;
+  no `engine/` code touched). `python -m pytest engine/tests/test_panchanga.py -q` - 179 passed.
+  `python validate_panchanga_holdout.py` (main env, no PyJHora needed) - PASS, 24 cases, 90 comparisons,
+  0 mismatches.
+- Certification executed and results: `python scripts/certify_panchanga.py` in the main (no-PyJHora)
+  environment - correctly `exit(3)` ("PyJHora oracle unavailable"), matching every other oracle-tier
+  certifier's behaviour without PyJHora - confirmed as the CORRECT fail-closed behaviour, not a defect.
+  `python scripts/certify_panchanga.py` via the isolated exploration venv (PyJHora 4.8.7 present) -
+  **PASS, all six gates**, including `F_external_oracle`: 66 comparisons, 0 mismatches, negative control
+  verified. `certification/PANCHANGA_V1_certification.json` regenerated from this real run - genuine
+  evidence, not backfilled. `scripts/check_adr_numbering.py` - PASS, 59 entries.
+  `scripts/check_retired_identifiers.py`, `scripts/check_identifier_families.py` - PASS. `git diff
+  --check` - clean (CRLF-normalization warnings only, expected on this Windows checkout).
+- Known issues: PyJHora prints internal diagnostic noise to stdout during its own config
+  initialization (observed: lines like "panchanga C:\Users added to system path [...]"); this happens
+  at import time, before `certification_support.start_transcript()` begins capturing, so it does not
+  pollute the archived console transcript - confirmed by inspecting `reports/certification/
+  panchanga.console.txt` after the run. Cosmetic only; not a defect in the certifier or its evidence.
+- Unresolved questions / CEO decision required: **only the commit/push itself, and the CI run it would
+  trigger.** This session's local verification used an isolated, throwaway, **unpinned** exploration
+  venv (PyJHora 4.8.7, matching the version pinned in `requirements-oracle.lock`, but not hash-verified
+  and not the CI-pinned Python 3.11/Linux environment) - this is genuine, real oracle evidence, but it
+  is explicitly **not** the hash-pinned CI oracle-environment evidence class `RISE_SET_V1` and the eight
+  existing varga oracle certifiers rely on for their own committed claims. `ADR-0059`'s own Consequences
+  section states this distinction; do not describe `PANCHANGA_V1` as CI-oracle-confirmed until a pushed
+  commit's `oracle` job run actually passes.
+- CEO decision required: **the commit/push itself**, to trigger the CI run that would upgrade this
+  evidence from "locally verified, unpinned" to "CI-confirmed, hash-pinned oracle environment" - the
+  same evidence class every other certified claim in this repository already carries.
+- Next authorized action: on explicit owner authorization to commit and push, stage exactly the seven
+  files listed above (`scripts/certify_panchanga.py`, `.github/workflows/ci.yml`, `certification/
+  PANCHANGA_V1_certification.json`, `reports/certification/panchanga.report.md`,
+  `reports/certification/panchanga.console.txt`, `docs/DECISION_LOG.md`, this file) on
+  `phase-g-governance`, commit, push, then monitor the resulting `oracle` job run specifically for
+  `certify_panchanga.py`'s new ninth position and `F_external_oracle`'s real result, and report the run
+  ID and PASS/FAIL per job - the same evidence-recovery discipline `ADR-0053`/`ADR-0054` already
+  established. Until authorized, no further action beyond this record is taken.
+
+### 2026-08-19 - Panchanga production-certification checkpoint (audit only, no commit)
+- Branch / commit SHA: `phase-g-governance`, `20a9589e3d567bbf86e36b13bf2d61ca734e728e` - **read-only
+  audit task; no implementation or certification code changed.** This entry and its two mechanical
+  `docs/DECISION_LOG.md` `ADR-0058` corrections (see below) are the only edits, and remain **uncommitted**
+  per this task's explicit "Do NOT: ... commit ... push."
+- Previous approved commit: `20a9589e3d567bbf86e36b13bf2d61ca734e728e`
+- Task: owner-directed "ACE EXECUTION CONTINUITY - PANCHANGA PRODUCTION-CERTIFICATION CHECKPOINT" -
+  determine whether `PANCHANGA_V1`'s existing green certification actually satisfies the FOUNDATION
+  phase's declared production-certification requirements (`docs/Q8_CLOSURE_MATRIX.md` s4, `DP-009`,
+  `ADR-0017`/`ADR-0051` C0-C5 framework, `ADR-0055`), not merely whether the gate script exits 0.
+- Relevant ADR/specification: `ADR-0055` (Panchanga classification scope); `ADR-0052` (DP-009 Option B:
+  rise/set Tier-0, panchanga Tier-1); `ADR-0054` (rise/set's closely analogous oracle-substitution
+  precedent); `ADR-0051` Decision 3 (binding C0-C5 table); `docs/Q8_CLOSURE_MATRIX.md` s4 (FOUNDATION
+  certification-gates row, names "external oracle" explicitly for the classification parts);
+  `docs/decisions/DP-009-panchanga-riseset-tier.md` s5 ("the varga template: frozen rule, second
+  transcription, dense sweep, ULP battery, external oracle, independent validator").
+- Files changed (working tree, uncommitted): `docs/DECISION_LOG.md` (two mechanical corrections to the
+  already-committed `ADR-0058` entry's Status/Consequences text and the register header, marking its
+  commit `20a9589` confirmed - the text had gone stale the moment the owner committed it directly, since
+  it still read "not yet committed"), `reports/AI_HANDOFF_CURRENT.md` (this entry, plus the matching
+  correction to the prior entry above and the refreshed snapshot below). No source, calculation,
+  certification, or evidence file touched.
+- Implementation summary (findings, not code changes):
+  1. **Scope, methodology, negative control, holdout, and vara's rise/set dependency all check out
+     against `ADR-0055`/`DP-009`/`ADR-0052`** - classification-only scope is correctly and explicitly
+     bounded in code (`panchanga.py`, `certify_panchanga.py`'s `explicit_non_claims`) and governance;
+     the Fraction-exact independent reference (Gates B/E) is genuinely independent (never calls
+     `division_index`); one genuine negative control exists and is demonstrated catching a real,
+     reintroduced defect before being undone (`test_negative_control_broken_division_index_is_caught_by_independent_reference`);
+     the H1-H11/P1-P2 holdout is the same protected, frozen holdout reused across this repository's
+     other certifiers; vara correctly consumes (never reimplements) certified `rise_set.sunrise()`.
+  2. **One genuine, unresolved gap: `PANCHANGA_V1` has no external-oracle gate for tithi/yoga/karana,
+     and this specific omission was never separately presented to the owner for ratification**, unlike
+     its exact structural analogue. `docs/decisions/DP-009-panchanga-riseset-tier.md` s5 (the
+     recommendation `ADR-0052` accepted as Option B) explicitly names "external oracle" as part of "the
+     varga template" panchanga's classification parts need, and `docs/Q8_CLOSURE_MATRIX.md` s4's
+     FOUNDATION certification-gates row repeats "external oracle... for the classification parts"
+     verbatim. `certify_panchanga.py`'s own docstring and `explicit_non_claims` list honestly disclose
+     that no PyJHora oracle gate exists (API surface not verified reachable in this environment) and
+     substitute only the independently-coded Fraction-exact reference instead. **This substitution
+     precisely mirrors what `certify_rise_set.py` already does for its own Gate C** (an independently-
+     coded closed-form reference in place of the unreachable/unverified `swetest` binary) - but rise/
+     set's substitution was explicitly named, justified in detail, and owner-ratified as part of
+     `ADR-0054`'s "CEO OWNER AUTHORIZATION - FOUNDATION RISE/SET" ("the complete rise/set workstream").
+     `ADR-0055`'s four bundled, owner-authorized items (boundary convention; Rahu Kalam/Yamaganda/Gulika
+     deferred; classification-only scope; vara consumes rise/set) do **not** mention the oracle-gate
+     substitution at all - it was a builder (Claude) methodology choice, disclosed in code and the
+     certification artifact, but never itself put to the owner as a decision the way the identical
+     rise/set case was.
+- Tests executed and results: none re-run (no code changed since the last full `pytest` pass, 778
+  passed, recorded in the 2026-08-18 evidence-recovery entry above); this task's own verification was
+  document/artifact inspection (`certify_panchanga.py`, `certify_rise_set.py`, `PANCHANGA_V1_certification.json`
+  / `panchanga.report.md`, `DP-009`, `ADR-0052`/`ADR-0054`/`ADR-0055`, `docs/Q8_CLOSURE_MATRIX.md` s4),
+  not a fresh run.
+- Certification executed and results: none re-run; `PANCHANGA_V1`'s existing `RESULT: PASS` (2026-08-18,
+  CI-confirmed per the prior entry) stands unchanged and is not disputed - the finding above is about
+  certified *scope*, not about the gates that exist being wrong.
+- Known issues: the `ADR-0058` staleness described above (now corrected in this same pass).
+- Unresolved questions / CEO decision required: **YES - exactly one.** Whether `PANCHANGA_V1`'s
+  independently-coded-reference substitution for the external-oracle gate (tithi/yoga/karana) is
+  accepted for Panchanga classification the same way the structurally identical substitution was
+  explicitly ratified for rise/set in `ADR-0054`, OR whether a real PyJHora oracle gate must first be
+  added and verified running in CI's `oracle` job (Linux, PyJHora already installed and already used by
+  the eight existing varga oracle certifiers) before Panchanga classification can be described as
+  meeting the FOUNDATION phase's own stated certification-gates requirement. Until one of those two
+  paths is decided, `PANCHANGA_V1` should be described as **certified to the level actually evidenced
+  (independently-coded reference, genuine negative control, protected holdout, dense sweep, ULP
+  battery, independent validator - materially equivalent to C3 "independently externally cross-checked"
+  is NOT yet met for the specific "external oracle" sense `DP-009`/`Q8` use, though C2 "implemented and
+  internally validated" is comfortably met)**, not as having satisfied the full varga-template
+  methodology `DP-009`/`ADR-0052` named for panchanga's classification parts.
+- Next authorized action: **await the owner's decision on the oracle-gate question above.** No
+  implementation change was made silently. If the owner ratifies the substitution (mirroring `ADR-0054`),
+  the next Claude action is a narrow `ADR-0055`-addendum-style decision-log entry recording that
+  ratification, and updating `certify_panchanga.py`'s docstring/`explicit_non_claims` to cite it instead
+  of describing the gap as merely undecided. If the owner instead requires a real oracle gate, the next
+  Claude action is a scoped implementation task to add and CI-verify a PyJHora-based Gate for tithi/
+  yoga/karana/nakshatra, explicitly not authorized to begin without that decision.
+
+### 2026-08-19 - Execution continuity rule drafted and committed (ADR-0058)
+- Branch / commit SHA: `phase-g-governance`, `20a9589e3d567bbf86e36b13bf2d61ca734e728e` ("Formalize ACE
+  execution continuity rule"). **Correction to this entry, made during the following task's mandatory
+  session-start audit:** this entry originally read "NOT YET COMMITTED" / "no commit made," reflecting
+  the state at drafting time; the owner committed the three files directly, and the commit's existence
+  was confirmed at `HEAD` before the next task began. `docs/DECISION_LOG.md`'s `ADR-0058` Status line
+  carries the matching correction.
 - Previous approved commit: `300e6267a2738b160e140e502a8765ec1711935a`
 - Task: owner-directed "ACE EXECUTION - PERSIST EXECUTION CONTINUITY GOVERNANCE" - add a permanent rule
   that ACE work continues past analysis/recommendation/partial-result stopping points until one of five
@@ -119,13 +281,9 @@ later task supersedes one, say so in the new entry.
   capability, gate, threshold, or evidence file touched.
 - Known issues: none.
 - Unresolved questions: none raised by this task.
-- CEO decision required: **the commit itself.** ADR-0058 is recorded as the owner's ratifying
-  instruction, but per that same instruction's item 10, the working-tree change is not persisted to a
-  commit until the owner explicitly authorizes it.
-- Next authorized action: on explicit owner authorization, stage and commit exactly the three files
-  listed above (nothing else) on `phase-g-governance`, then report the resulting commit SHA and update
-  this entry's "Branch / commit SHA" field accordingly. Until then, no further action is authorized by
-  this entry.
+- CEO decision required: no - the owner's own commit of `20a9589` closes the item that previously made
+  this a pending decision.
+- Next authorized action: none granted by this entry beyond what it implements.
 
 ### 2026-08-18 - Panchanga CI evidence recovery (KP_CHAIN/SIGN_CONVENTION/RISE_SET/PANCHANGA + oracle-tier)
 - Branch / commit SHA: `phase-g-governance`, `695c387564cbd55e0908a730cc8b94f36ae41659`
@@ -236,32 +394,37 @@ later task supersedes one, say so in the new entry.
   own oracle-tier gap; see `ADR-0055` and the commit preceding this one) remains a separate, already-
   authorized but not-yet-executed step, unrelated to this governance change.
 
-## Snapshot as of the last update to this file (2026-08-18, refreshed after the Panchanga CI evidence recovery) - verify before relying on any of this
+## Snapshot as of the last update to this file (2026-08-19, refreshed after PANCHANGA_V1 Gate F implementation) - verify before relying on any of this
 
-- Branch: `phase-g-governance`. Parent commit of this update: `695c387564cbd55e0908a730cc8b94f36ae41659`
-  ("Commit CI-sourced evidence recovery for KP_CHAIN/SIGN_CONVENTION/RISE_SET/PANCHANGA and the eight
-  oracle-tier certifiers"), on top of `389b98c` (ADR-0057), `00319b7` (ADR-0056), `f885693` (ADR-0055).
-  **Not merged to `main`**, and `main` remains untouched. `389b98c` and everything before it is pushed to
-  `origin/phase-g-governance`; `695c387` and this update's own commit are **not yet pushed** as of this
-  writing - confirm with `git status` / `git log origin/phase-g-governance..HEAD` before assuming
-  otherwise.
-- Most recent decisions: `ADR-0054` (FOUNDATION rise/set, CERTIFIED), `ADR-0055` (Panchanga
-  classification-only work authorized; Rahu Kalam/Yamaganda/Gulika explicitly deferred pending a future
-  variant-table ratification), the `ADR-0047` G5 restoration addendum (22/22 restored as authoritative,
-  the intervening "12/22" correction retracted), `ADR-0056` (four-role AI collaboration model, Codex
-  excluded from the ACE workflow), `ADR-0057` (ACE interaction mode and mandatory session-start audit
-  added to `specs/CLAUDE_WORKFLOW.md`). No new ADR for the evidence-recovery commit itself (matches the
-  `bd71e0d` precedent: a plain evidence commit citing existing ADRs, not a new decision).
-- FOUNDATION status: rise/set CERTIFIED (`RISE_SET_V1`). Panchanga classification (tithi, nakshatra,
-  yoga, karana, vara at a given instant) implemented and certified (`PANCHANGA_V1`), now with CI-sourced
-  evidence (commit `695c387`, CI run `32136604550`) - the "known, separate follow-up" the previous
-  snapshot flagged is now closed for all twelve affected artifacts (`current_engine`, `KP_CHAIN_V1`,
-  `SIGN_CONVENTION_V1`, `RISE_SET_V1`, `PANCHANGA_V1`, `VARGA_D2/D3/D7/D12/D30_V1`, `VIMSHOTTARI_V1`,
-  `PARASHARI_DRISHTI_V1`, `TRANSIT_V1`), all at `modules_scanned: 177`. Not yet directly confirmed by a
-  green CI run against `695c387` itself, since it has not been pushed. Rahu Kalam/Yamaganda/Gulika and
-  element start/end transition timing remain explicitly NOT authorized (`ADR-0055` items 2-3).
-- Known, permanent limitation: `swetest`-dependent certifiers cannot run on a Windows host. Not a
-  regression if encountered there.
+- Branch: `phase-g-governance`. HEAD: `20a9589e3d567bbf86e36b13bf2d61ca734e728e` ("Formalize ACE
+  execution continuity rule", owner-committed directly), pushed and equal to
+  `origin/phase-g-governance` at session start. **Seven files are uncommitted working-tree changes as of
+  this entry** (`scripts/certify_panchanga.py`, `.github/workflows/ci.yml`, `certification/
+  PANCHANGA_V1_certification.json`, `reports/certification/panchanga.report.md`/`.console.txt`,
+  `docs/DECISION_LOG.md`, this file) - do not assume `HEAD` reflects them until a future task commits
+  them. **Not merged to `main`**, and `main` remains untouched.
+- Most recent decisions: `ADR-0059` (PANCHANGA_V1 Gate F, genuine PyJHora external-oracle comparison for
+  tithi/yoga/karana - CEO-approved, implemented and locally verified this session, **not yet committed,
+  pushed, or CI-confirmed**), `ADR-0058` (execution continuity rule, committed `20a9589`), `ADR-0057`
+  (ACE interaction mode and mandatory session-start audit), `ADR-0056` (four-role AI collaboration
+  model, Codex excluded), `ADR-0055` (Panchanga classification-only work authorized), `ADR-0054`
+  (FOUNDATION rise/set, CERTIFIED, five owner-ratified conventions plus an explicitly-ratified
+  oracle-gate substitution), `ADR-0052` (DP-009 Option B: rise/set Tier-0, panchanga Tier-1).
+- FOUNDATION status: rise/set CERTIFIED (`RISE_SET_V1`), CI-confirmed green (`32143067593`). Panchanga
+  classification (tithi, nakshatra, yoga, karana, vara at a given instant) implemented and certified
+  (`PANCHANGA_V1`, `RESULT: PASS`) - Gates A-E unchanged, plus a **new Gate F** (genuine PyJHora
+  external-oracle comparison, tithi/yoga/karana, 66 comparisons, 0 mismatches, genuine negative control)
+  closing the gap the prior checkpoint found. **`certify_panchanga.py` now requires PyJHora
+  unconditionally and has moved to the CI `oracle` job (now nine runners)**; it can no longer run
+  standalone in the `hermetic` job or on this Windows host without PyJHora - matches the same limitation
+  already accepted for the eight pre-existing oracle certifiers. **This session's Gate F evidence is
+  genuine but locally-sourced (an isolated, unpinned exploration venv, not the hash-pinned CI oracle
+  environment) - treat `PANCHANGA_V1` as CI-oracle-confirmed only after a pushed commit's `oracle` job
+  run actually passes**, the same evidence bar every other certified claim here already meets. Rahu
+  Kalam/Yamaganda/Gulika and element start/end transition timing remain explicitly NOT authorized
+  (`ADR-0055` items 2-3).
+- Known, permanent limitation: `swetest`- and PyJHora-dependent certifiers (now including
+  `certify_panchanga.py`) cannot run on this Windows host. Not a regression if encountered there.
 - Tier-0 is formally Locked per `ADR-0034`. Do not assume anything else carries that status without
   checking `docs/OPEN_QUESTIONS.md` Q17/Q18 and the specific decision entry.
 
@@ -276,6 +439,8 @@ act.
 
 | Version | Date | Change |
 |---|---|---|
+| 2.5.0 | 2026-08-19 | `ADR-0059`: CEO approved building a genuine PyJHora external-oracle gate (Gate F) for `PANCHANGA_V1`'s tithi/yoga/karana; implemented, locally verified (66/66 comparisons, negative control verified), certifier moved to the CI `oracle` job; added this task's entry; refreshed the snapshot. Uncommitted; CI verification pending. |
+| 2.4.0 | 2026-08-19 | Panchanga production-certification checkpoint (audit only): corrected the prior 2.3.0 entry's stale "not yet committed" language now that the owner committed `ADR-0058` directly (`20a9589`); added this task's own entry recording one open CEO decision (Panchanga's missing external-oracle gate vs. `ADR-0054`'s ratified rise/set precedent); refreshed the snapshot to `20a9589`. |
 | 2.3.0 | 2026-08-19 | `ADR-0058` drafted (execution continuity rule): added this task's "Task handoff log" entry recording an **uncommitted** working-tree change pending explicit owner commit authorization. Snapshot section not refreshed (no new commit exists yet to refresh it to). |
 | 2.2.0 | 2026-08-18 | Panchanga CI evidence recovery: added this task's "Task handoff log" entry; refreshed the snapshot to `695c387`. Structure/status from 2.0.0 unchanged. |
 | 2.1.0 | 2026-08-18 | `ADR-0057` (CEO-audit HOLD remediation): added this task's "Task handoff log" entry; refreshed the snapshot to `00319b7` (on top of `f885693`). "INDEX ONLY" status and role-model/task-log structure from 2.0.0 unchanged - this entry is itself an application of that discipline, not a structural change to it. |

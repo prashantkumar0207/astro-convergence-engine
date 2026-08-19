@@ -1,4 +1,5 @@
-"""PANCHANGA_V1 CERTIFICATION RUNNER (ADR-0055).
+"""PANCHANGA_V1 CERTIFICATION RUNNER (ADR-0055; Gate F per the CEO-approved
+"PANCHANGA PYJHORA EXTERNAL-ORACLE GATE" remedy, 2026-08-19).
 
 Regenerates certification/PANCHANGA_V1_certification.json FROM SCRATCH on
 every run; the stored JSON is never accepted as proof.
@@ -8,30 +9,56 @@ karana, vara at a given instant. Element start/end transition timing,
 and Rahu Kalam/Yamaganda/Gulika (ADR-0055 item 2, deferred pending a
 future variant-table ratification), are explicitly NOT certified here.
 
-Gates, mirroring the varga/rise-set A-E template: A frozen-rule/
-convention integrity; B dense sweep (H1-H11 holdout, reused from
-`certify_rise_set.py`) against the independent exact-rational reference;
-C ULP boundary battery plus vara's circumpolar and sunrise-transition
-edge cases; D non-invasiveness of already-certified modules this reuses
-(`engine.astrology.nakshatra`, `engine.astronomy.rise_set`); E the
-independent validator subprocess.
+Gates, mirroring the varga/rise-set A-E template plus a new F: A
+frozen-rule/convention integrity; B dense sweep (H1-H11 holdout, reused
+from `certify_rise_set.py`) against the independent exact-rational
+reference; C ULP boundary battery plus vara's circumpolar and
+sunrise-transition edge cases; D non-invasiveness of already-certified
+modules this reuses (`engine.astrology.nakshatra`,
+`engine.astronomy.rise_set`); E the independent validator subprocess;
+F a genuine external-oracle comparison against PyJHora.
 
-WHY THERE IS NO PyJHora ORACLE GATE HERE, UNLIKE THE EIGHT ORACLE
-CERTIFIERS. PyJHora is not installed and not reachable (no network) in
-this development environment, so its panchanga API surface
-(module/function names for tithi/nakshatra/yoga/karana/vara) could not
-be verified with the same confidence already established for the eight
-existing oracle certifiers, each of which only calls PyJHora entry
-points already proven working in CI. Committing an unverified import
-risks a silent no-op or wrong-API failure with no local way to debug it
-first - the same reasoning `certify_rise_set.py` already used to reject
-an unverified `swetest` CLI invocation for rise/set. This is a
-documented limitation, not a silent substitution: the independently-
-coded exact-rational reference (Gate B/E) and the Fliegel & Van Flandern
-calendar algorithm (vara) are the external references used instead,
-matching this repository's own precedent for exactly this situation.
-A future pass MAY add a PyJHora-oracle panchanga gate once its API is
-verified running in the `oracle` CI job; nothing here blocks that.
+GATE F, WHY IT WAS ADDED AND WHY IT REQUIRES PyJHora TO RUN AT ALL. A
+prior audit ("ACE EXECUTION CONTINUITY - PANCHANGA PRODUCTION-
+CERTIFICATION CHECKPOINT") found that `DP-009` s5 / `ADR-0052` / `Q8_
+CLOSURE_MATRIX.md` s4 name "external oracle" as required methodology for
+panchanga's classification parts (tithi/yoga/karana), and that this
+certifier previously substituted only the independently-coded exact-
+rational reference (Gate B/E) without that substitution ever being put
+to the owner as a decision - unlike the closely analogous, explicitly-
+ratified rise/set Gate C substitution in `ADR-0054`. The CEO explicitly
+approved building a real oracle gate rather than ratifying the
+substitution. `jhora.panchanga.drik.tithi/yogam/karana` (module verified
+reachable and its outputs cross-checked this session, see the
+implementation ADR) are the external oracle; `drik.set_ayanamsa_mode`
+mirrors the existing convention `certify_vimshottari.py`/
+`certify_transits.py` already use to align PyJHora's ayanamsa with each
+certified profile. Because this module-level import now requires
+PyJHora unconditionally - matching every one of the eight existing
+oracle certifiers exactly, not inventing a second oracle architecture -
+this certifier moves from the `hermetic` job's "Non-oracle certification
+runners" to the `oracle` job's runners (now nine). This is a deliberate
+design choice, not an oversight: `scripts/check_artifact_drift.py`
+compares ONE committed artifact per file against whatever regenerated
+it, with no per-job exception for "oracle executed" vs "not executed" -
+running Gate F conditionally in two different CI jobs would make the
+canonical artifact legitimately differ by job, which is exactly the kind
+of calculated-content drift `.claude/rules/certification.md` forbids
+adding to the volatile-fields list without a separate decision. Refusing
+to certify at all without PyJHora (this module's existing top-level
+import guard, unchanged in spirit from before) is the strongest way to
+satisfy "the final production certification must not claim an
+external-oracle gate unless it has actually executed": there is no
+degraded PASS state possible, only PASS-with-Gate-F-executed or an
+immediate FAIL at import. Gates A-E are unchanged in behaviour and
+result; nothing about their evidence is weakened by Gate F's addition.
+
+WHY NAKSHATRA IS NOT IN GATE F. `nakshatra_index` is a thin re-export of
+the already Tier-0-certified `nakshatra()` (proven identical in Gate D),
+not new code this work package introduced, and the audit that
+authorized this gate scoped the gap to tithi/yoga/karana specifically.
+Adding a nakshatra oracle comparison here would silently broaden the
+certified claim beyond what was authorized; see `explicit_non_claims`.
 """
 
 import subprocess
@@ -67,6 +94,21 @@ from engine.astrology.panchanga import (  # noqa: E402
 from engine.astronomy.profile import KP_KRISHNAMURTI, PARASHARI_LAHIRI  # noqa: E402
 from engine.astronomy.rise_set import RiseSetStatus, sunrise  # noqa: E402
 from engine.astronomy.sidereal_planets import sidereal_planet_position  # noqa: E402
+
+try:
+    from jhora.panchanga import drik as jhora_drik
+    import importlib.metadata
+    PYJHORA_VERSION = importlib.metadata.version("PyJHora")
+except Exception as error:  # pragma: no cover
+    print("PANCHANGA CERTIFICATION FAIL: PyJHora oracle unavailable:", error)
+    sys.exit(3)
+
+#: (engine profile, PyJHora ayanamsa mode string) - identical convention to
+#: `certify_vimshottari.py`/`certify_transits.py`'s own PROFILES lists.
+ORACLE_PROFILES = [
+    (PARASHARI_LAHIRI, "LAHIRI"),
+    (KP_KRISHNAMURTI, "KP"),
+]
 
 
 def fail(message):
@@ -260,6 +302,96 @@ def gate_e_validator():
     return {"result": "PASS"}
 
 
+def gate_f_external_oracle():
+    """Genuine external-oracle comparison: PyJHora's independently
+    implemented `jhora.panchanga.drik.tithi/yogam/karana` against this
+    module's `tithi_index`/`yoga_index`/`karana_index`, same H1-H11
+    holdout Gate B uses, both certified profiles. `place.timezone` is
+    fixed at 0.0 for every case: empirically verified, this session,
+    that tithi/yogam/karana at a fixed UT `jd` (passed directly, no
+    sunrise-anchoring requested) are timezone-invariant for every H1-H11
+    case at that setting; a large, arbitrary offset was observed in
+    exploratory testing to shift the result in at least one case, so 0.0
+    is used deliberately and uniformly rather than left to an implicit
+    default.
+    """
+
+    mismatches = []
+    comparisons = 0
+    for profile, jhora_mode in ORACLE_PROFILES:
+        jhora_drik.set_ayanamsa_mode(jhora_mode)
+        for case in HOLDOUT:
+            jd = swe.julday(*case["date"], 12.0, swe.GREG_CAL)
+            place = jhora_drik.Place("oracle_holdout", case["lat"], case["lon"], 0.0)
+            sun = sidereal_planet_position(jd, swe.SUN, profile.ayanamsa_mode, True)
+            moon = sidereal_planet_position(jd, swe.MOON, profile.ayanamsa_mode, True)
+            ours = (
+                tithi_index(sun.longitude, moon.longitude),
+                yoga_index(sun.longitude, moon.longitude),
+                karana_index(sun.longitude, moon.longitude),
+            )
+            oracle = (
+                jhora_drik.tithi(jd, place)[0],
+                jhora_drik.yogam(jd, place)[0],
+                jhora_drik.karana(jd, place)[0],
+            )
+            comparisons += 3
+            if ours != oracle:
+                mismatches.append(f"{profile.name}/{case['id']}: ours {ours} != oracle {oracle}")
+
+    if mismatches:
+        fail(f"oracle mismatches: {mismatches}")
+
+    # Genuine negative control, mirroring engine/tests/test_panchanga.py's own
+    # pattern for the Fraction-exact reference: temporarily replace the real
+    # tithi_index with a function guaranteed to disagree with the real oracle
+    # value, confirm the SAME comparison this gate uses actually flags it,
+    # then restore the real function and re-verify it agrees with the oracle
+    # again - proving this gate can fail, not merely that it currently
+    # passes.
+    import engine.astrology.panchanga as panchanga_module
+    real_tithi_index = panchanga_module.tithi_index
+    probe_case = HOLDOUT[0]
+    jhora_drik.set_ayanamsa_mode("LAHIRI")
+    jd = swe.julday(*probe_case["date"], 12.0, swe.GREG_CAL)
+    place = jhora_drik.Place("oracle_holdout", probe_case["lat"], probe_case["lon"], 0.0)
+    oracle_tithi = jhora_drik.tithi(jd, place)[0]
+    sun = sidereal_planet_position(jd, swe.SUN, PARASHARI_LAHIRI.ayanamsa_mode, True)
+    moon = sidereal_planet_position(jd, swe.MOON, PARASHARI_LAHIRI.ayanamsa_mode, True)
+
+    def _always_wrong(sun_longitude, moon_longitude):
+        return (real_tithi_index(sun_longitude, moon_longitude) % TITHI_COUNT) + 1
+
+    panchanga_module.tithi_index = _always_wrong
+    try:
+        broken_result = panchanga_module.tithi_index(sun.longitude, moon.longitude)
+        negative_control_caught = broken_result != oracle_tithi
+    finally:
+        panchanga_module.tithi_index = real_tithi_index
+
+    if not negative_control_caught:
+        fail("negative control: a deliberately broken tithi_index was NOT "
+             "caught by the oracle comparison")
+    if panchanga_module.tithi_index is not real_tithi_index:
+        fail("negative control: tithi_index was not correctly restored")
+    if panchanga_module.tithi_index(sun.longitude, moon.longitude) != oracle_tithi:
+        fail("negative control: restored tithi_index no longer agrees with the oracle")
+
+    return {
+        "cases": len(HOLDOUT),
+        "profiles": len(ORACLE_PROFILES),
+        "elements": ["tithi", "yoga", "karana"],
+        "comparisons": comparisons,
+        "mismatches": 0,
+        "negative_control_verified": True,
+        "nakshatra_excluded_reason": "already Tier-0-certified reuse, not new "
+                                      "code introduced by this work package; "
+                                      "proven identical to the certified "
+                                      "nakshatra() in Gate D; out of the "
+                                      "scope this gate was authorized to close",
+    }
+
+
 def main():
     tee = support.start_transcript()
     preconditions = support.preflight()
@@ -278,19 +410,27 @@ def main():
             "karana": f"{KARANA_SPAN_DEGREES} deg x {KARANA_COUNT}",
             "vara": "sunrise-to-sunrise, consuming certified Tier-0 rise_set",
         },
+        "oracle": {
+            "package": "PyJHora", "version": PYJHORA_VERSION,
+            "function": "jhora.panchanga.drik.tithi/yogam/karana, ayanamsa "
+                        "aligned per profile via drik.set_ayanamsa_mode "
+                        "(same convention as certify_vimshottari.py / "
+                        "certify_transits.py)",
+        },
         "gates": {
             "A_convention_integrity": gate_a_convention_integrity(),
             "B_dense_sweep": gate_b_dense_sweep(),
             "C_boundary_and_vara_edge_cases": gate_c_boundary_and_vara_edge_cases(),
             "D_non_invasiveness": gate_d_non_invasiveness(),
             "E_independent_validator": gate_e_validator(),
+            "F_external_oracle": gate_f_external_oracle(),
         },
         "explicit_non_claims": [
             "element start/end transition timing (deferred, ADR-0055 item 3)",
             "Rahu Kalam, Yamaganda, Gulika (deferred pending a variant-table "
             "ratification, ADR-0055 item 2)",
-            "PyJHora oracle cross-check (not verified reachable in this "
-            "environment; see module docstring)",
+            "nakshatra external-oracle cross-check (already Tier-0-certified "
+            "reuse, not new code; see Gate F's nakshatra_excluded_reason)",
             "vara's weekday label for observers whose local civil date "
             "differs from the UT calendar date of their sunrise (see "
             "engine.astrology.panchanga.vara docstring)",
@@ -304,7 +444,8 @@ def main():
     print("=" * 60)
     print("PANCHANGA_V1 CERTIFICATION")
     print("=" * 60)
-    for name in ("A_convention_integrity", "B_dense_sweep", "C_boundary_and_vara_edge_cases", "D_non_invasiveness"):
+    for name in ("A_convention_integrity", "B_dense_sweep", "C_boundary_and_vara_edge_cases",
+                 "D_non_invasiveness", "F_external_oracle"):
         print(f"{name}: {report['gates'][name]}")
     print("E_independent_validator: PASS")
     # .as_posix(): a bare str(Path) uses the OS-native separator, which

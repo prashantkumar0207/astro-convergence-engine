@@ -3,10 +3,10 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | ACTIVE REGISTER. **ACCEPTED (36): ADR-0001, ADR-0002, ADR-0005 through ADR-0012, ADR-0015, ADR-0016, ADR-0017, ADR-0033 through ADR-0037, ADR-0039 through ADR-0042, ADR-0044, ADR-0045, ADR-0046, ADR-0048 through ADR-0058**, owner-ratified across 2026-08-13, 2026-08-14, 2026-08-17, 2026-08-18 and 2026-08-19. **`ADR-0056` formalizes the four-role AI collaboration model (USER/CLAUDE/CHATGPT/CODEX); Codex is explicitly excluded from the ACE workflow. `ADR-0057` (CEO-audit HOLD remediation) adds ACE interaction mode and mandatory session-start audit to `specs/CLAUDE_WORKFLOW.md`. `ADR-0058` adds an execution-continuity rule (do not stop prematurely; five terminal stop conditions) to the same document - recorded here per the owner's instruction, but its `specs/CLAUDE_WORKFLOW.md` edit is not yet committed pending explicit commit authorization.** Tier-0 is **FORMALLY LOCKED** (ADR-0034), the only s12 Locked artifact. The registry vargas and the sign conventions are **owner-ratified but NOT s12 Locked** (ADR-0035 D3, ADR-0036 D3). **Q8 is now CLOSED** (ADR-0048); **Phase G exited and FOUNDATION entry criteria were independently confirmed satisfied** (this session's evidence reports). **FOUNDATION's first work package, rise/set, is CERTIFIED (`ADR-0054`, `RISE_SET_V1`)**: five owner-ratified conventions (upper-limb disc, standard -50' refraction, elevation accounted for, structured NO_RISE/NO_SET, conventions in `CalculationProfile`/`BirthData`), zero calculation impact on any existing certified capability, two genuine defects found and fixed during its own construction (recorded in the entry). **Panchanga classification-only work (tithi/vara/nakshatra/yoga/karana at a given instant) is now authorised (`ADR-0055`)**: engine-wide 1e-10 promote-up boundary convention, vara consumes the certified rise/set layer, element transition-timing deferred. **Rahu Kalam/Yamaganda/Gulika remain NOT authorised pending a future DP-NNN variant-table ratification (`ADR-0055` item 2).** No later phase (Muhurta, Varshaphal, Prashna, Mundane, BTR, Interpretation, Convergence, UI, ML) is thereby authorised - `docs/Q8_CLOSURE_MATRIX.md` s4 requires its own per-capability checkpoint for each. **Still PROPOSED: ADR-0003, ADR-0004, ADR-0013, ADR-0014, ADR-0018 through ADR-0032, ADR-0038, and ADR-0047.** `ADR-0047`'s originally-reported G5 sample accounting (22/22 complete, 16 independent, 4 ADB_MATCH, 2 unresolved, 14 events) was briefly, and **erroneously**, corrected to "12/22 attempted" by a 2026-08-18 addendum that has since been found (owner-directed forensic reconciliation) to rest on a conflation of the 22-person sample with an unrelated 5-person bridging pilot; a second, later 2026-08-18 addendum **restores 22/22 as the authoritative state** (16 independent, 4 ADB_MATCH: Fichera/Aimar/Serantoni/Bobet, 2 unresolved: Veen/Perquier, 14 independent events) and marks the "12/22" addendum SUPERSEDED/RETRACTED, preserved unedited. `ADR-0047` remains PROPOSED, not ratified, throughout. Ratification is per-entry; an owner existing is not the register being ratified. Includes the ADR-0018 remote-CI evidence addendum (2026-08-11), the ADR-0047 "12/22" addendum (2026-08-18, now retracted), and the ADR-0047 restoration addendum (2026-08-18). |
-| Version | 2.8.0 |
+| Status | ACTIVE REGISTER. **ACCEPTED (37): ADR-0001, ADR-0002, ADR-0005 through ADR-0012, ADR-0015, ADR-0016, ADR-0017, ADR-0033 through ADR-0037, ADR-0039 through ADR-0042, ADR-0044, ADR-0045, ADR-0046, ADR-0048 through ADR-0059**, owner-ratified across 2026-08-13, 2026-08-14, 2026-08-17, 2026-08-18 and 2026-08-19. **`ADR-0056` formalizes the four-role AI collaboration model (USER/CLAUDE/CHATGPT/CODEX); Codex is explicitly excluded from the ACE workflow. `ADR-0057` (CEO-audit HOLD remediation) adds ACE interaction mode and mandatory session-start audit to `specs/CLAUDE_WORKFLOW.md`. `ADR-0058` adds an execution-continuity rule (do not stop prematurely; five terminal stop conditions) to the same document; its `specs/CLAUDE_WORKFLOW.md` edit is committed (`20a9589e3d567bbf86e36b13bf2d61ca734e728e`). `ADR-0059` records the CEO-approved `PANCHANGA_V1` Gate F (genuine PyJHora external-oracle comparison for tithi/yoga/karana, nakshatra explicitly excluded): implemented and locally verified (66/66 comparisons, negative control verified) this session, but its files remain uncommitted/unpushed and CI has not yet confirmed it under the hash-pinned oracle environment.** Tier-0 is **FORMALLY LOCKED** (ADR-0034), the only s12 Locked artifact. The registry vargas and the sign conventions are **owner-ratified but NOT s12 Locked** (ADR-0035 D3, ADR-0036 D3). **Q8 is now CLOSED** (ADR-0048); **Phase G exited and FOUNDATION entry criteria were independently confirmed satisfied** (this session's evidence reports). **FOUNDATION's first work package, rise/set, is CERTIFIED (`ADR-0054`, `RISE_SET_V1`)**: five owner-ratified conventions (upper-limb disc, standard -50' refraction, elevation accounted for, structured NO_RISE/NO_SET, conventions in `CalculationProfile`/`BirthData`), zero calculation impact on any existing certified capability, two genuine defects found and fixed during its own construction (recorded in the entry). **Panchanga classification-only work (tithi/vara/nakshatra/yoga/karana at a given instant) is now authorised (`ADR-0055`)**: engine-wide 1e-10 promote-up boundary convention, vara consumes the certified rise/set layer, element transition-timing deferred. **Rahu Kalam/Yamaganda/Gulika remain NOT authorised pending a future DP-NNN variant-table ratification (`ADR-0055` item 2).** No later phase (Muhurta, Varshaphal, Prashna, Mundane, BTR, Interpretation, Convergence, UI, ML) is thereby authorised - `docs/Q8_CLOSURE_MATRIX.md` s4 requires its own per-capability checkpoint for each. **Still PROPOSED: ADR-0003, ADR-0004, ADR-0013, ADR-0014, ADR-0018 through ADR-0032, ADR-0038, and ADR-0047.** `ADR-0047`'s originally-reported G5 sample accounting (22/22 complete, 16 independent, 4 ADB_MATCH, 2 unresolved, 14 events) was briefly, and **erroneously**, corrected to "12/22 attempted" by a 2026-08-18 addendum that has since been found (owner-directed forensic reconciliation) to rest on a conflation of the 22-person sample with an unrelated 5-person bridging pilot; a second, later 2026-08-18 addendum **restores 22/22 as the authoritative state** (16 independent, 4 ADB_MATCH: Fichera/Aimar/Serantoni/Bobet, 2 unresolved: Veen/Perquier, 14 independent events) and marks the "12/22" addendum SUPERSEDED/RETRACTED, preserved unedited. `ADR-0047` remains PROPOSED, not ratified, throughout. Ratification is per-entry; an owner existing is not the register being ratified. Includes the ADR-0018 remote-CI evidence addendum (2026-08-11), the ADR-0047 "12/22" addendum (2026-08-18, now retracted), and the ADR-0047 restoration addendum (2026-08-18). |
+| Version | 2.9.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-18 |
+| Last updated | 2026-08-19 |
 | Review cadence | TBD |
 
 # Decision Log (ADR register)
@@ -2710,15 +2710,111 @@ the two gates added under ADR-0037.
 ## ADR-0058 - Execution continuity rule: do not stop prematurely on authorized ACE work
 
 - **Date:** 2026-08-19
-- **Status:** **ACCEPTED**, on the owner's explicit, self-contained instruction: "ACE EXECUTION - PERSIST EXECUTION CONTINUITY GOVERNANCE," given directly in this session, specifying the five terminal stop conditions and the "convert 'you should do X' into the next executable instruction" rule verbatim. Per this same instruction's own item 10, **this entry and its accompanying `specs/CLAUDE_WORKFLOW.md` edit are recorded but not committed** until the owner explicitly authorizes the commit - the ACCEPTED status here reflects the owner's ratifying instruction, not that the change has been persisted to a commit yet; the commit authorization is a separate, still-pending act.
+- **Status:** **ACCEPTED**, on the owner's explicit, self-contained instruction: "ACE EXECUTION - PERSIST EXECUTION CONTINUITY GOVERNANCE," given directly in this session, specifying the five terminal stop conditions and the "convert 'you should do X' into the next executable instruction" rule verbatim. **Commit confirmed:** the owner committed this entry and its accompanying `specs/CLAUDE_WORKFLOW.md`/`reports/AI_HANDOFF_CURRENT.md` edits directly, commit `20a9589e3d567bbf86e36b13bf2d61ca734e728e` ("Formalize ACE execution continuity rule"), confirmed present at `HEAD` during the session-start audit of the following task ("ACE EXECUTION CONTINUITY - PANCHANGA PRODUCTION-CERTIFICATION CHECKPOINT", 2026-08-19). The "recorded but not committed pending authorization" language originally here (and in `reports/AI_HANDOFF_CURRENT.md`'s matching entry) described the state at drafting time and is corrected by this mechanical status update only - Decision/Context/Evidence below are unedited.
 - **Context:** `ADR-0056` (four-role model) and `ADR-0057` (ACE interaction mode; mandatory session-start audit) formalized *who* does what and *when* to check state, but neither addressed a related, distinct failure mode: an AI collaborator stopping mid-task to offer analysis, a recommendation, or a menu of possible next steps when the authorized workflow could instead simply continue. The owner's instruction names this precisely and gives five exhaustive conditions under which stopping is actually correct, plus the explicit prohibition on ending with "you should do X" when X is directly executable instead.
 - **Decision:**
   1. `specs/CLAUDE_WORKFLOW.md` (1.2.0 -> 1.3.0) gains a new "Execution continuity (do not stop prematurely)" section, placed after "Session-start audit (mandatory)" (`ADR-0057`) and before "Change history" - the same document, for the same reason `ADR-0057` chose it: procedural *how/when*, not the *who* (`docs/PROJECT_CONSTITUTION.md` s11 stays untouched).
   2. The five terminal stop conditions, verbatim in substance: **USER INPUT REQUIRED** (a genuine decision/approval/credential/file/output only the user can supply); **CLAUDE INPUT REQUIRED** (ChatGPT cannot itself execute the next step - issue Claude the complete next instruction: context, objective, constraints, required checks, expected output, handoff-update requirement; if the step is already obvious from governance and the current milestone, issue it without first asking "what next?"); **BLOCKED** (a genuine external/environmental limitation - state the precise blocker and exact unblock action once, not repeatedly); **CEO APPROVAL REQUIRED** (an existing governance/certification checkpoint under `docs/PROJECT_CONSTITUTION.md` s11 rule (a) or `.claude/rules/*.md`); **TASK COMPLETE** (authorized work and its required verification actually finished).
   3. Outside those five, do not stop: no ending on "you should do X" when X is directly executable; no re-asking confirmation for an already-authorized routine step; no re-explaining completed work absent an actual contradiction to resolve.
   4. **Explicit non-override, stated in the new section itself:** this rule governs response *behaviour*, not authorization. It does not authorize any work repository governance has not already authorized, and it does not weaken `docs/PROJECT_CONSTITUTION.md` s11 rule (a) - the owner still ratifies all decisions, and condition 4 (CEO approval required) is not overridden by the general "keep going" instruction. A continuity rule that could be read as license to skip an approval checkpoint would itself be a governance weakening, which this decision does not make.
-- **Consequences:** No calculation-engine, certification-artifact, locked Tier-0, or product-domain file is touched by this entry - confirmed by diffing the changed-file list before any commit. No certification gate, threshold, or existing evidence is altered. `docs/PROJECT_CONSTITUTION.md` s11 and `ADR-0056`/`ADR-0057` are not reopened. `reports/AI_HANDOFF_CURRENT.md` gains this task's own "Task handoff log" entry recording the change and its provenance, per the same discipline `ADR-0056` established. **Per the owner's own instruction 10, this ADR and the `specs/CLAUDE_WORKFLOW.md` edit remain uncommitted pending explicit commit authorization** - a future entry or the same one, once authorized, records the resulting commit SHA; this text is not to be treated as evidence of a persisted commit until that happens.
+- **Consequences:** No calculation-engine, certification-artifact, locked Tier-0, or product-domain file is touched by this entry - confirmed by diffing the changed-file list before any commit. No certification gate, threshold, or existing evidence is altered. `docs/PROJECT_CONSTITUTION.md` s11 and `ADR-0056`/`ADR-0057` are not reopened. `reports/AI_HANDOFF_CURRENT.md` gains this task's own "Task handoff log" entry recording the change and its provenance, per the same discipline `ADR-0056` established. **Commit now confirmed** (see Status line above, `20a9589e3d567bbf86e36b13bf2d61ca734e728e`) - the commit-authorization condition this paragraph originally described as pending is satisfied.
 - **Evidence:** Owner instruction, 2026-08-19, verbatim title "ACE EXECUTION - PERSIST EXECUTION CONTINUITY GOVERNANCE," specifying the five conditions, the token-efficiency rule, and the explicit "do not commit or push unless explicitly authorized" constraint. Pre-change inspection: branch `phase-g-governance`, HEAD `300e6267a2738b160e140e502a8765ec1711935a`, working tree clean of tracked changes, `scripts/check_adr_numbering.py` confirmed next free number `ADR-0058` before this entry was drafted.
+
+---
+
+## ADR-0059 - CEO-approved PANCHANGA_V1 external-oracle gate (Gate F): implemented, locally verified, CI-verification pending
+
+- **Date:** 2026-08-19
+- **Status:** **ACCEPTED**, on the owner's explicit CEO-relayed instruction: "ACE EXECUTION CONTINUITY -
+  PANCHANGA PYJHORA EXTERNAL-ORACLE GATE... CEO DECISION: APPROVED. The CEO has explicitly approved
+  Option (b): implement and CI-verify a genuine PyJHora external-oracle gate for Panchanga
+  classification," given directly in this session in response to the immediately preceding
+  "PANCHANGA PRODUCTION-CERTIFICATION CHECKPOINT" audit's finding (recorded in
+  `reports/AI_HANDOFF_CURRENT.md`'s 2026-08-19 checkpoint entry, not a separate ADR, per that audit's
+  own no-commit scope) that `PANCHANGA_V1` lacked the external-oracle gate `DP-009` s5 / `ADR-0052` /
+  `Q8_CLOSURE_MATRIX.md` s4 name for panchanga's classification parts. **CI verification is explicitly
+  NOT yet part of this ACCEPTED status** - see Evidence below; this entry records the CEO's decision and
+  its local implementation, not a claim that CI has confirmed it.
+- **Context:** The checkpoint audit offered two remedies: (a) ratify the existing independently-coded
+  reference as an accepted substitution, mirroring `ADR-0054`'s explicit rise/set precedent, or (b)
+  build a real PyJHora oracle gate. The CEO chose (b). `certify_d2.py`, `certify_vimshottari.py` and
+  `certify_transits.py` already establish the mechanism this entry reuses: a module-level
+  `try/except ImportError` around `jhora`, hard `sys.exit(3)` if unavailable, and (for the latter two)
+  `drik.set_ayanamsa_mode("LAHIRI"|"KP")` to align PyJHora's ayanamsa with each certified profile before
+  comparison. `jhora.panchanga.drik` was located and its `tithi(jd, place)`, `yogam(jd, place)`,
+  `karana(jd, place)` functions inspected and empirically cross-checked this session (an isolated,
+  throwaway venv, PyJHora 4.8.7 installed unpinned for exploration only, distinct from the hash-pinned
+  `requirements-oracle.lock` CI uses) - confirmed 1-based indices identical in convention to this
+  module's own `tithi_index`/`yoga_index`/`karana_index`, and confirmed empirically that `place.timezone`
+  does not affect the result at a fixed UT `jd` for the values this gate uses (one arbitrary large offset
+  was observed to change the result in exploratory testing; `timezone=0.0` is used deliberately and
+  uniformly, not left implicit).
+- **Decision:**
+  1. `scripts/certify_panchanga.py` gains **Gate F, `F_external_oracle`**: a genuine comparison of
+     `jhora.panchanga.drik.tithi/yogam/karana` against this module's `tithi_index`/`yoga_index`/
+     `karana_index`, run across the same H1-H11 holdout Gate B uses and both certified profiles (66
+     comparisons, matching Gate B's own scale), plus a genuine negative control (temporarily replacing
+     the real `tithi_index` with a function guaranteed to disagree with the real oracle value, confirming
+     the SAME comparison logic flags it, then restoring and re-verifying agreement) - mirroring
+     `engine/tests/test_panchanga.py`'s own established negative-control pattern for the Fraction-exact
+     reference. Gates A-E are **unedited in behaviour and result**.
+  2. **Nakshatra is deliberately excluded from Gate F**, recorded in the gate's own
+     `nakshatra_excluded_reason` field: `nakshatra_index` is a thin reuse of the already Tier-0-certified
+     `nakshatra()` (proven identical in Gate D), not new code this work package introduced, and the
+     checkpoint audit that authorized this gate scoped the gap to tithi/yoga/karana specifically. Adding
+     a nakshatra oracle comparison was judged to silently broaden the certified claim beyond what was
+     authorized, per the CEO instruction's own explicit prohibition on that.
+  3. **`certify_panchanga.py` moves from the `hermetic` job's "Non-oracle certification runners" to the
+     `oracle` job's runners** (`.github/workflows/ci.yml`, now nine), because its module-level PyJHora
+     import is now unconditional - identical in kind to all eight existing oracle certifiers, not a new
+     CI mechanism. This was a deliberate design choice, not the only possible one: `scripts/
+     check_artifact_drift.py` compares exactly one committed artifact per file against whatever
+     regenerated it, with no per-job exception for "oracle executed" vs "not executed"; running Gate F
+     conditionally in two CI jobs would make the canonical artifact legitimately differ by job, which is
+     exactly the calculated-content drift `.claude/rules/certification.md` forbids adding to the
+     volatile-fields list without its own separate decision. Refusing to certify at all without PyJHora
+     (the unconditional import guard) satisfies the CEO instruction's "the final production certification
+     must not claim an external-oracle gate unless it has actually executed" as strongly as possible:
+     there is no degraded/faked PASS state, only PASS-with-Gate-F-executed or an immediate FAIL at
+     import. `validate_panchanga_holdout.py` (Gate E) needs no PyJHora and **stays** in the `hermetic`
+     job's independent-holdout-validator list, unchanged.
+  4. `certification/PANCHANGA_V1_certification.json` (and its `reports/certification/panchanga.*`
+     companions) are regenerated to reflect Gate F - **this session, locally, via the unpinned
+     exploration venv described in Context**, genuinely executing PyJHora, not backfilled or faked: 66
+     comparisons, 0 mismatches, negative control verified. This is explicitly **not** the hash-pinned CI
+     oracle-environment evidence `RISE_SET_V1`/`ADR-0054`-class entries use as their canonical source -
+     see Evidence below for exactly what is and is not yet confirmed.
+- **Consequences:** No calculation logic in `engine/astrology/panchanga.py` or `panchanga_names.py` is
+  touched by this entry - `tithi_index`/`yoga_index`/`karana_index`/`nakshatra_index`/`vara` are
+  unchanged; Gate F only adds an external comparison against them. Gates A-E's own evidence is unchanged
+  (confirmed identical in this session's regenerated artifact). `python -m pytest -q` (778 passed) and
+  `validate_panchanga_holdout.py` (24 cases, 90 comparisons, 0 mismatches) both re-run unaffected, since
+  neither imports `jhora`. **This entry's implementation is not yet pushed or CI-verified** - per the
+  session's explicit no-commit/no-push instruction, `docs/DECISION_LOG.md`, `.github/workflows/ci.yml`,
+  `scripts/certify_panchanga.py`, `certification/PANCHANGA_V1_certification.json`, and the two
+  `reports/certification/panchanga.*` files remain **uncommitted working-tree changes** as of this
+  entry. The prior checkpoint's open item (`reports/AI_HANDOFF_CURRENT.md`'s 2026-08-19 checkpoint entry)
+  is resolved by this decision and this implementation, but **remains evidentially incomplete until a
+  pushed commit's CI run confirms Gate F passes under the hash-pinned oracle environment** - only that
+  run, not this local one, is the evidence class `RISE_SET_V1`/`current_engine`/the varga oracle
+  certifiers already rely on for their own committed claims.
+- **Evidence:** Owner/CEO instruction, 2026-08-19, verbatim title "ACE EXECUTION CONTINUITY - PANCHANGA
+  PYJHORA EXTERNAL-ORACLE GATE," "CEO DECISION: APPROVED... Option (b)." Session-start audit: branch
+  `phase-g-governance`, HEAD `20a9589e3d567bbf86e36b13bf2d61ca734e728e`, working tree carrying only the
+  prior checkpoint's two documentation edits before this task began. `scripts/certify_d2.py`,
+  `scripts/certify_vimshottari.py`, `scripts/certify_transits.py` (existing oracle-gate mechanism,
+  inspected before reuse); `jhora.panchanga.drik` (module located, functions inspected and empirically
+  cross-checked, 66/66 comparisons agreeing with this session's own probe run, in an isolated,
+  throwaway, unpinned venv distinct from `requirements-oracle.lock`). `python -m pytest -q` - 778 passed,
+  0 failed. `python validate_panchanga_holdout.py` - PASS, 24 cases, 90 comparisons. `python
+  scripts/certify_panchanga.py` in the main (no-PyJHora) environment - correctly `exit(3)`, matching
+  every other oracle-tier certifier's behaviour without PyJHora. `python scripts/certify_panchanga.py`
+  via the isolated exploration venv - PASS, all gates including `F_external_oracle` (66 comparisons, 0
+  mismatches, negative control verified); regenerated `certification/PANCHANGA_V1_certification.json`
+  and its report/console companions. `scripts/check_adr_numbering.py` - PASS, 58 -> 59 entries.
+  `scripts/check_retired_identifiers.py`, `scripts/check_identifier_families.py` - PASS.
+  `git diff --check` - clean (CRLF-normalization warnings only). **CI run: none yet - this entry's
+  changes are uncommitted and unpushed as of this evidence block.**
 
 ---
 
