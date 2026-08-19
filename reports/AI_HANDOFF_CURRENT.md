@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 2.6.0 |
+| Version | 2.7.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-19 (PANCHANGA_V1 Gate F committed, pushed, CI-confirmed under the hash-pinned oracle environment - CI run 32242462766 green) |
+| Last updated | 2026-08-19 (FOUNDATION checkpoint audit: no new implementation milestone currently authorized; Panchanga's per-capability CEO checkpoint is the sole open item) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,63 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-19 - FOUNDATION checkpoint audit (read-only; no code, no new ADR)
+- Branch / commit SHA: `phase-g-governance`, `ce2475f0fbfba348783b829b5d0a2b24fa45ef12` - this entry is
+  the only edit; no source, calculation, certification, or evidence file touched.
+- Previous approved commit: `ce2475f0fbfba348783b829b5d0a2b24fa45ef12`
+- Task: owner-directed "ACE - FOUNDATION CHECKPOINT AUDIT" - independently verify the repository's
+  current FOUNDATION state against `docs/Q8_CLOSURE_MATRIX.md` s4 (not trusting the prior entry's own
+  claims), enumerate remaining FOUNDATION scope, and identify exactly one next authorized step.
+- Relevant ADR/specification: `docs/Q8_CLOSURE_MATRIX.md` s4 (authoritative FOUNDATION scope and
+  per-capability CEO-approval requirement); `ADR-0054` (rise/set); `ADR-0055` (Panchanga scope);
+  `ADR-0059` (Panchanga Gate F); `ADR-0020` (PROPOSED, not ratified - H-02 D5 reproduction requirement
+  lives here); `docs/decisions/README.md` (DP index, last updated 2026-08-17, no Rahu Kalam/Yamaganda/
+  Gulika DP allocated yet).
+- Implementation summary (findings, not code changes): verified independently, not assumed from the
+  prior entry:
+  1. **HEAD, CI, and the DECISION_LOG register all corroborate the prior entry's claims** - `ce2475f`
+     and its two predecessor commits are all CI green (`gh run list`), `ADR-0058`/`ADR-0059` are
+     committed (`grep` against the file, not the register summary), and `certify_panchanga.py` at `HEAD`
+     genuinely requires PyJHora unconditionally (confirmed by reading the committed source directly).
+  2. **FOUNDATION implementation scope, per `Q8_CLOSURE_MATRIX.md` s4** (verbatim): rise/set with
+     declared conventions (**CERTIFIED**, `RISE_SET_V1`/`ADR-0054`); Panchanga tithi/vara/nakshatra/
+     yoga/karana (**implemented and CI-certified, all six gates including a genuine external oracle**,
+     `ADR-0059` - but the phase's own row states "CEO approval: Entry, per-capability checkpoint, exit"
+     and no per-capability checkpoint acceptance has been recorded for Panchanga); Rahu Kalam/Yamaganda/
+     Gulika (**NOT STARTED, NOT AUTHORIZED** - `ADR-0055` item 2 explicitly defers this pending a DP-NNN
+     variant-table paper, and no such paper has been drafted or registered per `docs/decisions/README.md`);
+     civil-date rendering for dasha boundaries (**NOT STARTED** - no governing ADR or DP found anywhere
+     in `docs/DECISION_LOG.md`); H-01 true-node completeness (**NOT STARTED** - no governing ADR/DP
+     found); H-02 ingress classification seam (**NOT STARTED** - flagged high-priority for Muhurta, but
+     its own reproduction methodology, `ADR-0020` D5, is itself **Status: PROPOSED**, not owner-ratified,
+     so even H-02's *investigation* is not yet authorized); boundary-proximity indicators (**NOT
+     STARTED**, no decision).
+  3. **Conclusion: no new FOUNDATION *implementation* milestone currently has all prerequisites
+     satisfied.** Every remaining capability except Panchanga is blocked on a decision paper and/or
+     owner ratification that does not yet exist - starting any of them now would be inventing scope
+     `Q8_CLOSURE_MATRIX.md` requires a decision to open. Panchanga alone is implementation-complete and
+     evidence-complete; its only remaining gap is the CEO checkpoint acceptance `Q8_CLOSURE_MATRIX.md`
+     s4 itself requires per capability - a decision, not further engineering, and not one this entry
+     (or any Claude-authored entry) can self-certify.
+- Tests executed and results: none re-run - read-only audit, no code touched.
+- Certification executed and results: none re-run; no certification claim disputed or changed.
+- Known issues: none newly found.
+- Unresolved questions / CEO decision required: **YES.** Whether to formally accept Panchanga
+  classification (tithi, nakshatra-reuse, yoga, karana, vara at a given instant) as meeting its
+  `Q8_CLOSURE_MATRIX.md` s4 per-capability FOUNDATION checkpoint, now that `ADR-0059`'s genuine,
+  CI-confirmed external-oracle gate closes the one gap the prior checkpoint identified. This is the
+  same open item the immediately preceding task-log entry already flagged; this entry independently
+  re-confirms it rather than taking it on faith.
+- CEO decision required: **the Panchanga per-capability FOUNDATION checkpoint acceptance**, per
+  `Q8_CLOSURE_MATRIX.md` s4's own "CEO approval: Entry, per-capability checkpoint, exit" row.
+- Next authorized action: on CEO/owner acceptance of the Panchanga checkpoint, the next Claude action is
+  a narrow `ADR-0059`-addendum-style decision-log entry recording that acceptance (not a new ADR number,
+  matching the addendum convention already used for `ADR-0047`/`ADR-0058`). No FOUNDATION capability
+  beyond Panchanga and rise/set is authorized to begin implementation by this entry - each remaining one
+  (Rahu Kalam/Yamaganda/Gulika, civil-date rendering, H-01, H-02, boundary-proximity) needs its own
+  decision paper and/or ratification first, per `Q8_CLOSURE_MATRIX.md` s4's per-capability CEO-approval
+  requirement.
 
 Claude appends one entry here after every meaningful implementation task, using this template. Entries
 are append-only history, like `docs/DECISION_LOG.md`; do not edit a prior entry's substance - if a
@@ -510,6 +567,7 @@ act.
 
 | Version | Date | Change |
 |---|---|---|
+| 2.7.0 | 2026-08-19 | FOUNDATION checkpoint audit (read-only): independently re-verified HEAD/CI/register against `Q8_CLOSURE_MATRIX.md` s4; confirmed no remaining FOUNDATION capability besides Panchanga has satisfied prerequisites for implementation (Rahu Kalam/Yamaganda/Gulika, civil-date rendering, H-01, H-02, boundary-proximity all lack a governing ratified ADR/DP); confirmed the sole open item is Panchanga's per-capability CEO checkpoint acceptance. No code, no new ADR. |
 | 2.6.0 | 2026-08-19 | Committed (`4177d61`) and pushed the Gate F work; CI run `32242462766` green on all four jobs, oracle job confirmed Gate F genuinely executed (66 comparisons, 0 mismatches, negative control verified) under the hash-pinned environment; overlaid CI-sourced canonical evidence over the local one (differs only in the volatile `environment.python` field); added this task's entry with full CI evidence; refreshed the snapshot; flagged the remaining CEO checkpoint (formal per-capability acceptance). |
 | 2.5.0 | 2026-08-19 | `ADR-0059`: CEO approved building a genuine PyJHora external-oracle gate (Gate F) for `PANCHANGA_V1`'s tithi/yoga/karana; implemented, locally verified (66/66 comparisons, negative control verified), certifier moved to the CI `oracle` job; added this task's entry; refreshed the snapshot. Uncommitted; CI verification pending. |
 | 2.4.0 | 2026-08-19 | Panchanga production-certification checkpoint (audit only): corrected the prior 2.3.0 entry's stale "not yet committed" language now that the owner committed `ADR-0058` directly (`20a9589`); added this task's own entry recording one open CEO decision (Panchanga's missing external-oracle gate vs. `ADR-0054`'s ratified rise/set precedent); refreshed the snapshot to `20a9589`. |
