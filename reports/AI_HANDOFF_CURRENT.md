@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 2.7.0 |
+| Version | 2.8.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-19 (FOUNDATION checkpoint audit: no new implementation milestone currently authorized; Panchanga's per-capability CEO checkpoint is the sole open item) |
+| Last updated | 2026-08-19 (Panchanga FOUNDATION checkpoint accepted, ADR-0059 addendum; DP-011 identified as the next authorized decision-paper item) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,63 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-19 - Owner acceptance of Panchanga's FOUNDATION per-capability checkpoint (ADR-0059 addendum)
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits in the same commit as
+  the addendum it describes).
+- Previous approved commit: `cb9001f47252d12f62e890f6d0b1e1bb03754f95`
+- Task: owner-directed "record this narrow checkpoint acceptance as an ADR-0059 addendum" - the owner's
+  reply to the prior FOUNDATION checkpoint audit's stop-and-ask.
+- Relevant ADR/specification: `ADR-0059` addendum (new, no new ADR number); `Q8_CLOSURE_MATRIX.md` s4.
+- Files changed: `docs/DECISION_LOG.md` (new `### Evidence addendum to ADR-0059`, register header
+  updated, version 2.9.0 -> 3.0.0), this file. No source/calculation/certification code touched.
+- Implementation summary: the addendum records the owner's instruction as the act of ratification
+  (matching the `ADR-0052`/`ADR-0055` precedent of treating a direct owner reply as the ratifying
+  record), and states explicitly what it does and does not close: Panchanga's own per-capability
+  checkpoint is accepted; FOUNDATION's phase-exit criteria are NOT thereby met (Rahu Kalam/Yamaganda/
+  Gulika, H-01, H-02 remain outstanding).
+- Tests executed and results: none re-run - documentation-only, no code touched.
+- Certification executed and results: none applicable.
+- Known issues: none.
+- Unresolved questions: none raised by this entry.
+- CEO decision required: no - this entry implements the owner's own instruction.
+- Next authorized action: proceed to determine FOUNDATION's next decision-paper work item (see the
+  following entry).
+
+### 2026-08-19 - DP-011 drafted: Rahu Kalam/Yamaganda/Gulika variant-table source
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (committed with the ADR-0059 addendum
+  above).
+- Previous approved commit: see prior entry.
+- Task: per the owner's "continue automatically to determine the next decision-paper work item for
+  FOUNDATION... If drafting that decision paper is already authorized by the repository, proceed with
+  it" instruction.
+- Finding: of the FOUNDATION scope items not yet authorized (Rahu Kalam/Yamaganda/Gulika, civil-date
+  rendering, H-01, H-02, boundary-proximity - see the FOUNDATION checkpoint audit entry above), exactly
+  one already has explicit repository authorization to draft its decision paper: `ADR-0055` item 2 -
+  "this entry authorizes drafting a short `DP-NNN` options paper naming candidate source tables for
+  [Rahu Kalam/Yamaganda/Gulika], for separate, later owner ratification." No other remaining FOUNDATION
+  item has any such drafting authorization - civil-date rendering, H-01, and H-02 have no governing
+  ADR/DP at all, and H-02's own investigation methodology (`ADR-0020` D5) is itself still PROPOSED, not
+  ratified, so drafting a paper for any of those would require a fresh decision to even begin.
+- Files changed: `docs/decisions/README.md` (DP-011 registered before drafting, per `ADR-0040`; version
+  1.5.0 -> 1.6.0), `docs/decisions/DP-011-rahu-kalam-yamaganda-gulika-variant-tables.md` (new).
+- Implementation summary: `DP-011` presents four options (single common table; adopt PyJHora's own
+  convention; multiple named profile-selectable variants; defer to nearer Muhurta entry) and recommends
+  Option C (named, profile-selectable variants) seeded by Option B's PyJHora convention as the first
+  variant to verify, confidence medium. It explicitly does **not** assert any specific weekday-to-part
+  table as fact - this session has not inspected PyJHora's `rahu_kaalam`/`yamaganda_kaalam`/
+  `gulikai_kaalam` source (PyJHora is not installed on this Windows host), and general astrological
+  convention is not, on its own, a citable independent reference by this repository's own validation
+  rules. Implementation of any of the three remains **NOT authorized** - this paper decides nothing.
+- Tests executed and results: none applicable - documentation only.
+- Certification executed and results: none applicable.
+- Known issues: none.
+- Unresolved questions: the four options themselves - awaiting owner ratification of one.
+- CEO decision required: **YES** - which option (or a different one) to ratify for Rahu Kalam/
+  Yamaganda/Gulika before any implementation may begin. This is a genuine new-owner-decision boundary,
+  not something Claude may infer or select.
+- Next authorized action: none beyond drafting. Awaiting the owner's decision on `DP-011`, or a new
+  authorized task naming a different next step.
 
 ### 2026-08-19 - FOUNDATION checkpoint audit (read-only; no code, no new ADR)
 - Branch / commit SHA: `phase-g-governance`, `ce2475f0fbfba348783b829b5d0a2b24fa45ef12` - this entry is
@@ -567,6 +624,7 @@ act.
 
 | Version | Date | Change |
 |---|---|---|
+| 2.8.0 | 2026-08-19 | Owner accepted Panchanga's FOUNDATION per-capability checkpoint (`ADR-0059` addendum); identified `DP-011` (Rahu Kalam/Yamaganda/Gulika variant-table options) as the sole FOUNDATION decision-paper item already authorized to draft. |
 | 2.7.0 | 2026-08-19 | FOUNDATION checkpoint audit (read-only): independently re-verified HEAD/CI/register against `Q8_CLOSURE_MATRIX.md` s4; confirmed no remaining FOUNDATION capability besides Panchanga has satisfied prerequisites for implementation (Rahu Kalam/Yamaganda/Gulika, civil-date rendering, H-01, H-02, boundary-proximity all lack a governing ratified ADR/DP); confirmed the sole open item is Panchanga's per-capability CEO checkpoint acceptance. No code, no new ADR. |
 | 2.6.0 | 2026-08-19 | Committed (`4177d61`) and pushed the Gate F work; CI run `32242462766` green on all four jobs, oracle job confirmed Gate F genuinely executed (66 comparisons, 0 mismatches, negative control verified) under the hash-pinned environment; overlaid CI-sourced canonical evidence over the local one (differs only in the volatile `environment.python` field); added this task's entry with full CI evidence; refreshed the snapshot; flagged the remaining CEO checkpoint (formal per-capability acceptance). |
 | 2.5.0 | 2026-08-19 | `ADR-0059`: CEO approved building a genuine PyJHora external-oracle gate (Gate F) for `PANCHANGA_V1`'s tithi/yoga/karana; implemented, locally verified (66/66 comparisons, negative control verified), certifier moved to the CI `oracle` job; added this task's entry; refreshed the snapshot. Uncommitted; CI verification pending. |
