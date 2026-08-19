@@ -124,15 +124,16 @@ later task supersedes one, say so in the new entry.
   `hermetic-certification-evidence-3.11` (sha256 `43bbeaa0...`), `hermetic-certification-evidence-3.12`
   (sha256 `116e7007...`), `oracle-certification-evidence` (sha256 `04fb382f...`) downloaded and used as
   the source of the evidence committed here.
-- Known issues: none introduced. `695c387` has not yet been pushed to `origin` as of this entry -
-  pushing it will very likely produce a CI run whose drift-assertion steps now PASS (not yet directly
-  confirmed by a green CI run against `695c387`, since that requires the push).
-- Unresolved questions: none raised by this task.
+- Known issues: none. **CONFIRMED 2026-08-18 post-push:** `c16bf7f` (which carries `695c387`) was pushed
+  and CI run `32143067593` (head SHA `c16bf7f`) completed with all four jobs GREEN - governance gate,
+  oracle gate, and both no-oracle (3.11/3.12) legs, including every drift-assertion step ("43 evidence
+  file(s) identical to the committed version outside the volatile fields") and `KP_CHAIN_V1`/
+  `SIGN_CONVENTION_V1`/`RISE_SET_V1`/`PANCHANGA_V1`/`current_engine`'s own `RESULT: PASS`. Directly
+  observed, not inferred.
+- Unresolved questions: none.
 - CEO decision required: **NO.**
-- Next authorized action: push `695c387` to `origin/phase-g-governance` (not yet done - requires its
-  own push authorization per this repository's git-safety rules) and confirm the resulting CI run is
-  fully green, closing this follow-up with directly-observed evidence rather than inference. No new
-  FOUNDATION capability (Rahu Kalam, Yamaganda, Gulika, element transition timing, or any later phase)
+- Next authorized action: this follow-up is closed. No new FOUNDATION capability (Rahu Kalam,
+  Yamaganda, Gulika, element transition timing, or any later phase)
   is authorized by this entry.
 
 ### 2026-08-18 - CEO-audit HOLD remediation: ACE interaction mode and mandatory session-start audit
