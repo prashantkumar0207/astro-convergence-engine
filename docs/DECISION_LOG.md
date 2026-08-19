@@ -3,7 +3,7 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | ACTIVE REGISTER. **ACCEPTED (37): ADR-0001, ADR-0002, ADR-0005 through ADR-0012, ADR-0015, ADR-0016, ADR-0017, ADR-0033 through ADR-0037, ADR-0039 through ADR-0042, ADR-0044, ADR-0045, ADR-0046, ADR-0048 through ADR-0059**, owner-ratified across 2026-08-13, 2026-08-14, 2026-08-17, 2026-08-18 and 2026-08-19. **`ADR-0056` formalizes the four-role AI collaboration model (USER/CLAUDE/CHATGPT/CODEX); Codex is explicitly excluded from the ACE workflow. `ADR-0057` (CEO-audit HOLD remediation) adds ACE interaction mode and mandatory session-start audit to `specs/CLAUDE_WORKFLOW.md`. `ADR-0058` adds an execution-continuity rule (do not stop prematurely; five terminal stop conditions) to the same document; its `specs/CLAUDE_WORKFLOW.md` edit is committed (`20a9589e3d567bbf86e36b13bf2d61ca734e728e`). `ADR-0059` records the CEO-approved `PANCHANGA_V1` Gate F (genuine PyJHora external-oracle comparison for tithi/yoga/karana, nakshatra explicitly excluded): implemented and locally verified (66/66 comparisons, negative control verified) this session, but its files remain uncommitted/unpushed and CI has not yet confirmed it under the hash-pinned oracle environment.** Tier-0 is **FORMALLY LOCKED** (ADR-0034), the only s12 Locked artifact. The registry vargas and the sign conventions are **owner-ratified but NOT s12 Locked** (ADR-0035 D3, ADR-0036 D3). **Q8 is now CLOSED** (ADR-0048); **Phase G exited and FOUNDATION entry criteria were independently confirmed satisfied** (this session's evidence reports). **FOUNDATION's first work package, rise/set, is CERTIFIED (`ADR-0054`, `RISE_SET_V1`)**: five owner-ratified conventions (upper-limb disc, standard -50' refraction, elevation accounted for, structured NO_RISE/NO_SET, conventions in `CalculationProfile`/`BirthData`), zero calculation impact on any existing certified capability, two genuine defects found and fixed during its own construction (recorded in the entry). **Panchanga classification-only work (tithi/vara/nakshatra/yoga/karana at a given instant) is now authorised (`ADR-0055`)**: engine-wide 1e-10 promote-up boundary convention, vara consumes the certified rise/set layer, element transition-timing deferred. **Rahu Kalam/Yamaganda/Gulika remain NOT authorised pending a future DP-NNN variant-table ratification (`ADR-0055` item 2).** No later phase (Muhurta, Varshaphal, Prashna, Mundane, BTR, Interpretation, Convergence, UI, ML) is thereby authorised - `docs/Q8_CLOSURE_MATRIX.md` s4 requires its own per-capability checkpoint for each. **Still PROPOSED: ADR-0003, ADR-0004, ADR-0013, ADR-0014, ADR-0018 through ADR-0032, ADR-0038, and ADR-0047.** `ADR-0047`'s originally-reported G5 sample accounting (22/22 complete, 16 independent, 4 ADB_MATCH, 2 unresolved, 14 events) was briefly, and **erroneously**, corrected to "12/22 attempted" by a 2026-08-18 addendum that has since been found (owner-directed forensic reconciliation) to rest on a conflation of the 22-person sample with an unrelated 5-person bridging pilot; a second, later 2026-08-18 addendum **restores 22/22 as the authoritative state** (16 independent, 4 ADB_MATCH: Fichera/Aimar/Serantoni/Bobet, 2 unresolved: Veen/Perquier, 14 independent events) and marks the "12/22" addendum SUPERSEDED/RETRACTED, preserved unedited. `ADR-0047` remains PROPOSED, not ratified, throughout. Ratification is per-entry; an owner existing is not the register being ratified. Includes the ADR-0018 remote-CI evidence addendum (2026-08-11), the ADR-0047 "12/22" addendum (2026-08-18, now retracted), and the ADR-0047 restoration addendum (2026-08-18). |
+| Status | ACTIVE REGISTER. **ACCEPTED (37): ADR-0001, ADR-0002, ADR-0005 through ADR-0012, ADR-0015, ADR-0016, ADR-0017, ADR-0033 through ADR-0037, ADR-0039 through ADR-0042, ADR-0044, ADR-0045, ADR-0046, ADR-0048 through ADR-0059**, owner-ratified across 2026-08-13, 2026-08-14, 2026-08-17, 2026-08-18 and 2026-08-19. **`ADR-0056` formalizes the four-role AI collaboration model (USER/CLAUDE/CHATGPT/CODEX); Codex is explicitly excluded from the ACE workflow. `ADR-0057` (CEO-audit HOLD remediation) adds ACE interaction mode and mandatory session-start audit to `specs/CLAUDE_WORKFLOW.md`. `ADR-0058` adds an execution-continuity rule (do not stop prematurely; five terminal stop conditions) to the same document; its `specs/CLAUDE_WORKFLOW.md` edit is committed (`20a9589e3d567bbf86e36b13bf2d61ca734e728e`). `ADR-0059` records the CEO-approved `PANCHANGA_V1` Gate F (genuine PyJHora external-oracle comparison for tithi/yoga/karana, nakshatra explicitly excluded): implemented, committed (`4177d6108236e64d07f6b23499307001f0d7c421`), pushed, and **CI-confirmed green** (run `32242462766`, all four jobs, oracle job genuinely executing Gate F: 66 comparisons, 0 mismatches, negative control verified) under the hash-pinned oracle environment. A CEO checkpoint decision on formally accepting this as Panchanga's FOUNDATION per-capability checkpoint remains open (see `reports/AI_HANDOFF_CURRENT.md`).** Tier-0 is **FORMALLY LOCKED** (ADR-0034), the only s12 Locked artifact. The registry vargas and the sign conventions are **owner-ratified but NOT s12 Locked** (ADR-0035 D3, ADR-0036 D3). **Q8 is now CLOSED** (ADR-0048); **Phase G exited and FOUNDATION entry criteria were independently confirmed satisfied** (this session's evidence reports). **FOUNDATION's first work package, rise/set, is CERTIFIED (`ADR-0054`, `RISE_SET_V1`)**: five owner-ratified conventions (upper-limb disc, standard -50' refraction, elevation accounted for, structured NO_RISE/NO_SET, conventions in `CalculationProfile`/`BirthData`), zero calculation impact on any existing certified capability, two genuine defects found and fixed during its own construction (recorded in the entry). **Panchanga classification-only work (tithi/vara/nakshatra/yoga/karana at a given instant) is now authorised (`ADR-0055`)**: engine-wide 1e-10 promote-up boundary convention, vara consumes the certified rise/set layer, element transition-timing deferred. **Rahu Kalam/Yamaganda/Gulika remain NOT authorised pending a future DP-NNN variant-table ratification (`ADR-0055` item 2).** No later phase (Muhurta, Varshaphal, Prashna, Mundane, BTR, Interpretation, Convergence, UI, ML) is thereby authorised - `docs/Q8_CLOSURE_MATRIX.md` s4 requires its own per-capability checkpoint for each. **Still PROPOSED: ADR-0003, ADR-0004, ADR-0013, ADR-0014, ADR-0018 through ADR-0032, ADR-0038, and ADR-0047.** `ADR-0047`'s originally-reported G5 sample accounting (22/22 complete, 16 independent, 4 ADB_MATCH, 2 unresolved, 14 events) was briefly, and **erroneously**, corrected to "12/22 attempted" by a 2026-08-18 addendum that has since been found (owner-directed forensic reconciliation) to rest on a conflation of the 22-person sample with an unrelated 5-person bridging pilot; a second, later 2026-08-18 addendum **restores 22/22 as the authoritative state** (16 independent, 4 ADB_MATCH: Fichera/Aimar/Serantoni/Bobet, 2 unresolved: Veen/Perquier, 14 independent events) and marks the "12/22" addendum SUPERSEDED/RETRACTED, preserved unedited. `ADR-0047` remains PROPOSED, not ratified, throughout. Ratification is per-entry; an owner existing is not the register being ratified. Includes the ADR-0018 remote-CI evidence addendum (2026-08-11), the ADR-0047 "12/22" addendum (2026-08-18, now retracted), and the ADR-0047 restoration addendum (2026-08-18). |
 | Version | 2.9.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 | Last updated | 2026-08-19 |
@@ -2722,7 +2722,7 @@ the two gates added under ADR-0037.
 
 ---
 
-## ADR-0059 - CEO-approved PANCHANGA_V1 external-oracle gate (Gate F): implemented, locally verified, CI-verification pending
+## ADR-0059 - CEO-approved PANCHANGA_V1 external-oracle gate (Gate F): implemented and CI-confirmed
 
 - **Date:** 2026-08-19
 - **Status:** **ACCEPTED**, on the owner's explicit CEO-relayed instruction: "ACE EXECUTION CONTINUITY -
@@ -2789,14 +2789,18 @@ the two gates added under ADR-0037.
   unchanged; Gate F only adds an external comparison against them. Gates A-E's own evidence is unchanged
   (confirmed identical in this session's regenerated artifact). `python -m pytest -q` (778 passed) and
   `validate_panchanga_holdout.py` (24 cases, 90 comparisons, 0 mismatches) both re-run unaffected, since
-  neither imports `jhora`. **This entry's implementation is not yet pushed or CI-verified** - per the
-  session's explicit no-commit/no-push instruction, `docs/DECISION_LOG.md`, `.github/workflows/ci.yml`,
-  `scripts/certify_panchanga.py`, `certification/PANCHANGA_V1_certification.json`, and the two
-  `reports/certification/panchanga.*` files remain **uncommitted working-tree changes** as of this
-  entry. The prior checkpoint's open item (`reports/AI_HANDOFF_CURRENT.md`'s 2026-08-19 checkpoint entry)
-  is resolved by this decision and this implementation, but **remains evidentially incomplete until a
-  pushed commit's CI run confirms Gate F passes under the hash-pinned oracle environment** - only that
-  run, not this local one, is the evidence class `RISE_SET_V1`/`current_engine`/the varga oracle
+  neither imports `jhora`. **CI now confirmed:** committed `4177d6108236e64d07f6b23499307001f0d7c421`,
+  pushed, CI run `32242462766` green on all four jobs; the `oracle` job's own execution of
+  `certify_panchanga.py` (ninth runner) printed `F_external_oracle` with 66 comparisons, 0 mismatches,
+  negative control verified, under the hash-pinned environment (`PyJHora 4.8.7`, identity-verified
+  against `requirements-oracle.lock`); the drift-assertion step passed (43 evidence files identical
+  outside volatile fields). The canonical `certification/PANCHANGA_V1_certification.json` and its
+  `reports/certification/panchanga.*` companions were subsequently overlaid with the CI-sourced versions
+  (differing from this entry's original local-venv-sourced commit only in the volatile
+  `environment.python` field), matching the `ADR-0053`/`ADR-0054` precedent of preferring CI-sourced
+  canonical evidence. The prior checkpoint's open item (`reports/AI_HANDOFF_CURRENT.md`'s 2026-08-19
+  checkpoint entry) is now resolved **with CI evidence**, the same evidence class `RISE_SET_V1`/
+  `current_engine`/the varga oracle
   certifiers already rely on for their own committed claims.
 - **Evidence:** Owner/CEO instruction, 2026-08-19, verbatim title "ACE EXECUTION CONTINUITY - PANCHANGA
   PYJHORA EXTERNAL-ORACLE GATE," "CEO DECISION: APPROVED... Option (b)." Session-start audit: branch
@@ -2813,8 +2817,15 @@ the two gates added under ADR-0037.
   mismatches, negative control verified); regenerated `certification/PANCHANGA_V1_certification.json`
   and its report/console companions. `scripts/check_adr_numbering.py` - PASS, 58 -> 59 entries.
   `scripts/check_retired_identifiers.py`, `scripts/check_identifier_families.py` - PASS.
-  `git diff --check` - clean (CRLF-normalization warnings only). **CI run: none yet - this entry's
-  changes are uncommitted and unpushed as of this evidence block.**
+  `git diff --check` - clean (CRLF-normalization warnings only). **CI run `32242462766`**
+  (commit `4177d6108236e64d07f6b23499307001f0d7c421`,
+  `https://github.com/prashantkumar0207/astro-convergence-engine/actions/runs/32242462766`) - all four
+  jobs green: governance (10s), no-oracle 3.11 (2m14s, `certify_panchanga.py` correctly absent,
+  `validate_panchanga_holdout.py` PASS), no-oracle 3.12 (2m41s, same shape), oracle (52s, environment
+  identity verified - python 3.11, PyJHora 4.8.7, 35 packages matching the lock, 3 ephemeris assets
+  matching checksums - `certify_panchanga.py` ran ninth and last, `F_external_oracle` genuinely executed
+  with 66 comparisons/0 mismatches/negative control verified, drift-assertion PASS on 43 evidence files).
+  Directly observed via `gh run view`/`gh run download`, not inferred.
 
 ---
 
