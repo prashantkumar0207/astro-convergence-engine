@@ -1,9 +1,9 @@
 | Field | Value |
 |---|---|
-| Status | **ACCEPTED - ratified as the ACE agent-workflow specification, `ADR-0016`/`ADR-0051` (owner-ratified 2026-08-17).** Subordinate to the `ADR-0042` authority hierarchy (`PROJECT CONSTITUTION` -> `ENGINEERING CONSTITUTION` -> `DECISION LOG / ADR` -> ... -> `SPECIFICATIONS`); MUST NOT be read as an independent source of authority capable of overriding the Constitution or an accepted ADR. Original substantive content (the six-step per-tier workflow) is unedited by ratification; `ADR-0057` added the two new sections below it (interaction mode, session-start audit) as a narrow CEO-audit remediation - see their own note. |
-| Version | 1.2.0 |
+| Status | **ACCEPTED - ratified as the ACE agent-workflow specification, `ADR-0016`/`ADR-0051` (owner-ratified 2026-08-17).** Subordinate to the `ADR-0042` authority hierarchy (`PROJECT CONSTITUTION` -> `ENGINEERING CONSTITUTION` -> `DECISION LOG / ADR` -> ... -> `SPECIFICATIONS`); MUST NOT be read as an independent source of authority capable of overriding the Constitution or an accepted ADR. Original substantive content (the six-step per-tier workflow) is unedited by ratification; `ADR-0057` added the interaction-mode/session-start-audit sections; `ADR-0058` added "Execution continuity" below it - both narrow, additive remediations, see their own notes. |
+| Version | 1.3.0 |
 | Owner | TBD (docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-18 |
+| Last updated | 2026-08-19 |
 | Review cadence | TBD |
 
 # Claude Implementation Workflow
@@ -58,9 +58,40 @@ of a `DRAFT`/`PROPOSED` document is not itself authorization; re-verify against 
 before treating anything as settled, per `CLAUDE.md`'s "Before modifying anything" section, which this
 codifies as a permanent, shared rule rather than tooling-specific habit.
 
+## Execution continuity (`ADR-0058`): do not stop prematurely
+
+For ACE tasks, do not stop after giving an analysis, recommendation, partial result, or list of possible
+next actions. Continue executing the authorized workflow step by step until one of these five terminal
+conditions actually occurs:
+
+1. **USER INPUT REQUIRED** - a genuine decision, approval, credential, file, command output, or other
+   user action is needed and nothing else can substitute for it.
+2. **CLAUDE INPUT REQUIRED** - the next step is implementation/research/execution ChatGPT cannot itself
+   perform. Give Claude the complete next execution instruction (repository context, objective,
+   constraints, required checks, expected output, and the handoff-update requirement), not merely a
+   description of what should happen. If the next step is already obvious from repository governance
+   and the current authorized milestone, issue it - do not stop to ask "what next?" first.
+3. **BLOCKED** - a genuine external/environmental limitation prevents progress (a missing credential, an
+   unreachable service, a platform limitation already documented elsewhere in this repository). State
+   the precise blocker and the exact unblock action; do not re-explain a blocker already stated.
+4. **CEO APPROVAL REQUIRED** - a governance or certification checkpoint requires explicit user/CEO
+   approval under existing rules (`docs/PROJECT_CONSTITUTION.md` s11 rule (a); `.claude/rules/*.md`).
+5. **TASK COMPLETE** - all authorized work and its required verification are actually finished.
+
+Outside those five, do not stop. Never end a response with "you should do X" when X can instead be
+issued as the next executable instruction. Never re-ask for confirmation of a step already authorized.
+Never restart or re-explain completed work unless resolving an actual contradiction requires it. Every
+iteration must materially advance the current milestone, not repeat established context.
+
+This section governs response *behaviour* (when to stop vs. continue); it does not itself authorize any
+work that repository governance has not already authorized, and it does not weaken `docs/
+PROJECT_CONSTITUTION.md` s11 rule (a) - the owner still ratifies all decisions, and condition 4 above is
+not overridden by the general "keep going" instruction.
+
 ## Change history
 | Version | Date | Change |
 |---|---|---|
+| 1.3.0 | 2026-08-19 | `ADR-0058` (narrow governance remediation): added "Execution continuity (do not stop prematurely)" - the five terminal stop conditions (user input, Claude input with a complete next instruction, genuine blocker, CEO approval checkpoint, task complete) and the "convert 'you should do X' into the next executable instruction" rule. Explicitly does not override s11 rule (a) (owner ratifies all decisions) or any existing approval checkpoint. Prior sections unedited. |
 | 1.2.0 | 2026-08-18 | `ADR-0057` (narrow CEO-audit remediation): added "ACE interaction mode" (ChatGPT execution/audit-first response mode) and "Session-start audit (mandatory)" (the shared branch/HEAD/working-tree/spec/handoff/decision/open-questions checklist, binding both AI collaborators, not only Claude's own tooling habit). Original six-step per-tier workflow and its "two AI systems agreeing is not evidence" line are unedited. |
 | 1.1.0 | 2026-08-17 | `ADR-0051`: owner-ratified as the ACE agent-workflow specification, subordinate to the `ADR-0042` hierarchy. Substantive content unchanged. |
 | 1.0.0 | 2026-08-17 | G7 documentation repair (`docs/Q8_CLOSURE_MATRIX.md` s3): added the mandatory status header required by `docs/DOCUMENTATION_STANDARD.md` s2, previously missing entirely. Substantive content unchanged. |

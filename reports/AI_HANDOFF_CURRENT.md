@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 2.2.0 |
+| Version | 2.3.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-18 (refreshed after Panchanga CI evidence recovery, commit 695c387) |
+| Last updated | 2026-08-19 (ADR-0058 drafted; specs/CLAUDE_WORKFLOW.md edit pending commit authorization) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -88,6 +88,44 @@ later task supersedes one, say so in the new entry.
 - CEO decision required: <yes/no, and exactly what if yes>
 - Next authorized action: <what Claude may do next without re-asking>
 ```
+
+### 2026-08-19 - Execution continuity rule drafted (ADR-0058) - NOT YET COMMITTED
+- Branch / commit SHA: `phase-g-governance`, working tree only - **no commit made**, per this task's own
+  explicit "do NOT commit or push unless explicitly authorized by the USER."
+- Previous approved commit: `300e6267a2738b160e140e502a8765ec1711935a`
+- Task: owner-directed "ACE EXECUTION - PERSIST EXECUTION CONTINUITY GOVERNANCE" - add a permanent rule
+  that ACE work continues past analysis/recommendation/partial-result stopping points until one of five
+  terminal conditions (user input required, Claude input required with a complete instruction, blocked,
+  CEO approval required, task complete) actually occurs.
+- Relevant ADR/specification: `ADR-0058` (drafted, see status note - ACCEPTED in substance per the
+  owner's direct instruction, but its file edit is uncommitted); `specs/CLAUDE_WORKFLOW.md` (new
+  "Execution continuity" section, placed after `ADR-0057`'s sections).
+- Files changed (working tree, uncommitted): `specs/CLAUDE_WORKFLOW.md` (1.2.0 -> 1.3.0),
+  `docs/DECISION_LOG.md` (new `ADR-0058`, register header updated), `reports/AI_HANDOFF_CURRENT.md`
+  (this entry).
+- Implementation summary: new "Execution continuity (do not stop prematurely)" section added to
+  `specs/CLAUDE_WORKFLOW.md`, same document `ADR-0057` used for the same class of procedural rule.
+  States the five terminal stop conditions verbatim in substance, the "convert 'you should do X' into
+  the next instruction" rule, and an explicit non-override clause: this rule governs response
+  behaviour only, does not authorize anything governance hasn't already authorized, and does not
+  weaken `docs/PROJECT_CONSTITUTION.md` s11 rule (a) (owner ratifies all decisions) - a CEO-approval
+  checkpoint is not overridden by "keep going." `docs/PROJECT_CONSTITUTION.md` s11 and `ADR-0056`/
+  `ADR-0057` not reopened.
+- Tests executed and results: `python -m pytest -q` - see this task's execution report for the exact
+  count; `scripts/check_adr_numbering.py`, `scripts/check_retired_identifiers.py`,
+  `scripts/check_identifier_families.py` - run against the working tree (uncommitted state);
+  `git diff --check` - run against the working tree.
+- Certification executed and results: none applicable - governance/documentation only, no certified
+  capability, gate, threshold, or evidence file touched.
+- Known issues: none.
+- Unresolved questions: none raised by this task.
+- CEO decision required: **the commit itself.** ADR-0058 is recorded as the owner's ratifying
+  instruction, but per that same instruction's item 10, the working-tree change is not persisted to a
+  commit until the owner explicitly authorizes it.
+- Next authorized action: on explicit owner authorization, stage and commit exactly the three files
+  listed above (nothing else) on `phase-g-governance`, then report the resulting commit SHA and update
+  this entry's "Branch / commit SHA" field accordingly. Until then, no further action is authorized by
+  this entry.
 
 ### 2026-08-18 - Panchanga CI evidence recovery (KP_CHAIN/SIGN_CONVENTION/RISE_SET/PANCHANGA + oracle-tier)
 - Branch / commit SHA: `phase-g-governance`, `695c387564cbd55e0908a730cc8b94f36ae41659`
@@ -238,6 +276,7 @@ act.
 
 | Version | Date | Change |
 |---|---|---|
+| 2.3.0 | 2026-08-19 | `ADR-0058` drafted (execution continuity rule): added this task's "Task handoff log" entry recording an **uncommitted** working-tree change pending explicit owner commit authorization. Snapshot section not refreshed (no new commit exists yet to refresh it to). |
 | 2.2.0 | 2026-08-18 | Panchanga CI evidence recovery: added this task's "Task handoff log" entry; refreshed the snapshot to `695c387`. Structure/status from 2.0.0 unchanged. |
 | 2.1.0 | 2026-08-18 | `ADR-0057` (CEO-audit HOLD remediation): added this task's "Task handoff log" entry; refreshed the snapshot to `00319b7` (on top of `f885693`). "INDEX ONLY" status and role-model/task-log structure from 2.0.0 unchanged - this entry is itself an application of that discipline, not a structural change to it. |
 | 2.0.0 | 2026-08-18 | `ADR-0056`: added the "Role model" section and the structured, templated "Task handoff log" section (this file is now explicitly the canonical Claude->ChatGPT handoff, not merely a snapshot index); refreshed the stale 2026-08-17 snapshot to `f885693` (FOUNDATION rise/set certified, Panchanga classification implemented and locally certified, `ADR-0047` G5 restoration, this entry itself). |
