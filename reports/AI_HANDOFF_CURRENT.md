@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 4.2.0 |
+| Version | 4.3.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-20 (ADR-0064: DP-013 Option C ratified and executed - H-02 reproduced for the Sun, PyJHora recorded as a limitation; push authorization pending) |
+| Last updated | 2026-08-20 (pushed and CI-confirmed green, run 32375941348: H-02 reproduction complete under the hash-pinned oracle environment; choosing a fix option is the sole open item) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -117,9 +117,15 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
   per the owner's own instruction.
 - CEO decision required: no, for this entry itself (implements the owner's own instruction). A future
   decision is needed to choose a fix option, if any.
-- Next authorized action: push (needs its own authorization), then monitor CI specifically for the two
-  new steps executing and their evidence artifacts uploading, then update both state files to
-  CI-confirmed.
+- Next authorized action: none self-authorized. **Post-push update:** commit `f3399f3` was pushed and CI
+  run `32375941348` completed with all four jobs green. Both new steps confirmed genuinely executed from
+  the CI log directly (not merely "job succeeded"): the hermetic-job "H-02 independent-reference
+  reproduction" step printed the identical Sun 12/2, Moon 34/15 result; the oracle-job "H-02 PyJHora
+  reliability investigation" step printed the identical precision-convergence table (0.1/0.01/0.001
+  converge to `jd=2460414.14308969`; 0.0001 TIMEOUT at 45.05s) and longitude bias (20.57 arcsec,
+  205,697x) - now under the hash-pinned environment, matching the local exploration-venv findings
+  exactly. H-02's reproduction methodology is complete and CI-confirmed. The next action is an owner
+  decision: choose one of the three original fix options (or defer H-02), not self-executable.
 
 ### 2026-08-20 - DP-013 decision-readiness audit: reproduction options, evidence, trade-offs, recommendation
 - Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the audit).
@@ -1154,6 +1160,7 @@ act.
 
 | Version | Date | Change |
 |---|---|---|
+| 4.3.0 | 2026-08-20 | Pushed `f3399f3`; CI run `32375941348` all four jobs green, both H-02 steps confirmed genuinely executed under the hash-pinned oracle environment with results identical to the local runs. H-02 reproduction complete; choosing a fix option is the sole remaining, non-blocking item. |
 | 4.2.0 | 2026-08-20 | `ADR-0064`: `DP-013` Option C ratified and executed. H-02 independently reproduced for the Sun (2/12, exact match to the original audit); Moon 15/34 (44%, comparable). PyJHora recorded as an evidenced limitation (search diverges/times out at 0.0001deg; direct longitude carries a 20.57 arcsec bias, ~206,000x the defect's scale) rather than manufactured agreement. New tests (8), negative controls, independent validator, non-gating CI wiring. No fix chosen; TRANSIT_V1 unmodified. Push authorization pending. |
 | 4.1.0 | 2026-08-20 | `DP-013` decision-readiness audit: re-verified the 278x tolerance mismatch against live code (unchanged); directly inspected PyJHora's source and confirmed Option B's API is real but its default precision is ~4 orders of magnitude too coarse. Full options/evidence/trade-offs/recommendation laid out in this file for CEO ratification. Nothing decided, nothing implemented. |
 | 4.0.0 | 2026-08-20 | `DP-013` drafted and registered: H-02 ingress-classification seam, extracting `ADR-0020` D5's already-written analysis (verified against the original `reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md` finding directly). 3 reproduction-methodology options, 3 preserved fix options (not recommended among). `ADR-0020` not ratified, H-02 not resolved. |
