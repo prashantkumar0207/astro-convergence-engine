@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | **ACCEPTED (`ADR-0062`) - canonical, machine-checkable current-state record.** Regenerate/refresh on every meaningful implementation task, same discipline as `reports/AI_HANDOFF_CURRENT.md`. |
-| Version | 1.5.0 |
+| Version | 1.6.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-20 (TRIKALAM_V1 FOUNDATION checkpoint accepted; milestone moved to civil-date rendering, DP-012 drafted and awaiting ratification) |
+| Last updated | 2026-08-20 (pushed and CI-confirmed green, run 32366108630; DP-012 is the sole standing, non-blocking open item) |
 | Review cadence | Refresh at the start of a session if stale; not load-bearing if it isn't. |
 
 # ACE execution state
@@ -48,16 +48,16 @@ independently is in these fields plus the pointers they name.
 | `TASK_OWNER` | CLAUDE (`TRIKALAM_V1` checkpoint recorded, `DP-012` drafted); USER (ratify `DP-012`, or name a different next task). |
 | `STATUS` | `TRIKALAM_V1` is done: implemented, CI-confirmed, CEO-audit ULP finding remediated and CI-confirmed, FOUNDATION checkpoint accepted. FOUNDATION's next tractable item, civil-date rendering for dasha boundaries, has a decision paper drafted (`DP-012`) presenting genuine open questions (DST fold/gap handling at arbitrary derived instants, pre-1900 `tzdata` coverage, rendering granularity) - not yet ratified, so not yet implemented. |
 | `LAST_COMPLETED_ACTION` | Third `ADR-0061` evidence addendum recording owner acceptance of `TRIKALAM_V1`'s FOUNDATION checkpoint; `DP-012` drafted and registered (`docs/decisions/README.md`). |
-| `LAST_COMMIT` | Local HEAD - see `git rev-parse HEAD`, made after this file was drafted; not yet pushed. `origin/phase-g-governance` remains at `1423a4bb2aa824115fa1bb7e826d9ac6a96739b6`. |
-| `LAST_CI_RUN` | `32361308330` (commit `8e6bb40`) - all four jobs green; unchanged by this documentation-only task. |
+| `LAST_COMMIT` | `42d61c3f13dd8a567ce9e4a257f3e4fb4f67b666` - pushed; `origin/phase-g-governance` identical. |
+| `LAST_CI_RUN` | `32366108630` (commit `42d61c3`) - **all four jobs green**, directly confirmed via `gh run view`. |
 | `LAST_CEO_DECISION` | "ACE CONTINUE - CEO CHECKPOINT ACCEPTED" (2026-08-20): the owner explicitly accepted `TRIKALAM_V1`'s FOUNDATION per-capability checkpoint. |
-| `NEXT_AUTHORIZED_ACTION` | On explicit USER push authorization: push local HEAD. Separately: on `DP-012` ratification, the next Claude action is implementing civil-date rendering per whichever option is ratified, following the established varga/rise-set certification template. |
-| `WAITING_FOR` | USER: push authorization for this commit, and (independently) a ratification decision on `DP-012` if civil-date rendering is to proceed. |
-| `BLOCKER` | None technical. Push needs its own per-action confirmation; `DP-012` implementation is blocked on ratification by design, not by any technical limitation. |
-| `CEO_APPROVAL_REQUIRED` | **YES** - push authorization for this commit. `DP-012`'s ratification is a separate, not-yet-requested decision (the owner may defer it, per the paper's own Option C). |
-| `CLAUDE_ACTION_REQUIRED` | None until push is authorized or `DP-012` is ratified. |
+| `NEXT_AUTHORIZED_ACTION` | None self-executable. On `DP-012` ratification, the next Claude action is implementing civil-date rendering per whichever option is ratified, following the established varga/rise-set certification template. |
+| `WAITING_FOR` | USER: a ratification decision on `DP-012` if civil-date rendering is to proceed (not blocking - may be deferred per the paper's own Option C). |
+| `BLOCKER` | None. `DP-012` implementation is blocked on ratification by design, not by any technical limitation. |
+| `CEO_APPROVAL_REQUIRED` | Not immediately - nothing is queued needing approval right now. `DP-012`'s ratification is a standing, non-blocking open item whenever the owner chooses to act on it. |
+| `CLAUDE_ACTION_REQUIRED` | None until `DP-012` is ratified or a different task is named. |
 | `CHATGPT_ACTION_REQUIRED` | Independent audit of `TRIKALAM_V1`'s full evidence trail and `DP-012`'s options is available now via the standard Git -> state-file path - no report relay needed. |
-| `USER_ACTION_REQUIRED` | Authorize the push, and separately, ratify `DP-012` (or defer it) whenever convenient - it does not block anything else. |
+| `USER_ACTION_REQUIRED` | Ratify `DP-012` (or defer it) whenever convenient - it does not block anything else. |
 | `HANDOFF_REQUIRED` | None beyond this file and `reports/AI_HANDOFF_CURRENT.md`'s latest entry - both already current as of this file's `Last updated` date. |
 
 ## How to independently verify every field above
@@ -78,6 +78,7 @@ exactly as `reports/AI_HANDOFF_CURRENT.md` already requires of itself.
 
 | Version | Date | Change |
 |---|---|---|
+| 1.6.0 | 2026-08-20 | Pushed `42d61c3`; CI run `32366108630` all four jobs green. Nothing left requiring immediate CEO approval; `DP-012` ratification is the sole standing, non-blocking open item. |
 | 1.5.0 | 2026-08-20 | Owner accepted `TRIKALAM_V1`'s FOUNDATION checkpoint (third `ADR-0061` addendum) - it is now production-certified. `CURRENT_MILESTONE` moved to civil-date rendering for dasha boundaries; `DP-012` drafted and registered presenting its genuine open questions (DST fold/gap at derived instants, pre-1900 tzdata coverage, rendering granularity); implementation not authorized pending ratification. |
 | 1.4.0 | 2026-08-20 | Pushed `8e6bb40`; CI run `32361308330` - all four jobs green, oracle-job log confirms the ULP battery genuinely executed (`ulp_boundary_checked: True, ulp_negative_control_verified: True`). CEO-audit finding closed. Refreshed all fields to present the FOUNDATION checkpoint decision as the sole open item. |
 | 1.3.0 | 2026-08-20 | CEO audit found `TRIKALAM_V1`'s Gate C was a pinning/tolerance check, not a genuine ULP battery - verified independently, remediated (exact-sunrise-boundary ULP battery with negative control), all six gates re-verified locally (PASS). Awaiting push authorization for CI re-confirmation. |
