@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | **ACCEPTED (`ADR-0062`) - canonical, machine-checkable current-state record.** Regenerate/refresh on every meaningful implementation task, same discipline as `reports/AI_HANDOFF_CURRENT.md`. |
-| Version | 1.7.0 |
+| Version | 1.8.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-20 (DP-012 strengthened with an empirical tzdata/LMT finding; still awaiting ratification, the sole standing non-blocking item) |
+| Last updated | 2026-08-20 (pushed and CI-confirmed green, run 32367342027; DP-012 ratification is the sole standing, non-blocking open item) |
 | Review cadence | Refresh at the start of a session if stale; not load-bearing if it isn't. |
 
 # ACE execution state
@@ -48,8 +48,8 @@ independently is in these fields plus the pointers they name.
 | `TASK_OWNER` | CLAUDE (`TRIKALAM_V1` checkpoint recorded, `DP-012` drafted); USER (ratify `DP-012`, or name a different next task). |
 | `STATUS` | `TRIKALAM_V1` is done: implemented, CI-confirmed, CEO-audit ULP finding remediated and CI-confirmed, FOUNDATION checkpoint accepted. FOUNDATION's next tractable item, civil-date rendering for dasha boundaries, has a decision paper drafted and strengthened (`DP-012` v1.1.0) with an empirical `zoneinfo`/`tzdata` probe against `RISE_SET_V1`'s own holdout - confirmed pre-standardization dates (e.g. `Europe/London` 1823) resolve to genuine Local Mean Time, a real labelled-vs-unlabelled distinction the ratified option must address. Research only, no implementation - not yet ratified. |
 | `LAST_COMPLETED_ACTION` | Third `ADR-0061` evidence addendum recording owner acceptance of `TRIKALAM_V1`'s FOUNDATION checkpoint; `DP-012` drafted and registered (`docs/decisions/README.md`). |
-| `LAST_COMMIT` | `42d61c3f13dd8a567ce9e4a257f3e4fb4f67b666` - pushed; `origin/phase-g-governance` identical. |
-| `LAST_CI_RUN` | `32366108630` (commit `42d61c3`) - **all four jobs green**, directly confirmed via `gh run view`. |
+| `LAST_COMMIT` | `eb79b7f1c0683bc7107335a2ae63fb89e0950397` - pushed; `origin/phase-g-governance` identical. |
+| `LAST_CI_RUN` | `32367342027` (commit `eb79b7f`) - **all four jobs green**, directly confirmed via `gh run view`. |
 | `LAST_CEO_DECISION` | "ACE CONTINUE - CEO CHECKPOINT ACCEPTED" (2026-08-20): the owner explicitly accepted `TRIKALAM_V1`'s FOUNDATION per-capability checkpoint. |
 | `NEXT_AUTHORIZED_ACTION` | None self-executable. On `DP-012` ratification, the next Claude action is implementing civil-date rendering per whichever option is ratified, following the established varga/rise-set certification template. |
 | `WAITING_FOR` | USER: a ratification decision on `DP-012` if civil-date rendering is to proceed (not blocking - may be deferred per the paper's own Option C). |
@@ -78,6 +78,7 @@ exactly as `reports/AI_HANDOFF_CURRENT.md` already requires of itself.
 
 | Version | Date | Change |
 |---|---|---|
+| 1.8.0 | 2026-08-20 | Pushed `eb79b7f`; CI run `32367342027` all four jobs green. Repository fully synced with origin, nothing outstanding except `DP-012` ratification (non-blocking). |
 | 1.7.0 | 2026-08-20 | Independently advanced `DP-012` without deciding or implementing anything: empirically probed `zoneinfo`/`tzdata` against `RISE_SET_V1`'s own holdout dates, confirmed pre-standardization instants resolve to genuine Local Mean Time (not approximation), and folded this into the paper's options and s5 sub-decisions. |
 | 1.6.0 | 2026-08-20 | Pushed `42d61c3`; CI run `32366108630` all four jobs green. Nothing left requiring immediate CEO approval; `DP-012` ratification is the sole standing, non-blocking open item. |
 | 1.5.0 | 2026-08-20 | Owner accepted `TRIKALAM_V1`'s FOUNDATION checkpoint (third `ADR-0061` addendum) - it is now production-certified. `CURRENT_MILESTONE` moved to civil-date rendering for dasha boundaries; `DP-012` drafted and registered presenting its genuine open questions (DST fold/gap at derived instants, pre-1900 tzdata coverage, rendering granularity); implementation not authorized pending ratification. |
