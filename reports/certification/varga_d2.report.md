@@ -5,14 +5,14 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 
 - Decision entry: ADR-0011
 - Supersedes provisional identifier: ADR-VARGA-D2-001
-- Date: 2026-08-18
+- Date: 2026-08-20
 - Scope: D2 Hora (Traditional Parashara): two-sign output space, Leo and Cancer only
 - Result: **PASS**
 
 ## Preconditions
 
 - Data assets verified against CHECKSUMS.sha256: 3
-- Anti-fitting scan: 177 production modules, 0 findings
+- Anti-fitting scan: 180 production modules, 0 findings
 
 ## Gates
 

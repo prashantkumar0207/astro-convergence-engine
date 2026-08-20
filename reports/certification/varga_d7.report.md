@@ -5,14 +5,14 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 
 - Decision entry: ADR-0011
 - Supersedes provisional identifier: ADR-VARGA-D7-001
-- Date: 2026-08-18
+- Date: 2026-08-20
 - Scope: D7 Saptamsa (Parashara variant): first non-identity start table on the cyclic path
 - Result: **PASS**
 
 ## Preconditions
 
 - Data assets verified against CHECKSUMS.sha256: 3
-- Anti-fitting scan: 177 production modules, 0 findings
+- Anti-fitting scan: 180 production modules, 0 findings
 
 ## Gates
 

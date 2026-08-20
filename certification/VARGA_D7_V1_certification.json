@@ -2,7 +2,7 @@
  "schema": "varga_d7_v1_certification",
  "adr": "ADR-0011",
  "supersedes_provisional_id": "ADR-VARGA-D7-001",
- "date": "2026-08-18",
+ "date": "2026-08-20",
  "scope": "D7 Saptamsa (Parashara variant): first non-identity start table on the cyclic path",
  "rule": {
   "kind": "CyclicVargaRule",
@@ -81,7 +81,7 @@
    }
   },
   "anti_fitting": {
-   "modules_scanned": 177,
+   "modules_scanned": 180,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."

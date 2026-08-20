@@ -1,7 +1,7 @@
 {
  "schema": "transit_v1_certification",
  "adr": "ADR-0008",
- "date": "2026-08-18",
+ "date": "2026-08-20",
  "scope": "longitude-crossing primitive; sign/nakshatra ingresses; returns; natal conjunctions; natal-relative view",
  "decisions": {
   "TR-A": "event-time guarantee 1e-6 day; bisection bracket 1e-9 day",
@@ -264,7 +264,7 @@
    }
   },
   "anti_fitting": {
-   "modules_scanned": 177,
+   "modules_scanned": 180,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."
