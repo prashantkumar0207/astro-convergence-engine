@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 3.4.0 |
+| Version | 3.5.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-20 (CEO-audit HOLD on TRIKALAM_V1's missing ULP battery remediated and locally verified; push authorization pending - see docs/ACE_EXECUTION_STATE.md) |
+| Last updated | 2026-08-20 (ULP-battery remediation pushed and CI-confirmed green, run 32361308330; FOUNDATION checkpoint decision is the sole open item - see docs/ACE_EXECUTION_STATE.md) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,31 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-20 - ULP-battery remediation pushed and CI-confirmed green; FOUNDATION checkpoint re-presented
+- Branch / commit SHA: `phase-g-governance`, `8e6bb40567512dd8680c1c567be73310fc235aa2` - pushed,
+  confirmed identical to `origin/phase-g-governance`.
+- Previous approved commit: `bf0d4140e239fa52200011698b2b132aa1460145`.
+- Task: owner "authorised" - pushed the ULP-battery remediation commit, monitored the resulting CI run.
+- Relevant ADR/specification: `ADR-0061` (register header updated with CI confirmation).
+- Files changed: `docs/DECISION_LOG.md` (register header), `docs/ACE_EXECUTION_STATE.md` (refreshed to
+  the CI-confirmed state), this file. No code.
+- Implementation summary: `git push` succeeded (`bf0d414..8e6bb40`). CI run `32361308330` completed with
+  **all four jobs green**. Did not stop at "conclusion: success" alone - pulled the oracle job's own log
+  and confirmed the line `C_boundary_ulp_and_circumpolar: {... 'ulp_boundary_checked': True,
+  'ulp_negative_control_verified': True ...}` was actually printed, i.e. the remediated gate genuinely
+  executed under the hash-pinned oracle environment, not merely that the job exited 0.
+- Tests executed and results: none re-run (no code changed; CI's own run is the evidence).
+- Certification executed and results: `TRIKALAM_V1` - PASS, all six gates, CI-confirmed, remediated
+  Gate C verified executed from the log directly.
+- Known issues: none. The CEO-audit HOLD finding on the missing ULP battery is closed.
+- Unresolved questions / CEO decision required: **YES - the same standing question, now on cleaner
+  evidence.** Does `TRIKALAM_V1` meet `Q8_CLOSURE_MATRIX.md` s4's per-capability FOUNDATION checkpoint,
+  with the ULP-battery gap closed and CI-confirmed? Not self-certified here.
+- CEO decision required: **the FOUNDATION per-capability checkpoint acceptance for `TRIKALAM_V1`.**
+- Next authorized action: on acceptance, a narrow `ADR-0061`-addendum entry recording it, then a fresh
+  audit of remaining FOUNDATION scope (civil-date rendering, H-01, H-02 all still lack a ratified
+  decision paper). If the owner names a different next task, that task governs.
 
 ### 2026-08-20 - CEO-audit HOLD remediated: genuine ULP battery added to TRIKALAM_V1 Gate C
 - Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the remediation).
@@ -846,6 +871,7 @@ act.
 
 | Version | Date | Change |
 |---|---|---|
+| 3.5.0 | 2026-08-20 | Pushed `8e6bb40`; CI run `32361308330` all four jobs green, ULP battery confirmed genuinely executed from the oracle-job log directly. CEO-audit HOLD finding closed. FOUNDATION per-capability checkpoint re-presented as the sole open decision. |
 | 3.4.0 | 2026-08-20 | CEO audit: `TRIKALAM_V1` Gate C lacked a genuine ULP battery (verified independently, finding correct). Remediated: exact-sunrise-boundary ULP test + negative control. All six gates re-verified locally (PASS), 801/801 pytest. Push authorization pending for CI re-confirmation. |
 | 3.3.0 | 2026-08-20 | Confirmed `bf0d414` pushed and CI run `32358109807` fully green (all four jobs). `TRIKALAM_V1` is CI-confirmed. Presented the FOUNDATION per-capability checkpoint as the sole open owner decision, not self-certified. |
 | 3.2.0 | 2026-08-20 | Pushed `3487add`; CI run `32353401132` confirmed `TRIKALAM_V1`'s Gate F genuinely PASSED under the hash-pinned oracle environment. Same run's drift-assertion steps failed on the expected M-03 177->180 field; recovered via CI-sourced overlay in commit `9e33490` (not yet pushed). |
