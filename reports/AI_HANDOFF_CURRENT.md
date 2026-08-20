@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 2.9.0 |
+| Version | 3.0.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-20 (DP-011 ratified, ADR-0060; PyJHora trikalam convention frozen; implementation in progress) |
+| Last updated | 2026-08-20 (ADR-0061: TRIKALAM_V1 implemented, all six gates locally verified in an unpinned exploration venv; commit/push authorization is the next open item) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -93,6 +93,53 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - Next authorized action: proceed to implement, test, and certify `PYJHORA_TRIKALAM_V1` per `ADR-0060`'s
   Consequences (new `engine.astrology.trikalam` module, tests, certifier, validator, CI wiring) - see the
   next task-log entry.
+
+### 2026-08-20 - TRIKALAM_V1 implemented, all six gates locally verified (ADR-0061), CI pending
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with `ADR-0061`).
+- Previous approved commit: `bad5b04936d9bd00ea8daf7e67d18a9bc6457d4b`
+- Task: continuation of `ADR-0060`'s authorized variant-definition/certification work, per the owner's
+  "continue execution automatically" instruction.
+- Relevant ADR/specification: `ADR-0061` (new); `ADR-0060` (authorization); `ADR-0054`/`ADR-0059`
+  (isolated-exploration-venv and oracle-provenance precedent this entry reuses exactly).
+- Files changed: `engine/astrology/trikalam.py` (new), `engine/tests/test_trikalam.py` (new, 21 tests),
+  `validate_trikalam_holdout.py` (new), `scripts/certify_trikalam.py` (new), `scripts/
+  certification_support.py` (M-03 scan surface 14/13 -> 15/14), `engine/tests/
+  test_certification_preconditions.py` (matching counts; `modules_scanned` floor 177 -> 180),
+  `.github/workflows/ci.yml` (`certify_trikalam.py` to the `oracle` job, now ten; `validate_trikalam_
+  holdout.py` to the `hermetic` job's validator list, now fourteen), `docs/DECISION_LOG.md` (new
+  `ADR-0061`, register header updated), this file. No already-certified module touched.
+- Implementation summary: `trikalam_period()` mirrors PyJHora's exact mixed behaviour (today's
+  calendar-day sunrise/sunset via certified `rise_set`, `panchanga.vara`'s rolled-back weekday for the
+  offset lookup) rather than a more "consistent" rule PyJHora itself does not implement. Gate F calls
+  live PyJHora `sunrise`/`sunset`/`vaara` (not the string-formatting `trikalam()` wrapper) and found,
+  empirically, a ~4-8.5 minute systematic gap between this engine's rise/set convention (`ADR-0054`) and
+  PyJHora's own (`swe.BIT_HINDU_RISING`) across the H1-H11 holdout's latitudes - recorded as an explicit,
+  reasoned 20-minute tolerance in the certifier's own docstring, not silently absorbed or ignored.
+- Tests executed and results: `python -m pytest -q` - **799 passed** (up from 778; 21 new
+  `test_trikalam.py` tests, 0 failures elsewhere). `python validate_trikalam_holdout.py` (main
+  environment, no PyJHora needed) - PASS, 24 cases, 72 comparisons, 0 mismatches.
+- Certification executed and results: `python scripts/certify_trikalam.py` (main environment, no
+  PyJHora) - correctly `exit(3)`, matching every oracle-tier certifier's fail-closed behaviour, confirmed
+  correct not defective. `python scripts/certify_trikalam.py` via an isolated, throwaway, **unpinned**
+  exploration venv (PyJHora 4.8.7 plus its six documented undeclared dependencies) - **PASS, all six
+  gates**: A (frozen table matches `ADR-0060`), B (66/66 comparisons, dense sweep), C (21 weekday/element
+  combinations + 2 circumpolar cases), D (non-invasiveness), E (independent validator), F (66/66 oracle
+  comparisons within the 20-minute tolerance, negative control verified). `certification/
+  TRIKALAM_V1_certification.json` regenerated from this real run - genuine evidence, not backfilled.
+  `scripts/check_adr_numbering.py` - PASS, 61 entries.
+- Known issues: none. The empirical rise/set convention gap (this engine vs. PyJHora's
+  `BIT_HINDU_RISING`) is a recorded, explained design fact, not treated as a defect.
+- Unresolved questions / CEO decision required: **only the commit/push itself**, to trigger the CI run
+  that would upgrade this evidence from "locally verified, unpinned exploration venv" to "CI-confirmed,
+  hash-pinned oracle environment" - the same evidence class every other certified claim in this
+  repository relies on. Per `.claude/rules/git-safety.md`, pushing needs explicit confirmation even
+  though this task authorized continuing automatically through implementation.
+- CEO decision required: **the commit/push itself**, per the above.
+- Next authorized action: on explicit owner authorization to commit and push, stage exactly the nine
+  files listed above on `phase-g-governance`, commit, push, then monitor the resulting `oracle` job run
+  specifically for `certify_trikalam.py`'s new tenth position and `F_external_oracle`'s real result,
+  reporting the run ID and PASS/FAIL per job - the same evidence-recovery discipline `ADR-0053`/
+  `ADR-0054`/`ADR-0059` already established. Until authorized, no push is made.
 
 ### 2026-08-19 - Owner acceptance of Panchanga's FOUNDATION per-capability checkpoint (ADR-0059 addendum)
 - Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits in the same commit as
@@ -650,6 +697,7 @@ act.
 
 | Version | Date | Change |
 |---|---|---|
+| 3.0.0 | 2026-08-20 | `ADR-0061`: `TRIKALAM_V1` (`PYJHORA_TRIKALAM_V1` variant) implemented - new `engine.astrology.trikalam`, tests, certifier, validator, CI wiring. All six gates locally verified (unpinned exploration venv); 799 tests pass. Not yet committed/pushed/CI-confirmed. |
 | 2.9.0 | 2026-08-20 | `ADR-0060`: `DP-011` ratified (Option C seeded by Option B); PyJHora 4.8.7 `trikalam()` convention independently inspected and frozen as `PYJHORA_TRIKALAM_V1`. Implementation/certification work proceeding next. |
 | 2.8.0 | 2026-08-19 | Owner accepted Panchanga's FOUNDATION per-capability checkpoint (`ADR-0059` addendum); identified `DP-011` (Rahu Kalam/Yamaganda/Gulika variant-table options) as the sole FOUNDATION decision-paper item already authorized to draft. |
 | 2.7.0 | 2026-08-19 | FOUNDATION checkpoint audit (read-only): independently re-verified HEAD/CI/register against `Q8_CLOSURE_MATRIX.md` s4; confirmed no remaining FOUNDATION capability besides Panchanga has satisfied prerequisites for implementation (Rahu Kalam/Yamaganda/Gulika, civil-date rendering, H-01, H-02, boundary-proximity all lack a governing ratified ADR/DP); confirmed the sole open item is Panchanga's per-capability CEO checkpoint acceptance. No code, no new ADR. |

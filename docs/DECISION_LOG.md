@@ -3,10 +3,10 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | ACTIVE REGISTER. **ACCEPTED (38): ADR-0001, ADR-0002, ADR-0005 through ADR-0012, ADR-0015, ADR-0016, ADR-0017, ADR-0033 through ADR-0037, ADR-0039 through ADR-0042, ADR-0044, ADR-0045, ADR-0046, ADR-0048 through ADR-0060**, owner-ratified across 2026-08-13, 2026-08-14, 2026-08-17, 2026-08-18, 2026-08-19 and 2026-08-20. **`ADR-0060` ratifies `DP-011` Option C seeded by Option B: Rahu Kalam/Yamaganda/Gulika become named, profile-selectable variants; the PyJHora 4.8.7 `trikalam()` convention is independently inspected, transcribed and frozen as the seed variant `PYJHORA_TRIKALAM_V1`. Authorizes only that one variant's implementation/certification work - does not itself certify it, does not authorize a second variant, and does not authorize Muhurta-specific consumption.** **`ADR-0056` formalizes the four-role AI collaboration model (USER/CLAUDE/CHATGPT/CODEX); Codex is explicitly excluded from the ACE workflow. `ADR-0057` (CEO-audit HOLD remediation) adds ACE interaction mode and mandatory session-start audit to `specs/CLAUDE_WORKFLOW.md`. `ADR-0058` adds an execution-continuity rule (do not stop prematurely; five terminal stop conditions) to the same document; its `specs/CLAUDE_WORKFLOW.md` edit is committed (`20a9589e3d567bbf86e36b13bf2d61ca734e728e`). `ADR-0059` records the CEO-approved `PANCHANGA_V1` Gate F (genuine PyJHora external-oracle comparison for tithi/yoga/karana, nakshatra explicitly excluded): implemented, committed (`4177d6108236e64d07f6b23499307001f0d7c421`), pushed, and **CI-confirmed green** (run `32242462766`, all four jobs, oracle job genuinely executing Gate F: 66 comparisons, 0 mismatches, negative control verified) under the hash-pinned oracle environment. A 2026-08-19 evidence addendum to `ADR-0059` records the owner's acceptance of Panchanga's FOUNDATION per-capability checkpoint (`Q8_CLOSURE_MATRIX.md` s4); this does not close FOUNDATION's own phase-exit criteria, which still require Rahu Kalam/Yamaganda/Gulika, H-01, and H-02.** Tier-0 is **FORMALLY LOCKED** (ADR-0034), the only s12 Locked artifact. The registry vargas and the sign conventions are **owner-ratified but NOT s12 Locked** (ADR-0035 D3, ADR-0036 D3). **Q8 is now CLOSED** (ADR-0048); **Phase G exited and FOUNDATION entry criteria were independently confirmed satisfied** (this session's evidence reports). **FOUNDATION's first work package, rise/set, is CERTIFIED (`ADR-0054`, `RISE_SET_V1`)**: five owner-ratified conventions (upper-limb disc, standard -50' refraction, elevation accounted for, structured NO_RISE/NO_SET, conventions in `CalculationProfile`/`BirthData`), zero calculation impact on any existing certified capability, two genuine defects found and fixed during its own construction (recorded in the entry). **Panchanga classification-only work (tithi/vara/nakshatra/yoga/karana at a given instant) is now authorised (`ADR-0055`)**: engine-wide 1e-10 promote-up boundary convention, vara consumes the certified rise/set layer, element transition-timing deferred. **Rahu Kalam/Yamaganda/Gulika remain NOT authorised pending a future DP-NNN variant-table ratification (`ADR-0055` item 2).** No later phase (Muhurta, Varshaphal, Prashna, Mundane, BTR, Interpretation, Convergence, UI, ML) is thereby authorised - `docs/Q8_CLOSURE_MATRIX.md` s4 requires its own per-capability checkpoint for each. **Still PROPOSED: ADR-0003, ADR-0004, ADR-0013, ADR-0014, ADR-0018 through ADR-0032, ADR-0038, and ADR-0047.** `ADR-0047`'s originally-reported G5 sample accounting (22/22 complete, 16 independent, 4 ADB_MATCH, 2 unresolved, 14 events) was briefly, and **erroneously**, corrected to "12/22 attempted" by a 2026-08-18 addendum that has since been found (owner-directed forensic reconciliation) to rest on a conflation of the 22-person sample with an unrelated 5-person bridging pilot; a second, later 2026-08-18 addendum **restores 22/22 as the authoritative state** (16 independent, 4 ADB_MATCH: Fichera/Aimar/Serantoni/Bobet, 2 unresolved: Veen/Perquier, 14 independent events) and marks the "12/22" addendum SUPERSEDED/RETRACTED, preserved unedited. `ADR-0047` remains PROPOSED, not ratified, throughout. Ratification is per-entry; an owner existing is not the register being ratified. Includes the ADR-0018 remote-CI evidence addendum (2026-08-11), the ADR-0047 "12/22" addendum (2026-08-18, now retracted), and the ADR-0047 restoration addendum (2026-08-18). |
-| Version | 3.1.0 |
+| Status | ACTIVE REGISTER. **ACCEPTED (39): ADR-0001, ADR-0002, ADR-0005 through ADR-0012, ADR-0015, ADR-0016, ADR-0017, ADR-0033 through ADR-0037, ADR-0039 through ADR-0042, ADR-0044, ADR-0045, ADR-0046, ADR-0048 through ADR-0061**, owner-ratified across 2026-08-13, 2026-08-14, 2026-08-17, 2026-08-18, 2026-08-19 and 2026-08-20. **`ADR-0060` ratifies `DP-011` Option C seeded by Option B: Rahu Kalam/Yamaganda/Gulika become named, profile-selectable variants; the PyJHora 4.8.7 `trikalam()` convention is independently inspected, transcribed and frozen as the seed variant `PYJHORA_TRIKALAM_V1`. Authorizes only that one variant's implementation/certification work - does not itself certify it, does not authorize a second variant, and does not authorize Muhurta-specific consumption. `ADR-0061` records that implementation as built and locally verified (all six gates, genuine PyJHora Gate F, empirically-calibrated 20-minute tolerance) in an unpinned exploration venv - explicitly NOT yet CI-confirmed; the commit/push to trigger CI is the next open item.** **`ADR-0056` formalizes the four-role AI collaboration model (USER/CLAUDE/CHATGPT/CODEX); Codex is explicitly excluded from the ACE workflow. `ADR-0057` (CEO-audit HOLD remediation) adds ACE interaction mode and mandatory session-start audit to `specs/CLAUDE_WORKFLOW.md`. `ADR-0058` adds an execution-continuity rule (do not stop prematurely; five terminal stop conditions) to the same document; its `specs/CLAUDE_WORKFLOW.md` edit is committed (`20a9589e3d567bbf86e36b13bf2d61ca734e728e`). `ADR-0059` records the CEO-approved `PANCHANGA_V1` Gate F (genuine PyJHora external-oracle comparison for tithi/yoga/karana, nakshatra explicitly excluded): implemented, committed (`4177d6108236e64d07f6b23499307001f0d7c421`), pushed, and **CI-confirmed green** (run `32242462766`, all four jobs, oracle job genuinely executing Gate F: 66 comparisons, 0 mismatches, negative control verified) under the hash-pinned oracle environment. A 2026-08-19 evidence addendum to `ADR-0059` records the owner's acceptance of Panchanga's FOUNDATION per-capability checkpoint (`Q8_CLOSURE_MATRIX.md` s4); this does not close FOUNDATION's own phase-exit criteria, which still require Rahu Kalam/Yamaganda/Gulika, H-01, and H-02.** Tier-0 is **FORMALLY LOCKED** (ADR-0034), the only s12 Locked artifact. The registry vargas and the sign conventions are **owner-ratified but NOT s12 Locked** (ADR-0035 D3, ADR-0036 D3). **Q8 is now CLOSED** (ADR-0048); **Phase G exited and FOUNDATION entry criteria were independently confirmed satisfied** (this session's evidence reports). **FOUNDATION's first work package, rise/set, is CERTIFIED (`ADR-0054`, `RISE_SET_V1`)**: five owner-ratified conventions (upper-limb disc, standard -50' refraction, elevation accounted for, structured NO_RISE/NO_SET, conventions in `CalculationProfile`/`BirthData`), zero calculation impact on any existing certified capability, two genuine defects found and fixed during its own construction (recorded in the entry). **Panchanga classification-only work (tithi/vara/nakshatra/yoga/karana at a given instant) is now authorised (`ADR-0055`)**: engine-wide 1e-10 promote-up boundary convention, vara consumes the certified rise/set layer, element transition-timing deferred. **Rahu Kalam/Yamaganda/Gulika remain NOT authorised pending a future DP-NNN variant-table ratification (`ADR-0055` item 2).** No later phase (Muhurta, Varshaphal, Prashna, Mundane, BTR, Interpretation, Convergence, UI, ML) is thereby authorised - `docs/Q8_CLOSURE_MATRIX.md` s4 requires its own per-capability checkpoint for each. **Still PROPOSED: ADR-0003, ADR-0004, ADR-0013, ADR-0014, ADR-0018 through ADR-0032, ADR-0038, and ADR-0047.** `ADR-0047`'s originally-reported G5 sample accounting (22/22 complete, 16 independent, 4 ADB_MATCH, 2 unresolved, 14 events) was briefly, and **erroneously**, corrected to "12/22 attempted" by a 2026-08-18 addendum that has since been found (owner-directed forensic reconciliation) to rest on a conflation of the 22-person sample with an unrelated 5-person bridging pilot; a second, later 2026-08-18 addendum **restores 22/22 as the authoritative state** (16 independent, 4 ADB_MATCH: Fichera/Aimar/Serantoni/Bobet, 2 unresolved: Veen/Perquier, 14 independent events) and marks the "12/22" addendum SUPERSEDED/RETRACTED, preserved unedited. `ADR-0047` remains PROPOSED, not ratified, throughout. Ratification is per-entry; an owner existing is not the register being ratified. Includes the ADR-0018 remote-CI evidence addendum (2026-08-11), the ADR-0047 "12/22" addendum (2026-08-18, now retracted), and the ADR-0047 restoration addendum (2026-08-18). |
+| Version | 3.2.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-20 (ADR-0060: DP-011 ratified, Option C seeded by Option B; PyJHora trikalam convention transcribed and frozen) |
+| Last updated | 2026-08-20 (ADR-0061: TRIKALAM_V1 implemented, all six gates locally verified, CI pending) |
 | Review cadence | TBD |
 
 # Decision Log (ADR register)
@@ -2945,6 +2945,75 @@ the two gates added under ADR-0037.
   "CEO DECISION - DP-011" instruction, quoted above; direct inspection of `jhora/panchanga/drik.py`
   (PyJHora 4.8.7, installed via `pip install PyJHora` into an isolated venv at
   `dp011_explore_venv`, not the main environment or CI's hash-pinned lock).
+
+---
+
+## ADR-0061 - TRIKALAM_V1 (PYJHORA_TRIKALAM_V1 variant) implemented, all six gates locally verified, CI pending
+
+- **Date:** 2026-08-20
+- **Status:** **ACCEPTED** as a record of implementation progress under `ADR-0060`'s authorization -
+  **not** a certification claim. `ADR-0060`'s own Consequences state this explicitly: "does NOT
+  automatically certify the resulting implementation... certified status requires the gates to actually
+  run and pass, CI-confirmed" - the same discipline `ADR-0059` applied relative to `ADR-0055`. This entry
+  is the `ADR-0059`-equivalent step: implementation done, gates run and passed against a real (not
+  hash-pinned) PyJHora, CI confirmation still outstanding.
+- **Context:** `ADR-0060` authorized the variant-definition/certification work for
+  `PYJHORA_TRIKALAM_V1`. This entry records that work's completion.
+- **Decision - what was built, mirroring the panchanga/rise-set template:**
+  1. **`engine/astrology/trikalam.py`** (new): `TrikalamElement` (RAHU_KALAM/YAMAGANDA/GULIKA),
+     `PYJHORA_TRIKALAM_V1`'s frozen offset table (verbatim from `ADR-0060`), `trikalam_period()` -
+     consumes certified `rise_set.sunrise`/`sunset` (today's calendar-day, never rolled back) and
+     certified `panchanga.vara` (which does roll back) for the weekday, mirroring PyJHora's own mixed
+     behaviour exactly (`ADR-0060` item 7(b)), never reimplementing either. `TrikalamResult` carries
+     `variant` explicitly (system/profile provenance, per the owner's instruction).
+  2. **`engine/tests/test_trikalam.py`** (new, 21 tests): frozen-table pinning, dense sweep against
+     `validate_trikalam_holdout.py` across the H1-H11 holdout and both certified profiles, all 21
+     weekday x element combinations individually pinned against the transcribed table, circumpolar
+     INDETERMINATE (P1/P2), a dedicated test proving the pre-sunrise mixed-behaviour fidelity to PyJHora
+     (item 7(b)), and a genuine negative control (mirrors `test_panchanga.py`'s established pattern:
+     monkeypatches a broken offset table, confirms the independent validator catches it, undoes it,
+     re-verifies agreement).
+  3. **`validate_trikalam_holdout.py`** (new, repo root): independent Gate E validator - the offset table
+     is retyped a second time, independently, never importing `engine.astrology.trikalam._OFFSETS`.
+  4. **`scripts/certify_trikalam.py`** (new): Gates A-F. Gate F calls live PyJHora `sunrise`/`sunset`/
+     `vaara` (not the string-formatting `trikalam()` wrapper) and applies the frozen table inline,
+     comparing against the engine in Julian Day (UT). **Empirically calibrated tolerance, not an
+     assumption:** probed in the same isolated exploration venv against several H1-H11 cases, this
+     engine's `rise_set` (`ADR-0054` convention) and PyJHora's own `sunrise`/`sunset`
+     (`swe.BIT_HINDU_RISING`, a different Swiss Ephemeris flag) agree to within roughly 4-8.5 minutes
+     across the holdout's latitudes - a small, explainable, already-known-in-kind convention gap, not a
+     transcription defect. `GATE_F_TOLERANCE_DAYS` is set to 20 minutes: comfortably wider than the
+     largest observed gap, far tighter than the 60-100+ minute error an actual offset-table
+     transcription bug would produce (see the certifier's own module docstring for the full
+     derivation). This tolerance, and the fact that this engine's rise/set convention and PyJHora's are
+     not reconciled, is recorded here explicitly, not silently assumed away.
+  5. **`scripts/certification_support.py`**: `CERTIFIER_SOURCES`/`VALIDATOR_SOURCES` 14/13 -> 15/14.
+     `engine/tests/test_certification_preconditions.py`: matching count assertions updated; `modules_scanned`
+     floor raised 177 -> 180 (three new files: the engine module plus the certifier and validator).
+  6. **`.github/workflows/ci.yml`**: `certify_trikalam.py` added to the `oracle` job's runners (now ten) -
+     its PyJHora import is unconditional, identical in kind to the nine existing oracle certifiers, not a
+     new mechanism; `validate_trikalam_holdout.py` added to the `hermetic` job's independent-validator
+     list (now fourteen) - needs no PyJHora. No change to `requirements-oracle.lock`: PyJHora's six
+     undeclared runtime dependencies it documents were already sufficient (verified by successfully
+     running the full certifier, all six gates, in the isolated exploration venv using exactly that
+     dependency list).
+- **Consequences:** No change to any already-certified module (`rise_set`, `panchanga`, or any varga/
+  dasha/KP layer) - confirmed by Gate D and by the full `pytest` suite (799 passed, up from 778,
+  unrelated failures none). This entry does **not** authorize a second variant, Muhurta-specific
+  consumption, or reconciling this engine's rise/set convention with PyJHora's - all remain out of
+  scope per `ADR-0060`.
+- **Evidence:** `python -m pytest -q` - 799 passed. `python scripts/certify_trikalam.py` (main
+  environment, no PyJHora) - correctly `exit(3)`, matching every other oracle-tier certifier's
+  fail-closed behaviour without PyJHora. `python scripts/certify_trikalam.py` (isolated exploration
+  venv, PyJHora 4.8.7 present) - **PASS, all six gates**: Gate B 66/66 comparisons 0 mismatches, Gate C
+  21 weekday/element combinations + 2 circumpolar cases all correct, Gate F 66/66 comparisons 0
+  mismatches within the 20-minute tolerance, negative control verified. `python
+  validate_trikalam_holdout.py` (main environment) - PASS, 24 cases, 72 comparisons, 0 mismatches.
+  `scripts/check_adr_numbering.py` - PASS, 61 entries. This session's local verification used the same
+  isolated, throwaway, **unpinned** exploration venv discipline `ADR-0059` established - genuine, real
+  oracle evidence, but explicitly **not** the hash-pinned CI oracle-environment evidence class this
+  repository's other certified claims rely on. Do not describe `TRIKALAM_V1` as CI-oracle-confirmed
+  until a pushed commit's `oracle` job run actually passes.
 
 ---
 

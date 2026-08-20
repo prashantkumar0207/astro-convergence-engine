@@ -75,7 +75,7 @@ jobs:
       - name: Default gate (engine/tests)
         run: python -m pytest -q
 
-      - name: Independent holdout validators (all thirteen)
+      - name: Independent holdout validators (all fourteen)
         run: |
           set -e
           for v in validate_d9_holdout.py \
@@ -90,7 +90,8 @@ jobs:
                    validate_transits_holdout.py \
                    validate_parashari_drishti_holdout.py \
                    validate_rise_set_holdout.py \
-                   validate_panchanga_holdout.py; do
+                   validate_panchanga_holdout.py \
+                   validate_trikalam_holdout.py; do
             echo "::group::$v"
             python "$v"
             echo "::endgroup::"
@@ -261,7 +262,7 @@ jobs:
       - name: Verify ephemeris asset checksums
         run: sha256sum --check CHECKSUMS.sha256
 
-      - name: Oracle certification runners (all nine)
+      - name: Oracle certification runners (all ten)
         run: |
           set -e
           for c in scripts/certify_d2.py \
@@ -272,7 +273,8 @@ jobs:
                    scripts/certify_vimshottari.py \
                    scripts/certify_transits.py \
                    scripts/certify_parashari_drishti.py \
-                   scripts/certify_panchanga.py; do
+                   scripts/certify_panchanga.py \
+                   scripts/certify_trikalam.py; do
             echo "::group::$c"
             python "$c"
             echo "::endgroup::"

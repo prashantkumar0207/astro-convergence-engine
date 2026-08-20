@@ -1,0 +1,109 @@
+{
+ "schema": "trikalam_v1_certification",
+ "adr": "ADR-0060",
+ "date": "2026-08-20",
+ "scope": "Exactly one variant, PYJHORA_TRIKALAM_V1: Rahu Kalam, Yamaganda, Gulika window computation at a given calendar day and location. No Muhurta-specific consumption; no second variant.",
+ "variant": "PYJHORA_TRIKALAM_V1",
+ "oracle": {
+  "package": "PyJHora",
+  "version": "4.8.7",
+  "function": "jhora.panchanga.drik.sunrise/sunset/vaara, ayanamsa aligned per profile via drik.set_ayanamsa_mode (same convention as certify_panchanga.py)"
+ },
+ "gates": {
+  "A_convention_integrity": {
+   "variant": "PYJHORA_TRIKALAM_V1",
+   "period_fraction": 0.125,
+   "offsets": {
+    "rahu_kalam": [
+     0.875,
+     0.125,
+     0.75,
+     0.5,
+     0.625,
+     0.375,
+     0.25
+    ],
+    "gulika": [
+     0.75,
+     0.625,
+     0.5,
+     0.375,
+     0.25,
+     0.125,
+     0.0
+    ],
+    "yamaganda": [
+     0.5,
+     0.375,
+     0.25,
+     0.125,
+     0.0,
+     0.75,
+     0.625
+    ]
+   }
+  },
+  "B_dense_sweep": {
+   "cases": 11,
+   "profiles": 2,
+   "elements": 3,
+   "comparisons": 66,
+   "mismatches": 0
+  },
+  "C_boundary_and_circumpolar": {
+   "weekday_element_combinations_checked": 21,
+   "circumpolar_cases": 2,
+   "total_checks": 27
+  },
+  "D_non_invasiveness": {
+   "ayanamsa_modes_unchanged": true,
+   "panchanga_vara_reuse_verified": true
+  },
+  "E_independent_validator": {
+   "result": "PASS"
+  },
+  "F_external_oracle": {
+   "cases": 11,
+   "profiles": 2,
+   "elements": [
+    "rahu_kalam",
+    "yamaganda",
+    "gulika"
+   ],
+   "comparisons": 66,
+   "mismatches": 0,
+   "tolerance_minutes": 20.0,
+   "tolerance_rationale": "empirically observed rise/set convention gap between this engine (ADR-0054: upper-limb disc, standard -50' refraction) and PyJHora's own sunrise/sunset (swe.BIT_HINDU_RISING) is roughly 4-8.5 minutes across the holdout's latitudes; a real offset-table transcription bug would produce errors an order of magnitude larger (60-100+ minutes)",
+   "negative_control_verified": true
+  }
+ },
+ "explicit_non_claims": [
+  "a second Rahu Kalam/Yamaganda/Gulika variant (not authorized, ADR-0060 Consequences)",
+  "any Muhurta-specific consumption of these periods (not authorized)",
+  "reconciliation of this engine's rise/set convention with PyJHora's BIT_HINDU_RISING flag (out of ADR-0060's scope; see Gate F's tolerance_rationale)",
+  "any other varga, dasha, panchanga classification, or certified layer"
+ ],
+ "environment": {
+  "python": "3.12.10"
+ },
+ "preconditions": {
+  "data_assets": {
+   "assets_verified": 3,
+   "sha256": {
+    "seas_18.se1": "a2cd8fc33807c78ca9a700c91c2e042258b12fc4796519e00781440b5ad8b2e2",
+    "semo_18.se1": "1ca07bd67c24374d77226180c20a4f9996cba013697894810518e7eb582ca4f7",
+    "sepl_18.se1": "ca1393ceab3a44fbc895887cf789c68819ae6a1cbc9b22225872dbe4ccd99a66"
+   }
+  },
+  "anti_fitting": {
+   "modules_scanned": 180,
+   "findings": [],
+   "justified_exceptions": [
+    "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."
+   ]
+  }
+ },
+ "result": "PASS",
+ "_artifact_name": "TRIKALAM_V1_certification.json",
+ "_slug": "trikalam"
+}
