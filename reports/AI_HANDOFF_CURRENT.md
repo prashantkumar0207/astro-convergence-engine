@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 3.5.0 |
+| Version | 3.6.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-20 (ULP-battery remediation pushed and CI-confirmed green, run 32361308330; FOUNDATION checkpoint decision is the sole open item - see docs/ACE_EXECUTION_STATE.md) |
+| Last updated | 2026-08-20 (TRIKALAM_V1 FOUNDATION checkpoint accepted, production-certified; DP-012 drafted for civil-date rendering, awaiting ratification - see docs/ACE_EXECUTION_STATE.md) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,43 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-20 - TRIKALAM_V1 FOUNDATION checkpoint accepted; DP-012 drafted for the next milestone
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the changes below).
+- Previous approved commit: `1423a4bb2aa824115fa1bb7e826d9ac6a96739b6`.
+- Task: owner "ACE CONTINUE - CEO CHECKPOINT ACCEPTED" - record the FOUNDATION checkpoint acceptance,
+  then determine and act on the next authorized FOUNDATION step.
+- Relevant ADR/specification: `ADR-0061` (third evidence addendum); `Q8_CLOSURE_MATRIX.md` s4
+  (FOUNDATION implementation scope: civil-date rendering, H-01, H-02 remain); `docs/decisions/README.md`
+  (`DP-012` registered).
+- Files changed: `docs/DECISION_LOG.md` (new `ADR-0061` addendum, register header updated),
+  `docs/decisions/README.md` (`DP-012` registered), `docs/decisions/DP-012-civil-date-rendering-dasha-
+  boundaries.md` (new), `docs/ACE_EXECUTION_STATE.md`, this file. No engine code touched.
+- Implementation summary: recorded the owner's checkpoint acceptance as `ADR-0061`'s third addendum
+  (`TRIKALAM_V1` now FOUNDATION checkpoint-accepted / production-certified, scope explicitly bounded -
+  does not authorize a second variant, Muhurta consumption, or close FOUNDATION's own phase-exit
+  criteria). Determined the next FOUNDATION item by re-checking prerequisites for every remaining scope
+  item (civil-date rendering, H-01, H-02, boundary-proximity): H-02's own investigation methodology
+  (`ADR-0020` D5) is itself unratified, H-01 has no governing document at all, boundary-proximity is
+  undefined scope - none of these can proceed without a prior, larger ratification this task does not
+  authorize. Civil-date rendering is the one item with real existing infrastructure to reason about
+  (`engine/services/time_service.py`'s already-audit-remediated `zoneinfo`/`tzdata` mechanism) and a
+  genuinely open, DP-worthy methodology question (DST fold/gap handling at a *derived* instant decades
+  after birth, not the validated birth instant `time_service.py` already handles; pre-1900 `tzdata`
+  coverage, directly relevant given `RISE_SET_V1`'s own 1823-2350 holdout). Drafted `DP-012` presenting
+  three options (extend `time_service.py`'s mechanism locally; render in UTC only; defer to a consuming
+  feature), recommending Option A with sub-decisions on fold/gap/coverage. Did **not** implement
+  anything - `DP-012` decides nothing and is not yet ratified.
+- Tests executed and results: none applicable - documentation/decision-paper only.
+- Certification executed and results: none applicable.
+- Known issues: none.
+- Unresolved questions: `DP-012`'s own options, awaiting ratification (or explicit deferral, per its own
+  Option C - not blocking).
+- CEO decision required: no, for this entry itself (implements the owner's own instruction). `DP-012`
+  ratification is a separate, not-yet-requested decision.
+- Next authorized action: push (needs its own authorization). Separately, on `DP-012` ratification,
+  implement civil-date rendering per whichever option is chosen, following the established certification
+  template.
 
 ### 2026-08-20 - ULP-battery remediation pushed and CI-confirmed green; FOUNDATION checkpoint re-presented
 - Branch / commit SHA: `phase-g-governance`, `8e6bb40567512dd8680c1c567be73310fc235aa2` - pushed,
@@ -871,6 +908,7 @@ act.
 
 | Version | Date | Change |
 |---|---|---|
+| 3.6.0 | 2026-08-20 | Owner accepted `TRIKALAM_V1`'s FOUNDATION checkpoint (`ADR-0061` third addendum) - production-certified. Drafted and registered `DP-012` (civil-date rendering for dasha boundaries) as the next tractable FOUNDATION item; not implemented, awaiting ratification. |
 | 3.5.0 | 2026-08-20 | Pushed `8e6bb40`; CI run `32361308330` all four jobs green, ULP battery confirmed genuinely executed from the oracle-job log directly. CEO-audit HOLD finding closed. FOUNDATION per-capability checkpoint re-presented as the sole open decision. |
 | 3.4.0 | 2026-08-20 | CEO audit: `TRIKALAM_V1` Gate C lacked a genuine ULP battery (verified independently, finding correct). Remediated: exact-sunrise-boundary ULP test + negative control. All six gates re-verified locally (PASS), 801/801 pytest. Push authorization pending for CI re-confirmation. |
 | 3.3.0 | 2026-08-20 | Confirmed `bf0d414` pushed and CI run `32358109807` fully green (all four jobs). `TRIKALAM_V1` is CI-confirmed. Presented the FOUNDATION per-capability checkpoint as the sole open owner decision, not self-certified. |

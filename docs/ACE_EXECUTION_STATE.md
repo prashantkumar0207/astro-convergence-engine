@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | **ACCEPTED (`ADR-0062`) - canonical, machine-checkable current-state record.** Regenerate/refresh on every meaningful implementation task, same discipline as `reports/AI_HANDOFF_CURRENT.md`. |
-| Version | 1.4.0 |
+| Version | 1.5.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-20 (CEO-audit ULP-battery finding remediated, pushed, and CI-confirmed green, run 32361308330; FOUNDATION checkpoint decision is the sole open item) |
+| Last updated | 2026-08-20 (TRIKALAM_V1 FOUNDATION checkpoint accepted; milestone moved to civil-date rendering, DP-012 drafted and awaiting ratification) |
 | Review cadence | Refresh at the start of a session if stale; not load-bearing if it isn't. |
 
 # ACE execution state
@@ -43,21 +43,21 @@ independently is in these fields plus the pointers they name.
 | Field | Value |
 |---|---|
 | `CURRENT_PHASE` | FOUNDATION (`docs/Q8_CLOSURE_MATRIX.md` s4). Phase G exited (`ADR-0048`); FOUNDATION entered. |
-| `CURRENT_MILESTONE` | Rahu Kalam / Yamaganda / Gulika, seed variant `PYJHORA_TRIKALAM_V1` (`DP-011` / `ADR-0060` / `ADR-0061`). Panchanga classification and rise/set are both already CERTIFIED and CEO-checkpoint-accepted (`ADR-0054`, `ADR-0059` + its checkpoint-acceptance addendum). |
-| `CURRENT_AUTHORIZED_TASK` | None self-executable remains for `TRIKALAM_V1` - the CEO-audit ULP-battery finding is remediated and CI-confirmed. The only open item is the FOUNDATION per-capability checkpoint decision (see `WAITING_FOR`). No other FOUNDATION implementation is authorized - civil-date rendering, H-01, H-02, and boundary-proximity indicators all remain unauthorized pending their own decision papers. |
-| `TASK_OWNER` | CLAUDE (remediation, push, and CI confirmation all complete); USER (the FOUNDATION checkpoint decision). |
-| `STATUS` | **CEO-audit finding remediated and CI-confirmed.** `TRIKALAM_V1`'s Gate C now runs a genuine ULP battery (exact sunrise weekday-rollover instant, `1e-9`-day epsilon, real negative control). Commit `8e6bb40` pushed; CI run `32361308330` completed with **all four jobs green**; the oracle-job log directly confirms `ulp_boundary_checked: True, ulp_negative_control_verified: True` genuinely executed under the hash-pinned environment. `origin/phase-g-governance` matches local HEAD; nothing unpushed. |
-| `LAST_COMPLETED_ACTION` | Pushed `8e6bb40` (ULP-battery remediation) and verified CI run `32361308330` - all four jobs green, ULP battery confirmed executed from the CI log directly. |
-| `LAST_COMMIT` | `8e6bb40567512dd8680c1c567be73310fc235aa2` - local HEAD and `origin/phase-g-governance` identical. |
-| `LAST_CI_RUN` | **`32361308330`** (commit `8e6bb40`) - all four jobs green, directly observed via `gh run view` and `gh run --log` (oracle job log line quoted in the `ADR-0061` addendum). |
-| `LAST_CEO_DECISION` | The CEO audit's HOLD finding on `TRIKALAM_V1`'s missing ULP battery (2026-08-20) - now remediated and CI-confirmed, closing that finding. |
-| `NEXT_AUTHORIZED_ACTION` | None self-executable. Awaiting the owner's decision on `TRIKALAM_V1`'s FOUNDATION per-capability checkpoint. On acceptance, the next Claude action is a narrow `ADR-0061`-addendum entry recording it, then a fresh audit of remaining FOUNDATION scope. |
-| `WAITING_FOR` | **USER/CEO decision:** does `TRIKALAM_V1` now meet `Q8_CLOSURE_MATRIX.md` s4's per-capability FOUNDATION checkpoint, with the ULP-battery gap closed and CI-confirmed? Not self-certified here. |
-| `BLOCKER` | None. |
-| `CEO_APPROVAL_REQUIRED` | **YES** - the FOUNDATION per-capability checkpoint decision. |
-| `CLAUDE_ACTION_REQUIRED` | None until the checkpoint decision is made. |
-| `CHATGPT_ACTION_REQUIRED` | Independent audit of the remediated, CI-confirmed evidence (this file, `ADR-0061` + both addenda, CI run `32361308330`) is available now via the standard Git -> state-file path - no report relay needed. |
-| `USER_ACTION_REQUIRED` | Decide the FOUNDATION checkpoint question above, or name a different next task. |
+| `CURRENT_MILESTONE` | `TRIKALAM_V1` (Rahu Kalam/Yamaganda/Gulika, seed variant `PYJHORA_TRIKALAM_V1`) is **FOUNDATION checkpoint-accepted / production-certified** (`ADR-0061`'s third addendum). Panchanga classification and rise/set are likewise CERTIFIED and checkpoint-accepted (`ADR-0054`, `ADR-0059`). Milestone now moves to: civil-date rendering for dasha boundaries - `DP-012` drafted and registered; implementation NOT yet authorized (awaiting ratification). |
+| `CURRENT_AUTHORIZED_TASK` | None self-executable. `DP-012` (civil-date rendering methodology for dasha boundaries) is drafted and awaiting owner ratification. No FOUNDATION implementation is currently authorized - `TRIKALAM_V1` is complete; civil-date rendering awaits `DP-012`; H-01 and H-02 still lack any ratified decision paper (H-02's own investigation methodology, `ADR-0020` D5, is itself unratified). |
+| `TASK_OWNER` | CLAUDE (`TRIKALAM_V1` checkpoint recorded, `DP-012` drafted); USER (ratify `DP-012`, or name a different next task). |
+| `STATUS` | `TRIKALAM_V1` is done: implemented, CI-confirmed, CEO-audit ULP finding remediated and CI-confirmed, FOUNDATION checkpoint accepted. FOUNDATION's next tractable item, civil-date rendering for dasha boundaries, has a decision paper drafted (`DP-012`) presenting genuine open questions (DST fold/gap handling at arbitrary derived instants, pre-1900 `tzdata` coverage, rendering granularity) - not yet ratified, so not yet implemented. |
+| `LAST_COMPLETED_ACTION` | Third `ADR-0061` evidence addendum recording owner acceptance of `TRIKALAM_V1`'s FOUNDATION checkpoint; `DP-012` drafted and registered (`docs/decisions/README.md`). |
+| `LAST_COMMIT` | Local HEAD - see `git rev-parse HEAD`, made after this file was drafted; not yet pushed. `origin/phase-g-governance` remains at `1423a4bb2aa824115fa1bb7e826d9ac6a96739b6`. |
+| `LAST_CI_RUN` | `32361308330` (commit `8e6bb40`) - all four jobs green; unchanged by this documentation-only task. |
+| `LAST_CEO_DECISION` | "ACE CONTINUE - CEO CHECKPOINT ACCEPTED" (2026-08-20): the owner explicitly accepted `TRIKALAM_V1`'s FOUNDATION per-capability checkpoint. |
+| `NEXT_AUTHORIZED_ACTION` | On explicit USER push authorization: push local HEAD. Separately: on `DP-012` ratification, the next Claude action is implementing civil-date rendering per whichever option is ratified, following the established varga/rise-set certification template. |
+| `WAITING_FOR` | USER: push authorization for this commit, and (independently) a ratification decision on `DP-012` if civil-date rendering is to proceed. |
+| `BLOCKER` | None technical. Push needs its own per-action confirmation; `DP-012` implementation is blocked on ratification by design, not by any technical limitation. |
+| `CEO_APPROVAL_REQUIRED` | **YES** - push authorization for this commit. `DP-012`'s ratification is a separate, not-yet-requested decision (the owner may defer it, per the paper's own Option C). |
+| `CLAUDE_ACTION_REQUIRED` | None until push is authorized or `DP-012` is ratified. |
+| `CHATGPT_ACTION_REQUIRED` | Independent audit of `TRIKALAM_V1`'s full evidence trail and `DP-012`'s options is available now via the standard Git -> state-file path - no report relay needed. |
+| `USER_ACTION_REQUIRED` | Authorize the push, and separately, ratify `DP-012` (or defer it) whenever convenient - it does not block anything else. |
 | `HANDOFF_REQUIRED` | None beyond this file and `reports/AI_HANDOFF_CURRENT.md`'s latest entry - both already current as of this file's `Last updated` date. |
 
 ## How to independently verify every field above
@@ -78,6 +78,7 @@ exactly as `reports/AI_HANDOFF_CURRENT.md` already requires of itself.
 
 | Version | Date | Change |
 |---|---|---|
+| 1.5.0 | 2026-08-20 | Owner accepted `TRIKALAM_V1`'s FOUNDATION checkpoint (third `ADR-0061` addendum) - it is now production-certified. `CURRENT_MILESTONE` moved to civil-date rendering for dasha boundaries; `DP-012` drafted and registered presenting its genuine open questions (DST fold/gap at derived instants, pre-1900 tzdata coverage, rendering granularity); implementation not authorized pending ratification. |
 | 1.4.0 | 2026-08-20 | Pushed `8e6bb40`; CI run `32361308330` - all four jobs green, oracle-job log confirms the ULP battery genuinely executed (`ulp_boundary_checked: True, ulp_negative_control_verified: True`). CEO-audit finding closed. Refreshed all fields to present the FOUNDATION checkpoint decision as the sole open item. |
 | 1.3.0 | 2026-08-20 | CEO audit found `TRIKALAM_V1`'s Gate C was a pinning/tolerance check, not a genuine ULP battery - verified independently, remediated (exact-sunrise-boundary ULP battery with negative control), all six gates re-verified locally (PASS). Awaiting push authorization for CI re-confirmation. |
 | 1.2.0 | 2026-08-20 | `bf0d414` confirmed pushed (`origin` matches local HEAD); CI run `32358109807` - **all four jobs green**. `TRIKALAM_V1` is now fully CI-confirmed. No self-executable action remains; refreshed all fields to present the owner's FOUNDATION per-capability checkpoint decision as the sole open item. |
