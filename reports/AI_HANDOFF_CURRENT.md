@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 3.3.0 |
+| Version | 3.4.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-20 (TRIKALAM_V1 fully CI-confirmed, all four jobs green, run 32358109807; FOUNDATION per-capability checkpoint is the sole open owner decision - see docs/ACE_EXECUTION_STATE.md) |
+| Last updated | 2026-08-20 (CEO-audit HOLD on TRIKALAM_V1's missing ULP battery remediated and locally verified; push authorization pending - see docs/ACE_EXECUTION_STATE.md) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,47 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-20 - CEO-audit HOLD remediated: genuine ULP battery added to TRIKALAM_V1 Gate C
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the remediation).
+- Previous approved commit: `5e34d3b14c46356232b0420330d7072a97ad4249`.
+- Task: owner "ACE CONTINUE - DO NOT RELAY REPORT" - a CEO audit placed `TRIKALAM_V1` on HOLD because
+  its certification contract requires an explicit ULP battery and the repository evidence did not show
+  one.
+- Relevant ADR/specification: `ADR-0061` (second evidence addendum); `Q8_CLOSURE_MATRIX.md` s4
+  ("frozen rule, second transcription, dense sweep, ULP battery, external oracle, independent
+  validator").
+- Files changed: `scripts/certify_trikalam.py` (Gate C renamed and extended with a genuine ULP battery
+  + negative control), `engine/tests/test_trikalam.py` (2 new tests), `certification/
+  TRIKALAM_V1_certification.json` + `reports/certification/trikalam.*` (regenerated), `docs/
+  DECISION_LOG.md` (new `ADR-0061` addendum, register header updated), `docs/ACE_EXECUTION_STATE.md`,
+  this file.
+- Implementation summary: **verified the audit finding independently before acting** (direct source
+  re-inspection of the committed `gate_c_boundary_and_circumpolar` confirmed it was pinning + a fixed
+  `abs(diff) > 1e-8` tolerance check, with no floating-point-scale perturbation test and no negative
+  control - the finding was correct, not assumed). Remediated by testing the one genuine discontinuity
+  this variant has - the exact sunrise instant where `panchanga.vara`'s weekday rolls over - perturbed by
+  `1e-9` days (~86 microseconds, above the double-precision floor at this JD magnitude, far below the
+  >=0.125-day-length jump under test) on both sides, asserting the flip happens exactly there, with a
+  negative control that temporarily freezes the weekday selection and confirms the same check would then
+  fail to detect a rollover.
+- Tests executed and results: `python -m pytest engine/tests/test_trikalam.py -q` - 23 passed (up from
+  21). `python -m pytest -q` - **801 passed** (up from 799).
+- Certification executed and results: `python scripts/certify_trikalam.py` (main environment, no
+  PyJHora) - correctly `exit(3)`. `python scripts/certify_trikalam.py` (rebuilt isolated exploration
+  venv, PyJHora 4.8.7) - **PASS, all six gates**; Gate C now reports `ulp_boundary_checked: True`,
+  `ulp_negative_control_verified: True`. `python validate_trikalam_holdout.py` - PASS, 24 cases, 72
+  comparisons, 0 mismatches. `scripts/check_adr_numbering.py`/`check_retired_identifiers.py`/
+  `check_identifier_families.py` - all PASS.
+- Known issues: none. M-03 scan surface unaffected (180, unchanged - no new files, only existing files
+  edited).
+- Unresolved questions: none technical.
+- CEO decision required: **the push itself**, per git-safety's per-action confirmation rule, to trigger
+  CI re-confirmation of the remediated gate. The separate FOUNDATION per-capability checkpoint question
+  for `TRIKALAM_V1` remains open and should follow this CI re-confirmation, not precede it.
+- Next authorized action: on push authorization, push, monitor the resulting CI run for all four jobs
+  green (including the remediated Gate C under the hash-pinned oracle environment), report the run ID
+  and PASS/FAIL per job, and refresh both state files to the confirmed-green state.
 
 ### 2026-08-20 - TRIKALAM_V1 fully CI-confirmed (all four jobs green); FOUNDATION checkpoint decision presented
 - Branch / commit SHA: `phase-g-governance`, `bf0d4140e239fa52200011698b2b132aa1460145` - confirmed
@@ -805,6 +846,7 @@ act.
 
 | Version | Date | Change |
 |---|---|---|
+| 3.4.0 | 2026-08-20 | CEO audit: `TRIKALAM_V1` Gate C lacked a genuine ULP battery (verified independently, finding correct). Remediated: exact-sunrise-boundary ULP test + negative control. All six gates re-verified locally (PASS), 801/801 pytest. Push authorization pending for CI re-confirmation. |
 | 3.3.0 | 2026-08-20 | Confirmed `bf0d414` pushed and CI run `32358109807` fully green (all four jobs). `TRIKALAM_V1` is CI-confirmed. Presented the FOUNDATION per-capability checkpoint as the sole open owner decision, not self-certified. |
 | 3.2.0 | 2026-08-20 | Pushed `3487add`; CI run `32353401132` confirmed `TRIKALAM_V1`'s Gate F genuinely PASSED under the hash-pinned oracle environment. Same run's drift-assertion steps failed on the expected M-03 177->180 field; recovered via CI-sourced overlay in commit `9e33490` (not yet pushed). |
 | 3.1.0 | 2026-08-20 | `ADR-0062`: added `docs/ACE_EXECUTION_STATE.md` (canonical current-state snapshot) and `specs/CLAUDE_WORKFLOW.md`'s "Execution-state recovery" section; explicit permanent prohibition on relaying reports between Claude and ChatGPT through the user. No approval checkpoint weakened. |

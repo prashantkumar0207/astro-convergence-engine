@@ -17,7 +17,7 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 
 - **A_convention_integrity**: variant=PYJHORA_TRIKALAM_V1, period_fraction=0.125
 - **B_dense_sweep**: cases=11, profiles=2, elements=3, comparisons=66, mismatches=0
-- **C_boundary_and_circumpolar**: weekday_element_combinations_checked=21, circumpolar_cases=2, total_checks=27
+- **C_boundary_ulp_and_circumpolar**: weekday_element_combinations_checked=21, circumpolar_cases=2, ulp_epsilon_days=1e-09, ulp_boundary_checked=True, ulp_negative_control_verified=True, total_checks=30
 - **D_non_invasiveness**: ayanamsa_modes_unchanged=True, panchanga_vara_reuse_verified=True
 - **E_independent_validator**: result=PASS
 - **F_external_oracle**: cases=11, profiles=2, comparisons=66, mismatches=0, tolerance_minutes=20.0, negative_control_verified=True

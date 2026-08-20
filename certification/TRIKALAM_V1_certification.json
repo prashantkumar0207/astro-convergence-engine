@@ -50,10 +50,13 @@
    "comparisons": 66,
    "mismatches": 0
   },
-  "C_boundary_and_circumpolar": {
+  "C_boundary_ulp_and_circumpolar": {
    "weekday_element_combinations_checked": 21,
    "circumpolar_cases": 2,
-   "total_checks": 27
+   "ulp_epsilon_days": 1e-09,
+   "ulp_boundary_checked": true,
+   "ulp_negative_control_verified": true,
+   "total_checks": 30
   },
   "D_non_invasiveness": {
    "ayanamsa_modes_unchanged": true,

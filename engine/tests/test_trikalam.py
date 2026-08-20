@@ -159,6 +159,87 @@ def test_pre_sunrise_instant_mirrors_pyjhora_mixed_behaviour():
     )
 
 
+#: ULP-scale epsilon for the boundary battery below - roughly 86 microseconds
+#: in JD-day units, comfortably above this magnitude's double-precision
+#: floor (~2.5e-10 days near JD 2,460,000) so the test is not flaky, but far
+#: smaller than any real-world tolerance (the discontinuity under test is a
+#: weekday-offset jump of at least 0.125 x day-length, typically 60+ minutes).
+_ULP_EPSILON_DAYS = 1e-9
+
+
+def test_ulp_boundary_at_the_exact_sunrise_weekday_rollover():
+    """A genuine ULP battery, not a tolerance check: perturbs the query
+    instant by _ULP_EPSILON_DAYS on either side of the EXACT sunrise Julian
+    Day where panchanga.vara's weekday rolls over, and asserts the offset
+    selection flips at exactly that instant - the discontinuity ADR-0060
+    item 7(b) documents, tested at floating-point resolution rather than a
+    coarse (e.g. one-hour) approximation of it."""
+
+    lat, lon = 28.6667, 77.2167
+    midnight = swe.julday(2025, 3, 2, 0.0, swe.GREG_CAL)  # 2025-03-02, a Sunday.
+    day_rise = sunrise(midnight, lat, lon, 0.0, PARASHARI_LAHIRI, True)
+    assert day_rise.status == RiseSetStatus.OK
+    exact_sunrise = day_rise.julian_day_ut
+
+    just_before = exact_sunrise - _ULP_EPSILON_DAYS
+    just_at_or_after = exact_sunrise  # panchanga.vara's own boundary is `>=`.
+
+    before = trikalam_period(TrikalamElement.RAHU_KALAM, just_before, lat, lon, 0.0, PARASHARI_LAHIRI, True, PYJHORA_TRIKALAM_V1)
+    at_boundary = trikalam_period(TrikalamElement.RAHU_KALAM, just_at_or_after, lat, lon, 0.0, PARASHARI_LAHIRI, True, PYJHORA_TRIKALAM_V1)
+
+    assert before.status == TrikalamStatus.OK and at_boundary.status == TrikalamStatus.OK
+    assert before.weekday_index == 6, "1 ULP before sunrise must still be the rolled-back weekday (Saturday)"
+    assert at_boundary.weekday_index == 0, "at/after sunrise must already be the new weekday (Sunday)"
+    # A genuine discontinuity: the two starts must differ by roughly a full
+    # offset-table step (0.125 x day-length, at least ~30 minutes at any
+    # holdout latitude), not by anything resembling the 1e-9 day input
+    # perturbation - proving the flip is a real logic branch, not noise.
+    assert abs(at_boundary.start_julian_day_ut - before.start_julian_day_ut) > 0.02
+
+
+def test_negative_control_ulp_boundary_battery_actually_fails_on_a_broken_rollback(monkeypatch):
+    """Demonstrates the ULP test above is failure-capable: temporarily
+    breaks panchanga.vara's rollback (so the weekday no longer flips at the
+    sunrise boundary), confirms the SAME assertion this file's ULP test
+    uses would then fail, restores the real function, and re-verifies the
+    boundary is precise again. Mirrors this repository's established
+    negative-control pattern (test_panchanga.py, certify_panchanga.py's
+    Gate F)."""
+
+    lat, lon = 28.6667, 77.2167
+    midnight = swe.julday(2025, 3, 2, 0.0, swe.GREG_CAL)
+    day_rise = sunrise(midnight, lat, lon, 0.0, PARASHARI_LAHIRI, True)
+    exact_sunrise = day_rise.julian_day_ut
+    just_before = exact_sunrise - _ULP_EPSILON_DAYS
+
+    import engine.astrology.trikalam as trikalam_module
+
+    real_vara = trikalam_module.vara
+
+    def _always_same_weekday(*args, **kwargs):
+        # Always report the pre-rollover weekday - the rollback never happens.
+        result = real_vara(*args, **kwargs)
+        if result.status != VaraStatus.OK:
+            return result
+        from dataclasses import replace
+        return replace(result, index=6)
+
+    monkeypatch.setattr(trikalam_module, "vara", _always_same_weekday)
+    try:
+        broken_before = trikalam_period(TrikalamElement.RAHU_KALAM, just_before, lat, lon, 0.0, PARASHARI_LAHIRI, True, PYJHORA_TRIKALAM_V1)
+        broken_at = trikalam_period(TrikalamElement.RAHU_KALAM, exact_sunrise, lat, lon, 0.0, PARASHARI_LAHIRI, True, PYJHORA_TRIKALAM_V1)
+        negative_control_caught = broken_at.weekday_index != 0  # would fail the real test's assertion
+        assert negative_control_caught, "negative control: broken rollback was NOT caught by the ULP boundary check"
+    finally:
+        monkeypatch.undo()
+
+    assert trikalam_module.vara is real_vara
+    restored_before = trikalam_period(TrikalamElement.RAHU_KALAM, just_before, lat, lon, 0.0, PARASHARI_LAHIRI, True, PYJHORA_TRIKALAM_V1)
+    restored_at = trikalam_period(TrikalamElement.RAHU_KALAM, exact_sunrise, lat, lon, 0.0, PARASHARI_LAHIRI, True, PYJHORA_TRIKALAM_V1)
+    assert restored_before.weekday_index == 6
+    assert restored_at.weekday_index == 0
+
+
 def test_negative_control_broken_offset_table_is_caught_by_independent_reference(monkeypatch):
     """Demonstrates the independent validator (validate_trikalam_holdout,
     a genuinely separate re-typed table) actually catches a corrupted

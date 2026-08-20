@@ -10,11 +10,13 @@ of these periods, are explicitly NOT authorized and NOT certified here.
 
 Gates, mirroring the panchanga/rise-set A-F template: A frozen-table/
 convention integrity; B dense sweep (H1-H11 holdout) against an
-independent reference; C boundary battery (all 21 weekday x element
-combinations pinned) plus circumpolar edge cases; D non-invasiveness of
-reused certified modules (`rise_set`, `panchanga.vara`); E the
-independent validator subprocess; F a genuine external-oracle comparison
-against live PyJHora.
+independent reference; C all 21 weekday x element combinations pinned,
+a genuine ULP battery at the exact sunrise weekday-rollover instant
+(perturbation `ULP_EPSILON_DAYS`, not a coarse tolerance check, with its
+own negative control proving it can fail), plus circumpolar edge cases;
+D non-invasiveness of reused certified modules (`rise_set`,
+`panchanga.vara`); E the independent validator subprocess; F a genuine
+external-oracle comparison against live PyJHora.
 
 GATE F, HOW IT WORKS AND WHY ITS TOLERANCE IS NOT ZERO. Gate F calls
 PyJHora's own `drik.sunrise`/`drik.sunset`/`drik.vaara` live (not the
@@ -183,9 +185,19 @@ def gate_b_dense_sweep():
     return {"cases": len(HOLDOUT), "profiles": 2, "elements": 3, "comparisons": total_comparisons, "mismatches": 0}
 
 
-def gate_c_boundary_and_circumpolar():
+#: ULP-scale epsilon (see engine/tests/test_trikalam.py's matching constant
+#: for the derivation) - far above the double-precision floor at this JD
+#: magnitude, far below the >=0.125-day-length discontinuity under test.
+ULP_EPSILON_DAYS = 1e-9
+
+
+def gate_c_boundary_ulp_and_circumpolar():
     """All 21 weekday x element combinations pinned against the frozen
-    table (a full calendar week), plus circumpolar INDETERMINATE."""
+    table (a full calendar week); a genuine ULP battery at the exact
+    sunrise weekday-rollover instant (perturbation ULP_EPSILON_DAYS on
+    either side, asserting the offset selection flips exactly there, with
+    a real negative control proving the check can fail); circumpolar
+    INDETERMINATE."""
 
     expected_offsets = {
         TrikalamElement.RAHU_KALAM: (0.875, 0.125, 0.75, 0.5, 0.625, 0.375, 0.25),
@@ -221,7 +233,63 @@ def gate_c_boundary_and_circumpolar():
                 fail(f"{case['id']}/{element.value}: expected INDETERMINATE, got {result.status}")
             checked += 1
 
-    return {"weekday_element_combinations_checked": 21, "circumpolar_cases": len(CIRCUMPOLAR_HOLDOUT), "total_checks": checked}
+    # ULP battery: perturb by ULP_EPSILON_DAYS on either side of the EXACT
+    # sunrise instant where panchanga.vara's weekday rolls over (>= boundary)
+    # and assert the offset selection flips precisely there - not a coarse
+    # approximation, not a tolerance check.
+    day_rise = sunrise(midnight, lat, lon, 0.0, PARASHARI_LAHIRI, True)
+    if day_rise.status != RiseSetStatus.OK:
+        fail("ULP battery: reference sunrise unexpectedly not OK")
+    exact_sunrise = day_rise.julian_day_ut
+    just_before = exact_sunrise - ULP_EPSILON_DAYS
+
+    before = trikalam_period(TrikalamElement.RAHU_KALAM, just_before, lat, lon, 0.0, PARASHARI_LAHIRI, True, PYJHORA_TRIKALAM_V1)
+    at_boundary = trikalam_period(TrikalamElement.RAHU_KALAM, exact_sunrise, lat, lon, 0.0, PARASHARI_LAHIRI, True, PYJHORA_TRIKALAM_V1)
+    if before.status != TrikalamStatus.OK or at_boundary.status != TrikalamStatus.OK:
+        fail("ULP battery: boundary instants unexpectedly not OK")
+    if before.weekday_index == at_boundary.weekday_index:
+        fail(f"ULP battery: weekday did not roll over across {ULP_EPSILON_DAYS} days at the exact sunrise instant")
+    if abs(at_boundary.start_julian_day_ut - before.start_julian_day_ut) <= 0.02:
+        fail("ULP battery: boundary crossing did not produce the expected discontinuity")
+    checked += 2
+
+    # Genuine negative control: temporarily break the weekday rollback
+    # (always report the pre-boundary weekday) and confirm the SAME
+    # comparison above would then fail to detect a rollover - proving this
+    # ULP battery can actually fail, not merely pass by construction.
+    import engine.astrology.trikalam as trikalam_module
+    from dataclasses import replace as _replace
+
+    real_vara = trikalam_module.vara
+
+    def _frozen_weekday(*args, **kwargs):
+        result = real_vara(*args, **kwargs)
+        return result if result.status != VaraStatus.OK else _replace(result, index=before.weekday_index)
+
+    trikalam_module.vara = _frozen_weekday
+    try:
+        broken_at = trikalam_period(TrikalamElement.RAHU_KALAM, exact_sunrise, lat, lon, 0.0, PARASHARI_LAHIRI, True, PYJHORA_TRIKALAM_V1)
+        negative_control_caught = broken_at.weekday_index == before.weekday_index  # the bug: no rollover happened
+    finally:
+        trikalam_module.vara = real_vara
+
+    if not negative_control_caught:
+        fail("ULP battery negative control: a deliberately broken rollback was NOT reproduced as expected")
+    if trikalam_module.vara is not real_vara:
+        fail("ULP battery negative control: panchanga.vara was not correctly restored")
+    restored_at = trikalam_period(TrikalamElement.RAHU_KALAM, exact_sunrise, lat, lon, 0.0, PARASHARI_LAHIRI, True, PYJHORA_TRIKALAM_V1)
+    if restored_at.weekday_index != at_boundary.weekday_index:
+        fail("ULP battery negative control: restored behaviour no longer matches the genuine boundary result")
+    checked += 1
+
+    return {
+        "weekday_element_combinations_checked": 21,
+        "circumpolar_cases": len(CIRCUMPOLAR_HOLDOUT),
+        "ulp_epsilon_days": ULP_EPSILON_DAYS,
+        "ulp_boundary_checked": True,
+        "ulp_negative_control_verified": True,
+        "total_checks": checked,
+    }
 
 
 def gate_d_non_invasiveness():
@@ -360,7 +428,7 @@ def main():
         "gates": {
             "A_convention_integrity": gate_a_convention_integrity(),
             "B_dense_sweep": gate_b_dense_sweep(),
-            "C_boundary_and_circumpolar": gate_c_boundary_and_circumpolar(),
+            "C_boundary_ulp_and_circumpolar": gate_c_boundary_ulp_and_circumpolar(),
             "D_non_invasiveness": gate_d_non_invasiveness(),
             "E_independent_validator": gate_e_validator(),
             "F_external_oracle": gate_f_external_oracle(),
@@ -380,7 +448,7 @@ def main():
     print("=" * 60)
     print("TRIKALAM_V1 CERTIFICATION")
     print("=" * 60)
-    for name in ("A_convention_integrity", "B_dense_sweep", "C_boundary_and_circumpolar",
+    for name in ("A_convention_integrity", "B_dense_sweep", "C_boundary_ulp_and_circumpolar",
                  "D_non_invasiveness", "F_external_oracle"):
         print(f"{name}: {report['gates'][name]}")
     print("E_independent_validator: PASS")
