@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 3.1.0 |
+| Version | 3.2.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-20 (ADR-0062: permanent ACE execution-state mechanism added - see docs/ACE_EXECUTION_STATE.md for the current snapshot; push authorization remains the standing next action) |
+| Last updated | 2026-08-20 (pushed 3487add; TRIKALAM_V1 Gate F CI-confirmed PASS; expected M-03 drift recovered in 9e33490, itself pending push authorization - see docs/ACE_EXECUTION_STATE.md) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,44 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-20 - Push executed; TRIKALAM_V1 Gate F CI-confirmed PASS; expected M-03 drift recovered
+- Branch / commit SHA: `phase-g-governance`, `9e33490d7e1186a114773231ff84807e835ededd` - **not yet
+  pushed**, per git-safety's per-action push-confirmation rule (the owner's "push authorised" covered
+  `3487add`, which is now pushed; this newer evidence-recovery commit needs its own authorization).
+- Previous approved commit: `3487add6252f6cc4ebb535c512d390fedbf16494` (pushed, CI-run).
+- Task: owner "push authorised" - pushed the 5 commits from the prior entry, then monitored the
+  resulting CI run per the standing evidence-recovery discipline.
+- Relevant ADR/specification: `ADR-0053`/`ADR-0054` (the evidence-recovery precedent reused verbatim);
+  `ADR-0061` (`TRIKALAM_V1`, whose Gate F this run confirms).
+- Files changed (commit `9e33490`): 13 `certification/*_certification.json` and their `reports/
+  certification/*.console.txt`/`*.report.md` companions where they actually differed (27 files) -
+  CI-sourced overlay only, no source code.
+- Implementation summary: `git push origin phase-g-governance` succeeded (`ce2475f..3487add`). CI run
+  `32353401132` completed with conclusion `failure`, but the failure was entirely the expected class:
+  the "Oracle certification runners (all ten)" step itself **PASSED** - `certify_trikalam.py` genuinely
+  executed under the hash-pinned oracle environment and its `F_external_oracle` gate passed for real -
+  and the subsequent drift-assertion steps failed only because `TRIKALAM_V1`'s addition legitimately grew
+  the M-03 anti-fitting scan surface 177 -> 180, aging every other already-committed artifact's
+  `modules_scanned` field, exactly as happened twice before (`ADR-0053`, and this session's own Panchanga
+  evidence-recovery). Downloaded `hermetic-certification-evidence-3.11`/`-3.12` and
+  `oracle-certification-evidence`; cross-compared 3.11 vs 3.12 (identical outside `environment.python`/
+  `run.python`); diffed all 13 affected artifacts against committed HEAD (confirmed `modules_scanned`
+  177->180 is the ONLY non-volatile difference in every case, via a small verification script, not by
+  assumption); overlaid the CI-sourced files.
+- Tests executed and results: `python -m pytest -q` - 799 passed (unchanged; no code touched).
+- Certification executed and results: `python scripts/check_artifact_drift.py` - **PASS, 46 evidence
+  files identical to committed HEAD outside the volatile fields** (confirms the overlay is exactly
+  correct, no other drift). `scripts/check_adr_numbering.py`/`check_retired_identifiers.py`/
+  `check_identifier_families.py` - all PASS.
+- Known issues: none. The CI failure was diagnosed, not assumed, before any fix was applied (log
+  inspection first, per certification-discipline rules).
+- Unresolved questions: none technical.
+- CEO decision required: **the push itself**, per git-safety's per-action confirmation rule - this is a
+  new commit made after the prior "push authorised" was already consumed by `3487add`.
+- Next authorized action: on push authorization, push `9e33490`, wait for the resulting CI run, report
+  run ID and PASS/FAIL per job, and refresh `docs/ACE_EXECUTION_STATE.md`/this file to the fully-green
+  state if it passes.
 
 ### 2026-08-20 - Permanent ACE execution-state mechanism implemented (ADR-0062)
 - Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with `ADR-0062`).
@@ -732,6 +770,7 @@ act.
 
 | Version | Date | Change |
 |---|---|---|
+| 3.2.0 | 2026-08-20 | Pushed `3487add`; CI run `32353401132` confirmed `TRIKALAM_V1`'s Gate F genuinely PASSED under the hash-pinned oracle environment. Same run's drift-assertion steps failed on the expected M-03 177->180 field; recovered via CI-sourced overlay in commit `9e33490` (not yet pushed). |
 | 3.1.0 | 2026-08-20 | `ADR-0062`: added `docs/ACE_EXECUTION_STATE.md` (canonical current-state snapshot) and `specs/CLAUDE_WORKFLOW.md`'s "Execution-state recovery" section; explicit permanent prohibition on relaying reports between Claude and ChatGPT through the user. No approval checkpoint weakened. |
 | 3.0.0 | 2026-08-20 | `ADR-0061`: `TRIKALAM_V1` (`PYJHORA_TRIKALAM_V1` variant) implemented - new `engine.astrology.trikalam`, tests, certifier, validator, CI wiring. All six gates locally verified (unpinned exploration venv); 799 tests pass. Not yet committed/pushed/CI-confirmed. |
 | 2.9.0 | 2026-08-20 | `ADR-0060`: `DP-011` ratified (Option C seeded by Option B); PyJHora 4.8.7 `trikalam()` convention independently inspected and frozen as `PYJHORA_TRIKALAM_V1`. Implementation/certification work proceeding next. |
