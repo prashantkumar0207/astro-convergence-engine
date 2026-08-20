@@ -4,7 +4,7 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | PROPOSED - index of decision papers. Papers present options; they decide nothing. |
-| Version | 1.8.0 |
+| Version | 1.9.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 | Last updated | 2026-08-20 |
 | Review cadence | TBD |
@@ -43,12 +43,13 @@ register uses for ADR-0015 through ADR-0017.
 | DP-009 | tier classification for panchanga and rise/set | panchanga and rise/set certification | **ADDRESSED by ADR-0052** (2026-08-17), accepting Option B: rise/set Tier-0; panchanga Tier-1; vara explicitly straddles the boundary. The paper remains unedited as the options record. |
 | DP-010 | in-repo AI collaboration scaffolding (CLAUDE.md / skills) and repair of stale AI-role documents | `docs/PROJECT_CONSTITUTION.md` s11; `specs/CLAUDE_WORKFLOW.md`; `docs/PROJECT_MASTER.md`; the transfer-bundle handoff convention | ADDRESSED by ADR-0044, narrower than this paper's recommendation (no skills/agents/MCP; the three named stale documents were not repaired, by owner instruction) |
 | DP-011 | Rahu Kalam / Yamaganda / Gulika variant-table source, per `ADR-0055` item 2's authorization to draft this paper | FOUNDATION implementation scope (`Q8_CLOSURE_MATRIX.md` s4); Rahu Kalam/Yamaganda/Gulika certification | **ADDRESSED by ADR-0060** (2026-08-20), accepting Option C seeded by Option B: named, profile-selectable variants; PyJHora's convention transcribed and frozen as the seed `PYJHORA_TRIKALAM_V1`. The paper remains unedited as the options record. |
-| DP-012 | Civil-date rendering methodology for dasha boundaries | FOUNDATION implementation scope (`Q8_CLOSURE_MATRIX.md` s4); any future dasha-boundary display/report | OPEN, drafted |
+| DP-012 | Civil-date rendering methodology for dasha boundaries | FOUNDATION implementation scope (`Q8_CLOSURE_MATRIX.md` s4); any future dasha-boundary display/report | **ADDRESSED by ADR-0063** (2026-08-20), accepting Option C: deferred entirely until a consuming feature needs it. Not implementation-authorized. The paper remains unedited as the options record. |
 
 ## Change history
 
 | Version | Date | Change |
 |---|---|---|
+| 1.9.0 | 2026-08-20 | DP-012 marked ADDRESSED by `ADR-0063` (Option C accepted: deferred). |
 | 1.8.0 | 2026-08-20 | Allocated and drafted DP-012 (`DP-012-civil-date-rendering-dasha-boundaries.md`), per the owner's "if a decision paper is required before implementation, draft that decision paper and register it" instruction. Options only; decides nothing. |
 | 1.7.0 | 2026-08-20 | DP-011 marked ADDRESSED by `ADR-0060` (Option C seeded by Option B accepted). |
 | 1.6.0 | 2026-08-19 | Allocated and drafted DP-011 (`DP-011-rahu-kalam-yamaganda-gulika-variant-tables.md`), per `ADR-0055` item 2's authorization. Options only; decides nothing. |

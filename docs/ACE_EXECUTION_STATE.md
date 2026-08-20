@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | **ACCEPTED (`ADR-0062`) - canonical, machine-checkable current-state record.** Regenerate/refresh on every meaningful implementation task, same discipline as `reports/AI_HANDOFF_CURRENT.md`. |
-| Version | 1.9.0 |
+| Version | 2.0.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-20 (DP-012 decision-readiness audit: fold/gap sub-question resolved by research, not a policy choice; two genuine sub-decisions remain, ratification still the sole standing non-blocking item) |
+| Last updated | 2026-08-20 (ADR-0063: DP-012 Option C ratified - civil-date rendering deferred, not implementation-authorized; caught and corrected a mismatched prior instruction before any code was written) |
 | Review cadence | Refresh at the start of a session if stale; not load-bearing if it isn't. |
 
 # ACE execution state
@@ -43,21 +43,21 @@ independently is in these fields plus the pointers they name.
 | Field | Value |
 |---|---|
 | `CURRENT_PHASE` | FOUNDATION (`docs/Q8_CLOSURE_MATRIX.md` s4). Phase G exited (`ADR-0048`); FOUNDATION entered. |
-| `CURRENT_MILESTONE` | `TRIKALAM_V1` (Rahu Kalam/Yamaganda/Gulika, seed variant `PYJHORA_TRIKALAM_V1`) is **FOUNDATION checkpoint-accepted / production-certified** (`ADR-0061`'s third addendum). Panchanga classification and rise/set are likewise CERTIFIED and checkpoint-accepted (`ADR-0054`, `ADR-0059`). Milestone now moves to: civil-date rendering for dasha boundaries - `DP-012` drafted and registered; implementation NOT yet authorized (awaiting ratification). |
-| `CURRENT_AUTHORIZED_TASK` | None self-executable. `DP-012` (civil-date rendering methodology for dasha boundaries) is drafted and awaiting owner ratification. No FOUNDATION implementation is currently authorized - `TRIKALAM_V1` is complete; civil-date rendering awaits `DP-012`; H-01 and H-02 still lack any ratified decision paper (H-02's own investigation methodology, `ADR-0020` D5, is itself unratified). |
-| `TASK_OWNER` | CLAUDE (`TRIKALAM_V1` checkpoint recorded, `DP-012` drafted); USER (ratify `DP-012`, or name a different next task). |
-| `STATUS` | `TRIKALAM_V1` is done: implemented, CI-confirmed, CEO-audit ULP finding remediated and CI-confirmed, FOUNDATION checkpoint accepted. `DP-012` (civil-date rendering for dasha boundaries) underwent a decision-readiness audit (v1.1.0 -> v1.2.0): empirically disproved its own v1.0.0 draft's assumed fold/gap-ambiguity sub-question (`astimezone()` on an already-unambiguous UTC instant is fully deterministic - not a policy choice) and confirmed the LMT-vs-standardized-zone labelling question is real. `DP-012` now presents exactly two genuine sub-decisions, not three. No FOUNDATION capability beyond `TRIKALAM_V1` is authorized to implement; H-01/H-02/boundary-proximity remain unauthorized, unchanged since the last full audit. |
-| `LAST_COMPLETED_ACTION` | Third `ADR-0061` evidence addendum recording owner acceptance of `TRIKALAM_V1`'s FOUNDATION checkpoint; `DP-012` drafted and registered (`docs/decisions/README.md`). |
-| `LAST_COMMIT` | `eb79b7f1c0683bc7107335a2ae63fb89e0950397` - pushed; `origin/phase-g-governance` identical. |
-| `LAST_CI_RUN` | `32367342027` (commit `eb79b7f`) - **all four jobs green**, directly confirmed via `gh run view`. |
-| `LAST_CEO_DECISION` | "ACE CONTINUE - CEO CHECKPOINT ACCEPTED" (2026-08-20): the owner explicitly accepted `TRIKALAM_V1`'s FOUNDATION per-capability checkpoint. |
-| `NEXT_AUTHORIZED_ACTION` | None self-executable. On `DP-012` ratification, the next Claude action is implementing civil-date rendering per whichever option is ratified, following the established varga/rise-set certification template. |
-| `WAITING_FOR` | USER: a ratification decision on `DP-012` if civil-date rendering is to proceed (not blocking - may be deferred per the paper's own Option C). |
-| `BLOCKER` | None. `DP-012` implementation is blocked on ratification by design, not by any technical limitation. |
-| `CEO_APPROVAL_REQUIRED` | Not immediately - nothing is queued needing approval right now. `DP-012`'s ratification is a standing, non-blocking open item whenever the owner chooses to act on it. |
-| `CLAUDE_ACTION_REQUIRED` | None until `DP-012` is ratified or a different task is named. |
-| `CHATGPT_ACTION_REQUIRED` | Independent audit of `TRIKALAM_V1`'s full evidence trail and `DP-012`'s options is available now via the standard Git -> state-file path - no report relay needed. |
-| `USER_ACTION_REQUIRED` | Ratify `DP-012` (or defer it) whenever convenient - it does not block anything else. |
+| `CURRENT_MILESTONE` | `TRIKALAM_V1` (Rahu Kalam/Yamaganda/Gulika, seed variant `PYJHORA_TRIKALAM_V1`) is **FOUNDATION checkpoint-accepted / production-certified** (`ADR-0061`'s third addendum). Panchanga classification and rise/set are likewise CERTIFIED and checkpoint-accepted (`ADR-0054`, `ADR-0059`). Civil-date rendering for dasha boundaries is **ratified as DEFERRED** (`ADR-0063`, `DP-012` Option C) - not an active milestone, not implementation-authorized. FOUNDATION's remaining implementation-scope items (H-01, H-02) both still lack any ratified decision paper. |
+| `CURRENT_AUTHORIZED_TASK` | None. No FOUNDATION implementation is currently authorized - `TRIKALAM_V1` is complete; civil-date rendering is explicitly deferred, not pending; H-01 has no governing document at all; H-02's own investigation methodology (`ADR-0020` D5) is itself unratified. |
+| `TASK_OWNER` | CLAUDE (`TRIKALAM_V1` checkpoint and `DP-012` deferral both recorded); USER (name the next task - no FOUNDATION item is currently ready without further ratification). |
+| `STATUS` | `TRIKALAM_V1` is done: implemented, CI-confirmed, CEO-audit ULP finding remediated and CI-confirmed, FOUNDATION checkpoint accepted. `DP-012` (civil-date rendering) is **ratified Option C: deferred entirely** until a consuming feature needs it - not implementation-authorized (a prior instruction to "implement Option C" was caught as a mismatch against the paper's actual text - Option C is the defer option - before any code was written, then corrected by the owner). No FOUNDATION capability beyond `TRIKALAM_V1` is authorized to implement; H-01/H-02/boundary-proximity remain unauthorized, unchanged since the last full audit. |
+| `LAST_COMPLETED_ACTION` | `ADR-0063`: owner ratified `DP-012` Option C - civil-date rendering for dasha boundaries is deferred, not implementation-authorized. Caught and corrected a mismatched prior instruction (which said "implement Option C") against the paper's actual text before any code was written. |
+| `LAST_COMMIT` | Local HEAD - see `git rev-parse HEAD`, made after this file was drafted; not yet pushed. `origin/phase-g-governance` remains at `9424768ebfb2d8567c939743e44efa0547eb32fa`. |
+| `LAST_CI_RUN` | `32368698367` (commit `9424768`) - all four jobs green; unchanged by this documentation-only task. |
+| `LAST_CEO_DECISION` | "ACE CORRECTION - DP-012 IS DEFERRED" (2026-08-20): the owner ratified `DP-012` Option C and corrected a prior mismatched implementation instruction. |
+| `NEXT_AUTHORIZED_ACTION` | None self-executable. No FOUNDATION capability currently has both satisfied prerequisites and a ratified implementation decision. The most promising next decision-paper candidate is a narrow H-02 investigation-methodology paper (extracting `ADR-0020` D5's already-written analysis into its own citable decision, without requiring ratification of `ADR-0020`'s other nine unrelated items) - not drafted, only identified; drafting it would need its own explicit authorization. |
+| `WAITING_FOR` | USER: to authorize drafting the H-02 decision paper identified above, or name a different next task. Not blocking - FOUNDATION has no other pending action. |
+| `BLOCKER` | None technical. Every remaining FOUNDATION item (H-01, H-02) is blocked on a decision this repository does not yet have the prerequisite ratification to make. |
+| `CEO_APPROVAL_REQUIRED` | Not immediately - nothing is queued needing approval right now. |
+| `CLAUDE_ACTION_REQUIRED` | None until the owner names a next task. |
+| `CHATGPT_ACTION_REQUIRED` | Independent audit of `TRIKALAM_V1`'s evidence trail, `ADR-0063`'s deferral, and the FOUNDATION roadmap state is available now via the standard Git -> state-file path - no report relay needed. |
+| `USER_ACTION_REQUIRED` | Name the next task - e.g. authorize drafting the H-02 decision paper, or a different priority. |
 | `HANDOFF_REQUIRED` | None beyond this file and `reports/AI_HANDOFF_CURRENT.md`'s latest entry - both already current as of this file's `Last updated` date. |
 
 ## How to independently verify every field above
@@ -78,6 +78,7 @@ exactly as `reports/AI_HANDOFF_CURRENT.md` already requires of itself.
 
 | Version | Date | Change |
 |---|---|---|
+| 2.0.0 | 2026-08-20 | `ADR-0063`: owner ratified `DP-012` Option C (deferred, not implementation-authorized), correcting a prior mismatched instruction caught before any code was written. Corrected all fields that previously implied civil-date rendering implementation was pending ratification. Identified (not drafted) a narrow H-02 decision-paper candidate as the next FOUNDATION item worth pursuing. |
 | 1.9.0 | 2026-08-20 | `DP-012` decision-readiness audit: empirically disproved the fold/gap-ambiguity sub-question (research-resolvable, not a policy choice) via a direct `zoneinfo` test across both 2024 DST transitions; confirmed the LMT-labelling sub-question is genuine. Checked the rest of the FOUNDATION roadmap - nothing else authorized to implement. No option selected, nothing implemented. |
 | 1.8.0 | 2026-08-20 | Pushed `eb79b7f`; CI run `32367342027` all four jobs green. Repository fully synced with origin, nothing outstanding except `DP-012` ratification (non-blocking). |
 | 1.7.0 | 2026-08-20 | Independently advanced `DP-012` without deciding or implementing anything: empirically probed `zoneinfo`/`tzdata` against `RISE_SET_V1`'s own holdout dates, confirmed pre-standardization instants resolve to genuine Local Mean Time (not approximation), and folded this into the paper's options and s5 sub-decisions. |

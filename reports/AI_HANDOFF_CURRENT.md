@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 3.8.0 |
+| Version | 3.9.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-20 (DP-012 decision-readiness audit: fold/gap sub-question resolved by research, not a policy choice - see docs/ACE_EXECUTION_STATE.md) |
+| Last updated | 2026-08-20 (ADR-0063: DP-012 Option C ratified - civil-date rendering deferred, not authorized; H-02 decision-paper candidate identified, not drafted - see docs/ACE_EXECUTION_STATE.md) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,42 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-20 - DP-012 Option C ratified: civil-date rendering deferred (ADR-0063); mismatch caught first
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with `ADR-0063`).
+- Previous approved commit: `9424768ebfb2d8567c939743e44efa0547eb32fa`.
+- Task: owner "ACE CONTINUE - DP-012 OPTION C RATIFIED" asked Claude to *implement* civil-date rendering
+  "per DP-012 Option C." Direct re-verification of `DP-012`'s actual text (mandatory before coding, per
+  that same task's own instruction) showed Option C is the paper's **defer** option, not an
+  implementation path - the detailed implementation requirements in that instruction actually matched
+  Option A's content. Claude stopped and asked which was intended, writing zero code. The owner's
+  follow-up, "ACE CORRECTION - DP-012 IS DEFERRED," confirmed Option C (defer) was in fact what was
+  ratified, and explicitly instructed correcting any wording that implied otherwise.
+- Relevant ADR/specification: `ADR-0063` (new); `DP-012` (unedited - paper is not the decision).
+- Files changed: `docs/DECISION_LOG.md` (new `ADR-0063`, register header updated, `ADR-0061`'s stale
+  "civil-date rendering... lacks a ratified decision paper" line corrected), `docs/decisions/README.md`
+  (`DP-012` marked ADDRESSED), `docs/ACE_EXECUTION_STATE.md` (every field that previously implied
+  implementation was pending ratification corrected to reflect deferral), this file. No engine code -
+  none was ever written for this capability.
+- Implementation summary: recorded the owner's Option C ratification as `ADR-0063`. Verified no
+  civil-date-rendering code/tests/certification artifacts existed anywhere in the working tree (the
+  mismatch was caught before the implementation instruction's steps 3-11 were ever executed). Per the
+  correction's own item 6-7, re-audited the FOUNDATION roadmap: no capability has both satisfied
+  prerequisites and a ratified implementation decision. Identified (did not draft, since only
+  "identify" was asked) the most promising next decision-paper candidate: a narrow H-02
+  investigation-methodology paper extracting `ADR-0020` D5's already-written analysis, so the owner
+  need not ratify `ADR-0020`'s other nine unrelated items just to unblock H-02. H-01 has no governing
+  document at all in this repository - not enough groundwork exists yet to identify a specific DP for
+  it.
+- Tests executed and results: none applicable - documentation/decision-recording only.
+- Certification executed and results: none applicable.
+- Known issues: none. This entry documents a self-caught process error (a task instruction's label and
+  its content disagreed) rather than a repository defect.
+- Unresolved questions: whether to authorize drafting the identified H-02 decision-paper candidate.
+- CEO decision required: no, for this entry itself (implements the owner's own correction). Drafting the
+  H-02 paper would need its own authorization, per "no silent scope expansion."
+- Next authorized action: push (needs its own authorization). Separately, awaiting the owner naming the
+  next task - most likely either authorizing the H-02 decision-paper draft, or something else entirely.
 
 ### 2026-08-20 - DP-012 decision-readiness audit: one sub-question resolved by research, not decided
 - Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the audit).
@@ -975,6 +1011,7 @@ act.
 
 | Version | Date | Change |
 |---|---|---|
+| 3.9.0 | 2026-08-20 | `ADR-0063`: `DP-012` Option C ratified (civil-date rendering deferred, not authorized) - caught and corrected a prior instruction that mislabeled Option A's content as "Option C" before any code was written. Corrected all state-file wording implying implementation was pending. Identified an H-02 decision-paper candidate; not drafted. |
 | 3.8.0 | 2026-08-20 | `DP-012` decision-readiness audit: empirically disproved the fold/gap-ambiguity sub-question (a mistaken analogy to `BirthData`'s opposite-direction problem) - `astimezone()` on an unambiguous UTC instant is fully deterministic. Two genuine sub-decisions remain. Nothing decided, nothing implemented; no other FOUNDATION work found authorized. |
 | 3.7.0 | 2026-08-20 | Verified `42d61c3`/checkpoint record/state files already correct, no changes needed. Independently advanced `DP-012` via a real `zoneinfo`/`tzdata` probe (LMT-era vs. standardized-zone distinction) - research only, decides and implements nothing. |
 | 3.6.0 | 2026-08-20 | Owner accepted `TRIKALAM_V1`'s FOUNDATION checkpoint (`ADR-0061` third addendum) - production-certified. Drafted and registered `DP-012` (civil-date rendering for dasha boundaries) as the next tractable FOUNDATION item; not implemented, awaiting ratification. |
