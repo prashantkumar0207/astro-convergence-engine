@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 3.2.0 |
+| Version | 3.3.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-20 (pushed 3487add; TRIKALAM_V1 Gate F CI-confirmed PASS; expected M-03 drift recovered in 9e33490, itself pending push authorization - see docs/ACE_EXECUTION_STATE.md) |
+| Last updated | 2026-08-20 (TRIKALAM_V1 fully CI-confirmed, all four jobs green, run 32358109807; FOUNDATION per-capability checkpoint is the sole open owner decision - see docs/ACE_EXECUTION_STATE.md) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,41 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-20 - TRIKALAM_V1 fully CI-confirmed (all four jobs green); FOUNDATION checkpoint decision presented
+- Branch / commit SHA: `phase-g-governance`, `bf0d4140e239fa52200011698b2b132aa1460145` - confirmed
+  identical to `origin/phase-g-governance` (`git fetch` + `git rev-parse` both sides). Nothing unpushed.
+- Previous approved commit: `9e33490d7e1186a114773231ff84807e835ededd`.
+- Task: owner "Continue ACE execution from the current repository state... perform the next authorized
+  action identified by the current state." Session-start audit found `origin/phase-g-governance` already
+  equal to local HEAD (`bf0d414`) - the push from the prior turn's request had already occurred outside
+  this conversation turn - so the next action was to verify CI, not to request push authorization again.
+- Relevant ADR/specification: `ADR-0061` (evidence addendum added, CI confirmation); `Q8_CLOSURE_MATRIX.md`
+  s4 (the per-capability checkpoint now presented as the open decision).
+- Files changed: `docs/DECISION_LOG.md` (new `### Evidence addendum to ADR-0061`, register header
+  updated), `docs/ACE_EXECUTION_STATE.md` (refreshed to the fully-green state), this file. No code.
+- Implementation summary: `gh run view 32358109807` confirmed all four jobs (governance, no-oracle 3.11,
+  no-oracle 3.12, oracle) green - `certify_trikalam.py` genuinely executed `F_external_oracle` under
+  the hash-pinned oracle environment and the drift-assertion step also passed (the `9e33490` overlay was
+  correct). `TRIKALAM_V1` is now evidenced to the same CI-confirmed standard as every other certified
+  claim in this repository. The addendum records this and explicitly does NOT self-certify the
+  FOUNDATION per-capability checkpoint question - that is presented as the next owner decision, mirroring
+  `ADR-0059`'s own Panchanga-checkpoint precedent exactly (Claude presents evidence; the owner ratifies).
+- Tests executed and results: none re-run (no code changed since `9e33490`'s own full-suite pass, 799
+  passed); this task's own verification was `gh run view` log/job inspection, not a fresh local run.
+- Certification executed and results: none re-run; `TRIKALAM_V1`'s CI result (PASS, all six gates) stands
+  as directly observed in run `32358109807`.
+- Known issues: none.
+- Unresolved questions / CEO decision required: **YES - exactly one, the same question `ADR-0059`
+  resolved for Panchanga.** Does `TRIKALAM_V1` (Rahu Kalam/Yamaganda/Gulika, `PYJHORA_TRIKALAM_V1`
+  variant) meet `Q8_CLOSURE_MATRIX.md` s4's per-capability FOUNDATION checkpoint, now that implementation
+  is complete and CI-confirmed? Not self-certified here.
+- CEO decision required: **the FOUNDATION per-capability checkpoint acceptance for `TRIKALAM_V1`.**
+- Next authorized action: on acceptance, the next Claude action is a narrow `ADR-0061`-addendum-style
+  entry recording it (no new ADR number), then a fresh audit of what FOUNDATION scope remains (Rahu
+  Kalam/Yamaganda/Gulika's own remaining items, if any, or the next capability entirely - civil-date
+  rendering, H-01, H-02 all still lack any ratified decision paper). If the owner instead names a
+  different next task, that task is what governs.
 
 ### 2026-08-20 - Push executed; TRIKALAM_V1 Gate F CI-confirmed PASS; expected M-03 drift recovered
 - Branch / commit SHA: `phase-g-governance`, `9e33490d7e1186a114773231ff84807e835ededd` - **not yet
@@ -770,6 +805,7 @@ act.
 
 | Version | Date | Change |
 |---|---|---|
+| 3.3.0 | 2026-08-20 | Confirmed `bf0d414` pushed and CI run `32358109807` fully green (all four jobs). `TRIKALAM_V1` is CI-confirmed. Presented the FOUNDATION per-capability checkpoint as the sole open owner decision, not self-certified. |
 | 3.2.0 | 2026-08-20 | Pushed `3487add`; CI run `32353401132` confirmed `TRIKALAM_V1`'s Gate F genuinely PASSED under the hash-pinned oracle environment. Same run's drift-assertion steps failed on the expected M-03 177->180 field; recovered via CI-sourced overlay in commit `9e33490` (not yet pushed). |
 | 3.1.0 | 2026-08-20 | `ADR-0062`: added `docs/ACE_EXECUTION_STATE.md` (canonical current-state snapshot) and `specs/CLAUDE_WORKFLOW.md`'s "Execution-state recovery" section; explicit permanent prohibition on relaying reports between Claude and ChatGPT through the user. No approval checkpoint weakened. |
 | 3.0.0 | 2026-08-20 | `ADR-0061`: `TRIKALAM_V1` (`PYJHORA_TRIKALAM_V1` variant) implemented - new `engine.astrology.trikalam`, tests, certifier, validator, CI wiring. All six gates locally verified (unpinned exploration venv); 799 tests pass. Not yet committed/pushed/CI-confirmed. |
