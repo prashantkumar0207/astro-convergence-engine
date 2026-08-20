@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 4.0.0 |
+| Version | 4.1.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-20 (DP-013 drafted: H-02 reproduction-methodology and fix-option paper, extracted from ADR-0020 D5, not ratified - see docs/ACE_EXECUTION_STATE.md) |
+| Last updated | 2026-08-20 (DP-013 decision-readiness audit: reproduction options/evidence/trade-offs/recommendation laid out for CEO ratification - see this file's latest task-log entry and docs/ACE_EXECUTION_STATE.md) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,61 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-20 - DP-013 decision-readiness audit: reproduction options, evidence, trade-offs, recommendation
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the audit).
+- Previous approved commit: `ae9a08ed2604033e3faf207e087e768f8e052fe9`.
+- Task: owner "Claude: read the current DP-013 from the repository and perform the decision-readiness
+  audit... Put the exact reproduction options, their evidence, trade-offs, and Claude's recommendation
+  into the repository handoff so the CEO can make an informed ratification decision." No option chosen;
+  H-02 not implemented.
+- Relevant ADR/specification: `DP-013` (v1.0.0 -> v1.1.0).
+- Files changed: `docs/decisions/DP-013-h02-ingress-classification-seam.md` (strengthened), this file.
+  No engine code, no `ADR-0020` edit, no fix applied.
+
+**For the CEO's ratification decision - the exact reproduction options, evidence, and trade-offs, in one
+place (full detail in `DP-013` itself):**
+
+- **Re-verified, not assumed:** `engine/astrology/longitude_utils.py`'s `BOUNDARY_TOLERANCE` is still
+  exactly `1e-10` and `engine/transits/crossing.py`'s `RESIDUAL_BOUND_ARCSEC` is still exactly `1e-4`
+  arcsec - the original audit's 278x mismatch still holds precisely, unchanged since 2026-08-11. The
+  defect has not been silently fixed.
+- **Option A - independent-reference validator** (mirrors this session's own `validate_panchanga_
+  holdout.py`/`validate_trikalam_holdout.py` pattern): classify sign/nakshatra directly from an
+  independently-computed longitude at the exact reported event instant, compared against the engine's
+  own classification, across a holdout of real ingress instants. *Evidence:* directly reuses proven,
+  already-trusted infrastructure. *Trade-off:* re-derives the same tolerance-mismatch mechanism
+  analytically rather than sourcing a second, independently-implemented system.
+- **Option B - PyJHora oracle cross-check** (mirrors the `ADR-0059`/`ADR-0061` external-oracle
+  mechanism): compare against PyJHora's own ingress detection. *Evidence, newly verified this audit*
+  (PyJHora 4.8.7's source directly inspected, not assumed): a reachable API genuinely exists -
+  `next_sankranti_date_from_jd`/`previous_sankranti_date_from_jd` (Sun) and
+  `next_planet_entry_date_general` (general/nakshatra via its `nakshathra` parameter) - so Option B is a
+  real path, not a guess. *Trade-off, newly surfaced this audit:* every one of these functions defaults
+  to `precision=0.1` degrees - about four orders of magnitude coarser than the `2.78e-8` degree defect
+  being investigated. `precision` is caller-adjustable, but PyJHora's own search loop (a simple
+  step-until-within-precision walk) has not been verified to converge reliably at the precision this
+  comparison would need - real, boundable, but non-trivial effort, not a one-line parameter change.
+- **Option C - both A and B** (Claude's recommendation, confidence medium-high, revised down slightly
+  from the first draft now that B's cost is concretely known): A confirms the *mechanism*, B confirms the
+  real-world *magnitude*, matching this repository's established Gate B/E-plus-Gate-F template. Claude
+  would also accept **Option A alone** as a legitimate, lower-cost reading of "independently reproduced"
+  if the owner judges mechanism-level confirmation sufficient without B's additional PyJHora
+  precision-tuning effort.
+- **Explicitly not decided by this audit or by `DP-013` itself:** which of the original audit's three fix
+  options (explicit signed residual + declared division; bias the instant to the target division; widen
+  the classifier tolerance) is adopted if reproduction confirms the defect - the audit itself reserved
+  that choice for the owner.
+
+- Tests executed and results: none applicable - documentation/decision-paper audit only.
+- Certification executed and results: none applicable.
+- Known issues: none.
+- Unresolved questions: the reproduction-methodology option (A/B/C) and, separately, the fix option -
+  both still awaiting ratification.
+- CEO decision required: yes - a reproduction-methodology option, to unblock any H-02 investigation work.
+  Not required for this entry itself, which decides nothing.
+- Next authorized action: push (needs its own authorization). Awaiting the owner's ratification decision
+  on `DP-013`, or a different next task.
 
 ### 2026-08-20 - DP-013 drafted: H-02 seam extracted from ADR-0020 D5, not ratified
 - Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the draft).
@@ -1046,6 +1101,7 @@ act.
 
 | Version | Date | Change |
 |---|---|---|
+| 4.1.0 | 2026-08-20 | `DP-013` decision-readiness audit: re-verified the 278x tolerance mismatch against live code (unchanged); directly inspected PyJHora's source and confirmed Option B's API is real but its default precision is ~4 orders of magnitude too coarse. Full options/evidence/trade-offs/recommendation laid out in this file for CEO ratification. Nothing decided, nothing implemented. |
 | 4.0.0 | 2026-08-20 | `DP-013` drafted and registered: H-02 ingress-classification seam, extracting `ADR-0020` D5's already-written analysis (verified against the original `reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md` finding directly). 3 reproduction-methodology options, 3 preserved fix options (not recommended among). `ADR-0020` not ratified, H-02 not resolved. |
 | 3.9.0 | 2026-08-20 | `ADR-0063`: `DP-012` Option C ratified (civil-date rendering deferred, not authorized) - caught and corrected a prior instruction that mislabeled Option A's content as "Option C" before any code was written. Corrected all state-file wording implying implementation was pending. Identified an H-02 decision-paper candidate; not drafted. |
 | 3.8.0 | 2026-08-20 | `DP-012` decision-readiness audit: empirically disproved the fold/gap-ambiguity sub-question (a mistaken analogy to `BirthData`'s opposite-direction problem) - `astimezone()` on an unambiguous UTC instant is fully deterministic. Two genuine sub-decisions remain. Nothing decided, nothing implemented; no other FOUNDATION work found authorized. |

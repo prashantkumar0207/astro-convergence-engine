@@ -4,7 +4,7 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | OPEN - decision paper. Presents options and recommends one. DECIDES NOTHING. Requires owner approval. |
-| Version | 1.0.0 |
+| Version | 1.1.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 | Last updated | 2026-08-20 |
 | Review cadence | TBD |
@@ -38,6 +38,12 @@ classified into the previous nakshatra.** The existing certification gate misses
 the classifier 0.05 degrees (Sun) or 0.002 days (Moon) *after* the event instant, not *at* it. Neither
 `TRANSIT_V1` nor the varga/nakshatra classification certifications is wrong in isolation - "the defect is
 in the seam between them, which no certification covers because no certification spans both" (G1 s.H-02).
+
+**Re-verified against the live codebase, not merely the audit's own wording** (decision-readiness
+audit, 2026-08-20): `engine/astrology/longitude_utils.py`'s `BOUNDARY_TOLERANCE` is still exactly `1e-10`
+and `engine/transits/crossing.py`'s `RESIDUAL_BOUND_ARCSEC` is still exactly `1e-4` - the 278x mismatch
+the audit computed still holds precisely, unchanged since 2026-08-11. The defect has not been silently
+fixed or altered in the intervening period.
 
 **Established (by `ADR-0020` D5, itself still PROPOSED) - the procedural requirement, not reopened here:**
 the measured percentages above were produced by "a delegated read-only audit," not personally
@@ -80,8 +86,20 @@ independently-computed instant against this engine's. Strongest independence (a 
 implemented system, not just differently-coded arithmetic over the same inputs), consistent with this
 repository's now-established preference for a genuine external oracle over an internally-coded reference
 where one is reachable (the exact preference the Panchanga Gate F CEO-audit finding enforced earlier this
-session). Cost: requires locating and verifying PyJHora's own ingress/sankranti API surface, a fresh
-verification task of the same kind `ADR-0059`/`ADR-0060` each required before use.
+session). **Feasibility independently verified, not assumed** (PyJHora 4.8.7 wheel downloaded and its
+source directly inspected, no execution needed for this check): a reachable API exists -
+`jhora.panchanga.drik.next_sankranti_date_from_jd`/`previous_sankranti_date_from_jd` (Sun sign ingress)
+and `next_planet_entry_date_general` (general planet/nakshatra/raasi entry, `nakshathra` parameter
+covers the Moon-nakshatra half of H-02 directly) - so Option B is a real, not merely assumed, path.
+**A genuine, previously-unstated cost this inspection surfaced:** every one of these functions defaults
+to `precision=0.1` (degrees) - about four orders of magnitude coarser than this engine's own residual
+bound (`2.78e-8` degrees) and the H-02 defect's `1e-10` degree boundary-promotion window. Used at its
+default, PyJHora's own search would not resolve the boundary any more precisely than the defect being
+investigated, and could not serve as a meaningful independent check. `precision` is a caller-supplied
+parameter (not hardcoded), so tightening it is possible, but PyJHora's own search loop (a simple
+step-until-within-precision bisection-style walk, read directly in `next_planet_entry_date_general`'s
+source) has not been verified to converge reliably at the precision this comparison would need - that
+verification is itself part of Option B's cost, not a detail to discover mid-implementation.
 
 **Option C. Both A and B**, since they check different things - A verifies the residual-vs-tolerance
 mechanism itself (does perturbing the classifier by the stated ~278x margin actually flip the
@@ -93,13 +111,16 @@ repository's general pattern of combining an independent-reference validator wit
 
 ## 4. Recommendation
 
-**Option C** (both), confidence: medium-high. The reasoning is that this repository's own established
-methodology template - "the varga template of frozen rule, second transcription, dense sweep, ULP
-battery, external oracle, independent validator" (`Q8_CLOSURE_MATRIX.md` s4) - already implies exactly
-this combination for a classification-seam defect of this kind, and G1's own finding is precise enough
-(a stated 278x tolerance mismatch, exact measured percentages) that confirming both the mechanism and the
-real-world magnitude is tractable at the same holdout scale this repository already certifies at (11-24
-cases), not a large new undertaking.
+**Option C** (both), confidence: medium-high, revised down slightly from the first draft now that s3's
+Option B cost is concretely known rather than assumed - tightening PyJHora's `precision` parameter and
+verifying its search loop's convergence at that precision is real, scoped effort, not a large new
+undertaking, but it is no longer a "fresh verification task" of unknown size; it is now a specific,
+boundable one. The reasoning otherwise stands: this repository's own established methodology template -
+"the varga template of frozen rule, second transcription, dense sweep, ULP battery, external oracle,
+independent validator" (`Q8_CLOSURE_MATRIX.md` s4) - already implies exactly this combination for a
+classification-seam defect of this kind, and G1's own finding is precise enough (a stated 278x tolerance
+mismatch, exact measured percentages) that confirming both the mechanism and the real-world magnitude is
+tractable at the same holdout scale this repository already certifies at (11-24 cases).
 
 I would accept Option A alone if the owner judges the mechanism-level confirmation sufficient to satisfy
 `ADR-0020` D5's "independently reproduced" bar without a fresh oracle-verification task - a legitimate,
@@ -126,4 +147,5 @@ silently conflated with H-02 later.
 
 | Version | Date | Change |
 |---|---|---|
+| 1.1.0 | 2026-08-20 | Decision-readiness audit: re-verified `BOUNDARY_TOLERANCE`/`RESIDUAL_BOUND_ARCSEC` against the live codebase (unchanged since the 2026-08-11 audit). Directly inspected PyJHora 4.8.7's source (no execution needed) and confirmed Option B's ingress-detection API genuinely exists and is reachable, but surfaced a real, previously-unstated cost: its default `precision=0.1` degrees is ~4 orders of magnitude coarser than this defect's scale, so tightening it and verifying convergence is real, boundable effort. Research only; still presents options and decides nothing. |
 | 1.0.0 | 2026-08-20 | Drafted per the owner's "ACE CONTINUE - AUTHORIZE H-02 DECISION PAPER" instruction, extracting `ADR-0020` D5's H-02 analysis. Presents options; decides nothing; does not ratify `ADR-0020`. |
