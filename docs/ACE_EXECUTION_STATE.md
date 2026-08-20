@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | **ACCEPTED (`ADR-0062`) - canonical, machine-checkable current-state record.** Regenerate/refresh on every meaningful implementation task, same discipline as `reports/AI_HANDOFF_CURRENT.md`. |
-| Version | 2.0.0 |
+| Version | 2.1.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-20 (ADR-0063: DP-012 Option C ratified - civil-date rendering deferred, not implementation-authorized; caught and corrected a mismatched prior instruction before any code was written) |
+| Last updated | 2026-08-20 (DP-013 drafted: H-02 reproduction-methodology and fix-option paper, extracted from ADR-0020 D5; awaiting ratification) |
 | Review cadence | Refresh at the start of a session if stale; not load-bearing if it isn't. |
 
 # ACE execution state
@@ -43,21 +43,21 @@ independently is in these fields plus the pointers they name.
 | Field | Value |
 |---|---|
 | `CURRENT_PHASE` | FOUNDATION (`docs/Q8_CLOSURE_MATRIX.md` s4). Phase G exited (`ADR-0048`); FOUNDATION entered. |
-| `CURRENT_MILESTONE` | `TRIKALAM_V1` (Rahu Kalam/Yamaganda/Gulika, seed variant `PYJHORA_TRIKALAM_V1`) is **FOUNDATION checkpoint-accepted / production-certified** (`ADR-0061`'s third addendum). Panchanga classification and rise/set are likewise CERTIFIED and checkpoint-accepted (`ADR-0054`, `ADR-0059`). Civil-date rendering for dasha boundaries is **ratified as DEFERRED** (`ADR-0063`, `DP-012` Option C) - not an active milestone, not implementation-authorized. FOUNDATION's remaining implementation-scope items (H-01, H-02) both still lack any ratified decision paper. |
-| `CURRENT_AUTHORIZED_TASK` | None. No FOUNDATION implementation is currently authorized - `TRIKALAM_V1` is complete; civil-date rendering is explicitly deferred, not pending; H-01 has no governing document at all; H-02's own investigation methodology (`ADR-0020` D5) is itself unratified. |
-| `TASK_OWNER` | CLAUDE (`TRIKALAM_V1` checkpoint and `DP-012` deferral both recorded); USER (name the next task - no FOUNDATION item is currently ready without further ratification). |
-| `STATUS` | `TRIKALAM_V1` is done: implemented, CI-confirmed, CEO-audit ULP finding remediated and CI-confirmed, FOUNDATION checkpoint accepted. `DP-012` (civil-date rendering) is **ratified Option C: deferred entirely** until a consuming feature needs it - not implementation-authorized (a prior instruction to "implement Option C" was caught as a mismatch against the paper's actual text - Option C is the defer option - before any code was written, then corrected by the owner). No FOUNDATION capability beyond `TRIKALAM_V1` is authorized to implement; H-01/H-02/boundary-proximity remain unauthorized, unchanged since the last full audit. |
-| `LAST_COMPLETED_ACTION` | `ADR-0063`: owner ratified `DP-012` Option C - civil-date rendering for dasha boundaries is deferred, not implementation-authorized. Caught and corrected a mismatched prior instruction (which said "implement Option C") against the paper's actual text before any code was written. |
-| `LAST_COMMIT` | Local HEAD - see `git rev-parse HEAD`, made after this file was drafted; not yet pushed. `origin/phase-g-governance` remains at `9424768ebfb2d8567c939743e44efa0547eb32fa`. |
-| `LAST_CI_RUN` | `32368698367` (commit `9424768`) - all four jobs green; unchanged by this documentation-only task. |
-| `LAST_CEO_DECISION` | "ACE CORRECTION - DP-012 IS DEFERRED" (2026-08-20): the owner ratified `DP-012` Option C and corrected a prior mismatched implementation instruction. |
-| `NEXT_AUTHORIZED_ACTION` | None self-executable. No FOUNDATION capability currently has both satisfied prerequisites and a ratified implementation decision. The most promising next decision-paper candidate is a narrow H-02 investigation-methodology paper (extracting `ADR-0020` D5's already-written analysis into its own citable decision, without requiring ratification of `ADR-0020`'s other nine unrelated items) - not drafted, only identified; drafting it would need its own explicit authorization. |
-| `WAITING_FOR` | USER: to authorize drafting the H-02 decision paper identified above, or name a different next task. Not blocking - FOUNDATION has no other pending action. |
-| `BLOCKER` | None technical. Every remaining FOUNDATION item (H-01, H-02) is blocked on a decision this repository does not yet have the prerequisite ratification to make. |
+| `CURRENT_MILESTONE` | `TRIKALAM_V1` is **FOUNDATION checkpoint-accepted / production-certified**. Civil-date rendering is **ratified as DEFERRED** (`ADR-0063`, `DP-012` Option C). H-02's ingress-classification seam now has a decision paper drafted and registered (`DP-013`, extracted from `ADR-0020` D5's already-written analysis) - presenting a reproduction methodology and a fix-option choice, both still owner decisions. H-01 still has no governing document of any kind. |
+| `CURRENT_AUTHORIZED_TASK` | None self-executable. `DP-013` is drafted and awaiting owner ratification (or explicit deferral). No H-02 reproduction work, fix, or implementation is authorized by drafting the paper alone - `ADR-0020` itself, and all its other items, remain unratified and unreopened. |
+| `TASK_OWNER` | CLAUDE (`DP-013` drafted and registered); USER (ratify a reproduction option in `DP-013`, or name a different next task). |
+| `STATUS` | `TRIKALAM_V1` done and checkpoint-accepted. `DP-012` ratified Option C (deferred). `DP-013` (H-02 reproduction methodology and fix option) drafted per explicit, narrowly-scoped owner authorization - extracts only `ADR-0020` D5's existing analysis (the measured 2/12 Sun sankranti and 12/28 Moon nakshatra ingress misclassifications, and the residual-vs-tolerance mechanism G1's original audit identified), presents 3 reproduction options (independent reference; PyJHora oracle cross-check; both) and separately preserves the audit's own 3 fix options without recommending among them (out of this paper's authorized scope). Does not ratify `ADR-0020`, resolve H-02, or authorize any implementation. |
+| `LAST_COMPLETED_ACTION` | `DP-013` drafted and registered: H-02 reproduction-methodology and fix-option decision paper, extracted from `ADR-0020` D5's existing analysis per explicit, scoped owner authorization. `ADR-0020` and its other items remain unratified and unreopened. |
+| `LAST_COMMIT` | Local HEAD - see `git rev-parse HEAD`, made after this file was drafted; not yet pushed. `origin/phase-g-governance` remains at `e062b8e130178ef42e1fe9fba9540782e8c20dbe`. |
+| `LAST_CI_RUN` | `32370032282` (commit `e062b8e`) - all four jobs green; unchanged by this documentation-only task. |
+| `LAST_CEO_DECISION` | "ACE CONTINUE - AUTHORIZE H-02 DECISION PAPER" (2026-08-20): the owner authorized drafting the narrow H-02 paper, strictly scoped to `ADR-0020` D5's existing analysis. |
+| `NEXT_AUTHORIZED_ACTION` | None self-executable. `DP-013` presents 3 reproduction-methodology options (independent reference; PyJHora oracle cross-check; both) and preserves the original audit's 3 fix options without recommending among them. On ratification of a reproduction option, the next Claude action is executing that reproduction (not a fix, not implementation) and reporting whether the original 2/12 and 12/28 findings are confirmed. |
+| `WAITING_FOR` | USER: ratify a `DP-013` reproduction option (or defer H-02 entirely), or name a different next task. Not blocking. |
+| `BLOCKER` | None technical. H-01 still has no governing document; H-02 now has a citable decision paper but no ratified option. |
 | `CEO_APPROVAL_REQUIRED` | Not immediately - nothing is queued needing approval right now. |
-| `CLAUDE_ACTION_REQUIRED` | None until the owner names a next task. |
-| `CHATGPT_ACTION_REQUIRED` | Independent audit of `TRIKALAM_V1`'s evidence trail, `ADR-0063`'s deferral, and the FOUNDATION roadmap state is available now via the standard Git -> state-file path - no report relay needed. |
-| `USER_ACTION_REQUIRED` | Name the next task - e.g. authorize drafting the H-02 decision paper, or a different priority. |
+| `CLAUDE_ACTION_REQUIRED` | None until the owner ratifies a `DP-013` option or names a different task. |
+| `CHATGPT_ACTION_REQUIRED` | Independent audit of `DP-013`'s fidelity to `ADR-0020` D5 and the original G1 audit finding is available now via the standard Git -> state-file path - no report relay needed. |
+| `USER_ACTION_REQUIRED` | Ratify a `DP-013` reproduction option (or defer), or name a different next task. |
 | `HANDOFF_REQUIRED` | None beyond this file and `reports/AI_HANDOFF_CURRENT.md`'s latest entry - both already current as of this file's `Last updated` date. |
 
 ## How to independently verify every field above
@@ -78,6 +78,7 @@ exactly as `reports/AI_HANDOFF_CURRENT.md` already requires of itself.
 
 | Version | Date | Change |
 |---|---|---|
+| 2.1.0 | 2026-08-20 | `DP-013` drafted and registered: H-02 ingress-classification seam, extracting `ADR-0020` D5's already-written analysis (measured 2/12 Sun sankranti and 12/28 Moon nakshatra misclassifications; the 278x residual-vs-tolerance mismatch mechanism) per explicit, narrowly-scoped owner authorization. Presents 3 reproduction-methodology options and preserves the original audit's 3 fix options without recommending among them. Does not ratify ADR-0020 or resolve H-02. |
 | 2.0.0 | 2026-08-20 | `ADR-0063`: owner ratified `DP-012` Option C (deferred, not implementation-authorized), correcting a prior mismatched instruction caught before any code was written. Corrected all fields that previously implied civil-date rendering implementation was pending ratification. Identified (not drafted) a narrow H-02 decision-paper candidate as the next FOUNDATION item worth pursuing. |
 | 1.9.0 | 2026-08-20 | `DP-012` decision-readiness audit: empirically disproved the fold/gap-ambiguity sub-question (research-resolvable, not a policy choice) via a direct `zoneinfo` test across both 2024 DST transitions; confirmed the LMT-labelling sub-question is genuine. Checked the rest of the FOUNDATION roadmap - nothing else authorized to implement. No option selected, nothing implemented. |
 | 1.8.0 | 2026-08-20 | Pushed `eb79b7f`; CI run `32367342027` all four jobs green. Repository fully synced with origin, nothing outstanding except `DP-012` ratification (non-blocking). |

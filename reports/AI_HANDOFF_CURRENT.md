@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 3.9.0 |
+| Version | 4.0.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-20 (ADR-0063: DP-012 Option C ratified - civil-date rendering deferred, not authorized; H-02 decision-paper candidate identified, not drafted - see docs/ACE_EXECUTION_STATE.md) |
+| Last updated | 2026-08-20 (DP-013 drafted: H-02 reproduction-methodology and fix-option paper, extracted from ADR-0020 D5, not ratified - see docs/ACE_EXECUTION_STATE.md) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,41 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-20 - DP-013 drafted: H-02 seam extracted from ADR-0020 D5, not ratified
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the draft).
+- Previous approved commit: `e062b8e130178ef42e1fe9fba9540782e8c20dbe`.
+- Task: owner "ACE CONTINUE - AUTHORIZE H-02 DECISION PAPER" - draft a narrow decision paper strictly
+  scoped to `ADR-0020` D5's already-written H-02 analysis, without ratifying `ADR-0020` or resolving
+  H-02.
+- Relevant ADR/specification: `ADR-0020` D5 (source analysis, itself still `Status: PROPOSED` -
+  extracted, not ratified); `reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md` finding H-02 (the original,
+  primary evidence source, read directly rather than trusting `ADR-0020`'s own summary of it).
+- Files changed: `docs/decisions/README.md` (`DP-013` registered before drafting, per `ADR-0040`),
+  `docs/decisions/DP-013-h02-ingress-classification-seam.md` (new), `docs/ACE_EXECUTION_STATE.md`, this
+  file. No engine code, no `ADR-0020` edit.
+- Implementation summary: read the G1 audit's original H-02 finding directly (not just `ADR-0020`'s
+  summary): the transit root-finder's `1e-4` arcsec residual bound is ~278x wider than the `1e-10`
+  degree boundary-promotion window classification uses, so the returned bracket midpoint lands on either
+  side of the true root effectively at random. Measured 2024, `parashari_lahiri`: 2/12 Sun sankranti
+  instants and 12/28 Moon nakshatra ingress instants misclassified into the previous division. `DP-013`
+  preserves this finding and the audit's own three named fix options verbatim in substance, adds three
+  reproduction-methodology options (an independent-reference validator mirroring this session's own
+  `validate_panchanga_holdout.py`/`validate_trikalam_holdout.py` pattern; a PyJHora oracle cross-check
+  mirroring `ADR-0059`/`ADR-0061`'s established mechanism; both), and recommends "both" while explicitly
+  declining to recommend among the three fix options - the original audit reserved that choice for the
+  owner, and this paper's authorized scope is extraction, not new analysis. States explicitly, in its
+  own s1, that `ADR-0020` remains unratified in its entirety and this paper's own future ratification
+  (not `ADR-0020`'s) is what would bind anything.
+- Tests executed and results: none applicable - documentation/decision-paper only.
+- Certification executed and results: none applicable.
+- Known issues: none.
+- Unresolved questions: `DP-013`'s reproduction-methodology options and the preserved fix options, both
+  awaiting ratification.
+- CEO decision required: not for drafting itself (implements the owner's own scoped authorization). A
+  future decision is needed to ratify a reproduction option before any H-02 investigation work begins.
+- Next authorized action: push (needs its own authorization). Separately, awaiting the owner's decision
+  on `DP-013`, or a different next task.
 
 ### 2026-08-20 - DP-012 Option C ratified: civil-date rendering deferred (ADR-0063); mismatch caught first
 - Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with `ADR-0063`).
@@ -1011,6 +1046,7 @@ act.
 
 | Version | Date | Change |
 |---|---|---|
+| 4.0.0 | 2026-08-20 | `DP-013` drafted and registered: H-02 ingress-classification seam, extracting `ADR-0020` D5's already-written analysis (verified against the original `reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md` finding directly). 3 reproduction-methodology options, 3 preserved fix options (not recommended among). `ADR-0020` not ratified, H-02 not resolved. |
 | 3.9.0 | 2026-08-20 | `ADR-0063`: `DP-012` Option C ratified (civil-date rendering deferred, not authorized) - caught and corrected a prior instruction that mislabeled Option A's content as "Option C" before any code was written. Corrected all state-file wording implying implementation was pending. Identified an H-02 decision-paper candidate; not drafted. |
 | 3.8.0 | 2026-08-20 | `DP-012` decision-readiness audit: empirically disproved the fold/gap-ambiguity sub-question (a mistaken analogy to `BirthData`'s opposite-direction problem) - `astimezone()` on an unambiguous UTC instant is fully deterministic. Two genuine sub-decisions remain. Nothing decided, nothing implemented; no other FOUNDATION work found authorized. |
 | 3.7.0 | 2026-08-20 | Verified `42d61c3`/checkpoint record/state files already correct, no changes needed. Independently advanced `DP-012` via a real `zoneinfo`/`tzdata` probe (LMT-era vs. standardized-zone distinction) - research only, decides and implements nothing. |
