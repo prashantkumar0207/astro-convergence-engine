@@ -4,7 +4,7 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | OPEN - decision paper. Presents options and recommends one. DECIDES NOTHING. Requires owner approval. |
-| Version | 1.0.0 |
+| Version | 1.1.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 | Last updated | 2026-08-20 |
 | Review cadence | TBD |
@@ -42,11 +42,20 @@ birth instant, on user-validated input:**
    inside a DST fall-back (ambiguous, two valid local times) or DST gap (no valid local time) window at
    the birth location, with no user-supplied `fold` to resolve it and no upstream validation step that
    could reject a derived instant the way `engine.core.validation` rejects invalid birth input.
-2. **`tzdata` coverage at century-scale spans.** Dasha periods can run to 120 years (a full Vimshottari
-   cycle); IANA timezone-rule data is reliably precise only from roughly the late 19th/early 20th century
-   onward for most zones, and is explicitly approximate (`LMT`, Local Mean Time, or a fixed early
-   estimate) further back. `RISE_SET_V1`'s own holdout already spans 1823-2350 for exactly this class of
-   reason; a dasha boundary for a chart born in 1823 or projected to 2350 is not a hypothetical edge
+2. **`tzdata` coverage at century-scale spans - empirically checked, not assumed.** Dasha periods can
+   run to 120 years (a full Vimshottari cycle). Probing this repository's own installed `tzdata` against
+   `RISE_SET_V1`'s own H1-H5 holdout dates confirms `zoneinfo` resolves every one of them, but the
+   *meaning* of the result changes silently at the pre-standardization boundary: `Europe/London` on
+   1823-04-17 (H1) resolves to a `-00:01:15` offset - not a rounded zone offset, but the great city's
+   **Local Mean Time** (solar time at that exact longitude), because standardized civil time zones did
+   not exist there yet; `Asia/Kolkata` on 1979-11-11 (H4, well after standardization) resolves to the
+   expected `+05:30`. Both are genuine, deliberately-encoded `tzdata` answers, not silent approximation -
+   but "LMT at the birth longitude" and "the modern civil zone's standard offset" are two different KINDS
+   of answer, and a rendered date that switches between them at an unstated historical boundary, with no
+   flag distinguishing which kind produced it, would be exactly the "silently-wrong timestamp"
+   `RISE_SET_V1`/`ADR-0054` already refuses to produce for sunrise/sunset. `RISE_SET_V1`'s own holdout
+   already spans 1823-2350 for exactly this class of reason; a dasha boundary for a chart born in 1823 or
+   projected to 2350 is not a hypothetical edge
    case in this repository, it is already inside the certified holdout's own range.
 3. **Rendering granularity.** Whether a rendered dasha boundary needs full local time-of-day precision,
    or only a civil calendar date, and what happens to the tie-breaking convention if two representations
@@ -88,7 +97,12 @@ warn against.
 recorded as their own sub-decisions** (not left implicit), confidence: medium-high on the mechanism
 (directly extends already-working, audit-remediated infrastructure), medium on the specific fold/gap
 conventions (genuinely arbitrary choices, not derivable from first principles, so any reasonable choice
-is defensible as long as it is recorded and applied uniformly).
+is defensible as long as it is recorded and applied uniformly). The empirical `tzdata` probe above
+(s2 item 2) sharpens this further: whichever option is chosen, the rendered result should carry an
+explicit flag distinguishing an LMT-era answer from a standardized-zone answer - `zoneinfo` already
+silently returns both kinds depending on the instant, and this repository's own discipline
+(`RISE_SET_V1`/`ADR-0054`: declared conventions, never a silently-varying implicit one) argues against
+passing that silent variation straight through to a rendered civil date unlabelled.
 
 I would accept Option C readily if the owner judges no near-term FOUNDATION or later-phase work actually
 consumes rendered dasha boundaries yet - the same "defer costs nothing while unauthorized" reasoning
@@ -99,16 +113,18 @@ regardless, so nothing is lost by waiting.
 
 The exact fold-ambiguity convention (earlier instant, later instant, or report both). Whether a DST-gap
 landing produces a structured indeterminate result (mirroring `RiseSetStatus`/`TrikalamStatus`) or some
-other explicit, non-silent handling. Whether pre-tzdata-reliable-coverage instants (roughly pre-1900,
-zone-dependent) get a documented, honest scope limitation (mirroring `panchanga.vara`'s own "UT calendar
-date of the anchoring sunrise, not necessarily the observer's local civil date" disclosed limitation)
-rather than a silently-approximate `LMT`-based answer presented as exact. Rendering granularity (date
-only vs. date-and-time) and whether both are needed for different consumers. Whether implementation is
-authorized to begin immediately on ratification, or requires its own FOUNDATION per-capability CEO
-checkpoint on completion, consistent with how Panchanga, rise/set, and `TRIKALAM_V1` each received one.
+other explicit, non-silent handling. Whether a rendered boundary in the empirically-confirmed LMT-era
+range carries an explicit marker (e.g. a `civil_time_basis: "LMT" | "standardized_zone"` field) rather
+than presenting an LMT-derived answer as if it were an ordinary standardized-zone civil time - the s2
+item 2 probe confirms both kinds of answer are real, `zoneinfo`-encoded outputs, not something to
+silently paper over. Rendering granularity (date only vs. date-and-time) and whether both are needed for
+different consumers. Whether implementation is authorized to begin immediately on ratification, or
+requires its own FOUNDATION per-capability CEO checkpoint on completion, consistent with how Panchanga,
+rise/set, and `TRIKALAM_V1` each received one.
 
 ## 6. Change history
 
 | Version | Date | Change |
 |---|---|---|
+| 1.1.0 | 2026-08-20 | Strengthened s2 item 2 and s5 with an empirical `zoneinfo`/`tzdata` probe against `RISE_SET_V1`'s own holdout dates: confirmed pre-standardization instants (e.g. `Europe/London` 1823) resolve to genuine Local Mean Time, not an approximation - a real, labelled-vs-unlabelled distinction the ratified option must address. Research only; still presents options and decides nothing. |
 | 1.0.0 | 2026-08-20 | Drafted per the owner's "if a decision paper is required before implementation, draft that decision paper and register it" instruction. Presents options; decides nothing. |

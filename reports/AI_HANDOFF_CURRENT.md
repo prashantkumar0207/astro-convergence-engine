@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 3.6.0 |
+| Version | 3.7.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-20 (TRIKALAM_V1 FOUNDATION checkpoint accepted, production-certified; DP-012 drafted for civil-date rendering, awaiting ratification - see docs/ACE_EXECUTION_STATE.md) |
+| Last updated | 2026-08-20 (verified checkpoint record correct; DP-012 strengthened with an empirical tzdata/LMT finding, still awaiting ratification - see docs/ACE_EXECUTION_STATE.md) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,38 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-20 - DP-012 independently advanced via empirical tzdata research (no decision, no implementation)
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the changes).
+- Previous approved commit: `3650fa9c27e6952c302e07b8406c5043d12390ea`.
+- Task: owner "ACE CONTINUE - RECORD CEO ACCEPTANCE" - verified commit `42d61c3` and the checkpoint
+  record, confirmed both already correct (no unnecessary changes made to them), then independently
+  advanced `DP-012` per the instruction to determine what could move forward without ratifying or
+  implementing anything.
+- Relevant ADR/specification: `DP-012` (v1.0.0 -> v1.1.0); `ADR-0054` (the "declared conventions, never
+  silent" discipline this research applies to civil-date rendering).
+- Files changed: `docs/decisions/DP-012-civil-date-rendering-dasha-boundaries.md` (strengthened),
+  `docs/ACE_EXECUTION_STATE.md`, this file. No engine code, no new ADR, no ratification.
+- Implementation summary: verification (items 1-3 of the task) found the committed state already correct
+  - `42d61c3` was already pushed and CI-green, the `ADR-0061` checkpoint addendum correctly records the
+  owner's exact acceptance instruction, and both state files already identified `DP-012` as the next
+  decision item - so nothing was changed there, per the task's own "if the committed state is correct,
+  do not create unnecessary changes." For the "advance what can be advanced around DP-012" instruction,
+  ran a real `zoneinfo`/`tzdata` probe (not assumed) against `RISE_SET_V1`'s own H1/H4 holdout dates:
+  confirmed `Europe/London` on 1823-04-17 resolves to a genuine Local Mean Time offset (`-00:01:15`,
+  solar time at that longitude, since standardized zones did not yet exist there), while `Asia/Kolkata`
+  on 1979-11-11 resolves to the expected standardized `+05:30`. Folded this into `DP-012`'s options
+  analysis and its s5 "what the decision must also settle" list: whichever option is ratified should
+  carry an explicit marker distinguishing an LMT-era answer from a standardized-zone one, rather than
+  silently blending two different kinds of `zoneinfo` answer into one rendered civil date.
+- Tests executed and results: `python -m pytest -q` - 801 passed (unchanged; no code touched).
+- Certification executed and results: none applicable.
+- Known issues: none.
+- Unresolved questions: `DP-012`'s options, unchanged in kind, now better-grounded - still awaiting
+  ratification or explicit deferral.
+- CEO decision required: no, for this entry - research/documentation only, decides nothing.
+- Next authorized action: push (this commit plus the prior `3650fa9`, both currently local-only) needs
+  its own authorization. Separately, `DP-012` ratification remains standing and non-blocking.
 
 ### 2026-08-20 - TRIKALAM_V1 FOUNDATION checkpoint accepted; DP-012 drafted for the next milestone
 - Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the changes below).
@@ -908,6 +940,7 @@ act.
 
 | Version | Date | Change |
 |---|---|---|
+| 3.7.0 | 2026-08-20 | Verified `42d61c3`/checkpoint record/state files already correct, no changes needed. Independently advanced `DP-012` via a real `zoneinfo`/`tzdata` probe (LMT-era vs. standardized-zone distinction) - research only, decides and implements nothing. |
 | 3.6.0 | 2026-08-20 | Owner accepted `TRIKALAM_V1`'s FOUNDATION checkpoint (`ADR-0061` third addendum) - production-certified. Drafted and registered `DP-012` (civil-date rendering for dasha boundaries) as the next tractable FOUNDATION item; not implemented, awaiting ratification. |
 | 3.5.0 | 2026-08-20 | Pushed `8e6bb40`; CI run `32361308330` all four jobs green, ULP battery confirmed genuinely executed from the oracle-job log directly. CEO-audit HOLD finding closed. FOUNDATION per-capability checkpoint re-presented as the sole open decision. |
 | 3.4.0 | 2026-08-20 | CEO audit: `TRIKALAM_V1` Gate C lacked a genuine ULP battery (verified independently, finding correct). Remediated: exact-sunrise-boundary ULP test + negative control. All six gates re-verified locally (PASS), 801/801 pytest. Push authorization pending for CI re-confirmation. |
