@@ -1,9 +1,9 @@
 | Field | Value |
 |---|---|
-| Status | **ACCEPTED - ratified as the ACE agent-workflow specification, `ADR-0016`/`ADR-0051` (owner-ratified 2026-08-17).** Subordinate to the `ADR-0042` authority hierarchy (`PROJECT CONSTITUTION` -> `ENGINEERING CONSTITUTION` -> `DECISION LOG / ADR` -> ... -> `SPECIFICATIONS`); MUST NOT be read as an independent source of authority capable of overriding the Constitution or an accepted ADR. Original substantive content (the six-step per-tier workflow) is unedited by ratification; `ADR-0057` added the interaction-mode/session-start-audit sections; `ADR-0058` added "Execution continuity" below it - both narrow, additive remediations, see their own notes. |
-| Version | 1.3.0 |
+| Status | **ACCEPTED - ratified as the ACE agent-workflow specification, `ADR-0016`/`ADR-0051` (owner-ratified 2026-08-17).** Subordinate to the `ADR-0042` authority hierarchy (`PROJECT CONSTITUTION` -> `ENGINEERING CONSTITUTION` -> `DECISION LOG / ADR` -> ... -> `SPECIFICATIONS`); MUST NOT be read as an independent source of authority capable of overriding the Constitution or an accepted ADR. Original substantive content (the six-step per-tier workflow) is unedited by ratification; `ADR-0057` added the interaction-mode/session-start-audit sections; `ADR-0058` added "Execution continuity" below it; `ADR-0062` added "Execution-state recovery" below that - all narrow, additive remediations, see their own notes. |
+| Version | 1.4.0 |
 | Owner | TBD (docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-19 |
+| Last updated | 2026-08-20 |
 | Review cadence | TBD |
 
 # Claude Implementation Workflow
@@ -88,9 +88,40 @@ work that repository governance has not already authorized, and it does not weak
 PROJECT_CONSTITUTION.md` s11 rule (a) - the owner still ratifies all decisions, and condition 4 above is
 not overridden by the general "keep going" instruction.
 
+## Execution-state recovery (`ADR-0062`): repository state, not conversational memory
+
+**Repository state is authoritative for reconstructing ACE's current execution state.** Neither AI
+collaborator's conversational memory is required, or reliable, for this - a fresh ChatGPT session and a
+fresh Claude session must each be able to determine exactly where ACE stands from the repository alone,
+per `docs/PROJECT_CONSTITUTION.md` s7 and s11 point 3 (already ratified, `ADR-0056`; not reopened here -
+this section operationalizes it).
+
+- **`docs/ACE_EXECUTION_STATE.md`** is the canonical current-state record: one overwritten snapshot
+  (`CURRENT_PHASE`, `CURRENT_MILESTONE`, `STATUS`, `WAITING_FOR`, `CEO_APPROVAL_REQUIRED`, and the other
+  fields it defines), not a history. Read it first when resuming ACE work cold.
+- **`reports/AI_HANDOFF_CURRENT.md`** remains the detailed, append-only, task-by-task LLM handoff log -
+  unchanged in role by this section.
+- **`docs/DECISION_LOG.md` (ADRs) and `docs/decisions/*` (DPs)** remain the normative decision authority;
+  neither state file outranks or substitutes for a decision entry.
+- **Git and CI remain evidential truth.** Both state files are pointers into git/CI, never a replacement
+  for reading the actual commit, diff, test run, or certification artifact they name.
+- **The USER is a decision/approval boundary, not a report-transfer layer.** A permanent, explicit rule,
+  sharpening `docs/PROJECT_CONSTITUTION.md` s11 point 3's already-ratified language into an unconditional
+  prohibition:
+
+  > **Never ask the user to copy/paste Claude's execution report to ChatGPT, or ChatGPT's findings to
+  > Claude.** Claude persists the necessary state in `docs/ACE_EXECUTION_STATE.md` and
+  > `reports/AI_HANDOFF_CURRENT.md` before stopping. ChatGPT recovers state from the repository via
+  > those files, not from the user relaying Claude's output.
+
+This section does not weaken any existing approval checkpoint, does not change the four-role model, and
+does not authorize Codex - `docs/PROJECT_CONSTITUTION.md` s11 rule (a) and the roles above govern exactly
+as before; this section only says *where* current state lives, not *who* may approve what.
+
 ## Change history
 | Version | Date | Change |
 |---|---|---|
+| 1.4.0 | 2026-08-20 | `ADR-0062` (permanent execution-state mechanism): added "Execution-state recovery" - `docs/ACE_EXECUTION_STATE.md` as the canonical current-state snapshot, `reports/AI_HANDOFF_CURRENT.md`'s role unchanged, ADRs/DPs remain normative, git/CI remain evidential, and an explicit permanent prohibition on the user relaying reports between Claude and ChatGPT (sharpens `docs/PROJECT_CONSTITUTION.md` s11 point 3, already ratified `ADR-0056` - not reopened). No approval checkpoint weakened; role model unchanged; Codex not authorized. |
 | 1.3.0 | 2026-08-19 | `ADR-0058` (narrow governance remediation): added "Execution continuity (do not stop prematurely)" - the five terminal stop conditions (user input, Claude input with a complete next instruction, genuine blocker, CEO approval checkpoint, task complete) and the "convert 'you should do X' into the next executable instruction" rule. Explicitly does not override s11 rule (a) (owner ratifies all decisions) or any existing approval checkpoint. Prior sections unedited. |
 | 1.2.0 | 2026-08-18 | `ADR-0057` (narrow CEO-audit remediation): added "ACE interaction mode" (ChatGPT execution/audit-first response mode) and "Session-start audit (mandatory)" (the shared branch/HEAD/working-tree/spec/handoff/decision/open-questions checklist, binding both AI collaborators, not only Claude's own tooling habit). Original six-step per-tier workflow and its "two AI systems agreeing is not evidence" line are unedited. |
 | 1.1.0 | 2026-08-17 | `ADR-0051`: owner-ratified as the ACE agent-workflow specification, subordinate to the `ADR-0042` hierarchy. Substantive content unchanged. |

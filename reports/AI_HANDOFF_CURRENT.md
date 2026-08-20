@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 3.0.0 |
+| Version | 3.1.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-20 (ADR-0061: TRIKALAM_V1 implemented, all six gates locally verified in an unpinned exploration venv; commit/push authorization is the next open item) |
+| Last updated | 2026-08-20 (ADR-0062: permanent ACE execution-state mechanism added - see docs/ACE_EXECUTION_STATE.md for the current snapshot; push authorization remains the standing next action) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,41 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-20 - Permanent ACE execution-state mechanism implemented (ADR-0062)
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with `ADR-0062`).
+- Previous approved commit: `7276bf9d2425420b482170cb02c16c55c0bbccce`
+- Task: owner "ACE - IMPLEMENT PERMANENT REPOSITORY-STATE ORCHESTRATION" - make ACE state recoverable
+  from the repository alone, without ChatGPT conversational memory and without the user relaying
+  Claude's reports to ChatGPT by hand.
+- Relevant ADR/specification: `ADR-0062` (new); `docs/PROJECT_CONSTITUTION.md` s11 point 3 (`ADR-0056`,
+  already ratified - operationalized, not reopened); `specs/CLAUDE_WORKFLOW.md` "ACE interaction mode"
+  (`ADR-0057`, same principle for ChatGPT's own behaviour).
+- Files changed: `docs/ACE_EXECUTION_STATE.md` (new - the canonical current-state snapshot),
+  `specs/CLAUDE_WORKFLOW.md` (1.3.0 -> 1.4.0, new "Execution-state recovery" section), `docs/
+  DECISION_LOG.md` (new `ADR-0062`, register header updated), this file. No code, no calculation,
+  certification, Panchanga, or `DP-011`/`TRIKALAM_V1` change - governance/documentation only.
+- Implementation summary: reconciled against existing governance first (per the task's own instruction)
+  and found the *principle* already ratified (`ADR-0056` s11 point 3) - what was missing was a
+  fixed-shape, always-current, machine-checkable snapshot document, not a new rule. `docs/
+  ACE_EXECUTION_STATE.md` now carries exactly the fields the owner specified, populated with this
+  session's actual, git-verified state (see its own "Current state" table): 4 unpushed local commits
+  ahead of `origin/phase-g-governance`, `TRIKALAM_V1` implemented but not yet CI-confirmed, push
+  authorization the sole outstanding item. `specs/CLAUDE_WORKFLOW.md` gained an explicit, permanent
+  prohibition on relaying reports between Claude and ChatGPT through the user, sharpening (not
+  duplicating) the constitution's own language.
+- Tests executed and results: none applicable - documentation only. Verified via direct `git`/`gh`
+  commands that every field in `docs/ACE_EXECUTION_STATE.md`'s "Current state" table is accurate as of
+  this entry (branch, local vs. origin HEAD, unpushed commit list, last two CI runs).
+- Certification executed and results: none applicable.
+- Known issues: none.
+- Unresolved questions: none raised by this entry.
+- CEO decision required: no, for this entry itself - implements the owner's own instruction, matching
+  the `ADR-0056`/`ADR-0057` precedent of committing a direct, self-contained governance instruction
+  without a separate pause. **The standing, pre-existing item is unchanged by this entry: push
+  authorization for the 4 unpushed commits** (see `docs/ACE_EXECUTION_STATE.md`).
+- Next authorized action: none self-authorized beyond what this entry implements. The next action for
+  ACE overall is the standing one - push authorization - not a new action this task created.
 
 ### 2026-08-20 - DP-011 ratified (ADR-0060): PyJHora trikalam convention transcribed and frozen
 - Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with `ADR-0060`).
@@ -697,6 +732,7 @@ act.
 
 | Version | Date | Change |
 |---|---|---|
+| 3.1.0 | 2026-08-20 | `ADR-0062`: added `docs/ACE_EXECUTION_STATE.md` (canonical current-state snapshot) and `specs/CLAUDE_WORKFLOW.md`'s "Execution-state recovery" section; explicit permanent prohibition on relaying reports between Claude and ChatGPT through the user. No approval checkpoint weakened. |
 | 3.0.0 | 2026-08-20 | `ADR-0061`: `TRIKALAM_V1` (`PYJHORA_TRIKALAM_V1` variant) implemented - new `engine.astrology.trikalam`, tests, certifier, validator, CI wiring. All six gates locally verified (unpinned exploration venv); 799 tests pass. Not yet committed/pushed/CI-confirmed. |
 | 2.9.0 | 2026-08-20 | `ADR-0060`: `DP-011` ratified (Option C seeded by Option B); PyJHora 4.8.7 `trikalam()` convention independently inspected and frozen as `PYJHORA_TRIKALAM_V1`. Implementation/certification work proceeding next. |
 | 2.8.0 | 2026-08-19 | Owner accepted Panchanga's FOUNDATION per-capability checkpoint (`ADR-0059` addendum); identified `DP-011` (Rahu Kalam/Yamaganda/Gulika variant-table options) as the sole FOUNDATION decision-paper item already authorized to draft. |
