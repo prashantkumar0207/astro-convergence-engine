@@ -183,6 +183,17 @@ jobs:
           done
           rm -rf /tmp/netprobes
 
+      - name: H-02 independent-reference reproduction (DP-013 Option A - investigation, not a certifier)
+        run: python scripts/reproduce_h02_ingress_seam.py
+
+      - name: Upload H-02 independent-reference reproduction evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: h02-reproduction-evidence-${{ matrix.python-version }}
+          path: reports/h02_reproduction/reproduction_evidence.json
+          if-no-files-found: error
+
       - name: Upload regenerated non-oracle artifacts, reports and transcripts
         # ADR-0053: this tier regenerates current_engine/KP_CHAIN/SIGN_CONVENTION
         # on Linux successfully, but nothing previously retrieved that evidence -
@@ -299,6 +310,20 @@ jobs:
             certification/*.json
             reports/certification/*.report.md
             reports/certification/*.console.txt
+          if-no-files-found: error
+
+      - name: H-02 PyJHora reliability investigation (DP-013 Option B - investigation, not a certifier)
+        # Bounded: each precision level runs in its own subprocess with a hard
+        # 45s timeout, so a divergent search (already observed locally to
+        # diverge at precision=0.0001) can never hang this step or the job.
+        run: python scripts/investigate_h02_pyjhora_precision.py
+
+      - name: Upload H-02 PyJHora reliability investigation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: h02-pyjhora-investigation-evidence
+          path: reports/h02_reproduction/pyjhora_reliability_investigation.json
           if-no-files-found: error
 
   governance:

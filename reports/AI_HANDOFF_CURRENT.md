@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 4.1.0 |
+| Version | 4.2.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-20 (DP-013 decision-readiness audit: reproduction options/evidence/trade-offs/recommendation laid out for CEO ratification - see this file's latest task-log entry and docs/ACE_EXECUTION_STATE.md) |
+| Last updated | 2026-08-20 (ADR-0064: DP-013 Option C ratified and executed - H-02 reproduced for the Sun, PyJHora recorded as a limitation; push authorization pending) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,59 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-20 - DP-013 Option C executed (ADR-0064): H-02 reproduced for the Sun; PyJHora recorded as a limitation
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the work).
+- Previous approved commit: `0dae97657e3a46ebeb85cc796094e5d23c1b742c`.
+- Task: owner "ACE EXECUTE - H-02 REPRODUCTION AUTHORIZED" - CEO ratified `DP-013` Option C (both A and
+  B) as final for the reproduction methodology; execute now.
+- Relevant ADR/specification: `ADR-0064` (new); `DP-013` (unedited); `ADR-0020` D5 (context, not
+  reopened); `reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md` H-02 (the original finding being reproduced).
+- Files changed: `scripts/reproduce_h02_ingress_seam.py` (new, Part A), `validate_h02_reproduction.py`
+  (new, independent cross-check), `scripts/investigate_h02_pyjhora_precision.py` (new, Part B),
+  `engine/tests/test_h02_reproduction.py` (new, 8 tests), `.github/workflows/ci.yml` (two new,
+  non-gating steps), `reports/h02_reproduction/*.json` (new evidence artifacts), `docs/DECISION_LOG.md`
+  (new `ADR-0064`, register header updated), `docs/ACE_EXECUTION_STATE.md`, this file. `TRANSIT_V1` and
+  every other certified capability untouched.
+- Implementation summary:
+  **Part A** reuses only certified primitives (`engine.transits.events.sign_ingresses`/
+  `nakshatra_ingresses` - TRANSIT_V1's own event-finder - and `sidereal_planet_position`) plus one new,
+  independently-typed exact-rational (`Fraction`) classifier that never imports `division_index`. A
+  second, separately-typed classifier in `validate_h02_reproduction.py` cross-checks via subprocess
+  (Gate-E-style). A negative control (synthetic known-mismatch case, checked against the real classifier
+  and a deliberately broken one, both at script level and again via `pytest` `monkeypatch`) proves the
+  check can actually detect a defect. **Result: 2 of 12 Sun sign-boundary crossings (2024,
+  `parashari_lahiri`, full year) misclassify - an EXACT match to the original audit's "2 of 12".** Moon
+  (independently-selected 35-day window, not the audit's exact unstated one): 15 of 34 (44%), comparable
+  to the audit's 12/28 (43%).
+  **Part B** re-verified, with fresh timed measurements, two claims `certify_transits.py`'s own Gate C
+  design rationale already recorded: PyJHora's search-based ingress detection converges stably at
+  `precision` 0.001 degrees and coarser, but diverges to a wrong answer or is bounded out by this
+  investigation's own 45-second per-call timeout at 0.0001 degrees - already 4 orders of magnitude short
+  of the H-02 scale (`2.78e-8` degrees). Its direct longitude evaluation (`solar_longitude`, no search)
+  carries a `20.57` arcsec systematic bias against this engine's certified ephemeris -
+  `~206,000x` the defect's own scale. **Conclusion: PyJHora cannot provide reliable Option B evidence at
+  the precision H-02 requires, by either method - recorded as an evidenced limitation, per the owner's
+  own explicit fallback instruction, not manufactured agreement.**
+  CI wiring: new step "H-02 independent-reference reproduction" in the `hermetic` job (both 3.11/3.12
+  legs), new step "H-02 PyJHora reliability investigation" in the `oracle` job - both non-gating
+  (investigation evidence, not certification), with their own `upload-artifact` steps. Neither script was
+  added to `certification_support.py`'s `CERTIFIER_SOURCES`/`VALIDATOR_SOURCES` (this is investigation
+  tooling, not a certified capability) - confirmed the M-03 anti-fitting scan surface is unchanged (180).
+- Tests executed and results: `python -m pytest -q` - **809 passed** (up from 801; 8 new tests).
+- Certification executed and results: none applicable - no capability is being certified. Part A ran in
+  the main environment (no PyJHora needed). Part B ran in an isolated, throwaway, unpinned exploration
+  venv (PyJHora 4.8.7) - the same discipline `ADR-0059`/`ADR-0061` established.
+- Known issues: none. The Moon holdout window is independently selected (DP-013 s5 flagged this as an
+  open methodology detail the ratification did not further specify), so its count does not numerically
+  match the original audit, by design, not error.
+- Unresolved questions: which of the three original fix options to adopt - explicitly not decided here,
+  per the owner's own instruction.
+- CEO decision required: no, for this entry itself (implements the owner's own instruction). A future
+  decision is needed to choose a fix option, if any.
+- Next authorized action: push (needs its own authorization), then monitor CI specifically for the two
+  new steps executing and their evidence artifacts uploading, then update both state files to
+  CI-confirmed.
 
 ### 2026-08-20 - DP-013 decision-readiness audit: reproduction options, evidence, trade-offs, recommendation
 - Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the audit).
@@ -1101,6 +1154,7 @@ act.
 
 | Version | Date | Change |
 |---|---|---|
+| 4.2.0 | 2026-08-20 | `ADR-0064`: `DP-013` Option C ratified and executed. H-02 independently reproduced for the Sun (2/12, exact match to the original audit); Moon 15/34 (44%, comparable). PyJHora recorded as an evidenced limitation (search diverges/times out at 0.0001deg; direct longitude carries a 20.57 arcsec bias, ~206,000x the defect's scale) rather than manufactured agreement. New tests (8), negative controls, independent validator, non-gating CI wiring. No fix chosen; TRANSIT_V1 unmodified. Push authorization pending. |
 | 4.1.0 | 2026-08-20 | `DP-013` decision-readiness audit: re-verified the 278x tolerance mismatch against live code (unchanged); directly inspected PyJHora's source and confirmed Option B's API is real but its default precision is ~4 orders of magnitude too coarse. Full options/evidence/trade-offs/recommendation laid out in this file for CEO ratification. Nothing decided, nothing implemented. |
 | 4.0.0 | 2026-08-20 | `DP-013` drafted and registered: H-02 ingress-classification seam, extracting `ADR-0020` D5's already-written analysis (verified against the original `reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md` finding directly). 3 reproduction-methodology options, 3 preserved fix options (not recommended among). `ADR-0020` not ratified, H-02 not resolved. |
 | 3.9.0 | 2026-08-20 | `ADR-0063`: `DP-012` Option C ratified (civil-date rendering deferred, not authorized) - caught and corrected a prior instruction that mislabeled Option A's content as "Option C" before any code was written. Corrected all state-file wording implying implementation was pending. Identified an H-02 decision-paper candidate; not drafted. |

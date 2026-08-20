@@ -1,0 +1,53 @@
+{
+ "schema": "h02_pyjhora_reliability_investigation",
+ "classification": "INVESTIGATION EVIDENCE, NOT A CERTIFICATION",
+ "date": "2026-08-20",
+ "executed_utc": "2026-08-20T13:36:14.013580+00:00",
+ "dp": "DP-013",
+ "adr_context": "ADR-0020 D5",
+ "pyjhora_version": "4.8.7",
+ "search_convergence": {
+  "probes": [
+   {
+    "precision_deg": 0.1,
+    "outcome": "RETURNED",
+    "wall_seconds": 1.8835771083831787,
+    "detail": "OK jd=2460414.14308969 residual_deg=7.303861170086426e-07 elapsed=1.0766849517822266"
+   },
+   {
+    "precision_deg": 0.01,
+    "outcome": "RETURNED",
+    "wall_seconds": 1.652226448059082,
+    "detail": "OK jd=2460414.14308969 residual_deg=7.303861170086426e-07 elapsed=1.0081760883331299"
+   },
+   {
+    "precision_deg": 0.001,
+    "outcome": "RETURNED",
+    "wall_seconds": 1.7224531173706055,
+    "detail": "OK jd=2460414.14308969 residual_deg=7.303861170086426e-07 elapsed=1.057565689086914"
+   },
+   {
+    "precision_deg": 0.0001,
+    "outcome": "TIMEOUT",
+    "wall_seconds": 45.08348274230957,
+    "detail": "exceeded 45s"
+   }
+  ],
+  "stable_at_coarse_precision_0.001_and_looser": false,
+  "diverges_at_0.0001": true,
+  "h02_required_precision_degrees": 2.777777777777778e-08,
+  "orders_of_magnitude_short_at_0.0001": 3600.0
+ },
+ "longitude_bias": {
+  "julian_day": 2460389.75,
+  "oracle_sun_longitude": 335.93131724133974,
+  "our_sun_longitude": 335.9256034349841,
+  "delta_arcsec": 20.56970288026605,
+  "h02_residual_bound_arcsec": 0.0001,
+  "bias_exceeds_h02_scale_by_factor": 205697.0288026605
+ },
+ "conclusion": {
+  "can_provide_reliable_h02_scale_evidence": false,
+  "reason": "NEITHER method PyJHora offers can resolve the H-02 defect's own scale (0.0001 arcsec): its search-based ingress detection converges reliably only at 0.001 degrees and coarser (already ~36x looser than H-02's own scale) and diverges/fails at 0.0001 degrees (still ~4 more orders of magnitude too loose to reach); its direct longitude evaluation carries a ~20.6 arcsec systematic bias against this engine's certified ephemeris - about 205697x larger than the defect being investigated. This is recorded as a genuine limitation, not manufactured agreement: PyJHora cannot serve as a reliable Option B oracle for H-02 at its own required precision, by either method tested."
+ }
+}

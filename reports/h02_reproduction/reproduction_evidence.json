@@ -1,0 +1,548 @@
+{
+ "schema": "h02_ingress_seam_reproduction",
+ "classification": "INVESTIGATION EVIDENCE, NOT A CERTIFICATION",
+ "date": "2026-08-20",
+ "executed_utc": "2026-08-20T13:24:55.876586+00:00",
+ "dp": "DP-013",
+ "adr_context": "ADR-0020 D5",
+ "source_finding": "reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md H-02",
+ "methodology": "Option A: independent exact-rational reference, real 2024 holdout, certified event-finder and position primitives reused, classifier typed independently (twice: here and in validate_h02_reproduction.py)",
+ "negative_control_verified": true,
+ "cross_validator": {
+  "ran_ok": true,
+  "counts": {
+   "sun_cases": 12,
+   "sun_mismatches": 2,
+   "moon_cases": 34,
+   "moon_mismatches": 15
+  },
+  "agrees_exactly": true
+ },
+ "sun_sign_ingresses": {
+  "holdout_window": "2024-01-01 to 2025-01-01 (366 days)",
+  "cases": 12,
+  "mismatches": 2,
+  "mismatch_rate": 0.16666666666666666,
+  "details": [
+   {
+    "body": "Sun",
+    "target_longitude": 270.0,
+    "julian_day": 2460324.3845377583,
+    "residual_arcsec": 1.3534645404433832e-06,
+    "direction": 1,
+    "reclassified_longitude": 269.99999999962404,
+    "target_division": 9,
+    "reclassified_division": 8,
+    "mismatch": true
+   },
+   {
+    "body": "Sun",
+    "target_longitude": 300.0,
+    "julian_day": 2460353.9262951906,
+    "residual_arcsec": 5.357378540793434e-07,
+    "direction": 1,
+    "reclassified_longitude": 300.0000000001488,
+    "target_division": 10,
+    "reclassified_division": 10,
+    "mismatch": false
+   },
+   {
+    "body": "Sun",
+    "target_longitude": 330.0,
+    "julian_day": 2460383.79605254,
+    "residual_arcsec": 6.992422640905716e-07,
+    "direction": 1,
+    "reclassified_longitude": 330.00000000019423,
+    "target_division": 11,
+    "reclassified_division": 11,
+    "mismatch": false
+   },
+   {
+    "body": "Sun",
+    "target_longitude": 0.0,
+    "julian_day": 2460414.14888691,
+    "residual_arcsec": 1.0952135198749602e-06,
+    "direction": 1,
+    "reclassified_longitude": 3.0421687472730393e-10,
+    "target_division": 0,
+    "reclassified_division": 0,
+    "mismatch": false
+   },
+   {
+    "body": "Sun",
+    "target_longitude": 30.0,
+    "julian_day": 2460445.016469076,
+    "residual_arcsec": 1.0855956134037115e-06,
+    "direction": 1,
+    "reclassified_longitude": 30.00000000030154,
+    "target_division": 1,
+    "reclassified_division": 1,
+    "mismatch": false
+   },
+   {
+    "body": "Sun",
+    "target_longitude": 60.0,
+    "julian_day": 2460476.289832272,
+    "residual_arcsec": 3.6834535421803594e-08,
+    "direction": 1,
+    "reclassified_longitude": 60.00000000001024,
+    "target_division": 2,
+    "reclassified_division": 2,
+    "mismatch": false
+   },
+   {
+    "body": "Sun",
+    "target_longitude": 90.0,
+    "julian_day": 2460507.7423508107,
+    "residual_arcsec": 8.837218956614379e-07,
+    "direction": 1,
+    "reclassified_longitude": 90.00000000024548,
+    "target_division": 3,
+    "reclassified_division": 3,
+    "mismatch": false
+   },
+   {
+    "body": "Sun",
+    "target_longitude": 120.0,
+    "julian_day": 2460539.0933323684,
+    "residual_arcsec": 1.1639713193289936e-06,
+    "direction": 1,
+    "reclassified_longitude": 119.99999999967669,
+    "target_division": 4,
+    "reclassified_division": 3,
+    "mismatch": true
+   },
+   {
+    "body": "Sun",
+    "target_longitude": 150.0,
+    "julian_day": 2460570.0923387236,
+    "residual_arcsec": 1.4847387319605332e-06,
+    "direction": 1,
+    "reclassified_longitude": 150.00000000041243,
+    "target_division": 5,
+    "reclassified_division": 5,
+    "mismatch": false
+   },
+   {
+    "body": "Sun",
+    "target_longitude": 180.0,
+    "julian_day": 2460600.592106728,
+    "residual_arcsec": 1.7956836018129252e-07,
+    "direction": 1,
+    "reclassified_longitude": 180.00000000004988,
+    "target_division": 6,
+    "reclassified_division": 6,
+    "mismatch": false
+   },
+   {
+    "body": "Sun",
+    "target_longitude": 210.0,
+    "julian_day": 2460630.584741887,
+    "residual_arcsec": 5.037122718931641e-07,
+    "direction": 1,
+    "reclassified_longitude": 210.00000000013992,
+    "target_division": 7,
+    "reclassified_division": 7,
+    "mismatch": false
+   },
+   {
+    "body": "Sun",
+    "target_longitude": 240.0,
+    "julian_day": 2460660.19526526,
+    "residual_arcsec": 1.0128474059456494e-06,
+    "direction": 1,
+    "reclassified_longitude": 240.00000000028135,
+    "target_division": 8,
+    "reclassified_division": 8,
+    "mismatch": false
+   }
+  ]
+ },
+ "moon_nakshatra_ingresses": {
+  "holdout_window": "2024-01-01 to 2024-02-05 (35 days)",
+  "cases": 34,
+  "mismatches": 15,
+  "mismatch_rate": 0.4411764705882353,
+  "details": [
+   {
+    "body": "Moon",
+    "target_longitude": 133.33333333333334,
+    "julian_day": 2460310.629358744,
+    "residual_arcsec": 2.1138930605957285e-06,
+    "direction": 1,
+    "reclassified_longitude": 133.33333333274615,
+    "target_division": 10,
+    "reclassified_division": 9,
+    "mismatch": true
+   },
+   {
+    "body": "Moon",
+    "target_longitude": 146.66666666666666,
+    "julian_day": 2460311.758388399,
+    "residual_arcsec": 1.8582511529530166e-05,
+    "direction": 1,
+    "reclassified_longitude": 146.66666666150485,
+    "target_division": 11,
+    "reclassified_division": 10,
+    "mismatch": true
+   },
+   {
+    "body": "Moon",
+    "target_longitude": 160.0,
+    "julian_day": 2460312.886254771,
+    "residual_arcsec": 1.754991671987227e-05,
+    "direction": 1,
+    "reclassified_longitude": 159.99999999512502,
+    "target_division": 12,
+    "reclassified_division": 11,
+    "mismatch": true
+   },
+   {
+    "body": "Moon",
+    "target_longitude": 173.33333333333334,
+    "julian_day": 2460314.0024512964,
+    "residual_arcsec": 1.3938904430688126e-05,
+    "direction": 1,
+    "reclassified_longitude": 173.33333333720526,
+    "target_division": 13,
+    "reclassified_division": 13,
+    "mismatch": false
+   },
+   {
+    "body": "Moon",
+    "target_longitude": 186.66666666666666,
+    "julian_day": 2460315.0969921113,
+    "residual_arcsec": 1.7039349131664494e-05,
+    "direction": 1,
+    "reclassified_longitude": 186.6666666619335,
+    "target_division": 14,
+    "reclassified_division": 13,
+    "mismatch": true
+   },
+   {
+    "body": "Moon",
+    "target_longitude": 200.0,
+    "julian_day": 2460316.1620890093,
+    "residual_arcsec": 1.7348452274745796e-05,
+    "direction": 1,
+    "reclassified_longitude": 200.00000000481901,
+    "target_division": 15,
+    "reclassified_division": 15,
+    "mismatch": false
+   },
+   {
+    "body": "Moon",
+    "target_longitude": 213.33333333333334,
+    "julian_day": 2460317.193266341,
+    "residual_arcsec": 2.1067717170808464e-05,
+    "direction": 1,
+    "reclassified_longitude": 213.3333333274812,
+    "target_division": 16,
+    "reclassified_division": 15,
+    "mismatch": true
+   },
+   {
+    "body": "Moon",
+    "target_longitude": 226.66666666666666,
+    "julian_day": 2460318.1896807845,
+    "residual_arcsec": 1.0851863407879137e-05,
+    "direction": 1,
+    "reclassified_longitude": 226.66666666968106,
+    "target_division": 17,
+    "reclassified_division": 17,
+    "mismatch": false
+   },
+   {
+    "body": "Moon",
+    "target_longitude": 240.0,
+    "julian_day": 2460319.1537540057,
+    "residual_arcsec": 7.354628905886784e-07,
+    "direction": 1,
+    "reclassified_longitude": 240.0000000002043,
+    "target_division": 18,
+    "reclassified_division": 18,
+    "mismatch": false
+   },
+   {
+    "body": "Moon",
+    "target_longitude": 253.33333333333334,
+    "julian_day": 2460320.0904130084,
+    "residual_arcsec": 1.7352238046441926e-05,
+    "direction": 1,
+    "reclassified_longitude": 253.3333333381534,
+    "target_division": 19,
+    "reclassified_division": 19,
+    "mismatch": false
+   },
+   {
+    "body": "Moon",
+    "target_longitude": 266.6666666666667,
+    "julian_day": 2460321.0062256553,
+    "residual_arcsec": 1.762348347256193e-05,
+    "direction": 1,
+    "reclassified_longitude": 266.6666666617713,
+    "target_division": 20,
+    "reclassified_division": 19,
+    "mismatch": true
+   },
+   {
+    "body": "Moon",
+    "target_longitude": 280.0,
+    "julian_day": 2460321.9086077404,
+    "residual_arcsec": 1.4054216990189161e-05,
+    "direction": 1,
+    "reclassified_longitude": 279.99999999609605,
+    "target_division": 21,
+    "reclassified_division": 20,
+    "mismatch": true
+   },
+   {
+    "body": "Moon",
+    "target_longitude": 293.3333333333333,
+    "julian_day": 2460322.805162195,
+    "residual_arcsec": 6.566779120475985e-07,
+    "direction": 1,
+    "reclassified_longitude": 293.3333333335157,
+    "target_division": 22,
+    "reclassified_division": 22,
+    "mismatch": false
+   },
+   {
+    "body": "Moon",
+    "target_longitude": 306.6666666666667,
+    "julian_day": 2460323.703140668,
+    "residual_arcsec": 3.744639798242133e-06,
+    "direction": 1,
+    "reclassified_longitude": 306.66666666770686,
+    "target_division": 23,
+    "reclassified_division": 23,
+    "mismatch": false
+   },
+   {
+    "body": "Moon",
+    "target_longitude": 320.0,
+    "julian_day": 2460324.6089962167,
+    "residual_arcsec": 6.764457793906331e-06,
+    "direction": 1,
+    "reclassified_longitude": 319.999999998121,
+    "target_division": 24,
+    "reclassified_division": 23,
+    "mismatch": true
+   },
+   {
+    "body": "Moon",
+    "target_longitude": 333.3333333333333,
+    "julian_day": 2460325.528011376,
+    "residual_arcsec": 8.791175787337124e-06,
+    "direction": 1,
+    "reclassified_longitude": 333.3333333357753,
+    "target_division": 25,
+    "reclassified_division": 25,
+    "mismatch": false
+   },
+   {
+    "body": "Moon",
+    "target_longitude": 346.6666666666667,
+    "julian_day": 2460326.4640195845,
+    "residual_arcsec": 1.9616436475189403e-06,
+    "direction": 1,
+    "reclassified_longitude": 346.6666666672116,
+    "target_division": 26,
+    "reclassified_division": 26,
+    "mismatch": false
+   },
+   {
+    "body": "Moon",
+    "target_longitude": 0.0,
+    "julian_day": 2460327.4192712763,
+    "residual_arcsec": 1.7055924672604306e-05,
+    "direction": 1,
+    "reclassified_longitude": 4.737754253508054e-09,
+    "target_division": 0,
+    "reclassified_division": 0,
+    "mismatch": false
+   },
+   {
+    "body": "Moon",
+    "target_longitude": 13.333333333333334,
+    "julian_day": 2460328.394503607,
+    "residual_arcsec": 1.310368133999873e-05,
+    "direction": 1,
+    "reclassified_longitude": 13.333333336973231,
+    "target_division": 1,
+    "reclassified_division": 1,
+    "mismatch": false
+   },
+   {
+    "body": "Moon",
+    "target_longitude": 26.666666666666668,
+    "julian_day": 2460329.389241306,
+    "residual_arcsec": 1.607418198545929e-07,
+    "direction": 1,
+    "reclassified_longitude": 26.666666666622024,
+    "target_division": 2,
+    "reclassified_division": 2,
+    "mismatch": false
+   },
+   {
+    "body": "Moon",
+    "target_longitude": 40.0,
+    "julian_day": 2460330.4022846767,
+    "residual_arcsec": 1.060363956639776e-05,
+    "direction": 1,
+    "reclassified_longitude": 40.000000002945455,
+    "target_division": 3,
+    "reclassified_division": 3,
+    "mismatch": false
+   },
+   {
+    "body": "Moon",
+    "target_longitude": 53.333333333333336,
+    "julian_day": 2460331.43226501,
+    "residual_arcsec": 1.227265329362126e-05,
+    "direction": 1,
+    "reclassified_longitude": 53.33333332992428,
+    "target_division": 4,
+    "reclassified_division": 3,
+    "mismatch": true
+   },
+   {
+    "body": "Moon",
+    "target_longitude": 66.66666666666667,
+    "julian_day": 2460332.47810829,
+    "residual_arcsec": 1.00149009085726e-06,
+    "direction": 1,
+    "reclassified_longitude": 66.66666666694488,
+    "target_division": 5,
+    "reclassified_division": 5,
+    "mismatch": false
+   },
+   {
+    "body": "Moon",
+    "target_longitude": 80.0,
+    "julian_day": 2460333.5392674375,
+    "residual_arcsec": 1.4047668628336396e-05,
+    "direction": 1,
+    "reclassified_longitude": 79.99999999609788,
+    "target_division": 6,
+    "reclassified_division": 5,
+    "mismatch": true
+   },
+   {
+    "body": "Moon",
+    "target_longitude": 93.33333333333333,
+    "julian_day": 2460334.615648627,
+    "residual_arcsec": 1.9786591565207345e-05,
+    "direction": 1,
+    "reclassified_longitude": 93.33333332783705,
+    "target_division": 7,
+    "reclassified_division": 6,
+    "mismatch": true
+   },
+   {
+    "body": "Moon",
+    "target_longitude": 106.66666666666667,
+    "julian_day": 2460335.7072327896,
+    "residual_arcsec": 7.522021405748092e-06,
+    "direction": 1,
+    "reclassified_longitude": 106.66666666875611,
+    "target_division": 8,
+    "reclassified_division": 8,
+    "mismatch": false
+   },
+   {
+    "body": "Moon",
+    "target_longitude": 120.0,
+    "julian_day": 2460336.8134600604,
+    "residual_arcsec": 1.566337459735223e-05,
+    "direction": 1,
+    "reclassified_longitude": 120.00000000435094,
+    "target_division": 9,
+    "reclassified_division": 9,
+    "mismatch": false
+   },
+   {
+    "body": "Moon",
+    "target_longitude": 133.33333333333334,
+    "julian_day": 2460337.932503193,
+    "residual_arcsec": 1.4286274563346524e-05,
+    "direction": 1,
+    "reclassified_longitude": 133.33333333730175,
+    "target_division": 10,
+    "reclassified_division": 10,
+    "mismatch": false
+   },
+   {
+    "body": "Moon",
+    "target_longitude": 146.66666666666666,
+    "julian_day": 2460339.06061607,
+    "residual_arcsec": 1.1392103260732256e-05,
+    "direction": 1,
+    "reclassified_longitude": 146.66666666983113,
+    "target_division": 11,
+    "reclassified_division": 11,
+    "mismatch": false
+   },
+   {
+    "body": "Moon",
+    "target_longitude": 160.0,
+    "julian_day": 2460340.191795704,
+    "residual_arcsec": 1.2745874755637487e-05,
+    "direction": 1,
+    "reclassified_longitude": 159.99999999645948,
+    "target_division": 12,
+    "reclassified_division": 11,
+    "mismatch": true
+   },
+   {
+    "body": "Moon",
+    "target_longitude": 173.33333333333334,
+    "julian_day": 2460341.317991619,
+    "residual_arcsec": 1.5889497717580525e-05,
+    "direction": 1,
+    "reclassified_longitude": 173.3333333289196,
+    "target_division": 13,
+    "reclassified_division": 12,
+    "mismatch": true
+   },
+   {
+    "body": "Moon",
+    "target_longitude": 186.66666666666666,
+    "julian_day": 2460342.4299716656,
+    "residual_arcsec": 1.7004867913783528e-05,
+    "direction": 1,
+    "reclassified_longitude": 186.66666667139023,
+    "target_division": 14,
+    "reclassified_division": 14,
+    "mismatch": false
+   },
+   {
+    "body": "Moon",
+    "target_longitude": 200.0,
+    "julian_day": 2460343.518704561,
+    "residual_arcsec": 1.8830019143933896e-05,
+    "direction": 1,
+    "reclassified_longitude": 199.99999999476944,
+    "target_division": 15,
+    "reclassified_division": 14,
+    "mismatch": true
+   },
+   {
+    "body": "Moon",
+    "target_longitude": 213.33333333333334,
+    "julian_day": 2460344.5768647557,
+    "residual_arcsec": 1.6589456208748743e-05,
+    "direction": 1,
+    "reclassified_longitude": 213.33333332872516,
+    "target_division": 16,
+    "reclassified_division": 15,
+    "mismatch": true
+   }
+  ]
+ },
+ "original_audit_figures_for_comparison": {
+  "sun_sankranti": "2 of 12 misclassified (2024, parashari_lahiri)",
+  "moon_nakshatra": "12 of 28 misclassified (2024, parashari_lahiri)",
+  "note": "this reproduction's own holdout selection (full year Sun; one sidereal month plus margin Moon) is independently defined, not the audit's exact unstated instant list - DP-013 s5 flags this as an open methodology question the ratification did not settle further."
+ }
+}
