@@ -4,7 +4,7 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | OPEN - decision paper. Presents options and recommends one. DECIDES NOTHING. Requires owner approval. |
-| Version | 1.1.0 |
+| Version | 1.2.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 | Last updated | 2026-08-20 |
 | Review cadence | TBD |
@@ -37,11 +37,23 @@ the birth instant itself.
 **What time_service.py's existing mechanism does not solve, because it only ever runs once, at the
 birth instant, on user-validated input:**
 
-1. **DST ambiguity/gaps at an arbitrary, computed later instant.** `BirthData.fold` disambiguates only
-   the birth instant; a dasha boundary's `start_jd`/`end_jd` is a *derived* instant that can itself land
-   inside a DST fall-back (ambiguous, two valid local times) or DST gap (no valid local time) window at
-   the birth location, with no user-supplied `fold` to resolve it and no upstream validation step that
-   could reject a derived instant the way `engine.core.validation` rejects invalid birth input.
+1. **DST fold/gap ambiguity - empirically checked and found NOT to apply to this direction.** An
+   earlier draft of this paper (v1.0.0) assumed dasha-boundary rendering would face the same fold/gap
+   ambiguity `BirthData`/`time_service.py` resolve for the birth instant. Direct testing (`zoneinfo`,
+   `America/New_York`, swept minute-by-minute across both the 2024-03-10 spring-forward gap and the
+   2024-11-03 fall-back fold) shows this does **not** apply: fold/gap ambiguity is a property of
+   *interpreting a naive local wall-clock reading as an instant* (which UTC instant did the human mean?)
+   - exactly `BirthData`'s own situation, which is why it needs `fold` as an input and why
+   `engine.core.validation` rejects gap-landing birth input. Dasha-boundary rendering runs in the
+   **opposite** direction: `start_jd`/`end_jd` are already exact, unambiguous UTC instants (computed,
+   never human-entered), and `datetime.astimezone(ZoneInfo(tz))` on an already-aware UTC datetime is
+   **fully deterministic in this direction** - every UTC instant maps to exactly one local datetime, the
+   spring-forward gap is simply never an output (local time jumps 01:59->03:00 with no instant landing
+   in between), and the fall-back fold is resolved automatically and correctly by `astimezone()` itself
+   (confirmed: instants an hour apart in wall-clock-adjacent UTC minutes are correctly tagged `fold=0`
+   then `fold=1` without any caller-supplied disambiguation). **No convention decision is needed for this
+   sub-question** - it is resolved by the language/library's own well-defined semantics, not a policy
+   choice this repository must record.
 2. **`tzdata` coverage at century-scale spans - empirically checked, not assumed.** Dasha periods can
    run to 120 years (a full Vimshottari cycle). Probing this repository's own installed `tzdata` against
    `RISE_SET_V1`'s own H1-H5 holdout dates confirms `zoneinfo` resolves every one of them, but the
@@ -63,15 +75,13 @@ birth instant, on user-validated input:**
 
 ## 3. Options
 
-**Option A. Reuse `BirthData.timezone` identity via `zoneinfo`, `astimezone()`, fold resolved by a fixed,
-declared convention (e.g. always the earlier of the two ambiguous instants), gaps reported as a
-structured indeterminate result rather than silently shifted.** Directly extends `time_service.py`'s
-already-working mechanism with the smallest new surface area. Mirrors this repository's established
-"structured NO_RISE/NO_SET, never a silently-wrong timestamp" discipline (`ADR-0054`) for the DST-gap
-case, and mirrors `ADR-0055`'s "engine-wide convention, not a silent per-instance choice" for the
-fold-ambiguity case. Its cost: a declared fold convention is itself a choice affecting the rendered date
-on the (rare) days it matters, and needs its own citation/justification the way every other convention
-in this repository does.
+**Option A. Reuse `BirthData.timezone` identity via `zoneinfo`, `astimezone()` directly on the already-
+unambiguous UTC instant, with the rendered result explicitly labelled `civil_time_basis: "LMT" |
+"standardized_zone"` per s2 item 2's finding.** Directly extends `time_service.py`'s already-working
+mechanism with minimal new surface area - s2 item 1's finding removes what looked like the largest open
+sub-question (fold/gap handling turns out to need no policy at all, only correct use of `astimezone()`).
+Its remaining, genuine cost is solely the LMT-vs-standardized-zone labelling s2 item 2 identifies, plus
+the ordinary implementation/certification effort any new FOUNDATION capability carries.
 
 **Option B. Render in a fixed reference timezone (e.g. UTC) instead of the birth location's local
 civil time, leaving local-time rendering to a future presentation layer.** Avoids the ambiguity/gap
@@ -93,16 +103,13 @@ warn against.
 
 ## 4. Recommendation
 
-**Option A, with the fold convention and the DST-gap/pre-tzdata-coverage handling each explicitly
-recorded as their own sub-decisions** (not left implicit), confidence: medium-high on the mechanism
-(directly extends already-working, audit-remediated infrastructure), medium on the specific fold/gap
-conventions (genuinely arbitrary choices, not derivable from first principles, so any reasonable choice
-is defensible as long as it is recorded and applied uniformly). The empirical `tzdata` probe above
-(s2 item 2) sharpens this further: whichever option is chosen, the rendered result should carry an
-explicit flag distinguishing an LMT-era answer from a standardized-zone answer - `zoneinfo` already
-silently returns both kinds depending on the instant, and this repository's own discipline
-(`RISE_SET_V1`/`ADR-0054`: declared conventions, never a silently-varying implicit one) argues against
-passing that silent variation straight through to a rendered civil date unlabelled.
+**Option A, with the LMT-vs-standardized-zone labelling explicitly recorded as its one remaining
+sub-decision** (not left implicit), confidence: **high** on the mechanism (directly extends
+already-working, audit-remediated infrastructure, and s2 item 1's empirical finding removes the
+fold/gap sub-question entirely - it was never a real choice, only a misapplied analogy to
+`BirthData`'s different, opposite-direction problem), medium-high on the labelling sub-decision (a real
+but narrow choice: which field name/values to use, not whether the distinction exists - s2 item 2
+already establishes that empirically).
 
 I would accept Option C readily if the owner judges no near-term FOUNDATION or later-phase work actually
 consumes rendered dasha boundaries yet - the same "defer costs nothing while unauthorized" reasoning
@@ -111,20 +118,20 @@ regardless, so nothing is lost by waiting.
 
 ## 5. What the decision must also settle, whichever option is chosen
 
-The exact fold-ambiguity convention (earlier instant, later instant, or report both). Whether a DST-gap
-landing produces a structured indeterminate result (mirroring `RiseSetStatus`/`TrikalamStatus`) or some
-other explicit, non-silent handling. Whether a rendered boundary in the empirically-confirmed LMT-era
-range carries an explicit marker (e.g. a `civil_time_basis: "LMT" | "standardized_zone"` field) rather
+Whether a rendered boundary in the empirically-confirmed LMT-era range carries an explicit marker (e.g.
+a `civil_time_basis: "LMT" | "standardized_zone"` field, or a specific alternative name/values) rather
 than presenting an LMT-derived answer as if it were an ordinary standardized-zone civil time - the s2
 item 2 probe confirms both kinds of answer are real, `zoneinfo`-encoded outputs, not something to
-silently paper over. Rendering granularity (date only vs. date-and-time) and whether both are needed for
-different consumers. Whether implementation is authorized to begin immediately on ratification, or
-requires its own FOUNDATION per-capability CEO checkpoint on completion, consistent with how Panchanga,
-rise/set, and `TRIKALAM_V1` each received one.
+silently paper over. (Fold/gap handling, this paper's v1.0.0 draft's other named sub-question, is
+resolved by s2 item 1's finding and needs no further decision.) Rendering granularity (date only vs.
+date-and-time) and whether both are needed for different consumers. Whether implementation is authorized
+to begin immediately on ratification, or requires its own FOUNDATION per-capability CEO checkpoint on
+completion, consistent with how Panchanga, rise/set, and `TRIKALAM_V1` each received one.
 
 ## 6. Change history
 
 | Version | Date | Change |
 |---|---|---|
+| 1.2.0 | 2026-08-20 | Decision-readiness audit: empirically tested (`zoneinfo`, `America/New_York`, both 2024 DST transitions) whether fold/gap ambiguity actually applies to UTC-instant-to-local rendering (the direction dasha-boundary rendering needs) - confirmed it does NOT: `astimezone()` on an already-unambiguous UTC instant is fully deterministic, no policy decision needed. Removed this sub-question from s5 and lowered Option A's cost/raised its confidence accordingly. Research only; still presents options (now two genuine sub-decisions instead of three) and decides nothing. |
 | 1.1.0 | 2026-08-20 | Strengthened s2 item 2 and s5 with an empirical `zoneinfo`/`tzdata` probe against `RISE_SET_V1`'s own holdout dates: confirmed pre-standardization instants (e.g. `Europe/London` 1823) resolve to genuine Local Mean Time, not an approximation - a real, labelled-vs-unlabelled distinction the ratified option must address. Research only; still presents options and decides nothing. |
 | 1.0.0 | 2026-08-20 | Drafted per the owner's "if a decision paper is required before implementation, draft that decision paper and register it" instruction. Presents options; decides nothing. |

@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 3.7.0 |
+| Version | 3.8.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-20 (verified checkpoint record correct; DP-012 strengthened with an empirical tzdata/LMT finding, still awaiting ratification - see docs/ACE_EXECUTION_STATE.md) |
+| Last updated | 2026-08-20 (DP-012 decision-readiness audit: fold/gap sub-question resolved by research, not a policy choice - see docs/ACE_EXECUTION_STATE.md) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,41 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-20 - DP-012 decision-readiness audit: one sub-question resolved by research, not decided
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the audit).
+- Previous approved commit: `a95948edeed8b3a514607a23ced0d7f807b268ce`.
+- Task: owner "ACE CONTINUE - DP-012 DECISION READINESS" - audit whether any of `DP-012`'s open
+  questions can be resolved by repository evidence/research alone, without ratifying an option, and
+  check the rest of the FOUNDATION roadmap for other authorized work.
+- Relevant ADR/specification: `DP-012` (v1.1.0 -> v1.2.0).
+- Files changed: `docs/decisions/DP-012-civil-date-rendering-dasha-boundaries.md`, `docs/
+  ACE_EXECUTION_STATE.md`, this file. No engine code, no ratification, nothing implemented.
+- Implementation summary: `DP-012` v1.0.0's draft assumed dasha-boundary civil-date rendering would need
+  the same fold/gap-ambiguity handling `BirthData`/`time_service.py` use for the birth instant. Tested
+  this directly: swept `zoneinfo`/`America/New_York` minute-by-minute across the 2024-03-10
+  spring-forward gap and 2024-11-03 fall-back fold, converting *from* well-defined UTC instants *to*
+  local time (the actual direction dasha-boundary rendering needs - the reverse of `BirthData`'s own
+  local-to-UTC problem). Result: `datetime.astimezone()` on an already-unambiguous UTC instant is fully
+  deterministic in every case - the gap is simply never an output, and the fold is resolved automatically
+  and correctly without any caller-supplied disambiguation. This was a real, mistaken analogy in the
+  original draft, now corrected: not a policy choice at all, so removed from `DP-012` s5's sub-decision
+  list, and Option A's cost lowered / confidence raised accordingly. The LMT-vs-standardized-zone
+  labelling question (added last task) remains genuinely open - confirmed still real, not resolvable by
+  research alone (it's a reporting-policy choice about whether/how to surface a distinction that is real
+  either way). Checked the rest of FOUNDATION's scope (civil-date rendering, H-01, H-02, boundary-
+  proximity) against the 2026-08-19 audit's own findings - nothing has changed; no other capability has
+  a ratified path to implementation.
+- Tests executed and results: none applicable to the DP-012 edit itself (no engine code touched); the
+  `zoneinfo` behaviour was verified by direct interactive testing, reproducible from the commands quoted
+  in `DP-012` s2 item 1.
+- Certification executed and results: none applicable.
+- Known issues: none.
+- Unresolved questions: `DP-012` now presents two genuine sub-decisions (LMT labelling; rendering
+  granularity) instead of three - still awaiting ratification or explicit deferral.
+- CEO decision required: no - this entry decides nothing, per the task's explicit instruction.
+- Next authorized action: push (needs its own authorization). `DP-012` ratification remains standing and
+  non-blocking.
 
 ### 2026-08-20 - DP-012 independently advanced via empirical tzdata research (no decision, no implementation)
 - Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the changes).
@@ -940,6 +975,7 @@ act.
 
 | Version | Date | Change |
 |---|---|---|
+| 3.8.0 | 2026-08-20 | `DP-012` decision-readiness audit: empirically disproved the fold/gap-ambiguity sub-question (a mistaken analogy to `BirthData`'s opposite-direction problem) - `astimezone()` on an unambiguous UTC instant is fully deterministic. Two genuine sub-decisions remain. Nothing decided, nothing implemented; no other FOUNDATION work found authorized. |
 | 3.7.0 | 2026-08-20 | Verified `42d61c3`/checkpoint record/state files already correct, no changes needed. Independently advanced `DP-012` via a real `zoneinfo`/`tzdata` probe (LMT-era vs. standardized-zone distinction) - research only, decides and implements nothing. |
 | 3.6.0 | 2026-08-20 | Owner accepted `TRIKALAM_V1`'s FOUNDATION checkpoint (`ADR-0061` third addendum) - production-certified. Drafted and registered `DP-012` (civil-date rendering for dasha boundaries) as the next tractable FOUNDATION item; not implemented, awaiting ratification. |
 | 3.5.0 | 2026-08-20 | Pushed `8e6bb40`; CI run `32361308330` all four jobs green, ULP battery confirmed genuinely executed from the oracle-job log directly. CEO-audit HOLD finding closed. FOUNDATION per-capability checkpoint re-presented as the sole open decision. |

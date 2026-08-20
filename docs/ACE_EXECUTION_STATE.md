@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | **ACCEPTED (`ADR-0062`) - canonical, machine-checkable current-state record.** Regenerate/refresh on every meaningful implementation task, same discipline as `reports/AI_HANDOFF_CURRENT.md`. |
-| Version | 1.8.0 |
+| Version | 1.9.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-20 (pushed and CI-confirmed green, run 32367342027; DP-012 ratification is the sole standing, non-blocking open item) |
+| Last updated | 2026-08-20 (DP-012 decision-readiness audit: fold/gap sub-question resolved by research, not a policy choice; two genuine sub-decisions remain, ratification still the sole standing non-blocking item) |
 | Review cadence | Refresh at the start of a session if stale; not load-bearing if it isn't. |
 
 # ACE execution state
@@ -46,7 +46,7 @@ independently is in these fields plus the pointers they name.
 | `CURRENT_MILESTONE` | `TRIKALAM_V1` (Rahu Kalam/Yamaganda/Gulika, seed variant `PYJHORA_TRIKALAM_V1`) is **FOUNDATION checkpoint-accepted / production-certified** (`ADR-0061`'s third addendum). Panchanga classification and rise/set are likewise CERTIFIED and checkpoint-accepted (`ADR-0054`, `ADR-0059`). Milestone now moves to: civil-date rendering for dasha boundaries - `DP-012` drafted and registered; implementation NOT yet authorized (awaiting ratification). |
 | `CURRENT_AUTHORIZED_TASK` | None self-executable. `DP-012` (civil-date rendering methodology for dasha boundaries) is drafted and awaiting owner ratification. No FOUNDATION implementation is currently authorized - `TRIKALAM_V1` is complete; civil-date rendering awaits `DP-012`; H-01 and H-02 still lack any ratified decision paper (H-02's own investigation methodology, `ADR-0020` D5, is itself unratified). |
 | `TASK_OWNER` | CLAUDE (`TRIKALAM_V1` checkpoint recorded, `DP-012` drafted); USER (ratify `DP-012`, or name a different next task). |
-| `STATUS` | `TRIKALAM_V1` is done: implemented, CI-confirmed, CEO-audit ULP finding remediated and CI-confirmed, FOUNDATION checkpoint accepted. FOUNDATION's next tractable item, civil-date rendering for dasha boundaries, has a decision paper drafted and strengthened (`DP-012` v1.1.0) with an empirical `zoneinfo`/`tzdata` probe against `RISE_SET_V1`'s own holdout - confirmed pre-standardization dates (e.g. `Europe/London` 1823) resolve to genuine Local Mean Time, a real labelled-vs-unlabelled distinction the ratified option must address. Research only, no implementation - not yet ratified. |
+| `STATUS` | `TRIKALAM_V1` is done: implemented, CI-confirmed, CEO-audit ULP finding remediated and CI-confirmed, FOUNDATION checkpoint accepted. `DP-012` (civil-date rendering for dasha boundaries) underwent a decision-readiness audit (v1.1.0 -> v1.2.0): empirically disproved its own v1.0.0 draft's assumed fold/gap-ambiguity sub-question (`astimezone()` on an already-unambiguous UTC instant is fully deterministic - not a policy choice) and confirmed the LMT-vs-standardized-zone labelling question is real. `DP-012` now presents exactly two genuine sub-decisions, not three. No FOUNDATION capability beyond `TRIKALAM_V1` is authorized to implement; H-01/H-02/boundary-proximity remain unauthorized, unchanged since the last full audit. |
 | `LAST_COMPLETED_ACTION` | Third `ADR-0061` evidence addendum recording owner acceptance of `TRIKALAM_V1`'s FOUNDATION checkpoint; `DP-012` drafted and registered (`docs/decisions/README.md`). |
 | `LAST_COMMIT` | `eb79b7f1c0683bc7107335a2ae63fb89e0950397` - pushed; `origin/phase-g-governance` identical. |
 | `LAST_CI_RUN` | `32367342027` (commit `eb79b7f`) - **all four jobs green**, directly confirmed via `gh run view`. |
@@ -78,6 +78,7 @@ exactly as `reports/AI_HANDOFF_CURRENT.md` already requires of itself.
 
 | Version | Date | Change |
 |---|---|---|
+| 1.9.0 | 2026-08-20 | `DP-012` decision-readiness audit: empirically disproved the fold/gap-ambiguity sub-question (research-resolvable, not a policy choice) via a direct `zoneinfo` test across both 2024 DST transitions; confirmed the LMT-labelling sub-question is genuine. Checked the rest of the FOUNDATION roadmap - nothing else authorized to implement. No option selected, nothing implemented. |
 | 1.8.0 | 2026-08-20 | Pushed `eb79b7f`; CI run `32367342027` all four jobs green. Repository fully synced with origin, nothing outstanding except `DP-012` ratification (non-blocking). |
 | 1.7.0 | 2026-08-20 | Independently advanced `DP-012` without deciding or implementing anything: empirically probed `zoneinfo`/`tzdata` against `RISE_SET_V1`'s own holdout dates, confirmed pre-standardization instants resolve to genuine Local Mean Time (not approximation), and folded this into the paper's options and s5 sub-decisions. |
 | 1.6.0 | 2026-08-20 | Pushed `42d61c3`; CI run `32366108630` all four jobs green. Nothing left requiring immediate CEO approval; `DP-012` ratification is the sole standing, non-blocking open item. |
