@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 2.8.0 |
+| Version | 2.9.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-19 (Panchanga FOUNDATION checkpoint accepted, ADR-0059 addendum; DP-011 identified as the next authorized decision-paper item) |
+| Last updated | 2026-08-20 (DP-011 ratified, ADR-0060; PyJHora trikalam convention frozen; implementation in progress) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,32 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-20 - DP-011 ratified (ADR-0060): PyJHora trikalam convention transcribed and frozen
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with `ADR-0060`).
+- Previous approved commit: `9bbe25420eab5322b2f5cd50c1a0e686611f1b69`
+- Task: owner "CEO DECISION - DP-011. RATIFIED: OPTION C, SEEDED BY OPTION B" - record the decision as
+  an ADR, then continue automatically into the variant-definition/certification work it authorizes.
+- Relevant ADR/specification: `ADR-0060` (new); `DP-011` (unedited, options record); `ADR-0055` item 2;
+  `ADR-0059` (PyJHora provenance/venv-isolation precedent this entry reuses).
+- Files changed: `docs/DECISION_LOG.md` (new `ADR-0060`, register header updated), `docs/decisions/
+  README.md` (`DP-011` marked ADDRESSED), this file. No engine code yet - implementation follows in the
+  next entry.
+- Implementation summary: PyJHora 4.8.7 installed into an isolated, throwaway venv
+  (`dp011_explore_venv`, network access confirmed available, `pip install PyJHora` succeeded from a
+  pre-existing pip cache); `jhora/panchanga/drik.py` read directly; the `trikalam()` function (lines
+  ~1433-1464) transcribed verbatim into `ADR-0060` as `PYJHORA_TRIKALAM_V1` - the day-only, 1/8-day-part
+  offset table for all three periods, plus two honestly-recorded representational differences (local-hour
+  vs JD-UT; today's-calendar-day sunrise for the window vs. `vaara`'s rolled-back weekday for the offset
+  lookup - PyJHora's actual mixed behaviour, not corrected).
+- Tests executed and results: none yet - decision-recording step only.
+- Certification executed and results: none - `ADR-0060` explicitly does not certify anything by itself.
+- Known issues: none.
+- Unresolved questions: none raised by this entry.
+- CEO decision required: no - implements the owner's own instruction.
+- Next authorized action: proceed to implement, test, and certify `PYJHORA_TRIKALAM_V1` per `ADR-0060`'s
+  Consequences (new `engine.astrology.trikalam` module, tests, certifier, validator, CI wiring) - see the
+  next task-log entry.
 
 ### 2026-08-19 - Owner acceptance of Panchanga's FOUNDATION per-capability checkpoint (ADR-0059 addendum)
 - Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits in the same commit as
@@ -624,6 +650,7 @@ act.
 
 | Version | Date | Change |
 |---|---|---|
+| 2.9.0 | 2026-08-20 | `ADR-0060`: `DP-011` ratified (Option C seeded by Option B); PyJHora 4.8.7 `trikalam()` convention independently inspected and frozen as `PYJHORA_TRIKALAM_V1`. Implementation/certification work proceeding next. |
 | 2.8.0 | 2026-08-19 | Owner accepted Panchanga's FOUNDATION per-capability checkpoint (`ADR-0059` addendum); identified `DP-011` (Rahu Kalam/Yamaganda/Gulika variant-table options) as the sole FOUNDATION decision-paper item already authorized to draft. |
 | 2.7.0 | 2026-08-19 | FOUNDATION checkpoint audit (read-only): independently re-verified HEAD/CI/register against `Q8_CLOSURE_MATRIX.md` s4; confirmed no remaining FOUNDATION capability besides Panchanga has satisfied prerequisites for implementation (Rahu Kalam/Yamaganda/Gulika, civil-date rendering, H-01, H-02, boundary-proximity all lack a governing ratified ADR/DP); confirmed the sole open item is Panchanga's per-capability CEO checkpoint acceptance. No code, no new ADR. |
 | 2.6.0 | 2026-08-19 | Committed (`4177d61`) and pushed the Gate F work; CI run `32242462766` green on all four jobs, oracle job confirmed Gate F genuinely executed (66 comparisons, 0 mismatches, negative control verified) under the hash-pinned environment; overlaid CI-sourced canonical evidence over the local one (differs only in the volatile `environment.python` field); added this task's entry with full CI evidence; refreshed the snapshot; flagged the remaining CEO checkpoint (formal per-capability acceptance). |

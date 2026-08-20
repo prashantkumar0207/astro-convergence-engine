@@ -3,10 +3,10 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | ACTIVE REGISTER. **ACCEPTED (37): ADR-0001, ADR-0002, ADR-0005 through ADR-0012, ADR-0015, ADR-0016, ADR-0017, ADR-0033 through ADR-0037, ADR-0039 through ADR-0042, ADR-0044, ADR-0045, ADR-0046, ADR-0048 through ADR-0059**, owner-ratified across 2026-08-13, 2026-08-14, 2026-08-17, 2026-08-18 and 2026-08-19. **`ADR-0056` formalizes the four-role AI collaboration model (USER/CLAUDE/CHATGPT/CODEX); Codex is explicitly excluded from the ACE workflow. `ADR-0057` (CEO-audit HOLD remediation) adds ACE interaction mode and mandatory session-start audit to `specs/CLAUDE_WORKFLOW.md`. `ADR-0058` adds an execution-continuity rule (do not stop prematurely; five terminal stop conditions) to the same document; its `specs/CLAUDE_WORKFLOW.md` edit is committed (`20a9589e3d567bbf86e36b13bf2d61ca734e728e`). `ADR-0059` records the CEO-approved `PANCHANGA_V1` Gate F (genuine PyJHora external-oracle comparison for tithi/yoga/karana, nakshatra explicitly excluded): implemented, committed (`4177d6108236e64d07f6b23499307001f0d7c421`), pushed, and **CI-confirmed green** (run `32242462766`, all four jobs, oracle job genuinely executing Gate F: 66 comparisons, 0 mismatches, negative control verified) under the hash-pinned oracle environment. A 2026-08-19 evidence addendum to `ADR-0059` records the owner's acceptance of Panchanga's FOUNDATION per-capability checkpoint (`Q8_CLOSURE_MATRIX.md` s4); this does not close FOUNDATION's own phase-exit criteria, which still require Rahu Kalam/Yamaganda/Gulika, H-01, and H-02.** Tier-0 is **FORMALLY LOCKED** (ADR-0034), the only s12 Locked artifact. The registry vargas and the sign conventions are **owner-ratified but NOT s12 Locked** (ADR-0035 D3, ADR-0036 D3). **Q8 is now CLOSED** (ADR-0048); **Phase G exited and FOUNDATION entry criteria were independently confirmed satisfied** (this session's evidence reports). **FOUNDATION's first work package, rise/set, is CERTIFIED (`ADR-0054`, `RISE_SET_V1`)**: five owner-ratified conventions (upper-limb disc, standard -50' refraction, elevation accounted for, structured NO_RISE/NO_SET, conventions in `CalculationProfile`/`BirthData`), zero calculation impact on any existing certified capability, two genuine defects found and fixed during its own construction (recorded in the entry). **Panchanga classification-only work (tithi/vara/nakshatra/yoga/karana at a given instant) is now authorised (`ADR-0055`)**: engine-wide 1e-10 promote-up boundary convention, vara consumes the certified rise/set layer, element transition-timing deferred. **Rahu Kalam/Yamaganda/Gulika remain NOT authorised pending a future DP-NNN variant-table ratification (`ADR-0055` item 2).** No later phase (Muhurta, Varshaphal, Prashna, Mundane, BTR, Interpretation, Convergence, UI, ML) is thereby authorised - `docs/Q8_CLOSURE_MATRIX.md` s4 requires its own per-capability checkpoint for each. **Still PROPOSED: ADR-0003, ADR-0004, ADR-0013, ADR-0014, ADR-0018 through ADR-0032, ADR-0038, and ADR-0047.** `ADR-0047`'s originally-reported G5 sample accounting (22/22 complete, 16 independent, 4 ADB_MATCH, 2 unresolved, 14 events) was briefly, and **erroneously**, corrected to "12/22 attempted" by a 2026-08-18 addendum that has since been found (owner-directed forensic reconciliation) to rest on a conflation of the 22-person sample with an unrelated 5-person bridging pilot; a second, later 2026-08-18 addendum **restores 22/22 as the authoritative state** (16 independent, 4 ADB_MATCH: Fichera/Aimar/Serantoni/Bobet, 2 unresolved: Veen/Perquier, 14 independent events) and marks the "12/22" addendum SUPERSEDED/RETRACTED, preserved unedited. `ADR-0047` remains PROPOSED, not ratified, throughout. Ratification is per-entry; an owner existing is not the register being ratified. Includes the ADR-0018 remote-CI evidence addendum (2026-08-11), the ADR-0047 "12/22" addendum (2026-08-18, now retracted), and the ADR-0047 restoration addendum (2026-08-18). |
-| Version | 3.0.0 |
+| Status | ACTIVE REGISTER. **ACCEPTED (38): ADR-0001, ADR-0002, ADR-0005 through ADR-0012, ADR-0015, ADR-0016, ADR-0017, ADR-0033 through ADR-0037, ADR-0039 through ADR-0042, ADR-0044, ADR-0045, ADR-0046, ADR-0048 through ADR-0060**, owner-ratified across 2026-08-13, 2026-08-14, 2026-08-17, 2026-08-18, 2026-08-19 and 2026-08-20. **`ADR-0060` ratifies `DP-011` Option C seeded by Option B: Rahu Kalam/Yamaganda/Gulika become named, profile-selectable variants; the PyJHora 4.8.7 `trikalam()` convention is independently inspected, transcribed and frozen as the seed variant `PYJHORA_TRIKALAM_V1`. Authorizes only that one variant's implementation/certification work - does not itself certify it, does not authorize a second variant, and does not authorize Muhurta-specific consumption.** **`ADR-0056` formalizes the four-role AI collaboration model (USER/CLAUDE/CHATGPT/CODEX); Codex is explicitly excluded from the ACE workflow. `ADR-0057` (CEO-audit HOLD remediation) adds ACE interaction mode and mandatory session-start audit to `specs/CLAUDE_WORKFLOW.md`. `ADR-0058` adds an execution-continuity rule (do not stop prematurely; five terminal stop conditions) to the same document; its `specs/CLAUDE_WORKFLOW.md` edit is committed (`20a9589e3d567bbf86e36b13bf2d61ca734e728e`). `ADR-0059` records the CEO-approved `PANCHANGA_V1` Gate F (genuine PyJHora external-oracle comparison for tithi/yoga/karana, nakshatra explicitly excluded): implemented, committed (`4177d6108236e64d07f6b23499307001f0d7c421`), pushed, and **CI-confirmed green** (run `32242462766`, all four jobs, oracle job genuinely executing Gate F: 66 comparisons, 0 mismatches, negative control verified) under the hash-pinned oracle environment. A 2026-08-19 evidence addendum to `ADR-0059` records the owner's acceptance of Panchanga's FOUNDATION per-capability checkpoint (`Q8_CLOSURE_MATRIX.md` s4); this does not close FOUNDATION's own phase-exit criteria, which still require Rahu Kalam/Yamaganda/Gulika, H-01, and H-02.** Tier-0 is **FORMALLY LOCKED** (ADR-0034), the only s12 Locked artifact. The registry vargas and the sign conventions are **owner-ratified but NOT s12 Locked** (ADR-0035 D3, ADR-0036 D3). **Q8 is now CLOSED** (ADR-0048); **Phase G exited and FOUNDATION entry criteria were independently confirmed satisfied** (this session's evidence reports). **FOUNDATION's first work package, rise/set, is CERTIFIED (`ADR-0054`, `RISE_SET_V1`)**: five owner-ratified conventions (upper-limb disc, standard -50' refraction, elevation accounted for, structured NO_RISE/NO_SET, conventions in `CalculationProfile`/`BirthData`), zero calculation impact on any existing certified capability, two genuine defects found and fixed during its own construction (recorded in the entry). **Panchanga classification-only work (tithi/vara/nakshatra/yoga/karana at a given instant) is now authorised (`ADR-0055`)**: engine-wide 1e-10 promote-up boundary convention, vara consumes the certified rise/set layer, element transition-timing deferred. **Rahu Kalam/Yamaganda/Gulika remain NOT authorised pending a future DP-NNN variant-table ratification (`ADR-0055` item 2).** No later phase (Muhurta, Varshaphal, Prashna, Mundane, BTR, Interpretation, Convergence, UI, ML) is thereby authorised - `docs/Q8_CLOSURE_MATRIX.md` s4 requires its own per-capability checkpoint for each. **Still PROPOSED: ADR-0003, ADR-0004, ADR-0013, ADR-0014, ADR-0018 through ADR-0032, ADR-0038, and ADR-0047.** `ADR-0047`'s originally-reported G5 sample accounting (22/22 complete, 16 independent, 4 ADB_MATCH, 2 unresolved, 14 events) was briefly, and **erroneously**, corrected to "12/22 attempted" by a 2026-08-18 addendum that has since been found (owner-directed forensic reconciliation) to rest on a conflation of the 22-person sample with an unrelated 5-person bridging pilot; a second, later 2026-08-18 addendum **restores 22/22 as the authoritative state** (16 independent, 4 ADB_MATCH: Fichera/Aimar/Serantoni/Bobet, 2 unresolved: Veen/Perquier, 14 independent events) and marks the "12/22" addendum SUPERSEDED/RETRACTED, preserved unedited. `ADR-0047` remains PROPOSED, not ratified, throughout. Ratification is per-entry; an owner existing is not the register being ratified. Includes the ADR-0018 remote-CI evidence addendum (2026-08-11), the ADR-0047 "12/22" addendum (2026-08-18, now retracted), and the ADR-0047 restoration addendum (2026-08-18). |
+| Version | 3.1.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-19 (ADR-0059 evidence addendum: owner acceptance of Panchanga's FOUNDATION per-capability checkpoint) |
+| Last updated | 2026-08-20 (ADR-0060: DP-011 ratified, Option C seeded by Option B; PyJHora trikalam convention transcribed and frozen) |
 | Review cadence | TBD |
 
 # Decision Log (ADR register)
@@ -2851,6 +2851,100 @@ the two gates added under ADR-0037.
 - **Evidence:** this session's "ACE - FOUNDATION CHECKPOINT AUDIT" task and its
   `reports/AI_HANDOFF_CURRENT.md` 2026-08-19 findings; the owner instruction quoted above; `ADR-0059`'s
   own Evidence section (CI run `32242462766`).
+
+---
+
+## ADR-0060 - Owner ratification of DP-011: Rahu Kalam/Yamaganda/Gulika as named, profile-selectable variants; PyJHora convention transcribed and frozen as the seed variant
+
+- **Date:** 2026-08-20
+- **Status:** **ACCEPTED**, on the owner's explicit instruction: "CEO DECISION - DP-011. RATIFIED: OPTION
+  C, SEEDED BY OPTION B. Adopt multiple named, profile-selectable Rahu Kalam / Yamaganda / Gulika
+  variants as the architectural model. For the initial certified variant, use the PyJHora convention as
+  the seed/default variant, but only after" the seven numbered conditions quoted verbatim in Decision
+  below. Per `docs/PROJECT_CONSTITUTION.md` s11, this instruction is the ratifying act; this entry
+  records it, matching the precedent already used for `ADR-0052`/`ADR-0055`/`ADR-0059`.
+- **Context:** `docs/decisions/DP-011-rahu-kalam-yamaganda-gulika-variant-tables.md` presented four
+  options and recommended Option C (named, profile-selectable variants) seeded by Option B (adopt
+  PyJHora's own convention as the first variant, since this repository already treats PyJHora as its
+  designated Panchanga oracle, `ADR-0059`), explicitly not yet backed by any inspection of PyJHora's
+  actual source. This entry closes that gap: PyJHora 4.8.7 was installed in an isolated, throwaway,
+  unpinned exploration venv (distinct from the hash-pinned `requirements-oracle.lock` CI uses, same
+  discipline `ADR-0059`'s own implementation entry used), and its
+  `jhora/panchanga/drik.py` source was read directly (not executed blind, not guessed) to locate and
+  transcribe the governing function.
+- **Decision - the owner's seven conditions, and how each is satisfied by this entry:**
+  1. **"the exact PyJHora convention/table is independently inspected"** - done. Function `trikalam(jd,
+     place, option)` in `jhora/panchanga/drik.py` (PyJHora 4.8.7), lines ~1433-1464, governs all three
+     periods via one shared implementation. Verbatim transcription of the offset table (the only
+     tradition-specific content):
+     ```
+     # value in each array is for given weekday (0 = sunday, etc.)
+     offsets = { 'raahu kaalam': [0.875, 0.125, 0.75, 0.5, 0.625, 0.375, 0.25],
+                 'gulikai':      [0.75, 0.625, 0.5, 0.375, 0.25, 0.125, 0.0],
+                 'yamagandam':   [0.5, 0.375, 0.25, 0.125, 0.0, 0.75, 0.625] }
+     start_time = srise + day_dur * offsets[option][weekday]
+     end_time = start_time + 0.125 * day_dur
+     ```
+     where `srise = sunrise(jd, place)[0]`, `day_dur = day_length(jd, place)` (`sunset - sunrise`, both
+     in **local decimal hours**, not Julian Day), and `weekday = vaara(jd, place)` (0=Sunday..6=Saturday,
+     PyJHora's default `show_vedic_day=True` - sunrise-to-sunrise Vedic weekday, computed by
+     `vedic_weekday()`: civil weekday of `jd`, rolled back by one if `jd`'s own local clock hour is
+     before that same day's sunrise local hour). Each period's window is always exactly 1/8 of that
+     day's sunrise-to-sunset span - **day-only division; PyJHora 4.8.7's `trikalam` has no separate
+     night-time branch for any of the three**, which resolves `DP-011` s2 item 2's open question for
+     this specific variant: this seed variant is day-only by construction, not by omission.
+  2. **"its rule/table is explicitly transcribed and frozen"** - the table above is frozen as
+     `PYJHORA_TRIKALAM_V1` (Decision item 4). Any future PyJHora version that changes these seven-element
+     arrays would require a new variant identity, never a silent edit to this one, per this repository's
+     existing "a variant is a decision to record, never a silent choice" discipline (`DP-009`).
+  3. **"provenance/source is recorded"** - PyPI package `PyJHora`, version `4.8.7` (the same version
+     `ADR-0059` already cites and CI's `requirements-oracle.lock` pins), module `jhora.panchanga.drik`,
+     function `trikalam` (and its three convenience lambdas `raahu_kaalam`/`yamaganda_kaalam`/
+     `gulikai_kaalam`). Inspected via direct source read of the installed package file, not via
+     documentation, a webpage, or memory of the convention.
+  4. **"the variant is given an explicit identity/name"** - `PYJHORA_TRIKALAM_V1`.
+  5. **"the implementation is isolated from other variants"** - satisfied by construction: exactly one
+     variant exists after this entry; the implementation (see Consequences) keys all tables by variant
+     identity from the start, so a second variant is additive, not a rewrite.
+  6. **"the required tests, boundary cases, negative control, independent validation and certification
+     evidence are defined"** - addressed by the implementation this entry authorizes (see Consequences);
+     this entry alone does not constitute that evidence, per the owner's own "does NOT automatically
+     certify the resulting implementation."
+  7. **"any uncertainty or ambiguity in the PyJHora convention is explicitly recorded rather than
+     guessed"** - two genuine representational differences are recorded, not silently resolved:
+     (a) PyJHora expresses `sunrise`/`sunset`/the resulting windows in **local decimal hours** (subject
+     to its `place.timezone` field); this repository's own `rise_set.sunrise`/`sunset` return **Julian
+     Day, UT**. The frozen rule transcribed above is the *proportional offset arithmetic*
+     (`start = sunrise + offset * day_length`; `duration = day_length / 8`), which is representation-
+     independent; the seed variant's implementation performs this arithmetic in JD-UT terms (consistent
+     with how `vara`, `ADR-0055` item 4, already consumes `rise_set` in JD-UT rather than reimplementing
+     PyJHora's local-hour pipeline), and Gate F must convert PyJHora's local-hour output (with
+     `place.timezone` fixed at `0.0`, the same convention `ADR-0059` already established) to JD-UT before
+     comparing, not assume the raw numbers are already comparable. (b) PyJHora's `trikalam` computes the
+     time window from **the sunrise of `jd`'s own calendar day** (via `sunrise(jd, place)` called
+     directly on the query instant) but selects the **offset using `vaara`'s sunrise-anchored, possibly
+     rolled-back weekday** - these two are not always the same calendar day for an instant before that
+     day's sunrise. This is PyJHora's actual behaviour, not a defect this entry is correcting; the seed
+     variant's implementation must mirror it exactly (today's-calendar-day sunrise/sunset for the
+     window, `panchanga.vara`'s already-certified rolled-back weekday for the offset lookup) rather than
+     "improving" it into a more internally-consistent rule PyJHora itself does not implement.
+- **Consequences:** This entry authorizes **only** the variant-definition and certification work for
+  `PYJHORA_TRIKALAM_V1` - a new `engine.astrology.trikalam` module (Rahu Kalam, Yamaganda, Gulika
+  window computation, consuming certified `rise_set.sunrise`/`sunset` and `panchanga.vara`, never
+  reimplementing either), its tests, a certifier following the established template (frozen-rule
+  integrity, dense sweep, boundary/circumpolar battery, non-invasiveness, independent validator, and a
+  genuine Gate F re-comparing against live PyJHora - the same discipline `ADR-0059` established), an
+  independent validator, and CI wiring. It does **not** by itself certify that implementation - certified
+  status requires the gates to actually run and pass, CI-confirmed, exactly as `ADR-0059` required for
+  Panchanga. It does **not** authorize: a second or later variant (explicitly reserved, per the owner's
+  "do not implement additional variants unless separately authorized"); any Muhurta-specific consumption
+  of these periods (search, ranking, or otherwise); or any change to `panchanga.py`, `rise_set.py`, or
+  any already-certified module. System/profile provenance (which variant identity produced a given
+  result) must be carried in the result type, not left implicit.
+- **Evidence:** `docs/decisions/DP-011-rahu-kalam-yamaganda-gulika-variant-tables.md`; the owner's
+  "CEO DECISION - DP-011" instruction, quoted above; direct inspection of `jhora/panchanga/drik.py`
+  (PyJHora 4.8.7, installed via `pip install PyJHora` into an isolated venv at
+  `dp011_explore_venv`, not the main environment or CI's hash-pinned lock).
 
 ---
 
