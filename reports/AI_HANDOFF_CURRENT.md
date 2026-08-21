@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 4.8.0 |
+| Version | 4.9.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-21 (ADR-0066: H-01 fix Option 2 ratified and implemented; FOUNDATION-exit readiness audit found boundary-proximity indicators completely unaddressed - standing blocker) |
+| Last updated | 2026-08-21 (H-01 independent verification complete, flagged as novel/unprecedented; DP-015 drafted for boundary-proximity indicators; not implementation-authorized; awaiting owner on both) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,85 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-21 - H-01 independent re-verification; boundary-proximity-indicator investigation (DP-015)
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the paper).
+- Previous approved commit: `d2a780cd7f0be31c1d18509a757b5b8225af032f` (H-01 fix Option 2, `ADR-0066`) -
+  **explicitly held back from push** per this task's own instruction ("Do not push d2a780c yet").
+- Task: owner asked for (1) an independent re-verification of the prior task's own H-01/`ADR-0066`
+  Q8-exit-criteria reading, without modifying or reopening H-01 code, and (2) a decision-readiness
+  investigation of the boundary-proximity-indicator gap only - no implementation, no ADR choosing an
+  option, no push.
+- Relevant ADR/specification: `ADR-0066` (re-examined, not edited); `Q8_CLOSURE_MATRIX.md` s4 (re-read
+  verbatim); `ADR-0049` (Phase G's B-01/B-02/B-03 remediation, checked as precedent); `ADR-0006`/`ADR-
+  0037` (KP_CHAIN_V1); `ADR-0027` (PROPOSED, cites H-07); `docs/DASHA_CERTIFICATION_ROADMAP.md`
+  (PROPOSED); `docs/H7_BTR_SPEC.md` (checked, no mention of the concept).
+- Files changed: `docs/decisions/DP-015-foundation-boundary-proximity-indicators.md` (new), `docs/
+  decisions/README.md` (`DP-015` registered, version 2.4.0), `docs/ACE_EXECUTION_STATE.md` (version
+  3.0.0), this file.
+- **Part 1 - H-01 independent verification (no code touched, no ADR written):** re-read `Q8_CLOSURE_
+  MATRIX.md` s4's exact ratified text directly rather than relying on the prior task's own paraphrase.
+  The clause reads: "H-01 and H-02 resolved and certified, or explicitly deferred by decision with the
+  dependent domains blocked accordingly." Confirmed `ADR-0066` satisfies this literally: it is a
+  decision; the dependent domain (true-node transit-event search via `find_crossings()`) is blocked at
+  the code level by `UnsupportedNodePolicyError`, which is stronger than a documentation-only deferral.
+  New this task: checked whether any prior case in this repository's own history establishes this
+  "deferred + blocked" pattern as something the owner has actually accepted before. Found `ADR-0049`
+  (Phase G's own exit criteria offered an equivalent, even less restrictive, "resolved or explicitly
+  deferred by decision" path for B-01/B-02/B-03) - but all three were fully REMEDIATED per `ADR-0049`,
+  never actually deferred, so **no precedent exists** for the owner having accepted a hybrid,
+  implemented-as-a-refusal (not a complete fix) treatment as satisfying an exit criterion. Conclusion:
+  the reading is textually sound and unchanged from the prior task's own determination, but it is a
+  **genuinely novel application**, not a settled or precedented one - restated with this additional
+  finding rather than either strengthened or walked back.
+- **Part 2 - boundary-proximity-indicator investigation (no implementation, no ADR):** confirmed via
+  direct repository-wide search that **nothing ratified governs this FOUNDATION scope item at all** -
+  unlike every other FOUNDATION-scope item, it has never appeared in any ADR, any prior decision paper,
+  or any code. The only related material found: (a) `engine/kp/chain.py`/`engine/models/kp_chain.py`'s
+  `nearest_boundary_arcsec` field (`ADR-0006`, KP_CHAIN_V1 - certified but explicitly stated NOT to be
+  a Constitution s12 Locked artifact, distinct from the separately FORMALLY LOCKED Tier-0 scope which
+  does not name it), which has its own unresolved defect - `reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md`
+  H-07, "blind to the sign boundary while its docstring claims all levels," re-verified directly against
+  the live code (`chain.py:36-43`'s `nearest` computation has no thirty-degree term; `kp_chain.py:37-41`'s
+  docstring claims "at any level") - H-07 is cited only inside `ADR-0027`, itself `Status: PROPOSED`, so
+  it too has no ratified decision; (b) `docs/DASHA_CERTIFICATION_ROADMAP.md` (`Status: PROPOSED`),
+  which discusses extending the concept to the dasha layer specifically - `Q8_CLOSURE_MATRIX.md` s5
+  (JATAKA)'s own entry criteria separately cites this same roadmap item, meaning the FOUNDATION-exit
+  item and the JATAKA-entry item are related but textually distinct requirements; (c) `docs/
+  H7_BTR_SPEC.md` (BTR being the roadmap's stated primary downstream beneficiary) contains zero mentions
+  of the concept, and BTR is phases away regardless (`Q8_CLOSURE_MATRIX.md` s13: orthogonal, reachable
+  only after EVIDENCE exits). Drafted `DP-015` covering all six items the task asked to determine
+  (Q8's exact requirement text; why it's in scope, assembled from the H-02/H-07/roadmap/BTR evidence
+  above; that nothing prior governs it; three legitimate treatment options - implement for named
+  capabilities, defer explicitly, or decouple from the exit checkpoint; a low-confidence lean toward
+  deferral; and a statement that `DP-015` itself is judged the minimum paper needed, with a second,
+  follow-up paper required only if Option 1 is chosen). **DP-015 s3 surfaces a genuinely new textual
+  finding**: `Q8_CLOSURE_MATRIX.md` s4's "explicitly deferred... blocked accordingly" alternate path is
+  textually scoped to H-01/H-02 by name in the second sentence, not the general rule the first sentence
+  states for "every capability above" - meaning a bare deferral decision for boundary-proximity
+  indicators (or, on this reading, civil-date rendering's ALREADY-recorded deferral, `ADR-0063`) may not
+  by itself satisfy FOUNDATION's exit bar, unless the owner confirms the broader reading (matching Phase
+  G's own less-restrictive, non-carved-out phrasing for B-01/B-02/B-03). This paper does not resolve
+  that question - it belongs to the owner, and bears on more than just this one scope item.
+- Tests executed and results: `python -m pytest -q` - **816 passed** (unchanged; no code touched, only
+  decision/documentation files).
+- Certification executed and results: not applicable - no certified capability touched.
+- Governance checks executed and results: `python scripts/check_adr_numbering.py` - PASS, 66 entries
+  unchanged; `python scripts/check_identifier_families.py` - PASS, 15 registered DP identifiers (up
+  from 14, `DP-015` newly registered); `python scripts/check_retired_identifiers.py` - PASS, 0
+  violations (clean on the first pass this time); `git diff --check` - clean; `engine/tests/
+  test_retired_identifier_gate_scope.py` - 36 passed.
+- Known issues: none.
+- Unresolved questions: both of `DP-015` s.N's decisions, plus the H-01 novelty finding above, which the
+  owner should weigh even though it does not change the technical conclusion.
+- CEO decision required: **yes, three items** - (1) confirm or correct the H-01 independent-verification
+  finding (the interpretation holds but is unprecedented); (2) `DP-015` s3's interpretive question
+  (does explicit deferral close FOUNDATION exit for any scope item, or only H-01/H-02 by name - this
+  also bears on civil-date rendering's existing deferral); (3) a `DP-015` treatment option for
+  boundary-proximity indicators specifically (implement, defer, or decouple from the exit checkpoint).
+- Next authorized action: none self-authorized. `d2a780c` remains unpushed per explicit instruction;
+  this task's own commit is local-only. Stopping here per "stop at the genuine CEO decision point" -
+  reached, since `DP-015`'s decisions and the H-01 confirmation are exactly that.
 
 ### 2026-08-21 - H-01 fix Option 2 implemented (ADR-0066): UnsupportedNodePolicyError; FOUNDATION-exit readiness audit
 - Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the implementation).
@@ -1406,6 +1485,7 @@ act.
 
 | Version | Date | Change |
 |---|---|---|
+| 4.9.0 | 2026-08-21 | Independently re-verified the H-01/`ADR-0066` Q8-exit-criteria reading against the exact ratified text and a Phase G precedent check (holds, but flagged as a novel, unprecedented application - `ADR-0049`'s B-01/B-02/B-03 were fully resolved, never actually deferred, despite an equivalent clause). Investigated the boundary-proximity-indicator gap: nothing ratified governs it; drafted `DP-015`, surfacing a textual ambiguity in `Q8_CLOSURE_MATRIX.md` s4 about whether the deferral-with-blocking carve-out extends beyond H-01/H-02 by name (bearing on this item and on civil-date rendering's existing deferral too). Three treatment options presented, low-confidence lean toward deferral. Decides nothing; not implementation-authorized. `d2a780c` held back from push per explicit instruction. |
 | 4.8.0 | 2026-08-21 | `ADR-0066`: H-01 fix Option 2 implemented - `UnsupportedNodePolicyError` raised from `find_crossings()` for any non-mean node policy on Rahu/Ketu (fail-closed, covers every caller automatically). No certified value changed (isolated-venv re-verification: PASS, only known ULP noise + volatile fields differed, discarded not committed). FOUNDATION-exit readiness audit: rise/set, panchanga, trikalam certified; civil-date rendering deferred; H-02 resolved/certified; H-01 now resolved via Q8's explicit-deferral-with-blocking clause (Claude's own reading, flagged for confirmation). Boundary-proximity indicators found completely unaddressed - standing FOUNDATION-exit blocker. Local-only, not pushed. |
 | 4.7.0 | 2026-08-21 | H-01 decision-readiness: `DP-014` drafted and registered, extracting `reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md`'s H-01 finding, re-verified live (TrueNode grid step still exactly 37.5 days), and tracing the defect's blast radius across all eight `node_policy` consumers - confined to `find_crossings()`'s callers; KP already independently refuses true node. Presents the audit's own two solutions plus a defer option; recommends explicit refusal (Option 2) at medium confidence. Decides nothing, not implementation-authorized. Local-only, not pushed. |
 | 4.6.0 | 2026-08-21 | Pushed `9737ddb` (TRANSIT_V1 evidence recovery: one ULP-level Gate C float difference, unpinned-vs-pinned dependency noise, recovered via CI-sourced overlay). CI run `32478694212` all four jobs green, Gate E re-confirmed. `DP-013`/H-02 fully closed. |
