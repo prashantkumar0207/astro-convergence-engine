@@ -1,8 +1,8 @@
 {
  "schema": "transit_v1_certification",
  "adr": "ADR-0008",
- "date": "2026-08-20",
- "scope": "longitude-crossing primitive; sign/nakshatra ingresses; returns; natal conjunctions; natal-relative view",
+ "date": "2026-08-21",
+ "scope": "longitude-crossing primitive; sign/nakshatra ingresses (with declared_division, H-02 fix Option 1, ADR-0065); returns; natal conjunctions; natal-relative view",
  "decisions": {
   "TR-A": "event-time guarantee 1e-6 day; bisection bracket 1e-9 day",
   "TR-B": "45 deg max motion per sample, speed bounds x safety 4",
@@ -93,7 +93,7 @@
      "oracle_jd": 2460539.087484674,
      "oracle_astronomy_delta_arcsec": 20.22951699816531,
      "delta_days": 0.005847694352269173,
-     "derived_tolerance_days": 0.007236584941425451
+     "derived_tolerance_days": 0.00723658494142545
     },
     {
      "profile": "parashari_lahiri",
@@ -243,6 +243,10 @@
   },
   "D_independent_validator": {
    "result": "PASS"
+  },
+  "E_declared_division": {
+   "cases_checked": 49,
+   "negative_control_verified": true
   }
  },
  "explicit_non_claims": [
@@ -252,7 +256,7 @@
   "interpretation"
  ],
  "environment": {
-  "python": "3.11.15"
+  "python": "3.12.10"
  },
  "preconditions": {
   "data_assets": {

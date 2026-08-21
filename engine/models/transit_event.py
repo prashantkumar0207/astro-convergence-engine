@@ -1,5 +1,6 @@
 """
-Transit event model (TRANSIT_V1, ADR-0008).
+Transit event model (TRANSIT_V1, ADR-0008; `declared_division` field,
+H-02 fix Option 1, ADR-0065).
 """
 
 from dataclasses import dataclass
@@ -31,6 +32,18 @@ class TransitEvent:
         "return", "natal_conjunction", or "tangent".
     profile_name
         CalculationProfile that produced the positions.
+    declared_division
+        H-02 fix (ADR-0065, DP-013 Option 1). For "sign_ingress" and
+        "nakshatra_ingress" events, the sign (1-12) or nakshatra (1-27)
+        this event is a crossing INTO, classified from the EXACT
+        `target_longitude` (never subject to the root-finder's own
+        residual) rather than by re-classifying the noisy `julian_day`
+        longitude after the fact - the seam `division_index` promotion
+        (`1e-10` degrees) and `find_crossings`' own residual guarantee
+        (`1e-4` arcsec, ~278x wider) could otherwise disagree on. `None`
+        for every other `kind`, where "division" has no defined meaning
+        (a return/natal-conjunction/plain-crossing target is not
+        necessarily a division boundary) - never guessed.
     """
 
     body: str
@@ -40,3 +53,4 @@ class TransitEvent:
     residual_arcsec: float
     kind: str
     profile_name: str
+    declared_division: int | None = None

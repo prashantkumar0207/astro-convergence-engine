@@ -41,6 +41,63 @@ def test_sun_has_exactly_12_sign_ingresses_per_year():
     assert boundaries == [30.0 * k for k in range(12)]
 
 
+def test_declared_division_matches_the_exact_target_not_the_noisy_reported_instant():
+    """H-02 fix, Option 1 (ADR-0065, DP-013 s6): `declared_division` is
+    classified from `target_longitude` (exact by construction), so it must
+    equal `zodiac_sign(target_longitude)`/`nakshatra(target_longitude)`
+    exactly - this is the actual property that closes the seam, not merely
+    "declared_division is populated"."""
+
+    for event in sign_ingresses("Sun", JD_2024, JD_2024 + 366, PARASHARI_LAHIRI):
+        assert event.declared_division == zodiac_sign(event.target_longitude)
+
+    for event in nakshatra_ingresses("Moon", JD_2024, JD_2024 + 35, PARASHARI_LAHIRI):
+        assert event.declared_division == nakshatra(event.target_longitude)
+
+
+def test_declared_division_is_none_for_events_with_no_division_semantics():
+    """`returns()`/`natal_conjunctions()` targets are natal points, not
+    division boundaries - `declared_division` must stay `None`, never a
+    guessed value."""
+
+    natal = calculate(BIRTH, profile=PARASHARI_LAHIRI).snapshot
+    natal_sun = natal.sidereal_planets["Sun"].longitude
+    window_start = swe.julday(2024, 11, 1, 0.0, swe.GREG_CAL)
+    for event in returns("Sun", natal_sun, window_start, window_start + 90, PARASHARI_LAHIRI):
+        assert event.declared_division is None
+
+    points = {"Sun": natal_sun}
+    for _label, event in natal_conjunctions("Moon", points, JD_2024, JD_2024 + 28, PARASHARI_LAHIRI):
+        assert event.declared_division is None
+
+
+def test_negative_control_declared_division_would_catch_a_broken_classifier(monkeypatch):
+    """Proves the check above can actually detect a defect: temporarily
+    breaks the classifier `sign_ingresses` uses so it always returns a
+    fixed, wrong division, confirms the same assertion the real tests use
+    would then fail, then restores and re-verifies agreement."""
+
+    import engine.transits.events as events_module
+
+    real_classify_sign = events_module._classify_sign
+    probe_events = sign_ingresses("Sun", JD_2024, JD_2024 + 366, PARASHARI_LAHIRI)
+    assert all(e.declared_division == real_classify_sign(e.target_longitude) for e in probe_events)
+
+    def _always_sign_1(_longitude):
+        return 1
+
+    monkeypatch.setattr(events_module, "_classify_sign", _always_sign_1)
+    broken_events = sign_ingresses("Sun", JD_2024, JD_2024 + 366, PARASHARI_LAHIRI)
+    # At least one real event's declared_division is NOT sign 1 (12 signs,
+    # only one is Aries), so the broken classifier must disagree with the
+    # real one for at least one case - proving the check is not vacuous.
+    assert any(b.declared_division != real_classify_sign(b.target_longitude) for b in broken_events)
+
+    monkeypatch.undo()
+    restored_events = sign_ingresses("Sun", JD_2024, JD_2024 + 366, PARASHARI_LAHIRI)
+    assert all(e.declared_division == real_classify_sign(e.target_longitude) for e in restored_events)
+
+
 def test_classification_after_ingress_matches_certified_primitives():
     # Epsilon after each Sun sign ingress, the certified sign, nakshatra,
     # and KP chain classifications must all agree with the boundary

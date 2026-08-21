@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | PROPOSED - index of decision papers. Papers present options; they decide nothing. |
-| Version | 2.0.0 |
+| Version | 2.1.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-20 |
+| Last updated | 2026-08-21 |
 | Review cadence | TBD |
 
 # Decision Papers
@@ -44,12 +44,13 @@ register uses for ADR-0015 through ADR-0017.
 | DP-010 | in-repo AI collaboration scaffolding (CLAUDE.md / skills) and repair of stale AI-role documents | `docs/PROJECT_CONSTITUTION.md` s11; `specs/CLAUDE_WORKFLOW.md`; `docs/PROJECT_MASTER.md`; the transfer-bundle handoff convention | ADDRESSED by ADR-0044, narrower than this paper's recommendation (no skills/agents/MCP; the three named stale documents were not repaired, by owner instruction) |
 | DP-011 | Rahu Kalam / Yamaganda / Gulika variant-table source, per `ADR-0055` item 2's authorization to draft this paper | FOUNDATION implementation scope (`Q8_CLOSURE_MATRIX.md` s4); Rahu Kalam/Yamaganda/Gulika certification | **ADDRESSED by ADR-0060** (2026-08-20), accepting Option C seeded by Option B: named, profile-selectable variants; PyJHora's convention transcribed and frozen as the seed `PYJHORA_TRIKALAM_V1`. The paper remains unedited as the options record. |
 | DP-012 | Civil-date rendering methodology for dasha boundaries | FOUNDATION implementation scope (`Q8_CLOSURE_MATRIX.md` s4); any future dasha-boundary display/report | **ADDRESSED by ADR-0063** (2026-08-20), accepting Option C: deferred entirely until a consuming feature needs it. Not implementation-authorized. The paper remains unedited as the options record. |
-| DP-013 | H-02 ingress-classification seam: reproduction methodology and fix option, extracted from `ADR-0020` D5's already-written analysis | FOUNDATION exit criteria (`Q8_CLOSURE_MATRIX.md` s4); MUHURTA entry criteria (s10); `TRANSIT_V1`/varga classification seam | OPEN, drafted |
+| DP-013 | H-02 ingress-classification seam: reproduction methodology and fix option, extracted from `ADR-0020` D5's already-written analysis | FOUNDATION exit criteria (`Q8_CLOSURE_MATRIX.md` s4); MUHURTA entry criteria (s10); `TRANSIT_V1`/varga classification seam | **ADDRESSED by ADR-0064** (reproduction methodology, Option C) **and ADR-0065** (fix option, Option 1: `TransitEvent.declared_division`). The paper remains unedited as the options record. |
 
 ## Change history
 
 | Version | Date | Change |
 |---|---|---|
+| 2.1.0 | 2026-08-21 | DP-013 marked ADDRESSED by `ADR-0064` (reproduction methodology) and `ADR-0065` (fix option, Option 1). |
 | 2.0.0 | 2026-08-20 | Allocated and drafted DP-013 (`DP-013-h02-ingress-classification-seam.md`), extracting `ADR-0020` D5's H-02 analysis per the owner's explicit, scoped authorization. Options only; decides nothing; does not ratify `ADR-0020`. |
 | 1.9.0 | 2026-08-20 | DP-012 marked ADDRESSED by `ADR-0063` (Option C accepted: deferred). |
 | 1.8.0 | 2026-08-20 | Allocated and drafted DP-012 (`DP-012-civil-date-rendering-dasha-boundaries.md`), per the owner's "if a decision paper is required before implementation, draft that decision paper and register it" instruction. Options only; decides nothing. |

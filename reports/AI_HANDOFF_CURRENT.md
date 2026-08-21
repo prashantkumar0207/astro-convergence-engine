@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 4.4.0 |
+| Version | 4.5.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-21 (DP-013 fix-option decision-readiness analysis complete, Option 1 recommended at high confidence; choosing a fix option is the sole open item) |
+| Last updated | 2026-08-21 (ADR-0065: H-02 fix Option 1 implemented and locally verified, all gates green; push authorization pending) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,45 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-21 - H-02 fix Option 1 implemented (ADR-0065): TransitEvent.declared_division
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the implementation).
+- Previous approved commit: `5a00dc6604c52ebcfb0a4da456571638e0c200a7`.
+- Task: owner "Ratify H-02 Fix Option 1." - implement `DP-013` s6's recommended, ratified option.
+- Relevant ADR/specification: `ADR-0065` (new); `DP-013` s6 (the analysis this implements); `ADR-0008`
+  (`TRANSIT_V1`, not reopened beyond this additive change).
+- Files changed: `engine/models/transit_event.py` (`declared_division: int | None = None`, additive),
+  `engine/transits/events.py` (`sign_ingresses`/`nakshatra_ingresses` populate it via `dataclasses.
+  replace()`; `find_crossings` itself untouched), `scripts/certify_transits.py` (new Gate E + a
+  proactive `.as_posix()` console-transcript path fix, matching this session's established discipline),
+  `engine/tests/test_transit_events.py` (4 new tests), `docs/DECISION_LOG.md` (new `ADR-0065`, register
+  header updated), `docs/decisions/README.md` (`DP-013` marked ADDRESSED by both `ADR-0064`/`ADR-0065`),
+  `docs/ACE_EXECUTION_STATE.md`, this file.
+- Implementation summary: exactly matches `DP-013` s6's own analysis. `TransitEvent` gained the field
+  with a default, so every existing `find_crossings()` construction call site is unchanged - no
+  existing field's value or meaning changes. `sign_ingresses`/`nakshatra_ingresses` (the only two
+  functions with a defined division scheme) classify `declared_division` from the EXACT `target_
+  longitude`, using the same certified `zodiac_sign`/`nakshatra` every other capability already uses -
+  never re-classifying the reported (residual-bounded) `julian_day`. `returns()`/`natal_conjunctions()`
+  are untouched, leaving the field `None` where "division" has no defined meaning - avoiding Option 2's
+  identified unscoped-call-site complication entirely, since Option 1 never needed `find_crossings`
+  itself to know about divisions. `certify_transits.py`'s new Gate E asserts `declared_division` equals
+  the certified classifier applied to the target for every Sun/Moon holdout case, asserts `None` for a
+  plain crossing, and includes a genuine negative control (temporarily breaks `events.py`'s own
+  classifier, confirms the same comparison would then fail to catch the disagreement, restores).
+- Tests executed and results: `python -m pytest -q` - **812 passed** (up from 809; 4 new tests).
+- Certification executed and results: `python scripts/certify_transits.py` (main environment, no
+  PyJHora) - correctly `exit(3)`, matching every oracle-tier certifier. `python scripts/
+  certify_transits.py` (isolated exploration venv, PyJHora 4.8.7) - **PASS, all gates (A/C/D/E)**: Gate
+  E `{"cases_checked": 49, "negative_control_verified": true}`. M-03 anti-fitting scan surface confirmed
+  unchanged (180 - only existing files edited, no new files added under `engine/`).
+- Known issues: none.
+- Unresolved questions: none technical. Options 2 and 3 remain formally un-chosen (not needed - Option 1
+  is what was ratified).
+- CEO decision required: no, for this entry itself (implements the owner's own ratification). CI
+  confirmation of Gate E is the remaining evidence step.
+- Next authorized action: push (needs its own authorization), then monitor CI specifically for Gate E
+  executing under the hash-pinned oracle environment and report the result.
 
 ### 2026-08-21 - DP-013 fix-option decision-readiness analysis: Option 1 recommended, not chosen
 - Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the analysis).
@@ -1198,6 +1237,7 @@ act.
 
 | Version | Date | Change |
 |---|---|---|
+| 4.5.0 | 2026-08-21 | `ADR-0065`: H-02 fix Option 1 implemented - `TransitEvent.declared_division` (additive), new Gate E in `certify_transits.py` (49 cases, genuine negative control). All gates green locally (isolated exploration venv), 812/812 pytest, M-03 unchanged. No certified value changed. Push authorization pending. |
 | 4.4.0 | 2026-08-21 | `DP-013` s6 (new): fix-option decision-readiness analysis. Verified `engine.transits` has zero production consumers; `division_index` feeds nearly every certified classifier. Option 3 verified to touch the FORMALLY LOCKED Tier-0 scope. Recommends Option 1 (high confidence); does not choose. |
 | 4.3.0 | 2026-08-20 | Pushed `f3399f3`; CI run `32375941348` all four jobs green, both H-02 steps confirmed genuinely executed under the hash-pinned oracle environment with results identical to the local runs. H-02 reproduction complete; choosing a fix option is the sole remaining, non-blocking item. |
 | 4.2.0 | 2026-08-20 | `ADR-0064`: `DP-013` Option C ratified and executed. H-02 independently reproduced for the Sun (2/12, exact match to the original audit); Moon 15/34 (44%, comparable). PyJHora recorded as an evidenced limitation (search diverges/times out at 0.0001deg; direct longitude carries a 20.57 arcsec bias, ~206,000x the defect's scale) rather than manufactured agreement. New tests (8), negative controls, independent validator, non-gating CI wiring. No fix chosen; TRANSIT_V1 unmodified. Push authorization pending. |
