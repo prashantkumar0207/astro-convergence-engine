@@ -3,8 +3,8 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | OPEN - decision paper. Questions 1 and 2 CEO-confirmed (2026-08-21); Question 3's amended Option 3 is presented for ratification, not yet ratified. DECIDES NOTHING ON ITS OWN - ratification is recorded as a separate ADR. |
-| Version | 3.0.0 |
+| Status | **ADDRESSED by `ADR-0067`** (2026-08-21). All three questions ratified: Q1/Q2 confirmed as drafted; Q3's original Option 3 explicitly NOT ratified, "Option 3 (AMENDED)" (section F) ratified exactly as written. The paper's option texts remain unedited as the options record, per this repository's established practice. |
+| Version | 3.1.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 | Last updated | 2026-08-21 |
 | Review cadence | TBD |
@@ -13,9 +13,11 @@ Document status header - keep current on every edit.
 
 ## 0. CEO decision package (read this first)
 
-**Status as of 2026-08-21: Questions 1 and 2 are CEO-confirmed below. Question 3's original Option 3
-text was reviewed, found to lack two required safeguards, and NOT ratified. An amended Option 3 (section
-F) is now prepared and presented for ratification - it is not yet ratified either.**
+**Status as of 2026-08-21: ALL THREE QUESTIONS RATIFIED (`ADR-0067`).** Questions 1 and 2 confirmed as
+drafted. Question 3's original Option 3 text was reviewed, found to lack two required safeguards, and
+explicitly NOT ratified; the amended "Option 3 (AMENDED)" (section F) was then ratified exactly as
+written. See `ADR-0067` for the binding record; this paper's text below is preserved unedited as the
+options record, per this repository's established practice.
 
 Three genuinely separate questions, kept explicitly apart per the owner's own instruction not to
 collapse them into one:
@@ -478,6 +480,7 @@ nothing, and extends the H-01/H-02 carve-out to nothing.
 
 | Version | Date | Change |
 |---|---|---|
+| 3.1.0 | 2026-08-21 | **Ratified by `ADR-0067`.** All three questions now closed: Q1/Q2 confirmed as drafted; Q3's original Option 3 explicitly not ratified; "Option 3 (AMENDED)" ratified exactly as written. Header status and section 0 banner updated to reflect ratification; option texts themselves left unedited, per established practice. |
 | 3.0.0 | 2026-08-21 | CEO direction recorded: Question 1 confirmed (novel, not precedent); Question 2 confirmed as characterization (c), genuinely ambiguous, not silently extended. Original Option 3 text preserved unedited in section F, marked NOT RATIFIED (found silent on two of five required safeguards: future-work tracking, forward consumer protection). New "Option 3 (AMENDED)" added, incorporating the owner's eight specified terms verbatim in substance, presented for ratification. Sections 0, L, M, N, and the section-5 table updated to reflect confirmed Questions 1/2 and the pending Question 3 ratification. No option implemented; no code touched; no certified value changed; no blocking mechanism built for a nonexistent consumer. |
 | 2.0.0 | 2026-08-21 | Restructured into an explicit three-question CEO decision package per owner instruction: Question 1 (H-01/`ADR-0066` finding, confirmation-only, new section 4) kept visibly separate from Question 2 (Q8 deferral-carve-out scope, section 3 rewritten to present three named characterizations - limited to H-01/H-02, generally applicable, or ambiguous - each with exact governing language, surrounding context, and consequences, per the owner's explicit "do not silently extend the carve-out") and Question 3 (boundary-proximity treatment options, section F, cross-referenced against each Question-2 answer in new section 5). Removed all "established precedent"/"owner-accepted pattern" framing around `DP-012`/`ADR-0063` per the owner's explicit instruction not to treat it as precedent - civil-date rendering's own deferral is now stated as equally open under characterization (a), not as settled ground. Added a structural argument (H-01/H-02 are defects in a built, reachable capability; boundary-proximity indicators is a never-built capability with nothing reachable to "block") that applies under any characterization. New section 0 gives the owner a single, cleanly separated summary of exactly what to decide. No option chosen; no carve-out extended; H-01 not reopened. |
 | 1.0.0 | 2026-08-21 | Created. Investigates the FOUNDATION-scope "boundary-proximity indicators where sensitivity warrants" gap: confirms nothing ratified governs it, traces the only related code (KP_CHAIN_V1's `nearest_boundary_arcsec` and its own unresolved H-07 defect) and the only related planning document (`DASHA_CERTIFICATION_ROADMAP.md`, PROPOSED), and surfaces a textual ambiguity in `Q8_CLOSURE_MATRIX.md` s4's exit criteria about whether the explicit-deferral path is scoped to H-01/H-02 only. Presents three treatment options with a low-confidence lean toward deferral. Options only; decides nothing; not implementation-authorized. |
