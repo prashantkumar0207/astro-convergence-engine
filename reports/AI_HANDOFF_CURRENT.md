@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 4.7.0 |
+| Version | 4.8.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-21 (H-01 decision-readiness: `DP-014` drafted and registered, not implementation-authorized; awaiting the owner's option selection) |
+| Last updated | 2026-08-21 (ADR-0066: H-01 fix Option 2 ratified and implemented; FOUNDATION-exit readiness audit found boundary-proximity indicators completely unaddressed - standing blocker) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,89 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-21 - H-01 fix Option 2 implemented (ADR-0066): UnsupportedNodePolicyError; FOUNDATION-exit readiness audit
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the implementation).
+- Previous approved commit: `cccdfadc87008209926eba84db1eb4fe2e6ff5e6` (H-01 decision-readiness/`DP-014`).
+- Task: owner "Ratify DP-014 Option 2. Implement the ratified DP-014 Option 2 exactly as specified. Do
+  not implement Option 1. Do not choose Option 3. Do not reopen H-02 or DP-012." - implement `DP-014`
+  s.H's Option 2, then determine whether H-01 can be considered closed/deferred under
+  `Q8_CLOSURE_MATRIX.md`, and if so perform a FOUNDATION-exit readiness audit.
+- Relevant ADR/specification: `ADR-0066` (new); `DP-014` s.H (the analysis this implements); `ADR-0008`
+  (`TRANSIT_V1`, not reopened beyond this additive guard).
+- Files changed: `engine/transits/crossing.py` (`UnsupportedNodePolicyError(NotImplementedError)`,
+  raised from `_resolve_body()` for `node_policy != NODE_POLICY_MEAN` on Rahu/Ketu; `find_crossings`'s
+  algorithm itself untouched), `engine/tests/test_transit_crossing.py` (4 new tests), `docs/
+  DECISION_LOG.md` (new `ADR-0066`, register header updated), `docs/decisions/README.md` (`DP-014`
+  marked ADDRESSED), `docs/decisions/DP-014-h01-true-node-station-density.md` (one wording fix: "ADR-
+  numbering" -> "decision-log renumbering", to clear the retired-identifier gate's Pattern B, which
+  flags any `ADR-` token not followed by exactly four digits - caught by `test_retired_identifier_gate_
+  scope.py`, not by my own pre-commit gate run, since that test scans the tracked tree and the file was
+  still untracked at the time of my first manual check), `docs/ACE_EXECUTION_STATE.md`, this file.
+- Implementation summary: the guard sits in `_resolve_body()`, the single point every `find_crossings()`
+  call for a node body passes through, so it automatically covers every caller built on top of it
+  (`sign_ingresses`, `nakshatra_ingresses`, `returns`, `natal_conjunctions`) without touching `engine/
+  transits/events.py` at all - matching `DP-014`'s own description of Option 2's blast radius. The
+  check is `!= NODE_POLICY_MEAN` (fail-closed on anything but the certified value), not `== "true"`
+  (which would fail-open on some future third policy value), matching this repository's existing
+  fail-closed convention (`engine/kp/chart.py`'s own `!= NODE_POLICY_MEAN` guard). Mean-node Rahu/Ketu
+  resolution is otherwise byte-for-byte identical to before.
+- Tests executed and results: `python -m pytest -q` - **816 passed** (up from 812; 4 new tests:
+  refusal for Rahu under true-node, refusal for Ketu under true-node, a negative control confirming an
+  unrelated body under the SAME true-node profile is unaffected, a negative control confirming the
+  certified mean-node Rahu/Ketu path still produces events after the guard was added).
+- Certification executed and results: `python scripts/certify_transits.py` (main environment, no
+  PyJHora) - correctly `exit(3)`, matching every oracle-tier certifier. Same command in the isolated
+  PyJHora exploration venv (`oracle_probe_venv`, already present from a prior session) - **PASS, all
+  gates** (`declared_division: 49 cases, negative_control_verified=True`). Regenerating the artifact
+  produced exactly one non-volatile diff: `gates.C_oracle_anchors.details[7].derived_tolerance_days`
+  differing by a single ULP (`0.007236584941425451` -> `0.00723658494142545`) - the SAME field, same
+  direction, as the `ADR-0065` evidence-recovery episode's own unpinned-venv-vs-CI-pinned-lock noise,
+  confirming this is pre-existing environment noise, not caused by this change. Discarded the
+  regenerated artifact (`git checkout --`) rather than committing it, since committing it would
+  reintroduce noise CI's hash-pinned lock does not produce; `check_artifact_drift.py` confirms the
+  committed evidence is untouched (46 files identical outside volatile fields).
+- Governance checks executed and results: `python scripts/check_adr_numbering.py` - PASS, 66 entries;
+  `python scripts/check_identifier_families.py` - PASS, 14 DP identifiers; `python scripts/check_
+  retired_identifiers.py` - PASS (after the wording fix above); `git diff --check` - clean.
+- Known issues: none.
+- Unresolved questions: **the H-01/FOUNDATION-exit determination below is Claude's own reasoned
+  interpretation of already-ratified text (`Q8_CLOSURE_MATRIX.md` s4's exit criteria), not itself a new
+  ratification - it should be independently checked, not accepted purely on this entry's say-so.**
+- **H-01 closure determination (task step 4):** `Q8_CLOSURE_MATRIX.md` s4's exit criteria read: "H-01
+  and H-02 resolved and certified, or explicitly deferred by decision with the dependent domains blocked
+  accordingly." `ADR-0066` is a decision; the dependent domain (true-node transit-event search) is now
+  blocked at the code level by `UnsupportedNodePolicyError`, not merely deferred on paper - stronger
+  than a documentation-only deferral. On this reading, **H-01 satisfies the exit criteria's explicit
+  carve-out**. This is distinct from "resolved and certified" (which would require Option 1's complete
+  fix with its own certification gate) - true-node transit search itself remains uncertified and is
+  now actively refused, not working.
+- **FOUNDATION-exit readiness audit (task step 5, performed since the determination above is that H-01
+  is closed):** checked every item in `Q8_CLOSURE_MATRIX.md` s4's implementation scope directly against
+  the decision log and repository state:
+  - Rise/set: **CERTIFIED** (`RISE_SET_V1`, `ADR-0054`).
+  - Panchanga classification (tithi/vara/nakshatra/yoga/karana): **CERTIFIED, checkpoint-accepted**
+    (`ADR-0059` addendum).
+  - Rahu Kalam/Yamaganda/Gulika (`TRIKALAM_V1`): **CERTIFIED, checkpoint-accepted** (`ADR-0061` third
+    addendum).
+  - Civil-date rendering for dasha boundaries: **explicitly DEFERRED by decision** (`ADR-0063`, `DP-012`
+    Option C).
+  - H-02: **resolved and certified** (`ADR-0064` reproduction, `ADR-0065` fix, CI-confirmed).
+  - H-01: **resolved via the explicit-deferral-with-blocking carve-out** (`ADR-0066`, per the
+    determination above).
+  - Boundary-proximity indicators: **zero decision paper, zero ADR, zero implementation anywhere in the
+    repository** - confirmed by grep across `docs/DECISION_LOG.md`, `docs/decisions/`, and `engine/`;
+    the only repository mentions are the `Q8_CLOSURE_MATRIX.md` scope-listing citations themselves and
+    prior-session notes recording that this item has never been authorized to proceed. **This is the
+    one FOUNDATION-scope item with no path chosen at all** - not certified, not implemented, not even
+    formally deferred by a decision entry - and is therefore the standing blocker to declaring
+    FOUNDATION exit, independent of how the H-01 determination above is ultimately read.
+- CEO decision required: **yes, two items** - (1) confirm or correct the H-01 Q8-exit-criteria reading
+  above; (2) direct next steps for boundary-proximity indicators (author a decision paper, explicitly
+  defer by decision, or otherwise), since FOUNDATION exit cannot be declared while that item has no
+  decision of any kind on record.
+- Next authorized action: none self-authorized. Per the task's own instruction to "stop only at the next
+  genuine CEO decision or blocker" - the boundary-proximity gap is exactly that blocker, reached here.
 
 ### 2026-08-21 - H-01 decision-readiness: DP-014 drafted and registered
 - Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the paper).
@@ -1323,6 +1406,7 @@ act.
 
 | Version | Date | Change |
 |---|---|---|
+| 4.8.0 | 2026-08-21 | `ADR-0066`: H-01 fix Option 2 implemented - `UnsupportedNodePolicyError` raised from `find_crossings()` for any non-mean node policy on Rahu/Ketu (fail-closed, covers every caller automatically). No certified value changed (isolated-venv re-verification: PASS, only known ULP noise + volatile fields differed, discarded not committed). FOUNDATION-exit readiness audit: rise/set, panchanga, trikalam certified; civil-date rendering deferred; H-02 resolved/certified; H-01 now resolved via Q8's explicit-deferral-with-blocking clause (Claude's own reading, flagged for confirmation). Boundary-proximity indicators found completely unaddressed - standing FOUNDATION-exit blocker. Local-only, not pushed. |
 | 4.7.0 | 2026-08-21 | H-01 decision-readiness: `DP-014` drafted and registered, extracting `reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md`'s H-01 finding, re-verified live (TrueNode grid step still exactly 37.5 days), and tracing the defect's blast radius across all eight `node_policy` consumers - confined to `find_crossings()`'s callers; KP already independently refuses true node. Presents the audit's own two solutions plus a defer option; recommends explicit refusal (Option 2) at medium confidence. Decides nothing, not implementation-authorized. Local-only, not pushed. |
 | 4.6.0 | 2026-08-21 | Pushed `9737ddb` (TRANSIT_V1 evidence recovery: one ULP-level Gate C float difference, unpinned-vs-pinned dependency noise, recovered via CI-sourced overlay). CI run `32478694212` all four jobs green, Gate E re-confirmed. `DP-013`/H-02 fully closed. |
 | 4.5.0 | 2026-08-21 | `ADR-0065`: H-02 fix Option 1 implemented - `TransitEvent.declared_division` (additive), new Gate E in `certify_transits.py` (49 cases, genuine negative control). All gates green locally (isolated exploration venv), 812/812 pytest, M-03 unchanged. No certified value changed. Push authorization pending. |

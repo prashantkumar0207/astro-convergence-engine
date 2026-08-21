@@ -45,8 +45,9 @@ audit:**
   `MAX_MOTION_PER_STEP_DEG = 45.0`, giving `grid_step_days("TrueNode") = 45.0 / (0.3 * 4.0) = 37.5`
   days - identical to the audit's own figure. The defect is present in the live codebase today, not
   already fixed.
-- `git log --oneline -- engine/transits/speeds.py` shows no commits since `8a5d56e` (an ADR-numbering
-  migration, not a substantive change) - the file predates and is untouched by this session's H-02 work.
+- `git log --oneline -- engine/transits/speeds.py` shows no commits since `8a5d56e` (a decision-log
+  renumbering migration, not a substantive change) - the file predates and is untouched by this
+  session's H-02 work.
 - A repository-wide grep of `docs/DECISION_LOG.md` for "H-01" finds no ratified or proposed ADR item
   specific to H-01 (only the `Q8_CLOSURE_MATRIX.md` scope citation and two "does not extend to H-01"
   disclaimers in `ADR-0059`/`ADR-0061`'s consequence sections). Unlike H-02, there is no existing
