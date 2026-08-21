@@ -93,7 +93,7 @@
      "oracle_jd": 2460539.087484674,
      "oracle_astronomy_delta_arcsec": 20.22951699816531,
      "delta_days": 0.005847694352269173,
-     "derived_tolerance_days": 0.00723658494142545
+     "derived_tolerance_days": 0.007236584941425451
     },
     {
      "profile": "parashari_lahiri",
@@ -256,7 +256,7 @@
   "interpretation"
  ],
  "environment": {
-  "python": "3.12.10"
+  "python": "3.11.16"
  },
  "preconditions": {
   "data_assets": {
