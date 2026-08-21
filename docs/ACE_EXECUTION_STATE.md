@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | **ACCEPTED (`ADR-0062`) - canonical, machine-checkable current-state record.** Regenerate/refresh on every meaningful implementation task, same discipline as `reports/AI_HANDOFF_CURRENT.md`. |
-| Version | 2.6.0 |
+| Version | 2.7.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-21 (ADR-0065: H-02 fix Option 1 ratified and implemented - TransitEvent.declared_division, locally verified all gates green; push authorization pending) |
+| Last updated | 2026-08-21 (H-02/DP-013 fully closed: pushed and CI-confirmed green, run 32478694212; awaiting the owner's next task) |
 | Review cadence | Refresh at the start of a session if stale; not load-bearing if it isn't. |
 
 # ACE execution state
@@ -46,18 +46,18 @@ independently is in these fields plus the pointers they name.
 | `CURRENT_MILESTONE` | `TRIKALAM_V1` is **FOUNDATION checkpoint-accepted / production-certified**. Civil-date rendering is **ratified as DEFERRED** (`ADR-0063`). H-02: reproduction methodology executed and CI-confirmed (`ADR-0064`); **fix Option 1 ratified and implemented** (`ADR-0065`) - `TransitEvent.declared_division`, additive, no certified value changes. H-01 still has no governing document of any kind. |
 | `CURRENT_AUTHORIZED_TASK` | None self-executable. `ADR-0065`'s implementation is complete and locally verified; CI confirmation of the new Gate E is the only remaining step, pending push authorization. |
 | `TASK_OWNER` | CLAUDE (`ADR-0065` implemented, locally verified); USER (push authorization). |
-| `STATUS` | `TRIKALAM_V1` done. `DP-012` deferred. `DP-013` Option C (reproduction) CI-confirmed (`ADR-0064`). **H-02 fix Option 1 ratified and implemented (`ADR-0065`):** `TransitEvent` gains `declared_division` (additive, default `None`); `sign_ingresses`/`nakshatra_ingresses` populate it from the exact `target_longitude` via the certified `zodiac_sign`/`nakshatra` classifiers; `find_crossings`/`returns`/`natal_conjunctions` untouched. `certify_transits.py` gains Gate E (49 cases, genuine negative control) - run locally in an isolated exploration venv: **PASS**, all gates (A/C/D/E) green, M-03 scan surface unchanged (180). `pytest -q` - **812 passed** (up from 809; 4 new tests in `test_transit_events.py`). No existing certified value changed; Options 2/3 not chosen; Tier-0 Locked scope not touched. **Not yet pushed - do not describe as CI-confirmed until it runs there.** |
-| `LAST_COMPLETED_ACTION` | `ADR-0065`: H-02 fix Option 1 ratified and implemented. Files: `engine/models/transit_event.py` (new field), `engine/transits/events.py` (populates it), `scripts/certify_transits.py` (new Gate E + a proactive `.as_posix()` path fix), `engine/tests/test_transit_events.py` (4 new tests). `docs/DECISION_LOG.md` (new `ADR-0065`), `docs/decisions/README.md` (`DP-013` marked ADDRESSED by both `ADR-0064`/`ADR-0065`). |
-| `LAST_COMMIT` | Local HEAD - see `git rev-parse HEAD`, made after this file was drafted; not yet pushed. `origin/phase-g-governance` remains at `5a00dc6604c52ebcfb0a4da456571638e0c200a7`. |
-| `LAST_CI_RUN` | `32470482258` (commit `5a00dc6`) - all four jobs green, but predates this task's Gate E addition. **Gate E has not yet run in CI.** |
+| `STATUS` | `TRIKALAM_V1` done. `DP-012` deferred. `DP-013` fully resolved: Option C (reproduction, `ADR-0064`) and Option 1 (fix, `ADR-0065`) both ratified, implemented, and **CI-confirmed green** (run `9737ddb`, all four jobs, Gate E genuinely executed under the hash-pinned oracle environment: `declared_division : 49 cases, negative_control_verified=True`). One incidental finding along the way, diagnosed and recovered, not a defect: the locally-committed `TRANSIT_V1_certification.json` (regenerated in an unpinned exploration venv) differed from CI's hash-pinned regeneration by a single ULP in one Gate C `derived_tolerance_days` value - recovered via the standard CI-sourced evidence overlay (`ADR-0053`/`ADR-0054` precedent). No existing certified value actually changed; Options 2/3 not chosen; Tier-0 Locked scope not touched. |
+| `LAST_COMPLETED_ACTION` | Pushed `9737ddb` (TRANSIT_V1 evidence recovery) and verified CI run `32478694212` - all four jobs green, Gate E confirmed genuinely executed from the log directly. |
+| `LAST_COMMIT` | `9737ddb7f0d6edac99b922f0816867eccd717820` - pushed; `origin/phase-g-governance` identical. |
+| `LAST_CI_RUN` | **`32478694212`** (commit `9737ddb`) - all four jobs green, directly confirmed via `gh run view`/`gh run --log`. |
 | `LAST_CEO_DECISION` | "Ratify H-02 Fix Option 1." (2026-08-21): the owner chose Option 1 from `DP-013` s6's analysis. |
-| `NEXT_AUTHORIZED_ACTION` | On explicit USER push authorization: push, monitor CI specifically for `certify_transits.py`'s new Gate E executing under the hash-pinned oracle environment, confirm identical results to the local exploration-venv run (49 cases, negative control verified), then update this file and the handoff to CI-confirmed. |
-| `WAITING_FOR` | USER: push authorization. |
+| `NEXT_AUTHORIZED_ACTION` | None self-executable. `DP-013` (H-02) is fully closed: reproduced, fixed, CI-confirmed. No FOUNDATION capability currently has both satisfied prerequisites and a ratified implementation decision - H-01 has no governing document; civil-date rendering is deferred. |
+| `WAITING_FOR` | USER: name the next task. Not blocking. |
 | `BLOCKER` | None. |
-| `CEO_APPROVAL_REQUIRED` | **YES** - authorization to push. |
-| `CLAUDE_ACTION_REQUIRED` | None until push is authorized. |
+| `CEO_APPROVAL_REQUIRED` | Not immediately - nothing is queued needing approval right now. |
+| `CLAUDE_ACTION_REQUIRED` | None until the owner names a next task. |
 | `CHATGPT_ACTION_REQUIRED` | Independent audit of the `declared_division` implementation, Gate E, and its negative control is available now via the standard Git -> state-file path - no report relay needed. |
-| `USER_ACTION_REQUIRED` | Authorize the push (a single yes/no), or give different instructions. |
+| `USER_ACTION_REQUIRED` | Name the next task - `DP-013`/H-02 is fully closed. |
 | `HANDOFF_REQUIRED` | None beyond this file and `reports/AI_HANDOFF_CURRENT.md`'s latest entry - both already current as of this file's `Last updated` date. |
 
 ## How to independently verify every field above
@@ -78,6 +78,7 @@ exactly as `reports/AI_HANDOFF_CURRENT.md` already requires of itself.
 
 | Version | Date | Change |
 |---|---|---|
+| 2.7.0 | 2026-08-21 | Pushed `9737ddb` (TRANSIT_V1 evidence recovery: one ULP-level Gate C float difference between an unpinned local run and CI's pinned regeneration, recovered via CI-sourced overlay); CI run `32478694212` all four jobs green, Gate E confirmed genuinely executed. `DP-013`/H-02 is fully closed - reproduced, fixed, CI-confirmed. Nothing currently requires CEO approval. |
 | 2.6.0 | 2026-08-21 | `ADR-0065`: H-02 fix Option 1 ratified and implemented. `TransitEvent.declared_division` (additive, default `None`), populated by `sign_ingresses`/`nakshatra_ingresses` from the exact target longitude. New Gate E in `certify_transits.py` (49 cases, genuine negative control) - PASS locally, all gates green, M-03 unchanged. 4 new tests, 812/812 pytest. No certified value changed. Push authorization pending. |
 | 2.5.0 | 2026-08-21 | `DP-013` s6 (new): fix-option decision-readiness analysis. Verified `engine.transits` has zero production consumers today; `division_index` feeds nearly every certified classifier. Option 1 (additive field): near-zero regression risk, narrow `TRANSIT_V1` addendum. Option 2 (bias event instant): changes certified values, needs `TRANSIT_V1` recertification, has an unscoped-call-site complication. Option 3 (widen tolerance): verified to touch the FORMALLY LOCKED Tier-0 scope (`ADR-0005`/`ADR-0034`), global blast radius - not recommended. Recommends Option 1, high confidence; does not choose. |
 | 2.4.0 | 2026-08-20 | Pushed `f3399f3`; CI run `32375941348` all four jobs green, both new H-02 steps confirmed genuinely executed under the hash-pinned oracle environment, identical results to the local runs. H-02's reproduction methodology is complete and CI-confirmed; choosing a fix option is the sole remaining, non-blocking item. |

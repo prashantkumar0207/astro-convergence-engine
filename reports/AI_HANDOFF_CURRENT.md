@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 4.5.0 |
+| Version | 4.6.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-21 (ADR-0065: H-02 fix Option 1 implemented and locally verified, all gates green; push authorization pending) |
+| Last updated | 2026-08-21 (H-02/DP-013 fully closed: pushed and CI-confirmed green, run 32478694212; awaiting the owner's next task) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,41 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-21 - H-02/DP-013 fully closed: pushed, CI-green, one ULP-noise finding recovered
+- Branch / commit SHA: `phase-g-governance`, `9737ddb7f0d6edac99b922f0816867eccd717820` - pushed,
+  confirmed identical to `origin/phase-g-governance`.
+- Previous approved commit: `09a9065b1ce8278b38597e4e68447028d4a97872`.
+- Task: owner "Approve push 09a9065" then "Approve push 9737ddb" - pushed the H-02 fix implementation,
+  diagnosed and recovered an incidental CI finding, pushed the fix, verified fully green.
+- Relevant ADR/specification: `ADR-0065` (no edit needed - the finding was evidence provenance, not a
+  decision); `ADR-0053`/`ADR-0054` (the evidence-recovery precedent reused).
+- Files changed: `certification/TRANSIT_V1_certification.json` only (`reports/certification/transit.*`
+  turned out byte-identical, so git recorded no change there).
+- Implementation summary: pushing `09a9065` triggered CI run `32478112307`, which failed only on the
+  drift-assertion step: `gates.C_oracle_anchors.details[7].derived_tolerance_days: 0.00723658494142545
+  -> 0.007236584941425451` - a single ULP difference in a PyJHora-derived Gate C value (unrelated to
+  Gate E or this session's actual work), caused by generating my local evidence in an unpinned
+  exploration venv (matching this session's own established discipline) whose transitive dependency
+  versions differ infinitesimally from CI's exact hash-pinned lock. Confirmed Gate E's own result was
+  identical and correct in the CI-regenerated artifact (`{"cases_checked": 49, "negative_control_
+  verified": true}`) before concluding this was evidence provenance, not a real defect. Downloaded
+  `oracle-certification-evidence` from the failed run (still uploaded, `if: always()`) and overlaid it
+  over the locally-committed file - exactly the `ADR-0053`/`ADR-0054` evidence-recovery pattern, applied
+  here to a genuine floating-point ULP difference rather than the usual `modules_scanned` count. Pushed
+  the recovery (`9737ddb`); CI run `32478694212` completed **all four jobs green**, Gate E re-confirmed
+  executing from the log directly.
+- Tests executed and results: `python -m pytest -q` - 812 passed (unchanged; no code touched by the
+  recovery commit).
+- Certification executed and results: `TRANSIT_V1` - PASS, all gates (A/C/D/E), CI-confirmed under the
+  hash-pinned oracle environment, run `32478694212`.
+- Known issues: none. The ULP-level Gate C sensitivity to unpinned-vs-pinned dependency versions is now
+  a known characteristic of that gate's PyJHora-derived value, not a defect requiring further action.
+- Unresolved questions: none.
+- CEO decision required: no - this entry is evidence recovery, not a new decision.
+- Next authorized action: none self-authorized. `DP-013`/H-02 is fully closed (reproduced, fixed,
+  CI-confirmed). Awaiting the owner's next task - no FOUNDATION capability currently has both satisfied
+  prerequisites and a ratified implementation decision.
 
 ### 2026-08-21 - H-02 fix Option 1 implemented (ADR-0065): TransitEvent.declared_division
 - Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the implementation).
@@ -1237,6 +1272,7 @@ act.
 
 | Version | Date | Change |
 |---|---|---|
+| 4.6.0 | 2026-08-21 | Pushed `9737ddb` (TRANSIT_V1 evidence recovery: one ULP-level Gate C float difference, unpinned-vs-pinned dependency noise, recovered via CI-sourced overlay). CI run `32478694212` all four jobs green, Gate E re-confirmed. `DP-013`/H-02 fully closed. |
 | 4.5.0 | 2026-08-21 | `ADR-0065`: H-02 fix Option 1 implemented - `TransitEvent.declared_division` (additive), new Gate E in `certify_transits.py` (49 cases, genuine negative control). All gates green locally (isolated exploration venv), 812/812 pytest, M-03 unchanged. No certified value changed. Push authorization pending. |
 | 4.4.0 | 2026-08-21 | `DP-013` s6 (new): fix-option decision-readiness analysis. Verified `engine.transits` has zero production consumers; `division_index` feeds nearly every certified classifier. Option 3 verified to touch the FORMALLY LOCKED Tier-0 scope. Recommends Option 1 (high confidence); does not choose. |
 | 4.3.0 | 2026-08-20 | Pushed `f3399f3`; CI run `32375941348` all four jobs green, both H-02 steps confirmed genuinely executed under the hash-pinned oracle environment with results identical to the local runs. H-02 reproduction complete; choosing a fix option is the sole remaining, non-blocking item. |
