@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | OPEN - decision paper. Presents options and recommends one. DECIDES NOTHING. Requires owner approval. |
-| Version | 1.1.0 |
+| Version | 1.2.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-20 |
+| Last updated | 2026-08-21 |
 | Review cadence | TBD |
 
 # DP-013. H-02 ingress-classification seam: reproduction methodology and fix option
@@ -129,10 +129,10 @@ verification effort.
 
 ## 5. What the decision must also settle, whichever reproduction option is chosen
 
-Which of the three fix options (s2 item 2) is adopted if reproduction confirms the defect - this paper
-does not recommend among them, since the original audit explicitly reserved that choice for the owner
-and this paper's scope is limited to what `ADR-0020` D5 already analyzes, not to extending that analysis
-with a new recommendation. Whether the confirmation-or-refutation holdout is the G1 audit's own 2024
+Which of the three fix options (s2 item 2) is adopted, now that reproduction has confirmed the defect for
+the Sun - s6 below performs the technical decision-readiness analysis and recommends Option 1, but the
+choice itself remains the owner's, exactly as the original audit reserved it. Whether the
+confirmation-or-refutation holdout is the G1 audit's own 2024
 sample (already measured, but not independently reproduced) or a fresh, separately-selected one (avoiding
 any risk of the reproduction unconsciously anchoring on the original figure). Whether a confirmed fix
 requires its own FOUNDATION per-capability CEO checkpoint (`Q8_CLOSURE_MATRIX.md` s4), consistent with
@@ -143,9 +143,120 @@ locked scope, a formal change decision and recertification"). Whether H-08's own
 enough to resolve together - out of scope for this paper to determine, named here only so it is not
 silently conflated with H-02 later.
 
-## 6. Change history
+## 6. Fix-option decision-readiness analysis (2026-08-21)
+
+H-02's reproduction methodology (s3) is complete and CI-confirmed (`ADR-0064`: Sun 2/12 exact match to
+the original audit; Moon 15/34, comparable rate; PyJHora recorded as an evidenced limitation). This
+section performs the narrow technical analysis the owner requested before choosing among the three fix
+options s2 item 2 preserved from the original audit. **It recommends; it does not choose.**
+
+**Exact affected interfaces, verified by direct inspection, not assumed:**
+`engine/transits/crossing.py` `find_crossings()` (the certified event-finder: bisects to a
+`REFINE_BRACKET_DAYS` = `1e-9` day bracket, reports `julian_day`, `residual_arcsec`,
+`direction`); `engine/models/transit_event.py` `TransitEvent` (the frozen result dataclass: `body`,
+`target_longitude`, `julian_day`, `direction`, `residual_arcsec`, `kind`, `profile_name` - no division
+field exists today); `engine/transits/events.py` `sign_ingresses()`/`nakshatra_ingresses()` (thin
+wrappers calling `find_crossings` once per boundary target, `_SIGN_BOUNDARIES`/`_NAKSHATRA_BOUNDARIES`);
+`engine/astrology/longitude_utils.py` `division_index()`/`BOUNDARY_TOLERANCE` (the shared, engine-wide
+classifier every division computation in the repository calls).
+
+**Downstream consumers, verified by repository-wide search, not assumed:** `grep`-searched every
+`.py` file for `TransitEvent`/`find_crossings`/`sign_ingresses`/`nakshatra_ingresses` imports outside
+`engine/transits/` itself: the ONLY matches are `scripts/certify_transits.py`,
+`validate_transits_holdout.py`, and this session's own H-02 investigation tooling
+(`scripts/reproduce_h02_ingress_seam.py`, `validate_h02_reproduction.py`). **`engine.transits` has zero
+production/domain consumers today** - no chart, dasha, panchanga, or report code calls it. This bounds
+today's actual regression risk for Options 1 and 2 to `TRANSIT_V1`'s own certification, not to any live
+feature. `division_index`, in sharp contrast, is imported by `engine/astrology/house.py`, `nakshatra.py`,
+`pada.py`, `panchanga.py`, `signs.py`, and `varga_classifier.py` - i.e. essentially every certified
+classification capability in the repository.
+
+**Mathematical/semantic distinction that matters for all three options:** the H-02 seam exists only
+where a longitude that is ITSELF the output of a residual-bounded search (`find_crossings`) is
+re-classified by a tolerance-bounded classifier (`division_index`). Ordinary chart calculations
+(a natal Moon's sign, a varga classification, a panchanga element at a given instant) classify a
+directly-computed ephemeris longitude with no search residual involved, so they are not exposed to this
+seam at all - confirmed by the same consumer search above finding no shared call path between
+`find_crossings` and any of `division_index`'s many callers.
+
+**Option 1 - explicit signed residual + declared division.** Add a new field to `TransitEvent` (e.g.
+`declared_division`) computed once, at construction time, from `target_longitude` - which is EXACT (a
+known boundary, `k*30` or `k*(40/3)`), never subject to residual noise - via the same classifier, rather
+than re-classifying the noisy reported `julian_day`'s longitude after the fact. **Certified-value impact:
+none** - `julian_day`, `residual_arcsec`, `direction` and every other existing field are unchanged;
+this is a pure addition. **Blast radius: `TRANSIT_V1` only**, and within it, additive only - Gates A/B/C
+(`certify_transits.py`) need no re-run of their existing assertions, only a new check that the added
+field is populated correctly (trivial by construction, but must be tested, not assumed). **Regression
+risk: near zero** - no existing certified value changes, and there are zero downstream consumers to
+break. **Required tests:** a check that `declared_division == classify(target_longitude)` for every
+holdout case; a negative control (deliberately omit or corrupt the field, confirm a test catches it).
+**Certification/checkpoint requirement: a narrow `TRANSIT_V1` recertification addendum** (new field,
+new gate assertion) - not a new FOUNDATION per-capability checkpoint (H-02 is a correction to an
+already-certified capability under `ADR-0008`, not a new one), and not a Locked-scope change (`TRANSIT_V1`
+is certified but not one of the four `docs/PROJECT_CONSTITUTION.md` s12 Locked artifacts).
+
+**Option 2 - bias the returned event instant toward the target division.** Modify `find_crossings()`'s
+bisection refinement so a residual that cannot reach exactly zero is deliberately resolved toward the
+side that classifies into the searched-for division, for boundary-crossing calls specifically.
+**Certified-value impact: real** - the reported `julian_day`/`residual_arcsec` for boundary-crossing
+events would differ (at sub-microsecond scale) from today's certified values; this is a change to
+`TRANSIT_V1`'s own certified algorithmic output, not an addition. **Blast radius: `TRANSIT_V1`'s Gates
+A (residual battery), B (completeness), and C (oracle anchors)** - each would need a fresh run and
+comparison against the certified holdout, since the very quantity they certify would change.
+**A genuine architectural complication this analysis surfaces:** `find_crossings()` is also called
+directly by `returns()` and `natal_conjunctions()` (`engine/transits/events.py`) with target longitudes
+that are natal points, not division boundaries - "bias toward the target division" has no natural
+meaning for those calls, so the bias logic would need to be scoped specifically to
+`sign_ingresses`/`nakshatra_ingresses`' own boundary-target calls, adding conditional complexity to a
+currently uniform, single-purpose primitive. **Required tests:** the full existing Gate A/B/C battery
+re-run and compared; a new boundary test proving the bias activates only within the intended residual
+window and never displaces an event by more than that window (an unbounded or over-eager bias would be
+a worse defect than the one being fixed). **Certification/checkpoint requirement: a `TRANSIT_V1` formal
+change decision and recertification** (`.claude/rules/certification.md`) - materially larger than
+Option 1's, though still not Locked-scope.
+
+**Option 3 - widen the classifier tolerance beyond the residual bound.** Change the single, engine-wide
+`BOUNDARY_TOLERANCE` (`1e-10` degrees) to something `>= RESIDUAL_BOUND_ARCSEC`'s `2.78e-8` degrees.
+**Certified-value impact: the most severe of the three, and global, not local.** `BOUNDARY_TOLERANCE` is
+the ONE shared constant every division classification in the repository calls - not only H-02's own
+Sun/nakshatra ingresses, but `house.py`, `pada.py`, `panchanga.py`, `signs.py`, and every certified varga
+(`varga_classifier.py`, consumed by `certify_d2.py`/`d3`/`d7`/`d12`/`d30`). **Directly verified against
+`docs/DECISION_LOG.md` `ADR-0005`/`ADR-0034`: Tier-0 is FORMALLY LOCKED with a scope that explicitly
+names "the certified D9/D10 divisional mathematics"** - the same `division_index`/`BOUNDARY_TOLERANCE`
+mechanism. Widening it would therefore modify a constant inside the repository's only `PROJECT_
+CONSTITUTION.md` s12 Locked artifact, triggering the full four-condition Locked change-control discipline
+`ADR-0034` itself required to establish the lock - not a `TRANSIT_V1`-scoped recertification, but
+formally reopening Tier-0. Separately, and independent of the Locked question: a widened tolerance would
+change classification for ANY boundary-adjacent value across the entire engine, including values that
+were never near a search residual at all (e.g. a natal Moon computed directly, with no root-finding
+involved) - `longitude_utils.py`'s own docstring states `1e-10` was chosen specifically because it is
+tight enough to absorb only float-arithmetic noise (~`1e-13` degree scale) while remaining "six orders of
+magnitude" inside the ephemeris's own `0.5` arcsec tolerance; widening by ~278x remains inside that
+ephemeris bound but abandons the "only absorbs float noise, never an astronomically real difference"
+property the current value was chosen to guarantee. **Blast radius: every certified capability in the
+repository.** **Required tests:** full holdout recertification of every `division_index` consumer
+(Tier-0, all five certified vargas, KP chain, sign convention, panchanga, `TRIKALAM_V1`), plus a new
+negative control proving the widened tolerance still rejects a value that is astronomically
+distinguishable from its boundary (a materially harder property to prove at a looser tolerance).
+**Certification/checkpoint requirement: reopening the FORMALLY LOCKED Tier-0 scope** - categorically the
+highest bar among the three options, and the only one touching a Locked artifact at all.
+
+**Recommendation, evidence-based, not a choice on the owner's behalf: Option 1**, confidence high. It is
+the only option with zero impact on any existing certified value, the smallest blast radius (`TRANSIT_V1`
+alone, which today has zero production consumers to protect against regression in the first place), and
+the lowest certification/governance bar (a narrow recertification addendum, not a formal-change decision
+and not a Locked-scope reopening). Option 2 is a legitimate, more invasive alternative if the owner
+judges an explicit `declared_division` field an insufficient fix (e.g. if a future consumer is expected
+to read `julian_day` alone without checking the declared division) - its cost is well-bounded and
+understood, just materially larger than Option 1's. **Option 3 is not recommended**: it is the only
+option that touches the FORMALLY LOCKED Tier-0 scope, the only one with global (not local) blast radius,
+and it fixes H-02's narrow seam by weakening the same guarantee for every other certified capability that
+was never exposed to H-02's mechanism in the first place.
+
+## 7. Change history
 
 | Version | Date | Change |
 |---|---|---|
+| 1.2.0 | 2026-08-21 | Fix-option decision-readiness analysis (new s6): exact affected interfaces and downstream consumers verified by direct inspection (`engine.transits` has zero production consumers today; `division_index` is consumed by nearly every certified classifier). Mathematical/semantic, certification-impact, blast-radius, and required-test analysis for all three fix options. Verified against `ADR-0005`/`ADR-0034` that Option 3 would touch the FORMALLY LOCKED Tier-0 scope. Recommends Option 1 (confidence high); does not choose. |
 | 1.1.0 | 2026-08-20 | Decision-readiness audit: re-verified `BOUNDARY_TOLERANCE`/`RESIDUAL_BOUND_ARCSEC` against the live codebase (unchanged since the 2026-08-11 audit). Directly inspected PyJHora 4.8.7's source (no execution needed) and confirmed Option B's ingress-detection API genuinely exists and is reachable, but surfaced a real, previously-unstated cost: its default `precision=0.1` degrees is ~4 orders of magnitude coarser than this defect's scale, so tightening it and verifying convergence is real, boundable effort. Research only; still presents options and decides nothing. |
 | 1.0.0 | 2026-08-20 | Drafted per the owner's "ACE CONTINUE - AUTHORIZE H-02 DECISION PAPER" instruction, extracting `ADR-0020` D5's H-02 analysis. Presents options; decides nothing; does not ratify `ADR-0020`. |

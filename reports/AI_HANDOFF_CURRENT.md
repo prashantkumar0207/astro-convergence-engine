@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 4.3.0 |
+| Version | 4.4.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-20 (pushed and CI-confirmed green, run 32375941348: H-02 reproduction complete under the hash-pinned oracle environment; choosing a fix option is the sole open item) |
+| Last updated | 2026-08-21 (DP-013 fix-option decision-readiness analysis complete, Option 1 recommended at high confidence; choosing a fix option is the sole open item) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,44 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-21 - DP-013 fix-option decision-readiness analysis: Option 1 recommended, not chosen
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the analysis).
+- Previous approved commit: `77e987b0f45a8c0560573729910eae9f048d6ad8`.
+- Task: owner "ACE CONTINUE - H-02 FIX DECISION READINESS" - a narrow technical decision-readiness
+  analysis of the three existing fix options only, no implementation, no fourth option, no choice made
+  on the owner's behalf.
+- Relevant ADR/specification: `DP-013` (v1.1.0 -> v1.2.0, new s6); `ADR-0005`/`ADR-0034` (Tier-0 Locked
+  scope, directly re-verified, not assumed).
+- Files changed: `docs/decisions/DP-013-h02-ingress-classification-seam.md`, `docs/ACE_EXECUTION_STATE.md`,
+  this file. No engine code, no `TRANSIT_V1` change, nothing implemented.
+- Implementation summary: verified by direct repository-wide search (not assumed) that `engine.transits`
+  (`find_crossings`/`TransitEvent`/`sign_ingresses`/`nakshatra_ingresses`) has **zero production
+  consumers today** - only its own certifier/validator and this session's H-02 tooling import it - while
+  `division_index` feeds nearly every certified classifier (`house.py`, `nakshatra.py`, `pada.py`,
+  `panchanga.py`, `signs.py`, `varga_classifier.py`). For each of the three fix options, determined:
+  exact affected interfaces; certified-value impact (Option 1 none, Option 2 real - the certified event
+  `julian_day`/`residual_arcsec` change - Option 3 the most severe, global); blast radius (Option 1
+  `TRANSIT_V1` only; Option 2 `TRANSIT_V1`'s Gates A/B/C; Option 3 every certified capability);
+  required tests (Option 1 a trivial-by-construction assertion plus negative control; Option 2 the full
+  existing Gate battery plus a bias-boundedness test; Option 3 full recertification of every
+  `division_index` consumer plus a harder negative control); and certification/checkpoint bar (Option 1
+  a narrow `TRANSIT_V1` addendum; Option 2 a formal `TRANSIT_V1` change decision; Option 3 - **directly
+  re-verified against `ADR-0005`/`ADR-0034`** - reopening the FORMALLY LOCKED Tier-0 scope, since its
+  own text names "the certified D9/D10 divisional mathematics" as in-scope, the same mechanism
+  `BOUNDARY_TOLERANCE` serves). Also flagged a genuine architectural complication for Option 2:
+  `find_crossings` is also called by `returns()`/`natal_conjunctions()` with non-boundary targets, so a
+  "bias toward target division" would need explicit scoping to avoid nonsensical application there.
+  **Recommends Option 1 at high confidence** (zero certified-value impact, smallest blast radius, lowest
+  governance bar); does not choose - the decision remains the owner's.
+- Tests executed and results: none applicable - documentation/decision-paper analysis only.
+- Certification executed and results: none applicable.
+- Known issues: none.
+- Unresolved questions: which fix option the owner ratifies (Option 1 recommended), or whether to defer.
+- CEO decision required: not for this entry itself (analysis only, decides nothing). A future decision
+  is needed to choose (or defer) a fix option.
+- Next authorized action: push (needs its own authorization). Awaiting the owner's fix-option decision,
+  or a different next task.
 
 ### 2026-08-20 - DP-013 Option C executed (ADR-0064): H-02 reproduced for the Sun; PyJHora recorded as a limitation
 - Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the work).
@@ -1160,6 +1198,7 @@ act.
 
 | Version | Date | Change |
 |---|---|---|
+| 4.4.0 | 2026-08-21 | `DP-013` s6 (new): fix-option decision-readiness analysis. Verified `engine.transits` has zero production consumers; `division_index` feeds nearly every certified classifier. Option 3 verified to touch the FORMALLY LOCKED Tier-0 scope. Recommends Option 1 (high confidence); does not choose. |
 | 4.3.0 | 2026-08-20 | Pushed `f3399f3`; CI run `32375941348` all four jobs green, both H-02 steps confirmed genuinely executed under the hash-pinned oracle environment with results identical to the local runs. H-02 reproduction complete; choosing a fix option is the sole remaining, non-blocking item. |
 | 4.2.0 | 2026-08-20 | `ADR-0064`: `DP-013` Option C ratified and executed. H-02 independently reproduced for the Sun (2/12, exact match to the original audit); Moon 15/34 (44%, comparable). PyJHora recorded as an evidenced limitation (search diverges/times out at 0.0001deg; direct longitude carries a 20.57 arcsec bias, ~206,000x the defect's scale) rather than manufactured agreement. New tests (8), negative controls, independent validator, non-gating CI wiring. No fix chosen; TRANSIT_V1 unmodified. Push authorization pending. |
 | 4.1.0 | 2026-08-20 | `DP-013` decision-readiness audit: re-verified the 278x tolerance mismatch against live code (unchanged); directly inspected PyJHora's source and confirmed Option B's API is real but its default precision is ~4 orders of magnitude too coarse. Full options/evidence/trade-offs/recommendation laid out in this file for CEO ratification. Nothing decided, nothing implemented. |

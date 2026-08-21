@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | **ACCEPTED (`ADR-0062`) - canonical, machine-checkable current-state record.** Regenerate/refresh on every meaningful implementation task, same discipline as `reports/AI_HANDOFF_CURRENT.md`. |
-| Version | 2.4.0 |
+| Version | 2.5.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-20 (pushed and CI-confirmed green, run 32375941348: H-02 reproduced for the Sun (exact match), PyJHora limitation confirmed under the hash-pinned oracle environment; choosing a fix option is the sole open item) |
+| Last updated | 2026-08-21 (DP-013 s6: fix-option decision-readiness analysis complete, Option 1 recommended at high confidence; choosing a fix option is the sole open item) |
 | Review cadence | Refresh at the start of a session if stale; not load-bearing if it isn't. |
 
 # ACE execution state
@@ -51,13 +51,13 @@ independently is in these fields plus the pointers they name.
 | `LAST_COMMIT` | `f3399f31c83133ef653243e8f195ad519e6de278` - pushed; `origin/phase-g-governance` identical. |
 | `LAST_CI_RUN` | **`32375941348`** (commit `f3399f3`) - all four jobs green. Both new H-02 steps confirmed genuinely executed from the CI log directly: Sun 12 cases/2 mismatches, Moon 34/15, PyJHora precision 0.1/0.01/0.001 all converge to `jd=2460414.14308969`, 0.0001 TIMEOUT at 45.05s, longitude bias 20.57 arcsec (205,697x) - identical to the local exploration-venv findings, now under the hash-pinned environment. |
 | `LAST_CEO_DECISION` | "ACE EXECUTE - H-02 REPRODUCTION AUTHORIZED" (2026-08-20): the owner ratified `DP-013` Option C (both A and B) as final for the reproduction methodology and authorized immediate execution. |
-| `NEXT_AUTHORIZED_ACTION` | None self-executable. H-02's reproduction methodology is complete and CI-confirmed. The next possible action - choosing one of the three original fix options - is explicitly not authorized here and needs its own owner decision. |
-| `WAITING_FOR` | USER: choose a fix option for H-02 (or defer it), or name a different next task. Not blocking. |
+| `NEXT_AUTHORIZED_ACTION` | None self-executable. `DP-013` s6 (new) presents a full technical decision-readiness analysis of the three fix options - exact interfaces, downstream consumers (`engine.transits` has zero today), certified-value impact, blast radius, required tests, and certification/checkpoint bar for each - and recommends Option 1 (explicit signed residual + declared division) at high confidence. Option 3 is verified to touch the FORMALLY LOCKED Tier-0 scope (`ADR-0005`/`ADR-0034`) and is not recommended. The choice itself remains the owner's. |
+| `WAITING_FOR` | USER: choose a fix option for H-02 (Option 1 recommended), or defer, or name a different next task. Not blocking. |
 | `BLOCKER` | None. |
 | `CEO_APPROVAL_REQUIRED` | Not immediately - nothing is queued needing approval right now. |
 | `CLAUDE_ACTION_REQUIRED` | None until the owner chooses a fix option or names a different task. |
 | `CHATGPT_ACTION_REQUIRED` | Independent audit of the reproduction's methodology, negative controls, and evidence artifacts (`reports/h02_reproduction/*.json`) is available now via the standard Git -> state-file path - no report relay needed. |
-| `USER_ACTION_REQUIRED` | Choose a fix option for H-02 (or defer), or name a different next task. |
+| `USER_ACTION_REQUIRED` | Choose a fix option for H-02 (`DP-013` s6 recommends Option 1) or defer, or name a different next task. |
 | `HANDOFF_REQUIRED` | None beyond this file and `reports/AI_HANDOFF_CURRENT.md`'s latest entry - both already current as of this file's `Last updated` date. |
 
 ## How to independently verify every field above
@@ -78,6 +78,7 @@ exactly as `reports/AI_HANDOFF_CURRENT.md` already requires of itself.
 
 | Version | Date | Change |
 |---|---|---|
+| 2.5.0 | 2026-08-21 | `DP-013` s6 (new): fix-option decision-readiness analysis. Verified `engine.transits` has zero production consumers today; `division_index` feeds nearly every certified classifier. Option 1 (additive field): near-zero regression risk, narrow `TRANSIT_V1` addendum. Option 2 (bias event instant): changes certified values, needs `TRANSIT_V1` recertification, has an unscoped-call-site complication. Option 3 (widen tolerance): verified to touch the FORMALLY LOCKED Tier-0 scope (`ADR-0005`/`ADR-0034`), global blast radius - not recommended. Recommends Option 1, high confidence; does not choose. |
 | 2.4.0 | 2026-08-20 | Pushed `f3399f3`; CI run `32375941348` all four jobs green, both new H-02 steps confirmed genuinely executed under the hash-pinned oracle environment, identical results to the local runs. H-02's reproduction methodology is complete and CI-confirmed; choosing a fix option is the sole remaining, non-blocking item. |
 | 2.3.0 | 2026-08-20 | `ADR-0064`: `DP-013` Option C (both A and B) ratified and executed. H-02 independently reproduced for the Sun (2/12, exact match); Moon 15/34 (44%), comparable to the audit's 43%. PyJHora recorded as an evidenced limitation (search diverges at 0.0001deg, direct longitude carries a 20.57 arcsec bias) rather than manufactured agreement. New tests, negative controls, independent validator, CI wiring (non-gating). No fix chosen; TRANSIT_V1 unmodified. Push authorization pending. |
 | 2.2.0 | 2026-08-20 | `DP-013` decision-readiness audit: re-verified the 278x mismatch against live code; directly inspected PyJHora's source, confirming Option B's API is real but its default precision is ~4 orders of magnitude too coarse - a genuine, previously-unstated cost. Full options/evidence/trade-offs/recommendation placed in `reports/AI_HANDOFF_CURRENT.md` for CEO ratification. No option chosen, nothing implemented. |
