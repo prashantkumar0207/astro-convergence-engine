@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 4.6.0 |
+| Version | 4.7.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-21 (H-02/DP-013 fully closed: pushed and CI-confirmed green, run 32478694212; awaiting the owner's next task) |
+| Last updated | 2026-08-21 (H-01 decision-readiness: `DP-014` drafted and registered, not implementation-authorized; awaiting the owner's option selection) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,57 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-21 - H-01 decision-readiness: DP-014 drafted and registered
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the paper).
+- Previous approved commit: `9737ddb7f0d6edac99b922f0816867eccd717820`.
+- Task: owner "Continue Astro Convergence Engine from the LIVE repository state at e7adeb0... YOUR NEXT
+  TASK IS H-01 DECISION-READINESS ONLY" - produce a narrow, evidence-driven H-01 decision paper without
+  implementation-authorizing anything. H-02/`DP-013` explicitly not reopened; `DP-012` explicitly not
+  revived.
+- Relevant ADR/specification: none pre-existing for H-01 specifically (unlike H-02's `ADR-0020` D5,
+  confirmed by direct grep of `docs/DECISION_LOG.md` - no ratified or proposed ADR item addresses H-01;
+  only `Q8_CLOSURE_MATRIX.md`'s scope citation and two "does not extend to H-01" disclaimers in
+  `ADR-0059`/`ADR-0061`). Primary source: `reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md` finding H-01.
+- Files changed: `docs/decisions/DP-014-h01-true-node-station-density.md` (new), `docs/decisions/
+  README.md` (DP-014 registered, version 2.2.0), `docs/ACE_EXECUTION_STATE.md` (version 2.8.0),
+  this file.
+- Implementation summary: re-verified the audit's H-01 finding live against `e7adeb0`, unchanged -
+  `engine/transits/speeds.py`'s `grid_step_days("TrueNode")` is still exactly 37.5 days
+  (`45.0 / (0.3 * 4.0)`), against a measured true-node station rate of roughly one per 6.25 days, so
+  `find_crossings()`'s "at most one station per grid interval" correctness assumption is still violated
+  for that body. Traced every one of the eight `node_policy` consumers in the repository directly
+  (not assumed): confirmed `engine/astronomy/sidereal_planets.py` and `engine/astronomy/
+  planet_collection.py` do plain dict/string lookups with no search algorithm (unaffected by H-01's
+  mechanism); `engine/astronomy/astronomy_snapshot.py` and `engine/models/provenance.py` are
+  pass-through/metadata only; `scripts/certify_current_engine.py` records `node_policy` in provenance
+  output only; and - a new finding this session - `engine/kp/chart.py:51` already raises
+  `KpProfileError("KP requires the mean node (Decision KP-B)")` whenever `node_policy != "mean"`, so KP
+  independently hard-refuses true node regardless of anything this paper decides. Confirmed via grep
+  that no test anywhere in `engine/tests/` exercises `NODE_POLICY_TRUE`. Confirmed neither shipped
+  profile (`PARASHARI_LAHIRI`, `KP_KRISHNAMURTI`) selects true-node. `DP-014` presents the audit's own
+  two proposed solutions (bound station spacing and re-size the grid; or gate the true-node path behind
+  an explicit refusal) plus a third, defer-only option consistent with `DP-012`'s own precedent -
+  no fourth, invented option. Recommends Option 2 (explicit refusal) at medium confidence, since it
+  requires no new astronomical research and matches KP's own existing refusal precedent, while noting
+  Option 1 remains the eventual complete fix and Option 3 is a legitimate zero-cost alternative.
+  Decides nothing; not implementation-authorized.
+- Tests executed and results: none run - no code changed, only documentation/decision-paper files.
+  Governance/drift checks re-run instead (below).
+- Certification executed and results: not applicable - no certified capability touched.
+- Governance checks executed and results: `python scripts/check_adr_numbering.py` - PASS, 65 entries
+  unchanged; `python scripts/check_identifier_families.py` - PASS, 14 registered DP identifiers (up
+  from 13, `DP-014` newly registered); `python scripts/check_retired_identifiers.py` - PASS, 0
+  violations; `git diff --check` - clean, no whitespace errors.
+- Known issues: none.
+- Unresolved questions: none technical. The owner's option selection among `DP-014`'s three options is
+  the genuine open item this task's own terminal condition defines.
+- CEO decision required: **yes** - select one of `DP-014`'s three options (bound station spacing and
+  repair `find_crossings()` for the true node; gate the true-node path behind an explicit refusal; or
+  defer, optionally with a documentation-only note), to be recorded as a new, numbered decision-log
+  entry citing this paper. No option is implementation-authorized by this paper alone.
+- Next authorized action: none self-authorized pending the owner's `DP-014` selection, or a different
+  next task.
 
 ### 2026-08-21 - H-02/DP-013 fully closed: pushed, CI-green, one ULP-noise finding recovered
 - Branch / commit SHA: `phase-g-governance`, `9737ddb7f0d6edac99b922f0816867eccd717820` - pushed,
@@ -1272,6 +1323,7 @@ act.
 
 | Version | Date | Change |
 |---|---|---|
+| 4.7.0 | 2026-08-21 | H-01 decision-readiness: `DP-014` drafted and registered, extracting `reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md`'s H-01 finding, re-verified live (TrueNode grid step still exactly 37.5 days), and tracing the defect's blast radius across all eight `node_policy` consumers - confined to `find_crossings()`'s callers; KP already independently refuses true node. Presents the audit's own two solutions plus a defer option; recommends explicit refusal (Option 2) at medium confidence. Decides nothing, not implementation-authorized. Local-only, not pushed. |
 | 4.6.0 | 2026-08-21 | Pushed `9737ddb` (TRANSIT_V1 evidence recovery: one ULP-level Gate C float difference, unpinned-vs-pinned dependency noise, recovered via CI-sourced overlay). CI run `32478694212` all four jobs green, Gate E re-confirmed. `DP-013`/H-02 fully closed. |
 | 4.5.0 | 2026-08-21 | `ADR-0065`: H-02 fix Option 1 implemented - `TransitEvent.declared_division` (additive), new Gate E in `certify_transits.py` (49 cases, genuine negative control). All gates green locally (isolated exploration venv), 812/812 pytest, M-03 unchanged. No certified value changed. Push authorization pending. |
 | 4.4.0 | 2026-08-21 | `DP-013` s6 (new): fix-option decision-readiness analysis. Verified `engine.transits` has zero production consumers; `division_index` feeds nearly every certified classifier. Option 3 verified to touch the FORMALLY LOCKED Tier-0 scope. Recommends Option 1 (high confidence); does not choose. |

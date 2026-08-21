@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | **ACCEPTED (`ADR-0062`) - canonical, machine-checkable current-state record.** Regenerate/refresh on every meaningful implementation task, same discipline as `reports/AI_HANDOFF_CURRENT.md`. |
-| Version | 2.7.0 |
+| Version | 2.8.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-21 (H-02/DP-013 fully closed: pushed and CI-confirmed green, run 32478694212; awaiting the owner's next task) |
+| Last updated | 2026-08-21 (H-01 decision-readiness: `DP-014` drafted and registered; not implementation-authorized; awaiting owner's option selection) |
 | Review cadence | Refresh at the start of a session if stale; not load-bearing if it isn't. |
 
 # ACE execution state
@@ -43,22 +43,22 @@ independently is in these fields plus the pointers they name.
 | Field | Value |
 |---|---|
 | `CURRENT_PHASE` | FOUNDATION (`docs/Q8_CLOSURE_MATRIX.md` s4). Phase G exited (`ADR-0048`); FOUNDATION entered. |
-| `CURRENT_MILESTONE` | `TRIKALAM_V1` is **FOUNDATION checkpoint-accepted / production-certified**. Civil-date rendering is **ratified as DEFERRED** (`ADR-0063`). H-02: reproduction methodology executed and CI-confirmed (`ADR-0064`); **fix Option 1 ratified and implemented** (`ADR-0065`) - `TransitEvent.declared_division`, additive, no certified value changes. H-01 still has no governing document of any kind. |
-| `CURRENT_AUTHORIZED_TASK` | None self-executable. `ADR-0065`'s implementation is complete and locally verified; CI confirmation of the new Gate E is the only remaining step, pending push authorization. |
-| `TASK_OWNER` | CLAUDE (`ADR-0065` implemented, locally verified); USER (push authorization). |
-| `STATUS` | `TRIKALAM_V1` done. `DP-012` deferred. `DP-013` fully resolved: Option C (reproduction, `ADR-0064`) and Option 1 (fix, `ADR-0065`) both ratified, implemented, and **CI-confirmed green** (run `9737ddb`, all four jobs, Gate E genuinely executed under the hash-pinned oracle environment: `declared_division : 49 cases, negative_control_verified=True`). One incidental finding along the way, diagnosed and recovered, not a defect: the locally-committed `TRANSIT_V1_certification.json` (regenerated in an unpinned exploration venv) differed from CI's hash-pinned regeneration by a single ULP in one Gate C `derived_tolerance_days` value - recovered via the standard CI-sourced evidence overlay (`ADR-0053`/`ADR-0054` precedent). No existing certified value actually changed; Options 2/3 not chosen; Tier-0 Locked scope not touched. |
-| `LAST_COMPLETED_ACTION` | Pushed `9737ddb` (TRANSIT_V1 evidence recovery) and verified CI run `32478694212` - all four jobs green, Gate E confirmed genuinely executed from the log directly. |
-| `LAST_COMMIT` | `9737ddb7f0d6edac99b922f0816867eccd717820` - pushed; `origin/phase-g-governance` identical. |
-| `LAST_CI_RUN` | **`32478694212`** (commit `9737ddb`) - all four jobs green, directly confirmed via `gh run view`/`gh run --log`. |
-| `LAST_CEO_DECISION` | "Ratify H-02 Fix Option 1." (2026-08-21): the owner chose Option 1 from `DP-013` s6's analysis. |
-| `NEXT_AUTHORIZED_ACTION` | None self-executable. `DP-013` (H-02) is fully closed: reproduced, fixed, CI-confirmed. No FOUNDATION capability currently has both satisfied prerequisites and a ratified implementation decision - H-01 has no governing document; civil-date rendering is deferred. |
-| `WAITING_FOR` | USER: name the next task. Not blocking. |
+| `CURRENT_MILESTONE` | `TRIKALAM_V1` is **FOUNDATION checkpoint-accepted / production-certified**. Civil-date rendering is **ratified as DEFERRED** (`ADR-0063`). H-02: reproduction methodology executed and CI-confirmed (`ADR-0064`); **fix Option 1 ratified and implemented** (`ADR-0065`) - `TransitEvent.declared_division`, additive, no certified value changes. H-01: **decision paper `DP-014` drafted and registered** - not yet implementation-authorized. |
+| `CURRENT_AUTHORIZED_TASK` | None self-executable. `DP-014` presents three options (bound station spacing and repair; gate true-node behind an explicit refusal; defer) and awaits the owner's selection. |
+| `TASK_OWNER` | CLAUDE (`DP-014` drafted, decision-readiness complete); USER (option selection). |
+| `STATUS` | `TRIKALAM_V1` done. `DP-012` deferred. `DP-013`/H-02 fully resolved and CI-confirmed (run `32478694212`). `DP-014`/H-01 decision-readiness complete: audit finding re-verified live against `e7adeb0` (grid step for TrueNode still exactly 37.5 days, unchanged since the audit); blast radius traced across all eight `node_policy` consumers, confirming the defect mechanism (grid/root-finding station-isolation failure) is confined to `engine/transits/crossing.py`'s `find_crossings()` and its callers - ordinary chart/position lookups and KP (which already hard-refuses true node, `engine/kp/chart.py:51`) are unaffected. No shipped profile selects true-node today. Paper presents the audit's own two proposed solutions plus a defer option; recommends Option 2 (explicit refusal) at medium confidence; decides nothing. |
+| `LAST_COMPLETED_ACTION` | Drafted and registered `DP-014` (H-01 decision paper); governance gates re-run clean (`check_adr_numbering.py`, `check_identifier_families.py`, `check_retired_identifiers.py`, `git diff --check`). |
+| `LAST_COMMIT` | `9737ddb7f0d6edac99b922f0816867eccd717820` - last **pushed** commit, `origin/phase-g-governance` identical to it. This task's own commit (`DP-014` + state-file refresh) is local-only, ahead of this SHA, pending push authorization - see `reports/AI_HANDOFF_CURRENT.md`'s latest entry for its exact SHA. |
+| `LAST_CI_RUN` | **`32478694212`** (commit `9737ddb`) - all four jobs green, directly confirmed via `gh run view`/`gh run --log`. Unrelated to this decision-readiness task (no code changed; nothing to re-run in CI). |
+| `LAST_CEO_DECISION` | "Ratify H-02 Fix Option 1." (2026-08-21): the owner chose Option 1 from `DP-013` s6's analysis. No CEO decision yet on `DP-014`/H-01. |
+| `NEXT_AUTHORIZED_ACTION` | None self-executable. `DP-014` awaits the owner's selection among its three options before any H-01 implementation can begin. |
+| `WAITING_FOR` | USER: select an option in `DP-014` (bound-and-repair; explicit refusal; defer), or name a different next task. Not blocking other work. |
 | `BLOCKER` | None. |
-| `CEO_APPROVAL_REQUIRED` | Not immediately - nothing is queued needing approval right now. |
-| `CLAUDE_ACTION_REQUIRED` | None until the owner names a next task. |
-| `CHATGPT_ACTION_REQUIRED` | Independent audit of the `declared_division` implementation, Gate E, and its negative control is available now via the standard Git -> state-file path - no report relay needed. |
-| `USER_ACTION_REQUIRED` | Name the next task - `DP-013`/H-02 is fully closed. |
-| `HANDOFF_REQUIRED` | None beyond this file and `reports/AI_HANDOFF_CURRENT.md`'s latest entry - both already current as of this file's `Last updated` date. |
+| `CEO_APPROVAL_REQUIRED` | Yes, if H-01 is to be acted on: select an option in `docs/decisions/DP-014-h01-true-node-station-density.md` s.H, recorded as a new, numbered decision-log entry. Not required for anything else queued. |
+| `CLAUDE_ACTION_REQUIRED` | None until the owner selects a `DP-014` option or names a different task. |
+| `CHATGPT_ACTION_REQUIRED` | Independent audit of `DP-014`'s evidence base and blast-radius trace is available now via the standard Git -> state-file path - no report relay needed. |
+| `USER_ACTION_REQUIRED` | Select a `DP-014` option, or name the next task. |
+| `HANDOFF_REQUIRED` | None beyond this file and `reports/AI_HANDOFF_CURRENT.md`'s latest entry, both refreshed as part of this task. |
 
 ## How to independently verify every field above
 
@@ -78,6 +78,7 @@ exactly as `reports/AI_HANDOFF_CURRENT.md` already requires of itself.
 
 | Version | Date | Change |
 |---|---|---|
+| 2.8.0 | 2026-08-21 | H-01 decision-readiness: `DP-014` drafted and registered (`docs/decisions/DP-014-h01-true-node-station-density.md`), extracting `reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md`'s H-01 finding, re-verified live against `e7adeb0` (`speeds.py`'s TrueNode grid step still exactly 37.5 days, unchanged), and tracing H-01's blast radius across all eight `node_policy` consumers - confirming the defect is confined to `find_crossings()`'s callers, that KP already hard-refuses true node independently, and that no shipped profile reaches the affected path. Presents the audit's own two proposed solutions plus a defer option; recommends explicit refusal (Option 2) at medium confidence; decides nothing, not implementation-authorized. Governance gates re-run clean. Local-only, not pushed. |
 | 2.7.0 | 2026-08-21 | Pushed `9737ddb` (TRANSIT_V1 evidence recovery: one ULP-level Gate C float difference between an unpinned local run and CI's pinned regeneration, recovered via CI-sourced overlay); CI run `32478694212` all four jobs green, Gate E confirmed genuinely executed. `DP-013`/H-02 is fully closed - reproduced, fixed, CI-confirmed. Nothing currently requires CEO approval. |
 | 2.6.0 | 2026-08-21 | `ADR-0065`: H-02 fix Option 1 ratified and implemented. `TransitEvent.declared_division` (additive, default `None`), populated by `sign_ingresses`/`nakshatra_ingresses` from the exact target longitude. New Gate E in `certify_transits.py` (49 cases, genuine negative control) - PASS locally, all gates green, M-03 unchanged. 4 new tests, 812/812 pytest. No certified value changed. Push authorization pending. |
 | 2.5.0 | 2026-08-21 | `DP-013` s6 (new): fix-option decision-readiness analysis. Verified `engine.transits` has zero production consumers today; `division_index` feeds nearly every certified classifier. Option 1 (additive field): near-zero regression risk, narrow `TRANSIT_V1` addendum. Option 2 (bias event instant): changes certified values, needs `TRANSIT_V1` recertification, has an unscoped-call-site complication. Option 3 (widen tolerance): verified to touch the FORMALLY LOCKED Tier-0 scope (`ADR-0005`/`ADR-0034`), global blast radius - not recommended. Recommends Option 1, high confidence; does not choose. |
