@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 5.3.0 |
+| Version | 5.4.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-22 (Proposed addendum to ADR-0063 drafted per owner request - ten explicit terms resolving civil-date rendering's FOUNDATION-exit gap narrowly, presented for CEO ratification, not yet ratified; DP-012 not reopened) |
+| Last updated | 2026-08-22 (ADR-0063 addendum ratified. FOUNDATION-exit readiness audit finds no remaining gap across all six Q8 scope items. ADR-0068 drafted (PROPOSED), declaring FOUNDATION exited if ratified - not yet ratified) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,83 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-22 - ADR-0063 addendum ratified; fresh FOUNDATION-exit readiness audit finds no remaining gap; ADR-0068 (FOUNDATION-exit determination) drafted, PROPOSED
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the changes).
+- Previous approved commit: `b2f696d48985918206a6954a75d8867b4e6cacd6` (proposed `ADR-0063` addendum,
+  civil-date rendering) - unpushed, together with `d026467`, `381f6e3`, `7a363e5`, `6a560e1`, `d2a780c`
+  beneath it, none newly authorized for push.
+- Task: "CEO RATIFICATION — ADR-0063 ADDENDUM. I ratify the proposed ADR-0063 addendum exactly as
+  written in commit b2f696d... Change only the addendum's status from PROPOSED to ACCEPTED through the
+  appropriate follow-up decision-log entry, exactly as the addendum specifies." Followed by: update the
+  state files; perform the complete FOUNDATION-exit readiness audit against Q8, verifying every scope
+  item individually; do NOT declare FOUNDATION exited unless the audit actually establishes all exit
+  conditions are satisfied; if it does, record the exact evidence and prepare the formal exit
+  determination; do not start JATAKA yet; do not merge to `main`; do not push without separate
+  authorization.
+- Relevant ADR/specification: the proposed `ADR-0063` addendum (ratified, status-only edit); new
+  "Ratification of the proposed `ADR-0063` addendum" follow-up subsection (new); new `ADR-0068` (drafted,
+  `Status: PROPOSED`); `Q8_CLOSURE_MATRIX.md` s4/s5 (re-quoted fresh); every FOUNDATION-relevant ADR
+  re-verified directly (`ADR-0054`, `ADR-0059`+addendum, `ADR-0060`/`ADR-0061`+addendum, `ADR-0063`+
+  addendum, `ADR-0064`-`ADR-0067`).
+- Files changed: `docs/DECISION_LOG.md` (addendum's `Status:` line edited PROPOSED->ACCEPTED, nothing
+  else in the addendum touched; new ratification follow-up subsection; new `ADR-0068`; register header
+  version/summary/"Still PROPOSED" list updated), `docs/ACE_EXECUTION_STATE.md`, this file. `ADR-0063`'s
+  own original text and `docs/decisions/DP-012-civil-date-rendering-dasha-boundaries.md`: **not touched**.
+- **Part 1 - ratification recorded:** added a "#### Ratification of the proposed `ADR-0063` addendum
+  (2026-08-22)" subsection quoting the owner's exact instruction as evidence, then - per the owner's own
+  "change only the addendum's status" wording - edited **only** the addendum's `Status:` bullet, from
+  `PROPOSED - drafted at the owner's explicit request, not yet ratified` to `ACCEPTED, on the owner's
+  ratifying instruction recorded in the [...] entry immediately below`. No other line of the addendum
+  (Context, the ten decision terms, Consequences, Evidence, the "Exact CEO ratification required"
+  paragraph) was touched. `ADR-0063`'s own pre-existing text remains completely unedited above it.
+- **Part 2 - fresh FOUNDATION-exit readiness audit** (re-verified directly against current repository
+  state, not reused from the prior task's own conclusions): re-confirmed all four relevant certification
+  artifacts present and `result: PASS` with zero uncommitted drift (`RISE_SET_V1`, `PANCHANGA_V1`,
+  `TRIKALAM_V1`, `TRANSIT_V1`; `check_artifact_drift.py` - PASS, 46 files); re-confirmed every relevant
+  ADR's `Status: ACCEPTED` directly by grep, not memory (`ADR-0054`, `ADR-0059` + its checkpoint
+  addendum, `ADR-0060`/`ADR-0061` + its checkpoint addendum, `ADR-0063` + its now-ratified addendum,
+  `ADR-0064`, `ADR-0065`, `ADR-0066`, `ADR-0067`); re-quoted `Q8_CLOSURE_MATRIX.md` s4's exact exit
+  criteria and its six implementation-scope items fresh. **Finding: every one of the six items now has a
+  settled, ratified disposition** - rise/set, panchanga, `TRIKALAM_V1` certified and checkpointed; H-01
+  resolved via the exit criteria's own named carve-out (reading confirmed `ADR-0067`); H-02 resolved and
+  certified; boundary-proximity indicators and civil-date rendering both explicitly, narrowly decoupled
+  from this specific checkpoint by their own ratified owner decisions (`ADR-0067`, and the just-ratified
+  `ADR-0063` addendum, respectively). **The audit finds no remaining gap.**
+- **Part 3 - `ADR-0068` drafted, `Status: PROPOSED`, not self-ratified:** presents the full item-by-item
+  evidence trail above and states "if ratified, this entry would declare: FOUNDATION's exit criteria...
+  are satisfied, and FOUNDATION is EXITED." Per the owner's own explicit caution ("do NOT declare
+  FOUNDATION exited unless the audit actually establishes...") and `Q8_CLOSURE_MATRIX.md` s4's own "CEO
+  approval: ...exit" requirement (exit needs the owner's own explicit ratification, exactly like entry
+  and every per-capability checkpoint before it), this entry does **not** itself declare FOUNDATION
+  exited - it is prepared and presented for the owner's review and explicit decision, matching the exact
+  same "prepare, present, stop" pattern used for the `ADR-0063` addendum itself. The Consequences section
+  explicitly states this would **not** authorize JATAKA: `Q8_CLOSURE_MATRIX.md` s5's own entry criteria
+  additionally require "the Dasha roadmap's steps 1 to 6 complete" - `docs/
+  DASHA_CERTIFICATION_ROADMAP.md` remains `Status: PROPOSED` and none of its six steps is done, so JATAKA
+  stays unentered regardless of `ADR-0068`'s own fate. `phase-g-governance` is not merged to `main`.
+- Tests executed and results: `python -m pytest -q` - **816 passed** (unchanged; no code touched).
+- Certification executed and results: verified fresh, not reused - all four relevant certification
+  artifacts present, `result: PASS`, `check_artifact_drift.py` clean (46 files), `git status --short
+  certification/` clean.
+- Governance checks executed and results: `python scripts/check_adr_numbering.py` - PASS, **68 entries**
+  (up from 67 - `ADR-0068` newly allocated; the ratification follow-up is a subsection, not a new
+  number); `python scripts/check_identifier_families.py` - PASS, 15 DP identifiers unchanged;
+  `python scripts/check_retired_identifiers.py` - PASS, 0 violations; `git diff --check` - clean;
+  `engine/tests/test_retired_identifier_gate_scope.py` - 36 passed.
+- Known issues: none.
+- Unresolved questions: exactly one - whether `ADR-0068`'s FOUNDATION-exit determination, as drafted, is
+  acceptable for ratification, or needs further amendment.
+- CEO decision required: **yes, one** - ratify (or further amend) `ADR-0068`. The form required,
+  matching the `ADR-0063`-addendum precedent just used: an explicit instruction such as "I ratify
+  `ADR-0068` and declare FOUNDATION exited, exactly as written in commit `<SHA>`," which would then be
+  recorded as its own follow-up entry changing `ADR-0068`'s `Status` line from `PROPOSED` to `ACCEPTED` -
+  `ADR-0068`'s own text would not be edited to record that.
+- Next authorized action: none self-authorized. Stopping here per the owner's own "do not start JATAKA
+  yet... do not merge to `main` yet... do not push without separate push authorization... continue until
+  the next genuine CEO decision, blocker, or completion point" - ratifying `ADR-0068` is exactly that
+  next decision point. Nothing pushed; nothing merged; JATAKA not started; H-01, H-02, `DP-012`, `DP-015`,
+  Panchanga, `TRIKALAM_V1`, and boundary-proximity indicators not reopened or altered in any way.
 
 ### 2026-08-22 - Proposed addendum to ADR-0063 drafted: narrow civil-date-rendering resolution, presented for ratification
 - Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the addendum).
@@ -1770,6 +1847,7 @@ act.
 
 | Version | Date | Change |
 |---|---|---|
+| 5.4.0 | 2026-08-22 | Recorded ratification of the `ADR-0063` addendum (status-only edit, per explicit instruction). Performed a fresh FOUNDATION-exit readiness audit against all six `Q8_CLOSURE_MATRIX.md` s4 scope items, re-verifying on-disk certification artifacts and every relevant ADR's status directly: **finds no remaining gap** - four items certified/resolved, two explicitly decoupled by ratified decision. Drafted `ADR-0068` (`Status: PROPOSED`), presenting this evidence and, if ratified, declaring FOUNDATION exited - not self-ratified, per the owner's own explicit caution. Notes this would not authorize JATAKA (its own entry criteria separately unmet). No code touched; not merged to `main`. Governance gates and 816/816 pytest re-run clean (68 ADR entries, up from 67). Nothing pushed. |
 | 5.3.0 | 2026-08-22 | Drafted a proposed addendum to `ADR-0063` (`Status: PROPOSED`, not ratified), per owner instruction, resolving civil-date rendering's FOUNDATION-exit gap narrowly with ten explicit terms mirroring `DP-015`'s "Option 3 (AMENDED)" treatment. `ADR-0063` and `DP-012` both unedited - `DP-012`'s technical investigation not reopened; no new Q8 interpretation asserted. No code touched. Governance gates and 816/816 pytest re-run clean. Nothing pushed. |
 | 5.2.0 | 2026-08-21 | `ADR-0067` records `DP-015`'s full ratification (Q1/Q2 confirmed; Q3's "Option 3 (AMENDED)" ratified exactly as written, quoted verbatim in the ADR). FOUNDATION-exit readiness audit performed: rise/set, panchanga, trikalam certified and checkpointed; H-01/H-02 resolved; boundary-proximity explicitly decoupled by decision. **Civil-date rendering's `ADR-0063` deferral asserts it "satisfies s4's exit language" - an assertion made before `DP-015`'s rigorous carve-out analysis existed, now called into question by the owner's own confirmed characterization (c). FOUNDATION does NOT yet unambiguously satisfy its exit criteria.** No exit determination recorded; no JATAKA prep begun. Nothing pushed. |
 | 5.1.0 | 2026-08-21 | CEO confirmed `DP-015` Questions 1 and 2 as drafted (novel/no-precedent; characterization (c), genuinely ambiguous). Question 3's original Option 3 rejected after owner verification found it silent on 2 of 5 required safeguards. Amended `DP-015` (v2.0.0 -> v3.0.0): original Option 3 preserved unedited, marked NOT RATIFIED; new "Option 3 (AMENDED)" drafted with all eight owner-specified terms, presented for ratification - not yet ratified, no ADR written. No code touched; no blocking mechanism built for a nonexistent consumer. Governance gates and 816/816 pytest re-run clean. Nothing pushed. |

@@ -3,10 +3,10 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | ACTIVE REGISTER. **ACCEPTED (45): ADR-0001, ADR-0002, ADR-0005 through ADR-0012, ADR-0015, ADR-0016, ADR-0017, ADR-0033 through ADR-0037, ADR-0039 through ADR-0042, ADR-0044, ADR-0045, ADR-0046, ADR-0048 through ADR-0067**, owner-ratified across 2026-08-13, 2026-08-14, 2026-08-17, 2026-08-18, 2026-08-19, 2026-08-20 and 2026-08-21. **`ADR-0067` ratifies `DP-015`: H-01/`ADR-0066`'s Q8 carve-out reading confirmed textually valid but novel, no precedent claimed; the carve-out's general reach beyond H-01/H-02 confirmed genuinely ambiguous, not silently generalized to any other FOUNDATION item; boundary-proximity indicators decoupled from the current FOUNDATION-exit checkpoint via `DP-015` §F "Option 3 (AMENDED)", ratified exactly as written - explicitly tracked as future work, not certified, does not gate exit, no future consumer may treat it as certified, any future consumer must certify first or explicitly refuse/gate, no certified values changed, no methodology specified here, a future decision paper determines it.** **`ADR-0066` ratifies `DP-014` Option 2: `find_crossings()` now raises `UnsupportedNodePolicyError` for Rahu/Ketu under any `node_policy` other than the certified mean node, converting H-01's silent transit-event incompleteness into an explicit refusal. No certified `TRANSIT_V1` value changes (confirmed by isolated-venv regeneration - only the already-understood ULP noise and volatile fields differed, and that regenerated artifact was discarded, not committed); Options 1/3 not chosen; Tier-0's Locked scope not touched.** **`ADR-0065` ratifies `DP-013`'s H-02 fix Option 1: `TransitEvent.declared_division`, an additive field classified from the exact `target_longitude`, with a new Gate E (genuine negative control) in `certify_transits.py`. No certified `TRANSIT_V1` value changes; Options 2/3 not chosen; Tier-0's Locked scope not touched.** **`ADR-0063` ratifies `DP-012` Option C: civil-date rendering for dasha boundaries is explicitly deferred, not authorized for implementation - `DP-012` itself unedited, per the established "paper is not the decision" discipline. A 2026-08-22 proposed addendum to `ADR-0063` (`Status: PROPOSED`, not yet ratified) drafts a narrow qualification - `ADR-0063`'s original claim of independently satisfying `Q8_CLOSURE_MATRIX.md` s4 must not be relied upon without it, following `DP-015`'s finding that the carve-out's general reach is genuinely ambiguous - awaiting explicit CEO ratification, matching `ADR-0067`'s equivalent treatment of boundary-proximity indicators.** `ADR-0064` ratifies `DP-013` Option C (independent reference + PyJHora) and records the executed reproduction: H-02 independently confirmed for the Sun (2 of 12 sankranti, exact match to the original audit), PyJHora recorded as an evidenced limitation (cannot resolve the defect's own precision scale, by either method tested) rather than manufactured agreement. `TRANSIT_V1` unmodified by the reproduction itself; **pushed and CI-confirmed green** (run `32375941348`, all four jobs, both new steps genuinely executed under the hash-pinned oracle environment). A fix option was chosen 2026-08-21 - see `ADR-0065`.** **`ADR-0062` adds the permanent ACE execution-state mechanism (`docs/ACE_EXECUTION_STATE.md`) plus an explicit prohibition on the user relaying reports between Claude and ChatGPT - operationalizes `ADR-0056`'s already-ratified s11 point 3, does not reopen it.** **`ADR-0060` ratifies `DP-011` Option C seeded by Option B: Rahu Kalam/Yamaganda/Gulika become named, profile-selectable variants; the PyJHora 4.8.7 `trikalam()` convention is independently inspected, transcribed and frozen as the seed variant `PYJHORA_TRIKALAM_V1`. Authorizes only that one variant's implementation/certification work - does not itself certify it, does not authorize a second variant, and does not authorize Muhurta-specific consumption. `ADR-0061` records that implementation as built, locally verified, then **pushed and CI-confirmed green** (run `32358109807`, all four jobs, oracle job genuinely executing `TRIKALAM_V1`'s Gate F) - a 2026-08-20 evidence addendum records the CI confirmation and a recovered, expected M-03 drift finding (177->180, same class as `ADR-0053`/`ADR-0054`); a second 2026-08-20 addendum records a genuine ULP battery added to Gate C (exact sunrise weekday-rollover instant, with negative control), remediating a CEO-audit finding that the prior Gate C was a pinning/tolerance check, not a true ULP battery - **pushed and CI-confirmed green** (run `32361308330`, all four jobs, oracle-job log directly confirming `ulp_boundary_checked: True, ulp_negative_control_verified: True`). A third 2026-08-20 addendum records the **owner's acceptance of `TRIKALAM_V1`'s FOUNDATION per-capability checkpoint** - `TRIKALAM_V1` is now FOUNDATION checkpoint-accepted / production-certified. FOUNDATION's own phase-exit criteria remain open: civil-date rendering is now explicitly deferred by decision (`ADR-0063`, `DP-012` Option C), not implemented; H-01 and H-02 still lack any ratified decision paper.** **`ADR-0056` formalizes the four-role AI collaboration model (USER/CLAUDE/CHATGPT/CODEX); Codex is explicitly excluded from the ACE workflow. `ADR-0057` (CEO-audit HOLD remediation) adds ACE interaction mode and mandatory session-start audit to `specs/CLAUDE_WORKFLOW.md`. `ADR-0058` adds an execution-continuity rule (do not stop prematurely; five terminal stop conditions) to the same document; its `specs/CLAUDE_WORKFLOW.md` edit is committed (`20a9589e3d567bbf86e36b13bf2d61ca734e728e`). `ADR-0059` records the CEO-approved `PANCHANGA_V1` Gate F (genuine PyJHora external-oracle comparison for tithi/yoga/karana, nakshatra explicitly excluded): implemented, committed (`4177d6108236e64d07f6b23499307001f0d7c421`), pushed, and **CI-confirmed green** (run `32242462766`, all four jobs, oracle job genuinely executing Gate F: 66 comparisons, 0 mismatches, negative control verified) under the hash-pinned oracle environment. A 2026-08-19 evidence addendum to `ADR-0059` records the owner's acceptance of Panchanga's FOUNDATION per-capability checkpoint (`Q8_CLOSURE_MATRIX.md` s4); this does not close FOUNDATION's own phase-exit criteria, which still require Rahu Kalam/Yamaganda/Gulika, H-01, and H-02.** Tier-0 is **FORMALLY LOCKED** (ADR-0034), the only s12 Locked artifact. The registry vargas and the sign conventions are **owner-ratified but NOT s12 Locked** (ADR-0035 D3, ADR-0036 D3). **Q8 is now CLOSED** (ADR-0048); **Phase G exited and FOUNDATION entry criteria were independently confirmed satisfied** (this session's evidence reports). **FOUNDATION's first work package, rise/set, is CERTIFIED (`ADR-0054`, `RISE_SET_V1`)**: five owner-ratified conventions (upper-limb disc, standard -50' refraction, elevation accounted for, structured NO_RISE/NO_SET, conventions in `CalculationProfile`/`BirthData`), zero calculation impact on any existing certified capability, two genuine defects found and fixed during its own construction (recorded in the entry). **Panchanga classification-only work (tithi/vara/nakshatra/yoga/karana at a given instant) is now authorised (`ADR-0055`)**: engine-wide 1e-10 promote-up boundary convention, vara consumes the certified rise/set layer, element transition-timing deferred. **Rahu Kalam/Yamaganda/Gulika: `DP-011` (`ADR-0055` item 2's authorized paper) is now ratified (`ADR-0060`, Option C seeded by Option B) and its seed variant `PYJHORA_TRIKALAM_V1` is implemented and CI-confirmed (`ADR-0061`); a second variant remains explicitly NOT authorised.** No later phase (Muhurta, Varshaphal, Prashna, Mundane, BTR, Interpretation, Convergence, UI, ML) is thereby authorised - `docs/Q8_CLOSURE_MATRIX.md` s4 requires its own per-capability checkpoint for each. **Still PROPOSED: ADR-0003, ADR-0004, ADR-0013, ADR-0014, ADR-0018 through ADR-0032, ADR-0038, and ADR-0047.** `ADR-0047`'s originally-reported G5 sample accounting (22/22 complete, 16 independent, 4 ADB_MATCH, 2 unresolved, 14 events) was briefly, and **erroneously**, corrected to "12/22 attempted" by a 2026-08-18 addendum that has since been found (owner-directed forensic reconciliation) to rest on a conflation of the 22-person sample with an unrelated 5-person bridging pilot; a second, later 2026-08-18 addendum **restores 22/22 as the authoritative state** (16 independent, 4 ADB_MATCH: Fichera/Aimar/Serantoni/Bobet, 2 unresolved: Veen/Perquier, 14 independent events) and marks the "12/22" addendum SUPERSEDED/RETRACTED, preserved unedited. `ADR-0047` remains PROPOSED, not ratified, throughout. Ratification is per-entry; an owner existing is not the register being ratified. Includes the ADR-0018 remote-CI evidence addendum (2026-08-11), the ADR-0047 "12/22" addendum (2026-08-18, now retracted), and the ADR-0047 restoration addendum (2026-08-18). |
-| Version | 4.3.0 |
+| Status | ACTIVE REGISTER. **ACCEPTED (45): ADR-0001, ADR-0002, ADR-0005 through ADR-0012, ADR-0015, ADR-0016, ADR-0017, ADR-0033 through ADR-0037, ADR-0039 through ADR-0042, ADR-0044, ADR-0045, ADR-0046, ADR-0048 through ADR-0067**, owner-ratified across 2026-08-13, 2026-08-14, 2026-08-17, 2026-08-18, 2026-08-19, 2026-08-20 and 2026-08-21. **`ADR-0067` ratifies `DP-015`: H-01/`ADR-0066`'s Q8 carve-out reading confirmed textually valid but novel, no precedent claimed; the carve-out's general reach beyond H-01/H-02 confirmed genuinely ambiguous, not silently generalized to any other FOUNDATION item; boundary-proximity indicators decoupled from the current FOUNDATION-exit checkpoint via `DP-015` §F "Option 3 (AMENDED)", ratified exactly as written - explicitly tracked as future work, not certified, does not gate exit, no future consumer may treat it as certified, any future consumer must certify first or explicitly refuse/gate, no certified values changed, no methodology specified here, a future decision paper determines it.** **`ADR-0066` ratifies `DP-014` Option 2: `find_crossings()` now raises `UnsupportedNodePolicyError` for Rahu/Ketu under any `node_policy` other than the certified mean node, converting H-01's silent transit-event incompleteness into an explicit refusal. No certified `TRANSIT_V1` value changes (confirmed by isolated-venv regeneration - only the already-understood ULP noise and volatile fields differed, and that regenerated artifact was discarded, not committed); Options 1/3 not chosen; Tier-0's Locked scope not touched.** **`ADR-0065` ratifies `DP-013`'s H-02 fix Option 1: `TransitEvent.declared_division`, an additive field classified from the exact `target_longitude`, with a new Gate E (genuine negative control) in `certify_transits.py`. No certified `TRANSIT_V1` value changes; Options 2/3 not chosen; Tier-0's Locked scope not touched.** **`ADR-0063` ratifies `DP-012` Option C: civil-date rendering for dasha boundaries is explicitly deferred, not authorized for implementation - `DP-012` itself unedited, per the established "paper is not the decision" discipline. A 2026-08-22 addendum to `ADR-0063` (**ratified**, `Status: ACCEPTED`, per the owner's "CEO RATIFICATION — ADR-0063 ADDENDUM" instruction) records a narrow qualification - `ADR-0063`'s original claim of independently satisfying `Q8_CLOSURE_MATRIX.md` s4 must not be relied upon without it, following `DP-015`'s finding that the carve-out's general reach is genuinely ambiguous - and explicitly decouples civil-date rendering from the current FOUNDATION-exit checkpoint, matching `ADR-0067`'s equivalent treatment of boundary-proximity indicators.** `ADR-0064` ratifies `DP-013` Option C (independent reference + PyJHora) and records the executed reproduction: H-02 independently confirmed for the Sun (2 of 12 sankranti, exact match to the original audit), PyJHora recorded as an evidenced limitation (cannot resolve the defect's own precision scale, by either method tested) rather than manufactured agreement. `TRANSIT_V1` unmodified by the reproduction itself; **pushed and CI-confirmed green** (run `32375941348`, all four jobs, both new steps genuinely executed under the hash-pinned oracle environment). A fix option was chosen 2026-08-21 - see `ADR-0065`.** **`ADR-0062` adds the permanent ACE execution-state mechanism (`docs/ACE_EXECUTION_STATE.md`) plus an explicit prohibition on the user relaying reports between Claude and ChatGPT - operationalizes `ADR-0056`'s already-ratified s11 point 3, does not reopen it.** **`ADR-0060` ratifies `DP-011` Option C seeded by Option B: Rahu Kalam/Yamaganda/Gulika become named, profile-selectable variants; the PyJHora 4.8.7 `trikalam()` convention is independently inspected, transcribed and frozen as the seed variant `PYJHORA_TRIKALAM_V1`. Authorizes only that one variant's implementation/certification work - does not itself certify it, does not authorize a second variant, and does not authorize Muhurta-specific consumption. `ADR-0061` records that implementation as built, locally verified, then **pushed and CI-confirmed green** (run `32358109807`, all four jobs, oracle job genuinely executing `TRIKALAM_V1`'s Gate F) - a 2026-08-20 evidence addendum records the CI confirmation and a recovered, expected M-03 drift finding (177->180, same class as `ADR-0053`/`ADR-0054`); a second 2026-08-20 addendum records a genuine ULP battery added to Gate C (exact sunrise weekday-rollover instant, with negative control), remediating a CEO-audit finding that the prior Gate C was a pinning/tolerance check, not a true ULP battery - **pushed and CI-confirmed green** (run `32361308330`, all four jobs, oracle-job log directly confirming `ulp_boundary_checked: True, ulp_negative_control_verified: True`). A third 2026-08-20 addendum records the **owner's acceptance of `TRIKALAM_V1`'s FOUNDATION per-capability checkpoint** - `TRIKALAM_V1` is now FOUNDATION checkpoint-accepted / production-certified. FOUNDATION's own phase-exit criteria remain open: civil-date rendering is now explicitly deferred by decision (`ADR-0063`, `DP-012` Option C), not implemented; H-01 and H-02 still lack any ratified decision paper.** **`ADR-0056` formalizes the four-role AI collaboration model (USER/CLAUDE/CHATGPT/CODEX); Codex is explicitly excluded from the ACE workflow. `ADR-0057` (CEO-audit HOLD remediation) adds ACE interaction mode and mandatory session-start audit to `specs/CLAUDE_WORKFLOW.md`. `ADR-0058` adds an execution-continuity rule (do not stop prematurely; five terminal stop conditions) to the same document; its `specs/CLAUDE_WORKFLOW.md` edit is committed (`20a9589e3d567bbf86e36b13bf2d61ca734e728e`). `ADR-0059` records the CEO-approved `PANCHANGA_V1` Gate F (genuine PyJHora external-oracle comparison for tithi/yoga/karana, nakshatra explicitly excluded): implemented, committed (`4177d6108236e64d07f6b23499307001f0d7c421`), pushed, and **CI-confirmed green** (run `32242462766`, all four jobs, oracle job genuinely executing Gate F: 66 comparisons, 0 mismatches, negative control verified) under the hash-pinned oracle environment. A 2026-08-19 evidence addendum to `ADR-0059` records the owner's acceptance of Panchanga's FOUNDATION per-capability checkpoint (`Q8_CLOSURE_MATRIX.md` s4); this does not close FOUNDATION's own phase-exit criteria, which still require Rahu Kalam/Yamaganda/Gulika, H-01, and H-02.** Tier-0 is **FORMALLY LOCKED** (ADR-0034), the only s12 Locked artifact. The registry vargas and the sign conventions are **owner-ratified but NOT s12 Locked** (ADR-0035 D3, ADR-0036 D3). **Q8 is now CLOSED** (ADR-0048); **Phase G exited and FOUNDATION entry criteria were independently confirmed satisfied** (this session's evidence reports). **FOUNDATION's first work package, rise/set, is CERTIFIED (`ADR-0054`, `RISE_SET_V1`)**: five owner-ratified conventions (upper-limb disc, standard -50' refraction, elevation accounted for, structured NO_RISE/NO_SET, conventions in `CalculationProfile`/`BirthData`), zero calculation impact on any existing certified capability, two genuine defects found and fixed during its own construction (recorded in the entry). **Panchanga classification-only work (tithi/vara/nakshatra/yoga/karana at a given instant) is now authorised (`ADR-0055`)**: engine-wide 1e-10 promote-up boundary convention, vara consumes the certified rise/set layer, element transition-timing deferred. **Rahu Kalam/Yamaganda/Gulika: `DP-011` (`ADR-0055` item 2's authorized paper) is now ratified (`ADR-0060`, Option C seeded by Option B) and its seed variant `PYJHORA_TRIKALAM_V1` is implemented and CI-confirmed (`ADR-0061`); a second variant remains explicitly NOT authorised.** No later phase (Muhurta, Varshaphal, Prashna, Mundane, BTR, Interpretation, Convergence, UI, ML) is thereby authorised - `docs/Q8_CLOSURE_MATRIX.md` s4 requires its own per-capability checkpoint for each. **Still PROPOSED: ADR-0003, ADR-0004, ADR-0013, ADR-0014, ADR-0018 through ADR-0032, ADR-0038, ADR-0047, and ADR-0068 (the FOUNDATION-exit determination itself, prepared and awaiting CEO ratification - FOUNDATION is NOT yet declared exited).** `ADR-0047`'s originally-reported G5 sample accounting (22/22 complete, 16 independent, 4 ADB_MATCH, 2 unresolved, 14 events) was briefly, and **erroneously**, corrected to "12/22 attempted" by a 2026-08-18 addendum that has since been found (owner-directed forensic reconciliation) to rest on a conflation of the 22-person sample with an unrelated 5-person bridging pilot; a second, later 2026-08-18 addendum **restores 22/22 as the authoritative state** (16 independent, 4 ADB_MATCH: Fichera/Aimar/Serantoni/Bobet, 2 unresolved: Veen/Perquier, 14 independent events) and marks the "12/22" addendum SUPERSEDED/RETRACTED, preserved unedited. `ADR-0047` remains PROPOSED, not ratified, throughout. Ratification is per-entry; an owner existing is not the register being ratified. Includes the ADR-0018 remote-CI evidence addendum (2026-08-11), the ADR-0047 "12/22" addendum (2026-08-18, now retracted), and the ADR-0047 restoration addendum (2026-08-18). |
+| Version | 4.5.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-22 (Proposed addendum to ADR-0063 drafted, PROPOSED - narrow civil-date-rendering amendment addressing DP-015's Q8 carve-out finding, presented for CEO ratification, not yet ratified) |
+| Last updated | 2026-08-22 (ADR-0068 drafted, PROPOSED - FOUNDATION-exit readiness audit finds all six Q8_CLOSURE_MATRIX.md s4 scope items now settled; presented for CEO ratification, FOUNDATION not yet declared exited) |
 | Review cadence | TBD |
 
 # Decision Log (ADR register)
@@ -3193,13 +3193,18 @@ the two gates added under ADR-0037.
 
 ### Proposed addendum to ADR-0063 - narrow amendment addressing DP-015's Q8 carve-out finding (prepared 2026-08-22, pending CEO ratification)
 
-- **Status:** **PROPOSED - drafted at the owner's explicit request, not yet ratified.** The owner
-  instructed: "Resolve the remaining FOUNDATION-exit civil-date rendering issue narrowly... Prepare a
-  narrow owner-decision amendment for `ADR-0063`/`DP-012`... Prepare the exact proposed decision wording
-  and identify the exact CEO ratification required." This addendum is that prepared wording, presented
-  for the owner's review and explicit ratification - it does not itself take effect. `ADR-0063` above
-  is unedited by this addendum, per this repository's practice of never editing an existing, already-
-  recorded decision entry's substance (`.claude/rules/governance.md`).
+- **Status:** **ACCEPTED, on the owner's ratifying instruction recorded in the "Ratification of the
+  proposed ADR-0063 addendum (2026-08-22)" entry immediately below this addendum's own text** ("CEO
+  RATIFICATION — ADR-0063 ADDENDUM. I ratify the proposed ADR-0063 addendum exactly as written in commit
+  `b2f696d`... Change only the addendum's status from PROPOSED to ACCEPTED"). Originally drafted
+  `PROPOSED` at the owner's request: "Resolve the remaining FOUNDATION-exit civil-date rendering issue
+  narrowly... Prepare a narrow owner-decision amendment for `ADR-0063`/`DP-012`... Prepare the exact
+  proposed decision wording and identify the exact CEO ratification required." Per the owner's own
+  "change only the addendum's status" instruction, this Status line is the only text in this addendum
+  edited to record ratification - the Context, the ten decision terms, Consequences, and Evidence below
+  are unchanged from commit `b2f696d`. `ADR-0063` above remains unedited by this addendum, per this
+  repository's practice of never editing an existing, already-recorded decision entry's substance
+  (`.claude/rules/governance.md`).
 - **Context:** `DP-015` section 3 (`ADR-0067`, ratified 2026-08-21) established that `Q8_CLOSURE_MATRIX.md`
   s4's "explicitly deferred by decision with the dependent domains blocked accordingly" carve-out is
   textually attached only to the H-01/H-02 sentence, and that its general reach to any other FOUNDATION
@@ -3270,6 +3275,34 @@ terms as written - for example, matching the form already used for `ADR-0067`'s 
 ("I ratify [this addendum] exactly as written in commit `<SHA>`") - which would change this addendum's
 own Status line from PROPOSED to ACCEPTED in a follow-up entry, per this repository's practice of
 recording ratification as a new dated act rather than by editing the proposal itself.
+
+#### Ratification of the proposed ADR-0063 addendum (2026-08-22)
+
+- **Status:** ACCEPTED. The owner instructed: "CEO RATIFICATION — ADR-0063 ADDENDUM. I ratify the
+  proposed ADR-0063 addendum exactly as written in commit: `b2f696d48985918206a6954a75d8867b4e6cacd6`.
+  Change only the addendum's status from PROPOSED to ACCEPTED through the appropriate follow-up
+  decision-log entry, exactly as the addendum specifies. Do not edit the original ADR-0063 text. Do not
+  alter `DP-012`." Per `docs/PROJECT_CONSTITUTION.md` s11, this instruction is the ratifying act; this
+  entry records it, matching the precedent already used throughout this session (`ADR-0060`/`ADR-0061`,
+  `ADR-0063` itself, `ADR-0064`-`ADR-0067`).
+- **Decision:** The proposed addendum above (its ten decision terms, Context, Consequences, and Evidence
+  sections) is **ratified exactly as drafted in commit `b2f696d`, with no wording changed**. Its own
+  `Status` line, immediately above, is updated from `PROPOSED - drafted at the owner's explicit request,
+  not yet ratified` to **`ACCEPTED, on the owner's ratifying instruction recorded in this follow-up
+  entry`** - this is the only edit made to the addendum text, per the owner's own "change only the
+  addendum's status" instruction. No other line of the addendum (Context, the ten decision terms,
+  Consequences, Evidence, or the "Exact CEO ratification required" paragraph) is altered. `ADR-0063`'s
+  own original text (above the addendum) remains completely unedited, as does `docs/decisions/
+  DP-012-civil-date-rendering-dasha-boundaries.md`.
+- **Consequences:** Civil-date rendering's FOUNDATION-exit status is now settled by explicit decision:
+  deferred, not certified, does not gate the current FOUNDATION-exit checkpoint, tracked as future work,
+  bound by the forward-binding certify-or-refuse rule for any future consumer. Together with `ADR-0067`
+  (boundary-proximity indicators), every one of `Q8_CLOSURE_MATRIX.md` s4's six FOUNDATION scope items
+  now has a settled, ratified status - whether that means FOUNDATION's exit criteria are actually
+  satisfied is determined separately, in the readiness audit this same task performs, not asserted by
+  this entry.
+- **Evidence:** the owner's "CEO RATIFICATION — ADR-0063 ADDENDUM" instruction, quoted above; the
+  proposed addendum itself, commit `b2f696d48985918206a6954a75d8867b4e6cacd6`.
 
 ---
 
@@ -3532,6 +3565,92 @@ recording ratification as a new dated act rather than by editing the proposal it
 - **Evidence:** the owner's "CEO RATIFICATION — DP-015 Q3" instruction, quoted above; `DP-015` v3.0.0
   (`docs/decisions/DP-015-foundation-boundary-proximity-indicators.md`, commit `381f6e3`) sections 0, 3,
   4, F, L, M, N; `ADR-0049` (the Phase G precedent check underlying Decision 1's "no precedent" finding).
+
+---
+
+## ADR-0068 - FOUNDATION-exit readiness audit: all six `Q8_CLOSURE_MATRIX.md` s4 scope items now have a settled, ratified disposition (PROPOSED - prepared for CEO ratification, not yet declared)
+
+- **Date:** 2026-08-22
+- **Status:** **PROPOSED - drafted per the owner's own instruction to "perform the complete FOUNDATION-exit
+  readiness audit... If the audit establishes FOUNDATION exit, record the exact evidence and prepare the
+  formal exit determination," and per the owner's own explicit caution: "Do NOT declare FOUNDATION exited
+  unless the audit actually establishes that all exit conditions are satisfied." This entry is that
+  prepared determination. It does not itself declare FOUNDATION exited** - `Q8_CLOSURE_MATRIX.md` s4's
+  own "CEO approval: Entry, per-capability checkpoint, **exit**" row requires the owner's own explicit
+  ratification for exit, exactly as it did for entry (`ADR-0048`) and every per-capability checkpoint
+  along the way (`ADR-0054`, `ADR-0059` addendum, `ADR-0061` addendum). This entry presents the audit's
+  findings and the exact evidence for the owner's review and explicit decision.
+- **Context:** `Q8_CLOSURE_MATRIX.md` s4's exit criteria, quoted in full: "Every capability above at the
+  level `ADR-0017` defines as production certified. H-01 and H-02 resolved and certified, or explicitly
+  deferred by decision with the dependent domains blocked accordingly." The implementation-scope row
+  names exactly six items: rise/set; panchanga (tithi, vara, nakshatra, yoga, karana); Rahu Kalam/
+  Yamaganda/Gulika; civil-date rendering; "Resolution of H-01... and H-02..."; boundary-proximity
+  indicators. This audit checks each individually, against the current repository state directly (on-disk
+  certification artifacts, exact ADR status lines), not against decision-log summary text alone.
+- **Decision - the audit's findings, item by item, verified fresh this entry:**
+  1. **Rise/set (`RISE_SET_V1`):** `ADR-0054`, `Status: ACCEPTED`. `certification/
+     RISE_SET_V1_certification.json` confirmed present, `result: PASS`, no uncommitted drift
+     (`check_artifact_drift.py` clean). Checkpoint satisfied via `ADR-0054`'s own combined ratifying
+     instruction ("CEO OWNER AUTHORIZATION - FOUNDATION RISE/SET... the complete rise/set workstream").
+     **SATISFIED.**
+  2. **Panchanga classification (`PANCHANGA_V1`):** `ADR-0059`, `Status: ACCEPTED`; separately-recorded
+     "Evidence addendum to `ADR-0059` - owner acceptance of the Panchanga per-capability FOUNDATION
+     checkpoint," `Status: ACCEPTED`. `certification/PANCHANGA_V1_certification.json` confirmed present,
+     `result: PASS`, no uncommitted drift. **SATISFIED.**
+  3. **Rahu Kalam/Yamaganda/Gulika (`TRIKALAM_V1`):** `ADR-0060`/`ADR-0061`, `Status: ACCEPTED`; third
+     addendum recording "the owner's acceptance of `TRIKALAM_V1`'s FOUNDATION per-capability checkpoint."
+     `certification/TRIKALAM_V1_certification.json` confirmed present, `result: PASS`, no uncommitted
+     drift. Only the seed variant `PYJHORA_TRIKALAM_V1` is authorized (a second variant explicitly is
+     not) - the owner accepted the checkpoint with this exact scope already on record, so this is not a
+     gap. **SATISFIED.**
+  4. **H-01:** resolved via the exit criteria's own named carve-out - `find_crossings()` now raises
+     `UnsupportedNodePolicyError` for any non-mean node policy (`ADR-0066`, `Status: ACCEPTED`). The
+     carve-out reading itself independently confirmed by the owner as textually valid, though novel, no
+     precedent claimed (`ADR-0067`, `Status: ACCEPTED`). **SATISFIED**, under the exit criteria's own
+     H-01/H-02-specific alternate path.
+  5. **H-02:** resolved and certified - `TransitEvent.declared_division` (`ADR-0065`, `Status: ACCEPTED`),
+     reproduction methodology (`ADR-0064`, `Status: ACCEPTED`). `certification/
+     TRANSIT_V1_certification.json` confirmed present, `result: PASS`, no uncommitted drift.
+     **SATISFIED.**
+  6. **Civil-date rendering:** deferred, not certified (`ADR-0063`, `Status: ACCEPTED`) - explicitly
+     decoupled from the current FOUNDATION-exit CEO checkpoint by the ratified addendum immediately
+     above this entry (`Status: ACCEPTED`, ratified 2026-08-22), which also qualifies `ADR-0063`'s own
+     prior, pre-`DP-015` claim of independent satisfaction. **SATISFIED, by explicit owner decision to
+     decouple this item from the current checkpoint** - not by certification.
+  7. **Boundary-proximity indicators** (the sixth implementation-scope bullet): not certified, not
+     implemented - explicitly decoupled from the current FOUNDATION-exit CEO checkpoint by `ADR-0067`'s
+     ratified "Option 3 (AMENDED)." **SATISFIED, by the same class of explicit owner decision** as item 6.
+  - **Every one of the six `Q8_CLOSURE_MATRIX.md` s4 implementation-scope items now has a settled,
+    ratified disposition:** four via certification or the exit criteria's own named resolution path
+    (rise/set, panchanga, `TRIKALAM_V1`, H-01, H-02 - five sub-items across four bullets), and two via
+    explicit, narrowly-scoped owner decisions decoupling them from this specific checkpoint (boundary-
+    proximity indicators, civil-date rendering). **The audit finds no remaining gap.**
+- **If ratified, this entry would declare: FOUNDATION's exit criteria (`Q8_CLOSURE_MATRIX.md` s4) are
+  satisfied, and FOUNDATION is EXITED**, on the evidence enumerated above.
+- **Consequences, if ratified:** FOUNDATION's own implementation-scope work is complete in the sense
+  `Q8_CLOSURE_MATRIX.md` s4 defines - each item is either certified/resolved or explicitly, narrowly
+  decoupled by its own ratified decision. **This does NOT itself authorize JATAKA.**
+  `Q8_CLOSURE_MATRIX.md` s5's own JATAKA entry criteria require, in addition to FOUNDATION exit, "the
+  Dasha roadmap's steps 1 to 6 complete: depth-3 gate, frozen dasha baseline, profile allow-list, the
+  H-08 convention decision, near-boundary Moon cases, boundary-proximity indicator" - `docs/
+  DASHA_CERTIFICATION_ROADMAP.md` remains `Status: PROPOSED`, and none of its six steps has been
+  completed. JATAKA remains not entered, pending its own, separate entry-criteria work and its own CEO
+  entry approval. This entry does not touch certified calculation behaviour anywhere, does not merge
+  `phase-g-governance` into `main`, and does not push anything.
+- **Evidence:** the owner's "Resolve the remaining FOUNDATION-exit civil-date rendering issue narrowly"
+  and "CEO RATIFICATION — ADR-0063 ADDENDUM" instructions (this same session); `docs/Q8_CLOSURE_MATRIX.md`
+  s4/s5 (re-quoted above); direct verification this entry of `ADR-0054`, `ADR-0059` + addendum, `ADR-0060`/
+  `ADR-0061` + addendum, `ADR-0063` + ratified addendum, `ADR-0064`, `ADR-0065`, `ADR-0066`, `ADR-0067` -
+  all `Status: ACCEPTED`; `certification/RISE_SET_V1_certification.json`, `PANCHANGA_V1_certification.json`,
+  `TRIKALAM_V1_certification.json`, `TRANSIT_V1_certification.json` - all `result: PASS`, confirmed
+  present on disk this entry via direct `python -c "json.load(...)"` inspection; `python scripts/
+  check_artifact_drift.py` - PASS, 46 evidence files identical outside volatile fields; `git status
+  --short certification/` - clean, no uncommitted drift.
+
+**Exact CEO ratification required:** a single explicit instruction declaring FOUNDATION exited on the
+evidence above - for example, "I ratify `ADR-0068` and declare FOUNDATION exited," or an equivalent
+explicit statement - which would change this entry's own Status line from PROPOSED to ACCEPTED in a
+follow-up entry, matching the same mechanism just used for the `ADR-0063` addendum.
 
 ---
 
