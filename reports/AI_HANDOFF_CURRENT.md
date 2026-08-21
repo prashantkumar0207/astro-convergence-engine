@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 5.2.0 |
+| Version | 5.3.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-21 (ADR-0067 records DP-015's full ratification; FOUNDATION-exit readiness audit performed - FOUNDATION does NOT yet unambiguously satisfy its exit criteria: civil-date rendering's ADR-0063 deferral asserted satisfaction under an assumption the CEO's own later ruling now calls into question) |
+| Last updated | 2026-08-22 (Proposed addendum to ADR-0063 drafted per owner request - ten explicit terms resolving civil-date rendering's FOUNDATION-exit gap narrowly, presented for CEO ratification, not yet ratified; DP-012 not reopened) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,67 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-22 - Proposed addendum to ADR-0063 drafted: narrow civil-date-rendering resolution, presented for ratification
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the addendum).
+- Previous approved commit: `d026467e4fc23a0cd15704b1af7d9d58fe5ae1b5` (`ADR-0067`, `DP-015` fully
+  ratified; FOUNDATION-exit readiness audit) - unpushed, together with `381f6e3`, `7a363e5`, `6a560e1`,
+  `d2a780c` beneath it, none newly authorized for push.
+- Task: "Resolve the remaining FOUNDATION-exit civil-date rendering issue narrowly... Prepare a narrow
+  owner-decision amendment for `ADR-0063`/`DP-012`... The proposed resolution must explicitly establish
+  [ten specific terms]... Do not implement civil-date rendering. Do not reopen `DP-012`'s technical
+  investigation. Do not reinterpret Q8 silently... Prepare the exact proposed decision wording and
+  identify the exact CEO ratification required. Do not push or declare FOUNDATION exited yet."
+- Relevant ADR/specification: `ADR-0063` (unedited, addendum appended after it); `DP-012` (unedited, not
+  reopened); `DP-015` section 3 / `ADR-0067` (the carve-out finding and its equivalent boundary-proximity
+  treatment, reused as the direct template for this addendum's structure).
+- Files changed: `docs/DECISION_LOG.md` (new "Proposed addendum to `ADR-0063`" subsection, `Status:
+  PROPOSED`, plus a brief flag added to the register's own header summary paragraph), `docs/
+  ACE_EXECUTION_STATE.md`, this file. `docs/decisions/DP-012-civil-date-rendering-dasha-boundaries.md`
+  and `ADR-0063` itself: **not touched**, per the owner's explicit "do not reopen" instruction.
+- Implementation summary (no code touched - decision-log addendum only): appended a new "### Proposed
+  addendum to `ADR-0063`" subsection directly after `ADR-0063`'s existing text (which remains completely
+  unedited above it), matching the exact structural precedent of the `ADR-0059`/`ADR-0061` checkpoint
+  addenda - a dated, self-contained subsection under the same ADR number, not a new top-level ADR entry,
+  since nothing about `ADR-0063`'s own substance is being changed, only qualified. Set `Status: PROPOSED
+  - drafted at the owner's explicit request, not yet ratified`, since the owner asked me to prepare the
+  wording, not ratify it. The Decision section states the owner's own ten points verbatim in substance,
+  numbered to match: (1) civil-date rendering remains deferred; (2) not certified; (3) `ADR-0063`'s
+  original claim of independently satisfying `Q8_CLOSURE_MATRIX.md` s4 must not be relied upon without
+  this qualification, since it predates `DP-015`'s carve-out analysis; (4) explicitly tracked as future
+  work; (5) does not gate the current FOUNDATION-exit checkpoint, by this explicit owner decision;
+  (6) no existing certified calculation or value changes; (7) no current production capability may
+  consume it as though certified; (8) any future consumer must, when specified, first certify the
+  methodology or explicitly refuse/gate the dependency - a forward-binding rule, explicitly not a present
+  code change, mirroring `ADR-0066`'s and `ADR-0067`'s equivalent terms; (9) this addendum does not
+  specify or certify the methodology; (10) a future decision paper may establish it, reusing `DP-012`'s
+  existing analysis rather than re-deriving it. The Context section is careful to state this addendum
+  applies `ADR-0067`'s already-confirmed characterization (c) finding to this one item specifically,
+  exactly as `ADR-0067` did for boundary-proximity indicators - it does **not** assert any new reading
+  of Q8's carve-out scope, and the Consequences section repeats this explicitly ("does not resolve the
+  general Question 2 characterization for any other FOUNDATION scope item"). Ends with an explicit "Exact
+  CEO ratification required" line naming the form a ratifying instruction would need to take (matching
+  `ADR-0067`'s own "I ratify... exactly as written in commit `<SHA>`" precedent).
+- Tests executed and results: `python -m pytest -q` - **816 passed** (unchanged; no code touched).
+- Certification executed and results: not applicable - no certified capability touched.
+- Governance checks executed and results: `python scripts/check_adr_numbering.py` - PASS, 67 entries
+  unchanged (this addendum is a subsection under `ADR-0063`'s existing number, not a new allocation);
+  `python scripts/check_identifier_families.py` - PASS, 15 DP identifiers unchanged (`DP-012` not
+  reopened, no new DP drafted); `python scripts/check_retired_identifiers.py` - PASS, 0 violations;
+  `git diff --check` - clean; `engine/tests/test_retired_identifier_gate_scope.py` - 36 passed.
+- Known issues: none.
+- Unresolved questions: exactly one - whether the proposed addendum's exact ten-term wording is
+  acceptable for ratification as drafted, or needs further amendment.
+- CEO decision required: **yes, one** - ratify (or further amend) the proposed `ADR-0063` addendum's
+  exact wording. The form required, matching `ADR-0067`'s own precedent: an explicit instruction such as
+  "I ratify the proposed `ADR-0063` addendum exactly as written in commit `<SHA>`," which would then be
+  recorded as a follow-up dated entry changing the addendum's own `Status` line from `PROPOSED` to
+  `ACCEPTED` - the addendum's own text is not edited to record ratification, matching this repository's
+  practice throughout.
+- Next authorized action: none self-authorized. Stopping here per the owner's own "do not push or
+  declare FOUNDATION exited yet" instruction - ratification of this addendum is the exact remaining step
+  before a FOUNDATION-exit determination becomes available to make. Nothing pushed; nothing implemented;
+  `ADR-0063` and `DP-012` untouched.
 
 ### 2026-08-21 - DP-015 fully ratified (ADR-0067); FOUNDATION-exit readiness audit: NOT yet satisfied
 - Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the ADR).
@@ -1709,6 +1770,7 @@ act.
 
 | Version | Date | Change |
 |---|---|---|
+| 5.3.0 | 2026-08-22 | Drafted a proposed addendum to `ADR-0063` (`Status: PROPOSED`, not ratified), per owner instruction, resolving civil-date rendering's FOUNDATION-exit gap narrowly with ten explicit terms mirroring `DP-015`'s "Option 3 (AMENDED)" treatment. `ADR-0063` and `DP-012` both unedited - `DP-012`'s technical investigation not reopened; no new Q8 interpretation asserted. No code touched. Governance gates and 816/816 pytest re-run clean. Nothing pushed. |
 | 5.2.0 | 2026-08-21 | `ADR-0067` records `DP-015`'s full ratification (Q1/Q2 confirmed; Q3's "Option 3 (AMENDED)" ratified exactly as written, quoted verbatim in the ADR). FOUNDATION-exit readiness audit performed: rise/set, panchanga, trikalam certified and checkpointed; H-01/H-02 resolved; boundary-proximity explicitly decoupled by decision. **Civil-date rendering's `ADR-0063` deferral asserts it "satisfies s4's exit language" - an assertion made before `DP-015`'s rigorous carve-out analysis existed, now called into question by the owner's own confirmed characterization (c). FOUNDATION does NOT yet unambiguously satisfy its exit criteria.** No exit determination recorded; no JATAKA prep begun. Nothing pushed. |
 | 5.1.0 | 2026-08-21 | CEO confirmed `DP-015` Questions 1 and 2 as drafted (novel/no-precedent; characterization (c), genuinely ambiguous). Question 3's original Option 3 rejected after owner verification found it silent on 2 of 5 required safeguards. Amended `DP-015` (v2.0.0 -> v3.0.0): original Option 3 preserved unedited, marked NOT RATIFIED; new "Option 3 (AMENDED)" drafted with all eight owner-specified terms, presented for ratification - not yet ratified, no ADR written. No code touched; no blocking mechanism built for a nonexistent consumer. Governance gates and 816/816 pytest re-run clean. Nothing pushed. |
 | 5.0.0 | 2026-08-21 | Restructured `DP-015` (v1.0.0 -> v2.0.0) into an explicit, non-collapsible three-question CEO decision package: Question 1 (H-01/`ADR-0066` finding, confirmation-only) kept visibly separate from Question 2 (Q8 deferral-carve-out scope - three named characterizations with exact governing language and consequences, none selected) and Question 3 (boundary-proximity options, cross-referenced per-characterization). `DP-012`/`ADR-0063` no longer framed as precedent for deferral working here. No code touched; H-01 not reopened; carve-out not extended. Governance gates and 816/816 pytest re-run clean. Nothing pushed. |
