@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 5.0.0 |
+| Version | 5.1.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-21 (DP-015 restructured into an explicit 3-question CEO decision package - H-01 finding confirmed/not reopened, Q8 carve-out scope characterized without silent extension, boundary-proximity options presented without treating DP-012 as precedent) |
+| Last updated | 2026-08-21 (CEO confirmed DP-015 Q1/Q2; rejected original Option 3 for missing safeguards; amended Option 3 with all eight owner-specified terms drafted and presented for ratification - not yet ratified) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,68 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-21 - DP-015 Q1/Q2 CEO-confirmed; original Option 3 rejected; amended Option 3 drafted, presented for ratification
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the paper).
+- Previous approved commit: `7a363e5c8dd3a1a102270557bbec0b62c803bd6e` (`DP-015` v2.0.0, the three-
+  question package) - unpushed, together with `6a560e1` and `d2a780c` beneath it, none newly authorized
+  for push.
+- Task: the owner responded to the three-question CEO decision package with: (1) Question 1 confirmed
+  as drafted; (2) Question 2 confirmed as characterization (c), genuinely ambiguous, explicitly not to
+  be silently extended; (3) an explicit verification request against five named safeguards for
+  Question 3's Option 3, with instruction to STOP and present the exact conflict if any safeguard was
+  missing rather than implementing or reinterpreting. That verification (prior turn) found two of five
+  safeguards missing (explicit future-work tracking; protection against a future consumer silently
+  assuming an uncertified signal exists) and stopped without recording anything. This task's owner
+  instruction: do not ratify the original Option 3; prepare a narrow amended Option 3 incorporating
+  eight specific terms; update `DP-015` only enough to present it clearly, preserving the original as
+  historical/unratified text; do not implement anything; do not create a blocking mechanism for a
+  nonexistent current consumer; do not push; then stop at the CEO ratification point and report the
+  exact amended wording.
+- Relevant ADR/specification: `DP-015` itself (amended, not re-investigated); `ADR-0066` (cited only as
+  the structural pattern the forward-binding refusal rule mirrors prospectively, not touched);
+  `ADR-0063`/`DP-012` (cited only to confirm it is still not treated as precedent).
+- Files changed: `docs/decisions/DP-015-foundation-boundary-proximity-indicators.md` (v2.0.0 -> v3.0.0),
+  `docs/ACE_EXECUTION_STATE.md`, this file. `docs/decisions/README.md` and `docs/DECISION_LOG.md`
+  unchanged - no ADR is written yet, per the owner's own "stop at the CEO ratification point" instruction;
+  ratification is a separate, subsequent step.
+- Implementation summary (no code touched - decision-paper amendment only): renamed the original Option 3
+  heading to "Option 3 (ORIGINAL TEXT - NOT RATIFIED, preserved for the record)," added a note stating
+  the owner's verification found it silent on the two named safeguards and directed it not be ratified,
+  and block-quoted the original text unedited beneath that note - matching this repository's practice of
+  not silently rewriting a considered option. Added "Option 3 (AMENDED)" immediately after, with all
+  eight of the owner's specified terms written as explicit, numbered decision terms: (1) boundary-
+  proximity indicators remain an unresolved, explicitly tracked future capability within FOUNDATION scope;
+  (2) not certified for any capability by this decision or anything currently in the repository; (3) does
+  not gate the current FOUNDATION-exit checkpoint - FOUNDATION's other scope items proceed independently;
+  (4) no future production capability may consume the signal as if certified - a forward-binding
+  constraint on future work, explicitly not a present code change, since no current consumer exists;
+  (5) any future consumer must, when specified, either first certify the methodology or explicitly
+  refuse/gate that dependency - mirroring `ADR-0066`'s structured-refusal pattern prospectively, without
+  building, naming, or implementing that mechanism now; (6) no existing certified value changes, matching
+  the paper's existing section D/J; (7) this decision does not itself specify or certify any methodology;
+  (8) a future decision paper determines the methodology when a consuming feature needs one. Updated
+  section 0 (status banner: Q1/Q2 confirmed, Q3 amended-and-pending), section 5's table (Option 3 row now
+  reflects the amended version and its selection under characterization (c)), section L (recommendation
+  withdrawn/superseded by CEO direction, no independent recommendation offered on the owner's own terms),
+  section M (adds "ratification itself" to what remains undecided), and section N (states the one
+  remaining decision precisely: ratify or further amend "Option 3 (AMENDED)"'s exact wording). Header
+  status/version bumped to reflect Q1/Q2 as CEO-confirmed and Q3 as pending ratification, not open.
+- Tests executed and results: `python -m pytest -q` - **816 passed** (unchanged; no code touched).
+- Certification executed and results: not applicable - no certified capability touched.
+- Governance checks executed and results: `python scripts/check_adr_numbering.py` - PASS, 66 entries
+  unchanged; `python scripts/check_identifier_families.py` - PASS, 15 DP identifiers unchanged;
+  `python scripts/check_retired_identifiers.py` - PASS, 0 violations; `git diff --check` - clean;
+  `engine/tests/test_retired_identifier_gate_scope.py` - 36 passed.
+- Known issues: none.
+- Unresolved questions: exactly one - whether "Option 3 (AMENDED)"'s exact wording (`DP-015` section F)
+  is acceptable for ratification as drafted, or needs further amendment.
+- CEO decision required: **yes, one** - ratify or further amend "Option 3 (AMENDED)"'s exact wording.
+  Once ratified, the next steps (recording the ADR, updating state files fully, the FOUNDATION-exit
+  readiness audit) follow - all explicitly deferred by this task's own scope.
+- Next authorized action: none self-authorized. Stopping here per the owner's own explicit instruction
+  ("stop at the CEO ratification point and report the exact amended decision wording") - this is exactly
+  that point. Nothing pushed; nothing implemented; no blocking mechanism built for a nonexistent consumer.
 
 ### 2026-08-21 - DP-015 restructured into an explicit three-question CEO decision package
 - Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the paper).
@@ -1545,6 +1607,7 @@ act.
 
 | Version | Date | Change |
 |---|---|---|
+| 5.1.0 | 2026-08-21 | CEO confirmed `DP-015` Questions 1 and 2 as drafted (novel/no-precedent; characterization (c), genuinely ambiguous). Question 3's original Option 3 rejected after owner verification found it silent on 2 of 5 required safeguards. Amended `DP-015` (v2.0.0 -> v3.0.0): original Option 3 preserved unedited, marked NOT RATIFIED; new "Option 3 (AMENDED)" drafted with all eight owner-specified terms, presented for ratification - not yet ratified, no ADR written. No code touched; no blocking mechanism built for a nonexistent consumer. Governance gates and 816/816 pytest re-run clean. Nothing pushed. |
 | 5.0.0 | 2026-08-21 | Restructured `DP-015` (v1.0.0 -> v2.0.0) into an explicit, non-collapsible three-question CEO decision package: Question 1 (H-01/`ADR-0066` finding, confirmation-only) kept visibly separate from Question 2 (Q8 deferral-carve-out scope - three named characterizations with exact governing language and consequences, none selected) and Question 3 (boundary-proximity options, cross-referenced per-characterization). `DP-012`/`ADR-0063` no longer framed as precedent for deferral working here. No code touched; H-01 not reopened; carve-out not extended. Governance gates and 816/816 pytest re-run clean. Nothing pushed. |
 | 4.9.0 | 2026-08-21 | Independently re-verified the H-01/`ADR-0066` Q8-exit-criteria reading against the exact ratified text and a Phase G precedent check (holds, but flagged as a novel, unprecedented application - `ADR-0049`'s B-01/B-02/B-03 were fully resolved, never actually deferred, despite an equivalent clause). Investigated the boundary-proximity-indicator gap: nothing ratified governs it; drafted `DP-015`, surfacing a textual ambiguity in `Q8_CLOSURE_MATRIX.md` s4 about whether the deferral-with-blocking carve-out extends beyond H-01/H-02 by name (bearing on this item and on civil-date rendering's existing deferral too). Three treatment options presented, low-confidence lean toward deferral. Decides nothing; not implementation-authorized. `d2a780c` held back from push per explicit instruction. |
 | 4.8.0 | 2026-08-21 | `ADR-0066`: H-01 fix Option 2 implemented - `UnsupportedNodePolicyError` raised from `find_crossings()` for any non-mean node policy on Rahu/Ketu (fail-closed, covers every caller automatically). No certified value changed (isolated-venv re-verification: PASS, only known ULP noise + volatile fields differed, discarded not committed). FOUNDATION-exit readiness audit: rise/set, panchanga, trikalam certified; civil-date rendering deferred; H-02 resolved/certified; H-01 now resolved via Q8's explicit-deferral-with-blocking clause (Claude's own reading, flagged for confirmation). Boundary-proximity indicators found completely unaddressed - standing FOUNDATION-exit blocker. Local-only, not pushed. |
