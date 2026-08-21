@@ -4,12 +4,52 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | OPEN - decision paper. Presents options and recommends one. DECIDES NOTHING. Requires owner approval. |
-| Version | 1.0.0 |
+| Version | 2.0.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 | Last updated | 2026-08-21 |
 | Review cadence | TBD |
 
 # DP-015. FOUNDATION "boundary-proximity indicators where sensitivity warrants"
+
+## 0. CEO decision package (read this first)
+
+Three genuinely separate questions, kept explicitly apart per the owner's own instruction not to
+collapse them into one:
+
+**Question 1 - the H-01/`ADR-0066` finding (confirmation only, not reopened).** The Q8 explicit-
+deferral/dependent-domain-blocked carve-out is **textually valid for H-01** (`ADR-0066` is a decision,
+and the dependent domain - true-node transit-event search - is blocked at the code level). Its use
+there is **novel: no prior case in this repository's history has the owner accepting a "deferred, with
+the gap blocked rather than fixed" treatment as satisfying an exit criterion.** `ADR-0049` (Phase G's
+B-01/B-02/B-03) had an equivalent, even less restrictive clause available and used it for none of the
+three - all three were fully remediated instead. **This finding is not represented as precedent for
+anything else in this paper**, including boundary-proximity indicators' own treatment. Nothing about
+H-01 is reopened, questioned, or reconsidered here - see section 4 for the full restatement.
+
+**Question 2 - does the Q8 deferral carve-out reach beyond H-01/H-02? (owner interpretation required).**
+The exact governing sentence is: "H-01 and H-02 resolved and certified, or explicitly deferred by
+decision with the dependent domains blocked accordingly." Section 3 lays out, side by side: the exact
+language and its immediate surrounding context; a structural comparison against Phase G's own,
+differently-scoped exit criteria; and three possible characterizations - (a) explicitly limited to
+H-01/H-02 by name, (b) generally applicable to any FOUNDATION scope item, or (c) genuinely ambiguous,
+requiring owner interpretation - with the textual evidence and consequences of each stated plainly. This
+paper adopts none of the three; **the carve-out is not silently extended to boundary-proximity
+indicators anywhere in this document.**
+
+**Question 3 - boundary-proximity indicators (option selection required, once Question 2 is answered).**
+Section F presents three legitimate treatment options (implement now for named capabilities; defer
+explicitly; decouple from the FOUNDATION-exit checkpoint), each restated in section 5 with its
+consequences under each of Question 2's three possible answers. **`DP-012`/`ADR-0063`'s civil-date-
+rendering deferral is not treated as precedent that deferral satisfies FOUNDATION's exit bar** - per
+Question 2's own narrow-reading branch, that deferral's own textual sufficiency is exactly as open as
+this item's would be, so it cannot be used to settle the question for either. No option is implemented
+or chosen by this paper.
+
+**What the owner must decide, precisely (restated from section N):** (1) confirm or correct the
+Question 1 framing above; (2) choose one of Question 2's three characterizations, or supply a fourth if
+none fit; (3) given that answer, select a Question-3 treatment option for boundary-proximity indicators.
+All three are recorded together as a new, numbered decision-log entry citing this paper - nothing below
+this section pre-selects any of them.
 
 ## 1. The question
 
@@ -87,36 +127,115 @@ should be implemented, for which FOUNDATION capabilities "sensitivity warrants" 
 indicator would concretely compute for panchanga/rise-set/trikalam, whether H-07 should be fixed, and
 whether the FOUNDATION-scope item and the JATAKA-entry dasha item should share one mechanism.
 
-## 3. A critical textual finding: does "explicitly deferred" even apply here?
+## 3. Does the Q8 deferral carve-out reach beyond H-01/H-02? Exact language, context, and three characterizations
 
-`Q8_CLOSURE_MATRIX.md` s4's exit criteria read, in full: "Every capability above at the level ADR-0017
-defines as production certified. H-01 and H-02 resolved and certified, or explicitly deferred by
-decision with the dependent domains blocked accordingly."
+**The exact governing sentence** (`Q8_CLOSURE_MATRIX.md` s4, "Exit criteria" row, `ACCEPTED`/`ADR-0048`,
+quoted in full, nothing omitted): "Every capability above at the level ADR-0017 defines as production
+certified. H-01 and H-02 resolved and certified, or explicitly deferred by decision with the dependent
+domains blocked accordingly."
 
-Read literally, the **second sentence's alternate path ("or explicitly deferred... blocked
-accordingly") is textually scoped to H-01 and H-02 by name** - it is not the general rule the first
-sentence states for "every capability above." Boundary-proximity indicators are named only in the first
-sentence's implementation-scope list, not in the second sentence's carve-out. Two readings are both
-textually defensible:
+**Immediate surrounding context, also quoted exactly, for the same row's neighbours:**
 
-- **Narrow reading:** only H-01/H-02 may satisfy FOUNDATION exit via deferral-with-blocking; every other
-  scope item, including boundary-proximity indicators AND the already-deferred civil-date rendering
-  (`ADR-0063`), needs actual "production certified" status - meaning civil-date rendering's existing
-  deferral may **not**, by this reading, actually satisfy FOUNDATION's exit bar either, an ambiguity
-  this paper surfaces but does not resolve, since it predates and is broader than this paper's own
-  boundary-proximity scope.
-- **Broad reading:** the deferral-with-blocking pattern is a general FOUNDATION convention the drafters
-  illustrated using H-01/H-02 (the two items requiring the most explanation) without meaning to exclude
-  every other scope item from the same treatment - consistent with Phase G's own, structurally similar
-  exit criteria ("The three BLOCKER findings B-01, B-02, B-03 either resolved or explicitly deferred by
-  decision"), which used the softer form for its **entire** named list, not a two-item carve-out.
+- Implementation scope (same section): "Rise and set with declared conventions. Panchanga: tithi, vara,
+  nakshatra as a panchanga element, yoga, karana. Rahu Kalam, Yamaganda, Gulika with variant tables
+  recorded. Civil-date rendering for dasha boundaries. **Resolution of H-01 true-node completeness and
+  H-02 the ingress classification seam.** Boundary-proximity indicators where sensitivity warrants."
+  Note that H-01/H-02 are already singled out here, in the scope row itself, with the word
+  "Resolution" attached specifically to them - boundary-proximity indicators get no equivalent verb,
+  only a bare noun phrase.
+- Certification gates (same section): "Per capability: declared conventions in a calculation profile;
+  independent external reference for the astronomical parts; the varga template of frozen rule, second
+  transcription, dense sweep, ULP battery, external oracle and independent validator for the
+  classification parts; protected holdout; regenerable artifact; collected pinning test; ADR." This is
+  what "production certified" concretely requires per capability under the first sentence of the exit
+  criteria - a real, substantive bar, not satisfied by an ADR alone.
+- Phase G's structurally comparable exit criteria (`Q8_CLOSURE_MATRIX.md` s3, ratified by the same
+  `ADR-0048`): "G2, G3, G4, G5, G7 complete. DP-001 answered so ADR entries can leave PROPOSED. **The
+  three BLOCKER findings B-01, B-02, B-03 either resolved or explicitly deferred by decision.**" Checked
+  against how this actually played out: `ADR-0049` records that **all three of B-01, B-02, B-03 were
+  fully remediated** - the "or explicitly deferred" branch was never actually exercised for any of them.
+  So the repository has no case, in either phase, of the owner accepting a bare-deferral resolution for
+  an exit-criteria item under either phrasing.
 
-This paper takes no position on which reading governs. It matters directly here: under the narrow
-reading, "explicitly defer boundary-proximity indicators" may not by itself close FOUNDATION's exit
-criteria even if the owner chooses deferral - closing FOUNDATION might then require either implementing
-something, or the owner separately confirming the broad reading applies. **This is a governance-text
-interpretation question, not an engineering one, and belongs in the owner's hands together with the
-substantive choice below.**
+**Three possible characterizations of the carve-out's reach, stated with their textual support and
+consequences, per the task's explicit requirement not to silently pick one:**
+
+**(a) Explicitly limited to H-01/H-02 by name.** Support: the alternate path appears only in the second
+sentence, which names H-01 and H-02 specifically; the first sentence's blanket "every capability above"
+requirement is not itself qualified by any deferral option. The scope row's own asymmetric phrasing
+("Resolution of H-01... and H-02..." vs. a bare, un-verbed "Boundary-proximity indicators...") reinforces
+that H-01/H-02 were drafted as a distinguished pair. Phase G's parallel structure - a blanket clause plus
+a SEPARATE, named-subset clause carrying its own alternate path - is consistent with this pattern
+recurring by design, not accident. A further, non-textual but structural point: H-01 and H-02 are both
+**defects in an already-built, reachable capability** (TRANSIT_V1), where "block the dependent domain"
+names a concrete action (refuse the reachable bad path, as `ADR-0066` did). Boundary-proximity indicators
+is a **capability that was never built at all** - there is no reachable, silently-wrong code path for a
+deferral decision to "block," so even a generous reader extending the pattern by analogy would need to
+explain what blocking a never-built capability's "dependent domain" would concretely mean. **Consequence
+if this characterization governs:** boundary-proximity indicators (and, on the same reading, civil-date
+rendering's existing `ADR-0063` deferral) cannot close FOUNDATION exit via a bare deferral decision;
+either actual implementation is required, or the exit checkpoint must be restructured to not require it
+(Option 3 below), or the owner must separately amend/reinterpret the ratified text.
+
+**(b) Generally applicable to FOUNDATION scope.** Support: Phase G's own exit criteria used the softer
+"resolved or explicitly deferred by decision" form for its entire named list (B-01/B-02/B-03), not a
+two-item subset of a longer list - so there is a same-document precedent for treating "resolved or
+deferred" as the general FOUNDATION-family convention for flagged findings, and a reader could take
+H-01/H-02's fuller wording ("with the dependent domains blocked accordingly") as simply elaborating that
+same convention for this phase rather than narrowing its reach. **Consequence if this characterization
+governs:** a bare, well-recorded deferral decision (matching `ADR-0063`'s form) would be sufficient for
+boundary-proximity indicators too, though the "blocked accordingly" language would still need an answer
+for what "blocked" means when there is no existing reachable path (see (a)'s point above, which
+applies under this reading too, not only the narrow one).
+
+**(c) Genuinely ambiguous, requiring owner interpretation.** Support: both (a) and (b) are textually
+defensible from the same sentence and the same document; nothing else in `Q8_CLOSURE_MATRIX.md`
+(sections 1, 2, or 14's cross-phase invariants) or in `ADR-0021` D2 (which established that Q8 requires
+named exit criteria per phase, but says nothing about how to read a specific phase's wording) resolves
+which was intended. **Consequence if this characterization governs:** the owner's answer becomes the
+authoritative reading going forward - worth recording as its own short interpretive ruling (either
+inside the ADR that also picks a Question-3 option, or as a standalone addendum to `Q8_CLOSURE_MATRIX.md`
+itself) since it will recur for civil-date rendering and any future FOUNDATION-family exit criteria
+that use similar language.
+
+**This paper does not select (a), (b), or (c).** It matters directly: under (a), or under (c) resolved
+toward (a), boundary-proximity indicators cannot exit FOUNDATION via deferral alone. Under (b), or (c)
+resolved toward (b), deferral remains textually available but still needs the "blocked accordingly"
+question answered given there is nothing reachable to block. **The carve-out is not extended to
+boundary-proximity indicators by this paper under any of the three.**
+
+## 4. Question 1 restated: the H-01/`ADR-0066` finding (confirmation only - not reopened, not reconsidered)
+
+Carried forward unchanged from the prior task's independent re-verification, restated here only because
+the owner asked for it to be kept explicitly separate from Questions 2 and 3, not because anything about
+it is uncertain or open for revision:
+
+- `ADR-0066` is a decision. The dependent domain it names - true-node transit-event search via
+  `find_crossings()` - is blocked at the code level (`UnsupportedNodePolicyError`), not merely deferred
+  in a document. This satisfies the literal text of the H-01/H-02 carve-out quoted in section 3.
+- Checked for repository precedent: **none exists.** `ADR-0049` (Phase G's B-01/B-02/B-03) had an
+  equivalent, even less restrictive alternate path available in its own exit criteria and did not use it
+  for any of the three findings - all three were fully remediated instead. No prior entry in
+  `docs/DECISION_LOG.md` records the owner accepting a "gap blocked, not fixed" treatment as satisfying
+  an exit criterion.
+- **Conclusion, restated exactly as before:** the carve-out is textually valid for H-01, and its
+  application there is legitimate - but it is a **novel application, not a precedented one**, and must
+  not be cited as precedent for how boundary-proximity indicators (or anything else) should be treated.
+  This paper does not do so anywhere in sections 3, 5, or F.
+- H-01's code, `ADR-0066`, and the underlying finding are **not reopened, re-examined, or reconsidered**
+  by this paper in any way. This section exists only to keep Question 1 visibly separate from Questions
+  2 and 3, per the owner's explicit instruction.
+
+## 5. Question 3 preview: options against each Question 2 characterization
+
+Full option detail is in section F; this table gives the CEO-package cross-reference the owner asked
+for, mapping each Question-2 characterization to what each Question-3 option would actually mean.
+
+| | (a) Limited to H-01/H-02 | (b) Generally applicable | (c) Ambiguous -> owner picks |
+|---|---|---|---|
+| **Option 1 - Implement** | Only path that certainly satisfies exit criteria for this item. | Also satisfies exit criteria; sidesteps needing to answer (b)'s own "blocked accordingly" gap. | Satisfies exit criteria under either resolution of (c). |
+| **Option 2 - Defer** | Does **not**, by itself, satisfy the exit criteria's blanket "production certified" sentence - FOUNDATION exit would need a separate resolution (e.g. Option 3, or amending the text). | Textually available, but "blocked accordingly" has no concrete referent since nothing reachable exists to block - a documentation-only deferral, weaker than `ADR-0066`'s. | Owner's resolution of (c) determines which of the two columns to the left applies. |
+| **Option 3 - Decouple from exit checkpoint** | Sidesteps the question entirely by removing this item from what "FOUNDATION exit" is defined to require - itself a scope-of-the-checkpoint decision, not an interpretation of existing text. | Same as under (a) - a sequencing choice orthogonal to which characterization governs. | Same as under (a)/(b) - available regardless of how (c) resolves. |
 
 ## A. Exactly what Q8 requires
 
@@ -202,23 +321,30 @@ MATRIX.md`'s own wording defers to implementation time.
 - **Blast radius:** confined to whichever FOUNDATION capabilities are named; additive fields only, if
   designed that way.
 
-### Option 2 - Explicitly defer, subject to section 3's ambiguity being resolved first
+### Option 2 - Explicitly defer, subject to section 3's characterization being resolved first
 
 Record a decision explicitly deferring boundary-proximity indicators until a consuming feature (BTR,
-principally) actually needs one - mirroring `DP-012`/`ADR-0063`'s civil-date-rendering precedent
-exactly. Because nothing today silently depends on a boundary-proximity indicator existing (unlike
-H-01, where a reachable code path was silently wrong), there is no "dependent domain" that needs
-code-level blocking the way `ADR-0066` blocked true-node transit search - deferral here would be a pure
-documentation-level decision, with nothing to enforce mechanically.
+principally) actually needs one. **`DP-012`/`ADR-0063`'s civil-date-rendering deferral is a prior case
+of the owner choosing this same kind of decision for a different FOUNDATION scope item, but it is
+explicitly NOT treated as precedent here that deferral satisfies FOUNDATION's exit bar** - under
+section 3's characterization (a), civil-date rendering's own deferral is exactly as textually open as
+this one would be, so it cannot be used to settle the question for either; it would need the same
+Question-2 answer this item does. Because nothing today silently depends on a boundary-proximity
+indicator existing (unlike H-01, where a reachable code path was silently wrong), there is also no
+"dependent domain" that needs code-level blocking the way `ADR-0066` blocked true-node transit search -
+deferral here would be a pure documentation-level decision, with nothing to enforce mechanically, which
+is itself a reason section 3(a)'s "nothing reachable to block" point weighs against this option even
+under a generous reading of the carve-out.
 
-- **Advantages:** zero implementation cost; matches the established, owner-accepted `DP-012` pattern;
-  correct if "sensitivity warrants" is judged, today, to mean "nowhere yet" (a defensible reading, given
-  BTR itself is phases away and its own spec never mentions the concept).
-- **Disadvantages:** per section 3, a pure-deferral decision may not, by the exit criteria's narrower
-  textual reading, actually satisfy "every capability above at the level ADR-0017 defines as production
-  certified" - the same open question that already, quietly, applies to civil-date rendering's existing
-  deferral. Choosing this option without the owner also addressing section 3 risks a FOUNDATION-exit
-  acceptance later being challenged on textual grounds.
+- **Advantages:** zero implementation cost; correct if "sensitivity warrants" is judged, today, to mean
+  "nowhere yet" (a defensible reading, given BTR itself is phases away and its own spec never mentions
+  the concept).
+- **Disadvantages:** per section 3, a pure-deferral decision may not, under characterization (a) or (c)
+  resolved toward (a), actually satisfy "every capability above at the level ADR-0017 defines as
+  production certified" - the same open question that already, independently, applies to civil-date
+  rendering's existing deferral (not resolved by this paper, and not settled by citing that deferral as
+  though it were established precedent). Choosing this option without the owner also resolving section 3
+  risks a FOUNDATION-exit acceptance later being challenged on textual grounds.
 - **Certification implications:** none.
 - **Blast radius:** none.
 
@@ -258,46 +384,53 @@ explicitly NOT drafted here.
 ## L. Recommendation
 
 No option is clearly compelled by the evidence. Weak lean, low confidence: **Option 2 (explicit
-deferral), contingent on the owner also resolving section 3's textual question** - because (i) nothing
-today is silently wrong in the way H-01 was (there is no live defect to stop), (ii) the one FOUNDATION-
-adjacent precedent that exists (KP's `nearest_boundary_arcsec`) is itself unfinished and a caution
-against building this quickly, and (iii) BTR, the stated primary beneficiary, is phases away and its own
-spec does not yet reference the concept. This lean is explicitly **not** a strong recommendation -
-Option 1 is equally legitimate if the owner judges FOUNDATION's exit bar requires it regardless of
-section 3, and Option 3 is a legitimate sequencing choice if the owner wants to decouple this item from
-the FOUNDATION-exit checkpoint entirely.
+deferral), contingent on the owner resolving Question 2 (section 3) toward a characterization that
+permits it** - because (i) nothing today is silently wrong in the way H-01 was (there is no live defect
+to stop), (ii) the one FOUNDATION-adjacent precedent that exists (KP's `nearest_boundary_arcsec`) is
+itself unfinished and a caution against building this quickly, and (iii) BTR, the stated primary
+beneficiary, is phases away and its own spec does not yet reference the concept. This lean does **not**
+rest on `DP-012`/`ADR-0063` as precedent (see section F Option 2's own caveat) and is explicitly **not**
+a strong recommendation - Option 1 is equally legitimate if the owner resolves Question 2 toward
+characterization (a) and judges implementation the only way to satisfy it, and Option 3 is a legitimate
+sequencing choice regardless of how Question 2 resolves.
 
 **Confidence: low.** This is a weaker basis for a recommendation than any other decision paper this
 session has produced - there is no audit-authored "proposed solution" to extract (unlike H-01/H-02),
-and the governing text itself carries a live interpretive ambiguity (section 3) that sits upstream of
-the substantive choice.
+and the governing text itself carries a live interpretive question (section 3) that sits upstream of the
+substantive choice.
 
 ## M. What is NOT being decided by this paper
 
 Whether boundary-proximity indicators are built; which FOUNDATION capabilities they would cover; what
 they would compute; whether H-07 is fixed; whether the FOUNDATION and JATAKA (dasha) boundary-proximity
-needs share one mechanism; and, most importantly, which textual reading of section 3 governs FOUNDATION's
-exit criteria generally - a question this paper surfaces but does not resolve, and which also bears on
-civil-date rendering's already-recorded deferral (`ADR-0063`), not only on this item.
+needs share one mechanism; which of section 3's three characterizations governs FOUNDATION's exit
+criteria generally (surfaced, not resolved - and note this also bears on civil-date rendering's already-
+recorded deferral, `ADR-0063`, not only on this item); and the H-01/`ADR-0066` finding, which is
+confirmed-and-restated only (section 4), never reopened or reconsidered.
 
 ## N. Exact CEO/owner decision required
 
-Two, genuinely separate, decisions:
+Three genuinely separate decisions, matching section 0's package exactly:
 
-1. **The interpretive question (section 3):** does FOUNDATION's exit criteria require an item to be
-   "production certified," full stop, unless it is H-01 or H-02 by name (narrow reading) - or does the
-   "explicitly deferred by decision with the dependent domain blocked accordingly" pattern generally
-   apply to any FOUNDATION scope item, matching Phase G's own precedent (broad reading)? This governs
-   not only boundary-proximity indicators but also whether civil-date rendering's existing deferral
-   (`ADR-0063`) already satisfies FOUNDATION exit.
-2. **The substantive question:** given that interpretive answer, select Option 1 (implement, naming
+1. **Question 1 (confirmation only):** confirm or correct section 4's restatement - the H-01/`ADR-0066`
+   carve-out reading is textually valid but novel, with no repository precedent, and is not itself being
+   reopened.
+2. **Question 2 (interpretation required):** which of section 3's three characterizations governs the
+   Q8 deferral carve-out's reach - (a) limited to H-01/H-02 by name, (b) generally applicable to any
+   FOUNDATION scope item, or (c) something else the owner states directly? This answer governs not only
+   boundary-proximity indicators but also whether civil-date rendering's existing deferral (`ADR-0063`)
+   already satisfies FOUNDATION exit - a question this paper surfaces but does not resolve on its own.
+3. **Question 3 (option selection):** given the answer to Question 2, select Option 1 (implement, naming
    which capabilities), Option 2 (defer explicitly), or Option 3 (decouple from the exit checkpoint) for
-   boundary-proximity indicators specifically.
+   boundary-proximity indicators specifically - per section 5's cross-reference of what each option means
+   under each possible answer to Question 2.
 
-Recorded as a new, numbered decision-log entry citing this paper - this paper alone authorizes nothing.
+Recorded together as a new, numbered decision-log entry citing this paper - this paper alone authorizes
+nothing, implements nothing, and extends the H-01/H-02 carve-out to nothing.
 
 ## Change history
 
 | Version | Date | Change |
 |---|---|---|
+| 2.0.0 | 2026-08-21 | Restructured into an explicit three-question CEO decision package per owner instruction: Question 1 (H-01/`ADR-0066` finding, confirmation-only, new section 4) kept visibly separate from Question 2 (Q8 deferral-carve-out scope, section 3 rewritten to present three named characterizations - limited to H-01/H-02, generally applicable, or ambiguous - each with exact governing language, surrounding context, and consequences, per the owner's explicit "do not silently extend the carve-out") and Question 3 (boundary-proximity treatment options, section F, cross-referenced against each Question-2 answer in new section 5). Removed all "established precedent"/"owner-accepted pattern" framing around `DP-012`/`ADR-0063` per the owner's explicit instruction not to treat it as precedent - civil-date rendering's own deferral is now stated as equally open under characterization (a), not as settled ground. Added a structural argument (H-01/H-02 are defects in a built, reachable capability; boundary-proximity indicators is a never-built capability with nothing reachable to "block") that applies under any characterization. New section 0 gives the owner a single, cleanly separated summary of exactly what to decide. No option chosen; no carve-out extended; H-01 not reopened. |
 | 1.0.0 | 2026-08-21 | Created. Investigates the FOUNDATION-scope "boundary-proximity indicators where sensitivity warrants" gap: confirms nothing ratified governs it, traces the only related code (KP_CHAIN_V1's `nearest_boundary_arcsec` and its own unresolved H-07 defect) and the only related planning document (`DASHA_CERTIFICATION_ROADMAP.md`, PROPOSED), and surfaces a textual ambiguity in `Q8_CLOSURE_MATRIX.md` s4's exit criteria about whether the explicit-deferral path is scoped to H-01/H-02 only. Presents three treatment options with a low-confidence lean toward deferral. Options only; decides nothing; not implementation-authorized. |

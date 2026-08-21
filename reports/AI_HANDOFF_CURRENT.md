@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 4.9.0 |
+| Version | 5.0.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-21 (H-01 independent verification complete, flagged as novel/unprecedented; DP-015 drafted for boundary-proximity indicators; not implementation-authorized; awaiting owner on both) |
+| Last updated | 2026-08-21 (DP-015 restructured into an explicit 3-question CEO decision package - H-01 finding confirmed/not reopened, Q8 carve-out scope characterized without silent extension, boundary-proximity options presented without treating DP-012 as precedent) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,66 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-21 - DP-015 restructured into an explicit three-question CEO decision package
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the paper).
+- Previous approved commit: `6a560e1f5e4c26546c702229186d340cc5b0273e` (H-01 re-verification; `DP-015`
+  v1.0.0) - unpushed, together with `d2a780c` beneath it (H-01 fix Option 2, `ADR-0066`) - **both
+  explicitly held back from push**, no new authorization given.
+- Task: owner asked for a CEO decision package with three questions kept explicitly, structurally
+  separate: (1) confirm the H-01/`ADR-0066` finding as textually valid but novel/unprecedented, not
+  representing it as precedent; (2) resolve, from the exact ratified Q8 text, whether the deferral
+  carve-out is limited to H-01/H-02, generally applicable, or genuinely ambiguous - with exact
+  governing language, surrounding context, and consequences of each, without silently extending the
+  carve-out; (3) present boundary-proximity indicators' legitimate treatment options and consequences
+  once Question 2 is characterized, explicitly not implementing anything, not treating `DP-012`'s
+  civil-date deferral as precedent, and not reopening H-01. No implementation, no ADR choosing an
+  option, no push.
+- Relevant ADR/specification: `DP-015` itself (restructured, not re-investigated); `ADR-0066` (restated
+  only, not touched); `Q8_CLOSURE_MATRIX.md` s3/s4 (re-quoted verbatim); `ADR-0049` (Phase G precedent
+  check, unchanged from the prior task); `ADR-0063`/`DP-012` (explicitly de-precedented).
+- Files changed: `docs/decisions/DP-015-foundation-boundary-proximity-indicators.md` (v1.0.0 -> v2.0.0),
+  `docs/ACE_EXECUTION_STATE.md`, this file. `docs/decisions/README.md` unchanged (DP-015's registration
+  row/status did not need updating - still `OPEN, drafted`).
+- Implementation summary (no code touched - decision-paper restructuring only): added a new section 0
+  ("CEO decision package") stating all three questions in the owner's own terms with a single, precise
+  "what the owner must decide" close. Added a new section 4 that restates Question 1 (the H-01/`ADR-0066`
+  finding) unchanged from the prior task, explicitly marked "confirmation only - not reopened, not
+  reconsidered," and explicitly states it "is not represented as precedent for anything else in this
+  paper." Rewrote section 3 (Question 2) to quote the exact governing sentence, its immediate
+  surrounding context (the implementation-scope row's own "Resolution of H-01... and H-02..." phrasing
+  versus boundary-proximity indicators' bare, un-verbed clause; the certification-gates row defining what
+  "production certified" actually requires; Phase G's structurally parallel exit criteria and how
+  `ADR-0049` actually resolved it - full remediation, deferral never exercised), then names three
+  characterizations explicitly - (a) limited to H-01/H-02 by name, (b) generally applicable to FOUNDATION
+  scope, (c) genuinely ambiguous - each with its own textual support and consequences, selecting none.
+  Added a structural argument that applies under any characterization: H-01/H-02 are defects in an
+  already-built, reachable capability, where "block the dependent domain" names a concrete action (as
+  `ADR-0066` did); boundary-proximity indicators was never built at all, so there is nothing reachable
+  for a deferral decision to "block," weakening Option 2's textual fit even under the broad reading.
+  Added section 5, a compact table cross-referencing each of the three Question-3 treatment options
+  against each of Question 2's three characterizations. Revised Option 2 (defer) in section F to
+  explicitly state `DP-012`/`ADR-0063` is "a prior case of the owner choosing this same kind of decision
+  for a different FOUNDATION scope item" but is "explicitly NOT treated as precedent here that deferral
+  satisfies FOUNDATION's exit bar," since under characterization (a) civil-date rendering's own deferral
+  is exactly as textually open as this item's would be. Adjusted the Recommendation (section L) to make
+  the same point and to make the lean's dependency on Question 2's answer explicit rather than implicit.
+  Rewrote section N to state the three decisions in the owner's own numbering, matching section 0 exactly.
+- Tests executed and results: `python -m pytest -q` - **816 passed** (unchanged; no code touched).
+- Certification executed and results: not applicable - no certified capability touched.
+- Governance checks executed and results: `python scripts/check_adr_numbering.py` - PASS, 66 entries
+  unchanged; `python scripts/check_identifier_families.py` - PASS, 15 DP identifiers unchanged;
+  `python scripts/check_retired_identifiers.py` - PASS, 0 violations, clean on first pass; `git diff
+  --check` - clean; `engine/tests/test_retired_identifier_gate_scope.py` - 36 passed.
+- Known issues: none.
+- Unresolved questions: exactly the three the package states - nothing new raised, nothing resolved.
+- CEO decision required: **yes, three, in order** - (1) confirm or correct the H-01/`ADR-0066` finding
+  (`DP-015` s4); (2) characterize the Q8 deferral carve-out's reach - (a), (b), (c), or a stated
+  alternative (`DP-015` s3); (3) select a boundary-proximity treatment option given that answer
+  (`DP-015` s.F, cross-referenced in s5).
+- Next authorized action: none self-authorized. Neither `d2a780c` nor `6a560e1` nor this task's own
+  commit is pushed - no push authorization has been given for any of them. Stopping here per "stop only
+  at the genuine CEO decision point" - `DP-015`'s three questions are exactly that.
 
 ### 2026-08-21 - H-01 independent re-verification; boundary-proximity-indicator investigation (DP-015)
 - Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the paper).
@@ -1485,6 +1545,7 @@ act.
 
 | Version | Date | Change |
 |---|---|---|
+| 5.0.0 | 2026-08-21 | Restructured `DP-015` (v1.0.0 -> v2.0.0) into an explicit, non-collapsible three-question CEO decision package: Question 1 (H-01/`ADR-0066` finding, confirmation-only) kept visibly separate from Question 2 (Q8 deferral-carve-out scope - three named characterizations with exact governing language and consequences, none selected) and Question 3 (boundary-proximity options, cross-referenced per-characterization). `DP-012`/`ADR-0063` no longer framed as precedent for deferral working here. No code touched; H-01 not reopened; carve-out not extended. Governance gates and 816/816 pytest re-run clean. Nothing pushed. |
 | 4.9.0 | 2026-08-21 | Independently re-verified the H-01/`ADR-0066` Q8-exit-criteria reading against the exact ratified text and a Phase G precedent check (holds, but flagged as a novel, unprecedented application - `ADR-0049`'s B-01/B-02/B-03 were fully resolved, never actually deferred, despite an equivalent clause). Investigated the boundary-proximity-indicator gap: nothing ratified governs it; drafted `DP-015`, surfacing a textual ambiguity in `Q8_CLOSURE_MATRIX.md` s4 about whether the deferral-with-blocking carve-out extends beyond H-01/H-02 by name (bearing on this item and on civil-date rendering's existing deferral too). Three treatment options presented, low-confidence lean toward deferral. Decides nothing; not implementation-authorized. `d2a780c` held back from push per explicit instruction. |
 | 4.8.0 | 2026-08-21 | `ADR-0066`: H-01 fix Option 2 implemented - `UnsupportedNodePolicyError` raised from `find_crossings()` for any non-mean node policy on Rahu/Ketu (fail-closed, covers every caller automatically). No certified value changed (isolated-venv re-verification: PASS, only known ULP noise + volatile fields differed, discarded not committed). FOUNDATION-exit readiness audit: rise/set, panchanga, trikalam certified; civil-date rendering deferred; H-02 resolved/certified; H-01 now resolved via Q8's explicit-deferral-with-blocking clause (Claude's own reading, flagged for confirmation). Boundary-proximity indicators found completely unaddressed - standing FOUNDATION-exit blocker. Local-only, not pushed. |
 | 4.7.0 | 2026-08-21 | H-01 decision-readiness: `DP-014` drafted and registered, extracting `reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md`'s H-01 finding, re-verified live (TrueNode grid step still exactly 37.5 days), and tracing the defect's blast radius across all eight `node_policy` consumers - confined to `find_crossings()`'s callers; KP already independently refuses true node. Presents the audit's own two solutions plus a defer option; recommends explicit refusal (Option 2) at medium confidence. Decides nothing, not implementation-authorized. Local-only, not pushed. |
