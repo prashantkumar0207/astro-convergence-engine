@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 6.3.0 |
+| Version | 7.0.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-22 (H-05 (ADR-0069) pushed and CI-confirmed green, run 32565790781, all four jobs, zero drift. Branch fully synced with origin. main untouched, H-06 not started) |
+| Last updated | 2026-08-22 (phase-g-governance MERGED into main via PR #3, merge commit 0e1ef11, CI-confirmed green on main itself, run 32567048173. FOUNDATION-complete baseline now on main. H-06 not started) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,77 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-22 - phase-g-governance MERGED into main (PR #3): FOUNDATION baseline now on main
+- Branch / commit SHA: `main` at `0e1ef115a647b8a44bf4d1a7af2a3cf3a8b96e03` (the merge commit, pushed).
+  `phase-g-governance` unchanged on the remote (`76ed443`); local `phase-g-governance` HEAD remains
+  `bf66e484bbde10906596a614bf4ac17d83062d2e` (still unpushed, still not part of `main`, per instruction).
+- Previous `main` SHA: `a3692e7191aa8f9debd2e9e9f0a9383d65096d37` (the PR #1 merge from 2026-08-13, `main`'s
+  only commit since then).
+- Task: "Approve merge of phase-g-governance into main at the CI-confirmed commit 76ed443. Use 76ed443
+  as the merge source. Do NOT include local-only commit bf66e48. Do NOT push bf66e48. Do NOT start H-06
+  yet. Perform the merge according to the repository's normal Git workflow," followed by a seven-item
+  post-merge verification list (main's SHA; clean merge; clean working tree; origin/main synchronized;
+  resulting CI status; FOUNDATION remains formally exited; no H-06/JATAKA work).
+- Relevant ADR/specification: `ADR-0068` (FOUNDATION exit), `ADR-0069` (H-05) - both carried into `main`
+  unchanged, neither reopened; `.claude/rules/git-safety.md`'s main-merge rule (explicit owner
+  authorization for that specific action - given, and scoped to this exact commit).
+- Files changed: `docs/ACE_EXECUTION_STATE.md`, this file (both on `phase-g-governance`, recording the
+  merge - not part of the merge itself). The merge itself touched 131 files on `main` (already
+  catalogued in the prior turn's merge-readiness audit).
+- Implementation summary: found no open PRs (`gh pr list`). Created PR #3 (`gh pr create --base main
+  --head phase-g-governance`) - since `bf66e48` was never pushed, `origin/phase-g-governance` was
+  confirmed still exactly at `76ed443` (`gh pr view --json headRefOid`), so the PR automatically and
+  correctly represented only the authorized commit, with no extra step needed to "exclude" `bf66e48` -
+  it was simply never on the remote branch the PR was built from. This is the repository's own
+  established normal workflow: PR #1 (2026-08-13) was the only prior `phase-g-governance` -> `main`
+  merge, and it followed the identical pattern (a GitHub PR, merged as a standard two-parent merge
+  commit, title "Merge pull request #N from .../phase-g-governance"). The PR's own creation triggered a
+  fresh CI run (`32566896767`, `pull_request` event) - watched to completion, green, `headSha` confirmed
+  `76ed443`. Merged via `gh pr merge 3 --merge` (explicit merge-commit strategy, not squash or rebase,
+  matching the PR #1 precedent's own commit shape) with an explicit subject/body citing both CI runs and
+  the source commit.
+- **Post-merge verification, each item checked directly, not assumed:**
+  1. `main`'s resulting SHA: `0e1ef115a647b8a44bf4d1a7af2a3cf3a8b96e03`, confirmed via `git fetch` +
+     `git rev-parse origin/main` **and** independently via `git ls-remote origin main` (a direct remote
+     query, not local cache).
+  2. Merge completed cleanly: `gh pr view --json mergeCommit,mergedAt,mergedBy,state` confirms
+     `state: MERGED`; `git show --format="%P"` on the merge commit shows exactly two parents,
+     `a3692e7` (prior `main` tip) and `76ed443` (the authorized source) - a plain, conflict-free merge,
+     matching the merge-readiness audit's own prediction that `main` had no independent work to conflict
+     with.
+  3. Working tree clean: confirmed on the local `phase-g-governance` branch, which the merge (a
+     server-side GitHub operation) does not touch.
+  4. `origin/main` synchronized: confirmed twice, via `git fetch` + `rev-parse` and via the independent
+     `git ls-remote` query above - both agree.
+  5. Resulting CI status: the push to `main` (created by the merge) triggered its own CI run
+     (`32567048173`, `push` event, `headBranch: main`, `headSha: 0e1ef11`) - watched to completion,
+     `conclusion: success`. Read the actual log, not just the checkmarks: both the 3.11 and 3.12
+     `Default gate (engine/tests)` steps printed `818 passed`; the network-guard re-run also printed
+     `818 passed`; both negative controls (`the identifier gate must actually fail`, `the numbering gate
+     must actually fail`) printed their own "caught" confirmation; all three relevant drift-assertion
+     steps printed `PASS: 46 evidence file(s) identical to the committed version outside the volatile
+     fields`.
+  6. FOUNDATION remains formally exited: `git show origin/main:docs/DECISION_LOG.md` directly confirms
+     both `ADR-0068` and `ADR-0069` carry `Status: ACCEPTED` in `main`'s own new content - not inferred
+     from the merge succeeding, read from the actual merged file.
+  7. No H-06 or JATAKA work: none begun, none touched.
+- Tests executed and results: none run locally this task (merge-and-verify only); CI's own `818 passed`
+  (both interpreter legs, plus the network-guard re-run) on `main`'s new tip, read directly from the log.
+- Certification executed and results: not applicable locally; CI's own `oracle gate (PyJHora, hash-
+  pinned)` job on `main`'s new tip confirmed green with zero drift, read directly from its log.
+- Governance checks executed and results: CI's own `governance gate (identifier families, document
+  structure)` job on `main`'s new tip confirmed green, including both its negative controls genuinely
+  firing.
+- Known issues: none. Only the same Node.js 20 deprecation annotation noise already seen on every CI run
+  this session, unrelated to this repository's own code.
+- Unresolved questions: none technical.
+- CEO decision required: no, for this entry itself (executes the owner's own merge authorization exactly,
+  scoped to the exact commit named). A decision is needed only when the owner is ready to authorize the
+  next Dasha-roadmap step.
+- Next authorized action: none self-authorized. Per the owner's own explicit "Do NOT start H-06 yet"
+  instruction, stopping here. `bf66e48` remains local-only and unpushed, exactly as instructed; H-06,
+  H-08, M-02, the dasha boundary-proximity indicator, and any JATAKA implementation remain untouched.
 
 ### 2026-08-22 - H-05 (ADR-0069) pushed and CI-confirmed green, run 32565790781
 - Branch / commit SHA: `phase-g-governance`, `76ed443bb9a1afa76abb42fab1e6a809c4d2ae9d` - **pushed**,
@@ -2161,6 +2232,7 @@ act.
 
 | Version | Date | Change |
 |---|---|---|
+| 7.0.0 | 2026-08-22 | **`phase-g-governance` MERGED into `main`** (PR #3), on explicit authorization scoped to commit `76ed443`. Created the PR (automatically excluding unpushed `bf66e48`), watched its own CI green, merged via a standard two-parent merge commit (`0e1ef11`) matching PR #1's own precedent. Verified directly: merge parents exactly `a3692e7` + `76ed443`; `bf66e48` confirmed not an ancestor of the new `main`; `origin/main` re-confirmed via `git ls-remote`; CI on `main` itself (run `32567048173`) green with `818 passed` on both interpreters and zero drift, read from the log; `ADR-0068`/`ADR-0069` both `Status: ACCEPTED` in `main`'s own new content. `main` now recoverable as the current approved ACE baseline. H-06 not started. |
 | 6.3.0 | 2026-08-22 | Pushed `76ed443` (H-05, `ADR-0069`) to `origin/phase-g-governance` on explicit push authorization - fast-forward, `e7adeb0..76ed443`, carrying ten commits accumulated since the last push. CI run `32565790781`: all four jobs green, confirmed via `gh run view --json` and by reading the log directly - `818 passed` on both interpreter legs (matching local exactly) and `PASS: 46 evidence file(s) identical...` on all three relevant jobs (genuinely zero drift). Remote SHA confirmed identical to local HEAD, both directions; working tree clean. H-06 not started; `main` not merged, per explicit instruction. |
 | 6.2.0 | 2026-08-22 | **`ADR-0069` ratifies `DP-016` Option 1 - H-05 CLOSED.** `engine/tests/test_vimshottari_hermetic_baseline.py` (new) freezes the Vimshottari anchor construction for five seed cases plus a negative control, verified at the strongest available level (real production line actually mutated in-session, new test confirmed to fail with the exact predicted value, then reverted, confirmed byte-identical). Zero certification impact verified directly (`certify_kp_chain.py` sanity check, M-03 scan surface confirmed unaffected). `certify_vimshottari.py`/`VIMSHOTTARI_V1_certification.json` untouched. 818/818 pytest. H-06/H-08/M-02/dasha boundary-proximity not touched; JATAKA not implemented. 69 ADR entries. Nothing pushed. |
 | 6.1.0 | 2026-08-22 | Owner authorized "H-05 decision-readiness only." Performed the mandated pre-work (state audit; fresh re-read of `ADR-0068`, `Q8_CLOSURE_MATRIX.md` s5, the complete `DASHA_CERTIFICATION_ROADMAP.md`; direct inspection of all existing H-05 code/tests/validator/certifier/CI wiring/certification-artifact schema). Drafted `DP-016`: independently re-verified every claim in the audit's own H-05 finding against the live tree; classifies H-05 as a coverage/baseline gap, not a defect; presents Option 1 (build a frozen hermetic baseline + negative control, zero certified-value impact) and Option 2 (defer), medium-high-confidence lean toward Option 1. No option chosen; no code touched; H-06/H-08/M-02/dasha boundary-proximity not started; JATAKA not implemented. Governance gates and 816/816 pytest re-run clean (16 DP identifiers, up from 15). Nothing pushed. |
