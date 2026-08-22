@@ -1,0 +1,91 @@
+{
+ "schema": "panchanga_v1_certification",
+ "adr": "ADR-0055",
+ "date": "2026-08-20",
+ "scope": "Classification only, at a given instant: tithi, nakshatra (reused), yoga, karana, vara. FOUNDATION Panchanga first work package.",
+ "conventions": {
+  "boundary": "engine-wide 1e-10 promote-up, [start, end), applied uniformly to both certified profiles",
+  "tithi": "12.0 deg x 30",
+  "yoga": "13.333333333333334 deg x 27",
+  "karana": "6.0 deg x 60",
+  "vara": "sunrise-to-sunrise, consuming certified Tier-0 rise_set"
+ },
+ "oracle": {
+  "package": "PyJHora",
+  "version": "4.8.7",
+  "function": "jhora.panchanga.drik.tithi/yogam/karana, ayanamsa aligned per profile via drik.set_ayanamsa_mode (same convention as certify_vimshottari.py / certify_transits.py)"
+ },
+ "gates": {
+  "A_convention_integrity": {
+   "tithi_rule": "12.0 deg x 30",
+   "yoga_rule": "13.333333333333334 deg x 27",
+   "karana_rule": "6.0 deg x 60",
+   "boundary_convention": "engine-wide 1e-10 promote-up, [start, end)",
+   "profile_parameterization": "none - ADR-0055 item 1 applies one convention uniformly"
+  },
+  "B_dense_sweep": {
+   "cases": 11,
+   "profiles": 2,
+   "comparisons": 66,
+   "mismatches": 0
+  },
+  "C_boundary_and_vara_edge_cases": {
+   "tithi_boundaries_checked": 30,
+   "karana_boundaries_checked": 60,
+   "karana_naming_checked": true,
+   "vara_circumpolar_cases": 2,
+   "vara_sunrise_rollover_checked": true,
+   "total_checks": 125
+  },
+  "D_non_invasiveness": {
+   "nakshatra_reuse_verified": true,
+   "ayanamsa_modes_unchanged": true
+  },
+  "E_independent_validator": {
+   "result": "PASS"
+  },
+  "F_external_oracle": {
+   "cases": 11,
+   "profiles": 2,
+   "elements": [
+    "tithi",
+    "yoga",
+    "karana"
+   ],
+   "comparisons": 66,
+   "mismatches": 0,
+   "negative_control_verified": true,
+   "nakshatra_excluded_reason": "already Tier-0-certified reuse, not new code introduced by this work package; proven identical to the certified nakshatra() in Gate D; out of the scope this gate was authorized to close"
+  }
+ },
+ "explicit_non_claims": [
+  "element start/end transition timing (deferred, ADR-0055 item 3)",
+  "Rahu Kalam, Yamaganda, Gulika (deferred pending a variant-table ratification, ADR-0055 item 2)",
+  "nakshatra external-oracle cross-check (already Tier-0-certified reuse, not new code; see Gate F's nakshatra_excluded_reason)",
+  "vara's weekday label for observers whose local civil date differs from the UT calendar date of their sunrise (see engine.astrology.panchanga.vara docstring)",
+  "any other varga, dasha, or certified layer"
+ ],
+ "environment": {
+  "python": "3.11.15"
+ },
+ "preconditions": {
+  "data_assets": {
+   "assets_verified": 3,
+   "sha256": {
+    "seas_18.se1": "a2cd8fc33807c78ca9a700c91c2e042258b12fc4796519e00781440b5ad8b2e2",
+    "semo_18.se1": "1ca07bd67c24374d77226180c20a4f9996cba013697894810518e7eb582ca4f7",
+    "sepl_18.se1": "ca1393ceab3a44fbc895887cf789c68819ae6a1cbc9b22225872dbe4ccd99a66"
+   }
+  },
+  "anti_fitting": {
+   "modules_scanned": 180,
+   "findings": [],
+   "justified_exceptions": [
+    "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."
+   ]
+  }
+ },
+ "result": "PASS",
+ "_artifact_name": "PANCHANGA_V1_certification.json",
+ "_slug": "panchanga"
+}

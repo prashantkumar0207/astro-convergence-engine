@@ -10,6 +10,7 @@ It is now wired into the live calculation pipeline
 (engine.calculations.calculations.calculate).
 """
 
+import math
 from datetime import datetime, timezone as _tz
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
@@ -60,6 +61,15 @@ def validate_birth_data(data: BirthData) -> None:
         -180.0 <= data.longitude <= 180.0
     ):
         raise ValidationError(f"Longitude out of range: {data.longitude}")
+
+    # ADR-0054: no arbitrary bound is imposed (real locations range from
+    # below-sea-level basins to high mountains); only finiteness is
+    # checked, matching this repository's practice of not inventing
+    # limits the record does not justify.
+    if not isinstance(data.elevation_m, (int, float)) or not math.isfinite(
+        float(data.elevation_m)
+    ):
+        raise ValidationError(f"elevation_m must be a finite number: {data.elevation_m}")
 
     # Timezone must be a real IANA zone.
     try:

@@ -4,14 +4,21 @@ residuals, completeness vs an independent dense scan, direction
 flags, retrograde multiplicity, guards.
 """
 
+import dataclasses
+
 import pytest
 import swisseph as swe
 
-from engine.astronomy.profile import KP_KRISHNAMURTI, PARASHARI_LAHIRI
+from engine.astronomy.profile import (
+    KP_KRISHNAMURTI,
+    NODE_POLICY_TRUE,
+    PARASHARI_LAHIRI,
+)
 from engine.astronomy.sidereal_planets import sidereal_planet_position
 from engine.transits.crossing import (
     RESIDUAL_BOUND_ARCSEC,
     TIME_TOLERANCE_DAYS,
+    UnsupportedNodePolicyError,
     find_crossings,
 )
 
@@ -116,6 +123,51 @@ def test_profiles_shift_event_times():
 def test_empty_window_rejected():
     with pytest.raises(ValueError):
         find_crossings("Sun", 0.0, JD_2024, JD_2024, PARASHARI_LAHIRI)
+
+
+def test_true_node_refused_for_rahu():
+    # H-01 / DP-014 Option 2 / ADR-0066: find_crossings()'s station-
+    # isolation logic is not certified for the true node, so the path
+    # must refuse loudly rather than silently drop crossing events.
+    true_node_profile = dataclasses.replace(
+        PARASHARI_LAHIRI, node_policy=NODE_POLICY_TRUE,
+    )
+    with pytest.raises(UnsupportedNodePolicyError):
+        find_crossings("Rahu", 0.0, JD_2024, JD_2024 + 400, true_node_profile)
+
+
+def test_true_node_refused_for_ketu():
+    true_node_profile = dataclasses.replace(
+        PARASHARI_LAHIRI, node_policy=NODE_POLICY_TRUE,
+    )
+    with pytest.raises(UnsupportedNodePolicyError):
+        find_crossings("Ketu", 0.0, JD_2024, JD_2024 + 400, true_node_profile)
+
+
+def test_true_node_refusal_does_not_affect_other_bodies():
+    # Negative control: an unrelated body under the SAME true-node
+    # profile must be unaffected - the refusal is scoped to Rahu/Ketu
+    # resolution, not a blanket rejection of the profile.
+    true_node_profile = dataclasses.replace(
+        PARASHARI_LAHIRI, node_policy=NODE_POLICY_TRUE,
+    )
+    events = find_crossings("Sun", 0.0, JD_2024, JD_2024 + 366, true_node_profile)
+    assert events
+
+
+def test_mean_node_rahu_ketu_unaffected_by_the_refusal_guard():
+    # Negative control: the certified mean-node path must still work
+    # after adding the true-node guard - the guard must not be
+    # over-broad. Target derived on Rahu's actual path, matching
+    # test_ketu_events_oppose_rahu_events's own technique, since the
+    # mean node moves too slowly for an arbitrary fixed target to be
+    # guaranteed reachable in a short window.
+    mode = PARASHARI_LAHIRI.ayanamsa_mode
+    start = _longitude(swe.MEAN_NODE, JD_2024, mode)
+    end = _longitude(swe.MEAN_NODE, JD_2024 + 400, mode)
+    target = (start - 0.5 * ((start - end) % 360.0)) % 360.0
+    events = find_crossings("Rahu", target, JD_2024, JD_2024 + 400, PARASHARI_LAHIRI)
+    assert events
 
 
 def test_events_carry_profile_and_kind():

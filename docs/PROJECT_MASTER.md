@@ -1,8 +1,18 @@
 # Astro Convergence Engine
 
+> **SUPERSEDED / HISTORICAL RECORD (G7 repair, `docs/Q8_CLOSURE_MATRIX.md` s3, 2026-08-17).** This
+> document describes the project's original Flutter-app-first plan and does not describe current
+> architecture, milestones, or status. Its "Repository Structure" section below still lists `app/`
+> and top-level `tests/`, both explicitly excluded from the canonical top-level structure by
+> `ADR-0041` (`docs/DECISION_LOG.md`), and its "Current Progress" / "Current Milestone" sections
+> describe Flutter work that is not part of the present engine-first architecture. For the current,
+> maintained state of the project, see `README.md`'s "Current state" section and
+> `docs/PROJECT_BACKLOG.md`. The content below is preserved unedited as a historical record, per this
+> repository's practice of not rewriting history; only this banner is new.
+
 Version: 0.1.0
 
-Status: Active Development
+Status: Active Development *(historical value as of 2026-07-11 - see banner above)*
 
 ---
 
@@ -144,3 +154,11 @@ Real Horoscope Calculation
 Status:
 
 In Progress
+
+---
+
+# Change history
+
+| Version | Date | Change |
+|---|---|---|
+| 0.1.0 (banner only) | 2026-08-17 | G7 documentation repair (`docs/Q8_CLOSURE_MATRIX.md` s3): added the superseded/historical banner above. Body content below the original status line is unedited. |

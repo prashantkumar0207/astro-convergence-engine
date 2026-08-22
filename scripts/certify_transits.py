@@ -1,4 +1,5 @@
-"""TRANSIT_V1 CERTIFICATION RUNNER (ADR-0008).
+"""TRANSIT_V1 CERTIFICATION RUNNER (ADR-0008; `declared_division` field
+and Gate E, H-02 fix Option 1, ADR-0065).
 
 Regenerates certification/TRANSIT_V1_certification.json FROM SCRATCH
 on every run; the stored JSON is never accepted as proof.
@@ -9,7 +10,24 @@ sankranti and Moon-ingress instants under the D-007 discipline:
 per-event tolerance derived from the MEASURED oracle astronomy delta
 at the event instant divided by the local speed, plus the oracle's
 own documented search slop; categorical tolerance zero); D the
-independent validator. Exit 0 = PASS, 3 = FAIL.
+independent validator; E `declared_division` correctness (H-02 fix,
+ADR-0065) with a genuine negative control. Exit 0 = PASS, 3 = FAIL.
+
+GATE E, WHAT IT CERTIFIES. `ADR-0064` independently reproduced H-02 (the
+ingress-classification seam: a reported crossing instant's own residual,
+`RESIDUAL_BOUND_ARCSEC` = `1e-4` arcsec, is ~278x wider than
+`division_index`'s promotion tolerance, `1e-10` degrees, so re-classifying
+the reported instant can disagree with the division actually searched
+for). `DP-013` s6 recommended, and the owner ratified (`ADR-0065`), Option
+1: `TransitEvent.declared_division` (`engine/transits/events.py`) is
+classified from the EXACT `target_longitude`, never from the noisy
+reported `julian_day`. This gate asserts that property holds for the
+full certified holdout, with a negative control proving the assertion
+can actually fail. It does not, and cannot, "fix" H-02's underlying
+residual-vs-tolerance gap - `julian_day`/`residual_arcsec` are unchanged
+by this gate or by Option 1 at all; `declared_division` is a new,
+independently-computed field a consumer can trust instead of
+re-classifying the event's own instant.
 """
 
 import json
@@ -117,6 +135,77 @@ def gate_d_validator():
     return {"result": "PASS"}
 
 
+def gate_e_declared_division():
+    """H-02 fix Option 1 (ADR-0065): `declared_division` must equal the
+    certified classifier applied to `target_longitude` (exact) for every
+    sign/nakshatra ingress in the holdout, and must be `None` for event
+    kinds with no division semantics. A genuine negative control (real
+    events checked, then the classifier `events.py` uses is temporarily
+    broken and the SAME assertion is shown to fail, then restored) proves
+    this gate can actually detect a defect."""
+
+    from engine.astrology.nakshatra import nakshatra as classify_nakshatra
+    from engine.astrology.signs import zodiac_sign as classify_sign
+
+    jd0 = swe.julday(2024, 1, 1, 0.0, swe.GREG_CAL)
+    sun_events = sign_ingresses("Sun", jd0, jd0 + 366, PARASHARI_LAHIRI)
+    moon_events = nakshatra_ingresses("Moon", jd0, jd0 + 35, PARASHARI_LAHIRI)
+
+    checked = 0
+    for event in sun_events:
+        if event.declared_division != classify_sign(event.target_longitude):
+            fail(f"sign_ingress at {event.target_longitude}: declared_division "
+                 f"{event.declared_division} != classify_sign(target) {classify_sign(event.target_longitude)}")
+        checked += 1
+    for event in moon_events:
+        if event.declared_division != classify_nakshatra(event.target_longitude):
+            fail(f"nakshatra_ingress at {event.target_longitude}: declared_division "
+                 f"{event.declared_division} != classify_nakshatra(target) "
+                 f"{classify_nakshatra(event.target_longitude)}")
+        checked += 1
+
+    # declared_division must be None where "division" has no defined
+    # meaning - a plain crossing to an arbitrary (non-boundary) target.
+    plain_crossing = find_crossings("Mercury", 355.0,
+                                     swe.julday(2024, 3, 1, 0.0, swe.GREG_CAL),
+                                     swe.julday(2024, 6, 15, 0.0, swe.GREG_CAL),
+                                     PARASHARI_LAHIRI)
+    for event in plain_crossing:
+        if event.declared_division is not None:
+            fail(f"plain crossing at {event.target_longitude}: declared_division "
+                 f"should be None, got {event.declared_division}")
+        checked += 1
+
+    # Genuine negative control: temporarily break the classifier
+    # engine/transits/events.py uses, confirm the SAME comparison this
+    # gate performs would then fail to detect the resulting disagreement,
+    # then restore and re-verify agreement.
+    import engine.transits.events as events_module
+    real_classify_sign = events_module._classify_sign
+
+    def _always_sign_1(_longitude):
+        return 1
+
+    events_module._classify_sign = _always_sign_1
+    try:
+        broken_events = sign_ingresses("Sun", jd0, jd0 + 366, PARASHARI_LAHIRI)
+        negative_control_caught = any(
+            b.declared_division != real_classify_sign(b.target_longitude) for b in broken_events
+        )
+    finally:
+        events_module._classify_sign = real_classify_sign
+
+    if not negative_control_caught:
+        fail("negative control: a deliberately broken classifier was NOT caught by Gate E's own comparison")
+    if events_module._classify_sign is not real_classify_sign:
+        fail("negative control: events.py's classifier was not correctly restored")
+    restored_events = sign_ingresses("Sun", jd0, jd0 + 366, PARASHARI_LAHIRI)
+    if any(e.declared_division != real_classify_sign(e.target_longitude) for e in restored_events):
+        fail("negative control: restored classifier no longer agrees with itself")
+
+    return {"cases_checked": checked, "negative_control_verified": True}
+
+
 def main():
     tee = support.start_transcript()
     preconditions = support.preflight()
@@ -124,7 +213,8 @@ def main():
         "schema": "transit_v1_certification",
         "adr": "ADR-0008",
         "date": str(date.today()),
-        "scope": ("longitude-crossing primitive; sign/nakshatra ingresses; "
+        "scope": ("longitude-crossing primitive; sign/nakshatra ingresses "
+                  "(with declared_division, H-02 fix Option 1, ADR-0065); "
                   "returns; natal conjunctions; natal-relative view"),
         "decisions": {
             "TR-A": "event-time guarantee 1e-6 day; bisection bracket 1e-9 day",
@@ -143,6 +233,7 @@ def main():
             "A_residual_battery": gate_a_residuals(),
             "C_oracle_anchors": gate_c_oracle_anchors(),
             "D_independent_validator": gate_d_validator(),
+            "E_declared_division": gate_e_declared_division(),
         },
         "explicit_non_claims": [
             "aspect-system events (Parashari/Western; aspect-systems phase)",
@@ -160,10 +251,16 @@ def main():
     print("=" * 60)
     gate_a = report["gates"]["A_residual_battery"]
     gate_c = report["gates"]["C_oracle_anchors"]
+    gate_e = report["gates"]["E_declared_division"]
     print(f"residual battery  : {gate_a['events']} events, max {gate_a['max_residual_arcsec']:.2e} arcsec")
     print(f"oracle anchors    : {gate_c['anchors']} sankrantis, worst delta/tolerance {gate_c['worst_delta_over_tolerance']:.3f}")
     print(f"validator         : PASS")
-    print("archived          :", out.relative_to(ROOT))
+    print(f"declared_division : {gate_e['cases_checked']} cases, negative_control_verified={gate_e['negative_control_verified']}")
+    # .as_posix(): a bare str(Path) uses the OS-native separator, which
+    # would make this line (captured into the console transcript) differ
+    # between a Windows-local run and Linux CI - the same provenance
+    # defect this session's other certifiers already hit and fixed.
+    print("archived          :", out.relative_to(ROOT).as_posix())
     print("RESULT            : PASS")
 
 

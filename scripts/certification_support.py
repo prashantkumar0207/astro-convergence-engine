@@ -47,6 +47,32 @@ _FORBIDDEN_IMPORTS = re.compile(
     r"^\s*(?:from|import)\s+(?:jhora|brihat_fixtures|legacy|engine\.tests)\b", re.MULTILINE
 )
 
+# M-03: all source locations that can shape a certification claim are scanned,
+# not merely the production package. The historical audit named eleven
+# certifiers; the current tree contains the later current-engine runner too.
+# ADR-0054 added a thirteenth (rise/set); ADR-0055 adds a fourteenth
+# (panchanga).
+CERTIFIER_SOURCES = (
+    "scripts/certify_current_engine.py", "scripts/certify_d12.py",
+    "scripts/certify_d2.py", "scripts/certify_d3.py", "scripts/certify_d30.py",
+    "scripts/certify_d7.py", "scripts/certify_kp_chain.py",
+    "scripts/certify_panchanga.py", "scripts/certify_parashari_drishti.py",
+    "scripts/certify_rise_set.py", "scripts/certify_sign_convention.py",
+    "scripts/certify_tier0.py", "scripts/certify_transits.py",
+    "scripts/certify_trikalam.py", "scripts/certify_vimshottari.py",
+)
+VALIDATOR_SOURCES = (
+    "validate_d10_holdout.py", "validate_d12_holdout.py",
+    "validate_d2_holdout.py", "validate_d3_holdout.py",
+    "validate_d30_holdout.py", "validate_d7_holdout.py",
+    "validate_d9_holdout.py", "validate_kp_holdout.py",
+    "validate_panchanga_holdout.py", "validate_parashari_drishti_holdout.py",
+    "validate_rise_set_holdout.py", "validate_transits_holdout.py",
+    "validate_trikalam_holdout.py", "validate_vimshottari_holdout.py",
+)
+FIXTURE_SOURCES = ("brihat_fixtures.py",)
+SCAN_TARGETS = ("engine", *CERTIFIER_SOURCES, *VALIDATOR_SOURCES, *FIXTURE_SOURCES)
+
 
 class CertificationFailure(RuntimeError):
     """Raised when a certification precondition or scan fails."""
@@ -77,30 +103,47 @@ def verify_data_assets() -> dict:
     return {"assets_verified": len(verified), "sha256": verified}
 
 
-def scan_for_fitting(targets=("engine",)) -> dict:
+def _source_files(targets: tuple[str, ...]) -> list[Path]:
+    """Resolve the declared scan surface, failing closed on any omission."""
+
+    paths: list[Path] = []
+    for target in targets:
+        path = ROOT / target
+        if path.is_dir():
+            paths.extend(
+                candidate for candidate in sorted(path.rglob("*.py"))
+                if "tests" not in candidate.parts and not candidate.name.startswith("test_")
+            )
+        elif path.is_file() and path.suffix == ".py":
+            paths.append(path)
+        else:
+            raise CertificationFailure(f"anti-fitting scan target missing or not Python: {target}")
+    return paths
+
+
+def scan_for_fitting(targets: tuple[str, ...] = SCAN_TARGETS) -> dict:
     """
     VALIDATION_STANDARD s2 rule 6: automated anti-fitting scan.
 
-    Flags, in production source only: suspicious identifier fragments;
-    any mention of a frozen holdout case identifier; imports of
-    verification-only material (the external oracle, transcribed
-    fixtures, the legacy kernel, the test package).
+    Flags suspicious identifier fragments in every certification subject. The
+    production engine has the stronger policy: no frozen holdout references or
+    verification-only imports. Certifiers necessarily declare the holdouts and
+    external oracle they execute, so treating those declarations as findings
+    would make the gate permanently fail rather than detect fitting.
     """
 
     findings = []
     scanned = 0
-    for target in targets:
-        for path in sorted((ROOT / target).rglob("*.py")):
-            if "tests" in path.parts or path.name.startswith("test_"):
-                continue
-            text = path.read_text()
-            scanned += 1
-            relative = path.relative_to(ROOT)
-            lowered = text.lower()
-            for fragment in _SUSPICIOUS_NAMES:
-                if fragment in lowered:
-                    findings.append({"file": str(relative), "kind": "suspicious_identifier",
-                                     "detail": fragment})
+    for path in _source_files(targets):
+        text = path.read_text()
+        scanned += 1
+        relative = path.relative_to(ROOT)
+        lowered = text.lower()
+        for fragment in _SUSPICIOUS_NAMES:
+            if fragment in lowered:
+                findings.append({"file": str(relative), "kind": "suspicious_identifier",
+                                 "detail": fragment})
+        if relative.parts[0] == "engine":
             for match in _HOLDOUT_IDS.finditer(text):
                 line = text[: match.start()].count("\n") + 1
                 findings.append({"file": f"{relative}:{line}", "kind": "holdout_reference",
@@ -113,7 +156,14 @@ def scan_for_fitting(targets=("engine",)) -> dict:
         raise CertificationFailure(
             f"anti-fitting scan produced {len(findings)} finding(s), none justified: {findings}"
         )
-    return {"modules_scanned": scanned, "findings": [], "justified_exceptions": []}
+    return {
+        "modules_scanned": scanned,
+        "findings": [],
+        "justified_exceptions": [
+            "Frozen holdout declarations and oracle imports are permitted only outside engine/; "
+            "all scanned sources remain subject to suspicious-identifier detection."
+        ],
+    }
 
 
 def _scalar(value) -> str:

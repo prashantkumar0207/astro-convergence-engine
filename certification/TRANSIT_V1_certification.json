@@ -1,8 +1,8 @@
 {
  "schema": "transit_v1_certification",
  "adr": "ADR-0008",
- "date": "2026-08-09",
- "scope": "longitude-crossing primitive; sign/nakshatra ingresses; returns; natal conjunctions; natal-relative view",
+ "date": "2026-08-21",
+ "scope": "longitude-crossing primitive; sign/nakshatra ingresses (with declared_division, H-02 fix Option 1, ADR-0065); returns; natal conjunctions; natal-relative view",
  "decisions": {
   "TR-A": "event-time guarantee 1e-6 day; bisection bracket 1e-9 day",
   "TR-B": "45 deg max motion per sample, speed bounds x safety 4",
@@ -243,6 +243,10 @@
   },
   "D_independent_validator": {
    "result": "PASS"
+  },
+  "E_declared_division": {
+   "cases_checked": 49,
+   "negative_control_verified": true
   }
  },
  "explicit_non_claims": [
@@ -252,7 +256,7 @@
   "interpretation"
  ],
  "environment": {
-  "python": "3.11.15"
+  "python": "3.11.16"
  },
  "preconditions": {
   "data_assets": {
@@ -264,9 +268,11 @@
    }
   },
   "anti_fitting": {
-   "modules_scanned": 146,
+   "modules_scanned": 180,
    "findings": [],
-   "justified_exceptions": []
+   "justified_exceptions": [
+    "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."
+   ]
   }
  },
  "result": "PASS",

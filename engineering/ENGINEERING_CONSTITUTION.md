@@ -1,9 +1,17 @@
 # Astro Convergence Engine
 # Engineering Constitution
 
-Version: 1.0.0
+Version: 1.1.1
 
 Status: ACTIVE
+
+*Status note (G7 repair, `docs/Q8_CLOSURE_MATRIX.md` s3): "ACTIVE" describes this document's own
+in-force operational status, not precedence over `docs/PROJECT_CONSTITUTION.md`. `ADR-0042`
+(`docs/DECISION_LOG.md`) ratified the authority hierarchy **OWNER -> PROJECT CONSTITUTION ->
+ENGINEERING CONSTITUTION -> DECISION LOG / ADR -> STANDARDS -> SPECIFICATIONS -> CODE ->
+CONVERSATION**: this document is subordinate to `docs/PROJECT_CONSTITUTION.md` regardless of that
+document's own `DRAFT` status, and does not narrow it. Where the two conflict, the senior document
+governs, per `docs/PROJECT_CONSTITUTION.md`'s own text.*
 
 ---
 
@@ -50,6 +58,8 @@ Knowledge belongs in structured knowledge files.
 Business logic belongs in engine modules.
 
 Knowledge must never be hardcoded into algorithms.
+
+**Explicit exception — executable normative rule data:** A deterministic, school-scoped rule table may be colocated with certified implementation when (1) the calculation cannot produce its certified output without it, (2) changing it changes certified numerical or categorical output, (3) the data is covered by the calculation's certification artifact, and (4) the classical source and provenance are recorded at the point of use. This exception is not permission to place interpretation, prediction logic, or general governed knowledge in engine code. It is subject to the authority hierarchy in ADR-0042 and must not be inferred for data that fails any of the four tests.
 
 ---
 

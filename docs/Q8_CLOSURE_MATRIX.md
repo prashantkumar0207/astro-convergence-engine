@@ -3,10 +3,10 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | PROPOSED. A candidate matrix for closing Q8. **Q8 REMAINS OPEN.** This document does not close it and is not implementation authorisation. Requires owner ratification. |
-| Version | 1.0.0 |
+| Status | **ACCEPTED. Owner-ratified 2026-08-17 (ADR-0048). Q8 is CLOSED.** Ratification approves this matrix as the roadmap-governance framework; it is not implementation authorisation for any phase. Phase entry remains gated by each phase's own prerequisites, entry criteria, and CEO approval per the sections below, none of which are weakened or waived by ratification. |
+| Version | 1.1.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-11 |
+| Last updated | 2026-08-17 |
 | Review cadence | TBD |
 
 # Q8 Closure Matrix
@@ -18,10 +18,15 @@ the domain order. ADR-0021 D2 confirmed that the order alone does not close Q8, 
 requires, per phase: prerequisites, entry criteria, implementation scope, certification gates, exit
 criteria, and CEO approval requirement.
 
-This document proposes that matrix so the owner has something concrete to amend or reject.
+This document proposed that matrix so the owner would have something concrete to amend or reject.
 
-**Q8 remains OPEN.** Only the owner closes it, by ratifying a matrix and updating the register.
-Nothing here authorises implementation of anything.
+**Q8 is CLOSED (ADR-0048, 2026-08-17).** The owner ratified this matrix as written; the register
+(`docs/OPEN_QUESTIONS.md`) is updated accordingly. Ratification closes the *governance question* -
+that ratified per-phase criteria now exist. **It still authorises no implementation of anything.**
+Every phase below remains gated by its own prerequisites, entry criteria and CEO approval, and phase
+entry does not imply authorisation of every capability inside that phase - each says so individually.
+`ADR-0048` additionally records that Phase G's own exit criteria (section 3) are not independently
+confirmed met as of ratification - see that entry for detail. Ratification does not assert they are.
 
 ## 2. Conventions used
 
@@ -162,18 +167,26 @@ used for selection or tuning. Statistical significance is never represented as s
 astrology. C4 is never represented as C5. Every phase's completion report states what it could not
 verify.
 
-## 15. What the owner must decide for Q8 to close
+## 15. What the owner decided for Q8 to close (historical framing, resolved 2026-08-17)
 
-Whether this matrix is the right shape. Whether the entry criteria are correct, particularly the
-recommendation that gate-integrity work precede FOUNDATION and that H-02 gate MUHURTA. Whether the
-approval levels are right, since per-capability approval is thorough and slow while entry-and-exit is
-fast and looser. Whether BTR's orthogonal treatment is acceptable. And whether phases may overlap,
-which this matrix assumes they may not.
+This section originally posed the questions the owner needed to settle: whether this matrix is the
+right shape; whether the entry criteria are correct, particularly the recommendation that
+gate-integrity work precede FOUNDATION and that H-02 gate MUHURTA; whether the approval levels are
+right; whether BTR's orthogonal treatment is acceptable; and whether phases may overlap, which this
+matrix assumes they may not.
 
-Until those are settled and the register updated, **Q8 remains OPEN and no phase is authorised.**
+**Resolved 2026-08-17 (`ADR-0048`): the owner ratified the matrix as written**, meaning as posed above,
+with no amendment to any of the questions this section raised. The original question text is preserved
+above unedited, per this repository's practice of not rewriting historical record; only this
+introductory sentence and the closing line below are updated to state the outcome.
+
+**Q8 is CLOSED. No phase is thereby authorised** - phase authorisation remains a separate, per-phase,
+per-capability owner act, exactly as sections 3 through 14 and the cross-phase invariants (section 14)
+already state.
 
 ## 16. Change history
 
 | Version | Date | Change |
 |---|---|---|
+| 1.1.0 | 2026-08-17 | Owner-ratified as written (`ADR-0048`). Q8 CLOSED. Status header, section 1 and section 15 updated to reflect ratification; sections 3-14 (the phase definitions) unchanged. No phase authorised by this change. |
 | 1.0.0 | 2026-08-11 | Drafted on CEO direction as a candidate matrix. Q8 remains OPEN. |

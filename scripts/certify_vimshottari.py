@@ -103,22 +103,25 @@ def run_case(case, engine_profile, jhora_ayanamsa):
     _, bhukthis = jhora_vim.get_vimsottari_dhasa_bhukthi(
         jd_local, place,
         dhasa_duration_type=jhora_const.DHASA_YEAR_DURATION.MEAN_SIDEREAL_YEAR,
+        dhasa_level_index=jhora_const.MAHA_DHASA_DEPTH.PRATYANTARA,
     )
 
     # Inject the ORACLE'S Moon into OUR timeline mathematics.
     timeline = vimshottari_from_moon(
         oracle_moon, jd_utc,
-        dasha_profile=VIMSHOTTARI_MEAN_SIDEREAL_YEAR, depth=2,
+        dasha_profile=VIMSHOTTARI_MEAN_SIDEREAL_YEAR, depth=3,
     )
-    ours = timeline.antardashas()
+    ours = timeline.pratyantardashas()
 
-    if len(bhukthis) != len(ours) or len(ours) != 81:
+    if len(bhukthis) != len(ours) or len(ours) != 729:
         fail(f"{case['id']}: row count {len(bhukthis)} vs {len(ours)}")
 
     max_start_delta = 0.0
     for our_period, oracle_row in zip(ours, bhukthis):
-        (md_index, ad_index), (oy, om, od, ohours), _duration = oracle_row
-        oracle_lords = (PYJHORA_LORD[md_index], PYJHORA_LORD[ad_index])
+        (md_index, ad_index, pd_index), (oy, om, od, ohours), _duration = oracle_row
+        oracle_lords = (
+            PYJHORA_LORD[md_index], PYJHORA_LORD[ad_index], PYJHORA_LORD[pd_index],
+        )
         if our_period.lords != oracle_lords:
             fail(f"{case['id']}: lords {our_period.lords} vs {oracle_lords}")
         oracle_jd = swe.julday(oy, om, od, ohours, swe.GREG_CAL)
@@ -130,7 +133,7 @@ def run_case(case, engine_profile, jhora_ayanamsa):
     return {
         "case": case["id"],
         "moon_delta_vs_oracle_arcsec": round(moon_delta_arcsec, 6),
-        "bhukti_rows": len(ours),
+        "pratyantar_rows": len(ours),
         "lord_mismatches": 0,
         "max_start_delta_days": max_start_delta,
     }
@@ -146,7 +149,7 @@ def main():
     for profile_name, engine_profile, jhora_ayanamsa in PROFILES:
         cases = [run_case(case, engine_profile, jhora_ayanamsa) for case in HOLDOUT]
         per_profile[profile_name] = cases
-        total_rows += sum(c["bhukti_rows"] for c in cases)
+        total_rows += sum(c["pratyantar_rows"] for c in cases)
         worst_start = max(worst_start, max(c["max_start_delta_days"] for c in cases))
         worst_moon = max(worst_moon, max(c["moon_delta_vs_oracle_arcsec"] for c in cases))
 
@@ -178,7 +181,7 @@ def main():
             "max_oracle_moon_delta_arcsec": worst_moon,
         },
         "gates": {
-            "oracle_bhukti_rows_compared": total_rows,
+            "oracle_pratyantar_rows_compared": total_rows,
             "oracle_lord_mismatches": 0,
             "oracle_max_start_delta_days": worst_start,
             "start_tolerance_days": START_TOLERANCE_DAYS,
@@ -200,7 +203,7 @@ def main():
     print("VIMSHOTTARI_V1 CERTIFICATION")
     print("=" * 60)
     print(f"profiles x cases  : 2 x {len(HOLDOUT)}")
-    print(f"bhukti rows       : {total_rows}")
+    print(f"pratyantar rows   : {total_rows}")
     print(f"lord mismatches   : 0")
     print(f"max start delta   : {worst_start} days (tolerance {START_TOLERANCE_DAYS})")
     print(f"oracle moon delta : {worst_moon} arcsec max (recorded, see D-007)")

@@ -1,0 +1,11 @@
+============================================================
+PANCHANGA_V1 CERTIFICATION
+============================================================
+A_convention_integrity: {'tithi_rule': '12.0 deg x 30', 'yoga_rule': '13.333333333333334 deg x 27', 'karana_rule': '6.0 deg x 60', 'boundary_convention': 'engine-wide 1e-10 promote-up, [start, end)', 'profile_parameterization': 'none - ADR-0055 item 1 applies one convention uniformly'}
+B_dense_sweep: {'cases': 11, 'profiles': 2, 'comparisons': 66, 'mismatches': 0}
+C_boundary_and_vara_edge_cases: {'tithi_boundaries_checked': 30, 'karana_boundaries_checked': 60, 'karana_naming_checked': True, 'vara_circumpolar_cases': 2, 'vara_sunrise_rollover_checked': True, 'total_checks': 125}
+D_non_invasiveness: {'nakshatra_reuse_verified': True, 'ayanamsa_modes_unchanged': True}
+F_external_oracle: {'cases': 11, 'profiles': 2, 'elements': ['tithi', 'yoga', 'karana'], 'comparisons': 66, 'mismatches': 0, 'negative_control_verified': True, 'nakshatra_excluded_reason': 'already Tier-0-certified reuse, not new code introduced by this work package; proven identical to the certified nakshatra() in Gate D; out of the scope this gate was authorized to close'}
+E_independent_validator: PASS
+archived          : certification/PANCHANGA_V1_certification.json
+RESULT            : PASS

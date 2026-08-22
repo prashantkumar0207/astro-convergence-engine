@@ -6,12 +6,25 @@
 # nine validators, the legacy gate and three certification runners that CI
 # previously never ran.
 #
-#   hermetic : default pytest gate + ALL ELEVEN independent holdout validators
+#   no-oracle  : default pytest gate + ALL ELEVEN independent holdout validators
 #              + legacy kernel gate + the three non-oracle certification
-#              runners, each also re-run with the network blocked.
+#              runners. A REPRESENTATIVE SUBSET is additionally re-run with an
+#              in-process network guard.
+#
+#              HONEST SCOPE, corrected 2026-08-13. This job is NOT network
+#              isolated: the runner has full egress, which it must in order to
+#              pip install. The guard patches five socket entry points inside
+#              ONE python process (scripts/ci_no_network.py) and is applied to
+#              six invocations, not to all fifteen. The job was previously
+#              named "hermetic (no oracle, no network)", which claimed more
+#              than it delivers. Child processes are not sandboxed.
 #   oracle   : the eight PyJHora certification runners, installed hash-pinned
 #              from requirements-oracle.lock ALONE, asserting and uploading the
 #              environment identity used for certification.
+#              NOTE: `pip install --upgrade pip` is NOT hash-pinned, so the
+#              environment is lock plus an unpinned pip. requirements.lock,
+#              used by the other two jobs, is version-pinned but NOT
+#              hash-pinned; only the oracle lock carries hashes.
 #
 # VALIDATION_STANDARD.md s2 rule 5: skips are failures in certification suites.
 # Nothing here uses continue-on-error and no step converts a failure into a
@@ -31,7 +44,7 @@ on:
 
 jobs:
   hermetic:
-    name: hermetic gate (no oracle, no network)
+    name: no-oracle gate (network guard on a subset, see header)
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -62,7 +75,7 @@ jobs:
       - name: Default gate (engine/tests)
         run: python -m pytest -q
 
-      - name: Independent holdout validators (all eleven)
+      - name: Independent holdout validators (all fourteen)
         run: |
           set -e
           for v in validate_d9_holdout.py \
@@ -75,7 +88,10 @@ jobs:
                    validate_kp_holdout.py \
                    validate_vimshottari_holdout.py \
                    validate_transits_holdout.py \
-                   validate_parashari_drishti_holdout.py; do
+                   validate_parashari_drishti_holdout.py \
+                   validate_rise_set_holdout.py \
+                   validate_panchanga_holdout.py \
+                   validate_trikalam_holdout.py; do
             echo "::group::$v"
             python "$v"
             echo "::endgroup::"
@@ -85,13 +101,18 @@ jobs:
         run: python -m pytest -q test_tier0_certification.py test_official_swetest_reference.py
 
       - name: Non-oracle certification runners
+        # certify_panchanga.py moved to the oracle job (below): it now
+        # requires PyJHora unconditionally for Gate F (genuine external-
+        # oracle comparison, CEO-approved 2026-08-19), matching every one
+        # of the oracle-tier runners' own import-guard pattern exactly.
         run: |
           set -e
           python scripts/certify_current_engine.py
           python scripts/certify_kp_chain.py
           python scripts/certify_sign_convention.py
+          python scripts/certify_rise_set.py
 
-      - name: Prove the hermetic tier really is hermetic (network blocked)
+      - name: Re-run a representative subset under the in-process network guard
         run: |
           set -e
           python scripts/ci_no_network.py -m pytest -q
@@ -100,24 +121,120 @@ jobs:
           python scripts/ci_no_network.py scripts/certify_current_engine.py
           python scripts/ci_no_network.py scripts/certify_kp_chain.py
           python scripts/ci_no_network.py scripts/certify_sign_convention.py
+          python scripts/ci_no_network.py scripts/certify_rise_set.py
 
       - name: Assert the network guard actually blocks (negative control)
         run: |
-          set +e
-          printf "import socket\nsocket.create_connection(('pypi.org', 443), timeout=5)\n" > /tmp/netprobe.py
-          python scripts/ci_no_network.py /tmp/netprobe.py
-          rc=$?
-          set -e
-          if [ "$rc" -eq 0 ]; then
-            echo "network guard did NOT block; the hermetic proof above is worthless"
+          # STRENGTHENED 2026-08-13, twice. The original asserted only a nonzero
+          # exit, which a missing probe, a renamed guard or a runner with no
+          # egress all satisfy. The first strengthening established a baseline
+          # but used ONE probe exercising three calls, which short-circuits on
+          # whichever patched symbol it reaches first: with two of the five
+          # patches deleted it still raised NoNetworkError and still "passed".
+          #
+          # SEPARATE PROBES, one per entry point, each run twice. Unguarded it
+          # must SUCCEED, proving egress exists and the probe is well formed;
+          # guarded it must FAIL with NoNetworkError. A patch silently removed
+          # from the guard now fails its own probe.
+          mkdir -p /tmp/netprobes
+
+          printf 'import socket\nsocket.getaddrinfo("pypi.org", 443)\nprint("ok")\n' \
+            > /tmp/netprobes/getaddrinfo.py
+          printf 'import socket\nsocket.create_connection(("pypi.org", 443), 10)\nprint("ok")\n' \
+            > /tmp/netprobes/create_connection.py
+          # Raw IP, so this probe does not depend on DNS and therefore isolates
+          # socket.socket.connect from the getaddrinfo patch.
+          printf 'import socket\ns=socket.socket()\ns.settimeout(10)\ns.connect(("151.101.0.223", 443))\ns.close()\nprint("ok")\n' \
+            > /tmp/netprobes/connect_raw_ip.py
+          printf 'import socket\nimport sys\ns=socket.socket()\ns.settimeout(10)\nsys.exit(0 if s.connect_ex(("151.101.0.223", 443)) == 0 else 1)\n' \
+            > /tmp/netprobes/connect_ex_raw_ip.py
+          printf 'import socket\nsocket.gethostbyname("pypi.org")\nprint("ok")\n' \
+            > /tmp/netprobes/gethostbyname.py
+          # COVERAGE, stated honestly: four of the guard's five patched symbols
+          # are isolated by these probes. create_connection cannot be isolated,
+          # because it delegates to getaddrinfo internally, so removing its patch
+          # alone leaves the call blocked by the getaddrinfo patch. It is
+          # defence in depth over a path already covered, and that is why its
+          # probe is retained rather than dropped.
+
+          for probe in /tmp/netprobes/*.py; do
+            name=$(basename "$probe")
+            echo "::group::network probe $name"
+            # 1. unguarded: MUST succeed, or the control proves nothing.
+            python "$probe"
+
+            # 2. guarded: MUST fail, and specifically with NoNetworkError.
+            set +e
+            out=$(python scripts/ci_no_network.py "$probe" 2>&1)
+            rc=$?
+            set -e
+            echo "$out"
+            if [ "$rc" -eq 0 ]; then
+              echo "network guard did NOT block $name"
+              exit 1
+            fi
+            if ! echo "$out" | grep -q "NoNetworkError"; then
+              echo "$name failed, but NOT with NoNetworkError; the failure cannot"
+              echo "be attributed to the guard, so this control proves nothing"
+              exit 1
+            fi
+            echo "::endgroup::"
+            echo "  $name: egress confirmed, guard blocked it with NoNetworkError"
+          done
+          rm -rf /tmp/netprobes
+
+      - name: H-02 independent-reference reproduction (DP-013 Option A - investigation, not a certifier)
+        run: python scripts/reproduce_h02_ingress_seam.py
+
+      - name: Upload H-02 independent-reference reproduction evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: h02-reproduction-evidence-${{ matrix.python-version }}
+          path: reports/h02_reproduction/reproduction_evidence.json
+          if-no-files-found: error
+
+      - name: Upload regenerated non-oracle artifacts, reports and transcripts
+        # ADR-0053: this tier regenerates current_engine/KP_CHAIN/SIGN_CONVENTION
+        # on Linux successfully, but nothing previously retrieved that evidence -
+        # a legitimate drift failure (e.g. after a source change like M-03) left
+        # the regenerated artifacts unrecoverable, forcing reliance on a
+        # non-reproducing Windows regeneration. Placed AFTER the network-guard
+        # re-run (which regenerates the same three files again) and BEFORE the
+        # drift assertion, so the upload captures exactly what that assertion
+        # examines, and `if: always()` so a legitimate drift failure still
+        # uploads for forensic inspection rather than being discarded.
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: hermetic-certification-evidence-${{ matrix.python-version }}
+          path: |
+            certification/*.json
+            reports/certification/*.report.md
+            reports/certification/*.console.txt
+          if-no-files-found: error
+
+      - name: Assert regenerated artifacts did not drift, then that no source changed
+        run: |
+          # ORDER MATTERS, corrected 2026-08-13. The previous form ran
+          # `git checkout -- certification/ reports/` FIRST, destroying the
+          # regenerated artifacts before anything examined them, so drift in
+          # this tier was discarded rather than asserted.
+          python scripts/check_artifact_drift.py
+          git checkout -- certification/ reports/
+          # WHOLE TREE, corrected 2026-08-13. An explicit pathspec, however long,
+          # always omits something: the previous list missed LOCK_MANIFEST.json,
+          # schemas/, knowledge/, pyproject.toml, pytest.ini and root-level
+          # documents, while the step's own message claimed "no tracked source
+          # file was modified". certification/ and reports/ are restored above,
+          # so anything remaining is genuine unexpected drift.
+          git status --porcelain > /tmp/source_drift.txt
+          if [ -s /tmp/source_drift.txt ]; then
+            echo "a certification run modified tracked source:"
+            cat /tmp/source_drift.txt
             exit 1
           fi
-          echo "negative control passed: guard blocked the connection (exit $rc)"
-
-      - name: Assert no source file was modified by a certification run
-        run: |
-          git checkout -- certification/ reports/
-          test -z "$(git status --porcelain -- engine/ scripts/ legacy/ validate_*.py)"
+          echo "no tracked source file was modified by any certification run"
 
   oracle:
     name: oracle gate (PyJHora, hash-pinned)
@@ -156,7 +273,7 @@ jobs:
       - name: Verify ephemeris asset checksums
         run: sha256sum --check CHECKSUMS.sha256
 
-      - name: Oracle certification runners (all eight)
+      - name: Oracle certification runners (all ten)
         run: |
           set -e
           for c in scripts/certify_d2.py \
@@ -166,14 +283,23 @@ jobs:
                    scripts/certify_d30.py \
                    scripts/certify_vimshottari.py \
                    scripts/certify_transits.py \
-                   scripts/certify_parashari_drishti.py; do
+                   scripts/certify_parashari_drishti.py \
+                   scripts/certify_panchanga.py \
+                   scripts/certify_trikalam.py; do
             echo "::group::$c"
             python "$c"
             echo "::endgroup::"
           done
 
-      - name: Show regenerated artifact delta (run date is the only expected change)
-        run: git --no-pager diff -- certification/ reports/certification/
+      - name: Assert regenerated artifacts drifted only in the volatile fields
+        run: |
+          # REPLACED 2026-08-13. This step previously ran `git --no-pager diff`,
+          # which ALWAYS exits 0. Its name asserted a byte-level invariant that
+          # `git diff` cannot enforce, so a changed comparison count, a changed
+          # maximum error, a widened tolerance or a removed holdout case would
+          # all have been printed into the log and the job would have gone green.
+          git --no-pager diff --stat -- certification/ reports/certification/
+          python scripts/check_artifact_drift.py
 
       - name: Upload regenerated artifacts, reports and transcripts
         if: always()
@@ -184,6 +310,20 @@ jobs:
             certification/*.json
             reports/certification/*.report.md
             reports/certification/*.console.txt
+          if-no-files-found: error
+
+      - name: H-02 PyJHora reliability investigation (DP-013 Option B - investigation, not a certifier)
+        # Bounded: each precision level runs in its own subprocess with a hard
+        # 45s timeout, so a divergent search (already observed locally to
+        # diverge at precision=0.0001) can never hang this step or the job.
+        run: python scripts/investigate_h02_pyjhora_precision.py
+
+      - name: Upload H-02 PyJHora reliability investigation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: h02-pyjhora-investigation-evidence
+          path: reports/h02_reproduction/pyjhora_reliability_investigation.json
           if-no-files-found: error
 
   governance:
@@ -199,6 +339,9 @@ jobs:
       # No third-party dependency: these checks read files and run regexes.
       - name: Identifier-family conformance (ADR-0014)
         run: python scripts/check_retired_identifiers.py
+
+      - name: Decision-paper identifier-family conformance (ADR-0040)
+        run: python scripts/check_identifier_families.py
 
       - name: Negative control, the identifier gate must actually fail
         run: |
@@ -222,25 +365,39 @@ jobs:
           echo "negative control passed: planted violation was caught (exit $rc)"
 
       - name: ADR numbering is unique and monotonic
+        run: python scripts/check_adr_numbering.py
+
+      - name: Negative control, the numbering gate must actually fail (Q14)
         run: |
-          python - <<'PY'
-          import re, sys
-          from pathlib import Path
-          text = Path("docs/DECISION_LOG.md").read_text()
-          nums = [int(m) for m in re.findall(r"^## ADR-(\d{4}) ", text, re.M)]
-          errors = []
-          if len(nums) != len(set(nums)):
-              dupes = sorted({n for n in nums if nums.count(n) > 1})
-              errors.append(f"duplicate ADR numbers: {dupes}")
-          if nums != sorted(nums):
-              errors.append(f"ADR numbers not monotonic: {nums}")
-          if errors:
-              for e in errors:
-                  print("FAIL:", e)
-              sys.exit(1)
-          print(f"PASS: {len(nums)} ADR entries, unique and monotonic: "
-                f"ADR-{nums[0]:04d}..ADR-{nums[-1]:04d}")
-          PY
+          # Q14. The numbering gate previously had NO negative control, so its
+          # PASS proved only that it ran. The gate and this control execute THE
+          # SAME code against different input, so a copy of the rule cannot
+          # drift from the rule.
+          set +e
+          cp docs/DECISION_LOG.md /tmp/register_probe.md
+          printf '\n## ADR-0018 - planted duplicate probe\nbody\n' >> /tmp/register_probe.md
+          python scripts/check_adr_numbering.py /tmp/register_probe.md > /dev/null 2>&1
+          dup=$?
+          cp docs/DECISION_LOG.md /tmp/register_probe.md
+          # ADR-0016 is RESERVED and unissued, so appending it at the end is
+          # out-of-order WITHOUT also being a duplicate. Using an already-issued
+          # number here would trip the uniqueness rule too, and the control would
+          # pass even if the ordering assertion were deleted outright.
+          printf '\n## ADR-0016 - planted out-of-order probe\nbody\n' >> /tmp/register_probe.md
+          python scripts/check_adr_numbering.py /tmp/register_probe.md > /dev/null 2>&1
+          ooo=$?
+          rm -f /tmp/register_probe.md
+          set -e
+          if [ "$dup" -eq 0 ]; then
+            echo "numbering gate did NOT flag a planted duplicate; its PASS is worthless"
+            exit 1
+          fi
+          if [ "$ooo" -eq 0 ]; then
+            echo "numbering gate did NOT flag a planted out-of-order entry"
+            exit 1
+          fi
+          echo "negative control passed: duplicate exit $dup, out-of-order exit $ooo"
+          test -z "$(git status --porcelain -- docs/DECISION_LOG.md)"
 
       - name: Governing documents carry a status header
         run: |

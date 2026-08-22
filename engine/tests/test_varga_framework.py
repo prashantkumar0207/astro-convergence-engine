@@ -41,12 +41,16 @@ SYNTHETIC_CYCLIC = CyclicVargaRule(divisions=5, start_sign=IDENTITY_12)
 
 # Synthetic non-uniform segment rule: widths 5/5/8/7/5 (the D30 width
 # pattern) with arbitrary but valid synthetic targets, same for all
-# signs. This is a FIXTURE, not the classical D30 rule.
+# signs. This is a FIXTURE, not the classical D30 rule. division=30
+# mirrors the real D30 shape this pattern is drawn from: 5 segments
+# per sign registered under division 30, exactly the case that makes
+# segment count unusable as a division proxy (B-01).
 SYNTHETIC_SEGMENTS = SegmentVargaRule(
     segments=tuple(
         ((5.0, 0), (5.0, 10), (8.0, 8), (7.0, 2), (5.0, 6))
         for _ in range(12)
-    )
+    ),
+    division=30,
 )
 
 
@@ -107,7 +111,29 @@ def test_segment_rule_valid_construction():
 )
 def test_segment_rule_invalid_construction_rejected(segments):
     with pytest.raises(InvalidVargaRuleError):
-        SegmentVargaRule(segments=segments)
+        SegmentVargaRule(segments=segments, division=2)
+
+
+@pytest.mark.parametrize(
+    "division",
+    [1, 0, -5, 1.5, "2", None, True],
+)
+def test_segment_rule_invalid_division_rejected(division):
+    # B-01: division must be a real positive integer >= 2, checked by
+    # the rule itself, independent of anything the registry later does.
+    with pytest.raises(InvalidVargaRuleError):
+        SegmentVargaRule(segments=SYNTHETIC_SEGMENTS.segments, division=division)
+
+
+def test_segment_rule_non_uniform_segment_count_rejected():
+    # B-01 cardinality invariant: every sign must carve the SAME
+    # number of segments as every other sign, independent of what
+    # that count equals (D30 proves the count need not equal the
+    # division). One sign with a different segment count is malformed.
+    uniform = tuple(((30.0, 0),) for _ in range(11))
+    non_uniform = uniform + (((15.0, 0), (15.0, 1)),)  # sign 11: 2 segments
+    with pytest.raises(InvalidVargaRuleError, match="not uniform"):
+        SegmentVargaRule(segments=non_uniform, division=2)
 
 
 # ---------------- classifier ----------------
@@ -240,12 +266,14 @@ def test_registry_contains_exactly_the_certified_production_vargas():
 
 
 def test_registry_lookup_roundtrip_and_cleanup():
-    register_varga_rule(9999, "test_school", SYNTHETIC_CYCLIC)
+    # Registered under 5, matching SYNTHETIC_CYCLIC.divisions (B-01:
+    # the registry now refuses a division/rule mismatch).
+    register_varga_rule(5, "test_school", SYNTHETIC_CYCLIC)
     try:
-        assert get_varga_rule(9999, "test_school") is SYNTHETIC_CYCLIC
-        assert (9999, "test_school") in registered_vargas()
+        assert get_varga_rule(5, "test_school") is SYNTHETIC_CYCLIC
+        assert (5, "test_school") in registered_vargas()
     finally:
-        unregister_varga_rule(9999, "test_school")
+        unregister_varga_rule(5, "test_school")
 
     # REPLACED (was: registry empty after cleanup): the certified
     # production entries remain.
@@ -255,12 +283,13 @@ def test_registry_lookup_roundtrip_and_cleanup():
 
 
 def test_registry_rejects_duplicates_and_bad_input():
-    register_varga_rule(9999, "test_school", SYNTHETIC_CYCLIC)
+    # Registered under 5, matching SYNTHETIC_CYCLIC.divisions (B-01).
+    register_varga_rule(5, "test_school", SYNTHETIC_CYCLIC)
     try:
         with pytest.raises(ValueError):
-            register_varga_rule(9999, "test_school", SYNTHETIC_CYCLIC)
+            register_varga_rule(5, "test_school", SYNTHETIC_CYCLIC)
     finally:
-        unregister_varga_rule(9999, "test_school")
+        unregister_varga_rule(5, "test_school")
 
     with pytest.raises(TypeError):
         register_varga_rule(9999, "test_school", "not a rule")
@@ -273,6 +302,74 @@ def test_registry_refuses_certified_divisions():
     for division in IMPLEMENTED_VARGAS:
         with pytest.raises(ValueError):
             register_varga_rule(division, "anything", SYNTHETIC_CYCLIC)
+
+
+# ---------------- B-01: division/rule-content invariant ----------------
+# reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md. The original finding's own
+# reproduction: registering a real 12-division rule under an unrelated
+# division succeeded silently. These are the direct negative controls
+# proving that specific scenario, and its structural cousins, are now
+# rejected - not merely that "some" registrations are rejected elsewhere.
+
+
+def test_cyclic_rule_registered_under_mismatched_division_rejected():
+    # The audit's exact repro: a rule built for one division, registered
+    # under a different one that happens to also be valid on its own.
+    twelve_division_rule = CyclicVargaRule(divisions=12, start_sign=IDENTITY_12)
+    with pytest.raises(ValueError, match="does not match"):
+        register_varga_rule(4, "test_school", twelve_division_rule)
+    assert (4, "test_school") not in registered_vargas()
+
+
+@pytest.mark.parametrize("division", [13, 0, -5])
+def test_cyclic_rule_registered_under_further_mismatched_divisions_rejected(division):
+    # SYNTHETIC_CYCLIC.divisions == 5; none of these match.
+    with pytest.raises(ValueError):
+        register_varga_rule(division, "test_school", SYNTHETIC_CYCLIC)
+    assert (division, "test_school") not in registered_vargas()
+
+
+def test_segment_rule_registered_under_mismatched_division_rejected():
+    # SYNTHETIC_SEGMENTS.division == 30 (D30 shape: 5 segments/sign).
+    # Registering it under 3 must be rejected even though a genuine
+    # 3-segment rule would be legitimate at division 3 - this is the
+    # cross-check the D30 shape exists specifically to prove holds.
+    with pytest.raises(ValueError, match="does not match"):
+        register_varga_rule(3, "test_school", SYNTHETIC_SEGMENTS)
+    assert (3, "test_school") not in registered_vargas()
+
+
+def test_registry_rejects_non_integer_and_out_of_range_division():
+    for bad_division in (1.5, "3", None, True, 0, -5):
+        with pytest.raises(ValueError):
+            register_varga_rule(bad_division, "test_school", SYNTHETIC_CYCLIC)
+
+
+def test_all_five_certified_production_registrations_remain_valid():
+    # Positive control: the invariant that rejects a mismatch must not
+    # reject the real, already-certified registrations. Proven by
+    # re-deriving each one directly from its own module's rule object,
+    # independent of the fact that `engine.astrology` already imported
+    # them once at collection time.
+    from engine.astrology.varga_d2 import D2_PARASHARA
+    from engine.astrology.varga_d3 import D3_PARASHARA
+    from engine.astrology.varga_d7 import D7_PARASHARA
+    from engine.astrology.varga_d12 import D12_PARASHARA
+    from engine.astrology.varga_d30 import D30_PARASHARA
+
+    for division, school, rule in (
+        (2, "parashara", D2_PARASHARA),
+        (3, "parashara", D3_PARASHARA),
+        (7, "parashara", D7_PARASHARA),
+        (12, "parashara", D12_PARASHARA),
+        (30, "parashara", D30_PARASHARA),
+    ):
+        # Already registered at import time; re-registering under the
+        # SAME key correctly raises for the duplicate-key reason, not
+        # a division-mismatch reason - proving the mismatch check does
+        # not (mis)fire on the legitimate registrations.
+        with pytest.raises(ValueError, match="already registered"):
+            register_varga_rule(division, school, rule)
 
 
 def test_unsupported_school_lookup_raises():
@@ -352,14 +449,15 @@ def test_dispatcher_routes_registered_rule_and_reports_school():
 
     snapshot = make_snapshot()
 
-    register_varga_rule(9999, "test_school", SYNTHETIC_CYCLIC)
+    # Registered under 5, matching SYNTHETIC_CYCLIC.divisions (B-01).
+    register_varga_rule(5, "test_school", SYNTHETIC_CYCLIC)
     try:
-        chart = divisional_chart(snapshot, 9999, school="test_school")
+        chart = divisional_chart(snapshot, 5, school="test_school")
     finally:
-        unregister_varga_rule(9999, "test_school")
+        unregister_varga_rule(5, "test_school")
 
     assert isinstance(chart, VargaChart)
-    assert chart.varga == 9999
+    assert chart.varga == 5
     assert chart.school == "test_school"
     assert len(chart.planets) == 14
 

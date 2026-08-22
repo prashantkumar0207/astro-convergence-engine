@@ -49,7 +49,24 @@ def test_data_assets_verify_against_the_manifest():
 def test_anti_fitting_scan_is_clean():
     result = support.scan_for_fitting()
     assert result["findings"] == [], result["findings"]
-    assert result["modules_scanned"] > 100
+    assert result["modules_scanned"] >= 180
+
+
+def test_anti_fitting_scan_covers_every_declared_certification_source():
+    """M-03: additions or removals from the certification surface are explicit."""
+
+    assert len(support.CERTIFIER_SOURCES) == 15
+    assert len(support.VALIDATOR_SOURCES) == 14
+    assert support.FIXTURE_SOURCES == ("brihat_fixtures.py",)
+    discovered_certifiers = {
+        str(path.relative_to(ROOT)).replace("\\", "/")
+        for path in (ROOT / "scripts").glob("certify_*.py")
+    }
+    assert discovered_certifiers == set(support.CERTIFIER_SOURCES)
+    discovered_validators = {
+        path.name for path in ROOT.glob("validate_*_holdout.py")
+    }
+    assert discovered_validators == set(support.VALIDATOR_SOURCES)
 
 
 def test_checksum_manifest_covers_every_required_ephemeris_file():
@@ -169,6 +186,23 @@ def test_anti_fitting_scan_actually_detects_violations(tmp_path):
         module.ROOT = original_root
 
 
+def test_anti_fitting_scan_rejects_a_certifier_named_adjustment(tmp_path):
+    """M-03 negative control: verification code is no longer outside the gate."""
+
+    offender = tmp_path / "certify_probe.py"
+    offender.write_text("oracle_adjust_for_case = 0.5\n")
+    import certification_support as module
+
+    original_root = module.ROOT
+    try:
+        module.ROOT = tmp_path
+        with pytest.raises(module.CertificationFailure) as caught:
+            module.scan_for_fitting(targets=("certify_probe.py",))
+        assert "suspicious_identifier" in str(caught.value)
+    finally:
+        module.ROOT = original_root
+
+
 @pytest.mark.parametrize("name", ARTIFACTS)
 def test_artifact_carries_its_preconditions(name):
     artifact = ROOT / "certification" / name
@@ -178,6 +212,9 @@ def test_artifact_carries_its_preconditions(name):
     assert preconditions, f"{name} carries no preconditions block"
     assert preconditions["data_assets"]["assets_verified"] >= 3
     assert preconditions["anti_fitting"]["findings"] == []
+    # Stored artifacts are history, not proof: pre-M-03 artifacts correctly
+    # record their older scan surface. New runs use the strengthened 170-file
+    # gate asserted above; do not rewrite unrelated evidence by hand.
     assert preconditions["anti_fitting"]["modules_scanned"] > 100
 
 

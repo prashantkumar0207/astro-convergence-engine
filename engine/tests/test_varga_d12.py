@@ -12,9 +12,12 @@ from engine.astrology.varga_classifier import classify
 from engine.astrology.varga_d12 import D12_PARASHARA, D12_SCHOOL, ensure_registered
 from engine.astrology.varga_registry import (
     UnsupportedVargaError,
+    get_varga_rule,
     register_varga_rule,
     registered_vargas,
+    unregister_varga_rule,
 )
+from engine.astrology.varga_rules import rule_content_sha256
 from engine.calculations.calculations import calculate
 from engine.models.birth_data import BirthData
 
@@ -142,3 +145,50 @@ def test_d12_served_through_dispatcher_with_provenance():
 def test_reregistration_refused():
     with pytest.raises(ValueError):
         register_varga_rule(12, D12_SCHOOL, D12_PARASHARA)
+
+
+# ------------------------------------------------------- Gate 4, B-02
+# reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md.
+
+#: Content fingerprint of the certified D12 table, pinned.
+CERTIFIED_D12_CONTENT_SHA256 = (
+    "224ece371b1fd024a49d545556e2f9b842343c44c17b9af666b7052b5e6cd195"
+)
+
+
+def test_registered_rule_identity_is_the_certified_object():
+    ensure_registered()
+    assert get_varga_rule(12, D12_SCHOOL) is D12_PARASHARA
+
+
+def test_registered_rule_content_hash_matches_pinned_value():
+    assert rule_content_sha256(D12_PARASHARA) == CERTIFIED_D12_CONTENT_SHA256
+
+
+def test_negative_control_substituted_rule_is_detected():
+    """Prove the identity and content checks above can actually fail."""
+
+    import dataclasses
+
+    # Aries' start sign changed from itself (0) to Taurus (1) - still a
+    # structurally valid CyclicVargaRule (divisions unchanged), so only
+    # B-02's checks catch it.
+    tampered_start = (1,) + D12_PARASHARA.start_sign[1:]
+    tampered = dataclasses.replace(D12_PARASHARA, start_sign=tampered_start)
+    assert tampered.divisions == 12  # still a legitimate D12 registration
+
+    unregister_varga_rule(12, D12_SCHOOL)
+    try:
+        register_varga_rule(12, D12_SCHOOL, tampered)
+
+        assert get_varga_rule(12, D12_SCHOOL) is not D12_PARASHARA
+        assert (
+            rule_content_sha256(get_varga_rule(12, D12_SCHOOL))
+            != CERTIFIED_D12_CONTENT_SHA256
+        )
+    finally:
+        unregister_varga_rule(12, D12_SCHOOL)
+        register_varga_rule(12, D12_SCHOOL, D12_PARASHARA)
+
+    assert get_varga_rule(12, D12_SCHOOL) is D12_PARASHARA
+    assert rule_content_sha256(D12_PARASHARA) == CERTIFIED_D12_CONTENT_SHA256

@@ -25,7 +25,7 @@ the motion direction at the event.
 import swisseph as swe
 
 from engine.astronomy.planet_collection import PLANET_BODIES
-from engine.astronomy.profile import CalculationProfile
+from engine.astronomy.profile import NODE_POLICY_MEAN, CalculationProfile
 from engine.astronomy.sidereal_planets import sidereal_planet_position
 from engine.models.transit_event import TransitEvent
 from engine.transits.speeds import grid_step_days
@@ -43,13 +43,33 @@ REFINE_BRACKET_DAYS = 1e-9
 RESIDUAL_BOUND_ARCSEC = 1e-4
 
 
+class UnsupportedNodePolicyError(NotImplementedError):
+    """Raised when a transit-event search is requested for a node policy
+    this module's station-isolation logic does not certify.
+
+    H-01 (reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md): the grid this
+    module searches on is sized from a bound on speed, not on station
+    spacing, so "at most one station per grid interval" can be violated
+    for a body whose direction changes more often than its grid step.
+    Measured true, and still true, for the true node (ADR-0066, DP-014
+    Option 2): refuse explicitly rather than return a silently
+    incomplete event list.
+    """
+
+
 def _resolve_body(body: str, profile: CalculationProfile):
     """Map a canonical body name to (swe id, longitude offset deg)."""
 
     if body in ("Rahu", "Ketu"):
-        node = "MeanNode" if profile.node_policy == "mean" else "TrueNode"
+        if profile.node_policy != NODE_POLICY_MEAN:
+            raise UnsupportedNodePolicyError(
+                f"find_crossings() does not certify node_policy={profile.node_policy!r} "
+                "for Rahu/Ketu: station spacing for this body is not bounded against "
+                "the search grid (H-01, DP-014 Option 2, ADR-0066). Only the mean node "
+                "is certified for transit-event search."
+            )
         offset = 180.0 if body == "Ketu" else 0.0
-        return PLANET_BODIES[node], offset
+        return PLANET_BODIES["MeanNode"], offset
     return PLANET_BODIES[body], 0.0
 
 

@@ -68,10 +68,94 @@ ALLOWED_TOKENS = {
 #:   pinning test    report["supersedes_provisional_id"] == "ADR-VARGA-D3-001"
 #: The match is bound to the declared key, not to a file, so a retired
 #: identifier in any other position still fails wherever it appears.
+#:
+#: THE VALUE IS VALIDATED, not merely scrubbed. An earlier form of this regex
+#: accepted `[^"]+` and `\S+`, which meant ANY token at all passed in the
+#: authorised position: a freshly invented identifier family was accepted, and
+#: so was a retired identifier belonging to a different varga. That is the exact
+#: defect class ADR-0004 retired, surviving inside the gate meant to prevent it.
+#: Only one of the ten strings ADR-0004 actually retired may appear here.
+#: (The demonstrating probe strings are deliberately NOT written out in this
+#: file: Pattern B would flag them, and it did on the first attempt.)
+_RETIRED_ALTERNATION = "|".join(re.escape(name) for name in RETIRED)
+
 SUPERSESSION_FIELD_RE = re.compile(
-    r'(supersedes_provisional_id"?\]?\s*(?::|==)\s*"[^"]+"'
-    r"|- Supersedes provisional identifier: \S+)"
+    r'(?<![A-Za-z0-9_])supersedes_provisional_id"?\]?\s*(?::|==)\s*"(?P<json>'
+    + _RETIRED_ALTERNATION
+    + r')"'
+    r"|- Supersedes provisional identifier: (?P<prose>"
+    + _RETIRED_ALTERNATION
+    + r")(?=\s|$)"
 )
+
+
+#: A division token in a path, e.g. `certify_d30.py`, `VARGA_D7_V1_...`,
+#: `varga_d12.report.md`. Used to bind a supersession claim to the division the
+#: file is actually about.
+_DIVISION_RE = re.compile(r"(?:^|[^a-z0-9])d(\d+)(?:[^0-9]|$)", re.IGNORECASE)
+
+#: Division number -> the retired varga identifier for it, DERIVED from RETIRED
+#: rather than written out. Deriving it keeps one source of truth and, secondarily,
+#: avoids planting a partial identifier literal in this file: Pattern B flags any
+#: `ADR-` token that is not four digits, and an f-string prefix is exactly that.
+#: Found the hard way, twice.
+_VARGA_BY_DIVISION: dict[int, str] = {}
+for _retired_name in RETIRED:
+    _parts = _retired_name.split("-")
+    if (
+        len(_parts) == 4
+        and _parts[1] == "VARGA"
+        and _parts[2][:1].upper() == "D"
+        and _parts[2][1:].isdigit()
+    ):
+        _VARGA_BY_DIVISION[int(_parts[2][1:])] = _retired_name
+
+
+#: Sentinels, so that "no division in the path" and "division present but not in
+#: the replacement map" are DIFFERENT answers. Collapsing them to None was the
+#: first form of this fix, and it meant a D9 or D10 file could claim to supersede
+#: any retired identifier at all, since neither division is in the map.
+ANY_RETIRED = "ANY_RETIRED"
+NOTHING_AUTHORISED = "NOTHING_AUTHORISED"
+
+
+def authorised_supersession(rel: str) -> str:
+    """What this file may claim to supersede.
+
+    Returns a specific retired identifier where ADR-0014 D1's replacement map
+    assigns one to the file's division; `ANY_RETIRED` where the path carries no
+    division token, which is the pre-existing behaviour for the layer runners;
+    and `NOTHING_AUTHORISED` where a division IS present but has no provisional
+    identifier, which is the D9 and D10 case. Failing closed there matters:
+    they are the two flagship certified vargas and neither ever had a
+    provisional identifier to supersede.
+    """
+
+    match = _DIVISION_RE.search(Path(rel).name)
+    if not match:
+        return ANY_RETIRED
+    return _VARGA_BY_DIVISION.get(int(match.group(1)), NOTHING_AUTHORISED)
+
+
+def scrub_supersession(rel: str, line: str) -> str:
+    """Remove an AUTHORISED supersession claim from a line, and only that.
+
+    A claim whose value is not a retired identifier, or is the wrong retired
+    identifier for this file's division, is left in the line so the ordinary
+    Pattern A and Pattern B checks flag it.
+    """
+
+    expected = authorised_supersession(rel)
+
+    def replace(match: "re.Match[str]") -> str:
+        claimed = match.group("json") or match.group("prose")
+        if expected is ANY_RETIRED:
+            return ""
+        if expected is NOTHING_AUTHORISED or claimed != expected:
+            return match.group(0)  # not authorised here: leave it to be flagged
+        return ""
+
+    return SUPERSESSION_FIELD_RE.sub(replace, line)
 
 
 def tracked_files() -> list[str]:
@@ -97,7 +181,7 @@ def scan() -> tuple[list[str], list[str]]:
 
         for lineno, line in enumerate(text.splitlines(), start=1):
             # Deliberate structured supersession is authorised anywhere.
-            scrubbed = SUPERSESSION_FIELD_RE.sub("", line)
+            scrubbed = scrub_supersession(rel, line)
 
             if not allowed_file:
                 for retired in RETIRED:
