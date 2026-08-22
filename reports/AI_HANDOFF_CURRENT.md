@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 7.2.0 |
+| Version | 7.3.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-22 (ADR-0070 ratifies DP-017 Option 1 - H-06 CLOSED: certified dasha-profile allow-list + year_length_days type enforcement, implemented and tested) |
+| Last updated | 2026-08-22 (cc02f37/H-06 pushed and CI-confirmed, run 32571001995. DP-018 drafted per owner authorization: H-08 decision-readiness only. Presents four options for the Parashari-labelled dasha boundary-convention question; not implementation-authorized) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,125 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-22 - Pushed cc02f37 (H-06, ADR-0070), CI-confirmed (run 32571001995); DP-018 drafted: H-08 decision-readiness only
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the DP-018 paper
+  and state-file updates, on top of `cc02f37`).
+- Previous approved commit: `cc02f370203f8b11b85688b3c33da2247eb0b5cf` (H-06 implementation, `ADR-0070`) -
+  now pushed and CI-confirmed (this task's first half). `main` (via PR #3, merge commit `0e1ef11`) is
+  unaffected by this task.
+- Task, part 1 (push authorization): "Approve push of H-06 commit cc02f370... Push only this H-06 commit
+  to origin/phase-g-governance. Do not push or commit the unrelated untracked files. Do not start H-08
+  yet. After pushing: verify remote SHA; wait for CI; verify all CI jobs and relevant logs; confirm H-06
+  is CI-confirmed; confirm working tree state; report the exact CI run and resulting state."
+- Push executed: `git push origin phase-g-governance` - fast-forward `76ed443..cc02f37`, carrying the four
+  commits accumulated since the last push (`bf66e48`, `0802247`, `e133413`, `cc02f37`); no new commits
+  created, no untracked files touched (untracked files never travel with a push regardless). Verified
+  `origin/phase-g-governance` == local HEAD == `cc02f370203f8b11b85688b3c33da2247eb0b5cf`, both directions,
+  via `git fetch` + `git rev-parse`.
+- CI run **`32571001995`** (headSha `cc02f37`) - **all four jobs green**, read directly from the log
+  transcript, not inferred from the checkmark: `oracle gate (PyJHora, hash-pinned)` - `lord mismatches: 0`;
+  drift-assertion step `PASS: 46 evidence file(s) identical to the committed version outside the volatile
+  fields (18 machine-readable, 28 rendered)`. `no-oracle gate (3.11)` - `825 passed in 27.88s`; all
+  fourteen independent holdout validators PASSED, including `RESULT: ALL INDEPENDENT VIMSHOTTARI CASES
+  PASSED`. `no-oracle gate (3.12)` - `825 passed` (initial run) and `825 passed` again (network-guard
+  re-run subset); same drift-check PASS. `governance gate` - identifier-family conformance clean. Working
+  tree confirmed clean of all tracked changes post-push; the 27 pre-existing, unrelated untracked items
+  (bundles, `.codex/`, `AGENTS.md`, misc scripts/reports) remain exactly as before, untouched.
+- **H-06 is now CI-confirmed, closing the task's first half.**
+- Task, part 2 (H-08 decision-readiness): "Authorize H-08 decision-readiness as the next Dasha/
+  Jataka-entry prerequisite," with the current verified state restated (FOUNDATION exited under
+  `ADR-0068`; `phase-g-governance` merged to `main` via PR #3; H-04/H-05/H-06 closed, H-06 CI-confirmed at
+  `cc02f37`, CI run `32571001995` green) and an explicit twenty-item scope: verify branch/HEAD/working-
+  tree/remote state; read `ACE_EXECUTION_STATE.md`/`AI_HANDOFF_CURRENT.md`; read `Q8_CLOSURE_MATRIX.md`
+  s5; read the complete `DASHA_CERTIFICATION_ROADMAP.md`; inspect every existing H-08 reference/evidence/
+  code/tests/certification/prior decision; independently establish the exact problem; classify it
+  precisely (defect/certification gap/governance gap/convention ambiguity/missing protection/other);
+  determine all legitimate options; determine blast radius and certified-value impact; identify any
+  interaction with H-05/H-06 without reopening them; recommend an option only if the evidence supports
+  one; draft a narrow decision paper; do not choose/ratify; do not implement H-08 yet; do not start M-02
+  or the dasha boundary-proximity item; do not begin general JATAKA; do not reopen FOUNDATION; preserve
+  all certification gates; update canonical state/handoff records preserving historical state; do not
+  push without separate authorization.
+- Relevant ADR/specification: `reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md` H-08 (the primary finding,
+  re-read and independently re-verified in full, including its exact reported cardinality); `docs/
+  DASHA_CERTIFICATION_ROADMAP.md` step 4 (re-read in full, still `Status: PROPOSED`); `engine/astrology/
+  nakshatra.py`/`longitude_utils.py` (the Parashari engine's own classifier and its `1e-10` tolerance-
+  promotion convention); `engine/kp/intervals.py` (the KP layer's exact `[start, end)` rule, `ADR-0006`);
+  `docs/KP_CHAIN_SPEC.md` s7 (the related but distinct M-01 promise, not addressed here); `ADR-0065`
+  (H-02's `declared_division` additive-disclosure precedent, cited as a candidate pattern for Option 3);
+  `ADR-0053`/`ADR-0069`/`ADR-0070` (H-04/H-05/H-06, not reopened).
+- Files changed: `docs/decisions/DP-018-h08-parashari-dasha-boundary-convention.md` (new), `docs/
+  decisions/README.md` (`DP-018` registered before drafting, per `ADR-0040`), `docs/ACE_EXECUTION_
+  STATE.md` (version 5.3.0), this file.
+- **Pre-work performed exactly as mandated:** confirmed branch `phase-g-governance`, local HEAD ==
+  `origin/phase-g-governance` == `cc02f37`, working tree clean of tracked changes, `origin/main` at
+  `0e1ef11` unchanged. Read `Q8_CLOSURE_MATRIX.md` s5 fresh (JATAKA entry criteria explicitly names "the
+  H-08 convention decision" as one of six required steps). Read `docs/DASHA_CERTIFICATION_ROADMAP.md` in
+  full - its own section 5 step 4 states H-08 is "an owner decision about which convention a
+  Parashari-seeded dasha follows, not a builder choice," the direct source for this paper's framing.
+  Inspected, directly, not from memory: `engine/dasha/vimshottari.py`'s `_to_exact()` (the KP-style exact
+  `Decimal(str(x))` conversion, used unconditionally regardless of seeding school); `engine/astrology/
+  nakshatra.py` and `longitude_utils.py` (the Parashari engine's own `1e-10`-degree tolerance-promoted
+  `division_index()` rule, a deliberately different convention for a different purpose - absorbing
+  ephemeris float noise, per F-04/A-3 remediation); `engine/kp/intervals.py` (confirming the identical
+  exact-boundary rule and its own separate, deliberate justification under `Decision KP-A`/`D-003`);
+  `engine/tests/test_vimshottari_consistency.py` in full (confirming `test_seed_agrees_with_certified_
+  kp_chain_everywhere()`'s own docstring locks in today's cross-school behaviour as deliberate, and that
+  its sibling off-boundary test never checks agreement with the Parashari classifier at or near a
+  boundary); `certification/VIMSHOTTARI_V1_certification.json`'s `explicit_non_claims` (confirmed it does
+  NOT disclose this seam - a materially different starting position from H-06's own artifact); `docs/
+  KP_CHAIN_SPEC.md` s7 (confirming M-01 is a related but distinct, not-in-scope finding); `engine/models/
+  dasha.py` (confirming `VimshottariTimeline` has no field recording which boundary convention produced
+  the seed classification - the same structural absence `ADR-0065` remedied for H-02). Searched `docs/
+  DECISION_LOG.md` and `docs/decisions/` for prior H-08 work: zero hits before this paper (only citations
+  noting it remains open).
+- **Independent reproduction, not trusted from the audit's own summary:** iterated `moon = float(NAK_SPAN
+  * k)` for `k` in `0..26` (the literal boundary floats, exactly the construction the existing
+  cross-layer test already uses) and compared `nakshatra(moon)` against `vimshottari_from_moon(moon,
+  ...).seed_nakshatra_number` for each - **exactly six mismatches**, at `k = 7, 11, 14, 17, 22, 25`
+  (longitudes 93.333..., 146.666..., 186.666..., 226.666..., 293.333..., 333.333... degrees), matching the
+  audit's own reported cardinality exactly, not merely a plausible re-derivation. Additionally ran a
+  broader synthetic probe (a fixed tiny offset below every one of the 26 non-zero boundaries) which showed
+  all 26 diverge - clarifying that the audit's "six" figure is about which naturally-occurring
+  `float(k * 360/27)` spellings happen to fall inside the `1e-10` promotion window, not a claim that only
+  six boundaries are structurally at risk.
+- Implementation summary (no code touched - decision-paper drafting only): registered `DP-018` in `docs/
+  decisions/README.md`'s index first, per `ADR-0040`, then drafted it, structured to match this session's
+  established DP template (sections 1, 2, A-I, change history). **Section A** (exact problem):
+  `vimshottari_from_moon()` uses the KP exact-boundary rule for every school; the Parashari classifier
+  uses a materially different rule; six specific floats diverge, changing the seed nakshatra and therefore
+  the entire mahadasha sequence for Parashari-seeded timelines. **Section B** (classification): a
+  convention ambiguity across a school-isolation seam, combined with a documentation gap (mirroring the
+  audit's own framing exactly) and a test-coverage gap - not a calculation defect, and (per the audit's
+  own statement) not currently a certification gap in the unverified-claim sense, since nothing certified
+  currently promises cross-classifier boundary agreement. **Section C** presents four options: Option 1
+  (ratify the status quo explicitly, document + pin, zero certified-value impact - matches the audit's own
+  proposed solution almost exactly); Option 2 (make Parashari seeding follow its own engine's classifier,
+  a genuine narrow certified-value change requiring PyJHora oracle re-verification before certification,
+  not yet investigated); Option 3 (Option 1 plus an additive convention-disclosure field on
+  `VimshottariTimeline`, directly mirroring `ADR-0065`'s own `declared_division` precedent for the
+  structurally identical H-02 seam); Option 4 (defer - assessed as having a weak cost/benefit case, since
+  Option 1 is nearly free and `Q8_CLOSURE_MATRIX.md` s5's own wording gives no carve-out opening, matching
+  `DP-016`/`DP-017`'s own prior finding on that point). **Section G** recommends Option 1 or its Option 3
+  enhancement at medium-high confidence - stronger than `DP-017`'s own H-06 lean, since H-08's zero-impact
+  option leaves almost no open design question, unlike H-06's two genuinely open sub-questions. Section H
+  explicitly confirms H-05/H-06/M-02/dasha-boundary-proximity/JATAKA/FOUNDATION are untouched and not
+  reopened.
+- Tests executed and results: none run for this decision-paper-only task (no code touched); the
+  reproduction above was interactive verification, not a committed test. Full test suite last confirmed
+  at 825/825 as part of the immediately preceding H-06 push/CI-confirmation (this task's own first half).
+- Certification executed and results: none - no code or certification artifact touched this task.
+- Governance checks executed and results: `python scripts/check_adr_numbering.py` (70 ADR entries,
+  unchanged), `python scripts/check_identifier_families.py` (**18 registered DP identifiers, up from 17**,
+  no unregistered tokens), `python scripts/check_retired_identifiers.py` - all PASS.
+- Known issues: none. The distinction between H-08 (this paper) and M-01 (the sibling, not-in-scope
+  KP-layer pinning-test promise) is recorded explicitly in the paper itself to prevent future conflation.
+- Unresolved questions: which of `DP-018`'s four options the owner selects for H-08; whether Option 3's
+  additive disclosure field is worth its slightly larger blast radius if Option 1 alone is chosen.
+- CEO decision required: select `DP-018`'s Option 1, 2, 3, or 4 for H-08.
+- Next authorized action: none self-executable. Per the owner's own closing instruction, continue until
+  the genuine H-08 CEO decision point - reached here; awaiting the owner's option selection.
 
 ### 2026-08-22 - ADR-0070 ratifies DP-017 Option 1: certified dasha-profile allow-list + year_length_days type enforcement (H-06 CLOSED)
 - Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the implementation).
@@ -2409,6 +2528,7 @@ act.
 
 | Version | Date | Change |
 |---|---|---|
+| 7.3.0 | 2026-08-22 | Pushed `cc02f37` (H-06, `ADR-0070`) to `origin/phase-g-governance` on explicit push authorization - fast-forward `76ed443..cc02f37`. CI run `32571001995`: all four jobs green, read directly from the log (oracle gate 0 lord mismatches + drift PASS; both no-oracle legs 825 passed with all fourteen holdout validators PASSED; governance gate clean). Remote SHA confirmed identical to local HEAD; working tree clean. **H-06 CI-confirmed.** Owner then authorized "H-08 decision-readiness." Drafted `DP-018`: independently reproduced the audit's own exact six-boundary cardinality (`k = 7, 11, 14, 17, 22, 25`) where the KP layer's exact-boundary rule (used unconditionally by `vimshottari_from_moon()`) disagrees with the Parashari engine's own tolerance-promoted `nakshatra()` classifier; confirmed the current cross-school behaviour is deliberate (a committed test asserts it), not accidental; confirmed the certification artifact's `explicit_non_claims` does not disclose the seam (unlike H-06's own artifact); confirmed zero interaction with H-05/H-06. Classifies H-08 as a convention ambiguity across a school-isolation seam - the roadmap's own text states this is "not a builder choice." Presents four options (ratify + pin, zero impact; change Parashari seeding to match its classifier, a genuine narrow certified-value change; the first plus an additive disclosure field mirroring `ADR-0065`'s H-02 precedent; defer), medium-high-confidence lean toward the zero-impact options. No option chosen; no code touched; H-05/H-06/M-02/dasha-boundary-proximity/JATAKA not reopened or started. Governance gates clean (18 DP identifiers, up from 17). Nothing pushed this half of the task. |
 | 7.2.0 | 2026-08-22 | **`ADR-0070` ratifies `DP-017` Option 1 - H-06 CLOSED.** Implemented `CERTIFIED_DASHA_PROFILES` (keyed on the full frozen `DashaProfile` instance, not name alone) and `UnsupportedDashaProfileError`/`validate_dasha_profile()` in `engine/dasha/profile.py`; wired into `vimshottari_from_moon()` (covers all four entry points) in `engine/dasha/vimshottari.py`. Both `DP-017` sub-questions resolved with recorded reasoning (type check as a separate function, matching `validate_birth_data()`'s precedent; allow-list keyed on full-instance equality, applying the B-01 lesson). 7 new tests; negative control verified at the strongest level (production guard actually removed in-session, confirmed genuine test failure, restored, confirmed byte-identical). Zero certified-value impact independently verified (`certify_vimshottari.py` in the isolated PyJHora venv - PASS, 0 lord mismatches; regenerated evidence discarded). 825/825 pytest (up from 818). Governance gates clean (70 ADR entries). H-08/M-02/dasha-boundary-proximity/JATAKA not started; FOUNDATION not reopened. Nothing pushed. |
 | 7.1.0 | 2026-08-22 | Owner authorized "H-06 decision-readiness," per the Dasha roadmap's own step order. Performed the mandated pre-work (state audit; re-read `ADR-0068`/`ADR-0069`, `Q8_CLOSURE_MATRIX.md` s5, the complete roadmap; direct inspection of `engine/dasha/profile.py`, all four `vimshottari.py` entry points, existing tests, `explicit_non_claims`, and the varga-registry precedent). Drafted `DP-017`: independently reproduced both H-06 claims live; confirmed `DashaProfile(...)` is constructed exactly once in the tracked tree - the gap is entirely latent, unlike H-05's own reachable scenario. Classifies H-06 as a certification/governance-scope gap plus a type-safety gap, not a defect. Presents Option 1 (build, mirroring the certified varga-registry pattern) and Option 2 (defer), medium-confidence lean toward Option 1. No option chosen; no code touched; H-08/M-02/dasha-boundary-proximity/JATAKA not started. Governance gates and 818/818 pytest re-run clean (17 DP identifiers, up from 16). Nothing pushed or merged. |
 | 7.0.0 | 2026-08-22 | **`phase-g-governance` MERGED into `main`** (PR #3), on explicit authorization scoped to commit `76ed443`. Created the PR (automatically excluding unpushed `bf66e48`), watched its own CI green, merged via a standard two-parent merge commit (`0e1ef11`) matching PR #1's own precedent. Verified directly: merge parents exactly `a3692e7` + `76ed443`; `bf66e48` confirmed not an ancestor of the new `main`; `origin/main` re-confirmed via `git ls-remote`; CI on `main` itself (run `32567048173`) green with `818 passed` on both interpreters and zero drift, read from the log; `ADR-0068`/`ADR-0069` both `Status: ACCEPTED` in `main`'s own new content. `main` now recoverable as the current approved ACE baseline. H-06 not started. |
