@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 6.2.0 |
+| Version | 6.3.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-22 (ADR-0069 ratifies DP-016 Option 1: H-05 CLOSED via a new hermetic Vimshottari anchor baseline plus a verified negative control, no certified value changes. 2 of 6 JATAKA-entry steps now closed) |
+| Last updated | 2026-08-22 (H-05 (ADR-0069) pushed and CI-confirmed green, run 32565790781, all four jobs, zero drift. Branch fully synced with origin. main untouched, H-06 not started) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,52 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-22 - H-05 (ADR-0069) pushed and CI-confirmed green, run 32565790781
+- Branch / commit SHA: `phase-g-governance`, `76ed443bb9a1afa76abb42fab1e6a809c4d2ae9d` - **pushed**,
+  confirmed identical to `origin/phase-g-governance` in both directions.
+- Previous pushed commit: `e7adeb011b939ae5066faf866216bc5eb1834835`.
+- Task: "H-05 implementation is accepted. Prepare the H-05 commit for remote verification. Do NOT merge
+  phase-g-governance into main yet. Push authorization is granted for the H-05 commit: 76ed443... Push
+  it to origin/phase-g-governance and wait for CI." Followed by an explicit five-step verification list
+  (remote SHA; CI result; working-tree/branch sync; H-05 CI-confirmed; do not start H-06; do not merge to
+  `main`).
+- Relevant ADR/specification: `ADR-0069` (pushed, not re-examined); none reopened.
+- Files changed: `docs/ACE_EXECUTION_STATE.md`, this file. No code, no new ADR - this task is push and
+  verification only.
+- Implementation summary: confirmed `76ed443` was exactly the current local HEAD before pushing (a plain
+  fast-forward, no force needed, no divergence to reconcile). Ran `git push origin phase-g-governance`;
+  it succeeded (`e7adeb0..76ed443 phase-g-governance -> phase-g-governance`), carrying the full chain of
+  ten commits accumulated since the last push (`e7adeb0`) - covering H-01's fix, `DP-015`/boundary-
+  proximity, FOUNDATION exit (`ADR-0068`), the `ADR-0063` addendum, and H-05 (`ADR-0069`) itself. Fetched
+  and confirmed the remote SHA matches local HEAD exactly, in both directions (`git log origin..HEAD` and
+  `git log HEAD..origin` both empty). Located the triggered CI run (`gh run list`), watched it to
+  completion (`gh run watch --exit-status`), then independently confirmed its result via `gh run view
+  --json status,conclusion,headSha`: `{"conclusion":"success","status":"completed","headSha":"76ed443..."}`.
+  Went beyond the green-checkmark summary, per this session's own established discipline: read the actual
+  CI log directly (`gh run view --log`) and confirmed both the 3.11 and 3.12 `Default gate (engine/tests)`
+  steps printed `818 passed` - matching the local result exactly, proving the two new H-05 tests
+  genuinely executed in CI, not merely that the suite as a whole happened to stay green. Also confirmed
+  all three relevant drift-assertion steps (`no-oracle` x2, `oracle`) printed `PASS: 46 evidence file(s)
+  identical to the committed version outside the volatile fields` - genuinely zero drift, the cleanest
+  outcome of any push this session (no evidence-recovery overlay was needed, unlike several earlier
+  episodes). Confirmed the working tree clean and the branch fully synced.
+- Tests executed and results: none run locally this task (verification-only); CI's own `818 passed` (both
+  interpreter legs) read directly from the log, as above.
+- Certification executed and results: not applicable - no certification work this task; CI's own oracle
+  job (`oracle gate (PyJHora, hash-pinned)`) confirmed green with zero drift, read directly from its log.
+- Governance checks executed and results: CI's own `governance gate (identifier families, document
+  structure)` job confirmed green.
+- Known issues: none. Only CI annotation noise (Node.js 20 deprecation notices on `actions/checkout@v4`/
+  `actions/setup-python@v5`/`actions/upload-artifact@v4`, unrelated to this repository's own code).
+- Unresolved questions: none technical.
+- CEO decision required: no, for this entry itself (executes the owner's own push authorization and
+  verification instructions exactly). A decision is needed only when the owner is ready to authorize the
+  next Dasha-roadmap step or a `main` merge.
+- Next authorized action: none self-authorized. Per the owner's own explicit "Do NOT start H-06 yet,"
+  "Do NOT merge into main yet," and "stop at the next genuine repository-governance checkpoint"
+  instructions, stopping here. `main` untouched; H-06/H-08/M-02/dasha boundary-proximity not started;
+  FOUNDATION and H-01 through H-05 not reopened.
 
 ### 2026-08-22 - ADR-0069: DP-016 Option 1 implemented - H-05 CLOSED (hermetic Vimshottari anchor baseline + verified negative control)
 - Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the implementation).
@@ -2115,6 +2161,7 @@ act.
 
 | Version | Date | Change |
 |---|---|---|
+| 6.3.0 | 2026-08-22 | Pushed `76ed443` (H-05, `ADR-0069`) to `origin/phase-g-governance` on explicit push authorization - fast-forward, `e7adeb0..76ed443`, carrying ten commits accumulated since the last push. CI run `32565790781`: all four jobs green, confirmed via `gh run view --json` and by reading the log directly - `818 passed` on both interpreter legs (matching local exactly) and `PASS: 46 evidence file(s) identical...` on all three relevant jobs (genuinely zero drift). Remote SHA confirmed identical to local HEAD, both directions; working tree clean. H-06 not started; `main` not merged, per explicit instruction. |
 | 6.2.0 | 2026-08-22 | **`ADR-0069` ratifies `DP-016` Option 1 - H-05 CLOSED.** `engine/tests/test_vimshottari_hermetic_baseline.py` (new) freezes the Vimshottari anchor construction for five seed cases plus a negative control, verified at the strongest available level (real production line actually mutated in-session, new test confirmed to fail with the exact predicted value, then reverted, confirmed byte-identical). Zero certification impact verified directly (`certify_kp_chain.py` sanity check, M-03 scan surface confirmed unaffected). `certify_vimshottari.py`/`VIMSHOTTARI_V1_certification.json` untouched. 818/818 pytest. H-06/H-08/M-02/dasha boundary-proximity not touched; JATAKA not implemented. 69 ADR entries. Nothing pushed. |
 | 6.1.0 | 2026-08-22 | Owner authorized "H-05 decision-readiness only." Performed the mandated pre-work (state audit; fresh re-read of `ADR-0068`, `Q8_CLOSURE_MATRIX.md` s5, the complete `DASHA_CERTIFICATION_ROADMAP.md`; direct inspection of all existing H-05 code/tests/validator/certifier/CI wiring/certification-artifact schema). Drafted `DP-016`: independently re-verified every claim in the audit's own H-05 finding against the live tree; classifies H-05 as a coverage/baseline gap, not a defect; presents Option 1 (build a frozen hermetic baseline + negative control, zero certified-value impact) and Option 2 (defer), medium-high-confidence lean toward Option 1. No option chosen; no code touched; H-06/H-08/M-02/dasha boundary-proximity not started; JATAKA not implemented. Governance gates and 816/816 pytest re-run clean (16 DP identifiers, up from 15). Nothing pushed. |
 | 6.0.0 | 2026-08-22 | **`ADR-0068` RATIFIED - FOUNDATION IS FORMALLY EXITED.** Recorded ratification (status-only edit, matching the `ADR-0063`-addendum mechanism). Verified repository state fresh (pytest 816/816, drift-check PASS, governance gates PASS). Identified JATAKA's exact unmet entry prerequisites: checked all six Dasha-roadmap steps individually against current repository state - **only step 1 (H-04, `ADR-0053`) is closed**; steps 2-6 (H-05, H-06, H-08, M-02, dasha boundary-proximity indicator) are genuinely untouched, confirmed by direct search. Restated (not newly recommended) the roadmap's own next-step sequencing for the owner's authorization. JATAKA not implemented, not authorized. No code touched; not merged to `main`. Nothing pushed. |
