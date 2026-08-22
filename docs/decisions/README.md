@@ -4,7 +4,7 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | PROPOSED - index of decision papers. Papers present options; they decide nothing. |
-| Version | 3.1.0 |
+| Version | 3.2.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 | Last updated | 2026-08-22 |
 | Review cadence | TBD |
@@ -50,11 +50,13 @@ register uses for ADR-0015 through ADR-0017.
 | DP-016 | H-05 (`docs/DASHA_CERTIFICATION_ROADMAP.md` step 2): the hermetic tier cannot detect a wrong dasha anchor - whether and how to close the gap | JATAKA entry criteria (`Q8_CLOSURE_MATRIX.md` s5); `VIMSHOTTARI_V1` hermetic-tier certification coverage | **ADDRESSED by ADR-0069** (2026-08-22), accepting Option 1: a new hermetic-tier test file freezes the already-oracle-validated Vimshottari anchor construction for five seed cases, plus a genuine negative control independently verified by mutating and reverting the production line in-session. No certified value changes. The paper remains unedited as the options record. |
 | DP-017 | H-06 (`docs/DASHA_CERTIFICATION_ROADMAP.md` step 3): no allow-list for dasha profiles, no type enforcement on `year_length_days` - whether and how to close the gap | JATAKA entry criteria (`Q8_CLOSURE_MATRIX.md` s5); `VIMSHOTTARI_V1` profile-certification coverage | **ADDRESSED by ADR-0070** (2026-08-22), accepting Option 1: `CERTIFIED_DASHA_PROFILES` allow-list (keyed on the full frozen instance) + `UnsupportedDashaProfileError` + `year_length_days` type enforcement, mirroring the varga-registry pattern. The paper remains unedited as the options record. |
 | DP-018 | H-08 (`docs/DASHA_CERTIFICATION_ROADMAP.md` step 4): the KP exact-boundary conversion rule is exported into the Parashari-labelled dasha seed, so at six float spellings of nakshatra boundaries a Parashari-seeded timeline disagrees with the engine's own Parashari `nakshatra()` classifier - which boundary convention a Parashari-seeded dasha should follow, an explicit owner decision per the roadmap's own framing | JATAKA entry criteria (`Q8_CLOSURE_MATRIX.md` s5); `VIMSHOTTARI_V1` seed-classification convention | **ADDRESSED by ADR-0071** (2026-08-22), accepting Option 3: the status quo ratified as deliberate (no calculated value changes) plus `VimshottariTimeline.seed_boundary_convention`, an additive disclosure field mirroring `ADR-0065`'s `declared_division`. The paper remains unedited as the options record, apart from one placeholder-identifier correction. |
+| DP-019 | M-02 (`docs/DASHA_CERTIFICATION_ROADMAP.md` step 5): the Vimshottari oracle gate's two cases named `H10_boundary_moon_a`/`H11_boundary_moon_b` are 6.46 and 5.02 degrees from the nearest nakshatra boundary - farther than most of the gate's own ordinary cases - so the oracle gate has zero genuine near-boundary Moon coverage despite claiming it; whether and how to add real coverage | JATAKA entry criteria (`Q8_CLOSURE_MATRIX.md` s5); `VIMSHOTTARI_V1` oracle-gate boundary coverage | OPEN, drafted |
 
 ## Change history
 
 | Version | Date | Change |
 |---|---|---|
+| 3.2.0 | 2026-08-22 | Allocated and drafted DP-019 (`DP-019-m02-vimshottari-oracle-boundary-coverage.md`), the fourth authorized JATAKA-entry-prerequisite decision-readiness paper, extracting `reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md`'s M-02 finding and `docs/DASHA_CERTIFICATION_ROADMAP.md` step 5. Options only; decides nothing; not implementation-authorized. |
 | 3.1.0 | 2026-08-22 | DP-018 marked ADDRESSED by `ADR-0071` (Option 3 accepted and implemented: status-quo ratification + additive `seed_boundary_convention` disclosure field + pinning test). |
 | 3.0.0 | 2026-08-22 | Allocated and drafted DP-018 (`DP-018-h08-parashari-dasha-boundary-convention.md`), the third authorized JATAKA-entry-prerequisite decision-readiness paper, extracting `reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md`'s H-08 finding and `docs/DASHA_CERTIFICATION_ROADMAP.md` step 4. Options only; decides nothing; not implementation-authorized. |
 | 2.9.0 | 2026-08-22 | DP-017 marked ADDRESSED by `ADR-0070` (Option 1 accepted and implemented: certified dasha-profile allow-list + `year_length_days` type enforcement). |
