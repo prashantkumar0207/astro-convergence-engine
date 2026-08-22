@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 5.4.0 |
+| Version | 6.0.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-22 (ADR-0063 addendum ratified. FOUNDATION-exit readiness audit finds no remaining gap across all six Q8 scope items. ADR-0068 drafted (PROPOSED), declaring FOUNDATION exited if ratified - not yet ratified) |
+| Last updated | 2026-08-22 (ADR-0068 RATIFIED - FOUNDATION IS FORMALLY EXITED. JATAKA not authorized: only step 1 (H-04) of the Dasha roadmap's 6 entry-criteria steps is closed; 5 remain untouched) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,110 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-22 - ADR-0068 RATIFIED: FOUNDATION IS FORMALLY EXITED. JATAKA readiness verified: 5 of 6 Dasha-roadmap entry steps remain unmet
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the changes).
+- Previous approved commit: `1706a8fde893f99550210cde03dbac6d78dcb661` (`ADR-0068` drafted, PROPOSED;
+  fresh FOUNDATION-exit readiness audit) - unpushed, together with `b2f696d`, `d026467`, `381f6e3`,
+  `7a363e5`, `6a560e1`, `d2a780c` beneath it, none newly authorized for push.
+- Task: "CEO RATIFICATION — FOUNDATION EXIT. I ratify ADR-0068 and declare FOUNDATION EXITED, exactly as
+  written in commit 1706a8f. Record the ratification exactly through the repository's prescribed
+  decision-log/ADR mechanism... Do NOT modify any certified calculation. Do NOT reopen any completed
+  FOUNDATION item. Do NOT reinterpret the Q8 exit criteria further. Do NOT treat this as authorization
+  for JATAKA implementation... update ACE_EXECUTION_STATE.md; update AI_HANDOFF_CURRENT.md; verify the
+  resulting repository state; identify the exact Q8 §5 JATAKA entry prerequisites that remain unmet;
+  prepare the next authorized decision/readiness task for JATAKA entry; do not implement Jataka until
+  its governing entry prerequisites are satisfied and authorized."
+- Relevant ADR/specification: `ADR-0068` (ratified, status-only edit); new "Ratification of `ADR-0068`:
+  FOUNDATION formally EXITED (2026-08-22)" follow-up subsection (new); `Q8_CLOSURE_MATRIX.md` s5
+  (JATAKA, re-read fresh); `docs/DASHA_CERTIFICATION_ROADMAP.md` (re-read fresh, still `PROPOSED`);
+  `reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md` H-05/H-06/H-08/M-02 (re-read fresh for accurate citation);
+  `ADR-0053` (H-04's own prior closure, discovered this task, not previously connected to the JATAKA
+  question in this session's own record).
+- Files changed: `docs/DECISION_LOG.md` (`ADR-0068`'s `Status:` line edited PROPOSED->ACCEPTED, nothing
+  else in that entry touched; new ratification follow-up subsection; register header version/ACCEPTED
+  count/"Still PROPOSED" list/summary paragraph updated), `docs/ACE_EXECUTION_STATE.md`, this file.
+  `ADR-0068`'s own Context/Decision/Consequences/Evidence text: **not touched**, matching the same
+  discipline just used for the `ADR-0063` addendum.
+- **Part 1 - ratification recorded:** added a "#### Ratification of `ADR-0068`: FOUNDATION formally
+  EXITED (2026-08-22)" subsection quoting the owner's exact instruction as evidence, then edited only
+  `ADR-0068`'s own `Status:` bullet from `PROPOSED - drafted per the owner's own instruction...` to
+  `ACCEPTED, on the owner's ratifying instruction recorded in [...] this entry's own text`. Updated the
+  register header: `ACCEPTED (45)` -> `ACCEPTED (46)`, range extended to `ADR-0068`, `ADR-0068` removed
+  from "Still PROPOSED," and the summary paragraph now states plainly: "FOUNDATION IS FORMALLY EXITED AS
+  OF 2026-08-22."
+- **Part 2 - repository state verified fresh:** `python -m pytest -q` - 816 passed; `python scripts/
+  check_artifact_drift.py` - PASS, 46 files identical outside volatile fields; `git status --short
+  certification/` - clean; all four governance gates (`check_adr_numbering.py` - 68 entries;
+  `check_identifier_families.py`; `check_retired_identifiers.py`; `git diff --check`) - PASS. No code
+  touched, so this is confirmation, not new evidence.
+- **Part 3 - JATAKA's exact unmet entry prerequisites, identified individually, not assumed from the
+  roadmap document's own summary:** `Q8_CLOSURE_MATRIX.md` s5's entry criteria read: "The Dasha roadmap's
+  steps 1 to 6 complete: depth-3 gate, frozen dasha baseline, profile allow-list, the H-08 convention
+  decision, near-boundary Moon cases, boundary-proximity indicator." Checked each against the current
+  repository state directly:
+  - **Step 1 (H-04, Vimshottari depth-3 oracle gate): CLOSED.** `ADR-0053` (2026-08-17, `Status:
+    ACCEPTED`) remediated this already, with real CI evidence (oracle job PASS, `oracle_pratyantar_rows_
+    compared: 16038`, `oracle_lord_mismatches: 0`) - discovered this task by searching the decision log
+    for any prior H-04/H-05/H-06/H-08/M-02 work, not previously connected to "JATAKA readiness"
+    explicitly in this session's own record, since it was originally authorized as FOUNDATION *entry*
+    gate-integrity work, which happens to be the identical finding the Dasha roadmap's own step 1 names.
+  - **Step 2 (H-05, no hermetic-tier protected dasha baseline): OPEN.** `reports/
+    G1_ARCHITECTURE_AUDIT_2026-08-11.md` H-05: flipping the anchor sign at `engine/dasha/
+    vimshottari.py:122` injects a 4,748-day error into every dasha date and passes every oracle-free
+    gate - only the PyJHora oracle job catches it, and "no committed numeric baseline of dasha calendar
+    dates exists anywhere in the repository." Confirmed still true: no frozen-baseline test found in
+    `engine/tests/test_vimshottari*.py`.
+  - **Step 3 (H-06, no dasha-profile allow-list): OPEN.** H-06: `vimshottari_parashari(birth,
+    dasha_profile=DashaProfile('i_made_this_up', ...))` returns a fully provenance-stamped timeline -
+    nothing rejects it, unlike the varga layer's `CERTIFIED_PRODUCTION_VARGAS`/`UnsupportedVargaError`
+    pattern. Confirmed still true: `grep -n "CERTIFIED_DASHA_PROFILES\|UnsupportedDashaProfileError"
+    engine/dasha/*.py` - zero matches.
+  - **Step 4 (H-08, boundary-convention owner decision): OPEN.** H-08: the KP layer's `[start, end)`
+    exact-rational boundary convention is exported into the Parashari-labelled dasha layer via a shared
+    `Decimal(str(x))` conversion rule, with no owner decision on record for which convention a
+    Parashari-seeded dasha should actually follow. This is explicitly an owner decision, not a builder
+    choice, per the audit's own framing.
+  - **Step 5 (M-02, no near-boundary Moon oracle cases): OPEN.** M-02: the Vimshottari certification's
+    two "boundary" cases sit 6.46 and 5.0 degrees from the nearest nakshatra boundary - farther than a
+    case not labelled as one - so the oracle gate has zero genuine near-boundary Moon coverage in "the
+    layer where boundary proximity has the largest downstream effect."
+  - **Step 6 (dasha-specific boundary-proximity indicator): OPEN.** No mechanism exists anywhere in
+    `engine/dasha/` resembling KP's own `nearest_boundary_arcsec` field - confirmed by the same search
+    `DP-015` already ran for the FOUNDATION-scope item. This is explicitly a **different** requirement
+    from the FOUNDATION-scope "boundary-proximity indicators" item `ADR-0067` already decoupled - `DP-015`
+    section 2 itself notes the two are related but textually distinct, so `ADR-0067`'s decoupling does
+    **not** close this JATAKA-entry step.
+  - **Net: 1 of 6 steps closed, 5 open.** `docs/DASHA_CERTIFICATION_ROADMAP.md` itself remains `Status:
+    PROPOSED` throughout - its own document ratification is not itself required to work a given step
+    (H-04's own closure, `ADR-0053`, happened without ever ratifying the roadmap document), but no step
+    beyond H-04 has been authorized or attempted.
+- **Part 4 - next authorized decision/readiness task, prepared, not executed:** per the owner's own
+  explicit "do not implement Jataka until its governing entry prerequisites are satisfied and
+  authorized" instruction, **no step is begun**. The roadmap's own recommended sequence (`docs/
+  DASHA_CERTIFICATION_ROADMAP.md` section 5) orders the remaining five as: H-05 (cheapest, no owner
+  decision embedded - pure gate-integrity work of the exact same class H-04/M-03 already closed) -> H-06
+  (certified-profile allow-list, same varga-mirroring pattern) -> H-08 (genuine owner decision) -> M-02
+  (near-boundary oracle cases) -> the dasha boundary-proximity indicator. This ordering is presented as
+  the roadmap's own prior recommendation, not a new recommendation manufactured here, and is not acted
+  on - it awaits the owner naming which step (if any) to authorize next.
+- Tests executed and results: `python -m pytest -q` - **816 passed** (unchanged; no code touched).
+- Certification executed and results: not applicable to this task - no certified capability touched;
+  existing artifacts re-verified present and drift-free (see Part 2).
+- Governance checks executed and results: `python scripts/check_adr_numbering.py` - PASS, 68 entries
+  unchanged; `python scripts/check_identifier_families.py` - PASS, 15 DP identifiers unchanged;
+  `python scripts/check_retired_identifiers.py` - PASS, 0 violations; `git diff --check` - clean;
+  `engine/tests/test_retired_identifier_gate_scope.py` - 36 passed.
+- Known issues: none.
+- Unresolved questions: which (if any) Dasha-roadmap step the owner wants pursued next, and in what
+  order - this task does not decide or recommend beyond restating the roadmap's own prior sequencing.
+- CEO decision required: **yes, one** - name which Dasha-roadmap step (H-05, H-06, H-08, M-02, or the
+  dasha boundary-proximity indicator) to authorize next, if any, or direct different work entirely.
+- Next authorized action: none self-authorized. Stopping here per the owner's own "continue until the
+  next genuine CEO decision or blocker" instruction - naming a JATAKA-readiness step is exactly that
+  decision point. Nothing pushed; nothing merged to `main`; JATAKA not started; no certified calculation
+  touched; no completed FOUNDATION item (rise/set, panchanga, `TRIKALAM_V1`, H-01, H-02, boundary-
+  proximity indicators, civil-date rendering) reopened.
 
 ### 2026-08-22 - ADR-0063 addendum ratified; fresh FOUNDATION-exit readiness audit finds no remaining gap; ADR-0068 (FOUNDATION-exit determination) drafted, PROPOSED
 - Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the changes).
@@ -1847,6 +1951,7 @@ act.
 
 | Version | Date | Change |
 |---|---|---|
+| 6.0.0 | 2026-08-22 | **`ADR-0068` RATIFIED - FOUNDATION IS FORMALLY EXITED.** Recorded ratification (status-only edit, matching the `ADR-0063`-addendum mechanism). Verified repository state fresh (pytest 816/816, drift-check PASS, governance gates PASS). Identified JATAKA's exact unmet entry prerequisites: checked all six Dasha-roadmap steps individually against current repository state - **only step 1 (H-04, `ADR-0053`) is closed**; steps 2-6 (H-05, H-06, H-08, M-02, dasha boundary-proximity indicator) are genuinely untouched, confirmed by direct search. Restated (not newly recommended) the roadmap's own next-step sequencing for the owner's authorization. JATAKA not implemented, not authorized. No code touched; not merged to `main`. Nothing pushed. |
 | 5.4.0 | 2026-08-22 | Recorded ratification of the `ADR-0063` addendum (status-only edit, per explicit instruction). Performed a fresh FOUNDATION-exit readiness audit against all six `Q8_CLOSURE_MATRIX.md` s4 scope items, re-verifying on-disk certification artifacts and every relevant ADR's status directly: **finds no remaining gap** - four items certified/resolved, two explicitly decoupled by ratified decision. Drafted `ADR-0068` (`Status: PROPOSED`), presenting this evidence and, if ratified, declaring FOUNDATION exited - not self-ratified, per the owner's own explicit caution. Notes this would not authorize JATAKA (its own entry criteria separately unmet). No code touched; not merged to `main`. Governance gates and 816/816 pytest re-run clean (68 ADR entries, up from 67). Nothing pushed. |
 | 5.3.0 | 2026-08-22 | Drafted a proposed addendum to `ADR-0063` (`Status: PROPOSED`, not ratified), per owner instruction, resolving civil-date rendering's FOUNDATION-exit gap narrowly with ten explicit terms mirroring `DP-015`'s "Option 3 (AMENDED)" treatment. `ADR-0063` and `DP-012` both unedited - `DP-012`'s technical investigation not reopened; no new Q8 interpretation asserted. No code touched. Governance gates and 816/816 pytest re-run clean. Nothing pushed. |
 | 5.2.0 | 2026-08-21 | `ADR-0067` records `DP-015`'s full ratification (Q1/Q2 confirmed; Q3's "Option 3 (AMENDED)" ratified exactly as written, quoted verbatim in the ADR). FOUNDATION-exit readiness audit performed: rise/set, panchanga, trikalam certified and checkpointed; H-01/H-02 resolved; boundary-proximity explicitly decoupled by decision. **Civil-date rendering's `ADR-0063` deferral asserts it "satisfies s4's exit language" - an assertion made before `DP-015`'s rigorous carve-out analysis existed, now called into question by the owner's own confirmed characterization (c). FOUNDATION does NOT yet unambiguously satisfy its exit criteria.** No exit determination recorded; no JATAKA prep begun. Nothing pushed. |
