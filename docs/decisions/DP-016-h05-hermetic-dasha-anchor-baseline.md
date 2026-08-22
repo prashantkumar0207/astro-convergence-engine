@@ -3,8 +3,8 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | OPEN - decision paper. Presents options and recommends one. DECIDES NOTHING. Requires owner approval. |
-| Version | 1.0.0 |
+| Status | **ADDRESSED by `ADR-0069`** (2026-08-22): Option 1 ratified and implemented. The paper's option texts remain unedited as the options record, per this repository's established practice. |
+| Version | 1.1.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 | Last updated | 2026-08-22 |
 | Review cadence | TBD |
@@ -231,4 +231,5 @@ dasha boundary-proximity indicator, or any JATAKA implementation.
 
 | Version | Date | Change |
 |---|---|---|
+| 1.1.0 | 2026-08-22 | **Ratified by `ADR-0069`.** Option 1 accepted and implemented: `engine/tests/test_vimshottari_hermetic_baseline.py` freezes the anchor construction for five seed cases plus a genuine negative control. Header status updated to reflect ratification; option texts themselves left unedited, per established practice. |
 | 1.0.0 | 2026-08-22 | Created. First authorized JATAKA-entry-prerequisite decision-readiness paper, extracting `reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md`'s H-05 finding and `docs/DASHA_CERTIFICATION_ROADMAP.md` step 2, with every claim independently re-verified against the live `engine/dasha/vimshottari.py`, its test suite, its independent validator, its certifier, and CI wiring, not trusted from the roadmap's own summary. Presents two options (build the hermetic baseline; defer) with a medium-high-confidence lean toward building it. Options only; decides nothing; not implementation-authorized. |

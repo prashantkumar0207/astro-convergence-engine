@@ -4,7 +4,7 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | PROPOSED - index of decision papers. Papers present options; they decide nothing. |
-| Version | 2.6.0 |
+| Version | 2.7.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 | Last updated | 2026-08-22 |
 | Review cadence | TBD |
@@ -47,12 +47,13 @@ register uses for ADR-0015 through ADR-0017.
 | DP-013 | H-02 ingress-classification seam: reproduction methodology and fix option, extracted from `ADR-0020` D5's already-written analysis | FOUNDATION exit criteria (`Q8_CLOSURE_MATRIX.md` s4); MUHURTA entry criteria (s10); `TRANSIT_V1`/varga classification seam | **ADDRESSED by ADR-0064** (reproduction methodology, Option C) **and ADR-0065** (fix option, Option 1: `TransitEvent.declared_division`). The paper remains unedited as the options record. |
 | DP-014 | H-01 true-node station-density gap in `find_crossings()`: whether and how to address it, extracted from `reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md`'s H-01 finding | FOUNDATION exit criteria (`Q8_CLOSURE_MATRIX.md` s4); `TRANSIT_V1` true-node completeness claim | **ADDRESSED by ADR-0066** (2026-08-21), accepting Option 2: `find_crossings()` refuses `node_policy` other than mean for Rahu/Ketu via `UnsupportedNodePolicyError`. The paper remains unedited as the options record. |
 | DP-015 | FOUNDATION "boundary-proximity indicators where sensitivity warrants": scope, governance status, legitimate treatment options | FOUNDATION exit criteria (`Q8_CLOSURE_MATRIX.md` s4) | **ADDRESSED by ADR-0067** (2026-08-21): Q1 (H-01/`ADR-0066` reading) and Q2 (carve-out scope) confirmed as drafted; Q3's original Option 3 explicitly NOT ratified; "Option 3 (AMENDED)" (section F) ratified exactly as written - boundary-proximity indicators decoupled from FOUNDATION exit, explicitly tracked as future work, not certified, forward-binding certify-or-refuse rule for future consumers. The paper remains unedited (both original and amended Option 3 text preserved as drafted) as the options record. |
-| DP-016 | H-05 (`docs/DASHA_CERTIFICATION_ROADMAP.md` step 2): the hermetic tier cannot detect a wrong dasha anchor - whether and how to close the gap | JATAKA entry criteria (`Q8_CLOSURE_MATRIX.md` s5); `VIMSHOTTARI_V1` hermetic-tier certification coverage | OPEN, drafted |
+| DP-016 | H-05 (`docs/DASHA_CERTIFICATION_ROADMAP.md` step 2): the hermetic tier cannot detect a wrong dasha anchor - whether and how to close the gap | JATAKA entry criteria (`Q8_CLOSURE_MATRIX.md` s5); `VIMSHOTTARI_V1` hermetic-tier certification coverage | **ADDRESSED by ADR-0069** (2026-08-22), accepting Option 1: a new hermetic-tier test file freezes the already-oracle-validated Vimshottari anchor construction for five seed cases, plus a genuine negative control independently verified by mutating and reverting the production line in-session. No certified value changes. The paper remains unedited as the options record. |
 
 ## Change history
 
 | Version | Date | Change |
 |---|---|---|
+| 2.7.0 | 2026-08-22 | DP-016 marked ADDRESSED by `ADR-0069` (Option 1 accepted: hermetic baseline + negative control). |
 | 2.6.0 | 2026-08-22 | Allocated and drafted DP-016 (`DP-016-h05-hermetic-dasha-anchor-baseline.md`), the first authorized JATAKA-entry-prerequisite decision-readiness paper, extracting `reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md`'s H-05 finding and `docs/DASHA_CERTIFICATION_ROADMAP.md`'s own step-2 framing. Options only; decides nothing; not implementation-authorized. |
 | 2.5.0 | 2026-08-21 | DP-015 marked ADDRESSED by `ADR-0067` (Q1/Q2 confirmed; Q3 "Option 3 (AMENDED)" ratified exactly as written; original Option 3 explicitly not ratified). |
 | 2.4.0 | 2026-08-21 | Allocated and drafted DP-015 (`DP-015-foundation-boundary-proximity-indicators.md`), investigating the FOUNDATION-scope "boundary-proximity indicators where sensitivity warrants" gap. Options only; decides nothing; not implementation-authorized. |

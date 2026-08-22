@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 6.1.0 |
+| Version | 6.2.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-22 (DP-016 drafted per owner authorization: H-05 decision-readiness only. Presents build-vs-defer options for the hermetic-tier dasha-anchor baseline gap; not implementation-authorized) |
+| Last updated | 2026-08-22 (ADR-0069 ratifies DP-016 Option 1: H-05 CLOSED via a new hermetic Vimshottari anchor baseline plus a verified negative control, no certified value changes. 2 of 6 JATAKA-entry steps now closed) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,86 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-22 - ADR-0069: DP-016 Option 1 implemented - H-05 CLOSED (hermetic Vimshottari anchor baseline + verified negative control)
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the implementation).
+- Previous approved commit: `9ce096c4960975889a7a7b93b27134af7b17ad3f` (`DP-016` drafted, H-05
+  decision-readiness only) - unpushed, together with `c221c3f`, `1706a8f`, `b2f696d`, `d026467`,
+  `381f6e3`, `7a363e5`, `6a560e1`, `d2a780c` beneath it, none newly authorized for push.
+- Task: "CEO DECISION — DP-016 H-05. Ratify DP-016 Option 1: Build the frozen hermetic Vimshottari
+  baseline plus the genuine negative control for H-05," with twelve explicit scope constraints: implement
+  only what Option 1 requires; do not change shipped calculation or certified values; freeze from
+  independently established correct behavior; add a genuine negative control against the known anchor
+  sign-flip; preserve existing oracle certification/artifacts; follow `ADR-0053`'s successful pattern; do
+  not weaken any gate; do not touch H-06/H-08/M-02/dasha boundary-proximity; do not begin JATAKA; run
+  relevant tests; update state records; continue to the next genuine decision point; do not push without
+  separate authorization.
+- Relevant ADR/specification: `ADR-0069` (new); `DP-016` section E (the analysis this implements);
+  `ADR-0007` (`VIMSHOTTARI_V1`, not reopened beyond this additive test); `ADR-0053` (the H-04/M-03
+  pattern this implementation deliberately mirrors).
+- Files changed: `engine/tests/test_vimshottari_hermetic_baseline.py` (new), `docs/DECISION_LOG.md` (new
+  `ADR-0069`, register header updated to 47 ACCEPTED), `docs/decisions/README.md` (`DP-016` marked
+  ADDRESSED), `docs/decisions/DP-016-h05-hermetic-dasha-anchor-baseline.md` (header updated to reflect
+  ratification, option text unedited), `docs/ACE_EXECUTION_STATE.md`, this file.
+  `engine/dasha/vimshottari.py`, `certify_vimshottari.py`, and `VIMSHOTTARI_V1_certification.json`:
+  **not touched** in the final committed state (see the in-session mutation-and-revert below).
+- Implementation summary: five frozen seed cases (moon longitudes `5.0`/`100.0`/`213.7`/`355.0`/
+  `45.6789`, four of them reusing exact values already independently documented elsewhere in this test
+  suite - `test_balance_identity`, `test_jd_view_is_consistent_with_exact_offsets`, `test_determinism`,
+  `test_wraparound_lord_cycle_from_late_nakshatra` - plus one fresh case; birth JD `2451545.0`, this
+  suite's existing J2000.0 convention). **Sourcing methodology, resolving `DP-016`'s own open
+  sub-question per the owner's "freeze from the independently established correct behavior"
+  instruction:** each expected value was computed by a standalone script re-deriving the anchor formula
+  independently (not by calling `vimshottari_from_moon` and trusting its output), then cross-checked to
+  match the production function's actual current output exactly, byte-for-byte, for all five cases and
+  both fields checked (`anchor_jd`, second-mahadasha `start_jd`) - freezing behaviour already
+  independently established correct by `VIMSHOTTARI_V1`'s own oracle-tier gate (`ADR-0007`), not
+  re-deriving a fresh correctness claim. `test_hermetic_baseline_matches_frozen_anchor_and_second_
+  mahadasha` asserts exact equality against these frozen values, hermetically. `_mutated_anchor_jd()` is
+  a local, deliberate reimplementation of the audit's documented mutation (`engine/dasha/
+  vimshottari.py:122`'s `-` flipped to `+`) - never imported by production code.
+  `test_anchor_sign_flip_negative_control` asserts the mutation produces a >100-day difference for every
+  case, then re-asserts the real function still matches frozen.
+- **Negative control independently verified beyond what the test file itself proves:** the real
+  production line was actually edited in place during this session (`birth_jd - float(...)` ->
+  `birth_jd + float(...)`), the new test file was run and both tests **failed** as expected - the
+  failure's actual `anchor_jd` value (`2452503.7979555` for the `ashwini_three_eighths_elapsed` case)
+  matched the independently pre-computed mutated value exactly - then the line was reverted and
+  `git diff --stat engine/dasha/vimshottari.py` confirmed zero diff, byte-identical to the committed
+  version. This proves the gate genuinely detects H-05's own documented defect class, not merely that a
+  parallel calculation disagrees with itself.
+- **Certification impact verified directly, not merely predicted:** `scripts/certify_vimshottari.py` and
+  `certification/VIMSHOTTARI_V1_certification.json` were not touched by the implementation - confirmed by
+  `git status` showing no changes to either. M-03 anti-fitting scan-surface impact confirmed by reading
+  `scripts/certification_support.py::_source_files()` directly: it excludes any path with `"tests"` in
+  its parts or a `test_`-prefixed name, matching the new file on both counts. Ran `scripts/
+  certify_kp_chain.py` locally (the only certifier runnable without PyJHora on this Windows host) as a
+  live sanity check; its regenerated artifact differed from the committed one only in the already-
+  understood volatile fields (`date`, `environment.python`) plus a known Windows-path-separator
+  console-transcript quirk (the same class of finding already documented once earlier this session) -
+  discarded via `git checkout --`, not committed.
+- Tests executed and results: `python -m pytest -q` - **818 passed** (up from 816; the two new tests).
+  Also directly observed both new tests **failing** against the real, temporarily-mutated production
+  code (see above), then passing again after the revert - the strongest form of "this gate actually
+  works" evidence used in this session to date.
+- Certification executed and results: `certify_vimshottari.py` not run (requires PyJHora, unavailable on
+  this host; not needed since nothing oracle-tier changed). `certify_kp_chain.py` run as a sanity check
+  only (see above) - PASS, regenerated evidence discarded as volatile-only drift.
+- Governance checks executed and results: `python scripts/check_adr_numbering.py` - PASS, 69 entries (up
+  from 68, `ADR-0069` newly allocated); `python scripts/check_identifier_families.py` - PASS, 16 DP
+  identifiers unchanged; `python scripts/check_retired_identifiers.py` - PASS, 0 violations;
+  `git diff --check` - clean; `engine/tests/test_retired_identifier_gate_scope.py` - 36 passed;
+  `python scripts/check_artifact_drift.py` - PASS, 46 files identical outside volatile fields (after
+  discarding the sanity-check regeneration).
+- Known issues: none.
+- Unresolved questions: none technical. H-06, H-08, M-02, and the dasha boundary-proximity indicator
+  remain open per the Dasha roadmap's own order; none was started, per the owner's explicit scope limits.
+- CEO decision required: no, for this entry itself (implements the owner's own ratification exactly).
+  A decision is needed only when the owner is ready to authorize the next Dasha-roadmap step.
+- Next authorized action: none self-authorized. Per the owner's own "do not begin general Jataka
+  implementation yet" and "do not modify H-06, H-08, M-02 or the dasha boundary-proximity item"
+  instructions, no further step proceeds without the owner naming it. Nothing pushed; nothing merged to
+  `main`; FOUNDATION not reopened; no certified calculation modified.
 
 ### 2026-08-22 - DP-016 drafted: H-05 decision-readiness only, the first authorized JATAKA-entry-prerequisite paper
 - Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the paper).
@@ -2035,6 +2115,7 @@ act.
 
 | Version | Date | Change |
 |---|---|---|
+| 6.2.0 | 2026-08-22 | **`ADR-0069` ratifies `DP-016` Option 1 - H-05 CLOSED.** `engine/tests/test_vimshottari_hermetic_baseline.py` (new) freezes the Vimshottari anchor construction for five seed cases plus a negative control, verified at the strongest available level (real production line actually mutated in-session, new test confirmed to fail with the exact predicted value, then reverted, confirmed byte-identical). Zero certification impact verified directly (`certify_kp_chain.py` sanity check, M-03 scan surface confirmed unaffected). `certify_vimshottari.py`/`VIMSHOTTARI_V1_certification.json` untouched. 818/818 pytest. H-06/H-08/M-02/dasha boundary-proximity not touched; JATAKA not implemented. 69 ADR entries. Nothing pushed. |
 | 6.1.0 | 2026-08-22 | Owner authorized "H-05 decision-readiness only." Performed the mandated pre-work (state audit; fresh re-read of `ADR-0068`, `Q8_CLOSURE_MATRIX.md` s5, the complete `DASHA_CERTIFICATION_ROADMAP.md`; direct inspection of all existing H-05 code/tests/validator/certifier/CI wiring/certification-artifact schema). Drafted `DP-016`: independently re-verified every claim in the audit's own H-05 finding against the live tree; classifies H-05 as a coverage/baseline gap, not a defect; presents Option 1 (build a frozen hermetic baseline + negative control, zero certified-value impact) and Option 2 (defer), medium-high-confidence lean toward Option 1. No option chosen; no code touched; H-06/H-08/M-02/dasha boundary-proximity not started; JATAKA not implemented. Governance gates and 816/816 pytest re-run clean (16 DP identifiers, up from 15). Nothing pushed. |
 | 6.0.0 | 2026-08-22 | **`ADR-0068` RATIFIED - FOUNDATION IS FORMALLY EXITED.** Recorded ratification (status-only edit, matching the `ADR-0063`-addendum mechanism). Verified repository state fresh (pytest 816/816, drift-check PASS, governance gates PASS). Identified JATAKA's exact unmet entry prerequisites: checked all six Dasha-roadmap steps individually against current repository state - **only step 1 (H-04, `ADR-0053`) is closed**; steps 2-6 (H-05, H-06, H-08, M-02, dasha boundary-proximity indicator) are genuinely untouched, confirmed by direct search. Restated (not newly recommended) the roadmap's own next-step sequencing for the owner's authorization. JATAKA not implemented, not authorized. No code touched; not merged to `main`. Nothing pushed. |
 | 5.4.0 | 2026-08-22 | Recorded ratification of the `ADR-0063` addendum (status-only edit, per explicit instruction). Performed a fresh FOUNDATION-exit readiness audit against all six `Q8_CLOSURE_MATRIX.md` s4 scope items, re-verifying on-disk certification artifacts and every relevant ADR's status directly: **finds no remaining gap** - four items certified/resolved, two explicitly decoupled by ratified decision. Drafted `ADR-0068` (`Status: PROPOSED`), presenting this evidence and, if ratified, declaring FOUNDATION exited - not self-ratified, per the owner's own explicit caution. Notes this would not authorize JATAKA (its own entry criteria separately unmet). No code touched; not merged to `main`. Governance gates and 816/816 pytest re-run clean (68 ADR entries, up from 67). Nothing pushed. |
