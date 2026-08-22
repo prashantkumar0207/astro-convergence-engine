@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 6.0.0 |
+| Version | 6.1.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-22 (ADR-0068 RATIFIED - FOUNDATION IS FORMALLY EXITED. JATAKA not authorized: only step 1 (H-04) of the Dasha roadmap's 6 entry-criteria steps is closed; 5 remain untouched) |
+| Last updated | 2026-08-22 (DP-016 drafted per owner authorization: H-05 decision-readiness only. Presents build-vs-defer options for the hermetic-tier dasha-anchor baseline gap; not implementation-authorized) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,90 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-22 - DP-016 drafted: H-05 decision-readiness only, the first authorized JATAKA-entry-prerequisite paper
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the paper).
+- Previous approved commit: `c221c3f0729dc1a506ae2f75f3a4a2227f07eac0` (`ADR-0068` ratified, FOUNDATION
+  formally exited; JATAKA readiness verified) - unpushed, together with `1706a8f`, `b2f696d`, `d026467`,
+  `381f6e3`, `7a363e5`, `6a560e1`, `d2a780c` beneath it, none newly authorized for push.
+- Task: "Authorize the next JATAKA-entry prerequisite work: H-05 decision-readiness only. Do NOT
+  implement H-05 yet. Do NOT begin JATAKA implementation. Do NOT start H-06, H-08, M-02, or the dasha
+  boundary-proximity indicator yet. Follow the existing DASHA_CERTIFICATION_ROADMAP.md order." Followed
+  by an explicit five-step pre-work mandate (state audit; read `ADR-0068`/`ACE_EXECUTION_STATE.md`; read
+  `Q8_CLOSURE_MATRIX.md` s5; read the complete `DASHA_CERTIFICATION_ROADMAP.md`; inspect all existing
+  H-05 evidence, code, tests, certification gates, and prior decisions) and a ten-item determination list
+  for the paper itself.
+- Relevant ADR/specification: `reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md` H-05 (the primary finding,
+  re-read and re-verified in full); `docs/DASHA_CERTIFICATION_ROADMAP.md` (re-read in full, still
+  `Status: PROPOSED`); `ADR-0053` (H-04's own closure, the precedent for this exact class of work);
+  `ADR-0007` (`VIMSHOTTARI_V1`, not reopened).
+- Files changed: `docs/decisions/DP-016-h05-hermetic-dasha-anchor-baseline.md` (new), `docs/decisions/
+  README.md` (`DP-016` registered), `docs/ACE_EXECUTION_STATE.md` (version 4.1.0), this file.
+- **Pre-work performed exactly as mandated:** confirmed branch `phase-g-governance`, HEAD `c221c3f`,
+  clean working tree, `origin/phase-g-governance` still at `e7adeb0` (`git fetch` run to confirm, not
+  assumed). Read `ADR-0068`'s full text fresh (both the audit entry and its ratification follow-up) and
+  `Q8_CLOSURE_MATRIX.md` s5 fresh. Read `docs/DASHA_CERTIFICATION_ROADMAP.md` in full (not excerpted) -
+  its own section 5 "Recommended sequence" is the direct source for "follow the existing roadmap order."
+  Inspected, directly, not from memory: `engine/dasha/vimshottari.py` (confirmed line 122's anchor
+  formula unchanged since the audit); all four `engine/tests/test_vimshottari_*.py` files (found and read
+  the exact JD-consistency and boundary tests the audit names); `validate_vimshottari_holdout.py` (read
+  in full - confirmed its `compare()` function never reads a Julian Day, only `Fraction` year offsets);
+  `scripts/certify_vimshottari.py` (confirmed unconditional PyJHora import, fail-closed `exit(3)`
+  pattern, and that its oracle comparison does read `start_jd` against PyJHora's own independently-
+  computed date - this is the one check that WOULD catch the mutation); `.github/workflows/ci.yml`
+  (confirmed `certify_vimshottari.py` runs only in the `oracle` job, line 284, never `hermetic`);
+  `certification/VIMSHOTTARI_V1_certification.json` (read its schema directly - no lettered gates, only
+  oracle-derived fields; its `explicit_non_claims` list does not mention the hermetic-tier gap);
+  `brihat_fixtures.py` (the established frozen-fixture precedent - confirmed it holds lord sequences,
+  not JD-level instants, so it does not already contain what H-05 needs). Searched `docs/DECISION_LOG.md`
+  for prior H-05 work: zero hits before this paper.
+- Implementation summary (no code touched - decision-paper drafting only): drafted `DP-016`, structured
+  to match this session's established DP template and to answer all ten items the owner's task listed.
+  **Section A** (exact problem): the anchor computation has no hermetic-tier coverage that would
+  independently confirm its correctness - every existing hermetic check is either self-referential
+  (relative to the anchor under test) or structurally blind to Julian Days entirely. **Section B**
+  (what "hermetic-tier protected baseline" means): defined by direct reference to this repository's own
+  established pattern (`brihat_fixtures.py`, the H1-H11 holdout reused across many certifiers) - a
+  committed, independently-sourced, versioned set of expected instant values, checked without PyJHora or
+  network access. **Section C** (what the sign-flip demonstrates): both a coverage gap and a
+  methodological point that every current hermetic check is, with respect to absolute correctness,
+  exactly the kind of self-referential test `.claude/rules/validation.md` itself warns against.
+  **Section D** (classification): a certification/governance coverage gap combined with a genuinely
+  missing baseline - explicitly NOT a calculation defect, since the shipped formula is confirmed correct
+  today. **Section E** (options): Option 1 (build the frozen baseline + negative control, the audit's own
+  proposed solution, with two openly-surfaced but unresolved sub-questions - data source, and whether to
+  bundle with H-06 - neither answered by this paper) and Option 2 (defer, optionally documenting the gap
+  in `explicit_non_claims`). **Sections F/G/H** (certification implications, blast radius, certified-value
+  impact): stated inline per option - Option 1 touches `engine/tests/` only, no certifier or artifact
+  schema change, and independently confirmed zero certified-value impact (not merely quoting the
+  roadmap's own claim, but verifying it against the actual JSON schema and architecture). **Section I**
+  (recommendation): Option 1 at medium-high confidence - higher than this session's typical decision-
+  paper confidence, because the fix is audit-authored, architecturally identical in class and risk
+  profile to H-04/M-03's already-successful `ADR-0053` closure, and JATAKA's own entry criteria name it
+  with no textual opening for a `DP-015`-style decoupling (`Q8_CLOSURE_MATRIX.md` s5's wording is a
+  plain, non-alternative list, unlike s4's H-01/H-02 carve-out - explicitly noted as a reason NOT to
+  invite that treatment here). **Section J** (exact owner decision): select Option 1 or Option 2; if
+  Option 1, optionally specify a data-source preference, though this does not require owner input per se.
+  No option is chosen by the paper; H-06, H-08, M-02, and the dasha boundary-proximity indicator are not
+  started; JATAKA is not implemented.
+- Tests executed and results: `python -m pytest -q` - **816 passed** (unchanged; no code touched).
+- Certification executed and results: not applicable - no certified capability touched; `VIMSHOTTARI_V1`'s
+  own certification artifact inspected only, not regenerated or modified.
+- Governance checks executed and results: `python scripts/check_adr_numbering.py` - PASS, 68 entries
+  unchanged; `python scripts/check_identifier_families.py` - PASS, 16 DP identifiers (up from 15, `DP-016`
+  newly registered); `python scripts/check_retired_identifiers.py` - PASS, 0 violations, clean on the
+  first pass; `git diff --check` - clean; `engine/tests/test_retired_identifier_gate_scope.py` - 36
+  passed.
+- Known issues: none.
+- Unresolved questions: which of `DP-016`'s two options the owner selects for H-05, and (if Option 1) the
+  data-source sub-question, which may be left to implementation judgment.
+- CEO decision required: **yes, one** - select Option 1 (build the frozen hermetic baseline and negative
+  control) or Option 2 (defer) for H-05.
+- Next authorized action: none self-authorized. Stopping here per the owner's own "continue the research
+  and decision-readiness work until the genuine CEO decision point is reached" instruction - selecting an
+  H-05 option is exactly that point. Nothing pushed; nothing implemented; FOUNDATION not reopened; no
+  certified dasha behavior modified; H-06/H-08/M-02/dasha boundary-proximity/JATAKA implementation not
+  started.
 
 ### 2026-08-22 - ADR-0068 RATIFIED: FOUNDATION IS FORMALLY EXITED. JATAKA readiness verified: 5 of 6 Dasha-roadmap entry steps remain unmet
 - Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the changes).
@@ -1951,6 +2035,7 @@ act.
 
 | Version | Date | Change |
 |---|---|---|
+| 6.1.0 | 2026-08-22 | Owner authorized "H-05 decision-readiness only." Performed the mandated pre-work (state audit; fresh re-read of `ADR-0068`, `Q8_CLOSURE_MATRIX.md` s5, the complete `DASHA_CERTIFICATION_ROADMAP.md`; direct inspection of all existing H-05 code/tests/validator/certifier/CI wiring/certification-artifact schema). Drafted `DP-016`: independently re-verified every claim in the audit's own H-05 finding against the live tree; classifies H-05 as a coverage/baseline gap, not a defect; presents Option 1 (build a frozen hermetic baseline + negative control, zero certified-value impact) and Option 2 (defer), medium-high-confidence lean toward Option 1. No option chosen; no code touched; H-06/H-08/M-02/dasha boundary-proximity not started; JATAKA not implemented. Governance gates and 816/816 pytest re-run clean (16 DP identifiers, up from 15). Nothing pushed. |
 | 6.0.0 | 2026-08-22 | **`ADR-0068` RATIFIED - FOUNDATION IS FORMALLY EXITED.** Recorded ratification (status-only edit, matching the `ADR-0063`-addendum mechanism). Verified repository state fresh (pytest 816/816, drift-check PASS, governance gates PASS). Identified JATAKA's exact unmet entry prerequisites: checked all six Dasha-roadmap steps individually against current repository state - **only step 1 (H-04, `ADR-0053`) is closed**; steps 2-6 (H-05, H-06, H-08, M-02, dasha boundary-proximity indicator) are genuinely untouched, confirmed by direct search. Restated (not newly recommended) the roadmap's own next-step sequencing for the owner's authorization. JATAKA not implemented, not authorized. No code touched; not merged to `main`. Nothing pushed. |
 | 5.4.0 | 2026-08-22 | Recorded ratification of the `ADR-0063` addendum (status-only edit, per explicit instruction). Performed a fresh FOUNDATION-exit readiness audit against all six `Q8_CLOSURE_MATRIX.md` s4 scope items, re-verifying on-disk certification artifacts and every relevant ADR's status directly: **finds no remaining gap** - four items certified/resolved, two explicitly decoupled by ratified decision. Drafted `ADR-0068` (`Status: PROPOSED`), presenting this evidence and, if ratified, declaring FOUNDATION exited - not self-ratified, per the owner's own explicit caution. Notes this would not authorize JATAKA (its own entry criteria separately unmet). No code touched; not merged to `main`. Governance gates and 816/816 pytest re-run clean (68 ADR entries, up from 67). Nothing pushed. |
 | 5.3.0 | 2026-08-22 | Drafted a proposed addendum to `ADR-0063` (`Status: PROPOSED`, not ratified), per owner instruction, resolving civil-date rendering's FOUNDATION-exit gap narrowly with ten explicit terms mirroring `DP-015`'s "Option 3 (AMENDED)" treatment. `ADR-0063` and `DP-012` both unedited - `DP-012`'s technical investigation not reopened; no new Q8 interpretation asserted. No code touched. Governance gates and 816/816 pytest re-run clean. Nothing pushed. |
