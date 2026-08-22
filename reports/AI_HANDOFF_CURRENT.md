@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 7.0.0 |
+| Version | 7.1.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-22 (phase-g-governance MERGED into main via PR #3, merge commit 0e1ef11, CI-confirmed green on main itself, run 32567048173. FOUNDATION-complete baseline now on main. H-06 not started) |
+| Last updated | 2026-08-22 (DP-017 drafted per owner authorization: H-06 decision-readiness only. Presents build-vs-defer options for the dasha-profile allow-list/type-enforcement gap; not implementation-authorized) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,96 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-22 - DP-017 drafted: H-06 decision-readiness only, per JATAKA-entry authorization
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the paper).
+- Previous approved commit: `0802247c1b92568d2e08aa0d744a91cf5426ed0f` (state-file updates recording
+  the FOUNDATION -> `main` merge) - unpushed, together with `bf66e48` beneath it, none newly authorized
+  for push. `main` (via PR #3, merge commit `0e1ef11`) is unaffected by this task.
+- Task: "Authorize the next JATAKA-entry prerequisite: H-06 decision-readiness... Continue strictly
+  according to DASHA_CERTIFICATION_ROADMAP.md's established order: H-06 -> H-08 -> M-02 -> Dasha
+  boundary-proximity indicator," with an explicit sixteen-item scope (state audit; re-read `ADR-0068`/
+  `ADR-0069`/`ACE_EXECUTION_STATE.md`; re-read `Q8_CLOSURE_MATRIX.md` s5; re-read the complete roadmap;
+  inspect all existing H-06 evidence; independently establish the exact problem; classify it; identify
+  all legitimate options; determine blast radius and certified-value impact; recommend an option only if
+  the evidence supports one; draft a narrow decision paper; do not choose/ratify; do not implement; do
+  not begin H-08/M-02/dasha-boundary-proximity/JATAKA; do not reopen FOUNDATION; do not push or merge).
+- Relevant ADR/specification: `reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md` H-06 (the primary finding,
+  re-read and independently re-verified in full); `docs/DASHA_CERTIFICATION_ROADMAP.md` (re-read in
+  full, still `Status: PROPOSED`); `engine/astrology/varga_registry.py`/`engine/astrology/__init__.py`
+  (the `CERTIFIED_PRODUCTION_VARGAS`/`UnsupportedVargaError` precedent H-06's own proposed solution
+  names); `ADR-0053`/`ADR-0069` (H-04/H-05, not reopened).
+- Files changed: `docs/decisions/DP-017-h06-dasha-profile-allow-list.md` (new), `docs/decisions/
+  README.md` (`DP-017` registered), `docs/ACE_EXECUTION_STATE.md` (version 5.1.0), this file.
+- **Pre-work performed exactly as mandated:** confirmed branch `phase-g-governance`, working tree clean,
+  `origin/main` at `0e1ef11` and `origin/phase-g-governance` at `76ed443` unchanged since the merge task.
+  Read `ADR-0068`/`ADR-0069`'s full text and `Q8_CLOSURE_MATRIX.md` s5 fresh. Read `docs/
+  DASHA_CERTIFICATION_ROADMAP.md` in full - its own section 5 is the direct source for "follow the
+  established order." Inspected, directly, not from memory: `engine/dasha/profile.py` (confirmed
+  `DashaProfile` is a plain frozen dataclass with zero validation of any field); all four entry points
+  in `engine/dasha/vimshottari.py` (confirmed each forwards `dasha_profile` unchecked); every `engine/
+  tests/test_vimshottari_*.py` file (confirmed zero coverage of an uncertified profile or a float year
+  length); `certification/VIMSHOTTARI_V1_certification.json`'s `explicit_non_claims` (confirmed it
+  already correctly lists "year conventions other than the certified profile" as out of scope - the
+  documentation is accurate, only the code enforcement is missing); `engine/astrology/varga_registry.py`
+  and `engine/astrology/__init__.py` (the `CERTIFIED_PRODUCTION_VARGAS`/`UnsupportedVargaError` pattern
+  H-06's own proposed solution names as the mirror target). Searched `docs/DECISION_LOG.md` and `docs/
+  decisions/` for prior H-06 work: zero hits before this paper (only citations noting it remains open).
+- **Independent reproduction, not trusted from the audit's own summary:** constructed
+  `DashaProfile('i_made_this_up', Fraction(360), 'no source')` and passed it to `vimshottari_from_moon()`
+  live - returned a fully-formed `VimshottariTimeline` with `dasha_profile_name: 'i_made_this_up'`, no
+  exception. Separately constructed `DashaProfile('float_year', 365.25, 'no source')` (a Python `float`
+  for `year_length_days`) - accepted identically, `type(t2.year_length_days)` confirmed `float`.
+  Verified the exactness-destruction claim numerically, not just by type: `Fraction(7) * 365.256364`
+  (the certified exact convention) versus `Fraction(7) * 365.25` (a plausible but wrong float
+  substitute) produce different results (`2556.794548` vs `2556.75`) with **no exception raised either
+  way** - Python's numeric tower silently promotes `Fraction * float` to float arithmetic. Searched the
+  entire tracked tree for `DashaProfile(` construction sites: **exactly one**, the certified
+  `VIMSHOTTARI_MEAN_SIDEREAL_YEAR` instance itself - confirming the gap is entirely latent in the
+  current shipped tree, a materially different risk profile from H-05's own reachable mutation
+  scenario (which had a concrete, documented injection point already in production code).
+- Implementation summary (no code touched - decision-paper drafting only): drafted `DP-017`, structured
+  to match this session's established DP template and the task's own explicit determination list.
+  **Section A** (exact problem): `DashaProfile` enforces nothing - not the profile's certified identity,
+  not the type of its own `year_length_days` field. **Section B** (classification): a certification/
+  governance-scope gap combined with a type-safety gap, explicitly NOT a calculation defect - the
+  certified profile computes correctly, and its own certification artifact's `explicit_non_claims`
+  already correctly disclaims other conventions; the code simply doesn't enforce that documented scope.
+  Two genuinely separate sub-gaps are kept distinct: profile-identity certification versus
+  `year_length_days` type enforcement - a profile could fail either independently of the other.
+  **Section C** (options): Option 1 (build `CERTIFIED_DASHA_PROFILES` + `UnsupportedDashaProfileError`,
+  mirroring the varga-registry pattern precisely, plus type enforcement - with two openly-surfaced,
+  unresolved sub-questions: where the type check lives, `__post_init__` versus entry-point; and how the
+  allow-list is keyed) and Option 2 (defer, given the gap's confirmed latency). **Sections D/E/F**
+  (certification implications, blast radius, certified-value impact): stated inline per option - Option
+  1 touches only `engine/dasha/profile.py`, `engine/dasha/vimshottari.py`, and `engine/tests/`; zero
+  certified-value impact under either option, confirmed directly (the certified profile's own
+  `year_length_days` is already `Fraction`-typed and its `name` would trivially be the allow-list's sole
+  entry). **Section G** (recommendation): Option 1 at **medium** confidence - explicitly weaker than
+  `DP-016`'s own medium-high lean for H-05, because the gap is entirely latent (no reachable production
+  path exercises it today) and two genuine implementation sub-questions remain open, unlike H-05 where
+  the audit's proposed solution left almost nothing to design. **Section I** (exact owner decision):
+  select Option 1 or Option 2; if Option 1, optionally specify a preference on either open sub-question,
+  though neither requires owner input per se. No option is chosen by the paper; H-08, M-02, the dasha
+  boundary-proximity indicator, and any JATAKA implementation are not started; FOUNDATION is not
+  reopened.
+- Tests executed and results: `python -m pytest -q` - **818 passed** (unchanged; no code touched).
+- Certification executed and results: not applicable - no certified capability touched; `VIMSHOTTARI_V1`'s
+  own certification artifact inspected only (its `explicit_non_claims` field), not regenerated.
+- Governance checks executed and results: `python scripts/check_adr_numbering.py` - PASS, 69 entries
+  unchanged; `python scripts/check_identifier_families.py` - PASS, 17 DP identifiers (up from 16, `DP-017`
+  newly registered); `python scripts/check_retired_identifiers.py` - PASS, 0 violations, clean on the
+  first pass; `git diff --check` - clean; `engine/tests/test_retired_identifier_gate_scope.py` - 36
+  passed.
+- Known issues: none.
+- Unresolved questions: which of `DP-017`'s two options the owner selects for H-06, and (if Option 1)
+  the two open implementation sub-questions, which may be left to implementation judgment.
+- CEO decision required: **yes, one** - select Option 1 (build the allow-list and type enforcement) or
+  Option 2 (defer) for H-06.
+- Next authorized action: none self-authorized. Stopping here per the owner's own "continue until the
+  genuine H-06 CEO decision point is reached" instruction - selecting an H-06 option is exactly that
+  point. Nothing pushed; nothing merged; FOUNDATION not reopened; no certified dasha behavior modified;
+  H-08/M-02/dasha-boundary-proximity/JATAKA implementation not started.
 
 ### 2026-08-22 - phase-g-governance MERGED into main (PR #3): FOUNDATION baseline now on main
 - Branch / commit SHA: `main` at `0e1ef115a647b8a44bf4d1a7af2a3cf3a8b96e03` (the merge commit, pushed).
@@ -2232,6 +2322,7 @@ act.
 
 | Version | Date | Change |
 |---|---|---|
+| 7.1.0 | 2026-08-22 | Owner authorized "H-06 decision-readiness," per the Dasha roadmap's own step order. Performed the mandated pre-work (state audit; re-read `ADR-0068`/`ADR-0069`, `Q8_CLOSURE_MATRIX.md` s5, the complete roadmap; direct inspection of `engine/dasha/profile.py`, all four `vimshottari.py` entry points, existing tests, `explicit_non_claims`, and the varga-registry precedent). Drafted `DP-017`: independently reproduced both H-06 claims live; confirmed `DashaProfile(...)` is constructed exactly once in the tracked tree - the gap is entirely latent, unlike H-05's own reachable scenario. Classifies H-06 as a certification/governance-scope gap plus a type-safety gap, not a defect. Presents Option 1 (build, mirroring the certified varga-registry pattern) and Option 2 (defer), medium-confidence lean toward Option 1. No option chosen; no code touched; H-08/M-02/dasha-boundary-proximity/JATAKA not started. Governance gates and 818/818 pytest re-run clean (17 DP identifiers, up from 16). Nothing pushed or merged. |
 | 7.0.0 | 2026-08-22 | **`phase-g-governance` MERGED into `main`** (PR #3), on explicit authorization scoped to commit `76ed443`. Created the PR (automatically excluding unpushed `bf66e48`), watched its own CI green, merged via a standard two-parent merge commit (`0e1ef11`) matching PR #1's own precedent. Verified directly: merge parents exactly `a3692e7` + `76ed443`; `bf66e48` confirmed not an ancestor of the new `main`; `origin/main` re-confirmed via `git ls-remote`; CI on `main` itself (run `32567048173`) green with `818 passed` on both interpreters and zero drift, read from the log; `ADR-0068`/`ADR-0069` both `Status: ACCEPTED` in `main`'s own new content. `main` now recoverable as the current approved ACE baseline. H-06 not started. |
 | 6.3.0 | 2026-08-22 | Pushed `76ed443` (H-05, `ADR-0069`) to `origin/phase-g-governance` on explicit push authorization - fast-forward, `e7adeb0..76ed443`, carrying ten commits accumulated since the last push. CI run `32565790781`: all four jobs green, confirmed via `gh run view --json` and by reading the log directly - `818 passed` on both interpreter legs (matching local exactly) and `PASS: 46 evidence file(s) identical...` on all three relevant jobs (genuinely zero drift). Remote SHA confirmed identical to local HEAD, both directions; working tree clean. H-06 not started; `main` not merged, per explicit instruction. |
 | 6.2.0 | 2026-08-22 | **`ADR-0069` ratifies `DP-016` Option 1 - H-05 CLOSED.** `engine/tests/test_vimshottari_hermetic_baseline.py` (new) freezes the Vimshottari anchor construction for five seed cases plus a negative control, verified at the strongest available level (real production line actually mutated in-session, new test confirmed to fail with the exact predicted value, then reverted, confirmed byte-identical). Zero certification impact verified directly (`certify_kp_chain.py` sanity check, M-03 scan surface confirmed unaffected). `certify_vimshottari.py`/`VIMSHOTTARI_V1_certification.json` untouched. 818/818 pytest. H-06/H-08/M-02/dasha boundary-proximity not touched; JATAKA not implemented. 69 ADR entries. Nothing pushed. |
