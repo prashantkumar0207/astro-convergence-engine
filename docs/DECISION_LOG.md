@@ -3843,6 +3843,91 @@ follow-up entry, matching the same mechanism just used for the `ADR-0063` addend
 
 ---
 
+## ADR-0071 - Owner ratification of DP-018 Option 3: ratify the H-08 boundary convention as deliberate, add an additive convention-disclosure field and a pinning test
+
+- **Date:** 2026-08-22
+- **Status:** **ACCEPTED**, on the owner's explicit instruction: "CEO DECISION — DP-018 H-08. Ratify
+  DP-018 Option 3: Ratify the existing H-08 boundary convention/status quo and add the proposed additive
+  disclosure field/documentation exactly as specified by DP-018 Option 3." Per `docs/
+  PROJECT_CONSTITUTION.md` s11, this instruction is the ratifying act; this entry records it and the
+  implementation it authorizes, matching the precedent used throughout this session (`ADR-0053`,
+  `ADR-0066`, `ADR-0069`, `ADR-0070`).
+- **Decision:** `DP-018`'s **Option 3 is ratified and implemented**: Option 1's status-quo ratification
+  (VIMSHOTTARI_V1's seed-nakshatra classification continues to use the KP layer's exact `[start, end)`
+  boundary-ownership rule for every seeding school, including Parashari - this is now a deliberate,
+  recorded convention, not an undocumented leak) **plus** an additive convention-disclosure field on
+  `VimshottariTimeline`, mirroring `ADR-0065`'s `TransitEvent.declared_division` precedent for the
+  structurally identical H-02 seam. **No calculated Vimshottari value changes.** Option 2 (change
+  Parashari seeding to match its own classifier) is **not** chosen; H-08 is **not** deferred.
+- **Implementation, matching `DP-018` section C's own Option 1 and Option 3 analysis exactly:**
+  1. `engine/models/dasha.py`: added `SEED_BOUNDARY_CONVENTION_KP_EXACT = "kp_exact_start_end"` (a named
+     constant, documented in full - what it means, why it is the only current value, where the six known
+     divergent boundaries are pinned) and a new field, `VimshottariTimeline.seed_boundary_convention: str
+     = SEED_BOUNDARY_CONVENTION_KP_EXACT` (defaulted, appended last in field order - the only production
+     construction site in the tracked tree, `vimshottari_from_moon()`, still passes it explicitly, matching
+     this file's existing style of never relying on defaults at the one real call site).
+  2. `engine/dasha/vimshottari.py`: `vimshottari_from_moon()`'s return now passes `seed_boundary_
+     convention=SEED_BOUNDARY_CONVENTION_KP_EXACT` explicitly; the module's own docstring gained an H-08
+     paragraph recording the ratification, cross-referencing the constant and the new pinning test, and
+     stating explicitly that no calculated value changed. No classification or arithmetic logic touched.
+  3. New `engine/tests/test_vimshottari_h08_boundary_convention.py` (6 tests): (a) exactly the six
+     previously-reproduced boundary floats (`k = 7, 11, 14, 17, 22, 25`) diverge from `engine.astrology.
+     nakshatra.nakshatra()` - the audit's own "Tests required" line, satisfied directly; (b) each
+     divergence is off by exactly one nakshatra, pinning direction and magnitude, not merely existence;
+     (c) the other 21 boundary floats still agree exactly - a negative control on the pin itself, proving
+     (a) is not vacuous; (d) a genuine negative control demonstrating the pin can detect a real regression:
+     `monkeypatch` sets `engine.astrology.longitude_utils.BOUNDARY_TOLERANCE` to `0.0` mid-test, the
+     divergent set changes from the pinned six to a different set (verified this session: `{17}` alone),
+     proving the assertions would fail under an actual convention change, then restores and re-confirms;
+     (e) the new `seed_boundary_convention` field is present and explicit on timelines from all three call
+     shapes (`vimshottari_from_moon()` directly, `vimshottari_parashari()`, `vimshottari_kp()`), confirming
+     it is independent of, not a proxy for, which school seeded the timeline; (f) H-05's own frozen
+     baseline (`ADR-0069`) reproduces exactly, unchanged - the new field is additive disclosure only.
+  4. `scripts/certify_vimshottari.py`: `explicit_non_claims` gained one new entry disclosing the seam by
+     name, citing H-08/this ADR, `VimshottariTimeline.seed_boundary_convention`, and the new pinning test
+     file - closing the gap `DP-018` section 2 identified (unlike H-06's own artifact, this one did not
+     already disclose the seam). No other field of the certifier or its output schema changed.
+  5. `docs/decisions/DP-018-h08-parashari-dasha-boundary-convention.md`: one placeholder decision-
+     identifier token, in the paper's own Option 1 description of what the future disclosure text would
+     cite, replaced with prose that does not spell a fake, non-compliant identifier, after `engine/tests/
+     test_retired_identifier_gate_scope.py` caught it as a genuine identifier-family violation. This is a
+     mechanical correction of a placeholder string, not a substantive edit to any option, evidence claim,
+     or the recommendation - the paper's analysis and options are otherwise exactly as drafted.
+- **Certification implications, verified not merely predicted:** `scripts/certify_vimshottari.py` re-run
+  in the isolated PyJHora exploration venv after the `explicit_non_claims` edit - **PASS, `lord
+  mismatches: 0`, `max start delta: 1.86e-09 days`, `oracle moon delta: 0.745776 arcsec max`**, every
+  calculated figure identical to the pre-existing certified evidence. `python scripts/
+  check_artifact_drift.py` run against the regenerated-but-uncommitted artifact correctly flagged exactly
+  one non-volatile change - `explicit_non_claims: length 4 -> 5` - and nothing else; this is the intended,
+  understood, now-recorded change this entry authorizes, not an unexplained drift. The regenerated
+  `vimshottari.console.txt`'s Windows-path backslash artifact (`certification\...` vs the committed
+  `certification/...`) was corrected to match the committed convention before commit, per the same
+  understood cross-platform quirk documented in `ADR-0069`'s and `ADR-0070`'s own evidence sections - not
+  a substantive change, a known local-regeneration artifact. M-03 anti-fitting scan-surface impact
+  confirmed nil via a `certify_kp_chain.py` sanity check (only the same class of volatile-field diff;
+  discarded, not committed) - modifying existing production files does not change `modules_scanned`, and
+  the new test file is excluded from the scan by construction.
+- **Consequences:** No existing certified Vimshottari value changes, in `VIMSHOTTARI_V1` or any other
+  capability - confirmed directly (831 passed, up from 825 by exactly the 6 new tests; every calculated
+  certification figure identical; `check_artifact_drift.py` shows only the one intended, now-recorded
+  `explicit_non_claims` addition). H-08 (`docs/DASHA_CERTIFICATION_ROADMAP.md` step 4 of 6) is **closed**.
+  H-04 (`ADR-0053`), H-05 (`ADR-0069`), and H-06 (`ADR-0070`) were already closed and remain untouched -
+  neither reopened. M-01 (the sibling, not-in-scope KP-layer pinning-test finding) remains open and
+  unaddressed, as before. M-02, the dasha boundary-proximity indicator, and general JATAKA implementation
+  remain not started. JATAKA remains not entered - two of its six entry-criteria steps are still unmet.
+  FOUNDATION is not reopened; `main` is not merged into.
+- **Evidence:** the owner's "CEO DECISION — DP-018 H-08" instruction, quoted above; `DP-018` sections C
+  (Options 1 and 3) and G (the recommendation this entry accepts); `python -m pytest -q` - 831 passed, 0
+  failed, 0 skipped; `python -m pytest engine/tests/test_vimshottari_h08_boundary_convention.py -v` - 6/6
+  passed, including the `BOUNDARY_TOLERANCE`-mutation negative control; `python scripts/
+  certify_vimshottari.py` (isolated exploration venv, PyJHora) - PASS, zero lord mismatches, all
+  calculated figures unchanged; `python scripts/certify_kp_chain.py` plus `python scripts/
+  check_artifact_drift.py` confirming the only non-volatile change is the intended `explicit_non_claims`
+  addition; `scripts/check_adr_numbering.py`, `scripts/check_identifier_families.py`, `scripts/
+  check_retired_identifiers.py`, `git diff --check` - all PASS.
+
+---
+
 ## ADR template (copy, do not edit above the line)
 
 ## ADR-XXXX - <title>

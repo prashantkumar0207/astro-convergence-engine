@@ -193,6 +193,14 @@ def main():
             "depths beyond pratyantardasha (DA-C)",
             "year conventions other than the certified profile",
             "transit or event overlays",
+            (
+                "agreement with engine.astrology.nakshatra's tolerance-promoted "
+                "classifier at a boundary: seed classification uses the KP "
+                "layer's exact [start, end) rule for every school, including "
+                "Parashari - a deliberate, ratified convention (H-08, ADR-0071), "
+                "not a defect. See VimshottariTimeline.seed_boundary_convention "
+                "and engine/tests/test_vimshottari_h08_boundary_convention.py."
+            ),
         ],
         "environment": {"python": sys.version.split()[0]},
         "preconditions": preconditions,

@@ -21,6 +21,15 @@ anchor_jd + float(offset_years x year_length_days).
 Seeding is school-explicit (Decision DA-B): entry points require a
 provenance-stamped snapshot computed under PARASHARI_LAHIRI or
 KP_KRISHNAMURTI and record which one seeded the timeline.
+
+H-08 (DP-018 Option 3, ADR-0071): the exact [start, end) boundary
+rule above is used for seed classification regardless of which
+school seeded the timeline - a deliberate, ratified convention, not
+an accidental leak. It can differ from engine.astrology.nakshatra's
+own tolerance-promoted classifier at six documented boundary floats;
+see SEED_BOUNDARY_CONVENTION_KP_EXACT in engine.models.dasha and
+engine/tests/test_vimshottari_h08_boundary_convention.py, which pins
+exactly where and why. No calculated value changed by ADR-0071.
 """
 
 from decimal import Decimal
@@ -43,7 +52,11 @@ from engine.dasha.tables import (
     YEARS_BY_LORD,
 )
 from engine.models.birth_data import BirthData
-from engine.models.dasha import DashaPeriod, VimshottariTimeline
+from engine.models.dasha import (
+    SEED_BOUNDARY_CONVENTION_KP_EXACT,
+    DashaPeriod,
+    VimshottariTimeline,
+)
 
 _SCHOOL_BY_PROFILE = {
     PARASHARI_LAHIRI.name: "parashari",
@@ -159,6 +172,7 @@ def vimshottari_from_moon(
         balance_years=balance,
         periods=tuple(periods),
         provenance=provenance,
+        seed_boundary_convention=SEED_BOUNDARY_CONVENTION_KP_EXACT,
     )
 
 

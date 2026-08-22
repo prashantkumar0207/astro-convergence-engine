@@ -3,8 +3,8 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | OPEN - decision paper. Presents options and recommends one. DECIDES NOTHING. Requires owner approval. |
-| Version | 1.0.0 |
+| Status | **ADDRESSED by ADR-0071** (2026-08-22) - owner ratified Option 3 (ratify the status quo + add an additive convention-disclosure field). This paper's own text is unedited below as the options record, apart from one placeholder-identifier correction (see the change history); see `ADR-0071` for the ratifying instruction and implementation record. |
+| Version | 1.1.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 | Last updated | 2026-08-22 |
 | Review cadence | TBD |
@@ -171,7 +171,7 @@ six divergent boundary floats found this session (or all reachable ones), assert
 with `nakshatra()` explicitly, so the difference is a recorded, visible convention rather than an
 undocumented surprise. Add the missing disclosure to `certification/VIMSHOTTARI_V1_certification.json`'s
 `explicit_non_claims` ("dasha seed classification at a nakshatra boundary may differ from the engine's
-general-purpose Parashari classifier by design; see ADR-NNNN"). Optionally update `engine/dasha/
+general-purpose Parashari classifier by design; see the ratifying decision-log entry"). Optionally update `engine/dasha/
 vimshottari.py`'s own module docstring and `docs/KP_CHAIN_SPEC.md` s7's already-partially-written
 rationale to cross-reference this specific instance.
 
@@ -335,4 +335,5 @@ the dasha boundary-proximity indicator, or any JATAKA implementation.
 
 | Version | Date | Change |
 |---|---|---|
+| 1.1.0 | 2026-08-22 | Marked ADDRESSED by `ADR-0071` (Option 3 accepted and implemented: status quo ratified + `SEED_BOUNDARY_CONVENTION_KP_EXACT` disclosure field + pinning test). One placeholder decision-identifier token in section C's Option 1 text (which `engine/tests/test_retired_identifier_gate_scope.py` correctly caught as a genuine identifier-family violation) corrected to non-identifier-shaped prose - a mechanical fix, not a substantive edit; the paper's options, evidence, and recommendation are otherwise exactly as drafted. |
 | 1.0.0 | 2026-08-22 | Created. Third authorized JATAKA-entry-prerequisite decision-readiness paper, extracting `reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md`'s H-08 finding and `docs/DASHA_CERTIFICATION_ROADMAP.md` step 4, with every claim independently re-verified against the live `engine/dasha/vimshottari.py`, `engine/astrology/nakshatra.py`/`longitude_utils.py`, `engine/kp/intervals.py`, the committed consistency tests, and the certification artifact's own `explicit_non_claims` - not trusted from the audit's own summary. Independently reproduced the audit's own reported cardinality exactly (six divergent boundary floats at the literal `float(k * 360/27)` spellings), and additionally characterized the broader boundary geometry (all 26 non-zero boundaries diverge under a fixed-offset synthetic probe, clarifying the audit's "six" figure is about naturally-occurring float spellings, not a claim of only six at-risk boundaries). Classifies H-08 as a convention ambiguity across a school-isolation seam, combined with a documentation gap and a test-coverage gap - not a calculation defect. Confirmed no interaction with H-05 (`ADR-0069`) or H-06 (`ADR-0070`); neither reopened. Presents four options (ratify status quo + pin; change Parashari seeding to match its own classifier; the first option plus an additive disclosure field mirroring `ADR-0065`'s H-02 precedent; defer), medium-high-confidence lean toward the zero-impact options (1 or 3). Options only; decides nothing; not implementation-authorized. |

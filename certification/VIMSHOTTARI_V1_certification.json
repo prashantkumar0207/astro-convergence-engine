@@ -1,7 +1,7 @@
 {
  "schema": "vimshottari_v1_certification",
  "adr": "ADR-0007",
- "date": "2026-08-20",
+ "date": "2026-08-22",
  "scope": "Vimshottari maha/antar/pratyantar timelines, school-explicit seeding",
  "year_convention": {
   "profile": "vimshottari_mean_sidereal_year",
@@ -185,10 +185,11 @@
   "other dasha systems (Ashtottari, Yogini, ...)",
   "depths beyond pratyantardasha (DA-C)",
   "year conventions other than the certified profile",
-  "transit or event overlays"
+  "transit or event overlays",
+  "agreement with engine.astrology.nakshatra's tolerance-promoted classifier at a boundary: seed classification uses the KP layer's exact [start, end) rule for every school, including Parashari - a deliberate, ratified convention (H-08, ADR-0071), not a defect. See VimshottariTimeline.seed_boundary_convention and engine/tests/test_vimshottari_h08_boundary_convention.py."
  ],
  "environment": {
-  "python": "3.11.15"
+  "python": "3.12.10"
  },
  "preconditions": {
   "data_assets": {
