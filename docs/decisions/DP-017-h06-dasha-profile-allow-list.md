@@ -3,8 +3,8 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | OPEN - decision paper. Presents options and recommends one. DECIDES NOTHING. Requires owner approval. |
-| Version | 1.0.0 |
+| Status | **ADDRESSED by ADR-0070** (2026-08-22) - owner ratified Option 1 (build the allow-list and type enforcement). This paper's own text is unedited below as the options record; see `ADR-0070` for the ratifying instruction and implementation record. |
+| Version | 1.1.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 | Last updated | 2026-08-22 |
 | Review cadence | TBD |
@@ -223,4 +223,5 @@ implementation.
 
 | Version | Date | Change |
 |---|---|---|
+| 1.1.0 | 2026-08-22 | Marked ADDRESSED by `ADR-0070` (Option 1 accepted and implemented: `CERTIFIED_DASHA_PROFILES` + `UnsupportedDashaProfileError` + `validate_dasha_profile()`, both open sub-questions resolved). Paper's substantive text below unchanged. |
 | 1.0.0 | 2026-08-22 | Created. Second authorized JATAKA-entry-prerequisite decision-readiness paper, extracting `reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md`'s H-06 finding and `docs/DASHA_CERTIFICATION_ROADMAP.md` step 3, with every claim independently re-verified against the live `engine/dasha/profile.py`/`vimshottari.py`, the varga-registry precedent it cites, and the certification artifact's own `explicit_non_claims`, not trusted from the roadmap's own summary. Confirmed `DashaProfile` is constructed exactly once anywhere in the tracked tree (the certified instance itself) - the gap is entirely latent today. Presents two options (build the allow-list/type guard; defer) with a medium-confidence lean toward building it. Options only; decides nothing; not implementation-authorized. |

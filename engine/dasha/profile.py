@@ -45,3 +45,58 @@ VIMSHOTTARI_MEAN_SIDEREAL_YEAR = DashaProfile(
         "DHASA_YEAR_DURATION.MEAN_SIDEREAL_YEAR)"
     ),
 )
+
+
+class UnsupportedDashaProfileError(NotImplementedError):
+    """Raised when a dasha profile is not production-certified (H-06, ADR-0070)."""
+
+
+#: The sanctioned VIMSHOTTARI_V1 profile set (H-06, ADR-0070). Keyed on the
+#: full frozen instance, not on `name` alone: `DashaProfile` auto-generates
+#: field-by-field `__eq__`, so `in` here verifies `year_length_days` and
+#: `source` too, not just the name - a name-only allow-list would let a
+#: same-named profile carrying a different (uncertified) year_length_days
+#: through, the exact class of gap this repository's own varga-registry
+#: remediation (B-01, `reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md`) found
+#: and fixed for divisional charts. Every addition requires its own
+#: approved ADR and certification artifact, mirroring
+#: `engine.astrology.CERTIFIED_PRODUCTION_VARGAS`.
+CERTIFIED_DASHA_PROFILES = (VIMSHOTTARI_MEAN_SIDEREAL_YEAR,)  # ADR-0007, VIMSHOTTARI_V1
+
+
+def validate_dasha_profile(profile: DashaProfile) -> None:
+    """
+    Refuse a dasha profile VIMSHOTTARI_V1 has not certified (H-06,
+    ADR-0070). Two independent checks, in this order so each failure
+    mode gets its own clear message:
+
+    1. `year_length_days` must actually be a `Fraction` - the type the
+       module's own docstrings promise "exact rational arithmetic
+       throughout" on. A same-valued `float` is checked separately
+       from certification-identity below because `Fraction(365256364,
+       1000000) != 365.256364` in Python's own float representation
+       (verified: they are not bit-exact), so relying on the identity
+       check alone to also catch a wrong-typed field would be an
+       accident of this one profile's specific numbers, not a real
+       guarantee.
+    2. The profile must be one of `CERTIFIED_DASHA_PROFILES` exactly -
+       not merely share a certified name.
+
+    Raises `UnsupportedDashaProfileError` (a `NotImplementedError`
+    subclass, matching `UnsupportedVargaError`'s own convention) naming
+    what is actually wrong and what is certified.
+    """
+
+    if not isinstance(profile.year_length_days, Fraction):
+        raise UnsupportedDashaProfileError(
+            f"dasha profile {profile.name!r} has year_length_days of type "
+            f"{type(profile.year_length_days).__name__}, not Fraction - "
+            "VIMSHOTTARI_V1 certifies exact rational year lengths only."
+        )
+
+    if profile not in CERTIFIED_DASHA_PROFILES:
+        certified_names = tuple(p.name for p in CERTIFIED_DASHA_PROFILES)
+        raise UnsupportedDashaProfileError(
+            f"dasha profile {profile.name!r} is not production-certified. "
+            f"Certified: {certified_names}."
+        )

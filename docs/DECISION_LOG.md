@@ -3751,6 +3751,98 @@ follow-up entry, matching the same mechanism just used for the `ADR-0063` addend
 
 ---
 
+## ADR-0070 - Owner ratification of DP-017 Option 1: certified dasha-profile allow-list and year_length_days type enforcement, closing H-06
+
+- **Date:** 2026-08-22
+- **Status:** **ACCEPTED**, on the owner's explicit instruction: "CEO DECISION — DP-017 H-06. Ratify
+  DP-017 Option 1. Build the certified Dasha-profile protection and type-safety enforcement described by
+  Option 1." Per `docs/PROJECT_CONSTITUTION.md` s11, this instruction is the ratifying act; this entry
+  records it and the implementation it authorizes, matching the precedent used throughout this session
+  (`ADR-0053`, `ADR-0066`, `ADR-0069`).
+- **Decision:** `DP-017`'s **Option 1 is ratified and implemented**: "A `CERTIFIED_DASHA_PROFILES`
+  constant mirroring the varga pattern, with a refusal error, plus runtime type enforcement on
+  `year_length_days`" (verbatim from the original G1 audit, preserved in substance in `DP-017` section
+  2). Option 2 (defer) is **not** chosen.
+- **Implementation, matching `DP-017` section C's own Option 1 analysis exactly, and resolving both
+  sub-questions it left open, with reasoning recorded per the owner's own instruction:**
+  1. **Sub-question 1 (where the type check lives) resolved: a separate validation function, not
+     `DashaProfile.__post_init__`.** Reasoning: `engine/core/validation.py`'s `validate_birth_data()` is
+     this repository's own directly analogous precedent - `BirthData`, also a frozen dataclass with
+     validated fields, is validated by a standalone function called explicitly at the calculation entry
+     point, not by a dataclass-internal guard. No dataclass anywhere in this repository (`BirthData`,
+     `CalculationProfile`, `DashaProfile` itself) uses `__post_init__` for validation. A construction-time
+     guard would also be a wider blast radius than necessary, rejecting even non-production test
+     constructions of `DashaProfile`; a usage-site guard, matching `validate_birth_data()`'s own scope, is
+     the narrower design.
+  2. **Sub-question 2 (allow-list keying) resolved: the full frozen instance, not the profile name
+     alone.** Reasoning, recorded in `engine/dasha/profile.py`'s own new docstring: `DashaProfile` is
+     `@dataclass(frozen=True)`, which auto-generates field-by-field `__eq__`; keying `CERTIFIED_
+     DASHA_PROFILES` on the whole object (`profile in CERTIFIED_DASHA_PROFILES`) therefore verifies
+     `year_length_days` and `source` too, not just `name` - a name-only allow-list would let a
+     same-named profile carrying a different, uncertified `year_length_days` through, exactly the class
+     of gap this repository's own varga-registry remediation (B-01, `reports/
+     G1_ARCHITECTURE_AUDIT_2026-08-11.md`) found and fixed for divisional charts. Verified directly this
+     entry, not assumed: `Fraction(365256364, 1000000) == 365.256364` is `False` in Python's own
+     representation, so object-equality alone would already reject a float-typed substitute in this
+     specific case - but the separate, explicit `isinstance(..., Fraction)` check (item 3 below) is kept
+     as an independent guard rather than relying on that numeric coincidence.
+  3. `engine/dasha/profile.py`: added `UnsupportedDashaProfileError(NotImplementedError)` (mirroring
+     `UnsupportedVargaError`'s own `NotImplementedError` subclassing convention); `CERTIFIED_
+     DASHA_PROFILES = (VIMSHOTTARI_MEAN_SIDEREAL_YEAR,)`, mirroring `engine.astrology.
+     CERTIFIED_PRODUCTION_VARGAS`'s role as "the single source of truth"; `validate_dasha_profile()`,
+     which checks `isinstance(profile.year_length_days, Fraction)` first (a materially different failure
+     mode from certification identity, given its own clear message), then `profile in
+     CERTIFIED_DASHA_PROFILES`.
+  4. `engine/dasha/vimshottari.py`: `validate_dasha_profile(dasha_profile)` called once, at the top of
+     `vimshottari_from_moon()` - the single shared entry point `vimshottari_from_snapshot()`,
+     `vimshottari_parashari()`, and `vimshottari_kp()` all route through, matching `ADR-0066`'s own
+     single-choke-point placement for H-01. No other line of `vimshottari_from_moon()`'s own arithmetic
+     changed.
+  5. New `engine/tests/test_vimshottari_profile_allow_list.py` (7 tests): the certified profile accepted,
+     both directly and via `vimshottari_from_moon()`; an uncertified profile refused; a float
+     `year_length_days` refused, including under the certified profile's own name (proving the type
+     check and the identity check are independent); a well-typed but uncertified profile refused (proving
+     the identity check, not merely the type check, is what catches it); `CERTIFIED_DASHA_PROFILES`
+     contains exactly the one certified instance; the certified computation's own already-independently-
+     verified frozen values (`DP-016`/`ADR-0069`'s own H-05 baseline) reproduce exactly, unchanged.
+- **Negative control independently verified beyond what the test file itself proves, matching `ADR-
+  0069`'s own strongest-available-evidence discipline:** the real `validate_dasha_profile(dasha_profile)`
+  call was actually removed from `vimshottari_from_moon()` in this session, the new test file was run,
+  and **exactly the two entry-point-level refusal assertions failed** (`test_uncertified_profile_
+  refused`, `test_float_year_length_refused`) - the direct `validate_dasha_profile()` calls inside those
+  same tests still correctly raised, since only the call *site* was removed, not the function itself.
+  This precisely demonstrates the guard's wiring into the entry point, not merely the function's own
+  existence, is what protects production code. The line was then restored; `git diff` against the
+  intended final state showed exactly the designed change and nothing else.
+- **Certification implications, verified not merely predicted:** `scripts/certify_vimshottari.py` run in
+  the isolated PyJHora exploration venv - **PASS, `lord mismatches: 0`, `max start delta: 1.86e-09
+  days`**, identical to the pre-existing certified figures. Regenerating produced exactly the same class
+  of volatile-only diff already documented for `ADR-0069`'s own evidence (`date`, `environment.python`,
+  a Windows-path console-transcript quirk) - discarded, not committed. M-03 anti-fitting scan-surface
+  impact confirmed nil: `engine/dasha/profile.py` and `engine/dasha/vimshottari.py` are pre-existing,
+  already-scanned files (modifying their content does not change `modules_scanned`, which counts files,
+  not content); the new test file is excluded from the scan by construction (`"tests" in candidate.parts`).
+  Verified via a live `certify_kp_chain.py` run, whose own regeneration also differed only in the same
+  volatile fields.
+- **Consequences:** No existing certified value, in `VIMSHOTTARI_V1` or any other capability, changes -
+  confirmed directly (825 passed, up from 818 by exactly the seven new tests; `check_artifact_drift.py`
+  clean, 46 files identical outside volatile fields). H-06 (`docs/DASHA_CERTIFICATION_ROADMAP.md` step 3
+  of 6) is closed. H-04 (`ADR-0053`) and H-05 (`ADR-0069`) were already closed; H-08, M-02, and the dasha
+  boundary-proximity indicator (steps 4-6) remain open and are not touched by this entry. JATAKA remains
+  not entered - three of its six entry-criteria steps are still unmet. FOUNDATION is not reopened;
+  `main` is not merged into.
+- **Evidence:** the owner's "CEO DECISION — DP-017 H-06" instruction, quoted above; `DP-017` section C
+  (the decision-readiness analysis this entry implements); `python -m pytest -q` - 825 passed, 0 failed,
+  0 skipped; direct in-session removal-and-restoration of the `validate_dasha_profile()` call site,
+  confirming the new tests fail against exactly the intended failure mode and the file is byte-identical
+  to its designed final state afterward; `python scripts/certify_vimshottari.py` (isolated exploration
+  venv, PyJHora) - PASS, zero lord mismatches; `python scripts/certify_kp_chain.py` plus `python
+  scripts/check_artifact_drift.py` confirming zero certification-artifact impact; `scripts/
+  check_adr_numbering.py`, `scripts/check_identifier_families.py`, `scripts/check_retired_
+  identifiers.py`, `git diff --check` - all PASS.
+
+---
+
 ## ADR template (copy, do not edit above the line)
 
 ## ADR-XXXX - <title>

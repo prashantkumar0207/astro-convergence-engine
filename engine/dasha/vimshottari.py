@@ -30,7 +30,11 @@ import swisseph as swe
 
 from engine.astronomy.profile import KP_KRISHNAMURTI, PARASHARI_LAHIRI
 from engine.calculations.calculations import calculate
-from engine.dasha.profile import VIMSHOTTARI_MEAN_SIDEREAL_YEAR, DashaProfile
+from engine.dasha.profile import (
+    VIMSHOTTARI_MEAN_SIDEREAL_YEAR,
+    DashaProfile,
+    validate_dasha_profile,
+)
 from engine.dasha.tables import (
     DASHA_LORDS,
     DASHA_YEARS,
@@ -107,6 +111,8 @@ def vimshottari_from_moon(
 
     if depth not in (1, 2, 3):
         raise ValueError("VIMSHOTTARI_V1 certifies depths 1-3 (DA-C)")
+
+    validate_dasha_profile(dasha_profile)
 
     moon = float(moon_longitude)
     exact = _to_exact(moon_longitude) % 360
