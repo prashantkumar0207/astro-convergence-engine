@@ -3,10 +3,10 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | OPEN - decision paper. Presents options and recommends one. DECIDES NOTHING. Requires owner approval. |
-| Version | 1.0.0 |
+| Status | **ADDRESSED by ADR-0072** (2026-08-24) - owner ratified Option 1 (root-find genuine oracle-gate cases; correct the mislabeled cases). This paper's own text is unedited below as the options record; see `ADR-0072` for the ratifying instruction and implementation record. |
+| Version | 1.1.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-22 |
+| Last updated | 2026-08-24 |
 | Review cadence | TBD |
 
 # DP-019. M-02: the Vimshottari oracle gate's two cases named "boundary_moon" are not boundary cases -
@@ -309,4 +309,5 @@ and does not authorize the dasha boundary-proximity indicator or any JATAKA impl
 
 | Version | Date | Change |
 |---|---|---|
+| 1.1.0 | 2026-08-24 | Marked ADDRESSED by `ADR-0072` (Option 1 accepted and implemented: six root-found near-boundary cases added via `engine.transits.crossing.find_crossings()`, `H10`/`H11` corrected). Paper's substantive text below unchanged. |
 | 1.0.0 | 2026-08-22 | Created. Fourth authorized JATAKA-entry-prerequisite decision-readiness paper, extracting `reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md`'s M-02 finding and `docs/DASHA_CERTIFICATION_ROADMAP.md` step 5, with every claim independently re-verified against the live `scripts/certify_vimshottari.py` HOLDOUT set and the current tree - not trusted from the audit's own summary. Independently reproduced the audit's own exact reported distances (6.46 and 5.02 degrees) for `H10_boundary_moon_a`/`H11_boundary_moon_b`, and additionally measured all nine other holdout cases, confirming eight of nine are closer to a boundary than at least one of the two cases labelled "boundary." Independently verified Option 1's technical feasibility live using the already-certified `engine.transits.crossing.find_crossings()` (`TRANSIT_V1`), locating a real Moon-boundary crossing at sub-microarcsecond residual within a one-month window. Checked H-04/H-05/H-06/H-08 as precedents explicitly, finding H-05's own hermetic-only remedy shape does not actually satisfy M-02's oracle-gate-specific wording, and identifying `KP_CHAIN_V1`'s/`TRIKALAM_V1`'s own boundary-battery precedent as the more directly applicable shape. Classifies M-02 as an oracle/holdout coverage gap combined with a smaller label-accuracy defect - not a calculation defect. Presents four options (root-find genuine oracle-gate cases; hermetic-only coverage; label-fix only; defer), medium-high-confidence lean toward Option 1 with Option 3's label fix folded into it. Options only; decides nothing; not implementation-authorized. |

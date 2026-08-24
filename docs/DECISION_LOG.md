@@ -3928,6 +3928,146 @@ follow-up entry, matching the same mechanism just used for the `ADR-0063` addend
 
 ---
 
+## ADR-0072 - Owner ratification of DP-019 Option 1: genuine root-found near-boundary Moon cases added to the Vimshottari oracle gate, closing M-02
+
+- **Date:** 2026-08-24
+- **Status:** **ACCEPTED**, on the owner's explicit instruction: "CEO DECISION — DP-019 M-02. Ratify
+  DP-019 Option 1: Root-find genuine Moon/nakshatra-boundary oracle-gate holdout cases and correct the
+  mislabeled existing boundary cases as part of the same work." Per `docs/PROJECT_CONSTITUTION.md` s11,
+  this instruction is the ratifying act; this entry records it and the implementation it authorizes,
+  matching the precedent used throughout this session (`ADR-0053`, `ADR-0069`, `ADR-0070`, `ADR-0071`).
+- **Decision:** `DP-019`'s **Option 1 is ratified and implemented**: six genuine near-boundary Moon
+  holdout cases, root-found via the already-certified `engine.transits.crossing.find_crossings()`
+  (`TRANSIT_V1`, `ADR-0008`), added to `scripts/certify_vimshottari.py`'s oracle-gate methodology; the
+  two mislabeled cases (`H10_boundary_moon_a`, `H11_boundary_moon_b`) corrected to accurate names,
+  birth data unchanged. Option 2 (hermetic-only) is **not** chosen - the fix uses the oracle gate itself,
+  per M-02's own wording. **No existing certified Vimshottari value changes.**
+- **Implementation, matching `DP-019` section E's own Option 1 analysis and every scope item the owner's
+  instruction specified:**
+  1. **Root-finding (item 1):** `engine.transits.crossing.find_crossings("Moon", target, jd_start,
+     jd_end, profile)` located real nakshatra-boundary crossings for `PARASHARI_LAHIRI` (target `120`
+     degrees, the nakshatra-9/10 boundary) and `KP_KRISHNAMURTI` (target `240` degrees, the
+     nakshatra-18/19 boundary) in January 2025, both at sub-microarcsecond residual. Each crossing
+     yielded three cases - 5 minutes before, at, and 5 minutes after - so the resulting six-case
+     `BOUNDARY_HOLDOUT` genuinely exercises a nakshatra-lord change (`Me` -> `Ke` at both boundaries,
+     confirmed directly) across a real astronomical event, not merely a birth chart that happens to
+     exist near one.
+  2. **Label correction (item 2):** `H10_boundary_moon_a` -> `H10_delhi_2025a`, `H11_boundary_moon_b` ->
+     `H11_delhi_2025b` in `scripts/certify_vimshottari.py`'s `HOLDOUT` list. Birth data (date, time, lat,
+     lon) unchanged - the correction is exactly what the evidence supports: these are valid,
+     already-oracle-verified ordinary cases, wrongly labelled, not wrong data. Kept as ordinary coverage
+     rather than discarded.
+  3. **Distinction preserved (item 3):** `NEAR_BOUNDARY_CASE_IDS` (a frozenset of the six `BOUNDARY_
+     HOLDOUT` case IDs, `"B1"`-`"B6"` prefixed, never colliding with the ordinary `"H"`-prefixed IDs) is
+     checked structurally by a new test (`test_boundary_and_ordinary_case_ids_are_disjoint_and_
+     distinguishable`) and used by the certifier itself to build a distinct `gates.near_boundary_
+     coverage` section in the certification artifact, separate from the per-case detail in `gates.cases`.
+  4. **Oracle-gate methodology, not hermetic substitution (item 4):** each new case runs through the
+     existing, unmodified `run_case()` - PyJHora's own Moon at the same instant is injected into the
+     engine's timeline and the full 729-row pratyantardasha structure is compared, identical methodology
+     to every pre-existing case. **A genuine architectural correction, found during implementation, not
+     assumed:** a case root-found near-boundary under one profile's ayanamsa is not, in general, still
+     near-boundary under the *other* profile's ayanamsa (Lahiri and Krishnamurti differ by a materially
+     non-trivial offset - verified directly: a case within 0.044 degrees of a boundary under KP measured
+     0.141 degrees under Lahiri, exceeding the intended tolerance). Each `BOUNDARY_HOLDOUT` case is
+     therefore tagged with its own native `"profile"` and run **only** under that profile, not both like
+     the ordinary `HOLDOUT` cases - this is architecturally correct, not a weakening: testing a
+     Lahiri-rooted case under KP would silently exercise an ordinary case while the artifact claimed
+     boundary coverage for KP.
+  5. **Certified values preserved (item 5):** verified directly, not assumed - see Certification
+     implications below.
+  6. **No production logic touched (item 6):** confirmed directly - `git diff` for this task touches
+     only `scripts/certify_vimshottari.py` (a certifier/test-harness script), `certification/
+     VIMSHOTTARI_V1_certification.json` and its rendered evidence (regenerated), and two new/edited test
+     files. `engine/dasha/`, `engine/astrology/`, and `engine/kp/` are byte-identical to before this
+     task. `DP-019` section B already established M-02 is a coverage/label gap, not a calculation defect,
+     and nothing found during implementation contradicts that classification.
+  7. **Artifact structure/provenance preserved (item 7):** the certification artifact's schema is
+     unchanged - `gates.near_boundary_coverage` is a purely additive new key alongside the existing
+     `gates.cases`; no existing key, field name, or value type was removed or restructured.
+  8. **Genuine validation the cases are actually at the intended boundary (item 8):** new hermetic test
+     file `engine/tests/test_vimshottari_m02_boundary_holdout.py` (6 tests, no PyJHora required):
+     every `BOUNDARY_HOLDOUT` case measured directly (via the same `engine.calculations.calculations.
+     calculate()` path the certifier uses) to be within `0.1` degrees of the nearest nakshatra boundary
+     (two orders of magnitude tighter than the 6.46/5.02-degree distance M-02 found for the cases this
+     replaces); the two `"_at"` cases additionally confirmed within `0.001` degrees, verifying `find_
+     crossings()`'s own root-finding precision specifically; the `"before"`/`"after"` pairs confirmed to
+     land in different, adjacent nakshatras with different Vimshottari lords, proving a genuine crossing
+     is exercised, not mere proximity; the renamed `H10`/`H11` cases confirmed to reproduce their
+     original, pre-rename Moon longitude and boundary distance exactly, unchanged.
+  9. **Genuine negative control (item 9):** `test_original_mislabeled_cases_fail_the_same_near_boundary_
+     check` reconstructs the *original* `H10_boundary_moon_a`/`H11_boundary_moon_b` birth data (unchanged
+     from before this task) and asserts it fails the identical `0.1`-degree threshold the new cases must
+     pass - proving the check is discriminating, not vacuously true, and directly reproducing the M-02
+     defect this task closes as living proof the fix's own verification would have caught it.
+     `scripts/certify_vimshottari.py`'s own `run_case()` additionally gained a live self-check: any
+     `NEAR_BOUNDARY_CASE_IDS` case whose measured distance exceeds `NEAR_BOUNDARY_THRESHOLD_DEG` fails the
+     certifier outright, not merely a downstream pytest assertion - a gate that can meaningfully fail at
+     the certification layer itself, not only in the hermetic test suite. **Verified as a real, not
+     decorative, gate this session:** an earlier implementation attempt (testing every `BOUNDARY_HOLDOUT`
+     case under both profiles, before the native-profile-only correction in item 4) tripped this exact
+     self-check for `B4_kp_boundary_before` at `0.141` degrees under the non-native profile, confirming
+     the threshold check genuinely fails on a real violation, not only in a contrived test.
+  10. **Existing cases verified unchanged (item 10):** confirmed directly by structured comparison of the
+      regenerated artifact against the previously committed one - `H1_london_1823` through
+      `H9_paris_2350`'s recorded results are byte-identical (excluding the new, always-present `moon_
+      distance_to_nearest_boundary_deg` diagnostic field, itself descriptive, not a changed calculation);
+      the renamed `H10`/`H11` entries carry identical numeric results under their new IDs. Total oracle
+      row count moved from `16038` to `20412` (`2 profiles x 11 ordinary cases x 729` unchanged, plus
+      `6 near-boundary cases x 1 native profile each x 729` newly added: `16038 + 4374 = 20412`) - an
+      increase from added coverage, not a changed result for any existing case. `engine/tests/
+      test_vimshottari_certification.py`'s own pinned row-count assertion updated from `16038` to
+      `20412` to track this intentional, understood, now-recorded change (a test-only edit, not a
+      production-logic change).
+- **A related finding, explicitly NOT acted on - flagged, not fixed:** the same `H10_boundary_moon_a`/
+  `H11_boundary_moon_b` birth data and ID convention is reused as a "boundary_sensitive" holdout case in
+  at least eight other certifiers/validators (`scripts/certify_trikalam.py`, `certify_panchanga.py`,
+  `certify_rise_set.py`, `certify_tier0.py`, `certify_kp_chain.py`, `certify_parashari_drishti.py`,
+  `certify_current_engine.py`, `engine/tests/test_kp_chart.py`) - discovered by a repository-wide search
+  this task, not by DP-019's own investigation. **This entry does not determine whether those cases are
+  similarly mislabeled relative to their own domain-specific "boundary" claims** (sunrise/sunset instant,
+  tithi/yoga boundary, KP-specific boundaries, etc. are different quantities from nakshatra-longitude
+  distance, and no evidence was gathered about any of them this task). `DP-019`'s evidence base and this
+  ratification are scoped strictly to the Vimshottari oracle gate; extending the correction to any other
+  certifier is out of scope here and would require its own investigation and, if warranted, its own
+  decision paper - not assumed from this one.
+- **Certification implications, verified not merely predicted:** `scripts/certify_vimshottari.py` re-run
+  in the isolated PyJHora exploration venv after every code change - **PASS, `lord mismatches: 0`**,
+  including all six new near-boundary cases individually (max `0.044714` degrees from the nearest
+  boundary, the tightest at `0.000192`/`0.000193` degrees for the two root-found `"_at"` instants).
+  `python scripts/check_artifact_drift.py` run against the regenerated-but-uncommitted artifact correctly
+  flagged exactly the intended, understood changes and nothing else: `gates.cases.*` case-list length
+  `11 -> 14` (two renamed, no removal), `gates.near_boundary_coverage: added`, `gates.oracle_pratyantar_
+  rows_compared: 16038 -> 20412`, and the corresponding console/report text - no other field, and no
+  existing case's own recorded result, differed. The regenerated console transcript's Windows-path
+  backslash artifact was corrected to the committed forward-slash convention before commit, matching the
+  same understood cross-platform quirk documented in this session's prior evidence sections. M-03
+  anti-fitting scan-surface impact confirmed nil via a `certify_kp_chain.py` sanity check (only the same
+  class of volatile-field diff; discarded, not committed) - `scripts/certify_vimshottari.py` is outside
+  `engine/`, the default M-03 scan target, so it was never in the scan surface to begin with.
+- **Consequences:** No existing certified Vimshottari value changes, in any case, under any profile -
+  confirmed directly (837 passed, up from 831 by exactly the 6 new hermetic tests; every pre-existing
+  oracle case's own recorded result byte-identical; `check_artifact_drift.py` shows only the intended,
+  now-recorded additions). M-02 (`docs/DASHA_CERTIFICATION_ROADMAP.md` step 5 of 6) is **closed**. H-04
+  (`ADR-0053`), H-05 (`ADR-0069`), H-06 (`ADR-0070`), and H-08 (`ADR-0071`) were already closed and remain
+  untouched - none reopened. The dasha boundary-proximity indicator (step 6) and general JATAKA
+  implementation remain not started. JATAKA remains not entered - one of its six entry-criteria steps
+  (the boundary-proximity indicator) is still unmet. FOUNDATION is not reopened; `main` is not merged
+  into.
+- **Evidence:** the owner's "CEO DECISION — DP-019 M-02" instruction, quoted above; `DP-019` section E
+  (Option 1, the analysis this entry implements) and section F (the recommendation this entry accepts);
+  `python -m pytest -q` - 837 passed, 0 failed, 0 skipped; `python -m pytest engine/tests/
+  test_vimshottari_m02_boundary_holdout.py -v` - 6/6 passed, including the original-mislabeled-data
+  negative control; `python scripts/certify_vimshottari.py` (isolated exploration venv, PyJHora) - PASS,
+  zero lord mismatches across all 17 cases under their native profile(s); direct structured comparison of
+  the regenerated certification artifact against the previously committed one, confirming every
+  pre-existing case's own result unchanged; `python scripts/certify_kp_chain.py` plus `python scripts/
+  check_artifact_drift.py` confirming the only non-volatile change is the intended M-02 addition;
+  `scripts/check_adr_numbering.py`, `scripts/check_identifier_families.py`, `scripts/check_retired_
+  identifiers.py`, `git diff --check` - all PASS.
+
+---
+
 ## ADR template (copy, do not edit above the line)
 
 ## ADR-XXXX - <title>

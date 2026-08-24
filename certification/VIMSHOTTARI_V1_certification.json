@@ -1,7 +1,7 @@
 {
  "schema": "vimshottari_v1_certification",
  "adr": "ADR-0007",
- "date": "2026-08-22",
+ "date": "2026-08-24",
  "scope": "Vimshottari maha/antar/pratyantar timelines, school-explicit seeding",
  "year_convention": {
   "profile": "vimshottari_mean_sidereal_year",
@@ -15,7 +15,7 @@
   "max_oracle_moon_delta_arcsec": 0.745776
  },
  "gates": {
-  "oracle_pratyantar_rows_compared": 16038,
+  "oracle_pratyantar_rows_compared": 20412,
   "oracle_lord_mismatches": 0,
   "oracle_max_start_delta_days": 1.862645149230957e-09,
   "start_tolerance_days": 1e-05,
@@ -27,77 +27,112 @@
      "moon_delta_vs_oracle_arcsec": 0.727501,
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
-     "max_start_delta_days": 1.3969838619232178e-09
+     "max_start_delta_days": 1.3969838619232178e-09,
+     "moon_distance_to_nearest_boundary_deg": 3.182121
     },
     {
      "case": "H2_newyork_1900",
      "moon_delta_vs_oracle_arcsec": 0.733448,
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
-     "max_start_delta_days": 1.862645149230957e-09
+     "max_start_delta_days": 1.862645149230957e-09,
+     "moon_distance_to_nearest_boundary_deg": 3.382171
     },
     {
      "case": "H3_sydney_1946",
      "moon_delta_vs_oracle_arcsec": 0.668716,
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
-     "max_start_delta_days": 1.862645149230957e-09
+     "max_start_delta_days": 1.862645149230957e-09,
+     "moon_distance_to_nearest_boundary_deg": 1.511671
     },
     {
      "case": "H4_delhi_1979",
      "moon_delta_vs_oracle_arcsec": 0.665488,
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
-     "max_start_delta_days": 1.862645149230957e-09
+     "max_start_delta_days": 1.862645149230957e-09,
+     "moon_distance_to_nearest_boundary_deg": 4.254292
     },
     {
      "case": "H5_reykjavik_1992",
      "moon_delta_vs_oracle_arcsec": 0.664223,
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
-     "max_start_delta_days": 1.3969838619232178e-09
+     "max_start_delta_days": 1.3969838619232178e-09,
+     "moon_distance_to_nearest_boundary_deg": 2.067614
     },
     {
      "case": "H6_quito_2010",
      "moon_delta_vs_oracle_arcsec": 0.695028,
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
-     "max_start_delta_days": 1.3969838619232178e-09
+     "max_start_delta_days": 1.3969838619232178e-09,
+     "moon_distance_to_nearest_boundary_deg": 5.50155
     },
     {
      "case": "H7_tokyo_2033",
      "moon_delta_vs_oracle_arcsec": 0.69574,
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
-     "max_start_delta_days": 1.862645149230957e-09
+     "max_start_delta_days": 1.862645149230957e-09,
+     "moon_distance_to_nearest_boundary_deg": 2.911525
     },
     {
      "case": "H8_mumbai_2077",
      "moon_delta_vs_oracle_arcsec": 0.703176,
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
-     "max_start_delta_days": 1.3969838619232178e-09
+     "max_start_delta_days": 1.3969838619232178e-09,
+     "moon_distance_to_nearest_boundary_deg": 1.221409
     },
     {
      "case": "H9_paris_2350",
      "moon_delta_vs_oracle_arcsec": 0.700659,
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
-     "max_start_delta_days": 1.3969838619232178e-09
+     "max_start_delta_days": 1.3969838619232178e-09,
+     "moon_distance_to_nearest_boundary_deg": 3.390257
     },
     {
-     "case": "H10_boundary_moon_a",
+     "case": "H10_delhi_2025a",
      "moon_delta_vs_oracle_arcsec": 0.745776,
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
-     "max_start_delta_days": 1.3969838619232178e-09
+     "max_start_delta_days": 1.3969838619232178e-09,
+     "moon_distance_to_nearest_boundary_deg": 6.458862
     },
     {
-     "case": "H11_boundary_moon_b",
+     "case": "H11_delhi_2025b",
      "moon_delta_vs_oracle_arcsec": 0.744763,
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
-     "max_start_delta_days": 1.862645149230957e-09
+     "max_start_delta_days": 1.862645149230957e-09,
+     "moon_distance_to_nearest_boundary_deg": 5.019943
+    },
+    {
+     "case": "B1_lahiri_boundary_before",
+     "moon_delta_vs_oracle_arcsec": 0.692377,
+     "pratyantar_rows": 729,
+     "lord_mismatches": 0,
+     "max_start_delta_days": 1.862645149230957e-09,
+     "moon_distance_to_nearest_boundary_deg": 0.044009
+    },
+    {
+     "case": "B2_lahiri_boundary_at",
+     "moon_delta_vs_oracle_arcsec": 0.692201,
+     "pratyantar_rows": 729,
+     "lord_mismatches": 0,
+     "max_start_delta_days": 1.862645149230957e-09,
+     "moon_distance_to_nearest_boundary_deg": 0.000192
+    },
+    {
+     "case": "B3_lahiri_boundary_after",
+     "moon_delta_vs_oracle_arcsec": 0.692614,
+     "pratyantar_rows": 729,
+     "lord_mismatches": 0,
+     "max_start_delta_days": 1.862645149230957e-09,
+     "moon_distance_to_nearest_boundary_deg": 0.044389
     }
    ],
    "kp_krishnamurti": [
@@ -106,77 +141,154 @@
      "moon_delta_vs_oracle_arcsec": 0.727501,
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
-     "max_start_delta_days": 1.3969838619232178e-09
+     "max_start_delta_days": 1.3969838619232178e-09,
+     "moon_distance_to_nearest_boundary_deg": 3.278973
     },
     {
      "case": "H2_newyork_1900",
      "moon_delta_vs_oracle_arcsec": 0.733448,
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
-     "max_start_delta_days": 1.862645149230957e-09
+     "max_start_delta_days": 1.862645149230957e-09,
+     "moon_distance_to_nearest_boundary_deg": 3.285318
     },
     {
      "case": "H3_sydney_1946",
      "moon_delta_vs_oracle_arcsec": 0.668716,
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
-     "max_start_delta_days": 1.862645149230957e-09
+     "max_start_delta_days": 1.862645149230957e-09,
+     "moon_distance_to_nearest_boundary_deg": 1.608523
     },
     {
      "case": "H4_delhi_1979",
      "moon_delta_vs_oracle_arcsec": 0.665488,
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
-     "max_start_delta_days": 1.862645149230957e-09
+     "max_start_delta_days": 1.862645149230957e-09,
+     "moon_distance_to_nearest_boundary_deg": 4.15744
     },
     {
      "case": "H5_reykjavik_1992",
      "moon_delta_vs_oracle_arcsec": 0.664223,
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
-     "max_start_delta_days": 1.3969838619232178e-09
+     "max_start_delta_days": 1.3969838619232178e-09,
+     "moon_distance_to_nearest_boundary_deg": 1.970761
     },
     {
      "case": "H6_quito_2010",
      "moon_delta_vs_oracle_arcsec": 0.695028,
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
-     "max_start_delta_days": 1.3969838619232178e-09
+     "max_start_delta_days": 1.3969838619232178e-09,
+     "moon_distance_to_nearest_boundary_deg": 5.598402
     },
     {
      "case": "H7_tokyo_2033",
      "moon_delta_vs_oracle_arcsec": 0.69574,
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
-     "max_start_delta_days": 1.862645149230957e-09
+     "max_start_delta_days": 1.862645149230957e-09,
+     "moon_distance_to_nearest_boundary_deg": 3.008377
     },
     {
      "case": "H8_mumbai_2077",
      "moon_delta_vs_oracle_arcsec": 0.703176,
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
-     "max_start_delta_days": 1.3969838619232178e-09
+     "max_start_delta_days": 1.3969838619232178e-09,
+     "moon_distance_to_nearest_boundary_deg": 1.318261
     },
     {
      "case": "H9_paris_2350",
      "moon_delta_vs_oracle_arcsec": 0.700659,
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
-     "max_start_delta_days": 1.3969838619232178e-09
+     "max_start_delta_days": 1.3969838619232178e-09,
+     "moon_distance_to_nearest_boundary_deg": 3.293405
     },
     {
-     "case": "H10_boundary_moon_a",
+     "case": "H10_delhi_2025a",
      "moon_delta_vs_oracle_arcsec": 0.745776,
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
-     "max_start_delta_days": 1.3969838619232178e-09
+     "max_start_delta_days": 1.3969838619232178e-09,
+     "moon_distance_to_nearest_boundary_deg": 6.555714
     },
     {
-     "case": "H11_boundary_moon_b",
+     "case": "H11_delhi_2025b",
      "moon_delta_vs_oracle_arcsec": 0.744763,
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
-     "max_start_delta_days": 1.862645149230957e-09
+     "max_start_delta_days": 1.862645149230957e-09,
+     "moon_distance_to_nearest_boundary_deg": 5.116796
+    },
+    {
+     "case": "B4_kp_boundary_before",
+     "moon_delta_vs_oracle_arcsec": 0.69485,
+     "pratyantar_rows": 729,
+     "lord_mismatches": 0,
+     "max_start_delta_days": 1.862645149230957e-09,
+     "moon_distance_to_nearest_boundary_deg": 0.044324
+    },
+    {
+     "case": "B5_kp_boundary_at",
+     "moon_delta_vs_oracle_arcsec": 0.694699,
+     "pratyantar_rows": 729,
+     "lord_mismatches": 0,
+     "max_start_delta_days": 1.862645149230957e-09,
+     "moon_distance_to_nearest_boundary_deg": 0.000193
+    },
+    {
+     "case": "B6_kp_boundary_after",
+     "moon_delta_vs_oracle_arcsec": 0.695007,
+     "pratyantar_rows": 729,
+     "lord_mismatches": 0,
+     "max_start_delta_days": 1.862645149230957e-09,
+     "moon_distance_to_nearest_boundary_deg": 0.044714
+    }
+   ]
+  },
+  "near_boundary_coverage": {
+   "methodology": "Cases root-found via engine.transits.crossing.find_crossings() (TRANSIT_V1, ADR-0008), sampled at the exact crossing and 5 minutes before/after, so the mahadasha lord genuinely changes across the boundary. Closes M-02 (ADR-0072): the previously named boundary cases (H10/H11) were 6.46 and 5.02 degrees from the nearest boundary, farther than most of this holdout's own ordinary cases - both corrected and kept as ordinary coverage.",
+   "threshold_deg": 0.1,
+   "cases": [
+    {
+     "case": "B1_lahiri_boundary_before",
+     "profile": "parashari_lahiri",
+     "moon_distance_to_nearest_boundary_deg": 0.044009,
+     "lord_mismatches": 0
+    },
+    {
+     "case": "B2_lahiri_boundary_at",
+     "profile": "parashari_lahiri",
+     "moon_distance_to_nearest_boundary_deg": 0.000192,
+     "lord_mismatches": 0
+    },
+    {
+     "case": "B3_lahiri_boundary_after",
+     "profile": "parashari_lahiri",
+     "moon_distance_to_nearest_boundary_deg": 0.044389,
+     "lord_mismatches": 0
+    },
+    {
+     "case": "B4_kp_boundary_before",
+     "profile": "kp_krishnamurti",
+     "moon_distance_to_nearest_boundary_deg": 0.044324,
+     "lord_mismatches": 0
+    },
+    {
+     "case": "B5_kp_boundary_at",
+     "profile": "kp_krishnamurti",
+     "moon_distance_to_nearest_boundary_deg": 0.000193,
+     "lord_mismatches": 0
+    },
+    {
+     "case": "B6_kp_boundary_after",
+     "profile": "kp_krishnamurti",
+     "moon_distance_to_nearest_boundary_deg": 0.044714,
+     "lord_mismatches": 0
     }
    ]
   }
