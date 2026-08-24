@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 8.0.0 |
+| Version | 8.1.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-24 (ADR-0074 RATIFIED - JATAKA ENTRY CRITERIA FORMALLY SATISFIED, JATAKA ENTERED. Owner: "CEO RATIFICATION — ADR-0074... I formally declare the JATAKA entry criteria satisfied under Q8_CLOSURE_MATRIX.md s5." Phase entry only - no individual JATAKA capability thereby authorized.) |
+| Last updated | 2026-08-24 (CI-run-ID discrepancy resolved by direct GitHub Actions query - no fabrication, both runs genuine; canonical snapshot corrected. Full main-vs-phase-g-governance merge-readiness audit performed: READY, merge NOT performed, awaiting separate CEO merge authorization. No JATAKA implementation begun.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,136 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-24 - JATAKA phase pre-flight: CI-run-ID discrepancy resolved (no fabrication); main-vs-phase-g-governance merge-readiness audit (READY, not performed)
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the
+  reconciliation record, on top of `931b6d0`).
+- Previous approved commit: `931b6d09bf331773781ec357a305c412d4c0da04` (`ADR-0074` ratification record)
+  - pushed and CI-confirmed this session (run `32756205364`). `main` (`0e1ef115a647b8a44bf4d1a7af2a3cf3a8b96e03`,
+  via PR #3) is unaffected by this task.
+- Task (owner's exact instruction): "JATAKA PHASE PRE-FLIGHT — EVIDENCE RECONCILIATION + MAINLINE
+  SYNCHRONIZATION. Do NOT begin Jataka architecture or implementation yet. An independent Claude Web
+  audit... identified two items." **Task 1** - resolve a CI-run-ID discrepancy: the session's own report
+  cited run `32756205364`, canonical repository records repeatedly cited `32752248185`, and `32756205364`
+  "does not appear in the repository." Required: query GitHub Actions directly; inspect both runs (exist?
+  headSha? branch? conclusion? jobs? test counts? oracle result? drift result?); determine which
+  corresponds to `931b6d0`; do not assume either is correct; do not silently rewrite historical records;
+  if `32756205364` was an erroneous reference, document the discrepancy and correct the canonical record
+  via the established append-only mechanism; if the runs genuinely conflict, stop and report rather than
+  decide unilaterally; preserve the evidence of what actually happened. **Task 2** - after Task 1, a
+  merge-readiness audit of `origin/main` vs `origin/phase-g-governance`: current SHAs; commits/files that
+  would merge; whether `main` has independent work; conflicts; whether the source branch is CI-green;
+  unapproved work; accidental JATAKA production implementation; whether the merge would preserve the
+  accepted JATAKA-entry state - explicitly NOT a merge, NOT a push to `main`, NOT a self-authorization to
+  merge, NOT JATAKA implementation or architecture work; the purpose is to prepare a CEO merge decision.
+  **Task 3** - verify working tree, local HEAD, both remote SHAs, `ADR-0074` status, `CURRENT_PHASE`, all
+  six Dasha ADRs, current CI evidence, absence of JATAKA production code; do not modify closed Dasha/
+  FOUNDATION decisions, H-03, or the eight `H10`/`H11` cross-certifier findings. Required output: exact
+  discrepancy resolution; correct CI run(s); any required append-only correction; exact main-vs-phase-g
+  state; merge-readiness result (READY/NOT READY); existing merge commit/PR info if any; remaining
+  blockers; explicit statement that no merge was performed. Stop; no JATAKA architecture until separate
+  merge authorization.
+- Relevant ADR/specification: none reopened - this task is a verification/reconciliation task, not a
+  decision. `ADR-0074` (its own `32752248185` citation checked and left unaltered, confirmed accurate for
+  when it was drafted); `ADR-0053`, `ADR-0069` through `ADR-0073` (all six Dasha-roadmap ADRs, re-verified
+  `ACCEPTED`, not reopened).
+- Files changed: `docs/ACE_EXECUTION_STATE.md` (version 6.1.0 - `LAST_COMMIT`/`LAST_CI_RUN` snapshot
+  fields corrected via the file's own designed overwrite mechanism, plus an append-only Change History
+  row explaining the correction; merge-readiness findings recorded), this file.
+- **Task 1 findings, verified directly against GitHub Actions, not assumed:** `gh run view 32752248185
+  --json databaseId,headSha,headBranch,conclusion,status,event,createdAt,jobs` - exists, `conclusion:
+  success`, `headSha: f0eb220d4b5e05a8f8fcf7798810f6f195981a29`, `headBranch: phase-g-governance`,
+  `event: push`, `createdAt: 2026-08-24T16:41:07Z`, all four jobs `success`. `gh run view 32756205364`
+  (same fields) - exists, `conclusion: success`, `headSha: 931b6d09bf331773781ec357a305c412d4c0da04`
+  (current HEAD), `headBranch: phase-g-governance`, `event: push`, `createdAt: 2026-08-24T17:22:01Z`
+  (later than the other run), all four jobs `success`. Both runs' logs independently re-inspected for
+  test counts/oracle/drift: `32752248185` - `844 passed` (both interpreter legs, both the default and
+  network-guard re-run), `lord mismatches: 0`, `PASS: 46 evidence file(s) identical...` (both no-oracle
+  legs and the oracle gate); `32756205364` - identical shape (`844 passed`, `lord mismatches: 0`, drift
+  PASS), as expected since the intervening commit touched only documentation. **Neither run is
+  erroneous or fabricated; there is no evidentiary conflict between them** - they are two genuine,
+  correctly-conclusive CI runs for two different, sequential commits on the same branch. Searched every
+  committed file (`docs/`, `reports/`) for both numbers: `32752248185` appears repeatedly, always
+  correctly attributed to `f0eb220`, in `docs/ACE_EXECUTION_STATE.md`, `docs/DECISION_LOG.md` (inside
+  `ADR-0074`'s own evidence section, describing the CI state available when that entry was drafted -
+  before `931b6d0` existed), and `reports/AI_HANDOFF_CURRENT.md`. `32756205364` appears in **zero**
+  committed files - it was reported only in this session's own chat output after the `931b6d0` push, and
+  never written into any tracked document. **Root cause: not an error, a recording gap** - `docs/
+  ACE_EXECUTION_STATE.md`'s `LAST_COMMIT`/`LAST_CI_RUN` snapshot fields were last written while drafting
+  the `931b6d0` commit itself (before that commit was pushed), so they still named the *previous* commit/
+  run (`f0eb220`/`32752248185`) as "current" even after `931b6d0` was pushed and its own CI run
+  (`32756205364`) completed successfully - the push-confirmation step never looped back to update the
+  snapshot file. Per the owner's own item 7, corrected the canonical state/handoff record: `docs/
+  ACE_EXECUTION_STATE.md`'s `LAST_COMMIT (phase-g-governance)` and `LAST_CI_RUN` fields updated to
+  `931b6d0`/`32756205364`, via this file's own designed mechanism (a current-state snapshot, explicitly
+  "overwritten each time, not append-only," per its own "What this file is" section) - the append-only
+  record of *why* it changed is the new Change History row plus this task-log entry. `ADR-0074`'s own
+  entry in `docs/DECISION_LOG.md` was **not** edited - its citation of `32752248185` was accurate
+  evidence for the state that existed when that entry was drafted, and remains historically correct as
+  written; nothing there was rewritten.
+- **Task 2 findings (merge-readiness audit), each verified directly, none assumed:** `origin/main` =
+  `0e1ef115a647b8a44bf4d1a7af2a3cf3a8b96e03`; `origin/phase-g-governance` = `931b6d09bf331773781ec357a30
+  5c412d4c0da04`. `git merge-base --is-ancestor origin/main origin/phase-g-governance` returns false
+  (not a simple fast-forward ancestor) - investigated directly rather than treated as a red flag:
+  `main`'s own tip is merge commit `0e1ef11` with parents `a3692e7` (main's prior tip) and `76ed443`
+  (phase-g-governance's tip at PR #3 merge time); `git merge-base --is-ancestor 76ed443 origin/phase-g-
+  governance` returns **true** - confirming `phase-g-governance`'s current tip is a linear descendant of
+  everything that was merged into `main`, with zero lost or diverged content; the only reason `main`
+  isn't a strict git-ancestor is the expected, normal topology of a feature branch that kept receiving
+  commits after its own merge commit was created on the target branch. `git log origin/phase-g-
+  governance..origin/main --oneline` - exactly two commits, both `main`'s own historical merge commits
+  (PR #3, PR #1) - **no independent content work on `main`**. `git log origin/main..origin/phase-g-
+  governance --oneline` - exactly 13 commits, enumerated and each individually matched against this
+  session's own ratified ADRs (H-05 push-record, the PR #3 merge-record, `DP-017`/`ADR-0070` H-06,
+  `DP-018`/`ADR-0071` H-08, `DP-019`/`ADR-0072` M-02 plus its CI-tolerance fix, `DP-020`/`ADR-0073`
+  boundary-proximity indicator, the `ADR-0074` audit and its ratification) - **no unapproved work found**.
+  `git diff --stat origin/main origin/phase-g-governance` - 20 files, `4111(+)/65(-)`. `git merge-tree
+  --write-tree origin/main origin/phase-g-governance` - returned a single tree hash, exit 0, **no
+  conflict markers or file list - a clean, conflict-free merge is available**. `gh pr list --head
+  phase-g-governance --state all` - only the two historical, already-merged PRs (#1, #3); **no PR
+  currently open** for this 13-commit set. `grep -rn "JATAKA\|jataka" engine/ scripts/` excluding test
+  files - **zero hits**; no accidental JATAKA production implementation exists. **Merge-readiness
+  result: READY** (mechanically - clean ancestry, no conflicts, all work ratified, CI-green source
+  branch). **The merge would preserve the accepted JATAKA-entry state**, since `ADR-0074`'s own
+  acceptance and `CURRENT_PHASE: JATAKA ENTERED` already live on `phase-g-governance` and would simply
+  be carried into `main` by the merge. **No merge was performed. No PR was created. No self-authorization
+  to merge was taken or implied.**
+- **Task 3 findings (state re-verification), each re-run fresh this task:** working tree clean
+  (`git status --porcelain` limited to `??` untracked pre-existing items); local HEAD = `origin/phase-g-
+  governance` = `931b6d09bf331773781ec357a305c412d4c0da04`; `origin/main` unchanged at `0e1ef115a647b8a4
+  4bf4d1a7af2a3cf3a8b96e03`; `ADR-0074` `Status: ACCEPTED, on the owner's ratifying instruction recorded
+  in the "Ratification of..."` entry; `CURRENT_PHASE` reads `JATAKA ENTERED`; all six Dasha-roadmap ADRs
+  (`ADR-0053`, `ADR-0069` through `ADR-0073`) re-confirmed `ACCEPTED`, unchanged; `python scripts/
+  check_adr_numbering.py` - 74 ADR entries; `python scripts/check_identifier_families.py` - 20 DP
+  identifiers; no JATAKA production code (re-confirmed, same search as Task 2). H-03 and the eight
+  `ADR-0072` cross-certifier findings: confirmed untouched, not referenced by any change this task made
+  beyond the same read-only citations already in `ADR-0074`'s own unedited text.
+- Implementation summary: no code touched. Corrected `docs/ACE_EXECUTION_STATE.md`'s current-snapshot
+  fields (its own designed function) and added an append-only Change History row explaining the
+  correction's cause and resolution; added this task-log entry recording the full reconciliation and
+  merge-readiness audit. `docs/DECISION_LOG.md` was **not** edited - no entry required correction, since
+  `ADR-0074`'s own citation was accurate for its own drafting-time evidence.
+- Tests executed and results: `python -m pytest -q` last confirmed at 844/844 as part of the immediately
+  preceding `931b6d0` push/CI-confirmation; not re-run this task since no code changed.
+- Certification executed and results: none - no code or certification artifact touched this task; both
+  CI runs' own oracle-gate and drift results were read directly from their logs as evidence (see Task 1
+  findings above), not regenerated locally.
+- Governance checks executed and results: `python scripts/check_adr_numbering.py` (74 ADR entries,
+  unchanged), `python scripts/check_identifier_families.py` (20 DP identifiers, unchanged),
+  `python scripts/check_retired_identifiers.py`, `git diff --check` - all PASS.
+- Known issues: none new. The stale `DECISION_LOG.md` register-header summary and the eight flagged
+  cross-certifier findings remain exactly as previously characterized - non-blocking, not addressed this
+  task, per the owner's own explicit instruction not to touch them.
+- Unresolved questions: whether the owner authorizes the `main` merge (mechanically READY, per this
+  task's own audit); if so, whether via a new PR (matching the PR #1/#3 precedent) or another mechanism;
+  which JATAKA capability, if any, to authorize next; whether to push this task's own commit.
+- CEO decision required: whether to authorize the `main` merge - this task deliberately stops short of
+  it, per the owner's own explicit instruction ("Do NOT merge into main... Do NOT authorize yourself to
+  merge... STOP"). Separately, whether to begin JATAKA architecture/implementation for any specific
+  capability remains open and undecided.
+- Next authorized action: none self-executable. Per the owner's own explicit instruction, this task does
+  not merge, does not push to `main`, does not begin JATAKA architecture or implementation, and stops
+  here having produced the required reconciliation and readiness output.
 
 ### 2026-08-24 - ADR-0074 RATIFIED: JATAKA ENTRY CRITERIA FORMALLY SATISFIED, JATAKA ENTERED
 - Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the ratification
@@ -3263,6 +3393,7 @@ act.
 
 | Version | Date | Change |
 |---|---|---|
+| 8.1.0 | 2026-08-24 | **CI-run-ID discrepancy resolved (no fabrication); `main`-vs-`phase-g-governance` merge-readiness audit performed (READY, not performed).** Independent audit flagged this session's chat citation of CI run `32756205364` vs committed records citing only `32752248185`. Resolved by direct `gh run view` query: both runs genuine and `success` - `32752248185` -> `f0eb220` (16:41 UTC), `32756205364` -> `931b6d0` (17:22 UTC, later, current HEAD). Root cause: `ACE_EXECUTION_STATE.md`'s snapshot fields were never updated after the `931b6d0` push; `32756205364` had only been reported in chat, never committed. Corrected via the file's own designed overwrite mechanism, `ADR-0074` left unedited (its own citation was accurate when drafted). Merge-readiness audit: confirmed `main`'s merge-commit second parent is an ancestor of current `phase-g-governance` (no lost content, normal continued-branch topology); `main` has no independent work beyond its own two historical merges; `git merge-tree` reports a clean, conflict-free merge; all 13 ahead-of-main commits individually ratified; zero JATAKA production code found; no PR currently open. Result: READY. **No merge performed, no PR created, no self-authorization taken.** No code touched. Governance gates clean (74 ADR entries). H-03, the eight cross-certifier findings, and all closed Dasha/FOUNDATION items untouched. No JATAKA implementation begun. |
 | 8.0.0 | 2026-08-24 | **`ADR-0074` RATIFIED — JATAKA ENTRY CRITERIA FORMALLY SATISFIED, JATAKA ENTERED.** Owner: "CEO RATIFICATION — ADR-0074. I ratify ADR-0074 exactly as written in commit 2f26eee. I formally declare the JATAKA entry criteria satisfied under Q8_CLOSURE_MATRIX.md s5," individually confirming all ten items enumerated (FOUNDATION prerequisite satisfied; all six Dasha-roadmap steps satisfied and individually ratified; H-03 not a JATAKA-entry prerequisite; the eight `ADR-0072` cross-certifier findings non-blocking; the "six steps, not the roadmap document" interpretation ratified; the stale header confirmed non-blocking; phase entry only; every JATAKA capability still needs its own authorization; implementation not begun). Recorded via the established "Ratification of ADR-<number>" mechanism, mirroring `ADR-0068`'s own FOUNDATION-exit ratification exactly - Status line only edited, a new follow-up sub-entry added. `CURRENT_PHASE` updated to JATAKA ENTERED. No code touched; 844/844 pytest unchanged; governance gates clean (74 ADR entries). No JATAKA capability implementation begun; no closed Dasha or FOUNDATION item reopened; the eight cross-certifier findings untouched; the stale register-header summary left unfixed. Nothing pushed. |
 | 7.9.0 | 2026-08-24 | Pushed `f0eb220` (Dasha roadmap step 6, `ADR-0073`) to `origin/phase-g-governance` on explicit push authorization - fast-forward `d18e7ff..f0eb220`. CI run `32752248185`: all four jobs green, read directly from the log (governance gate clean; both no-oracle legs 844 passed, confirming the 7 new boundary-proximity tests executed; oracle gate 0 lord mismatches, 20412 rows, drift PASS). **Full six-step Dasha roadmap fully CI-confirmed, zero certified-value impact.** Owner then authorized a formal JATAKA-entry readiness audit. Drafted `ADR-0074` (`Status: PROPOSED`, not self-ratified, mirroring `ADR-0068`'s own precedent): independently reverified all six Dasha-roadmap ADRs' own `Status` fields directly - all `ACCEPTED`. `Q8_CLOSURE_MATRIX.md` s5's entry-criteria text found satisfied on its own plain terms. Searched for H-03: confirmed genuinely absent from JATAKA's entry criteria and the Dasha roadmap - a separate, still-open `TRANSIT_V1` finding, not invented as a requirement. Reconciled the eight `ADR-0072` cross-certifier findings: confirmed non-blocking, remain untouched. Confirmed no accidental JATAKA implementation (`planet_strength.py` is pre-Phase-G legacy code). Flagged, not fixed, a stale `DECISION_LOG.md` register-header summary. Presented the Dasha-roadmap-document's own unratified status as an explicit textual point. Determination: entry criteria satisfied; a separate CEO entry decision is the only remaining authorization. No code touched; 844/844 pytest unchanged; governance gates clean (74 ADR entries). No JATAKA implementation begun; no closed Dasha or FOUNDATION item reopened; the eight cross-certifier findings untouched. |
 | 7.8.0 | 2026-08-24 | **`ADR-0073` ratifies `DP-020` Option 1 - DASHA ROADMAP FULLY CLOSED (all six steps).** Added `VimshottariTimeline.seed_nakshatra_boundary_arcsec`, an exact re-expression of the already-computed `elapsed` fraction (zero new astronomical calculation), deliberately scoped narrower than KP's own `nearest_boundary_arcsec` (nakshatra/seed boundary only) after independently reproducing that field's own unresolved completeness defect (H-07) live. 7 new hermetic tests including a genuine negative control (`NAK_SPAN` monkeypatched, pinned value changes). `certify_vimshottari.py` gained a real per-case self-check plus a new `boundary_proximity_indicator` artifact section. Zero certified-value impact verified via structured before/after comparison and `check_artifact_drift.py`. 844/844 pytest (up from 837). Governance gates clean (73 ADR entries). `Q8_CLOSURE_MATRIX.md` s5's JATAKA entry-criteria text is now satisfied on its own plain terms - general JATAKA implementation is NOT thereby authorized, still requires its own separate authorization. H-04/H-05/H-06/H-08/M-02/`DP-015`/FOUNDATION not touched; the eight flagged cross-certifier findings untouched. Nothing pushed. |
