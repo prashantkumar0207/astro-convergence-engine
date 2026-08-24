@@ -136,7 +136,16 @@ def test_original_mislabeled_cases_fail_the_same_near_boundary_check():
 def test_renamed_ordinary_cases_reproduce_the_original_unchanged_values():
     """The rename (H10_boundary_moon_a -> H10_delhi_2025a, H11_boundary_
     moon_b -> H11_delhi_2025b) must not change any computed value - same
-    birth data, same Moon, same distance, only the label corrected."""
+    birth data, same Moon, same distance, only the label corrected.
+
+    Compared with a tight tolerance, not bit-exact equality: this Moon
+    longitude is swetest/pyswisseph-derived, not a fixed input like the
+    H-05/H-08 pinning tests use, so it inherits the platform's own
+    trigonometric-library ULP noise (observed: Linux CI vs this Windows
+    host differ by 3 ULPs, ~1.7e-13 degrees / ~6e-10 arcsec - far below
+    the certification's own 1e-10 degree boundary tolerance and 0.5
+    arcsec ephemeris tolerance, and irrelevant to the rename this test
+    actually verifies)."""
 
     expected = {
         "H10_delhi_2025a": (339.79198804189934, 6.458654708565996),
@@ -145,7 +154,7 @@ def test_renamed_ordinary_cases_reproduce_the_original_unchanged_values():
     for case_id, date, time, lat, lon in CORRECTED_ORDINARY_CASES:
         moon, distance_deg, _ = _moon_and_distance(date, time, lat, lon, PARASHARI_LAHIRI)
         expected_moon, expected_distance = expected[case_id]
-        assert moon == expected_moon, case_id
+        assert abs(moon - expected_moon) < 1e-9, case_id
         assert abs(distance_deg - expected_distance) < 1e-9, case_id
 
 
