@@ -4178,14 +4178,15 @@ follow-up entry, matching the same mechanism just used for the `ADR-0063` addend
 ## ADR-0074 - JATAKA-entry readiness audit: all six Dasha-roadmap steps closed and CI-confirmed; entry criteria satisfied on their own plain text (PROPOSED - prepared for CEO ratification, not yet declared)
 
 - **Date:** 2026-08-24
-- **Status:** **PROPOSED.** Drafted per the owner's explicit "JATAKA ENTRY READINESS AUDIT — DO NOT
-  IMPLEMENT YET... Do not self-ratify JATAKA entry... Stop at the genuine CEO decision point" instruction,
-  mirroring `ADR-0068`'s own FOUNDATION-exit-readiness precedent exactly: this entry presents the audit's
-  complete findings and, if ratified, would declare JATAKA entry criteria satisfied - it does **not**
-  itself authorize JATAKA implementation (`Q8_CLOSURE_MATRIX.md` s15's own text: "Q8 is CLOSED. No phase
-  is thereby authorised - phase authorisation remains a separate, per-phase, per-capability owner act"),
-  and it is not self-ratified. Awaits the owner's own explicit ratifying instruction, exactly as
-  `ADR-0068` did.
+- **Status:** **ACCEPTED, on the owner's ratifying instruction recorded in the "Ratification of
+  ADR-0074: JATAKA ENTRY CRITERIA FORMALLY SATISFIED" entry immediately below this entry's own text**
+  ("CEO RATIFICATION — ADR-0074. I ratify ADR-0074 exactly as written in commit `2f26eee`...").
+  Originally drafted `PROPOSED` per the owner's own "JATAKA ENTRY READINESS AUDIT — DO NOT IMPLEMENT
+  YET... Do not self-ratify JATAKA entry... Stop at the genuine CEO decision point" instruction, mirroring
+  `ADR-0068`'s own FOUNDATION-exit-readiness precedent exactly. Per the owner's own "change only the
+  status" discipline (already applied to the `ADR-0063` addendum and to `ADR-0068` itself), this Status
+  line is the only text in this entry edited to record ratification - the Context, the item-by-item audit
+  findings, Consequences, and Evidence below are unchanged from commit `2f26eee`.
 - **Context:** `Q8_CLOSURE_MATRIX.md` s5's own JATAKA entry criteria, quoted in full: "Prerequisites:
   FOUNDATION exit. Entry criteria: The Dasha roadmap's steps 1 to 6 complete: depth-3 gate, frozen dasha
   baseline, profile allow-list, the H-08 convention decision, near-boundary Moon cases, boundary-proximity
@@ -4331,6 +4332,51 @@ follow-up entry, matching the same mechanism just used for the `ADR-0063` addend
   VIMSHOTTARI_V1_certification.json`; `python scripts/check_artifact_drift.py` (clean); `python
   scripts/check_adr_numbering.py`, `scripts/check_identifier_families.py`, `scripts/
   check_retired_identifiers.py` - all PASS.
+
+#### Ratification of ADR-0074: JATAKA ENTRY CRITERIA FORMALLY SATISFIED (2026-08-24)
+
+- **Status:** ACCEPTED. The owner instructed: "CEO RATIFICATION — ADR-0074. I ratify ADR-0074 exactly as
+  written in commit: `2f26eee`. I formally declare the JATAKA entry criteria satisfied under
+  `Q8_CLOSURE_MATRIX.md` §5." Per `docs/PROJECT_CONSTITUTION.md` s11, this instruction is the ratifying
+  act; this entry records it, matching the precedent already used throughout this session (`ADR-0063`
+  addendum, the `ADR-0068` ratification entry immediately preceding this one in kind).
+- **Decision:** `ADR-0074` above (its full item-by-item audit findings, Context, and Consequences) is
+  **ratified exactly as drafted in commit `2f26eee`, with no wording changed**. Its own `Status` line,
+  immediately above, is updated from `PROPOSED` to **`ACCEPTED, on the owner's ratifying instruction
+  recorded in this follow-up entry`** - the only edit made to that entry's text, matching the same
+  "change only the status" discipline just used for `ADR-0068`. **JATAKA ENTRY CRITERIA ARE FORMALLY
+  SATISFIED as of 2026-08-24**, per `Q8_CLOSURE_MATRIX.md` s5, on the evidence `ADR-0074` enumerates. The
+  owner's ratifying instruction additionally confirms, explicitly and individually, every one of
+  `ADR-0074`'s own findings - none reinterpreted, narrowed, or extended beyond what `ADR-0074` itself
+  already states:
+  1. The FOUNDATION-exit prerequisite is satisfied.
+  2. All six Dasha-roadmap entry steps are satisfied and individually ratified: H-04/`ADR-0053`,
+     H-05/`ADR-0069`, H-06/`ADR-0070`, H-08/`ADR-0071`, M-02/`ADR-0072`, the dasha boundary-proximity
+     indicator/`ADR-0073`.
+  3. H-03 remains an open, separately tracked finding and is **not** a JATAKA-entry prerequisite.
+  4. The eight `H10`/`H11` cross-certifier findings from `ADR-0072` remain separate future work and do
+     **not** block JATAKA entry.
+  5. The interpretation that `Q8_CLOSURE_MATRIX.md` §5 requires the six named **steps**, not the Dasha
+     roadmap document itself, to carry `ACCEPTED` status is ratified.
+  6. The stale `DECISION_LOG.md` register-header summary is a non-blocking documentation-hygiene issue
+     and must not be treated as an entry gate.
+  7. This decision authorizes **JATAKA phase entry only**.
+  8. This decision does **NOT** authorize implementation of any individual JATAKA capability.
+  9. Every JATAKA capability still requires its own specification, decision/ADR, implementation,
+     certification, and CEO approval, exactly as `Q8_CLOSURE_MATRIX.md` s5's own "Implementation scope"
+     and "CEO approval" rows already require.
+  10. JATAKA implementation is explicitly **not begun** as part of this ratification.
+- **Consequences, restated exactly as `ADR-0074` itself already states them, not expanded upon:** this
+  ratification does **not** authorize any JATAKA capability, ADR, specification, or implementation work -
+  `Q8_CLOSURE_MATRIX.md` s5's own "Implementation scope" row (remaining production vargas, Vimshottari
+  depth/convention extensions, aspect coverage, planet strength) states explicitly "Each is a separate
+  ADR and none is implied by phase entry." No certified calculation changes. No closed Dasha-roadmap item
+  (H-04, H-05, H-06, H-08, M-02, the boundary-proximity indicator) or FOUNDATION item is reopened or
+  reconsidered by this entry. The eight cross-certifier findings (`ADR-0072`) remain untouched and
+  unaddressed. H-03 remains open, unresolved, and outside this entry's scope. `phase-g-governance` is not
+  merged to `main` by this entry, and nothing is pushed.
+- **Evidence:** the owner's "CEO RATIFICATION — ADR-0074" instruction, quoted above; `ADR-0074` itself,
+  commit `2f26eee675742b4b672e9af00b50bd1550848548`.
 
 ---
 

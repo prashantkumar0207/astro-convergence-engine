@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 7.9.0 |
+| Version | 8.0.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-24 (f0eb220/Dasha-step-6 pushed and CI-confirmed, run 32752248185. ADR-0074 drafted, PROPOSED: JATAKA-entry readiness audit - Q8_CLOSURE_MATRIX.md s5 found satisfied on its own plain terms; H-03 confirmed genuinely absent from JATAKA's entry criteria; the eight ADR-0072 cross-certifier findings confirmed non-blocking. Not self-ratified; not implementation-authorized.) |
+| Last updated | 2026-08-24 (ADR-0074 RATIFIED - JATAKA ENTRY CRITERIA FORMALLY SATISFIED, JATAKA ENTERED. Owner: "CEO RATIFICATION — ADR-0074... I formally declare the JATAKA entry criteria satisfied under Q8_CLOSURE_MATRIX.md s5." Phase entry only - no individual JATAKA capability thereby authorized.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,77 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-24 - ADR-0074 RATIFIED: JATAKA ENTRY CRITERIA FORMALLY SATISFIED, JATAKA ENTERED
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the ratification
+  record and state-file updates, on top of `2f26eee`).
+- Previous approved commit: `2f26eee675742b4b672e9af00b50bd1550848548` (`ADR-0074` audit drafted,
+  `PROPOSED`) - unpushed, together with `f0eb220` (Dasha roadmap step 6, pushed and CI-confirmed)
+  beneath it. `main` (via PR #3, merge commit `0e1ef11`) is unaffected by this task.
+- Task (owner's exact instruction): "CEO RATIFICATION — ADR-0074. I ratify ADR-0074 exactly as written
+  in commit: 2f26eee. I formally declare the JATAKA entry criteria satisfied under Q8_CLOSURE_MATRIX.md
+  §5." The instruction individually confirmed: (1) the FOUNDATION-exit prerequisite is satisfied; (2)
+  all six Dasha-roadmap entry steps are satisfied and individually ratified (H-04/`ADR-0053`,
+  H-05/`ADR-0069`, H-06/`ADR-0070`, H-08/`ADR-0071`, M-02/`ADR-0072`, boundary-proximity indicator/
+  `ADR-0073`); (3) H-03 remains open, separately tracked, and is not a JATAKA-entry prerequisite; (4)
+  the eight `H10`/`H11` cross-certifier findings from `ADR-0072` remain separate future work and do not
+  block entry; (5) the "six steps, not the roadmap document" interpretation is ratified; (6) the stale
+  `DECISION_LOG.md` register-header summary is non-blocking documentation hygiene, not an entry gate;
+  (7) this decision authorizes JATAKA phase entry only; (8) it does not authorize any individual
+  capability's implementation; (9) every JATAKA capability still needs its own specification, decision/
+  ADR, implementation, certification, and CEO approval; (10) JATAKA implementation is not begun as part
+  of this ratification. Further instructed: do not begin JATAKA implementation; record the ratification
+  via the established ADR follow-up mechanism; update canonical execution-state and handoff records; do
+  not push/merge without separate authorization; perform a final JATAKA-entry state verification and
+  stop.
+- Relevant ADR/specification: `docs/DECISION_LOG.md` `ADR-0074` (the entry ratified, its Status line
+  changed from `PROPOSED` to `ACCEPTED`, no other text edited) and its new `#### Ratification of
+  ADR-0074` follow-up sub-entry (the ratifying record itself - authoritative over this summary);
+  `ADR-0068`'s own "Ratification of ADR-0068" sub-entry (the precedent this task's own mechanism mirrors
+  exactly); `Q8_CLOSURE_MATRIX.md` s5 (the criteria formally declared satisfied); `ADR-0053`, `ADR-0069`
+  through `ADR-0073` (the six Dasha-roadmap ADRs this ratification confirms, not reopened).
+- Files changed: `docs/DECISION_LOG.md` (`ADR-0074`'s Status line updated; new `#### Ratification of
+  ADR-0074` sub-entry added), `docs/ACE_EXECUTION_STATE.md` (version 6.0.0, `CURRENT_PHASE` updated to
+  JATAKA ENTERED), this file.
+- Implementation summary: recorded the ratification using the exact mechanism `ADR-0068`'s own
+  ratification established as precedent in this repository - a minimal Status-line edit on the original
+  entry ("PROPOSED" -> "ACCEPTED, on the owner's ratifying instruction recorded in the follow-up entry
+  below"), plus a new, separate `####`-level "Ratification of ADR-0074" sub-entry (not a new top-level
+  numbered ADR) quoting the owner's full instruction verbatim and individually restating each of the ten
+  items it enumerated, none reinterpreted, narrowed, or extended beyond what `ADR-0074` itself already
+  stated. `docs/ACE_EXECUTION_STATE.md`'s `CURRENT_PHASE` field updated from "FOUNDATION EXITED... JATAKA
+  NOT entered" to "JATAKA ENTERED (`ADR-0074`, ratified 2026-08-24)," explicitly noting entry authorizes
+  the phase only - no individual capability.
+- Tests executed and results: `python -m pytest -q` - **844 passed, 0 failed, 0 skipped**, unchanged (no
+  code touched this task - a governance-record ratification only).
+- Certification executed and results: none - no code or certification artifact touched this task.
+- Governance checks executed and results: `python scripts/check_adr_numbering.py` (**74 ADR entries,
+  unchanged** - the ratification is a sub-entry within `ADR-0074`, not a new numbered ADR, matching the
+  `ADR-0068` precedent exactly), `python scripts/check_identifier_families.py` (20 DP identifiers,
+  unchanged), `python scripts/check_retired_identifiers.py`, `git diff --check` - all PASS.
+- Known issues: none new. The stale `DECISION_LOG.md` register-header summary (flagged in `ADR-0074`
+  itself, and explicitly confirmed non-blocking by the owner's own item 6) remains uncorrected, by
+  design, as does the eight-certifier `H10`/`H11` finding from `ADR-0072` - both remain available for
+  their own separate, future follow-up.
+- Final JATAKA-entry state verification (performed fresh this task, per the owner's own closing
+  instruction): `ADR-0074`'s `Status` field reads `ACCEPTED`; its own "Ratification of ADR-0074"
+  sub-entry is present and quotes the owner's instruction verbatim; all six Dasha-roadmap ADRs'
+  `Status` fields remain `ACCEPTED` (unchanged by this task); `docs/ACE_EXECUTION_STATE.md`'s
+  `CURRENT_PHASE` reads `JATAKA ENTERED`; no file under `engine/` was touched this task
+  (`git status --porcelain` limited to the two documentation files plus this one); governance gates
+  clean (74 ADR entries, 20 DP identifiers); full test suite 844/844 unchanged. **JATAKA is formally
+  entered. No JATAKA capability implementation has been authorized or begun.**
+- Unresolved questions: which, if any, JATAKA capability the owner wishes to authorize next (a specific
+  varga, a Vimshottari extension, aspect coverage, planet strength, or something else - each requires
+  its own separate specification/decision/ADR per `Q8_CLOSURE_MATRIX.md` s5); whether the flagged
+  cross-certifier finding or the stale register header warrant their own follow-up work; whether/when to
+  push the now-two unpushed commits (`2f26eee`, this task's own) or merge `phase-g-governance` to `main`.
+- CEO decision required: none to close out this task - the ratification itself was the decision point,
+  now recorded. The next genuine decision point is authorizing a specific JATAKA capability, authorizing
+  a push, or directing other work.
+- Next authorized action: none self-executable. Per the owner's own explicit instruction, this task does
+  not begin JATAKA implementation and does not push - it performs the final state verification above and
+  stops here.
 
 ### 2026-08-24 - Pushed f0eb220 (Dasha roadmap step 6, ADR-0073), CI-confirmed (run 32752248185); ADR-0074 drafted: JATAKA-entry readiness audit (PROPOSED, not self-ratified)
 - Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the audit's
@@ -3192,6 +3263,7 @@ act.
 
 | Version | Date | Change |
 |---|---|---|
+| 8.0.0 | 2026-08-24 | **`ADR-0074` RATIFIED — JATAKA ENTRY CRITERIA FORMALLY SATISFIED, JATAKA ENTERED.** Owner: "CEO RATIFICATION — ADR-0074. I ratify ADR-0074 exactly as written in commit 2f26eee. I formally declare the JATAKA entry criteria satisfied under Q8_CLOSURE_MATRIX.md s5," individually confirming all ten items enumerated (FOUNDATION prerequisite satisfied; all six Dasha-roadmap steps satisfied and individually ratified; H-03 not a JATAKA-entry prerequisite; the eight `ADR-0072` cross-certifier findings non-blocking; the "six steps, not the roadmap document" interpretation ratified; the stale header confirmed non-blocking; phase entry only; every JATAKA capability still needs its own authorization; implementation not begun). Recorded via the established "Ratification of ADR-<number>" mechanism, mirroring `ADR-0068`'s own FOUNDATION-exit ratification exactly - Status line only edited, a new follow-up sub-entry added. `CURRENT_PHASE` updated to JATAKA ENTERED. No code touched; 844/844 pytest unchanged; governance gates clean (74 ADR entries). No JATAKA capability implementation begun; no closed Dasha or FOUNDATION item reopened; the eight cross-certifier findings untouched; the stale register-header summary left unfixed. Nothing pushed. |
 | 7.9.0 | 2026-08-24 | Pushed `f0eb220` (Dasha roadmap step 6, `ADR-0073`) to `origin/phase-g-governance` on explicit push authorization - fast-forward `d18e7ff..f0eb220`. CI run `32752248185`: all four jobs green, read directly from the log (governance gate clean; both no-oracle legs 844 passed, confirming the 7 new boundary-proximity tests executed; oracle gate 0 lord mismatches, 20412 rows, drift PASS). **Full six-step Dasha roadmap fully CI-confirmed, zero certified-value impact.** Owner then authorized a formal JATAKA-entry readiness audit. Drafted `ADR-0074` (`Status: PROPOSED`, not self-ratified, mirroring `ADR-0068`'s own precedent): independently reverified all six Dasha-roadmap ADRs' own `Status` fields directly - all `ACCEPTED`. `Q8_CLOSURE_MATRIX.md` s5's entry-criteria text found satisfied on its own plain terms. Searched for H-03: confirmed genuinely absent from JATAKA's entry criteria and the Dasha roadmap - a separate, still-open `TRANSIT_V1` finding, not invented as a requirement. Reconciled the eight `ADR-0072` cross-certifier findings: confirmed non-blocking, remain untouched. Confirmed no accidental JATAKA implementation (`planet_strength.py` is pre-Phase-G legacy code). Flagged, not fixed, a stale `DECISION_LOG.md` register-header summary. Presented the Dasha-roadmap-document's own unratified status as an explicit textual point. Determination: entry criteria satisfied; a separate CEO entry decision is the only remaining authorization. No code touched; 844/844 pytest unchanged; governance gates clean (74 ADR entries). No JATAKA implementation begun; no closed Dasha or FOUNDATION item reopened; the eight cross-certifier findings untouched. |
 | 7.8.0 | 2026-08-24 | **`ADR-0073` ratifies `DP-020` Option 1 - DASHA ROADMAP FULLY CLOSED (all six steps).** Added `VimshottariTimeline.seed_nakshatra_boundary_arcsec`, an exact re-expression of the already-computed `elapsed` fraction (zero new astronomical calculation), deliberately scoped narrower than KP's own `nearest_boundary_arcsec` (nakshatra/seed boundary only) after independently reproducing that field's own unresolved completeness defect (H-07) live. 7 new hermetic tests including a genuine negative control (`NAK_SPAN` monkeypatched, pinned value changes). `certify_vimshottari.py` gained a real per-case self-check plus a new `boundary_proximity_indicator` artifact section. Zero certified-value impact verified via structured before/after comparison and `check_artifact_drift.py`. 844/844 pytest (up from 837). Governance gates clean (73 ADR entries). `Q8_CLOSURE_MATRIX.md` s5's JATAKA entry-criteria text is now satisfied on its own plain terms - general JATAKA implementation is NOT thereby authorized, still requires its own separate authorization. H-04/H-05/H-06/H-08/M-02/`DP-015`/FOUNDATION not touched; the eight flagged cross-certifier findings untouched. Nothing pushed. |
 | 7.7.0 | 2026-08-24 | Pushed `d18e7ff` (M-02 CI-fix) to `origin/phase-g-governance` on explicit push authorization - fast-forward `53ec25e..d18e7ff`. CI run `32711122102`: all four jobs green, read directly from the log (governance gate clean; both no-oracle legs 837 passed including `Near-boundary cases: 216 PASSED`; oracle gate 0 lord mismatches, 20412 rows, drift PASS). **M-02 fully CI-confirmed, zero certified-value impact.** Owner then authorized dasha-boundary-proximity-indicator decision-readiness only - the sixth and final Dasha-roadmap step. Drafted `DP-020`: independently reproduced KP's own `nearest_boundary_arcsec` completeness defect (H-07) live; confirmed a proximity value is exactly derivable from `seed_elapsed_fraction` with zero new calculation, flagging this and M-02's own certifier-only diagnostic as signals not to be silently treated as certified; explicitly distinguished this item from `DP-015`/`ADR-0067`'s own FOUNDATION-scope item without reopening it; confirmed JATAKA's own entry-criteria text has no deferral-with-blocking carve-out, so deferring this step would not unblock JATAKA the way `ADR-0067` unblocked FOUNDATION. Reviewed H-05/H-06/H-08/M-02 as precedents without mechanically copying KP's own flawed pattern. Presents five options (build a narrow seed-only field, reusing M-02's own evidence; build it plus an amplified days-of-uncertainty figure; disclosure-only; an unreachable refusal mechanism; defer), medium-confidence lean toward Option 1. No option chosen; no code touched; H-04/H-05/H-06/H-08/M-02/`DP-015`/FOUNDATION not reopened; the eight flagged cross-certifier findings untouched; general JATAKA not started. Governance gates clean (20 DP identifiers, up from 19). |
