@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 8.3.0 |
+| Version | 8.4.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-24 (`phase-g-governance` merged into `main` via PR #4, CI-confirmed both sides, `d738520`. `DP-021` - JATAKA first-capability decision-readiness - drafted and registered: options only, no ADR, no capability implementation authorized. Awaiting CEO review.) |
+| Last updated | 2026-08-25 (`DP-022` - JATAKA/Q8 implementation-scope governance question, arising from `DP-021` s H.1/M.1 - drafted and registered: evidence and arguments for EXHAUSTIVE vs. ILLUSTRATIVE readings of `Q8_CLOSURE_MATRIX.md` s5, medium-confidence lean toward ILLUSTRATIVE, decides nothing, no Q8 amendment, no capability selected. Awaiting CEO ruling.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,85 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-25 - DP-022 drafted: JATAKA/Q8 implementation-scope governance question (EXHAUSTIVE vs. ILLUSTRATIVE, decides nothing)
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the `DP-022` file
+  and registration, on top of `06ff564`).
+- Previous approved commit: `06ff564ba1628e8f694e58d07cce1f60c7de6d12` (the `DP-021` commit, local-only,
+  one commit ahead of `origin/phase-g-governance`'s `c4d571a340b4baf873fbefb5661eb195937d2f51`).
+  `origin/main` unchanged at `d738520ffc796d07468e24a5b1dddcfba3120c65` (PR #4 merge).
+- Task (owner's exact instruction, abridged): "CEO AUTHORIZATION — RESOLVE JATAKA/Q8
+  IMPLEMENTATION-SCOPE GOVERNANCE QUESTION. Begin the next decision-readiness task arising from DP-021.
+  Do not implement any capability. Do not modify production code. Do not select or ratify a JATAKA
+  capability. Investigate only whether Q8_CLOSURE_MATRIX.md s5's 'Implementation scope' list is: 1.
+  EXHAUSTIVE... or 2. ILLUSTRATIVE..." Required method: session-start audit; independent inspection of
+  Q8 s5/s15, `PROJECT_CHARTER`, governance standards, phase-entry/implementation-authorization ADRs, and
+  any prior example of work outside an initial roadmap list being subsequently authorized; trace
+  governance precedent across FOUNDATION exit, H-01/H-02, the Dasha roadmap, `ADR-0074`, `DP-021` itself;
+  specifically investigate whether an ADR can authorize a new JATAKA capability outside s5 without first
+  amending Q8; explicit instruction not to treat technical sensibility as governance authorization and
+  not to treat Claude Web's recommendation as authority (not applicable to this paper directly - no
+  external input was cited). Required output: a new `DP-0XX`, registered before drafting under
+  `ADR-0040`, containing exact governing text, evidence for each interpretation, arguments for
+  EXHAUSTIVE, arguments for ILLUSTRATIVE, precedent analysis, consequences of each, interaction with s15,
+  interaction with `ADR-0074`, whether a Q8 amendment is required, whether an ADR alone is sufficient,
+  recommendation with confidence, explicit non-claims, exact CEO decision required. Hard scope boundary:
+  no implementation of any named capability, no H-03/H10-H11/FOUNDATION/closed-Dasha-item modification,
+  no self-amendment of Q8, no self-ratification. Run the full relevant governance/regression tests; code
+  and certified values must remain untouched. Update canonical state/handoff records append-only. Stop
+  only at the genuine CEO decision point.
+- Relevant ADR/specification: none reopened or created. Cites `ADR-0048` (Q8 ratification), `ADR-0021`
+  D2/D3, `ADR-0067`/`DP-015` (the closest analogous-ambiguity precedent), `ADR-0074`, `ADR-0063`,
+  `specs/PROJECT_CHARTER.md`, `docs/PROJECT_CONSTITUTION.md`, `.claude/rules/governance.md` - all
+  read-only citations, none edited.
+- Files changed: `docs/decisions/DP-022-jataka-q8-implementation-scope-governance.md` (new),
+  `docs/decisions/README.md` (registered `DP-022` before drafting, per `ADR-0040`; version 3.6.0 ->
+  3.7.0), `docs/ACE_EXECUTION_STATE.md` (version 6.3.0 -> 6.4.0), this file.
+- Method: direct investigation (not delegated to a subagent, given the narrower, textual/precedent-
+  analysis nature of this task compared to `DP-021`'s broad capability inventory) - read
+  `Q8_CLOSURE_MATRIX.md` in full; grepped `docs/DECISION_LOG.md` for `ADR-0048`, `ADR-0021`, `ADR-0067`,
+  `ADR-0074` and read each in full; grepped `specs/PROJECT_CHARTER.md` for its "Analytical systems"
+  text; grepped `docs/PROJECT_CONSTITUTION.md` and `docs/DOCUMENTATION_STANDARD.md` for "amend"/
+  "amendment" (no defined procedure found in either); confirmed `Q8_CLOSURE_MATRIX.md`'s own two-version
+  change history has never touched sections 3-14.
+- Key findings: `Q8_CLOSURE_MATRIX.md` s5's "Each is a separate ADR and none is implied by phase entry"
+  sentence's grammatical antecedent is the four named items - it governs *how* they get authorized, and
+  is silent on whether unlisted items are eligible at all. FOUNDATION's own exit criterion ("every
+  capability above... production certified") textually ties phase exit to its own implementation-scope
+  list, supporting EXHAUSTIVE by structural analogy. `specs/PROJECT_CHARTER.md`'s own "additional systems
+  require their own specification and isolation rules" (senior in the `ADR-0042` hierarchy) and `ADR-0021`
+  D3's entity-vocabulary "provisional and extensible... a new entity kind requires an explicit
+  architectural decision" (the closest structural precedent found, though never yet exercised and at a
+  different governance layer) both support ILLUSTRATIVE. **No ADR has ever amended `Q8_CLOSURE_MATRIX.md`
+  sections 3-14**, and every capability actually pursued during FOUNDATION and the Dasha roadmap was
+  already named in its phase's own ratified text before being pursued - meaning there is no true
+  precedent, in either direction, of a phase-scope row being extended to cover something not originally
+  named. The one directly relevant, on-point precedent is `DP-015`/`ADR-0067`: it resolved an analogous
+  "does this Q8 phrase's reach extend beyond its literal named scope" ambiguity **narrowly, per-item**,
+  via a fresh addendum ADR layered on top of Q8 (never rewriting Q8's own text), and explicitly declined
+  to generalize that resolution to other items ("It is not silently generalized to any other FOUNDATION
+  item"). `ADR-0074` and s15 were both checked directly and found silent on this specific question -
+  neither supports nor forecloses either reading.
+- Implementation summary: no engine/scripts/certification code touched. Decision paper only.
+- Tests executed and results: `python -m pytest -q` - 844/844 passed, unchanged, confirming the
+  documentation-only change made no regression.
+- Certification executed and results: none - no certification artifact touched or regenerated.
+- Governance checks executed and results: `python scripts/check_adr_numbering.py` (74 ADR entries,
+  unchanged), `python scripts/check_identifier_families.py` (22 DP identifiers, up from 21 - `DP-022`
+  registered), `python scripts/check_retired_identifiers.py` (0 violations) - all PASS.
+- Known issues: none new.
+- Unresolved questions: all of `DP-022` section M - principally the EXHAUSTIVE-vs-ILLUSTRATIVE ruling
+  itself; if EXHAUSTIVE, how a Q8 amendment should be enacted (no formal procedure currently exists); if
+  ILLUSTRATIVE, whether the ruling applies generally or should be resolved narrowly per candidate
+  capability, matching the `ADR-0067` precedent's own stated preference; whether to resume `DP-021`'s own
+  capability-selection question now or wait for this paper's ratification first.
+- CEO decision required: rule on `DP-022`'s exhaustive-vs-illustrative question (or defer it per-
+  capability, per the `ADR-0067` precedent); this task deliberately stops at the decision point, per the
+  owner's own explicit instruction - no interpretation is adopted, no ADR is drafted, no capability is
+  selected or implementation-authorized.
+- Next authorized action: none self-executable. Awaiting CEO ruling on `DP-022`, resumption of `DP-021`'s
+  capability-selection work once that ruling is made, and a push authorization for this task's own
+  commit.
 
 ### 2026-08-24 - DP-021 drafted: JATAKA first-capability decision-readiness (options only, no ADR, no implementation)
 - Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the `DP-021` file

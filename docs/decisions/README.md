@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | PROPOSED - index of decision papers. Papers present options; they decide nothing. |
-| Version | 3.6.0 |
+| Version | 3.7.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-24 |
+| Last updated | 2026-08-25 |
 | Review cadence | TBD |
 
 # Decision Papers
@@ -53,11 +53,13 @@ register uses for ADR-0015 through ADR-0017.
 | DP-019 | M-02 (`docs/DASHA_CERTIFICATION_ROADMAP.md` step 5): the Vimshottari oracle gate's two cases named `H10_boundary_moon_a`/`H11_boundary_moon_b` are 6.46 and 5.02 degrees from the nearest nakshatra boundary - farther than most of the gate's own ordinary cases - so the oracle gate has zero genuine near-boundary Moon coverage despite claiming it; whether and how to add real coverage | JATAKA entry criteria (`Q8_CLOSURE_MATRIX.md` s5); `VIMSHOTTARI_V1` oracle-gate boundary coverage | **ADDRESSED by ADR-0072** (2026-08-24), accepting Option 1: six genuine near-boundary cases root-found via `engine.transits.crossing.find_crossings()` (`TRANSIT_V1`), `H10`/`H11` corrected to accurate names (data unchanged). The paper remains unedited as the options record. |
 | DP-020 | Dasha-specific boundary-proximity indicator (`docs/DASHA_CERTIFICATION_ROADMAP.md` step 6, the sixth and final Dasha-roadmap prerequisite): the KP layer exposes `nearest_boundary_arcsec`; the dasha layer, where boundary-proximity amplification runs to hundreds of days per degree, exposes nothing equivalent - whether and how to add one, distinct from `DP-015`/`ADR-0067`'s own FOUNDATION-scope boundary-proximity item | JATAKA entry criteria (`Q8_CLOSURE_MATRIX.md` s5); `VIMSHOTTARI_V1` boundary-sensitivity disclosure | **ADDRESSED by ADR-0073** (2026-08-24), accepting Option 1: `VimshottariTimeline.seed_nakshatra_boundary_arcsec`, an exact re-expression of `seed_elapsed_fraction`, narrowly scoped to the nakshatra boundary only. The paper remains unedited as the options record. **Closes the Dasha roadmap's sixth and final step - all six steps now closed.** |
 | DP-021 | JATAKA architecture / first-capability decision-readiness (`ADR-0074`'s own JATAKA-entry authorization, `Q8_CLOSURE_MATRIX.md` s5's implementation-scope row): what the first production JATAKA capability should be and what architecture/certification prerequisites it requires - full capability inventory, dependency graph, bhava/house-cusp deep investigation, certification design, and proposed sequencing | JATAKA implementation scope (`Q8_CLOSURE_MATRIX.md` s5); the first capability's own eventual ADR | OPEN, drafted |
+| DP-022 | JATAKA/Q8 implementation-scope governance question, surfaced by `DP-021` section H.1/M.1: whether `Q8_CLOSURE_MATRIX.md` s5's "Implementation scope" row (remaining vargas, Vimshottari extensions, aspect coverage, planet strength) is EXHAUSTIVE (only those four may proceed without amending Q8) or ILLUSTRATIVE (other JATAKA-appropriate capabilities may receive their own ADR without amending Q8) - exact governing text, precedent analysis, whether an amendment or an ADR alone suffices | Eligibility of any JATAKA candidate capability not named in `Q8_CLOSURE_MATRIX.md` s5 (bhava/house-cusp gap-closure, karakas, Parashari yogas, KP significators) for its own ADR; `DP-021`'s own option set | OPEN, drafted |
 
 ## Change history
 
 | Version | Date | Change |
 |---|---|---|
+| 3.7.0 | 2026-08-25 | Allocated `DP-022` (`DP-022-jataka-q8-implementation-scope-governance.md`) before drafting, per `ADR-0040`, per the owner's explicit "CEO AUTHORIZATION — RESOLVE JATAKA/Q8 IMPLEMENTATION-SCOPE GOVERNANCE QUESTION" instruction, arising directly from `DP-021` section H.1/M.1. Options only; decides nothing; not implementation-authorized; does not amend `Q8_CLOSURE_MATRIX.md`. |
 | 3.6.0 | 2026-08-24 | Allocated `DP-021` (`DP-021-jataka-first-capability-decision-readiness.md`) before drafting, per `ADR-0040`, per the owner's explicit "CEO AUTHORIZATION — BEGIN JATAKA ARCHITECTURE / CAPABILITY DECISION-READINESS" instruction: the first authorized JATAKA-phase decision-readiness paper. Not implementation-authorized. |
 | 3.5.0 | 2026-08-24 | DP-020 marked ADDRESSED by `ADR-0073` (Option 1 accepted and implemented: narrow, seed-only `seed_nakshatra_boundary_arcsec` field, closing the Dasha roadmap's sixth and final step). |
 | 3.4.0 | 2026-08-24 | Allocated and drafted DP-020 (`DP-020-dasha-boundary-proximity-indicator.md`), the fifth authorized JATAKA-entry-prerequisite decision-readiness paper and the sixth and final Dasha-roadmap step, extracting `docs/DASHA_CERTIFICATION_ROADMAP.md` step 6 and distinguishing it explicitly from `DP-015`/`ADR-0067`'s own FOUNDATION-scope boundary-proximity item. Options only; decides nothing; not implementation-authorized. |
