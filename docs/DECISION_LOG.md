@@ -4068,6 +4068,113 @@ follow-up entry, matching the same mechanism just used for the `ADR-0063` addend
 
 ---
 
+## ADR-0073 - Owner ratification of DP-020 Option 1: narrow, seed-only dasha boundary-proximity indicator, closing the Dasha roadmap's sixth and final step
+
+- **Date:** 2026-08-24
+- **Status:** **ACCEPTED**, on the owner's explicit instruction: "CEO DECISION — DP-020 FINAL DASHA
+  ROADMAP STEP. Ratify DP-020 Option 1 exactly as proposed: Build the narrow, seed-only dasha
+  boundary-proximity field using the already-certified seed_elapsed_fraction / M-02 evidence, with the
+  methodology and certification scope explicitly defined by DP-020." Per `docs/PROJECT_CONSTITUTION.md`
+  s11, this instruction is the ratifying act; this entry records it and the implementation it authorizes,
+  matching the precedent used throughout this session (`ADR-0069` through `ADR-0072`).
+- **Decision:** `DP-020`'s **Option 1 is ratified and implemented**: a new, additive field,
+  `VimshottariTimeline.seed_nakshatra_boundary_arcsec`, reporting the birth Moon's distance to the
+  nearest nakshatra boundary in arcseconds - an exact re-expression of the already-certified
+  `seed_elapsed_fraction`, no new astronomical calculation. Options 2 (amplified days-of-uncertainty
+  figure), 3 (disclosure-only), 4 (unreachable refusal mechanism), and 5 (defer) are **not** chosen.
+  **No existing certified Vimshottari value changes.** This closes the sixth and final `docs/
+  DASHA_CERTIFICATION_ROADMAP.md` step; all six Dasha-roadmap prerequisites are now closed.
+- **Implementation, matching `DP-020` section F's own Option 1 analysis and every constraint the owner's
+  instruction specified:**
+  1. **Narrow, seed-only scope (items 1, 3, 4, 5):** `engine/models/dasha.py` gains
+     `seed_nakshatra_boundary_arcsec: float`, computed in `engine/dasha/vimshottari.py`'s
+     `vimshottari_from_moon()` as `float(min(elapsed, 1 - elapsed) * NAK_SPAN * 3600)` - the exact same
+     `elapsed` local variable already computed for `seed_elapsed_fraction`, in exact `Fraction`
+     arithmetic until the final float step, matching this project's own "exact until the final view"
+     convention used throughout the dasha layer. **KP's own `nearest_boundary_arcsec` implementation is
+     deliberately not copied** (item 3): that field's own docstring claims coverage "at any level" while
+     its computation omits the sign boundary (H-07, an open, unresolved defect) - the new field's own
+     name and docstring instead state its scope explicitly and narrowly (nakshatra/seed boundary only),
+     so it cannot inherit or repeat H-07's overclaim. The field's own docstring (item 5) states, in full,
+     what it measures, what it does not cover (deeper antardasha/pratyantardasha period-transition
+     boundaries - the roadmap's own separate, unaddressed "boundaries in time" problem; any KP-specific
+     level), that it is proximity-only (not a dasha-date-uncertainty figure - Option 2, explicitly not
+     chosen, item 6), and that it must not be treated as equivalent to KP's own `nearest_boundary_arcsec`
+     or to `scripts/certify_vimshottari.py`'s own `moon_distance_to_nearest_boundary_deg` certifier
+     diagnostic (item 4) - both cross-referenced explicitly, neither silently conflated.
+  2. **Zero new astronomical calculation (item 2):** confirmed directly, not merely asserted - a new
+     hermetic test (`test_field_is_exactly_and_only_a_reexpression_of_seed_elapsed_fraction`) recomputes
+     the field's own value independently from `seed_elapsed_fraction` alone for every known case and
+     asserts exact equality with the production value.
+  3. **Genuine tests proving the field's semantics and scope (item 15):** new `engine/tests/
+     test_vimshottari_boundary_proximity_indicator.py` (7 tests): the six near-boundary cases M-02 already
+     root-found and oracle-verified (`ADR-0072`) agree, each, with an independent measurement computed by
+     a deliberately different code path (matching M-02's own certifier-side formula shape, not the
+     production field's own formula); all six report values under the 360-arcsec threshold M-02's own
+     `NEAR_BOUNDARY_THRESHOLD_DEG` already established; the H-05 baseline case (`moon=5.0`, `ADR-0069`)
+     reports a large value (`18000.0` arcsec), proving the field discriminates near from far, not a
+     constant; the two root-found `"_at"` instants report the tightest values of the six, matching the
+     expected shape of a genuine boundary crossing; the field's own re-expression claim verified directly
+     (item above); and a structural guard confirming `VimshottariTimeline` carries no
+     "uncertainty"-named field (Option 2 was not built) and no KP-style multi-level fields.
+  4. **Genuine negative control (item 16):** `test_negative_control_pin_would_catch_a_broken_formula`
+     monkeypatches `engine.dasha.vimshottari.NAK_SPAN` (the name as bound in that module's own namespace,
+     not `engine.dasha.tables.NAK_SPAN` directly, verified to be the correct patch target this session)
+     to a deliberately wrong value mid-test, confirms the H-05 baseline case's reported value changes from
+     its pinned `18000.0`, then restores and re-confirms - proving the pin genuinely depends on the real
+     computation, not a hardcoded or vacuous result.
+  5. **Certification artifact and provenance (item 17):** `scripts/certify_vimshottari.py`'s `run_case()`
+     now also computes each case's `seed_nakshatra_boundary_arcsec` and asserts it agrees with an
+     independently measured distance (a genuine, potentially-failing gate, not a tautological
+     self-comparison - it compares the production field's own reported value against a certifier-side
+     measurement using a different formula shape). A new `gates.boundary_proximity_indicator` section
+     records the methodology and scope directly in the certification artifact; `explicit_non_claims`
+     gained a matching entry. No PyJHora oracle comparison was invented for this specific claim - the
+     field is a pure derivation of an already oracle-validated quantity (`seed_elapsed_fraction`'s own
+     provenance, established via the `anchor_jd`/`balance_years` values the same `elapsed` local variable
+     already produces, already certified), matching H-05's own precedent (`ADR-0069`) for exactly this
+     situation, not M-02's own oracle-battery shape, which was appropriate there because M-02's own claim
+     (near-boundary coverage) had no existing certified provenance to derive from.
+- **Certification implications, verified not merely predicted:** `scripts/certify_vimshottari.py` re-run
+  in the isolated PyJHora exploration venv after every code change - **PASS, `lord mismatches: 0`**
+  across all 17 cases, including the new `seed_nakshatra_boundary_arcsec` self-check on every one.
+  Structured comparison of the regenerated artifact against the previously committed one confirmed every
+  pre-existing case's own recorded result byte-identical (excluding the new, always-present `seed_
+  nakshatra_boundary_arcsec` diagnostic field). `python scripts/check_artifact_drift.py` run against the
+  regenerated-but-uncommitted artifact correctly flagged exactly the intended, understood changes and
+  nothing else: `explicit_non_claims` length `5 -> 6`, `gates.boundary_proximity_indicator: added`, and
+  the new field added to every one of the 28 per-case entries across both profiles - no existing case's
+  own prior fields, and no calculated figure, differed. M-03 anti-fitting scan-surface impact confirmed
+  nil via a `certify_kp_chain.py` sanity check (only the same class of volatile-field diff; discarded,
+  not committed).
+- **Consequences:** No existing certified Vimshottari value changes, in any case, under any profile -
+  confirmed directly (844 passed, up from 837 by exactly the 7 new tests; every pre-existing certification
+  case byte-identical). The Dasha roadmap (`docs/DASHA_CERTIFICATION_ROADMAP.md` section 5) is now
+  **fully closed - all six steps (H-04, H-05, H-06, H-08, M-02, boundary-proximity indicator) are
+  closed and, except for this entry's own commit, CI-confirmed.** `Q8_CLOSURE_MATRIX.md` s5's own JATAKA
+  entry-criteria text ("The Dasha roadmap's steps 1 to 6 complete") is now satisfied on its own plain
+  terms. **This entry does not itself authorize JATAKA implementation** - a separate, explicit owner
+  authorization is required to begin it, per the owner's own item 14 and this session's established
+  per-phase discipline. H-04, H-05, H-06, H-08, and M-02 (`ADR-0053`, `ADR-0069`, `ADR-0070`, `ADR-0071`,
+  `ADR-0072`) remain untouched - none reopened. `DP-015`/`ADR-0067`'s own FOUNDATION-scope
+  boundary-proximity decision remains untouched and is not reopened by this entry, despite sharing
+  terminology. The eight cross-certifier `H10`/`H11` findings `ADR-0072` flagged remain untouched and
+  unaddressed, exactly as recorded - still a separate, future item. FOUNDATION is not reopened; `main` is
+  not merged into.
+- **Evidence:** the owner's "CEO DECISION — DP-020 FINAL DASHA ROADMAP STEP" instruction, quoted above;
+  `DP-020` section F (Option 1, the analysis this entry implements) and section G (the recommendation
+  this entry accepts); `python -m pytest -q` - 844 passed, 0 failed, 0 skipped; `python -m pytest
+  engine/tests/test_vimshottari_boundary_proximity_indicator.py -v` - 7/7 passed, including the
+  `NAK_SPAN`-mutation negative control; `python scripts/certify_vimshottari.py` (isolated exploration
+  venv, PyJHora) - PASS, zero lord mismatches across all 17 cases, including the new per-case
+  self-check; direct structured comparison of the regenerated certification artifact against the
+  previously committed one, confirming every pre-existing case's own result unchanged; `python
+  scripts/certify_kp_chain.py` plus `python scripts/check_artifact_drift.py` confirming the only
+  non-volatile change is the intended addition; `scripts/check_adr_numbering.py`, `scripts/
+  check_identifier_families.py`, `scripts/check_retired_identifiers.py`, `git diff --check` - all PASS.
+
+---
+
 ## ADR template (copy, do not edit above the line)
 
 ## ADR-XXXX - <title>

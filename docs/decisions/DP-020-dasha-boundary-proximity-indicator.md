@@ -3,8 +3,8 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | OPEN - decision paper. Presents options and recommends one. DECIDES NOTHING. Requires owner approval. |
-| Version | 1.0.0 |
+| Status | **ADDRESSED by ADR-0073** (2026-08-24) - owner ratified Option 1 (build the narrow, seed-only boundary-proximity field). This paper's own text is unedited below as the options record; see `ADR-0073` for the ratifying instruction and implementation record. |
+| Version | 1.1.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 | Last updated | 2026-08-24 |
 | Review cadence | TBD |
@@ -353,4 +353,5 @@ findings.
 
 | Version | Date | Change |
 |---|---|---|
+| 1.1.0 | 2026-08-24 | Marked ADDRESSED by `ADR-0073` (Option 1 accepted and implemented: `VimshottariTimeline.seed_nakshatra_boundary_arcsec`, an exact re-expression of `seed_elapsed_fraction`, closing the Dasha roadmap's sixth and final step). Paper's substantive text below unchanged. |
 | 1.0.0 | 2026-08-24 | Created. Fifth authorized JATAKA-entry-prerequisite decision-readiness paper, and the sixth and final Dasha-roadmap step, extracting `docs/DASHA_CERTIFICATION_ROADMAP.md` step 6 with every claim independently re-verified against the live `engine/kp/chain.py`, `engine/models/dasha.py`, `scripts/certify_vimshottari.py`, and `docs/Q8_CLOSURE_MATRIX.md`/`DASHA_CERTIFICATION_ROADMAP.md` - not trusted from either document's own summary. Independently reproduced H-07's own KP boundary-indicator completeness defect live (`kp_chain(29.999999999)`: `sign_lord='Ma'`, `nearest_boundary_arcsec=380.0000036`), confirmed no boundary-proximity signal exists on `VimshottariTimeline` today, and confirmed a proximity value is exactly and losslessly derivable from the already-certified `seed_elapsed_fraction` with zero new calculation - identifying this, and M-02's own certifier-only diagnostic field, as related signals that must not be silently treated as a certified indicator (item 8). Explicitly distinguished this item from `DP-015`/`ADR-0067`'s own FOUNDATION-scope boundary-proximity item, confirming the latter's forward-binding rule applies here without being reopened. Confirmed JATAKA's own entry-criteria text carries no deferral-with-blocking carve-out of the kind FOUNDATION's had, so deferral does not by itself unblock JATAKA the way it unblocked FOUNDATION. Reviewed H-05/H-06/H-08/M-02 as precedents per the owner's own item 13, explicitly declining to mechanically copy KP's own flawed `nearest_boundary_arcsec` pattern. Classifies the item as a missing capability plus a methodology gap, not a defect. Presents five options (build a narrow seed-only field, reusing M-02's own evidence; build it plus an amplified days-of-uncertainty figure; disclosure-only; an unreachable refusal mechanism; defer), medium-confidence lean toward Option 1. Options only; decides nothing; not implementation-authorized. |

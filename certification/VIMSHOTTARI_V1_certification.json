@@ -28,7 +28,8 @@
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
      "max_start_delta_days": 1.3969838619232178e-09,
-     "moon_distance_to_nearest_boundary_deg": 3.182121
+     "moon_distance_to_nearest_boundary_deg": 3.182121,
+     "seed_nakshatra_boundary_arcsec": 11455.634113
     },
     {
      "case": "H2_newyork_1900",
@@ -36,7 +37,8 @@
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
      "max_start_delta_days": 1.862645149230957e-09,
-     "moon_distance_to_nearest_boundary_deg": 3.382171
+     "moon_distance_to_nearest_boundary_deg": 3.382171,
+     "seed_nakshatra_boundary_arcsec": 12175.813928
     },
     {
      "case": "H3_sydney_1946",
@@ -44,7 +46,8 @@
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
      "max_start_delta_days": 1.862645149230957e-09,
-     "moon_distance_to_nearest_boundary_deg": 1.511671
+     "moon_distance_to_nearest_boundary_deg": 1.511671,
+     "seed_nakshatra_boundary_arcsec": 5442.014713
     },
     {
      "case": "H4_delhi_1979",
@@ -52,7 +55,8 @@
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
      "max_start_delta_days": 1.862645149230957e-09,
-     "moon_distance_to_nearest_boundary_deg": 4.254292
+     "moon_distance_to_nearest_boundary_deg": 4.254292,
+     "seed_nakshatra_boundary_arcsec": 15315.45261
     },
     {
      "case": "H5_reykjavik_1992",
@@ -60,7 +64,8 @@
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
      "max_start_delta_days": 1.3969838619232178e-09,
-     "moon_distance_to_nearest_boundary_deg": 2.067614
+     "moon_distance_to_nearest_boundary_deg": 2.067614,
+     "seed_nakshatra_boundary_arcsec": 7443.408724
     },
     {
      "case": "H6_quito_2010",
@@ -68,7 +73,8 @@
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
      "max_start_delta_days": 1.3969838619232178e-09,
-     "moon_distance_to_nearest_boundary_deg": 5.50155
+     "moon_distance_to_nearest_boundary_deg": 5.50155,
+     "seed_nakshatra_boundary_arcsec": 19805.580083
     },
     {
      "case": "H7_tokyo_2033",
@@ -76,7 +82,8 @@
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
      "max_start_delta_days": 1.862645149230957e-09,
-     "moon_distance_to_nearest_boundary_deg": 2.911525
+     "moon_distance_to_nearest_boundary_deg": 2.911525,
+     "seed_nakshatra_boundary_arcsec": 10481.488727
     },
     {
      "case": "H8_mumbai_2077",
@@ -84,7 +91,8 @@
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
      "max_start_delta_days": 1.3969838619232178e-09,
-     "moon_distance_to_nearest_boundary_deg": 1.221409
+     "moon_distance_to_nearest_boundary_deg": 1.221409,
+     "seed_nakshatra_boundary_arcsec": 4397.071487
     },
     {
      "case": "H9_paris_2350",
@@ -92,7 +100,8 @@
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
      "max_start_delta_days": 1.3969838619232178e-09,
-     "moon_distance_to_nearest_boundary_deg": 3.390257
+     "moon_distance_to_nearest_boundary_deg": 3.390257,
+     "seed_nakshatra_boundary_arcsec": 12204.924893
     },
     {
      "case": "H10_delhi_2025a",
@@ -100,7 +109,8 @@
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
      "max_start_delta_days": 1.3969838619232178e-09,
-     "moon_distance_to_nearest_boundary_deg": 6.458862
+     "moon_distance_to_nearest_boundary_deg": 6.458862,
+     "seed_nakshatra_boundary_arcsec": 23251.902727
     },
     {
      "case": "H11_delhi_2025b",
@@ -108,7 +118,8 @@
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
      "max_start_delta_days": 1.862645149230957e-09,
-     "moon_distance_to_nearest_boundary_deg": 5.019943
+     "moon_distance_to_nearest_boundary_deg": 5.019943,
+     "seed_nakshatra_boundary_arcsec": 18071.796587
     },
     {
      "case": "B1_lahiri_boundary_before",
@@ -116,7 +127,8 @@
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
      "max_start_delta_days": 1.862645149230957e-09,
-     "moon_distance_to_nearest_boundary_deg": 0.044009
+     "moon_distance_to_nearest_boundary_deg": 0.044009,
+     "seed_nakshatra_boundary_arcsec": 158.431235
     },
     {
      "case": "B2_lahiri_boundary_at",
@@ -124,7 +136,8 @@
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
      "max_start_delta_days": 1.862645149230957e-09,
-     "moon_distance_to_nearest_boundary_deg": 0.000192
+     "moon_distance_to_nearest_boundary_deg": 0.000192,
+     "seed_nakshatra_boundary_arcsec": 0.692202
     },
     {
      "case": "B3_lahiri_boundary_after",
@@ -132,7 +145,8 @@
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
      "max_start_delta_days": 1.862645149230957e-09,
-     "moon_distance_to_nearest_boundary_deg": 0.044389
+     "moon_distance_to_nearest_boundary_deg": 0.044389,
+     "seed_nakshatra_boundary_arcsec": 159.801605
     }
    ],
    "kp_krishnamurti": [
@@ -142,7 +156,8 @@
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
      "max_start_delta_days": 1.3969838619232178e-09,
-     "moon_distance_to_nearest_boundary_deg": 3.278973
+     "moon_distance_to_nearest_boundary_deg": 3.278973,
+     "seed_nakshatra_boundary_arcsec": 11804.303578
     },
     {
      "case": "H2_newyork_1900",
@@ -150,7 +165,8 @@
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
      "max_start_delta_days": 1.862645149230957e-09,
-     "moon_distance_to_nearest_boundary_deg": 3.285318
+     "moon_distance_to_nearest_boundary_deg": 3.285318,
+     "seed_nakshatra_boundary_arcsec": 11827.145047
     },
     {
      "case": "H3_sydney_1946",
@@ -158,7 +174,8 @@
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
      "max_start_delta_days": 1.862645149230957e-09,
-     "moon_distance_to_nearest_boundary_deg": 1.608523
+     "moon_distance_to_nearest_boundary_deg": 1.608523,
+     "seed_nakshatra_boundary_arcsec": 5790.683307
     },
     {
      "case": "H4_delhi_1979",
@@ -166,7 +183,8 @@
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
      "max_start_delta_days": 1.862645149230957e-09,
-     "moon_distance_to_nearest_boundary_deg": 4.15744
+     "moon_distance_to_nearest_boundary_deg": 4.15744,
+     "seed_nakshatra_boundary_arcsec": 14966.78419
     },
     {
      "case": "H5_reykjavik_1992",
@@ -174,7 +192,8 @@
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
      "max_start_delta_days": 1.3969838619232178e-09,
-     "moon_distance_to_nearest_boundary_deg": 1.970761
+     "moon_distance_to_nearest_boundary_deg": 1.970761,
+     "seed_nakshatra_boundary_arcsec": 7094.740362
     },
     {
      "case": "H6_quito_2010",
@@ -182,7 +201,8 @@
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
      "max_start_delta_days": 1.3969838619232178e-09,
-     "moon_distance_to_nearest_boundary_deg": 5.598402
+     "moon_distance_to_nearest_boundary_deg": 5.598402,
+     "seed_nakshatra_boundary_arcsec": 20154.248367
     },
     {
      "case": "H7_tokyo_2033",
@@ -190,7 +210,8 @@
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
      "max_start_delta_days": 1.862645149230957e-09,
-     "moon_distance_to_nearest_boundary_deg": 3.008377
+     "moon_distance_to_nearest_boundary_deg": 3.008377,
+     "seed_nakshatra_boundary_arcsec": 10830.156923
     },
     {
      "case": "H8_mumbai_2077",
@@ -198,7 +219,8 @@
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
      "max_start_delta_days": 1.3969838619232178e-09,
-     "moon_distance_to_nearest_boundary_deg": 1.318261
+     "moon_distance_to_nearest_boundary_deg": 1.318261,
+     "seed_nakshatra_boundary_arcsec": 4745.739552
     },
     {
      "case": "H9_paris_2350",
@@ -206,7 +228,8 @@
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
      "max_start_delta_days": 1.3969838619232178e-09,
-     "moon_distance_to_nearest_boundary_deg": 3.293405
+     "moon_distance_to_nearest_boundary_deg": 3.293405,
+     "seed_nakshatra_boundary_arcsec": 11856.256592
     },
     {
      "case": "H10_delhi_2025a",
@@ -214,7 +237,8 @@
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
      "max_start_delta_days": 1.3969838619232178e-09,
-     "moon_distance_to_nearest_boundary_deg": 6.555714
+     "moon_distance_to_nearest_boundary_deg": 6.555714,
+     "seed_nakshatra_boundary_arcsec": 23600.570954
     },
     {
      "case": "H11_delhi_2025b",
@@ -222,7 +246,8 @@
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
      "max_start_delta_days": 1.862645149230957e-09,
-     "moon_distance_to_nearest_boundary_deg": 5.116796
+     "moon_distance_to_nearest_boundary_deg": 5.116796,
+     "seed_nakshatra_boundary_arcsec": 18420.464814
     },
     {
      "case": "B4_kp_boundary_before",
@@ -230,7 +255,8 @@
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
      "max_start_delta_days": 1.862645149230957e-09,
-     "moon_distance_to_nearest_boundary_deg": 0.044324
+     "moon_distance_to_nearest_boundary_deg": 0.044324,
+     "seed_nakshatra_boundary_arcsec": 159.565215
     },
     {
      "case": "B5_kp_boundary_at",
@@ -238,7 +264,8 @@
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
      "max_start_delta_days": 1.862645149230957e-09,
-     "moon_distance_to_nearest_boundary_deg": 0.000193
+     "moon_distance_to_nearest_boundary_deg": 0.000193,
+     "seed_nakshatra_boundary_arcsec": 0.694709
     },
     {
      "case": "B6_kp_boundary_after",
@@ -246,7 +273,8 @@
      "pratyantar_rows": 729,
      "lord_mismatches": 0,
      "max_start_delta_days": 1.862645149230957e-09,
-     "moon_distance_to_nearest_boundary_deg": 0.044714
+     "moon_distance_to_nearest_boundary_deg": 0.044714,
+     "seed_nakshatra_boundary_arcsec": 160.969907
     }
    ]
   },
@@ -291,6 +319,10 @@
      "lord_mismatches": 0
     }
    ]
+  },
+  "boundary_proximity_indicator": {
+   "methodology": "VimshottariTimeline.seed_nakshatra_boundary_arcsec (Dasha roadmap step 6, DP-020 Option 1, ADR-0073) is an exact re-expression of seed_elapsed_fraction, no new astronomical calculation. Verified per case above (each case's own seed_nakshatra_boundary_arcsec is checked against an independently measured distance, not the field's own formula; see run_case()). Hermetic pinning tests and a genuine negative control: engine/tests/test_vimshottari_boundary_proximity_indicator.py.",
+   "scope": "Nakshatra (seed) boundary only - does not cover deeper period-transition boundaries or any KP-specific level, and is not a dasha-date-uncertainty figure (that is DP-020 Option 2, not chosen)."
   }
  },
  "explicit_non_claims": [
@@ -298,7 +330,8 @@
   "depths beyond pratyantardasha (DA-C)",
   "year conventions other than the certified profile",
   "transit or event overlays",
-  "agreement with engine.astrology.nakshatra's tolerance-promoted classifier at a boundary: seed classification uses the KP layer's exact [start, end) rule for every school, including Parashari - a deliberate, ratified convention (H-08, ADR-0071), not a defect. See VimshottariTimeline.seed_boundary_convention and engine/tests/test_vimshottari_h08_boundary_convention.py."
+  "agreement with engine.astrology.nakshatra's tolerance-promoted classifier at a boundary: seed classification uses the KP layer's exact [start, end) rule for every school, including Parashari - a deliberate, ratified convention (H-08, ADR-0071), not a defect. See VimshottariTimeline.seed_boundary_convention and engine/tests/test_vimshottari_h08_boundary_convention.py.",
+  "any distance-to-boundary claim beyond the nakshatra (seed) level: seed_nakshatra_boundary_arcsec (Dasha roadmap step 6, DP-020 Option 1, ADR-0073) does not cover antardasha/pratyantardasha period-transition boundaries, does not cover any KP-specific level, and is not a dasha-date-uncertainty figure. It must not be treated as equivalent to KP's own nearest_boundary_arcsec (which itself has an unresolved completeness defect, H-07) or to this certifier's own moon_distance_to_nearest_boundary_deg diagnostic (M-02)."
  ],
  "environment": {
   "python": "3.12.10"

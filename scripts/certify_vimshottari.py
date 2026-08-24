@@ -180,6 +180,20 @@ def run_case(case, engine_profile, jhora_ayanamsa):
             "(the exact defect M-02/ADR-0072 corrected)"
         )
 
+    # Dasha roadmap step 6 (DP-020 Option 1, ADR-0073): the new
+    # VimshottariTimeline.seed_nakshatra_boundary_arcsec field must agree
+    # with an INDEPENDENTLY measured distance (the same certifier-side
+    # quantity M-02 already computes above, not the field's own formula)
+    # to within float round-trip noise - a genuine gate, not a tautology.
+    boundary_arcsec_delta = abs(timeline.seed_nakshatra_boundary_arcsec - float(boundary_distance_deg * 3600))
+    if boundary_arcsec_delta > 1e-3:
+        fail(
+            f"{case['id']}: seed_nakshatra_boundary_arcsec "
+            f"{timeline.seed_nakshatra_boundary_arcsec} disagrees with the independently "
+            f"measured {float(boundary_distance_deg * 3600)} arcsec by {boundary_arcsec_delta} "
+            "- DP-020/ADR-0073's own re-expression claim would be false"
+        )
+
     return {
         "case": case["id"],
         "moon_delta_vs_oracle_arcsec": round(moon_delta_arcsec, 6),
@@ -187,6 +201,7 @@ def run_case(case, engine_profile, jhora_ayanamsa):
         "lord_mismatches": 0,
         "max_start_delta_days": max_start_delta,
         "moon_distance_to_nearest_boundary_deg": round(boundary_distance_deg, 6),
+        "seed_nakshatra_boundary_arcsec": round(timeline.seed_nakshatra_boundary_arcsec, 6),
     }
 
 
@@ -275,6 +290,25 @@ def main():
                 "threshold_deg": NEAR_BOUNDARY_THRESHOLD_DEG,
                 "cases": near_boundary_coverage,
             },
+            "boundary_proximity_indicator": {
+                "methodology": (
+                    "VimshottariTimeline.seed_nakshatra_boundary_arcsec (Dasha "
+                    "roadmap step 6, DP-020 Option 1, ADR-0073) is an exact "
+                    "re-expression of seed_elapsed_fraction, no new astronomical "
+                    "calculation. Verified per case above (each case's own "
+                    "seed_nakshatra_boundary_arcsec is checked against an "
+                    "independently measured distance, not the field's own "
+                    "formula; see run_case()). Hermetic pinning tests and a "
+                    "genuine negative control: engine/tests/"
+                    "test_vimshottari_boundary_proximity_indicator.py."
+                ),
+                "scope": (
+                    "Nakshatra (seed) boundary only - does not cover deeper "
+                    "period-transition boundaries or any KP-specific level, "
+                    "and is not a dasha-date-uncertainty figure (that is "
+                    "DP-020 Option 2, not chosen)."
+                ),
+            },
         },
         "explicit_non_claims": [
             "other dasha systems (Ashtottari, Yogini, ...)",
@@ -288,6 +322,17 @@ def main():
                 "Parashari - a deliberate, ratified convention (H-08, ADR-0071), "
                 "not a defect. See VimshottariTimeline.seed_boundary_convention "
                 "and engine/tests/test_vimshottari_h08_boundary_convention.py."
+            ),
+            (
+                "any distance-to-boundary claim beyond the nakshatra (seed) "
+                "level: seed_nakshatra_boundary_arcsec (Dasha roadmap step 6, "
+                "DP-020 Option 1, ADR-0073) does not cover antardasha/"
+                "pratyantardasha period-transition boundaries, does not cover "
+                "any KP-specific level, and is not a dasha-date-uncertainty "
+                "figure. It must not be treated as equivalent to KP's own "
+                "nearest_boundary_arcsec (which itself has an unresolved "
+                "completeness defect, H-07) or to this certifier's own "
+                "moon_distance_to_nearest_boundary_deg diagnostic (M-02)."
             ),
         ],
         "environment": {"python": sys.version.split()[0]},

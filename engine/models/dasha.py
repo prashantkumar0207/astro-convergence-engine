@@ -70,6 +70,36 @@ class VimshottariTimeline:
     balance_years is the remaining portion of the first mahadasha at
     birth (exact); seed_boundary_convention (H-08, ADR-0071) names
     which boundary-ownership rule produced seed_nakshatra_number.
+
+    seed_nakshatra_boundary_arcsec (Dasha roadmap step 6, DP-020
+    Option 1, ADR-0073): distance from the birth Moon to the nearest
+    NAKSHATRA boundary, in arcseconds - an exact re-expression of
+    seed_elapsed_fraction (min(elapsed, 1 - elapsed) * NAK_SPAN *
+    3600, Fraction arithmetic until the final float step), not a new
+    astronomical calculation. Scope, deliberately narrower than KP's
+    own engine.models.kp_chain.KpChain.nearest_boundary_arcsec:
+
+    - Covers ONLY the nakshatra (seed) boundary that determines
+      seed_lord and therefore the entire mahadasha/antardasha/
+      pratyantardasha structure. It does NOT cover deeper period-
+      transition boundaries (antardasha/pratyantardasha starts and
+      ends - the roadmap's own separate, unaddressed "boundaries in
+      time" interval-membership problem), and it does NOT cover any
+      KP-specific level (sign/sub/sub-sub) - unlike
+      nearest_boundary_arcsec, whose own docstring claims coverage
+      "at any level" while its implementation omits the sign
+      boundary (H-07, an open, unresolved defect this field does not
+      inherit because it makes no such broader claim).
+    - Reports proximity only. It is NOT a dasha-date-uncertainty
+      figure: no lord-specific days-per-degree amplification
+      (docs/DASHA_CERTIFICATION_ROADMAP.md s1) is applied - that is
+      DP-020 Option 2, explicitly not chosen.
+    - MUST NOT be treated as equivalent to KP's own
+      nearest_boundary_arcsec, or to scripts/certify_vimshottari.py's
+      own moon_distance_to_nearest_boundary_deg certifier diagnostic
+      (M-02, ADR-0072) - each is a separate signal with its own scope
+      and provenance; see engine/tests/
+      test_vimshottari_boundary_proximity_indicator.py.
     """
 
     school: str
@@ -83,6 +113,7 @@ class VimshottariTimeline:
     seed_nakshatra_number: int
     seed_lord: str
     seed_elapsed_fraction: Fraction
+    seed_nakshatra_boundary_arcsec: float
     balance_years: Fraction
 
     periods: tuple

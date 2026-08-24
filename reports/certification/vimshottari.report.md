@@ -22,6 +22,7 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 - **independent_validator**: PASS
 - **cases**: see machine-readable results
 - **near_boundary_coverage**: threshold_deg=0.1
+- **boundary_proximity_indicator**: see machine-readable results
 
 ## Explicit non-claims
 
@@ -30,6 +31,7 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 - year conventions other than the certified profile
 - transit or event overlays
 - agreement with engine.astrology.nakshatra's tolerance-promoted classifier at a boundary: seed classification uses the KP layer's exact [start, end) rule for every school, including Parashari - a deliberate, ratified convention (H-08, ADR-0071), not a defect. See VimshottariTimeline.seed_boundary_convention and engine/tests/test_vimshottari_h08_boundary_convention.py.
+- any distance-to-boundary claim beyond the nakshatra (seed) level: seed_nakshatra_boundary_arcsec (Dasha roadmap step 6, DP-020 Option 1, ADR-0073) does not cover antardasha/pratyantardasha period-transition boundaries, does not cover any KP-specific level, and is not a dasha-date-uncertainty figure. It must not be treated as equivalent to KP's own nearest_boundary_arcsec (which itself has an unresolved completeness defect, H-07) or to this certifier's own moon_distance_to_nearest_boundary_deg diagnostic (M-02).
 
 ## Evidence files
 
