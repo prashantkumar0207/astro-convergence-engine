@@ -4,7 +4,7 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | PROPOSED - index of decision papers. Papers present options; they decide nothing. |
-| Version | 3.3.0 |
+| Version | 3.4.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 | Last updated | 2026-08-24 |
 | Review cadence | TBD |
@@ -51,11 +51,13 @@ register uses for ADR-0015 through ADR-0017.
 | DP-017 | H-06 (`docs/DASHA_CERTIFICATION_ROADMAP.md` step 3): no allow-list for dasha profiles, no type enforcement on `year_length_days` - whether and how to close the gap | JATAKA entry criteria (`Q8_CLOSURE_MATRIX.md` s5); `VIMSHOTTARI_V1` profile-certification coverage | **ADDRESSED by ADR-0070** (2026-08-22), accepting Option 1: `CERTIFIED_DASHA_PROFILES` allow-list (keyed on the full frozen instance) + `UnsupportedDashaProfileError` + `year_length_days` type enforcement, mirroring the varga-registry pattern. The paper remains unedited as the options record. |
 | DP-018 | H-08 (`docs/DASHA_CERTIFICATION_ROADMAP.md` step 4): the KP exact-boundary conversion rule is exported into the Parashari-labelled dasha seed, so at six float spellings of nakshatra boundaries a Parashari-seeded timeline disagrees with the engine's own Parashari `nakshatra()` classifier - which boundary convention a Parashari-seeded dasha should follow, an explicit owner decision per the roadmap's own framing | JATAKA entry criteria (`Q8_CLOSURE_MATRIX.md` s5); `VIMSHOTTARI_V1` seed-classification convention | **ADDRESSED by ADR-0071** (2026-08-22), accepting Option 3: the status quo ratified as deliberate (no calculated value changes) plus `VimshottariTimeline.seed_boundary_convention`, an additive disclosure field mirroring `ADR-0065`'s `declared_division`. The paper remains unedited as the options record, apart from one placeholder-identifier correction. |
 | DP-019 | M-02 (`docs/DASHA_CERTIFICATION_ROADMAP.md` step 5): the Vimshottari oracle gate's two cases named `H10_boundary_moon_a`/`H11_boundary_moon_b` are 6.46 and 5.02 degrees from the nearest nakshatra boundary - farther than most of the gate's own ordinary cases - so the oracle gate has zero genuine near-boundary Moon coverage despite claiming it; whether and how to add real coverage | JATAKA entry criteria (`Q8_CLOSURE_MATRIX.md` s5); `VIMSHOTTARI_V1` oracle-gate boundary coverage | **ADDRESSED by ADR-0072** (2026-08-24), accepting Option 1: six genuine near-boundary cases root-found via `engine.transits.crossing.find_crossings()` (`TRANSIT_V1`), `H10`/`H11` corrected to accurate names (data unchanged). The paper remains unedited as the options record. |
+| DP-020 | Dasha-specific boundary-proximity indicator (`docs/DASHA_CERTIFICATION_ROADMAP.md` step 6, the sixth and final Dasha-roadmap prerequisite): the KP layer exposes `nearest_boundary_arcsec`; the dasha layer, where boundary-proximity amplification runs to hundreds of days per degree, exposes nothing equivalent - whether and how to add one, distinct from `DP-015`/`ADR-0067`'s own FOUNDATION-scope boundary-proximity item | JATAKA entry criteria (`Q8_CLOSURE_MATRIX.md` s5); `VIMSHOTTARI_V1` boundary-sensitivity disclosure | OPEN, drafted |
 
 ## Change history
 
 | Version | Date | Change |
 |---|---|---|
+| 3.4.0 | 2026-08-24 | Allocated and drafted DP-020 (`DP-020-dasha-boundary-proximity-indicator.md`), the fifth authorized JATAKA-entry-prerequisite decision-readiness paper and the sixth and final Dasha-roadmap step, extracting `docs/DASHA_CERTIFICATION_ROADMAP.md` step 6 and distinguishing it explicitly from `DP-015`/`ADR-0067`'s own FOUNDATION-scope boundary-proximity item. Options only; decides nothing; not implementation-authorized. |
 | 3.3.0 | 2026-08-24 | DP-019 marked ADDRESSED by `ADR-0072` (Option 1 accepted and implemented: genuine root-found near-boundary oracle-gate cases + `H10`/`H11` label correction). |
 | 3.2.0 | 2026-08-22 | Allocated and drafted DP-019 (`DP-019-m02-vimshottari-oracle-boundary-coverage.md`), the fourth authorized JATAKA-entry-prerequisite decision-readiness paper, extracting `reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md`'s M-02 finding and `docs/DASHA_CERTIFICATION_ROADMAP.md` step 5. Options only; decides nothing; not implementation-authorized. |
 | 3.1.0 | 2026-08-22 | DP-018 marked ADDRESSED by `ADR-0071` (Option 3 accepted and implemented: status-quo ratification + additive `seed_boundary_convention` disclosure field + pinning test). |
