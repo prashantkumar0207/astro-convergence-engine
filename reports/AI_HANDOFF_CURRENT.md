@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 8.1.0 |
+| Version | 8.3.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-24 (CI-run-ID discrepancy resolved by direct GitHub Actions query - no fabrication, both runs genuine; canonical snapshot corrected. Full main-vs-phase-g-governance merge-readiness audit performed: READY, merge NOT performed, awaiting separate CEO merge authorization. No JATAKA implementation begun.) |
+| Last updated | 2026-08-24 (`phase-g-governance` merged into `main` via PR #4, CI-confirmed both sides, `d738520`. `DP-021` - JATAKA first-capability decision-readiness - drafted and registered: options only, no ADR, no capability implementation authorized. Awaiting CEO review.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,123 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-24 - DP-021 drafted: JATAKA first-capability decision-readiness (options only, no ADR, no implementation)
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the `DP-021` file
+  and registration, on top of `c4d571a` post-merge).
+- Previous approved commit: `c4d571a340b4baf873fbefb5661eb195937d2f51`, merged into `main` this session
+  via PR #4 (merge commit `d738520ffc796d07468e24a5b1dddcfba3120c65`, both PR CI run `32758690945` and
+  `main`'s own post-merge CI run `32759008459` green).
+- Task (owner's exact instruction, abridged): "CEO AUTHORIZATION — BEGIN JATAKA ARCHITECTURE /
+  CAPABILITY DECISION-READINESS INVESTIGATION... You are authorized to BEGIN THE JATAKA ARCHITECTURE /
+  CAPABILITY DECISION-READINESS INVESTIGATION. You are NOT authorized to implement a Jataka capability
+  yet." Supplied an "IMPORTANT INDEPENDENT INPUT" from a separate Claude Web audit (six claims about
+  bhava/house-cusp methodology, karakas, Parashari yogas, KP significators), explicitly framed as **not
+  predecided** and requiring testing against the repository. Required twelve investigation sections
+  (capability inventory; dependency graph; deep bhava/house-cusp investigation naming the "previously
+  identified polar-Placidus question"; candidate first capabilities A-E; system separation; certification
+  design; variant handling; JATAKA phase boundaries; sequencing; governance/DP registration; explicit
+  no-implementation constraints; a formal decision paper, sections A-M). Explicit stop condition: "Stop
+  at the genuine CEO decision point. Do not implement anything. Do not ratify your own recommendation.
+  Do not push anything without explicit push authorization. Do not merge anything."
+- Relevant ADR/specification: none reopened or created. Cites `ADR-0074` (JATAKA entry),
+  `Q8_CLOSURE_MATRIX.md` s5 (implementation scope), `docs/DECISION_LOG.md` D-008 (KP significator
+  methodology-freeze requirement), `docs/KP_CHAIN_SPEC.md`, `specs/PROJECT_CHARTER.md`, `docs/
+  PROJECT_ROADMAP.md` s1/s3, `docs/NEW_VARGA_IMPLEMENTATION_TEMPLATE.md`, `docs/
+  DASHA_CERTIFICATION_ROADMAP.md` - all read-only citations, none edited.
+- Files changed: `docs/decisions/DP-021-jataka-first-capability-decision-readiness.md` (new, sections
+  A-M as specified), `docs/decisions/README.md` (registered `DP-021` before drafting, per `ADR-0040`;
+  version 3.5.0 -> 3.6.0), `docs/ACE_EXECUTION_STATE.md` (version 6.1.0 -> 6.3.0), this file.
+- Method: three parallel, read-only Explore-agent research passes (isolated worktrees, no risk to the
+  working tree) - (1) full capability inventory across ~20 named areas, cross-checked against every
+  `certification/*.json` artifact's own `"result"` field and live source, not documentation inference;
+  (2) a dedicated 15-part deep investigation of house-cusp/bhava methodology; (3) a survey of every
+  JATAKA-relevant governing specification document and its own Status header. Synthesis, evidence
+  weighing, and paper authorship performed directly, not delegated.
+- Key findings: whole-sign D1 house assignment (Parashari) and Placidus cusp geometry with a full
+  SL/NL/SB/SS lordship chain (KP) are **both already certified** at different scopes - the genuine
+  remaining house-cusp gap is narrow: Placidus certification stops at 64.1 degrees N/S, polar behaviour
+  is explicitly undefined and unverified (documented consistently across 7+ repository files), and
+  `RISE_SET_V1`'s own certified `NO_RISE`/`NO_SET` structured-status pattern is a directly applicable,
+  unused precedent for handling it. Parashari yoga/rule evaluation and KP significators are both
+  genuinely absent (zero code); their real blocker in both cases is a **missing ratified methodology
+  specification** (for KP significators, `D-008`'s own eleven-element checklist, not yet started), not
+  missing calculation infrastructure, which is largely already built and certified. "Karakas" names three
+  unrelated concepts with zero shared code. Corrected one stale secondary source
+  (`certification/ENGINE_CAPABILITY_INVENTORY.json`, dated 2026-08-11) that still cited closed finding
+  H-04 as open. Tested the independent Claude Web audit's six claims individually against this evidence:
+  one confirmed strongly (KP significators genuinely need the polar-Placidus question resolved, per
+  `D-008`'s own "cusp handling" requirement), several found overstated or mis-scoped (Parashari yogas do
+  not actually depend on cusp geometry at all; "build bhava" overstates what remains, since most of it is
+  already certified). **Headline finding not present in the independent input:** `Q8_CLOSURE_MATRIX.md`
+  s5's own "Implementation scope" row names exactly four items (remaining vargas, Vimshottari depth/
+  convention extensions, aspect coverage, planet strength) - none of bhava, karakas, Parashari yogas, or
+  KP significators appears in that list, making it an open, load-bearing governance question (section H.1/
+  M.1 of the paper) whether that list is exhaustive or illustrative, prior to any capability choice.
+- Implementation summary: no engine/scripts/certification code touched. Decision paper only.
+- Tests executed and results: none run - no code changed; prior 844/844 pytest baseline unaffected.
+- Certification executed and results: none - no certification artifact touched or regenerated.
+- Governance checks executed and results: `python scripts/check_adr_numbering.py` (74 ADR entries,
+  unchanged), `python scripts/check_identifier_families.py` (21 DP identifiers, up from 20 - `DP-021`
+  registered), `python scripts/check_retired_identifiers.py` (0 violations) - all PASS.
+- Known issues: the M-04 finding (`DrishtiChart` provenance mislabels its own house-convention field)
+  was found apparently still present during the bhava investigation; whether a since-closed decision
+  supersedes it was not conclusively established and is flagged in the paper (section H.4) as requiring
+  independent verification, not resolved here.
+- Unresolved questions: all of section M in `DP-021` - principally whether `Q8_CLOSURE_MATRIX.md` s5's
+  implementation-scope list is exhaustive or illustrative; which of the four presented options to pursue;
+  varga risk order if a varga is chosen; whether polar-Placidus closure is FOUNDATION-tier maintenance or
+  a JATAKA-scoped decision; whether to authorize follow-up dedicated papers for `D-008` (KP significators)
+  and/or a Parashari yoga-rule specification.
+- CEO decision required: review `DP-021`; resolve the governing-scope question; select an option (or
+  request a narrower follow-up paper); this task deliberately stops at "DECISION PAPER READY," per the
+  owner's own explicit stop condition - no option is chosen, no ADR is drafted, no capability is
+  implementation-authorized.
+- Next authorized action: none self-executable. Awaiting CEO review of `DP-021` and a push authorization
+  for this task's own commit.
+
+### 2026-08-24 - phase-g-governance MERGED into main (PR #4): JATAKA-entry state now on main
+- Branch / commit SHA: `main` after merge = `d738520ffc796d07468e24a5b1dddcfba3120c65` (parents
+  `0e1ef115a647b8a44bf4d1a7af2a3cf3a8b96e03` + `c4d571a340b4baf873fbefb5661eb195937d2f51`).
+- Previous approved commit: `c4d571a340b4baf873fbefb5661eb195937d2f51` on `phase-g-governance`
+  (the CI-discrepancy-resolution + merge-readiness-audit commit, local-only at authorization time).
+- Task (owner's exact instruction, abridged): "CEO AUTHORIZATION — MERGE JATAKA-ENTRY STATE TO MAIN. I
+  authorize the merge of the current phase-g-governance state into main." Named source HEAD `931b6d0`;
+  required: merge via normal PR/standard process, no squash/rebase/force-push, no unrelated file changes,
+  no JATAKA capability implementation, no H-03/cross-certifier-finding/FOUNDATION/closed-Dasha-item work
+  in the same task; full post-merge verification and reporting; explicit instruction not to start JATAKA
+  architecture work in the same task.
+- Discrepancy flagged before acting: local HEAD was actually `c4d571a` (one commit ahead of the named
+  `931b6d0`), containing exactly the CI-discrepancy-resolution work the owner's own stated preconditions
+  and output requirement #11 presupposed as already present - pushed `c4d571a` to `phase-g-governance`
+  first (verified CI green, run `32758370489`) before opening the PR, with the reasoning disclosed to the
+  user prior to acting.
+- Relevant ADR/specification: `ADR-0074` (the state being merged), `Q8_CLOSURE_MATRIX.md` s5 - neither
+  reopened or edited by this task.
+- Files changed: none beyond the merge commit itself (a standard two-parent git merge, no file edits by
+  Claude in this task).
+- Execution: `gh pr create --base main --head phase-g-governance` (PR #4); waited for its own CI run
+  (`32758690945`, all four jobs green, read from the log); `gh pr merge 4 --merge` (standard merge commit,
+  not squash, not rebase, no force-push) - resulting `main` SHA `d738520`.
+- Post-merge verification, each performed directly, not assumed: `main`'s own CI run `32759008459` - all
+  four jobs green (844 passed both interpreters, 0 lord mismatches, drift PASS, 74 ADR entries, 20 DP
+  identifiers at merge time); `git show origin/main:docs/DECISION_LOG.md` confirms `ADR-0074` `Status:
+  ACCEPTED`; `git show origin/main:docs/ACE_EXECUTION_STATE.md` confirms `CURRENT_PHASE: JATAKA ENTERED`;
+  `grep -rn "JATAKA\|jataka" engine/ scripts/` on `main` excluding test files - zero hits, no JATAKA
+  production code; engine/scripts/certification content otherwise unchanged.
+- Tests executed and results: 844/844 pytest, confirmed via `main`'s own CI run `32759008459`.
+- Certification executed and results: oracle gate 0 lord mismatches, drift PASS on all relevant jobs -
+  confirmed via `main`'s own CI run.
+- Governance checks executed and results: 74 ADR entries, 20 DP identifiers - confirmed via `main`'s own
+  CI run.
+- Known issues: none new.
+- Unresolved questions: which JATAKA capability, if any, to authorize next (deferred to the subsequent
+  `DP-021` task, see entry above).
+- CEO decision required: none for the merge itself - fully executed per explicit authorization. JATAKA
+  capability selection remained open, addressed by the immediately following `DP-021` task.
+- Next authorized action: per the owner's own explicit instruction, JATAKA architecture work was not
+  begun in this same task - it followed as a separate, subsequent, explicitly-authorized task (`DP-021`,
+  see entry above).
 
 ### 2026-08-24 - JATAKA phase pre-flight: CI-run-ID discrepancy resolved (no fabrication); main-vs-phase-g-governance merge-readiness audit (READY, not performed)
 - Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the
