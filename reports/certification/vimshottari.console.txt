@@ -1,10 +1,11 @@
 ============================================================
 VIMSHOTTARI_V1 CERTIFICATION
 ============================================================
-profiles x cases  : 2 x 11
-pratyantar rows   : 16038
+profiles x cases  : 2 x 11 ordinary + 6 near-boundary (native profile only)
+pratyantar rows   : 20412
 lord mismatches   : 0
 max start delta   : 1.862645149230957e-09 days (tolerance 1e-05)
 oracle moon delta : 0.745776 arcsec max (recorded, see D-007)
+near-boundary     : 6 genuine cases (3 per profile, native only), max 0.044714 deg from boundary (M-02, ADR-0072)
 archived          : certification/VIMSHOTTARI_V1_certification.json
 RESULT            : PASS

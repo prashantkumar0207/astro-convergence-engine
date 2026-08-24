@@ -30,8 +30,10 @@ def test_artifact_exists_and_claims_pass():
     gates = report["gates"]
     assert gates["oracle_lord_mismatches"] == 0
     # H-04 (ADR-0053): the oracle comparison now runs at pratyantar depth
-    # (3), not antardasha depth (2). 2 profiles x 11 cases x 729 rows/case.
-    assert gates["oracle_pratyantar_rows_compared"] == 16038
+    # (3), not antardasha depth (2). 2 profiles x 11 ordinary cases x 729
+    # rows/case (16038), plus M-02's 6 near-boundary cases (ADR-0072),
+    # each run once under its own native profile only (4374): 20412 total.
+    assert gates["oracle_pratyantar_rows_compared"] == 20412
     assert gates["oracle_max_start_delta_days"] <= gates["start_tolerance_days"]
     assert gates["independent_validator"] == "PASS"
     # Oracle astronomy divergence is recorded, bounded, and does not

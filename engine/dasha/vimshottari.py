@@ -21,6 +21,27 @@ anchor_jd + float(offset_years x year_length_days).
 Seeding is school-explicit (Decision DA-B): entry points require a
 provenance-stamped snapshot computed under PARASHARI_LAHIRI or
 KP_KRISHNAMURTI and record which one seeded the timeline.
+
+H-08 (DP-018 Option 3, ADR-0071): the exact [start, end) boundary
+rule above is used for seed classification regardless of which
+school seeded the timeline - a deliberate, ratified convention, not
+an accidental leak. It can differ from engine.astrology.nakshatra's
+own tolerance-promoted classifier at six documented boundary floats;
+see SEED_BOUNDARY_CONVENTION_KP_EXACT in engine.models.dasha and
+engine/tests/test_vimshottari_h08_boundary_convention.py, which pins
+exactly where and why. No calculated value changed by ADR-0071.
+
+Dasha roadmap step 6 (DP-020 Option 1, ADR-0073):
+VimshottariTimeline.seed_nakshatra_boundary_arcsec re-expresses the
+already-computed elapsed fraction as a distance, in arcseconds, from
+the birth Moon to the nearest nakshatra boundary - no new
+astronomical calculation. Its exact scope and non-claims (narrower
+than KP's own nearest_boundary_arcsec, and not a dasha-date-
+uncertainty figure) are documented on the field itself in
+engine/models/dasha.py; see engine/tests/
+test_vimshottari_boundary_proximity_indicator.py for the pinning
+tests and negative control. No other calculated value changed by
+ADR-0073.
 """
 
 from decimal import Decimal
@@ -30,7 +51,11 @@ import swisseph as swe
 
 from engine.astronomy.profile import KP_KRISHNAMURTI, PARASHARI_LAHIRI
 from engine.calculations.calculations import calculate
-from engine.dasha.profile import VIMSHOTTARI_MEAN_SIDEREAL_YEAR, DashaProfile
+from engine.dasha.profile import (
+    VIMSHOTTARI_MEAN_SIDEREAL_YEAR,
+    DashaProfile,
+    validate_dasha_profile,
+)
 from engine.dasha.tables import (
     DASHA_LORDS,
     DASHA_YEARS,
@@ -39,7 +64,11 @@ from engine.dasha.tables import (
     YEARS_BY_LORD,
 )
 from engine.models.birth_data import BirthData
-from engine.models.dasha import DashaPeriod, VimshottariTimeline
+from engine.models.dasha import (
+    SEED_BOUNDARY_CONVENTION_KP_EXACT,
+    DashaPeriod,
+    VimshottariTimeline,
+)
 
 _SCHOOL_BY_PROFILE = {
     PARASHARI_LAHIRI.name: "parashari",
@@ -108,6 +137,8 @@ def vimshottari_from_moon(
     if depth not in (1, 2, 3):
         raise ValueError("VIMSHOTTARI_V1 certifies depths 1-3 (DA-C)")
 
+    validate_dasha_profile(dasha_profile)
+
     moon = float(moon_longitude)
     exact = _to_exact(moon_longitude) % 360
 
@@ -120,6 +151,11 @@ def vimshottari_from_moon(
     year_length = dasha_profile.year_length_days
     elapsed_years = seed_years * elapsed
     anchor_jd = birth_jd - float(elapsed_years * year_length)
+
+    # Dasha roadmap step 6 (DP-020 Option 1, ADR-0073): exact
+    # re-expression of `elapsed` - no new astronomical calculation.
+    # Scope and non-claims documented on VimshottariTimeline itself.
+    boundary_arcsec = float(min(elapsed, 1 - elapsed) * NAK_SPAN * 3600)
 
     periods = []
     cursor = Fraction(0)
@@ -150,9 +186,11 @@ def vimshottari_from_moon(
         seed_nakshatra_number=nakshatra_index + 1,
         seed_lord=seed_lord,
         seed_elapsed_fraction=elapsed,
+        seed_nakshatra_boundary_arcsec=boundary_arcsec,
         balance_years=balance,
         periods=tuple(periods),
         provenance=provenance,
+        seed_boundary_convention=SEED_BOUNDARY_CONVENTION_KP_EXACT,
     )
 
 

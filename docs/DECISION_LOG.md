@@ -3751,6 +3751,635 @@ follow-up entry, matching the same mechanism just used for the `ADR-0063` addend
 
 ---
 
+## ADR-0070 - Owner ratification of DP-017 Option 1: certified dasha-profile allow-list and year_length_days type enforcement, closing H-06
+
+- **Date:** 2026-08-22
+- **Status:** **ACCEPTED**, on the owner's explicit instruction: "CEO DECISION — DP-017 H-06. Ratify
+  DP-017 Option 1. Build the certified Dasha-profile protection and type-safety enforcement described by
+  Option 1." Per `docs/PROJECT_CONSTITUTION.md` s11, this instruction is the ratifying act; this entry
+  records it and the implementation it authorizes, matching the precedent used throughout this session
+  (`ADR-0053`, `ADR-0066`, `ADR-0069`).
+- **Decision:** `DP-017`'s **Option 1 is ratified and implemented**: "A `CERTIFIED_DASHA_PROFILES`
+  constant mirroring the varga pattern, with a refusal error, plus runtime type enforcement on
+  `year_length_days`" (verbatim from the original G1 audit, preserved in substance in `DP-017` section
+  2). Option 2 (defer) is **not** chosen.
+- **Implementation, matching `DP-017` section C's own Option 1 analysis exactly, and resolving both
+  sub-questions it left open, with reasoning recorded per the owner's own instruction:**
+  1. **Sub-question 1 (where the type check lives) resolved: a separate validation function, not
+     `DashaProfile.__post_init__`.** Reasoning: `engine/core/validation.py`'s `validate_birth_data()` is
+     this repository's own directly analogous precedent - `BirthData`, also a frozen dataclass with
+     validated fields, is validated by a standalone function called explicitly at the calculation entry
+     point, not by a dataclass-internal guard. No dataclass anywhere in this repository (`BirthData`,
+     `CalculationProfile`, `DashaProfile` itself) uses `__post_init__` for validation. A construction-time
+     guard would also be a wider blast radius than necessary, rejecting even non-production test
+     constructions of `DashaProfile`; a usage-site guard, matching `validate_birth_data()`'s own scope, is
+     the narrower design.
+  2. **Sub-question 2 (allow-list keying) resolved: the full frozen instance, not the profile name
+     alone.** Reasoning, recorded in `engine/dasha/profile.py`'s own new docstring: `DashaProfile` is
+     `@dataclass(frozen=True)`, which auto-generates field-by-field `__eq__`; keying `CERTIFIED_
+     DASHA_PROFILES` on the whole object (`profile in CERTIFIED_DASHA_PROFILES`) therefore verifies
+     `year_length_days` and `source` too, not just `name` - a name-only allow-list would let a
+     same-named profile carrying a different, uncertified `year_length_days` through, exactly the class
+     of gap this repository's own varga-registry remediation (B-01, `reports/
+     G1_ARCHITECTURE_AUDIT_2026-08-11.md`) found and fixed for divisional charts. Verified directly this
+     entry, not assumed: `Fraction(365256364, 1000000) == 365.256364` is `False` in Python's own
+     representation, so object-equality alone would already reject a float-typed substitute in this
+     specific case - but the separate, explicit `isinstance(..., Fraction)` check (item 3 below) is kept
+     as an independent guard rather than relying on that numeric coincidence.
+  3. `engine/dasha/profile.py`: added `UnsupportedDashaProfileError(NotImplementedError)` (mirroring
+     `UnsupportedVargaError`'s own `NotImplementedError` subclassing convention); `CERTIFIED_
+     DASHA_PROFILES = (VIMSHOTTARI_MEAN_SIDEREAL_YEAR,)`, mirroring `engine.astrology.
+     CERTIFIED_PRODUCTION_VARGAS`'s role as "the single source of truth"; `validate_dasha_profile()`,
+     which checks `isinstance(profile.year_length_days, Fraction)` first (a materially different failure
+     mode from certification identity, given its own clear message), then `profile in
+     CERTIFIED_DASHA_PROFILES`.
+  4. `engine/dasha/vimshottari.py`: `validate_dasha_profile(dasha_profile)` called once, at the top of
+     `vimshottari_from_moon()` - the single shared entry point `vimshottari_from_snapshot()`,
+     `vimshottari_parashari()`, and `vimshottari_kp()` all route through, matching `ADR-0066`'s own
+     single-choke-point placement for H-01. No other line of `vimshottari_from_moon()`'s own arithmetic
+     changed.
+  5. New `engine/tests/test_vimshottari_profile_allow_list.py` (7 tests): the certified profile accepted,
+     both directly and via `vimshottari_from_moon()`; an uncertified profile refused; a float
+     `year_length_days` refused, including under the certified profile's own name (proving the type
+     check and the identity check are independent); a well-typed but uncertified profile refused (proving
+     the identity check, not merely the type check, is what catches it); `CERTIFIED_DASHA_PROFILES`
+     contains exactly the one certified instance; the certified computation's own already-independently-
+     verified frozen values (`DP-016`/`ADR-0069`'s own H-05 baseline) reproduce exactly, unchanged.
+- **Negative control independently verified beyond what the test file itself proves, matching `ADR-
+  0069`'s own strongest-available-evidence discipline:** the real `validate_dasha_profile(dasha_profile)`
+  call was actually removed from `vimshottari_from_moon()` in this session, the new test file was run,
+  and **exactly the two entry-point-level refusal assertions failed** (`test_uncertified_profile_
+  refused`, `test_float_year_length_refused`) - the direct `validate_dasha_profile()` calls inside those
+  same tests still correctly raised, since only the call *site* was removed, not the function itself.
+  This precisely demonstrates the guard's wiring into the entry point, not merely the function's own
+  existence, is what protects production code. The line was then restored; `git diff` against the
+  intended final state showed exactly the designed change and nothing else.
+- **Certification implications, verified not merely predicted:** `scripts/certify_vimshottari.py` run in
+  the isolated PyJHora exploration venv - **PASS, `lord mismatches: 0`, `max start delta: 1.86e-09
+  days`**, identical to the pre-existing certified figures. Regenerating produced exactly the same class
+  of volatile-only diff already documented for `ADR-0069`'s own evidence (`date`, `environment.python`,
+  a Windows-path console-transcript quirk) - discarded, not committed. M-03 anti-fitting scan-surface
+  impact confirmed nil: `engine/dasha/profile.py` and `engine/dasha/vimshottari.py` are pre-existing,
+  already-scanned files (modifying their content does not change `modules_scanned`, which counts files,
+  not content); the new test file is excluded from the scan by construction (`"tests" in candidate.parts`).
+  Verified via a live `certify_kp_chain.py` run, whose own regeneration also differed only in the same
+  volatile fields.
+- **Consequences:** No existing certified value, in `VIMSHOTTARI_V1` or any other capability, changes -
+  confirmed directly (825 passed, up from 818 by exactly the seven new tests; `check_artifact_drift.py`
+  clean, 46 files identical outside volatile fields). H-06 (`docs/DASHA_CERTIFICATION_ROADMAP.md` step 3
+  of 6) is closed. H-04 (`ADR-0053`) and H-05 (`ADR-0069`) were already closed; H-08, M-02, and the dasha
+  boundary-proximity indicator (steps 4-6) remain open and are not touched by this entry. JATAKA remains
+  not entered - three of its six entry-criteria steps are still unmet. FOUNDATION is not reopened;
+  `main` is not merged into.
+- **Evidence:** the owner's "CEO DECISION — DP-017 H-06" instruction, quoted above; `DP-017` section C
+  (the decision-readiness analysis this entry implements); `python -m pytest -q` - 825 passed, 0 failed,
+  0 skipped; direct in-session removal-and-restoration of the `validate_dasha_profile()` call site,
+  confirming the new tests fail against exactly the intended failure mode and the file is byte-identical
+  to its designed final state afterward; `python scripts/certify_vimshottari.py` (isolated exploration
+  venv, PyJHora) - PASS, zero lord mismatches; `python scripts/certify_kp_chain.py` plus `python
+  scripts/check_artifact_drift.py` confirming zero certification-artifact impact; `scripts/
+  check_adr_numbering.py`, `scripts/check_identifier_families.py`, `scripts/check_retired_
+  identifiers.py`, `git diff --check` - all PASS.
+
+---
+
+## ADR-0071 - Owner ratification of DP-018 Option 3: ratify the H-08 boundary convention as deliberate, add an additive convention-disclosure field and a pinning test
+
+- **Date:** 2026-08-22
+- **Status:** **ACCEPTED**, on the owner's explicit instruction: "CEO DECISION — DP-018 H-08. Ratify
+  DP-018 Option 3: Ratify the existing H-08 boundary convention/status quo and add the proposed additive
+  disclosure field/documentation exactly as specified by DP-018 Option 3." Per `docs/
+  PROJECT_CONSTITUTION.md` s11, this instruction is the ratifying act; this entry records it and the
+  implementation it authorizes, matching the precedent used throughout this session (`ADR-0053`,
+  `ADR-0066`, `ADR-0069`, `ADR-0070`).
+- **Decision:** `DP-018`'s **Option 3 is ratified and implemented**: Option 1's status-quo ratification
+  (VIMSHOTTARI_V1's seed-nakshatra classification continues to use the KP layer's exact `[start, end)`
+  boundary-ownership rule for every seeding school, including Parashari - this is now a deliberate,
+  recorded convention, not an undocumented leak) **plus** an additive convention-disclosure field on
+  `VimshottariTimeline`, mirroring `ADR-0065`'s `TransitEvent.declared_division` precedent for the
+  structurally identical H-02 seam. **No calculated Vimshottari value changes.** Option 2 (change
+  Parashari seeding to match its own classifier) is **not** chosen; H-08 is **not** deferred.
+- **Implementation, matching `DP-018` section C's own Option 1 and Option 3 analysis exactly:**
+  1. `engine/models/dasha.py`: added `SEED_BOUNDARY_CONVENTION_KP_EXACT = "kp_exact_start_end"` (a named
+     constant, documented in full - what it means, why it is the only current value, where the six known
+     divergent boundaries are pinned) and a new field, `VimshottariTimeline.seed_boundary_convention: str
+     = SEED_BOUNDARY_CONVENTION_KP_EXACT` (defaulted, appended last in field order - the only production
+     construction site in the tracked tree, `vimshottari_from_moon()`, still passes it explicitly, matching
+     this file's existing style of never relying on defaults at the one real call site).
+  2. `engine/dasha/vimshottari.py`: `vimshottari_from_moon()`'s return now passes `seed_boundary_
+     convention=SEED_BOUNDARY_CONVENTION_KP_EXACT` explicitly; the module's own docstring gained an H-08
+     paragraph recording the ratification, cross-referencing the constant and the new pinning test, and
+     stating explicitly that no calculated value changed. No classification or arithmetic logic touched.
+  3. New `engine/tests/test_vimshottari_h08_boundary_convention.py` (6 tests): (a) exactly the six
+     previously-reproduced boundary floats (`k = 7, 11, 14, 17, 22, 25`) diverge from `engine.astrology.
+     nakshatra.nakshatra()` - the audit's own "Tests required" line, satisfied directly; (b) each
+     divergence is off by exactly one nakshatra, pinning direction and magnitude, not merely existence;
+     (c) the other 21 boundary floats still agree exactly - a negative control on the pin itself, proving
+     (a) is not vacuous; (d) a genuine negative control demonstrating the pin can detect a real regression:
+     `monkeypatch` sets `engine.astrology.longitude_utils.BOUNDARY_TOLERANCE` to `0.0` mid-test, the
+     divergent set changes from the pinned six to a different set (verified this session: `{17}` alone),
+     proving the assertions would fail under an actual convention change, then restores and re-confirms;
+     (e) the new `seed_boundary_convention` field is present and explicit on timelines from all three call
+     shapes (`vimshottari_from_moon()` directly, `vimshottari_parashari()`, `vimshottari_kp()`), confirming
+     it is independent of, not a proxy for, which school seeded the timeline; (f) H-05's own frozen
+     baseline (`ADR-0069`) reproduces exactly, unchanged - the new field is additive disclosure only.
+  4. `scripts/certify_vimshottari.py`: `explicit_non_claims` gained one new entry disclosing the seam by
+     name, citing H-08/this ADR, `VimshottariTimeline.seed_boundary_convention`, and the new pinning test
+     file - closing the gap `DP-018` section 2 identified (unlike H-06's own artifact, this one did not
+     already disclose the seam). No other field of the certifier or its output schema changed.
+  5. `docs/decisions/DP-018-h08-parashari-dasha-boundary-convention.md`: one placeholder decision-
+     identifier token, in the paper's own Option 1 description of what the future disclosure text would
+     cite, replaced with prose that does not spell a fake, non-compliant identifier, after `engine/tests/
+     test_retired_identifier_gate_scope.py` caught it as a genuine identifier-family violation. This is a
+     mechanical correction of a placeholder string, not a substantive edit to any option, evidence claim,
+     or the recommendation - the paper's analysis and options are otherwise exactly as drafted.
+- **Certification implications, verified not merely predicted:** `scripts/certify_vimshottari.py` re-run
+  in the isolated PyJHora exploration venv after the `explicit_non_claims` edit - **PASS, `lord
+  mismatches: 0`, `max start delta: 1.86e-09 days`, `oracle moon delta: 0.745776 arcsec max`**, every
+  calculated figure identical to the pre-existing certified evidence. `python scripts/
+  check_artifact_drift.py` run against the regenerated-but-uncommitted artifact correctly flagged exactly
+  one non-volatile change - `explicit_non_claims: length 4 -> 5` - and nothing else; this is the intended,
+  understood, now-recorded change this entry authorizes, not an unexplained drift. The regenerated
+  `vimshottari.console.txt`'s Windows-path backslash artifact (`certification\...` vs the committed
+  `certification/...`) was corrected to match the committed convention before commit, per the same
+  understood cross-platform quirk documented in `ADR-0069`'s and `ADR-0070`'s own evidence sections - not
+  a substantive change, a known local-regeneration artifact. M-03 anti-fitting scan-surface impact
+  confirmed nil via a `certify_kp_chain.py` sanity check (only the same class of volatile-field diff;
+  discarded, not committed) - modifying existing production files does not change `modules_scanned`, and
+  the new test file is excluded from the scan by construction.
+- **Consequences:** No existing certified Vimshottari value changes, in `VIMSHOTTARI_V1` or any other
+  capability - confirmed directly (831 passed, up from 825 by exactly the 6 new tests; every calculated
+  certification figure identical; `check_artifact_drift.py` shows only the one intended, now-recorded
+  `explicit_non_claims` addition). H-08 (`docs/DASHA_CERTIFICATION_ROADMAP.md` step 4 of 6) is **closed**.
+  H-04 (`ADR-0053`), H-05 (`ADR-0069`), and H-06 (`ADR-0070`) were already closed and remain untouched -
+  neither reopened. M-01 (the sibling, not-in-scope KP-layer pinning-test finding) remains open and
+  unaddressed, as before. M-02, the dasha boundary-proximity indicator, and general JATAKA implementation
+  remain not started. JATAKA remains not entered - two of its six entry-criteria steps are still unmet.
+  FOUNDATION is not reopened; `main` is not merged into.
+- **Evidence:** the owner's "CEO DECISION — DP-018 H-08" instruction, quoted above; `DP-018` sections C
+  (Options 1 and 3) and G (the recommendation this entry accepts); `python -m pytest -q` - 831 passed, 0
+  failed, 0 skipped; `python -m pytest engine/tests/test_vimshottari_h08_boundary_convention.py -v` - 6/6
+  passed, including the `BOUNDARY_TOLERANCE`-mutation negative control; `python scripts/
+  certify_vimshottari.py` (isolated exploration venv, PyJHora) - PASS, zero lord mismatches, all
+  calculated figures unchanged; `python scripts/certify_kp_chain.py` plus `python scripts/
+  check_artifact_drift.py` confirming the only non-volatile change is the intended `explicit_non_claims`
+  addition; `scripts/check_adr_numbering.py`, `scripts/check_identifier_families.py`, `scripts/
+  check_retired_identifiers.py`, `git diff --check` - all PASS.
+
+---
+
+## ADR-0072 - Owner ratification of DP-019 Option 1: genuine root-found near-boundary Moon cases added to the Vimshottari oracle gate, closing M-02
+
+- **Date:** 2026-08-24
+- **Status:** **ACCEPTED**, on the owner's explicit instruction: "CEO DECISION — DP-019 M-02. Ratify
+  DP-019 Option 1: Root-find genuine Moon/nakshatra-boundary oracle-gate holdout cases and correct the
+  mislabeled existing boundary cases as part of the same work." Per `docs/PROJECT_CONSTITUTION.md` s11,
+  this instruction is the ratifying act; this entry records it and the implementation it authorizes,
+  matching the precedent used throughout this session (`ADR-0053`, `ADR-0069`, `ADR-0070`, `ADR-0071`).
+- **Decision:** `DP-019`'s **Option 1 is ratified and implemented**: six genuine near-boundary Moon
+  holdout cases, root-found via the already-certified `engine.transits.crossing.find_crossings()`
+  (`TRANSIT_V1`, `ADR-0008`), added to `scripts/certify_vimshottari.py`'s oracle-gate methodology; the
+  two mislabeled cases (`H10_boundary_moon_a`, `H11_boundary_moon_b`) corrected to accurate names,
+  birth data unchanged. Option 2 (hermetic-only) is **not** chosen - the fix uses the oracle gate itself,
+  per M-02's own wording. **No existing certified Vimshottari value changes.**
+- **Implementation, matching `DP-019` section E's own Option 1 analysis and every scope item the owner's
+  instruction specified:**
+  1. **Root-finding (item 1):** `engine.transits.crossing.find_crossings("Moon", target, jd_start,
+     jd_end, profile)` located real nakshatra-boundary crossings for `PARASHARI_LAHIRI` (target `120`
+     degrees, the nakshatra-9/10 boundary) and `KP_KRISHNAMURTI` (target `240` degrees, the
+     nakshatra-18/19 boundary) in January 2025, both at sub-microarcsecond residual. Each crossing
+     yielded three cases - 5 minutes before, at, and 5 minutes after - so the resulting six-case
+     `BOUNDARY_HOLDOUT` genuinely exercises a nakshatra-lord change (`Me` -> `Ke` at both boundaries,
+     confirmed directly) across a real astronomical event, not merely a birth chart that happens to
+     exist near one.
+  2. **Label correction (item 2):** `H10_boundary_moon_a` -> `H10_delhi_2025a`, `H11_boundary_moon_b` ->
+     `H11_delhi_2025b` in `scripts/certify_vimshottari.py`'s `HOLDOUT` list. Birth data (date, time, lat,
+     lon) unchanged - the correction is exactly what the evidence supports: these are valid,
+     already-oracle-verified ordinary cases, wrongly labelled, not wrong data. Kept as ordinary coverage
+     rather than discarded.
+  3. **Distinction preserved (item 3):** `NEAR_BOUNDARY_CASE_IDS` (a frozenset of the six `BOUNDARY_
+     HOLDOUT` case IDs, `"B1"`-`"B6"` prefixed, never colliding with the ordinary `"H"`-prefixed IDs) is
+     checked structurally by a new test (`test_boundary_and_ordinary_case_ids_are_disjoint_and_
+     distinguishable`) and used by the certifier itself to build a distinct `gates.near_boundary_
+     coverage` section in the certification artifact, separate from the per-case detail in `gates.cases`.
+  4. **Oracle-gate methodology, not hermetic substitution (item 4):** each new case runs through the
+     existing, unmodified `run_case()` - PyJHora's own Moon at the same instant is injected into the
+     engine's timeline and the full 729-row pratyantardasha structure is compared, identical methodology
+     to every pre-existing case. **A genuine architectural correction, found during implementation, not
+     assumed:** a case root-found near-boundary under one profile's ayanamsa is not, in general, still
+     near-boundary under the *other* profile's ayanamsa (Lahiri and Krishnamurti differ by a materially
+     non-trivial offset - verified directly: a case within 0.044 degrees of a boundary under KP measured
+     0.141 degrees under Lahiri, exceeding the intended tolerance). Each `BOUNDARY_HOLDOUT` case is
+     therefore tagged with its own native `"profile"` and run **only** under that profile, not both like
+     the ordinary `HOLDOUT` cases - this is architecturally correct, not a weakening: testing a
+     Lahiri-rooted case under KP would silently exercise an ordinary case while the artifact claimed
+     boundary coverage for KP.
+  5. **Certified values preserved (item 5):** verified directly, not assumed - see Certification
+     implications below.
+  6. **No production logic touched (item 6):** confirmed directly - `git diff` for this task touches
+     only `scripts/certify_vimshottari.py` (a certifier/test-harness script), `certification/
+     VIMSHOTTARI_V1_certification.json` and its rendered evidence (regenerated), and two new/edited test
+     files. `engine/dasha/`, `engine/astrology/`, and `engine/kp/` are byte-identical to before this
+     task. `DP-019` section B already established M-02 is a coverage/label gap, not a calculation defect,
+     and nothing found during implementation contradicts that classification.
+  7. **Artifact structure/provenance preserved (item 7):** the certification artifact's schema is
+     unchanged - `gates.near_boundary_coverage` is a purely additive new key alongside the existing
+     `gates.cases`; no existing key, field name, or value type was removed or restructured.
+  8. **Genuine validation the cases are actually at the intended boundary (item 8):** new hermetic test
+     file `engine/tests/test_vimshottari_m02_boundary_holdout.py` (6 tests, no PyJHora required):
+     every `BOUNDARY_HOLDOUT` case measured directly (via the same `engine.calculations.calculations.
+     calculate()` path the certifier uses) to be within `0.1` degrees of the nearest nakshatra boundary
+     (two orders of magnitude tighter than the 6.46/5.02-degree distance M-02 found for the cases this
+     replaces); the two `"_at"` cases additionally confirmed within `0.001` degrees, verifying `find_
+     crossings()`'s own root-finding precision specifically; the `"before"`/`"after"` pairs confirmed to
+     land in different, adjacent nakshatras with different Vimshottari lords, proving a genuine crossing
+     is exercised, not mere proximity; the renamed `H10`/`H11` cases confirmed to reproduce their
+     original, pre-rename Moon longitude and boundary distance exactly, unchanged.
+  9. **Genuine negative control (item 9):** `test_original_mislabeled_cases_fail_the_same_near_boundary_
+     check` reconstructs the *original* `H10_boundary_moon_a`/`H11_boundary_moon_b` birth data (unchanged
+     from before this task) and asserts it fails the identical `0.1`-degree threshold the new cases must
+     pass - proving the check is discriminating, not vacuously true, and directly reproducing the M-02
+     defect this task closes as living proof the fix's own verification would have caught it.
+     `scripts/certify_vimshottari.py`'s own `run_case()` additionally gained a live self-check: any
+     `NEAR_BOUNDARY_CASE_IDS` case whose measured distance exceeds `NEAR_BOUNDARY_THRESHOLD_DEG` fails the
+     certifier outright, not merely a downstream pytest assertion - a gate that can meaningfully fail at
+     the certification layer itself, not only in the hermetic test suite. **Verified as a real, not
+     decorative, gate this session:** an earlier implementation attempt (testing every `BOUNDARY_HOLDOUT`
+     case under both profiles, before the native-profile-only correction in item 4) tripped this exact
+     self-check for `B4_kp_boundary_before` at `0.141` degrees under the non-native profile, confirming
+     the threshold check genuinely fails on a real violation, not only in a contrived test.
+  10. **Existing cases verified unchanged (item 10):** confirmed directly by structured comparison of the
+      regenerated artifact against the previously committed one - `H1_london_1823` through
+      `H9_paris_2350`'s recorded results are byte-identical (excluding the new, always-present `moon_
+      distance_to_nearest_boundary_deg` diagnostic field, itself descriptive, not a changed calculation);
+      the renamed `H10`/`H11` entries carry identical numeric results under their new IDs. Total oracle
+      row count moved from `16038` to `20412` (`2 profiles x 11 ordinary cases x 729` unchanged, plus
+      `6 near-boundary cases x 1 native profile each x 729` newly added: `16038 + 4374 = 20412`) - an
+      increase from added coverage, not a changed result for any existing case. `engine/tests/
+      test_vimshottari_certification.py`'s own pinned row-count assertion updated from `16038` to
+      `20412` to track this intentional, understood, now-recorded change (a test-only edit, not a
+      production-logic change).
+- **A related finding, explicitly NOT acted on - flagged, not fixed:** the same `H10_boundary_moon_a`/
+  `H11_boundary_moon_b` birth data and ID convention is reused as a "boundary_sensitive" holdout case in
+  at least eight other certifiers/validators (`scripts/certify_trikalam.py`, `certify_panchanga.py`,
+  `certify_rise_set.py`, `certify_tier0.py`, `certify_kp_chain.py`, `certify_parashari_drishti.py`,
+  `certify_current_engine.py`, `engine/tests/test_kp_chart.py`) - discovered by a repository-wide search
+  this task, not by DP-019's own investigation. **This entry does not determine whether those cases are
+  similarly mislabeled relative to their own domain-specific "boundary" claims** (sunrise/sunset instant,
+  tithi/yoga boundary, KP-specific boundaries, etc. are different quantities from nakshatra-longitude
+  distance, and no evidence was gathered about any of them this task). `DP-019`'s evidence base and this
+  ratification are scoped strictly to the Vimshottari oracle gate; extending the correction to any other
+  certifier is out of scope here and would require its own investigation and, if warranted, its own
+  decision paper - not assumed from this one.
+- **Certification implications, verified not merely predicted:** `scripts/certify_vimshottari.py` re-run
+  in the isolated PyJHora exploration venv after every code change - **PASS, `lord mismatches: 0`**,
+  including all six new near-boundary cases individually (max `0.044714` degrees from the nearest
+  boundary, the tightest at `0.000192`/`0.000193` degrees for the two root-found `"_at"` instants).
+  `python scripts/check_artifact_drift.py` run against the regenerated-but-uncommitted artifact correctly
+  flagged exactly the intended, understood changes and nothing else: `gates.cases.*` case-list length
+  `11 -> 14` (two renamed, no removal), `gates.near_boundary_coverage: added`, `gates.oracle_pratyantar_
+  rows_compared: 16038 -> 20412`, and the corresponding console/report text - no other field, and no
+  existing case's own recorded result, differed. The regenerated console transcript's Windows-path
+  backslash artifact was corrected to the committed forward-slash convention before commit, matching the
+  same understood cross-platform quirk documented in this session's prior evidence sections. M-03
+  anti-fitting scan-surface impact confirmed nil via a `certify_kp_chain.py` sanity check (only the same
+  class of volatile-field diff; discarded, not committed) - `scripts/certify_vimshottari.py` is outside
+  `engine/`, the default M-03 scan target, so it was never in the scan surface to begin with.
+- **Consequences:** No existing certified Vimshottari value changes, in any case, under any profile -
+  confirmed directly (837 passed, up from 831 by exactly the 6 new hermetic tests; every pre-existing
+  oracle case's own recorded result byte-identical; `check_artifact_drift.py` shows only the intended,
+  now-recorded additions). M-02 (`docs/DASHA_CERTIFICATION_ROADMAP.md` step 5 of 6) is **closed**. H-04
+  (`ADR-0053`), H-05 (`ADR-0069`), H-06 (`ADR-0070`), and H-08 (`ADR-0071`) were already closed and remain
+  untouched - none reopened. The dasha boundary-proximity indicator (step 6) and general JATAKA
+  implementation remain not started. JATAKA remains not entered - one of its six entry-criteria steps
+  (the boundary-proximity indicator) is still unmet. FOUNDATION is not reopened; `main` is not merged
+  into.
+- **Evidence:** the owner's "CEO DECISION — DP-019 M-02" instruction, quoted above; `DP-019` section E
+  (Option 1, the analysis this entry implements) and section F (the recommendation this entry accepts);
+  `python -m pytest -q` - 837 passed, 0 failed, 0 skipped; `python -m pytest engine/tests/
+  test_vimshottari_m02_boundary_holdout.py -v` - 6/6 passed, including the original-mislabeled-data
+  negative control; `python scripts/certify_vimshottari.py` (isolated exploration venv, PyJHora) - PASS,
+  zero lord mismatches across all 17 cases under their native profile(s); direct structured comparison of
+  the regenerated certification artifact against the previously committed one, confirming every
+  pre-existing case's own result unchanged; `python scripts/certify_kp_chain.py` plus `python scripts/
+  check_artifact_drift.py` confirming the only non-volatile change is the intended M-02 addition;
+  `scripts/check_adr_numbering.py`, `scripts/check_identifier_families.py`, `scripts/check_retired_
+  identifiers.py`, `git diff --check` - all PASS.
+
+---
+
+## ADR-0073 - Owner ratification of DP-020 Option 1: narrow, seed-only dasha boundary-proximity indicator, closing the Dasha roadmap's sixth and final step
+
+- **Date:** 2026-08-24
+- **Status:** **ACCEPTED**, on the owner's explicit instruction: "CEO DECISION — DP-020 FINAL DASHA
+  ROADMAP STEP. Ratify DP-020 Option 1 exactly as proposed: Build the narrow, seed-only dasha
+  boundary-proximity field using the already-certified seed_elapsed_fraction / M-02 evidence, with the
+  methodology and certification scope explicitly defined by DP-020." Per `docs/PROJECT_CONSTITUTION.md`
+  s11, this instruction is the ratifying act; this entry records it and the implementation it authorizes,
+  matching the precedent used throughout this session (`ADR-0069` through `ADR-0072`).
+- **Decision:** `DP-020`'s **Option 1 is ratified and implemented**: a new, additive field,
+  `VimshottariTimeline.seed_nakshatra_boundary_arcsec`, reporting the birth Moon's distance to the
+  nearest nakshatra boundary in arcseconds - an exact re-expression of the already-certified
+  `seed_elapsed_fraction`, no new astronomical calculation. Options 2 (amplified days-of-uncertainty
+  figure), 3 (disclosure-only), 4 (unreachable refusal mechanism), and 5 (defer) are **not** chosen.
+  **No existing certified Vimshottari value changes.** This closes the sixth and final `docs/
+  DASHA_CERTIFICATION_ROADMAP.md` step; all six Dasha-roadmap prerequisites are now closed.
+- **Implementation, matching `DP-020` section F's own Option 1 analysis and every constraint the owner's
+  instruction specified:**
+  1. **Narrow, seed-only scope (items 1, 3, 4, 5):** `engine/models/dasha.py` gains
+     `seed_nakshatra_boundary_arcsec: float`, computed in `engine/dasha/vimshottari.py`'s
+     `vimshottari_from_moon()` as `float(min(elapsed, 1 - elapsed) * NAK_SPAN * 3600)` - the exact same
+     `elapsed` local variable already computed for `seed_elapsed_fraction`, in exact `Fraction`
+     arithmetic until the final float step, matching this project's own "exact until the final view"
+     convention used throughout the dasha layer. **KP's own `nearest_boundary_arcsec` implementation is
+     deliberately not copied** (item 3): that field's own docstring claims coverage "at any level" while
+     its computation omits the sign boundary (H-07, an open, unresolved defect) - the new field's own
+     name and docstring instead state its scope explicitly and narrowly (nakshatra/seed boundary only),
+     so it cannot inherit or repeat H-07's overclaim. The field's own docstring (item 5) states, in full,
+     what it measures, what it does not cover (deeper antardasha/pratyantardasha period-transition
+     boundaries - the roadmap's own separate, unaddressed "boundaries in time" problem; any KP-specific
+     level), that it is proximity-only (not a dasha-date-uncertainty figure - Option 2, explicitly not
+     chosen, item 6), and that it must not be treated as equivalent to KP's own `nearest_boundary_arcsec`
+     or to `scripts/certify_vimshottari.py`'s own `moon_distance_to_nearest_boundary_deg` certifier
+     diagnostic (item 4) - both cross-referenced explicitly, neither silently conflated.
+  2. **Zero new astronomical calculation (item 2):** confirmed directly, not merely asserted - a new
+     hermetic test (`test_field_is_exactly_and_only_a_reexpression_of_seed_elapsed_fraction`) recomputes
+     the field's own value independently from `seed_elapsed_fraction` alone for every known case and
+     asserts exact equality with the production value.
+  3. **Genuine tests proving the field's semantics and scope (item 15):** new `engine/tests/
+     test_vimshottari_boundary_proximity_indicator.py` (7 tests): the six near-boundary cases M-02 already
+     root-found and oracle-verified (`ADR-0072`) agree, each, with an independent measurement computed by
+     a deliberately different code path (matching M-02's own certifier-side formula shape, not the
+     production field's own formula); all six report values under the 360-arcsec threshold M-02's own
+     `NEAR_BOUNDARY_THRESHOLD_DEG` already established; the H-05 baseline case (`moon=5.0`, `ADR-0069`)
+     reports a large value (`18000.0` arcsec), proving the field discriminates near from far, not a
+     constant; the two root-found `"_at"` instants report the tightest values of the six, matching the
+     expected shape of a genuine boundary crossing; the field's own re-expression claim verified directly
+     (item above); and a structural guard confirming `VimshottariTimeline` carries no
+     "uncertainty"-named field (Option 2 was not built) and no KP-style multi-level fields.
+  4. **Genuine negative control (item 16):** `test_negative_control_pin_would_catch_a_broken_formula`
+     monkeypatches `engine.dasha.vimshottari.NAK_SPAN` (the name as bound in that module's own namespace,
+     not `engine.dasha.tables.NAK_SPAN` directly, verified to be the correct patch target this session)
+     to a deliberately wrong value mid-test, confirms the H-05 baseline case's reported value changes from
+     its pinned `18000.0`, then restores and re-confirms - proving the pin genuinely depends on the real
+     computation, not a hardcoded or vacuous result.
+  5. **Certification artifact and provenance (item 17):** `scripts/certify_vimshottari.py`'s `run_case()`
+     now also computes each case's `seed_nakshatra_boundary_arcsec` and asserts it agrees with an
+     independently measured distance (a genuine, potentially-failing gate, not a tautological
+     self-comparison - it compares the production field's own reported value against a certifier-side
+     measurement using a different formula shape). A new `gates.boundary_proximity_indicator` section
+     records the methodology and scope directly in the certification artifact; `explicit_non_claims`
+     gained a matching entry. No PyJHora oracle comparison was invented for this specific claim - the
+     field is a pure derivation of an already oracle-validated quantity (`seed_elapsed_fraction`'s own
+     provenance, established via the `anchor_jd`/`balance_years` values the same `elapsed` local variable
+     already produces, already certified), matching H-05's own precedent (`ADR-0069`) for exactly this
+     situation, not M-02's own oracle-battery shape, which was appropriate there because M-02's own claim
+     (near-boundary coverage) had no existing certified provenance to derive from.
+- **Certification implications, verified not merely predicted:** `scripts/certify_vimshottari.py` re-run
+  in the isolated PyJHora exploration venv after every code change - **PASS, `lord mismatches: 0`**
+  across all 17 cases, including the new `seed_nakshatra_boundary_arcsec` self-check on every one.
+  Structured comparison of the regenerated artifact against the previously committed one confirmed every
+  pre-existing case's own recorded result byte-identical (excluding the new, always-present `seed_
+  nakshatra_boundary_arcsec` diagnostic field). `python scripts/check_artifact_drift.py` run against the
+  regenerated-but-uncommitted artifact correctly flagged exactly the intended, understood changes and
+  nothing else: `explicit_non_claims` length `5 -> 6`, `gates.boundary_proximity_indicator: added`, and
+  the new field added to every one of the 28 per-case entries across both profiles - no existing case's
+  own prior fields, and no calculated figure, differed. M-03 anti-fitting scan-surface impact confirmed
+  nil via a `certify_kp_chain.py` sanity check (only the same class of volatile-field diff; discarded,
+  not committed).
+- **Consequences:** No existing certified Vimshottari value changes, in any case, under any profile -
+  confirmed directly (844 passed, up from 837 by exactly the 7 new tests; every pre-existing certification
+  case byte-identical). The Dasha roadmap (`docs/DASHA_CERTIFICATION_ROADMAP.md` section 5) is now
+  **fully closed - all six steps (H-04, H-05, H-06, H-08, M-02, boundary-proximity indicator) are
+  closed and, except for this entry's own commit, CI-confirmed.** `Q8_CLOSURE_MATRIX.md` s5's own JATAKA
+  entry-criteria text ("The Dasha roadmap's steps 1 to 6 complete") is now satisfied on its own plain
+  terms. **This entry does not itself authorize JATAKA implementation** - a separate, explicit owner
+  authorization is required to begin it, per the owner's own item 14 and this session's established
+  per-phase discipline. H-04, H-05, H-06, H-08, and M-02 (`ADR-0053`, `ADR-0069`, `ADR-0070`, `ADR-0071`,
+  `ADR-0072`) remain untouched - none reopened. `DP-015`/`ADR-0067`'s own FOUNDATION-scope
+  boundary-proximity decision remains untouched and is not reopened by this entry, despite sharing
+  terminology. The eight cross-certifier `H10`/`H11` findings `ADR-0072` flagged remain untouched and
+  unaddressed, exactly as recorded - still a separate, future item. FOUNDATION is not reopened; `main` is
+  not merged into.
+- **Evidence:** the owner's "CEO DECISION — DP-020 FINAL DASHA ROADMAP STEP" instruction, quoted above;
+  `DP-020` section F (Option 1, the analysis this entry implements) and section G (the recommendation
+  this entry accepts); `python -m pytest -q` - 844 passed, 0 failed, 0 skipped; `python -m pytest
+  engine/tests/test_vimshottari_boundary_proximity_indicator.py -v` - 7/7 passed, including the
+  `NAK_SPAN`-mutation negative control; `python scripts/certify_vimshottari.py` (isolated exploration
+  venv, PyJHora) - PASS, zero lord mismatches across all 17 cases, including the new per-case
+  self-check; direct structured comparison of the regenerated certification artifact against the
+  previously committed one, confirming every pre-existing case's own result unchanged; `python
+  scripts/certify_kp_chain.py` plus `python scripts/check_artifact_drift.py` confirming the only
+  non-volatile change is the intended addition; `scripts/check_adr_numbering.py`, `scripts/
+  check_identifier_families.py`, `scripts/check_retired_identifiers.py`, `git diff --check` - all PASS.
+
+---
+
+## ADR-0074 - JATAKA-entry readiness audit: all six Dasha-roadmap steps closed and CI-confirmed; entry criteria satisfied on their own plain text (PROPOSED - prepared for CEO ratification, not yet declared)
+
+- **Date:** 2026-08-24
+- **Status:** **ACCEPTED, on the owner's ratifying instruction recorded in the "Ratification of
+  ADR-0074: JATAKA ENTRY CRITERIA FORMALLY SATISFIED" entry immediately below this entry's own text**
+  ("CEO RATIFICATION — ADR-0074. I ratify ADR-0074 exactly as written in commit `2f26eee`...").
+  Originally drafted `PROPOSED` per the owner's own "JATAKA ENTRY READINESS AUDIT — DO NOT IMPLEMENT
+  YET... Do not self-ratify JATAKA entry... Stop at the genuine CEO decision point" instruction, mirroring
+  `ADR-0068`'s own FOUNDATION-exit-readiness precedent exactly. Per the owner's own "change only the
+  status" discipline (already applied to the `ADR-0063` addendum and to `ADR-0068` itself), this Status
+  line is the only text in this entry edited to record ratification - the Context, the item-by-item audit
+  findings, Consequences, and Evidence below are unchanged from commit `2f26eee`.
+- **Context:** `Q8_CLOSURE_MATRIX.md` s5's own JATAKA entry criteria, quoted in full: "Prerequisites:
+  FOUNDATION exit. Entry criteria: The Dasha roadmap's steps 1 to 6 complete: depth-3 gate, frozen dasha
+  baseline, profile allow-list, the H-08 convention decision, near-boundary Moon cases, boundary-proximity
+  indicator." This audit checks each item directly against the current repository state (ratified ADR
+  entries, live CI evidence, on-disk certification artifacts), not against summary text alone.
+- **Decision - the audit's findings, item by item, verified fresh this entry:**
+  1. **FOUNDATION exit (prerequisite):** `ADR-0068`, `Status: ACCEPTED` (the entry's own title text
+     retains its original "PROPOSED - prepared for CEO ratification" phrasing as historical record, per
+     this repository's "change only the Status line" discipline - the Status field itself is
+     unambiguous). Owner's ratifying instruction quoted in that entry: "CEO RATIFICATION — FOUNDATION
+     EXIT. I ratify `ADR-0068` and declare FOUNDATION EXITED." **SATISFIED.**
+  2. **Depth-3 gate (H-04):** `ADR-0053`, `Status: ACCEPTED` (2026-08-17). **SATISFIED.**
+  3. **Frozen dasha baseline (H-05):** `ADR-0069`, `Status: ACCEPTED` (2026-08-22), owner instruction
+     "CEO DECISION — DP-016 H-05. Ratify..." quoted in the entry. **SATISFIED.**
+  4. **Profile allow-list (H-06):** `ADR-0070`, `Status: ACCEPTED` (2026-08-22), owner instruction "CEO
+     DECISION — DP-017 H-06. Ratify..." quoted in the entry. **SATISFIED.**
+  5. **The H-08 convention decision:** `ADR-0071`, `Status: ACCEPTED` (2026-08-22), owner instruction
+     "CEO DECISION — DP-018 H-08. Ratify..." quoted in the entry. **SATISFIED.**
+  6. **Near-boundary Moon cases (M-02):** `ADR-0072`, `Status: ACCEPTED` (2026-08-24), owner instruction
+     "CEO DECISION — DP-019 M-02. Ratify..." quoted in the entry. **SATISFIED.**
+  7. **Boundary-proximity indicator:** `ADR-0073`, `Status: ACCEPTED` (2026-08-24), owner instruction
+     "CEO DECISION — DP-020 FINAL DASHA ROADMAP STEP. Ratify..." quoted in the entry. **SATISFIED.**
+  All six steps: **individually owner-ratified, each via its own explicit CEO instruction, none inferred
+  or assumed.**
+- **CI and certification evidence, verified directly, not merely cited:**
+  - `phase-g-governance` HEAD `f0eb220d4b5e05a8f8fcf7798810f6f195981a29`; `origin/phase-g-governance`
+    confirmed identical, both directions. CI run **`32752248185`** - all four jobs green: governance gate
+    (73 ADR entries, 20 DP identifiers); both no-oracle legs `844 passed`; oracle gate `lord mismatches:
+    0`, `pratyantar rows: 20412`, drift `PASS: 46 evidence file(s) identical to the committed version
+    outside the volatile fields`. Read directly from the CI log this session, not inferred from the
+    checkmark.
+  - `certification/VIMSHOTTARI_V1_certification.json`: `result: PASS`, `oracle_lord_mismatches: 0`,
+    `gates.near_boundary_coverage` and `gates.boundary_proximity_indicator` both present with their own
+    recorded methodology/scope. `check_artifact_drift.py` clean against the current committed state.
+  - `main` at `0e1ef115a647b8a44bf4d1a7af2a3cf3a8b96e03` (the FOUNDATION-merge PR #3 commit) - unchanged
+    since 2026-08-22; **`phase-g-governance` is not yet merged into `main`**, so `main` does not yet
+    contain the six Dasha-roadmap ADRs' own implementation. This is a factual state, not a blocker under
+    the entry-criteria text: `Q8_CLOSURE_MATRIX.md` s5 requires "the Dasha roadmap's steps... complete,"
+    not "merged into `main`" - and the FOUNDATION-exit precedent (`ADR-0068`) itself was ratified while
+    `phase-g-governance` was still unmerged, with the merge to `main` (PR #3) following as a separate,
+    subsequent operational step. This entry does not authorize a merge; that remains its own separate act
+    if and when the owner chooses it, exactly as it did for FOUNDATION.
+- **H-03 determination (owner's item 7):** `reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md` H-03, quoted:
+  "The transit oracle gate cannot detect a systematic astronomical bias" - `scripts/certify_transits.py`'s
+  tolerance is derived from the same quantity it is meant to bound, so injected biases up to 7.9 hours
+  pass. **This finding concerns `TRANSIT_V1`, not the Dasha layer.** Confirmed by direct search: H-03 is
+  named nowhere in `docs/DASHA_CERTIFICATION_ROADMAP.md`'s own findings list (which names only H-04, H-05,
+  H-06, H-08, M-02), nowhere in `Q8_CLOSURE_MATRIX.md`'s FOUNDATION or JATAKA sections (neither entry nor
+  exit criteria for either phase), and was never claimed resolved by any of `ADR-0053`/`ADR-0069` through
+  `ADR-0073`. **Determination: H-03 is genuinely absent from the Dasha roadmap and from JATAKA's own entry
+  criteria - not renamed, superseded, retired, or incorporated elsewhere, and not a missing prerequisite
+  for JATAKA entry under the governing text.** It remains a real, open, unresolved architecture-audit
+  finding about a different capability (`TRANSIT_V1`'s own oracle gate), outside this audit's scope to
+  fix and outside JATAKA's own textual entry requirements. Not invented as a requirement, per the owner's
+  own explicit instruction; not silently dismissed either - recorded here for completeness.
+- **H10/H11 cross-certifier determination (owner's item 8):** `ADR-0072` flagged, and this audit
+  reconfirms unchanged and untouched, that the same mislabeled `H10_boundary_moon_a`/`H11_boundary_
+  moon_b` birth data is reused as a "boundary_sensitive" holdout case in eight other certifiers/
+  validators: `certify_trikalam.py`, `certify_panchanga.py`, `certify_rise_set.py`, `certify_tier0.py`,
+  `certify_kp_chain.py`, `certify_parashari_drishti.py`, `certify_current_engine.py`, `engine/tests/
+  test_kp_chart.py`. **None of these eight is a Dasha-roadmap item, and none is named in `Q8_CLOSURE_
+  MATRIX.md` s5's own JATAKA entry-criteria text.** Verified directly this entry: none of the six
+  Dasha-roadmap ADRs' own closure depended on any of these eight certifiers' own case correctness -
+  `ADR-0071`/H-08 concerned `vimshottari.py`'s own internal convention, not `KP_CHAIN_V1`'s certification
+  evidence; `ADR-0072`/M-02 fixed `VIMSHOTTARI_V1`'s own, separate oracle gate (`certify_vimshottari.py`)
+  exclusively. **Determination: the eight flagged findings do not block JATAKA entry under the governing
+  text.** They remain exactly what `ADR-0072` characterized them as: a genuine, real, but separate future
+  item, requiring its own investigation and (if warranted) its own decision paper before any of those
+  eight certifiers' own claims are corrected - not touched by this entry, per the owner's own explicit
+  instruction.
+- **Other explicit JATAKA-entry prerequisites outside the six Dasha steps (owner's item 9):** none found.
+  `Q8_CLOSURE_MATRIX.md` s5's own row is the complete, direct source; s14's cross-phase invariants (no
+  gate weakening, no silent second convention, protected holdouts never tuned, C4 never represented as
+  C5, every phase states what it could not verify) are ongoing compliance obligations, not additional
+  entry gates, and this session's own ADRs each explicitly confirm compliance. `docs/
+  DASHA_CERTIFICATION_ROADMAP.md` section 5's own steps 7 (civil-date rendering) and 8 (deeper dasha
+  levels/a second system) are explicitly **outside** the six-step JATAKA-entry list and remain
+  unauthorized, untouched, and not required for entry.
+- **A textual interpretation point, presented rather than silently resolved (owner's item 13):**
+  `docs/DASHA_CERTIFICATION_ROADMAP.md` itself remains `Status: PROPOSED` as a planning document (Version
+  1.0.0, last updated 2026-08-11) - it has never been formally ratified as a whole. `Q8_CLOSURE_
+  MATRIX.md` s5's entry-criteria text, however, requires only that "the Dasha roadmap's **steps** 1 to 6"
+  be "complete" - a factual state about six named items, not a clause requiring the parent planning
+  document's own ratification. Each of the six steps carries its own separate, individually owner-
+  ratified ADR (`ADR-0053`, `ADR-0069` through `ADR-0073`), each ratified by the owner's own explicit,
+  separate instruction, with the roadmap document's own `PROPOSED` status visible and stated in every one
+  of this session's own decision-readiness papers (`DP-016` through `DP-020`) at the time of each
+  ratification. This reading has been applied consistently, without objection, across all six steps this
+  session - it is not a fresh interpretive act, but its basis is stated explicitly here rather than
+  assumed silently, per the owner's own instruction. If the owner disagrees with this reading, ratifying
+  this entry is the point to say so.
+- **A found, non-blocking governance-hygiene gap:** `docs/DECISION_LOG.md`'s own register-header summary
+  line (the "ACCEPTED (N): ..." blob) was not updated after `ADR-0070` through `ADR-0073` were each
+  ratified - it still reads "ACCEPTED (47): ..., ADR-0048 through ADR-0069," omitting the four most
+  recent entries from its own count and citation range. **This does not affect any individual entry's own
+  Status field** (each of the four is independently confirmed `ACCEPTED` in its own entry, verified fresh
+  this audit) and is not a JATAKA-entry blocker - it is a stale convenience-summary string, not a missing
+  ratification. Flagged here rather than silently corrected, since this entry's own owner instruction
+  authorized an audit and (if warranted) a decision paper, not incidental document edits; correcting the
+  header is a small, separate, mechanical action available on request.
+- **No accidental JATAKA implementation found (owner's item 11):** confirmed directly, not assumed - no
+  file or symbol anywhere in `engine/` matches "JATAKA" (case-insensitive search). `engine/astrology/
+  planet_strength.py` exists (JATAKA's own future implementation-scope text names "Planet strength if
+  decided") but is **pre-existing legacy code from 2026-07-30/08-08, predating Phase G, FOUNDATION, and
+  this session's entire numbered-ADR decision framework** - not new work from any Dasha-roadmap task.
+  Confirmed it has zero production consumers (only its own test file references it); it is not named in
+  `README.md`'s "Current state" as a certified or declared capability. **No uncertified calculation,
+  methodology, or dependency was found silently promoted into active use** (owner's item 10) - every
+  change this session's six Dasha-roadmap ADRs made was additive, hermetically or oracle-verified, with
+  zero existing certified value changed, confirmed independently for each.
+- **No remaining governance, architecture, certification, or specification prerequisite identified**
+  (owner's item 12) for JATAKA entry specifically, beyond the owner's own separate ratifying act that
+  `Q8_CLOSURE_MATRIX.md` s15 already requires for every phase, with no exception for JATAKA.
+- **Whether `Q8_CLOSURE_MATRIX.md` s5 is actually satisfied:** **Yes, on its own plain text** - all six
+  named items are individually, explicitly owner-ratified, and CI-confirmed. **Whether a separate CEO
+  entry decision is now the only remaining authorization:** **Yes.** No further technical, evidentiary, or
+  governance work is required to satisfy the entry-criteria text itself; `Q8_CLOSURE_MATRIX.md` s15's own
+  "No phase is thereby authorised - phase authorisation remains a separate, per-phase... owner act"
+  requires the owner's own explicit ratifying instruction regardless, exactly as it did for FOUNDATION
+  (`ADR-0048` entry, `ADR-0068` exit).
+- **Consequences, if ratified:** JATAKA's own entry criteria would be declared satisfied. **This does
+  NOT authorize any JATAKA implementation, capability, or ADR** - `Q8_CLOSURE_MATRIX.md` s5's own
+  "Implementation scope" row (remaining production vargas, Vimshottari depth/convention extensions,
+  aspect coverage, planet strength) states explicitly "Each is a separate ADR and none is implied by
+  phase entry," and s5's own "CEO approval" row requires "Entry, per capability, exit" - phase entry alone
+  authorizes nothing further. H-04, H-05, H-06, H-08, M-02, the boundary-proximity indicator, `DP-015`/
+  `ADR-0067`'s own FOUNDATION-scope item, and FOUNDATION itself remain exactly as already ratified - none
+  reopened by this entry. The eight flagged cross-certifier findings remain untouched and unaddressed,
+  exactly as `ADR-0072` recorded them. H-03 remains open, unresolved, and outside this entry's scope.
+- **Evidence:** the owner's "JATAKA ENTRY READINESS AUDIT — DO NOT IMPLEMENT YET" instruction, quoted
+  in substance above; `Q8_CLOSURE_MATRIX.md` s5, s14, s15 (read fresh, quoted directly); `docs/
+  DASHA_CERTIFICATION_ROADMAP.md` (read fresh, `Status: PROPOSED`, Version 1.0.0); `docs/DECISION_LOG.md`
+  entries for `ADR-0053`, `ADR-0068` through `ADR-0073` (each Status field read directly, not from the
+  register header summary); `reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md` H-03 (read in full);
+  repository-wide search for "H-03" (three files: `docs/PROJECT_ROADMAP.md`, the untracked, non-
+  authoritative `HOLD_REMEDIATION_PROPOSALS.md`, and the G1 audit itself) and for "JATAKA"/"jataka" in
+  `engine/` (zero hits); `git log --follow -- engine/astrology/planet_strength.py` (first commit
+  `716141e`, 2026-07-30, predating this session); `grep -r planet_strength engine/` (only its own test
+  file references it); `git branch --show-current`, `git rev-parse HEAD`, `git status --porcelain`,
+  `git fetch` plus `git rev-parse origin/phase-g-governance origin/main` (both directions confirmed);
+  `gh run list`/`gh run view 32752248185 --json ...`/`gh run view 32752248185 --log` (all four jobs read
+  directly from the transcript); `python -c` structured read of `certification/
+  VIMSHOTTARI_V1_certification.json`; `python scripts/check_artifact_drift.py` (clean); `python
+  scripts/check_adr_numbering.py`, `scripts/check_identifier_families.py`, `scripts/
+  check_retired_identifiers.py` - all PASS.
+
+#### Ratification of ADR-0074: JATAKA ENTRY CRITERIA FORMALLY SATISFIED (2026-08-24)
+
+- **Status:** ACCEPTED. The owner instructed: "CEO RATIFICATION — ADR-0074. I ratify ADR-0074 exactly as
+  written in commit: `2f26eee`. I formally declare the JATAKA entry criteria satisfied under
+  `Q8_CLOSURE_MATRIX.md` §5." Per `docs/PROJECT_CONSTITUTION.md` s11, this instruction is the ratifying
+  act; this entry records it, matching the precedent already used throughout this session (`ADR-0063`
+  addendum, the `ADR-0068` ratification entry immediately preceding this one in kind).
+- **Decision:** `ADR-0074` above (its full item-by-item audit findings, Context, and Consequences) is
+  **ratified exactly as drafted in commit `2f26eee`, with no wording changed**. Its own `Status` line,
+  immediately above, is updated from `PROPOSED` to **`ACCEPTED, on the owner's ratifying instruction
+  recorded in this follow-up entry`** - the only edit made to that entry's text, matching the same
+  "change only the status" discipline just used for `ADR-0068`. **JATAKA ENTRY CRITERIA ARE FORMALLY
+  SATISFIED as of 2026-08-24**, per `Q8_CLOSURE_MATRIX.md` s5, on the evidence `ADR-0074` enumerates. The
+  owner's ratifying instruction additionally confirms, explicitly and individually, every one of
+  `ADR-0074`'s own findings - none reinterpreted, narrowed, or extended beyond what `ADR-0074` itself
+  already states:
+  1. The FOUNDATION-exit prerequisite is satisfied.
+  2. All six Dasha-roadmap entry steps are satisfied and individually ratified: H-04/`ADR-0053`,
+     H-05/`ADR-0069`, H-06/`ADR-0070`, H-08/`ADR-0071`, M-02/`ADR-0072`, the dasha boundary-proximity
+     indicator/`ADR-0073`.
+  3. H-03 remains an open, separately tracked finding and is **not** a JATAKA-entry prerequisite.
+  4. The eight `H10`/`H11` cross-certifier findings from `ADR-0072` remain separate future work and do
+     **not** block JATAKA entry.
+  5. The interpretation that `Q8_CLOSURE_MATRIX.md` §5 requires the six named **steps**, not the Dasha
+     roadmap document itself, to carry `ACCEPTED` status is ratified.
+  6. The stale `DECISION_LOG.md` register-header summary is a non-blocking documentation-hygiene issue
+     and must not be treated as an entry gate.
+  7. This decision authorizes **JATAKA phase entry only**.
+  8. This decision does **NOT** authorize implementation of any individual JATAKA capability.
+  9. Every JATAKA capability still requires its own specification, decision/ADR, implementation,
+     certification, and CEO approval, exactly as `Q8_CLOSURE_MATRIX.md` s5's own "Implementation scope"
+     and "CEO approval" rows already require.
+  10. JATAKA implementation is explicitly **not begun** as part of this ratification.
+- **Consequences, restated exactly as `ADR-0074` itself already states them, not expanded upon:** this
+  ratification does **not** authorize any JATAKA capability, ADR, specification, or implementation work -
+  `Q8_CLOSURE_MATRIX.md` s5's own "Implementation scope" row (remaining production vargas, Vimshottari
+  depth/convention extensions, aspect coverage, planet strength) states explicitly "Each is a separate
+  ADR and none is implied by phase entry." No certified calculation changes. No closed Dasha-roadmap item
+  (H-04, H-05, H-06, H-08, M-02, the boundary-proximity indicator) or FOUNDATION item is reopened or
+  reconsidered by this entry. The eight cross-certifier findings (`ADR-0072`) remain untouched and
+  unaddressed. H-03 remains open, unresolved, and outside this entry's scope. `phase-g-governance` is not
+  merged to `main` by this entry, and nothing is pushed.
+- **Evidence:** the owner's "CEO RATIFICATION — ADR-0074" instruction, quoted above; `ADR-0074` itself,
+  commit `2f26eee675742b4b672e9af00b50bd1550848548`.
+
+---
+
 ## ADR template (copy, do not edit above the line)
 
 ## ADR-XXXX - <title>
