@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 8.6.0 |
+| Version | 8.7.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-25 (`DP-021` resumed (section N): recommends remaining production vargas as first JATAKA capability at medium-high confidence, polar-Placidus/M-04 closure recommended in parallel, Parashari yogas/KP significators flagged high-value-but-not-methodology-ready. Genuine CEO decision point reached - five exact decisions required. No capability implemented.) |
+| Last updated | 2026-08-25 (`DP-023` drafted: exact first-JATAKA-capability selection, individually scoring all eight remaining vargas plus non-varga candidates against ten required axes. Recommends **D45 (Akshavedamsa)** at medium-high confidence, resolved from repository evidence (`docs/VARGA_CERTIFICATION_ROADMAP.md`). Genuine CEO decision point reached - six exact decisions required. No capability implemented.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,89 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-25 - DP-023 drafted: exact first-JATAKA-capability selection (D45 recommended), genuine CEO decision point
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with `DP-023`'s own
+  file and registration, on top of `728da71`).
+- Previous approved commit: `728da71` (the `DP-021` section-N resumption, local-only, four commits ahead
+  of `origin/phase-g-governance`'s `c4d571a340b4baf873fbefb5661eb195937d2f51`).
+- Task (owner's exact instruction, abridged): "CONTINUE — DP-021 FIRST JATAKA CAPABILITY DECISION. Do
+  not stop at the DP-022 ratification. Continue the already-authorized DP-021 investigation until the
+  actual first-capability CEO decision point... Evaluate at minimum: each remaining production Varga
+  candidate individually, not merely the Varga family; additional Parashari aspect coverage; Vimshottari
+  depth extension; Shadbala; polar-Placidus/M-04 maintenance separately; Parashari yoga methodology-
+  readiness; KP/D-008 significator methodology-readiness; Jaimini Chara karakas... Score each against
+  [ten named axes]... Do not simply repeat 'remaining Vargas' as the recommendation. Determine which
+  exact Varga, if Varga remains first, and prove why it should precede the alternatives. Resolve the
+  previously open Varga risk-order question from repository evidence. If the repository does not contain
+  enough evidence to determine the order, explicitly say so and create a narrower decision-readiness
+  paper rather than inventing an order. Likewise, do not treat polar-Placidus/M-04 as automatically part
+  of the Varga capability... Methodology-first rule: if the recommended capability lacks a frozen,
+  authoritative methodology, stop before implementation and produce the required methodology decision-
+  readiness paper. Do not write production code merely because the calculation is technically easy."
+  Required deliverable: a registered decision paper with exact candidate inventory, evidence, dependency
+  graph, scoring matrix, exact first-capability candidate, alternatives, risks, certification plan,
+  methodology/source requirements, explicit non-claims, recommendation and confidence, exact CEO decision
+  required. Hard boundary: no implementation of any candidate, no production/certified-artifact
+  modification, no polar-Placidus/M-04/KP-significator/Parashari-yoga/Jaimini-BNN-Numerology work begun,
+  no reopening FOUNDATION or any closed Dasha item.
+- Relevant ADR/specification: `DP-021` (extended, not contradicted - sections A-N unedited), `DP-022`/
+  `ADR-0075` (the governance ruling making non-listed candidates eligible), `docs/VARGA_CERTIFICATION_
+  ROADMAP.md` (the primary new evidence source this task), `ADR-0049` (B-01/B-02 remediation, used to
+  find the roadmap document stale on one point), `specs/PROJECT_CHARTER.md` (Jaimini-scope finding).
+- Files changed: `docs/decisions/DP-023-jataka-first-capability-exact-selection.md` (new), `docs/
+  decisions/README.md` (registered `DP-023` before drafting, per `ADR-0040`; version 3.8.0 -> 3.9.0),
+  `docs/ACE_EXECUTION_STATE.md` (version 6.6.0 -> 6.7.0), this file.
+- Method: direct investigation (no subagent launched - the required evidence was concentrated in one
+  already-known document, `docs/VARGA_CERTIFICATION_ROADMAP.md`, plus targeted greps/reads against
+  `docs/DECISION_LOG.md`, `engine/astrology/varga_registry.py`, `varga_rules.py`, and `specs/
+  PROJECT_CHARTER.md`). Read `docs/VARGA_CERTIFICATION_ROADMAP.md` in full (sections 1-9); cross-checked
+  its own section 2 claim that B-01/B-02 "must be resolved before the next varga is added" against
+  `ADR-0049`'s own text (already read earlier this session) and against live code
+  (`register_varga_rule`'s division cross-check, `rule_content_sha256`) - confirmed the roadmap document
+  is stale on this specific point (B-01/B-02 resolved 2026-08-17, roadmap never updated since
+  2026-08-11); confirmed no `step` field exists on `CyclicVargaRule` and no ADR resolves the section-3
+  payload/label-table proposal; grepped `engine/**/*.py` for "yoga" (only the panchanga anga and
+  provenance non-claims found, zero combination-yoga code, consistent with `DP-021`'s own earlier
+  finding); re-read `specs/PROJECT_CHARTER.md`'s "Analytical systems" section specifically checking for
+  Jaimini - confirmed absent, a finding not made in `DP-021`'s own original three-agent investigation.
+- Key findings: applying the owner's own methodology-first rule as an explicit filter to `docs/
+  VARGA_CERTIFICATION_ROADMAP.md` section 4's own confidence table excludes D20 and D60 (both flagged
+  "Medium... genuinely disputed" content confidence - D20's start triple, D60's even-sign reversal) and,
+  cross-referencing section 3's separately-stated payload/label-table gap list, also excludes D16 and D27
+  (need an undecided architecture decision - kalamsa/vimsamsa deities, nakshatra lord - before being a
+  legitimate analytical input) and D4 (needs an undecided Segment-vs-`step` contract choice) - leaving
+  D24, D40, and D45 as the only three of the eight remaining vargas with no disputed content and no
+  undecided architecture prerequisite. Of these three, the roadmap's own section 5 risk order places D45
+  in its second tier (grouped with D16 in the roadmap's own text, but D16 is excluded here on the payload
+  ground) while D24/D40 sit in the third tier - **making D45 (Akshavedamsa) the highest-ranked cleanly-
+  ready varga**, an inference this paper's own section E discloses as bridging two separate sections of
+  an unratified document, not a verbatim citation of an already-stated conclusion. Every non-varga
+  JATAKA-scope candidate investigated (aspect coverage, Shadbala, Parashari yoga, KP significators) fails
+  the methodology-first rule outright; Vimshottari depth extension passes as cleanly as D45 but scores
+  lower on architectural leverage/product value and reopens a just-closed area. Polar-Placidus/M-04 was
+  scored separately, on its own terms, per explicit instruction - not folded into the varga pick.
+- Implementation summary: no engine/scripts/certification code touched. Decision paper only.
+- Tests executed and results: `python -m pytest -q` - 844/844 passed, unchanged (105.87s).
+- Certification executed and results: none - no certification artifact touched or regenerated.
+- Governance checks executed and results: `python scripts/check_adr_numbering.py` (75 ADR entries,
+  unchanged), `python scripts/check_identifier_families.py` (23 DP identifiers, up from 22 - `DP-023`
+  registered), `python scripts/check_retired_identifiers.py` (0 violations, clean on the first pass) -
+  all PASS.
+- Known issues: D45's own cell width (30/45 = 2/3 degree, not exactly binary-representable) is flagged as
+  an unresolved technical question the roadmap's own section 4 table does not address for D45 the way it
+  explicitly does for D27 - disclosed, not resolved, in section E; the eventual certification work should
+  verify it.
+- Unresolved questions: all six items in `DP-023` section L - the first-capability selection itself; the
+  varga-framework `step`-field/payload-table timing; whether polar-Placidus/M-04 closure gets its own
+  JATAKA-labelled ADR or proceeds as Tier-0 maintenance; whether to authorize a `D-008` methodology paper;
+  whether a comparable Parashari-yoga paper should also be authorized; whether `docs/VARGA_CERTIFICATION_
+  ROADMAP.md` itself should be formally ratified.
+- CEO decision required: this task's own genuine stopping point, per the owner's explicit instruction -
+  review `DP-023` and act on any or all of its six items (section L). No capability is selected, no ADR
+  is drafted, and no implementation is authorized by this task.
+- Next authorized action: none self-executable. Awaiting the owner's review of `DP-023`, and, separately,
+  authorization to push this task's commits (this one plus the three preceding it) if desired.
 
 ### 2026-08-25 - DP-021 resumed (section N): first-JATAKA-capability recommendation reached, genuine CEO decision point
 - Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with `DP-021`'s new
