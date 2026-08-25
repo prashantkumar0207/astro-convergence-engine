@@ -4607,13 +4607,17 @@ follow-up entry, matching the same mechanism just used for the `ADR-0063` addend
 ## ADR-0077 - D45 (Akshavedamsa) certification design: frozen rule, oracle, boundary/holdout/negative-control plan (PROPOSED - prepared for CEO ratification, not yet declared)
 
 - **Date:** 2026-08-25
-- **Status:** PROPOSED - prepared per the owner's "CEO DECISION" instruction item 6 ("D45 certification:
-  proceed through the established certification workflow... prepare the certification ADR/artifacts").
-  Not self-ratified, per the owner's own standing "Do not ratify any other ADR" instruction. **This entry
-  is a certification design - it freezes the rule and plans the certification work. It does not write or
-  register `engine/astrology/varga_d45.py`, does not modify `varga_registry.py`, and does not produce a
-  final `VARGA_D45_V1_certification.json` artifact.** Producing those is the separate, subsequent
-  certification-execution step this design authorizes the shape of, not itself performs.
+- **Status:** **ACCEPTED, on the owner's ratifying instruction recorded in the "Ratification of ADR-0077"
+  entry immediately below this entry's own text.** Originally drafted `PROPOSED` per the owner's "CEO
+  DECISION" instruction item 6 ("D45 certification: proceed through the established certification
+  workflow... prepare the certification ADR/artifacts"), not self-ratified. Per this repository's own
+  "change only the status" discipline, this Status line is the only text in this entry edited to record
+  ratification - the Context, the certification design (sections 1-11), Consequences, and Evidence below
+  are unchanged. **This entry is a certification design - it freezes the rule and plans the certification
+  work. It does not write or register `engine/astrology/varga_d45.py`, does not modify
+  `varga_registry.py`, and does not itself produce the final `VARGA_D45_V1_certification.json` artifact -
+  that was performed as the certification-execution step this design's own ratification authorized,
+  recorded in the ratification entry below, and evidenced by the artifact itself.**
 - **Context:** `ADR-0076` (ratified) confirmed D45's implementation readiness on eleven of twelve owner-
   required items, deferring one (cell-width representability) to be resolved empirically rather than
   assumed. This entry performs that empirical resolution and completes the remaining certification-design
@@ -4765,6 +4769,70 @@ subsequent act - not performed by this entry itself.**
   TEMPLATE.md`; `ADR-0049` (negative-control precedent); root `DECISION_LOG.md` D-002 (0.5 arcsecond
   Tier-0 tolerance, cited for scale comparison) and D-003 (zero categorical tolerance, applied to this
   design's own oracle gate).
+
+#### Ratification of ADR-0077: D45 CERTIFICATION EXECUTED, ALL EIGHT GATES PASS (2026-08-25)
+
+- **Status:** ACCEPTED. The owner instructed: "CEO RATIFICATION — ADR-0077. I ratify ADR-0077 exactly as
+  drafted. Authorize execution of the D45 certification work only: write the frozen D45 rule; build the
+  independent validator; execute the defined oracle comparison; execute the defined boundary cases,
+  including k=13, 26, 29; execute the protected holdout; execute genuine negative controls; generate the
+  machine-readable certification artifact and human-readable report; establish artifact-drift protection
+  and CI coverage; preserve the explicit non-claims and provenance. Do not create or modify
+  engine/astrology/varga_d45.py yet. Production D45 implementation remains a separate authorization after
+  certification execution establishes the required evidence." Per `docs/PROJECT_CONSTITUTION.md` s11,
+  this instruction is the ratifying act; this entry records it, matching the precedent already used
+  throughout this session (`ADR-0068`, `ADR-0074`, `ADR-0076`'s own ratification sub-entries).
+- **Decision:** `ADR-0077` above (its full certification design, sections 1-11) is **ratified exactly as
+  drafted, with no wording changed**. Its own `Status` line, immediately above, is updated to point to
+  this entry - the only edit made to that entry's text. **The certification-execution step `ADR-0077`
+  itself authorized the shape of was then performed, in this same task, exactly as the owner's nine
+  itemized execution steps directed:**
+  1. The frozen D45 rule (`CyclicVargaRule(divisions=45, start_sign=(0,4,8,0,4,8,0,4,8,0,4,8),
+     direction=(1,)*12)`) was written as a standalone object inside new `scripts/certify_d45.py` -
+     **not** registered via `engine.astrology.varga_registry.register_varga_rule`, and
+     `engine/astrology/varga_d45.py` was **not** created, exactly per the owner's own explicit
+     instruction.
+  2. An independent validator (`validate_d45_holdout.py`) was built from scratch, using a per-sign lookup
+     table constructed by direct zodiacal-order enumeration, not the framework's own offset arithmetic.
+  3. The oracle comparison (PyJHora's `akshavedamsa_chart`, Traditional Parasara method) was executed:
+     5,400 comparisons, 0 mismatches.
+  4. The boundary cases (k=13, 26, 29 per sign, 60 total, plus sign-transition edges) were executed: 0
+     mismatches, resolved by the engine's own existing 1e-10 tolerance-promoted boundary convention,
+     unmodified.
+  5. The protected holdout (26,278 points, prime-step sampling independent of the boundary cases) was
+     executed: 0 mismatches.
+  6. Genuine negative controls (three planted mutations - a start-sign tamper, a direction reversal, a
+     content-hash check) were executed: all three detected; the frozen rule object itself confirmed
+     unmutated throughout.
+  7. The machine-readable certification artifact (`certification/VARGA_D45_V1_certification.json`) and
+     human-readable report (`reports/certification/varga_d45.report.md`) were generated in the same run,
+     per this project's own established `certification_support.emit()` mechanism.
+  8. Artifact-drift protection and CI coverage were established: `scripts/certify_d45.py`/
+     `validate_d45_holdout.py` added to `scripts/certification_support.py`'s own anti-fitting scan scope;
+     `scripts/certify_d45.py` added to `.github/workflows/ci.yml`'s oracle-tier certifier loop.
+  9. Explicit non-claims and provenance were preserved exactly as `ADR-0077`'s own section 10 specified,
+     recorded in the artifact itself.
+  **Two genuine defects were found and fixed during this execution, not hidden or worked around** - the
+  independent validator's own first-draft reference formula initially disagreed with the production
+  boundary-tolerance convention at 347 points until independently re-derived correctly; a negative
+  control initially targeted the wrong tuple index and, once corrected, an initial test point landed on a
+  mathematically degenerate case before a correct one was chosen - both are recorded in full in
+  `reports/AI_HANDOFF_CURRENT.md`'s own task-log entry for this execution, not summarized away here.
+  **Result: PASS on all eight gates (A-H).** `engine/astrology/varga_d45.py` does not exist; D45 is not
+  registered; `get_varga_rule(45, "parashara")` still raises `UnsupportedVargaError` - confirmed directly
+  by gate D itself. **This ratification does not authorize production implementation** - the owner's own
+  explicit instruction reserves that as "a separate authorization after certification execution
+  establishes the required evidence," not granted by this entry.
+- **Consequences:** D45's own certification evidence now exists and is real, regenerable, and gate-based -
+  not a design assertion. Production implementation (writing and registering `engine/astrology/
+  varga_d45.py`) remains a separate, not-yet-authorized act. `DP-024`, `DP-025`, `DP-026`, and `DP-027`
+  are untouched by this entry, per the owner's own explicit exclusion. FOUNDATION, H-03, the eight
+  `ADR-0072` cross-certifier findings, and every closed Dasha item remain untouched.
+- **Evidence:** the owner's "CEO RATIFICATION — ADR-0077" instruction, quoted above; `ADR-0077` itself;
+  `certification/VARGA_D45_V1_certification.json` (the generated artifact, `result: PASS`, all eight
+  gates recorded); `reports/certification/varga_d45.report.md` and `varga_d45.console.txt` (the
+  human-readable report and console transcript, generated in the same run); `reports/
+  AI_HANDOFF_CURRENT.md`'s own task-log entry for this execution (full defect-and-fix narrative).
 
 ---
 
