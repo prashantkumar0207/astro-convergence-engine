@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 8.5.0 |
+| Version | 8.6.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-25 (`ADR-0075` RATIFIED: `DP-022`'s ILLUSTRATIVE interpretation of `Q8_CLOSURE_MATRIX.md` s5 adopted - unlisted JATAKA capabilities are now eligible for their own ADR without a prior Q8 amendment. `Q8_CLOSURE_MATRIX.md` itself unedited. Resuming `DP-021` for first-capability decision-readiness per explicit instruction.) |
+| Last updated | 2026-08-25 (`DP-021` resumed (section N): recommends remaining production vargas as first JATAKA capability at medium-high confidence, polar-Placidus/M-04 closure recommended in parallel, Parashari yogas/KP significators flagged high-value-but-not-methodology-ready. Genuine CEO decision point reached - five exact decisions required. No capability implemented.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,75 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-25 - DP-021 resumed (section N): first-JATAKA-capability recommendation reached, genuine CEO decision point
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with `DP-021`'s new
+  section N, on top of `fe6ae02`).
+- Previous approved commit: `fe6ae02` (the `ADR-0075` ratification commit, local-only, three commits
+  ahead of `origin/phase-g-governance`'s `c4d571a340b4baf873fbefb5661eb195937d2f51`).
+- Task (owner's exact instruction, continuing directly from the same "CEO DECISION — DP-022" message):
+  "After ratification, continue automatically into the next decision-readiness task: resume DP-021 and
+  determine the strongest candidate for the first JATAKA capability. Do not implement that capability.
+  The next stopping point must be the genuine CEO decision point where you present: candidate
+  capabilities, dependencies, methodology readiness, certification difficulty, architectural leverage,
+  risk, recommended first capability, alternatives, exact CEO decision required. Do not stop merely
+  because the DP-022 ratification commit is complete. Continue until that next genuine CEO decision
+  point, blocker, or separate push-authorization checkpoint."
+- Relevant ADR/specification: `DP-021` (resumed, section N added, sections A-M unedited); `ADR-0075`
+  (the governance ruling that made all candidates, not just the four literally named in `Q8_CLOSURE_
+  MATRIX.md` s5, eligible for consideration); `D-008` (cited as the correct next step for the
+  KP-significator track, not implemented).
+- Files changed: `docs/decisions/DP-021-jataka-first-capability-decision-readiness.md` (new section N;
+  version 1.0.0 -> 1.1.0), `docs/ACE_EXECUTION_STATE.md` (version 6.5.0 -> 6.6.0), this file.
+- Method: direct synthesis of evidence already gathered in `DP-021` sections A-M (no new research agents
+  launched - the original three-agent investigation's evidence remained current), plus one targeted,
+  read-only code verification this task performed directly: re-checked the M-04 finding (`DrishtiChart`
+  provenance mislabeling), which `DP-021` section H.4 had flagged as "apparently still open, not
+  confirmed," against live source. Confirmed still live: `engine/models/drishti.py`'s own docstring
+  states `aspected_houses` "counts whole-sign houses from the lagna"; `engine/parashari/
+  drishti.py::graha_drishti_from_snapshot()` (line 84) computes `aspected_houses` via pure whole-sign
+  counting from the ascendant sign with no Placidus reference, while reusing `snapshot.provenance`
+  unmodified (line 63); the certified `PARASHARI_LAHIRI` profile hardcodes `house_system=b"P"`. No file
+  under `engine/` was modified - read-only verification only.
+- Key findings: scored all candidates (remaining vargas, Vimshottari depth extension, aspect-coverage
+  extension, karakas in all three senses, bhava/house-cusp gap-closure, Parashari yogas, KP significators,
+  planet strength) against the owner's six required axes in a comparison table (`DP-021` section N.2).
+  **Remaining production vargas** is the only candidate simultaneously methodology-ready (classical
+  formulas fixed and uncontested per division), low-certification-difficulty (five-times-proven template),
+  and low-risk - recommended as the first JATAKA capability at medium-high confidence, with the caveat
+  that no varga "risk order" is defined anywhere in this repository, so a short follow-up sub-decision
+  (which division first) would still be needed. **Polar-Placidus + M-04 closure** is recommended in
+  parallel, explicitly framed as Tier-0/FOUNDATION-tier certification-completion work rather than a new
+  JATAKA capability in its own right (it lives inside the already-locked Tier-0 kernel certification, not
+  a JATAKA-scope artifact), since it is narrow, `RISE_SET_V1`-precedented, and the one concretely
+  evidenced prerequisite for KP significators specifically. **Parashari yogas and KP significators are
+  the highest product-value candidates found, and both are genuinely not implementable yet** - neither is
+  missing calculation infrastructure (both build on already-certified sign/house/aspect/varga data); both
+  are missing a frozen, source-cited, owner-ratified methodology specification. Recommends authorizing a
+  dedicated `D-008` KP-significator methodology-specification decision-readiness paper (now confirmed
+  scope-eligible under `ADR-0075`, removing the doubt `DP-021`'s original section H.1 raised) as the
+  correct next step for that track - not implementation of either capability.
+- Implementation summary: no engine/scripts/certification code touched (the M-04 check was read-only).
+  Decision-paper resumption only.
+- Tests executed and results: `python -m pytest -q` - 844/844 passed, unchanged.
+- Certification executed and results: none - no certification artifact touched or regenerated.
+- Governance checks executed and results: `python scripts/check_adr_numbering.py` (75 ADR entries,
+  unchanged), `python scripts/check_identifier_families.py` (22 DP identifiers, unchanged),
+  `python scripts/check_retired_identifiers.py` (0 violations, clean on the first pass this time) - all
+  PASS.
+- Known issues: none new. The M-04 finding is now confirmed live (not merely flagged) but was not fixed
+  this task - fixing it would be implementation, outside this task's own decision-readiness scope.
+- Unresolved questions: all five items in `DP-021` section N.5 - the first-capability selection itself;
+  the varga risk-order follow-up if vargas is chosen; whether polar-Placidus/M-04 closure should carry
+  its own JATAKA-labelled ADR or proceed as ordinary Tier-0 maintenance; whether to authorize a `D-008`
+  methodology-specification paper; whether a comparable Parashari-yoga methodology paper should also be
+  authorized.
+- CEO decision required: this task's own genuine stopping point, per the owner's explicit instruction -
+  review `DP-021` section N and act on any or all of its five items (N.5). No capability is selected, no
+  ADR is drafted, and no implementation is authorized by this task.
+- Next authorized action: none self-executable. Awaiting the owner's review of `DP-021` section N, and,
+  separately, authorization to push this task's commits (this one plus the preceding `ADR-0075`
+  ratification commit) if desired.
 
 ### 2026-08-25 - ADR-0075 RATIFIED: DP-022's ILLUSTRATIVE interpretation adopted; Q8 unedited
 - Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the `ADR-0075`

@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | OPEN - decision paper. Presents options and recommends one. DECIDES NOTHING. Requires owner approval. |
-| Version | 1.0.0 |
+| Version | 1.1.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-24 |
+| Last updated | 2026-08-25 (section N added: resumed after `ADR-0075` ratified `DP-022`'s ILLUSTRATIVE interpretation; sections A-M unedited) |
 | Review cadence | TBD |
 
 # DP-021. JATAKA architecture / first-capability decision-readiness
@@ -439,8 +439,115 @@ polar-Placidus work.
    methodology specification, and/or a Parashari yoga-rule specification, as next steps after whichever
    near-term item is chosen above.
 
+## N. Resumption after `ADR-0075` (2026-08-25): refined first-capability analysis and exact CEO decision required
+
+Sections A-M above are unedited and remain the historical record of the original investigation. This
+section resumes the paper per the owner's explicit "CEO DECISION — DP-022... DP-021 should now be
+resumed for capability selection/first-capability decision-readiness" instruction, now that `ADR-0075`
+has ratified `DP-022`'s ILLUSTRATIVE interpretation: candidates not literally named in `Q8_CLOSURE_
+MATRIX.md` s5 (bhava/house-cusp gap-closure, karakas, Parashari yogas, KP significators) are eligible
+for their own decision-readiness -> ADR -> owner-ratification pathway without a prior Q8 amendment,
+removing section H.1/M.1's own blocking governance ambiguity. This section does not select a capability -
+consistent with `docs/decisions/README.md`'s own rule that "a paper that resolves its own question has
+failed," it presents the refined evidence and a recommendation, at a stated confidence level, for the
+owner to act on.
+
+### N.1 One additional verification performed this resumption
+
+Before finalizing the candidate scoring below, the M-04 finding (section H.4's own "apparently still
+open, not confirmed" flag) was checked directly against live code, since it bears on the bhava-adjacent
+candidates' own architectural-leverage score. **Confirmed still live, not fixed:** `engine/models/
+drishti.py`'s own docstring states `aspected_houses` "counts whole-sign houses from the lagna"; `engine/
+parashari/drishti.py::graha_drishti_from_snapshot()` computes `aspected_houses` via pure whole-sign
+counting from the ascendant sign (`((sign - ascendant_sign) % 12) + 1`, no Placidus cusp reference at
+all, line 84) while reusing `snapshot.provenance` unmodified (line 63) - and the certified `PARASHARI_
+LAHIRI` profile hardcodes `house_system=b"P"` (Placidus). The resulting `DrishtiChart.provenance.
+house_system` field therefore reads `"P"` on every certified Parashari drishti chart, even though the
+houses it carries are whole-sign, not Placidus-derived. This is read-only verification of an existing
+finding, not a code change - no file under `engine/` was modified.
+
+### N.2 Candidate capabilities, scored against the owner's own six required axes
+
+| Candidate | Dependencies | Methodology readiness | Certification difficulty | Architectural leverage | Risk |
+|---|---|---|---|---|---|
+| **Remaining production vargas** (one of D4/D16/D20/D24/D27/D40/D45/D60) | Sidereal longitudes only (certified); needs its own risk-order sub-decision (which division first - undefined anywhere in this repository) | **Ready** - classical divisional formulas are fixed and largely uncontested per division | **Low** - `docs/NEW_VARGA_IMPLEMENTATION_TEMPLATE.md`'s six-gate template proven five times (D2/D3/D7/D9/D10/D12/D30); PyJHora oracle path already exercised repeatedly | **Low** - standalone; does not unlock any other candidate | **Low** - lowest methodology-ambiguity and manufactured-confidence risk of any candidate investigated |
+| **Vimshottari depth extension** (depth 4+) | Already-certified proportional-subdivision recursion (`_subdivide()`); currently capped by an explicit `ValueError` guard, not a missing algorithm | **Ready** - mechanical continuation of an already-certified rule, zero new methodology | **Low** - extends the existing `VIMSHOTTARI_V1` template directly | **None** - finer granularity only, unlocks nothing new | **Very low**, but reopens an area this session just spent six ADRs formally closing (`ADR-0053`, `ADR-0069`-`ADR-0073`) - a scope-creep-optics consideration, not a technical one |
+| **Aspect coverage extension** (fractional/sputa drishti; Rahu/Ketu's own aspects) | Extends already-certified `PARASHARI_DRISHTI_V1`; Decisions AS-A/AS-B already on record as deferred-not-decided | **Partial** - classical fractional-aspect tables exist (BPHS-adjacent sources) but multiple variant traditions exist, and whether Rahu/Ketu cast aspects at all is itself school-dependent (AS-B) | **Moderate** - needs a fresh oracle comparison for degree-of-influence values, not just binary aspect presence | **Moderate** - some classical yoga qualification rules reference aspect *strength*, not just presence, giving this candidate real (if indirect) leverage toward future yoga detection | **Moderate** - genuine methodology-selection work required, not zero-ambiguity like vargas |
+| **Karakas - Jaimini Chara karakas specifically** | Exact planetary longitudes only (certified) - the narrowest technical footprint of any candidate | **Not ready** - no Jaimini specification exists anywhere in this repository; this project's own school-isolation discipline requires Jaimini's own ADR and module before any Jaimini-school code, per the same pattern already applied to Parashari vs. KP | **Unknown/high** - would be this project's first Jaimini-school certification, with no existing template to extend | **Low for JATAKA itself** - opens an entirely new *system* (Jaimini), a bigger strategic commitment than its own small technical footprint suggests | **Moderate-high** - not on the math, but on the scope commitment: building any Jaimini code starts a fourth analytical system this project has not yet begun |
+| **Karakas - static natural-significator metadata** | Already implemented (`engine/models/planet_metadata.py`), populated from `engine/knowledge/data/planets.json` | N/A - not a methodology, descriptive reference data | **Low** - would only need certification of already-existing, tested-but-uncertified data | **None** - not wired into any chart-analysis consumer; certifying it does not unlock anything | **Low**, but also **low value** - closing a certification gap on data nothing currently consumes |
+| **Bhava/house-cusp gap-closure** (polar Placidus + M-04 provenance fix) | Extends the already-certified Tier-0 kernel (`current_engine_certification.json`); `RISE_SET_V1`'s own `NO_RISE`/`NO_SET` structured-status pattern is a direct, unused precedent | **Bounded, not fully ready** - needs an explicit decision on what a certified system *returns* outside the verified domain (refuse, structurally undefined-status, or a named fallback), and a citable mathematical definition of Placidus's own polar failure mode, neither of which exists yet; M-04's fix (correcting `DrishtiChart.provenance.house_system` to reflect its own whole-sign houses, confirmed still live this session, section N.1) is small and well-understood | **Moderate** - needs a new oracle strategy (`swetest`'s own polar behaviour has never been tested here; PyJHora has never been used as a house-cusp oracle at all, confirmed by exhaustive search) | **Real, but narrow** - the one concrete, evidenced prerequisite for KP significators (`D-008` names "cusp handling" explicitly); does **not** meaningfully unlock Parashari yogas, which do not depend on cusp geometry | **Low-moderate** - narrow, well-precedented scope, but **is arguably Tier-0/FOUNDATION-tier maintenance, not itself a new JATAKA capability** - completing an existing certification, not building a new "production analytical input" per `Q8_CLOSURE_MATRIX.md` s5's own exit-criteria language |
+| **Parashari yoga/rule evaluation** | Built entirely on already-certified infrastructure (D1 whole-sign houses, graha drishti, varga charts) - genuinely zero missing calculation dependency | **Not ready** - no methodology specification exists; classical sources name dozens to hundreds of yogas with materially different qualifying conditions between texts; no source has been chosen | **High** - unclear whether a comparable external oracle even exists for yoga detection specifically (not independently investigated this session); would need its own from-scratch certification design | **High** - this is arguably the single highest-value, most recognizably "Jataka" capability in the whole candidate set | **High** - the highest manufactured-confidence and methodology-ambiguity risk of any candidate: picking one classical tradition's yoga rules and certifying it invites exactly the "authoritative-sounding but silently arbitrary" failure mode this project's own governance culture is built to prevent |
+| **KP significators** (four-step, ruling planets, cuspal sub-lord technique) | KP's own cuspal SL/NL/SB/SS lordship chain is already certified (`KP_CHAIN_V1`); the polar-Placidus gap (above) is a genuine, if narrow, remaining prerequisite | **Not ready** - explicitly gated on `D-008`, which requires an eleven-element frozen methodology spec (exact methodology, source authority, houses considered, star/sub/sub-sub logic, four-step interpretation, ruling planets, cusp handling, retrograde treatment, node treatment, boundary behaviour, school/profile requirements, independent validation protocol, protected holdout, negative controls, acceptance criteria, explicit non-claims) that does not yet exist in any form | **High** - "four-step" interpretation itself has documented variant traditions even once a source is chosen | **High** - explicitly named in `specs/PROJECT_CHARTER.md`'s own in-scope analytical-systems list ("KP with Four-Step refinement"); the strongest single validated claim from the original "Claude Web" input (section C.5) | **High**, primarily on methodology - `D-008`'s own checklist exists precisely because this is recognized as needing careful, deliberate specification before any code |
+| **Planet strength (Shadbala)** | Currently a deliberate `NotImplementedError` refusal stub, not a placeholder - built on already-certified sign/house/aspect data | **Not ready** - six classically-varying sub-components, each with its own sub-methodology and textual-tradition variance | **High** - the most complex certification design of any candidate investigated | **Moderate** - feeds into future strength-weighted analysis, but nothing currently consumes it | **Highest of any candidate** - explicitly named in this project's own governance culture as the example of what NOT to do without real methodology ("a placeholder 0.0 was previously returned here; that was removed so unimplemented strength can never masquerade as a computed value") |
+
+### N.3 Recommended first capability (NOT a decision; medium-high confidence)
+
+**Remaining production vargas - one specific division, to be selected by a short, immediately-answerable
+risk-order sub-decision - is the recommended first JATAKA capability**, on the strength of being the only
+candidate that is simultaneously methodology-ready, low-certification-difficulty, low-risk, and backed by
+a five-times-proven template, with a real (if modest) product-value increase (more divisional-chart
+analytical depth) and zero manufactured-confidence exposure. This recommendation is not itself a
+decision - `docs/decisions/README.md`'s own "a paper that resolves its own question has failed" rule
+applies here as much as to any other candidate.
+
+**A separate, parallel recommendation, not competing with the above:** close the polar-Placidus
+certification gap and the now-confirmed-live M-04 provenance mislabeling (section N.1), framed
+explicitly as Tier-0/FOUNDATION-tier certification-completion work rather than a new JATAKA capability in
+its own right, given `RISE_SET_V1`'s own directly-applicable, already-certified `NO_RISE`/`NO_SET`
+precedent and given it is the one concrete, evidenced prerequisite for KP significators specifically.
+This is worth doing regardless of which JATAKA capability is chosen next, and its own governing-scope
+question (whether it needs a JATAKA-labelled ADR at all, versus ordinary Tier-0 maintenance) is
+independent of `ADR-0075`'s own ruling, since `ADR-0075` concerns *JATAKA's* implementation scope
+specifically.
+
+**High-value candidates found genuinely not yet implementable, flagged rather than recommended:**
+Parashari yogas and KP significators are both, on the evidence gathered across this paper, the highest
+*product*-value candidates in the set - but neither is methodology-ready, and recommending either as "the
+first capability to implement" would misstate what is actually achievable next: what is missing for both
+is a frozen, source-cited, owner-ratified methodology specification, not calculation infrastructure. If
+the owner wants to invest in the highest long-term architectural leverage rather than the safest
+near-term deliverable, the correct next action is authorizing a **dedicated, separate decision-readiness
+paper** for one of these - most naturally `D-008`'s own KP-significator methodology specification, since
+its eleven required elements are already enumerated and `ADR-0075` has now removed any doubt about its
+JATAKA-scope eligibility - not implementation of either capability directly.
+
+### N.4 Alternatives, ranked
+
+1. **Remaining production vargas** (recommended, N.3).
+2. **Aspect coverage extension** (sputa/fractional drishti, Rahu/Ketu aspects) - moderate value, moderate
+   methodology-selection work required, some genuine leverage toward future yoga detection.
+3. **Vimshottari depth extension** - lowest possible risk, but lowest value, and reopens an area just
+   formally closed this session.
+4. **Karakas (Jaimini Chara karakas)** - cheapest technical footprint of any candidate, but opening
+   Jaimini as a new system is a strategic commitment larger than its own math suggests; better treated as
+   its own explicit "should we open a fourth analytical system now" question than folded into ordinary
+   first-capability selection.
+5. **Karakas (static natural-significator metadata)** - low effort, low value; certifying data nothing
+   consumes is not a strong use of a "first capability" slot.
+6. **Planet strength (Shadbala)** - not recommended at any priority; highest risk, no ready methodology,
+   explicitly named in this project's own governance culture as the example of premature implementation
+   to avoid.
+7. **Parashari yogas** and **KP significators** - not ready for direct selection; each would first need
+   its own dedicated methodology-specification decision-readiness paper (see N.3).
+
+### N.5 Exact CEO decision required
+
+1. **Select the first JATAKA capability** from the candidates in N.2/N.4, or direct a different one not
+   fully captured here.
+2. If remaining vargas is selected (as recommended): authorize a short follow-up decision-readiness note
+   establishing which division goes first, since no risk order is defined anywhere in this repository.
+3. Separately, whether to authorize the polar-Placidus + M-04 certification-completion work (N.3) now,
+   regardless of which JATAKA capability is chosen, and whether it should carry its own JATAKA-labelled
+   ADR or proceed as ordinary Tier-0/FOUNDATION-tier maintenance.
+4. Separately, whether to authorize a dedicated `D-008` KP-significator methodology-specification
+   decision-readiness paper (not implementation) as a parallel, higher-risk/higher-value track alongside
+   whichever near-term capability is chosen.
+5. Whether a comparable methodology-specification decision-readiness paper should also be authorized for
+   Parashari yogas, given both are found equally "high-value but not methodology-ready" in this analysis.
+
 ## Change history
 
 | Version | Date | Change |
 |---|---|---|
+| 1.1.0 | 2026-08-25 | Section N added, resuming capability selection per the owner's explicit "CEO DECISION — DP-022... DP-021 should now be resumed" instruction, following `ADR-0075`'s ratification of `DP-022`'s ILLUSTRATIVE interpretation (section H.1/M.1's own blocking governance ambiguity now resolved). Re-verified the M-04 finding directly against live code (`engine/models/drishti.py`, `engine/parashari/drishti.py`) and confirmed it is still live, not fixed. Scored all candidates from sections C/N.2 against the owner's six required axes (dependencies, methodology readiness, certification difficulty, architectural leverage, risk); recommends remaining production vargas as the first JATAKA capability at medium-high confidence, with polar-Placidus/M-04 closure recommended in parallel as Tier-0/FOUNDATION-tier maintenance rather than a JATAKA capability itself; flags Parashari yogas and KP significators as the highest-value candidates found genuinely not methodology-ready, recommending a dedicated `D-008` decision-readiness paper as the correct next step for that track rather than direct implementation. Presents five exact owner decisions required. Sections A-M unedited. Options and a recommendation only; decides nothing; no capability implemented; no ADR drafted. |
 | 1.0.0 | 2026-08-24 | Created. First authorized JATAKA-phase decision-readiness paper. Full capability inventory (23 areas) independently verified against live code/tests/certification artifacts via three parallel research passes; dependency graph built with explicit rejection of the "shared math implies shared methodology" assumption; Claude Web's six independent claims tested individually against evidence (one confirmed strongly, several found overstated or mis-scoped); deep bhava/house-cusp investigation (15 sub-items) confirms both certified house rules already exist, with a narrow, well-precedented polar-Placidus certification gap as the genuine remaining item; identifies the governing-scope question (whether `Q8_CLOSURE_MATRIX.md` §5's implementation-scope row is exhaustive) as the single most consequential unresolved item; presents two sequencing tracks and four options; recommends resolving the scope question first and treating the polar-Placidus gap as worth closing regardless, at medium confidence. Options only; decides nothing; not implementation-authorized; no ADR drafted. |
