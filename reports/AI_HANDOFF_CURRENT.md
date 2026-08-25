@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.6.0 |
+| Version | 9.7.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-25 (**`ADR-0027` AMENDED AND RATIFIED** - per "CEO DECISION — DP-028" items 1-2: Evidence section corrected (eleven-item miscount fixed to sixteen; `DP-028` external verification cited) via a new sub-entry, then ratified via a further sub-entry - `ADR-0027`'s own Decisions 1-5 left word-for-word unedited. `ADR-0027` is now `Status: ACCEPTED`. 857/857 tests, governance clean, 77 ADR entries (no new number consumed). Now proceeding, same task, into `KP_SIGNIFICATOR_V1` specification drafting per items 3-10. Local commit only, not pushed.) |
+| Last updated | 2026-08-25 (**`KP_SIGNIFICATOR_V1` specification DRAFTED, NOT FROZEN** - `docs/KP_SIGNIFICATOR_SPEC.md` v0.1.0 created. Deep external research (K.S. Krishnamurti's own Reader I inspected, Reader III sought but not located; `K.P. Dynamics` retrieved as strongest secondary source) surfaced four genuine, evidenced methodology disagreements (significator strength order; question-granular positive/negative house groups; retrograde treatment; node treatment) rather than resolving them silently. Reached the task's own genuine CEO decision point per explicit instruction. Does not implement. 857/857 tests, governance clean. Local commit only, not pushed.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,93 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-25 - KP_SIGNIFICATOR_V1 specification drafted, NOT FROZEN: genuine methodology disagreements surfaced, task's own CEO decision point reached
+- Branch / commit SHA: `phase-g-governance` (local), this task's own commit on top of `670eaeb30a60
+  98ab5bc225fee281173816a0802f` (the `ADR-0027` amendment/ratification commit). `main` unchanged.
+- Previous approved commit: `670eaeb` on `phase-g-governance` (local, unpushed).
+- Task (owner's exact instruction): items 3-10 of "CEO DECISION — DP-028" (quoted in full in the
+  preceding task-log entry and in `docs/DECISION_LOG.md`'s own `ADR-0027` amendment sub-entry): "3.
+  Proceed with KP_SIGNIFICATOR_V1 methodology-specification drafting only. 4. Freeze V1 around core K.S.
+  Krishnamurti significator methodology. 5. Explicitly exclude Four Step Theory, Ruling Planets,
+  horary-specific extensions and other variants from V1. 6. Do not implement KP significators. 7. Do not
+  begin Parashari yoga implementation. 8. During specification drafting, independently verify every
+  methodology claim against named authoritative sources and identify disagreements/variants rather than
+  silently choosing one. 9. Continue autonomously through research and drafting. 10. Stop only when the
+  KP specification reaches a genuine CEO decision point requiring ratification or a substantive
+  methodological choice."
+- Relevant ADR/specification: `ADR-0027` (the governing, now-ratified sixteen-item checklist this
+  document is structured against); `docs/KP_CHAIN_SPEC.md` (the certified substrate this specification
+  consumes as a read-only input); `DP-025` (cited, not reopened, for the polar-cusp dependency); `DP-028`
+  (cited for its own earlier, shallower external findings, extended substantially by this task's own
+  deeper, targeted research).
+- Files changed: `docs/KP_SIGNIFICATOR_SPEC.md` (new, v0.1.0, `Status: DRAFT - NOT FROZEN`);
+  `docs/ACE_EXECUTION_STATE.md` (v7.6.0 -> v7.7.0); this file.
+- Method: structured the specification against `ADR-0027`'s own ratified sixteen-item checklist as
+  section headers, marking sections 5-6 (four-step; ruling planets) N/A per explicit exclusion. For each
+  remaining item, checked what this project's own already-certified/ratified material already answers
+  (`KP_CHAIN_V1`'s SL/NL/SB/SS substrate, its boundary convention, its profile assertion, `DP-025`'s cusp
+  findings) versus what required new external verification. Performed nine further `WebSearch`/`WebFetch`
+  calls (beyond `DP-028`'s own four): directly retrieved and inspected K.S. Krishnamurti's own Reader I
+  PDF (`archive.org`) and confirmed it foundational-only, containing no significator-hierarchy or
+  per-matter house-table content; searched specifically and repeatedly for Reader III (the volume
+  secondary sources consistently attribute significator theory to) and did **not** locate or inspect it;
+  retrieved *K.P. Dynamics* by Sri Satyanarayana Naik in full via `WebFetch` as the most substantial,
+  directly-quotable secondary source found, explicitly disclosed throughout as non-primary. For every
+  claim, cross-checked at least two independent sources rather than accepting one, per item 8's explicit
+  instruction - this is what surfaced the disagreements below, which single-source research would have
+  missed.
+- Key findings (four genuine, evidenced disagreements, each disclosed rather than resolved):
+  (1) **Significator strength order** - three different orderings found: the most tertiary-source-
+  converged ordering (star-of-occupant > occupant > star-of-owner > owner, directly confirmed via
+  `WebFetch` of an AstroSage tutorial's own "Chapter 2: Fundamental Principles," which explicitly frames
+  it as "grade A to E" and as a deliberate departure from traditional astrology); a search-engine-
+  synthesized "1965 volume" exception rule not independently quote-verified; and a `K.P. Dynamics`
+  passage on "static cuspal dignity" that may describe a related-but-distinct concept under similar
+  terminology, not confirmed either way.
+  (2) **Positive/negative house groups are question-granular, not one list per house** - the clearest
+  finding of this task: `K.P. Dynamics`' own "Interlinking Houses, Sub & Event" table gives *different*
+  negative/denial house groups for different specific questions under the "marriage" umbrella (6, 8, 12
+  for "divorce"; 1, 6, 10 for "married life disturbed"), while tertiary blog sources collapse these into
+  one undifferentiated "marriage" answer, disagreeing with each other about which collapsed list is
+  right. The positive group (2, 7, 11) is the one point of strong, near-universal convergence.
+  (3) **Retrograde treatment tension** - tertiary sources describe retrograde as a secondary, modulating
+  factor only ("never treated as an isolated yes-or-no rule"), while `K.P. Dynamics` directly attributes
+  a stronger claim to "Prof. KSK" himself: "a planet in retrogression will not give the result of its
+  signification" - a real, source-attributed disagreement, not merely a difference in emphasis.
+  (4) **Node treatment open question** - Rahu/Ketu's substitution-based signification rule (via
+  conjunction/aspect/sign-lord, when they have no owned sign) is reasonably converged externally, but
+  whether `KP_SIGNIFICATOR_V1` needs additional node-specific logic beyond simply consuming this
+  project's own already-certified `KP_CHAIN_V1` chain output (which already assigns nodes their own
+  SL/NL/SB/SS via the standard 9-lord cycle) is not resolved by the evidence gathered.
+- Determination: applying this project's own methodology-first rule (previously used in `DP-023` to
+  exclude D20/D60/D16/D27/D4 from `D45`'s own candidate selection specifically for undecided source/
+  architecture questions) with genuine force rather than as a formality: **the specification cannot be
+  responsibly frozen from evidence available this task.** Rather than silently picking one ordering or
+  one house-table to produce an artificially "complete" spec, `docs/KP_SIGNIFICATOR_SPEC.md` section 18
+  names four gated decisions the owner must make, with a medium-confidence recommendation offered (not
+  decided) for the narrowest possible V1 scope: a single 7th-cusp marriage-promise judgment using only
+  the well-converged 2/7/11 positive group, with no denial-group claim at all, deliberately avoiding
+  every disputed point above.
+- Tests: `python -m pytest -q` -> **857 passed**, unchanged (no engine code touched this task).
+- Governance status: `check_adr_numbering.py` PASS (77 ADR entries, unchanged); `check_identifier_
+  families.py` PASS (28 registered DP identifiers, unchanged - this document is a specification, not a
+  `DP-NNN` decision paper, and needed no registration); `check_retired_identifiers.py` PASS (0
+  violations).
+- Explicit non-claims / exclusions honored: does not implement KP significators; does not freeze or
+  ratify anything; Four Step Theory and Ruling Planets marked N/A per explicit exclusion; does not begin
+  Parashari yoga implementation; does not reopen `DP-024`/`DP-025`; does not touch FOUNDATION, closed
+  Dasha items, H-03, or H10/H11; not pushed or merged, per explicit instruction.
+- Next genuine CEO decision required (`docs/KP_SIGNIFICATOR_SPEC.md` section 18): (1) source-authority
+  strategy (adopt `K.P. Dynamics` as V1's disclosed secondary source of record; authorize further, deeper
+  search specifically for Reader II/III; pursue owner-side acquisition of a primary Reader; or narrow V1
+  to only the best-converged material and defer the rest); (2) V1 matter scope (this document's own
+  medium-confidence recommendation: the single narrow 7th-cusp marriage-promise judgment described
+  above); (3) which of the three significator-strength orderings governs V1; (4) whether/how to handle
+  retrograde and node treatment, or omit both from V1 entirely (the more conservative option). The owner
+  may also choose to redirect toward Parashari yoga instead, given `DP-028`'s own earlier finding that it
+  has a materially better oracle-availability position (233 pre-built PyJHora functions versus none for
+  KP significators) - not decided by this document either.
 
 ### 2026-08-25 - ADR-0027 amended and ratified; KP_SIGNIFICATOR_V1 methodology-specification drafting authorized and begun
 - Branch / commit SHA: `phase-g-governance` (local), this task's own commit on top of `6a7e3300bb5fac2
