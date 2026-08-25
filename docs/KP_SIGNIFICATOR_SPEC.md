@@ -3,10 +3,10 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | DRAFT - NOT FROZEN. Research-and-drafting stage only, per "CEO DECISION — DP-028" items 3, 8-10. Structured per `ADR-0027` Decision 4's sixteen-item checklist. Several items cannot be frozen from evidence available to this session (see section 17) - this document identifies exactly which, and why, rather than silently choosing among disputed sources. |
-| Version | 0.1.0 |
+| Status | DRAFT - NOT FROZEN, but substantially resolved via direct primary-source retrieval (section 19), per "CEO AUTHORIZATION — CONTINUE KP METHODOLOGY EVIDENCE RESOLUTION." Structured per `ADR-0027` Decision 4's sixteen-item checklist. Section 17's v0.1.0 disagreements are superseded by section 19 for the specific matter/question section 19 resolves; genuinely residual items are named in section 18. |
+| Version | 0.2.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-25 |
+| Last updated | 2026-08-25 (section 19 added: direct primary-source retrieval and resolution) |
 | Review cadence | TBD |
 
 # KP_SIGNIFICATOR_V1 methodology specification (DRAFT)
@@ -26,6 +26,22 @@ This document is **not** itself a decision paper (`DP-NNN`) - it is the specific
 `ADR-0027`'s own ratified, governing content, per its amendment/ratification this same task). It **does
 not implement anything**. Sections 5 and 6 (four-step; ruling planets) are marked N/A per the owner's
 explicit exclusion (item 5) rather than answered.
+
+**v0.2.0 continuation.** Authorized by "CEO AUTHORIZATION — CONTINUE KP METHODOLOGY EVIDENCE
+RESOLUTION": continue from `fb4b2c6` (v0.1.0); do not implement; do not arbitrarily select among the
+v0.1.0 disagreements; continue targeted primary-source research, especially Reader II and Reader III;
+construct a source/claim matrix; determine whether the disagreements can be resolved from authoritative
+evidence; if resolvable, update the specification with explicit provenance and variant boundaries and
+stop at the genuine ratification point; if not, document the irreducible variants and recommend the
+narrowest defensible V1 or deferral; do not switch to Parashari yoga merely because KP research is
+difficult - only recommend switching if the evidence establishes KP cannot responsibly be frozen while
+Parashari yoga is sufficiently ready; no production code, no certification execution, no push/merge.
+Section 19 records what this continuation found: **direct, primary K.S. Krishnamurti Reader text was
+located, retrieved, and read this task** (not merely secondary/tertiary restatement), resolving most of
+v0.1.0's open disagreements with genuine textual evidence. This determination is stated plainly: **the
+evidence establishes KP significators CAN responsibly be frozen for a narrow V1** - the instruction's own
+condition for recommending a switch to Parashari yoga is therefore **not met**, and no such switch is
+recommended.
 
 **Provenance discipline.** Every claim below is tagged **[EXTERNAL]** (secondary/tertiary web sources,
 via `WebSearch`/`WebFetch` this task, none of them K.S. Krishnamurti's own primary Reader text - see
@@ -145,8 +161,13 @@ no disagreement found on this point.
   source's author flags two possible readings of even this one sentence (no manifestation at all, versus
   opposite/inverted manifestation) as unresolved.
 
-**Determination: not resolved.** V1 cannot freeze a specific retrograde rule from this evidence alone.
-Recorded as an explicit non-claim (section 16) and an open item (section 17.6).
+**Determination (v0.1.0): not resolved.** V1 cannot freeze a specific retrograde rule from this evidence
+alone. Recorded as an explicit non-claim (section 16) and an open item (section 17.6).
+
+**Superseded by section 19.2 (v0.2.0).** Direct retrieval of K.S. Krishnamurti's own Reader III text
+resolved this with a primary-source rule more precise than either v0.1.0 position: retrograde does not
+flatly deny, nor merely "modulate" - it makes a promised result **conditional and reversible until the
+planet stations direct**. See section 19.2 for the verbatim quotes and the resulting V1 rule.
 
 ## 9. Node treatment (checklist item 9)
 
@@ -165,6 +186,11 @@ ordinary sense. Whether `KP_SIGNIFICATOR_V1` needs an *additional*, node-specifi
 top of consuming `KP_CHAIN_V1`'s own chain output as-is (section 4), or whether the certified chain
 output already suffices without special-casing nodes, is genuinely unresolved from the evidence gathered
 and is recorded as an open item (section 17.7).
+
+**Superseded by section 19.3 (v0.2.0).** Direct retrieval of K.S. Krishnamurti's own Reader III text
+resolved this: **yes, node-specific substitution logic is needed**, with an explicit, repeatedly-stated
+primary-source priority order (conjoined planet, then aspecting planet, then sign lord), on top of - not
+instead of - `KP_CHAIN_V1`'s own existing star/sub assignment. See section 19.3 for the verbatim quotes.
 
 ## 10. Boundary behaviour (checklist item 10)
 
@@ -243,12 +269,13 @@ A future `KP_SIGNIFICATOR_V1`, when frozen, must state at minimum:
    III text, which was sought but not located/inspected this task (section 2) - this is disclosed on the
    chart/result itself, not only in this document.
 
-## 17. Unresolved variants, disagreements, and the exact decision points
+## 17. Unresolved variants, disagreements, and the exact decision points (v0.1.0 - see section 19 for resolution)
 
 This section is the direct output of item 8's instruction ("independently verify every methodology claim
 against named authoritative sources and identify disagreements/variants rather than silently choosing
-one"). Nothing here is resolved by this document - each item names what was found and what resolving it
-would require.
+one"). It is preserved unedited as the v0.1.0 record of what secondary/tertiary sources alone could
+establish. **Section 19 (v0.2.0) supersedes 17.1, 17.2, and most of 17.3-17.4 with direct primary-source
+findings** - each subsection below now carries a pointer to where it was resolved.
 
 ### 17.1 Significator strength order - three different orderings found
 
@@ -273,6 +300,9 @@ would require.
 
 **Requires:** primary-source confirmation (Reader III) or an owner-designated single secondary authority
 to adopt as V1's frozen rule, with the other orderings recorded as known variants, not implemented.
+
+**RESOLVED - see section 19.1.** Reader III text, retrieved directly, confirms Ordering A explicitly and
+repeatedly, in its own words, across at least six independent passages in different topical contexts.
 
 ### 17.2 Positive/negative house groups per matter - genuinely question-granular, not a single list
 
@@ -303,6 +333,15 @@ one table.
 **Requires:** an owner decision on which specific question(s) V1 actually certifies (see 17.4) and which
 source's table governs it, before any table can be frozen.
 
+**RESOLVED for one specific question - see section 19.4.** Reader III's own horary chapter gives an
+explicit, primary-source cuspal-sub-lord house list for "will marriage happen with this specific party":
+positive 2, 7, 11 (with Krishnamurti's own stated classical rationale); negative 1, 6, 10, 12 (with a
+rich, explicit per-additional-house elaboration of *why*, not merely *whether*). The question-granularity
+finding itself is also directly confirmed: Reader III has genuinely distinct rule structures for "is
+marriage promised" versus "marriage promised but late" versus this horary question - three different
+chapters, three different rule shapes, not one collapsed list. The children/5th-house parallel remains
+unresolved - see section 19.5.
+
 ### 17.3 Source authority - primary text not located
 
 Reader III (the volume secondary sources consistently attribute significator theory to) was not located
@@ -318,6 +357,11 @@ or otherwise legitimately obtained copy) if available; (d) narrow V1 enough that
 material (section 4's chain hierarchy, the single well-converged 2/7/11 positive group) is used, deferring
 everything genuinely disputed to a later, separately-scoped addition.
 
+**LARGELY RESOLVED - see section 19.0.** Reader II, Reader III, and Reader IV (K.S. Krishnamurti's own
+volumes, option (a) above) were located and directly retrieved this task via a persistent, targeted
+search that the v0.1.0 attempt did not exhaust. Residual caveat: retrieval was of scanned/OCR'd reprints,
+not a critical edition - section 19.0 discloses this precisely rather than claiming perfect fidelity.
+
 ### 17.4 Recommended V1 matter scope (not decided here)
 
 Given 17.1-17.3, the narrowest, best-evidenced possible V1 - offered as a recommendation, not a decision
@@ -329,6 +373,11 @@ asserting a specific denial list). This is narrower than a full "marriage signif
 avoids freezing anything in dispute. **Medium confidence** - the owner may prefer a different matter, or
 may prefer resolving 17.1-17.3 first via a broader source-acquisition effort before committing to any
 specific matter.
+
+**SUPERSEDED - see section 19.6.** With 17.1-17.3 now resolved for the horary marriage-promise question,
+the recommended V1 scope is upgraded from a bare promise/no-promise binary (no denial-group claim) to the
+full, primary-source-confirmed promise/deny judgment (2/7/11 positive, 1/6/10/12 negative), at
+correspondingly higher confidence.
 
 ### 17.5 Ruling Planets composition (out of scope for V1, but worth recording as found)
 
@@ -350,38 +399,200 @@ Recorded fully in section 9; not repeated here. Requires either a determination 
 existing certified chain output suffices as-is, or a specification of exactly what additional
 substitution logic V1 would need and why.
 
+## 19. Primary-source resolution (2026-08-25, this continuation task)
+
+Per "CEO AUTHORIZATION — CONTINUE KP METHODOLOGY EVIDENCE RESOLUTION": continued, persistent, targeted
+search located and directly retrieved K.S. Krishnamurti's own Reader II, Reader III, and Reader IV -
+genuine primary text, not secondary restatement. This section is the source/claim matrix and resolution
+the instruction required, with every claim tagged **[PRIMARY]** (K.S. Krishnamurti's own Reader text,
+this task) or carried forward from v0.1.0 as **[EXTERNAL]**/**[REPOSITORY]**.
+
+### 19.0 Retrieval provenance and its own limits
+
+Located via `archive.org` item `kp-readers` (a six-Reader collection, `Prof. K.S. Krishnamurti` credited
+directly) and the standalone item `kpreader-4-marriage-married-life-children`. Reader III
+("Predictive Stellar Astrology") and, separately, a partial excerpt of Reader IV ("Marriage, Married Life
+& Children") were extracted to plain text locally (`pdftotext`, since no OCR/rendering tool was available
+to re-derive text from an image-only PDF) and searched directly for the disputed claims.
+
+**Disclosed limits, precisely, not glossed over:**
+- These are **scanned/OCR'd reprints**, not a critical edition - visible OCR artifacts exist (e.g.
+  running-header mis-scans like "KRISHNAMURTI PADHDHATI" rendered variously, and at least one digit-level
+  corruption, "0112" for "or 12," corrected here by context and cross-reference within the same
+  paragraph, not assumed).
+- The `kp-readers` collection's own copy of Reader IV (a different scan than the standalone item) had a
+  corrupted custom font encoding that made its text non-recoverable by any tool available this task; the
+  standalone item's own `_text.pdf` variant extracted cleanly but is itself only a partial excerpt
+  (roughly pages 186-200 of the book, two worked examples, not the full text) - the specific
+  positive/negative house list for marriage was **not** found in that Reader IV excerpt; it was found
+  instead in Reader III's own horary chapter (section 19.4), which independently addresses the same
+  question.
+- No independent second reader verified these OCR transcriptions - this document's own reading of them is
+  itself a single-pass transcription, the same caution this project applies to every other single-source
+  claim.
+
+These are primary-source retrievals of real evidentiary weight, well above v0.1.0's secondary/tertiary
+material - but they are not a publisher-verified critical edition, and that distinction is preserved
+rather than erased.
+
+### 19.1 Significator strength order - RESOLVED (Ordering A confirmed)
+
+Reader III states this explicitly and repeatedly, in different topical contexts, with no contrary passage
+found anywhere in the retrieved text:
+
+- "Planets in the constellation of the occupants of these houses are very strong to give the matters of
+  these houses" (general house-matter chapter).
+- "Occupants or owners do not offer the results of the houses but they offer the results of the lord of
+  the Constellation in which they are deposited" - i.e. the star lord is the operative mechanism, not bare
+  occupancy/ownership.
+- "Planets occupying or owning the house are weaker in strength than the planets in the constellation of
+  the occupants and owner" (health/disease chapter) - a direct, unambiguous ranking statement.
+- "The planets, in the constellation of the occupants of the Bhadhakasthana, are the stronger evils: next,
+  the occupants of Bhadhakasthana; next those in the constellation of the lords of the Bhadhakasthana, and
+  lastly the lords of these evil houses" (longevity chapter) - a complete, explicit four-level ranking,
+  strongest to weakest.
+- "Planets posited in the constellation of the occupants in the houses 2, 6, 10 or 11 are the strongest to
+  give wealth" (finance chapter).
+
+Reader IV's own excerpt independently states the same rule in near-identical language: "Occupant of the
+constellation of [the house's occupant] is stronger than the occupant. Occupant of a house is stronger
+than the lord of the house."
+
+**Ordering A is confirmed at high confidence: star of occupant > occupant > star of owner > owner.**
+Orderings B and C (section 17.1) were not found anywhere in the retrieved primary text and are treated as
+not part of Krishnamurti's own stated rule - Ordering B in particular (the "occupant in an enemy's sign"
+exception) remains unverified and is not adopted.
+
+### 19.2 Retrograde treatment - RESOLVED (more precise than either v0.1.0 position)
+
+Reader III states, in a worked example: **"A planet, in direct motion, gives a result and confirms it. A
+planet, in retrogression, will produce a result which will fall through when it takes direct motion."**
+A second worked example corroborates directly: an 11th-lord Jupiter, retrograde, denies recovery of lost
+property specifically **"during the period of Jupiter's retrograde motion"**, becoming available only
+after the date it is calculated to station direct.
+
+**This is neither v0.1.0's "modulating factor only" nor its "flatly denies" reading - it is a third,
+more precise primary rule: a retrograde significator's promised result is conditional, and typically
+fails or reverses if/while the planet remains retrograde, with the promise reinstated once it stations
+direct.** One further passage (the Ketu/theft example) shows this can also manifest as a *durable* denial
+when the retrograde significator represents an undesired claim (the thief's own claim to stolen property)
+rather than a desired outcome - i.e. the rule is about the *reliability* of what the retrograde planet
+signifies, applied consistently in both directions, not a simple universal "good" or "bad" tag.
+
+**V1 rule:** a retrograde-planet significator's promise is disclosed as *conditional on direct motion*
+rather than treated as equivalent to a direct-motion promise - implementable as a disclosed qualifier on
+the judgment output, not a silent pass/fail.
+
+### 19.3 Node (Rahu/Ketu) treatment - RESOLVED
+
+Reader III states this rule for nodes four separate times, in near-identical wording each time, e.g.:
+**"As Rahu does not own any sign, find out with which planet it is conjoined or aspected by and the sign
+and the constellation where it was at birth... Rahu or Kethu will give the results of the planets with
+which it is conjoined, then those of the planet which aspects them. Lastly, those of the lord of the sign
+[it occupies]."**
+
+**Confirmed priority order, explicit and repeated: conjoined planet > aspecting planet > sign lord
+(fallback only when neither applies).** This is layered on top of, not a replacement for, `KP_CHAIN_V1`'s
+own existing SL/NL/SB/SS assignment for nodes (section 4/9) - the substitution rule governs *what houses
+a node signifies* (since it owns no sign of its own), while the node's own star/sub position (which stars
+it rules, what its own SL/NL/SB/SS is) is unaffected and needs no special-casing.
+
+### 19.4 Positive/negative house groups for "will marriage happen with this party" - RESOLVED
+
+Reader III's own horary chapter (Q12, "how to find out why a marriage which was about to be settled was
+prevented from fructifying") states the rule directly:
+
+> "The sub-lord of the 7th cusp should be the significator of the houses 1, 6, 10 or 12. It shows that
+> the marriage will not take place with the party in question."
+
+The positive group is separately, explicitly stated (general marriage-timing chapter, with its own
+classical rationale, not merely asserted): **"By marriage, it is meant that one more member is added to
+the family which is indicated by the second house. This addition is an agreement which is denoted by the
+seventh... and such an additional member brings permanent tie of friendship for pleasure and progeny,
+shown by the 11th house. That is why houses 2, 7 and 11 are examined."**
+
+**Confirmed: positive = 2, 7, 11; negative = 1, 6, 10, 12**, for this specific question. The same chapter
+goes further than a bare binary: if the sub-lord signifying 1/6/10/12 *also* signifies a further specific
+house, that names the specific *reason* for the denial (2 -> lack of money; 3 -> neighbour/cousin
+interference; 4 -> maternal interference or property disagreement; 5 -> prior love affair exposed; 1&6
+together -> ill-health/servants/secret enemy; 7 -> a pending lawsuit; 8 -> insufficient dowry or a
+relative's death; 9 -> travel/examination prevents attendance; 1&10 together -> elder/officer
+interference; 11 -> friend/elder-brother interference; 12&1 together -> secret enemies/false propaganda) -
+elaboration of *why*, not a change to *whether*.
+
+**Question-granularity independently reconfirmed from primary text, not only secondary sources**: this
+exact chapter is structurally distinct from the separate "marriage promised but late" chapter (a
+different, non-house-list, planet-condition-based rule - Saturn/Mars/Moon placements) and from the general
+"is marriage celebrated in youth" chapter (a rich ~20-item classical combination catalogue, not a clean
+positive/negative binary at all). Three genuinely different rule shapes for three genuinely different
+questions, confirmed directly in Krishnamurti's own text - v0.1.0's hypothesis (17.2) that tertiary
+sources were collapsing a more granular primary structure is now itself primary-source-confirmed.
+
+**One honest residual caveat:** the 1/6/10/12 passage is presented via a horary illustration (a querist's
+horary number). No separately-stated natal-chart version of the identical house list was found in the
+retrieved text. KP's own house-signification mechanism is presented as chart-type-agnostic everywhere else
+in Reader III (only chart *erection* differs between horary and natal, not what a house or its sub-lord
+signifies once cusps are known), and no competing natal-specific list was found, so applying this rule to
+natal charts is a reasonable, disclosed inference, not an unqualified primary-source natal citation. This
+is recorded as V1's own explicit non-claim addition (section 19.7).
+
+### 19.5 Children/5th-house parallel - NOT resolved, not pursued further
+
+The 5th-house/children positive-negative equivalent was searched for in the retrieved Reader III/IV text
+and not found with comparable clarity. Not required for the recommended narrow V1 (section 19.6), and not
+pursued further this task to stay within scope - recorded as a named gap, not silently omitted.
+
+### 19.6 Updated V1 recommendation
+
+Given 19.1-19.4, the recommended V1 (upgraded from section 17.4's hedged binary) is: the general
+significator-chain mechanism (section 1 stage 1, section 4) plus **one** fully-specified cuspal-sub-lord
+judgment - "does the 7th cusp's sub-lord signify the marriage-promise houses (2, 7, 11) or the
+marriage-denial houses (1, 6, 10, 12)" - using Ordering A (19.1) for significator determination, the
+conditional-retrograde disclosure rule (19.2), and the node substitution rule (19.3) where applicable.
+**Confidence: medium-high** (raised from v0.1.0's medium) - the remaining uncertainty is the horary-versus-
+natal inference (19.4's own caveat) and the single-transcription-pass OCR risk (19.0), not open
+methodological disagreement.
+
+### 19.7 Updated explicit non-claims (additive to section 16)
+
+9. The marriage-promise/denial house rule (2/7/11 vs 1/6/10/12) is drawn from a horary illustration in
+   Krishnamurti's own Reader III; its application to natal charts is a disclosed, reasoned inference, not
+   an unqualified primary citation for the natal case specifically (section 19.4).
+10. Source text is a scanned/OCR'd reprint, single-transcription-pass, not a publisher-verified critical
+    edition (section 19.0) - disclosed on the chart/result itself, not only in this document.
+11. The children/5th-house parallel is not covered by V1 (section 19.5).
+
 ## 18. Status and the exact CEO decision(s) required to proceed
 
-This specification is **not frozen** and `KP_SIGNIFICATOR_V1` **cannot yet be certified or implemented**.
-Per item 10 of "CEO DECISION — DP-028," this is the genuine decision point this task's own research
-produced - not because an option exists, but because the methodology-first rule this project has applied
-throughout (most recently to exclude D20/D60/D16/D27/D4 from `D45`'s own selection in `DP-023`, precisely
-for having undecided source/architecture questions) applies here with real force: sections 17.1-17.3 are
-not implementation details, they are the exact methodology, and cannot be responsibly guessed.
+**Updated determination (v0.2.0): most of v0.1.0's disagreements are now resolved from direct primary-
+source evidence (section 19), not merely narrowed by recommendation.** Per the CEO's own explicit
+instruction, this determination is stated plainly: **the evidence establishes that KP significators CAN
+responsibly be frozen for a narrow V1** - the condition for recommending a switch to Parashari yoga is
+not met, and no such switch is recommended. `KP_SIGNIFICATOR_V1` is closer to ready for `ADR`-level
+ratification than v0.1.0 found, but is **still not frozen** - three items remain genuinely open, all
+narrower in scope than v0.1.0's four:
 
-**The decisions required, in the order they gate each other:**
+1. **Ratify the primary-source resolution itself** (section 19): accept Ordering A, the conditional-
+   retrograde rule, the node substitution rule, and the 2/7/11 vs 1/6/10/12 marriage judgment as V1's
+   frozen methodology, on the evidentiary basis section 19 discloses (genuine Reader text, single-pass
+   OCR, horary-to-natal inference) - or require independent re-verification of the OCR transcription
+   before treating it as frozen.
+2. **Confirm the V1 matter scope** (section 19.6): the single 7th-cusp marriage-promise/denial judgment,
+   at medium-high confidence, or a different/broader scope.
+3. **Confirm the horary-to-natal inference** (section 19.4's own caveat): accept it as reasonable, or
+   require it treated as a disclosed non-claim/caveat on every V1 result rather than a settled rule.
 
-1. **Source-authority strategy** (section 17.3): treat *K.P. Dynamics* as V1's frozen secondary source of
-   record (disclosed as non-primary), authorize further search for Reader II/III specifically, pursue
-   owner-side acquisition of a primary Reader, or narrow V1 to only the best-converged material and defer
-   the rest.
-2. **V1 matter scope** (section 17.4): which specific question(s) V1 actually certifies - this
-   specification recommends the single narrowest option (7th-cusp marriage-promise judgment only, 2/7/11
-   positive group only, no denial-group claim) at medium confidence, but does not decide it.
-3. **Significator strength order** (section 17.1): which of the three orderings found (or another) governs
-   V1, once 1 is resolved enough to check against.
-4. **Retrograde and node treatment** (sections 17.6/17.7): freeze a specific rule, or explicitly omit
-   retrograde/node-sensitive judgment from V1 entirely (the more conservative option, requiring no further
-   resolution).
+Sections 17.5 (Ruling Planets composition, out of scope, not required) and 19.5 (children/5th house, not
+pursued) remain open but do not gate V1.
 
-This document does not implement anything, does not ratify anything, and does not choose among these
-options. It is ready for the owner's review and, on any combination of decisions above, can be revised
-(as a new version, per this project's own append-and-revise discipline for specification documents) into
-a frozen V1 ready for `ADR`-level ratification and certification-design work, mirroring the
-`ADR-0076`/`ADR-0077` two-stage pattern already used for `D45`.
+This document does not implement anything, does not ratify anything, and does not choose among the three
+items above. It is ready for the owner's review and, on any combination of decisions above, can be
+revised (as a new version) into a frozen V1 ready for `ADR`-level ratification and certification-design
+work, mirroring the `ADR-0076`/`ADR-0077` two-stage pattern already used for `D45`.
 
 ## Change history
 
 | Version | Date | Change |
 |---|---|---|
+| 0.2.0 | 2026-08-25 | Per "CEO AUTHORIZATION — CONTINUE KP METHODOLOGY EVIDENCE RESOLUTION": continued, persistent, targeted search located and directly retrieved K.S. Krishnamurti's own Reader II, Reader III, and Reader IV (`archive.org`, `kp-readers` collection and the standalone `kpreader-4-marriage-married-life-children` item), extracted to plain text locally and searched directly - genuine primary source, not secondary restatement, with retrieval limits (scanned/OCR reprint, single transcription pass, partial Reader IV excerpt) disclosed precisely in new section 19.0. Constructed the source/claim matrix the instruction required (section 19) and resolved, with direct verbatim primary-source quotes: the significator strength order (19.1, Ordering A confirmed at high confidence across six independent passages); retrograde treatment (19.2, a third, more precise "conditional on direct motion" rule, neither v0.1.0 position); node treatment (19.3, explicit conjoined-planet > aspecting-planet > sign-lord priority, confirmed four times); and the marriage promise/denial house groups for one specific, well-scoped question (19.4, positive 2/7/11, negative 1/6/10/12, with Krishnamurti's own classical rationale for the positive group and a rich per-additional-house elaboration of denial reasons) - independently reconfirming, from primary text, v0.1.0's own question-granularity hypothesis. Determined explicitly, per the instruction's own branching condition, that the evidence establishes KP CAN responsibly be frozen for a narrow V1, so no switch to Parashari yoga is recommended. Updated the V1 recommendation to medium-high confidence (19.6) and narrowed section 18's decision point from four gated items to three, all narrower than v0.1.0's. Does not implement KP significators. Does not ratify anything. Sections 17 and its own v0.1.0 findings preserved unedited as the prior-state record, each with an explicit pointer to where section 19 superseded it. |
 | 0.1.0 | 2026-08-25 | Created. Drafted per "CEO DECISION — DP-028" items 3-10, structured against `ADR-0027` Decision 4's sixteen-item checklist. External research (K.S. Krishnamurti's own Reader I directly inspected and confirmed foundational-only; Reader III sought but not located; *K.P. Dynamics* by Sri Satyanarayana Naik retrieved as the most substantial secondary source) independently verified against multiple sources per claim, surfacing genuine, evidenced disagreements rather than silently resolving them: three different significator-strength orderings (17.1); question-granular, source-disputed positive/negative house groups even within "marriage" alone (17.2); a retrograde-treatment tension between "modulating factor" and a direct KSK-attributed "denies its own result" claim (8); an open question on whether nodes need special-casing beyond `KP_CHAIN_V1`'s own certified chain output (9). Four Step Theory and Ruling Planets marked N/A, per explicit exclusion. Does not implement KP significators. Concludes NOT FROZEN - identifies four gated owner decisions (source-authority strategy, V1 matter scope, significator strength order, retrograde/node treatment) required before certification-design work can begin, mirroring the `D45` precedent's own methodology-first rule. |

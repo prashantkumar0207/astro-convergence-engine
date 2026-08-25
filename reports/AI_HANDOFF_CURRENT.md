@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.7.0 |
+| Version | 9.8.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-25 (**`KP_SIGNIFICATOR_V1` specification DRAFTED, NOT FROZEN** - `docs/KP_SIGNIFICATOR_SPEC.md` v0.1.0 created. Deep external research (K.S. Krishnamurti's own Reader I inspected, Reader III sought but not located; `K.P. Dynamics` retrieved as strongest secondary source) surfaced four genuine, evidenced methodology disagreements (significator strength order; question-granular positive/negative house groups; retrograde treatment; node treatment) rather than resolving them silently. Reached the task's own genuine CEO decision point per explicit instruction. Does not implement. 857/857 tests, governance clean. Local commit only, not pushed.) |
+| Last updated | 2026-08-25 (**`KP_SIGNIFICATOR_V1` specification v0.2.0 - MOST DISAGREEMENTS RESOLVED via direct primary-source retrieval.** K.S. Krishnamurti's own Reader II/III/IV located and directly retrieved (`archive.org`), resolving significator strength order, retrograde treatment, node treatment, and the marriage promise/denial house groups with verbatim primary quotes, disclosed retrieval-limit caveats. Determined explicitly that KP CAN responsibly be frozen for a narrow V1 - no switch to Parashari yoga recommended. Decision point narrowed from four items to three. Still NOT FROZEN. Does not implement. 857/857 tests, governance clean. Local commit only, not pushed.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,89 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-25 - KP_SIGNIFICATOR_V1 specification v0.2.0: most methodology disagreements RESOLVED via direct primary-source retrieval (K.S. Krishnamurti's own Readers)
+- Branch / commit SHA: `phase-g-governance` (local), this task's own commit on top of `fb4b2c6` (the
+  v0.1.0 specification commit). `main` unchanged.
+- Previous approved commit: `fb4b2c6` on `phase-g-governance` (local, unpushed).
+- Task (owner's exact instruction): "CEO AUTHORIZATION — CONTINUE KP METHODOLOGY EVIDENCE RESOLUTION.
+  Continue from fb4b2c6. Do not implement KP significators. Do not arbitrarily select among the disputed
+  significator-strength orderings, house-positive/negative groups, retrograde treatment, or node
+  treatment. Continue targeted primary-source research, especially K.S. Krishnamurti Reader II and Reader
+  III, and construct a source/claim matrix. Determine whether the disagreements can be resolved from
+  authoritative evidence. If they can, update the KP specification with explicit provenance and variant
+  boundaries and stop at the genuine CEO ratification point. If they cannot, explicitly document the
+  irreducible variants and recommend the narrowest defensible V1 or deferral. Do not switch to Parashari
+  yoga merely because KP research is difficult. Only recommend switching if the evidence establishes that
+  KP cannot responsibly be frozen while Parashari yoga is sufficiently methodology-ready. No production
+  code. No certification execution. No push/merge. Continue until a genuine CEO decision is required."
+- Relevant ADR/specification: `ADR-0027` (the governing, ratified checklist); `docs/KP_SIGNIFICATOR_SPEC.md`
+  (updated, not replaced); `docs/KP_CHAIN_SPEC.md` (the certified substrate this specification consumes).
+- Files changed: `docs/KP_SIGNIFICATOR_SPEC.md` (v0.1.0 -> v0.2.0, new section 19 added, sections 8/9/17/18
+  updated with supersession pointers, section 17 itself preserved unedited as the prior-state record);
+  `docs/ACE_EXECUTION_STATE.md` (v7.7.0 -> v7.8.0); this file.
+- Method: the v0.1.0 attempt to find Reader III had stopped after one unsuccessful targeted fetch; this
+  task resumed the search more persistently and located a complete six-Reader `archive.org` collection
+  (`kp-readers`, crediting "Prof. K.S. Krishnamurti" directly) plus a standalone item specifically for
+  Reader IV (`kpreader-4-marriage-married-life-children`). Downloaded the actual PDFs (`WebFetch` saves a
+  local copy even when it cannot itself parse the binary), then extracted them to plain text locally via
+  `pdftotext` (no OCR/PDF-render tool was available on this host - `pdftoppm`/`tesseract` absent - so a
+  purely image-based PDF, and one copy of Reader IV with a corrupted custom font encoding, remained
+  unrecoverable; a second, cleanly-encoded partial excerpt of Reader IV was used instead where the
+  `kp-readers` bundle's own copy failed). Searched the extracted text directly (`Grep`) for every disputed
+  claim from v0.1.0, reading full surrounding context (`Read`) before treating any match as conclusive.
+- Key findings (four disagreements resolved with verbatim primary-source evidence, source/claim matrix
+  in `docs/KP_SIGNIFICATOR_SPEC.md` section 19):
+  (1) **Significator strength order** - Ordering A (star of occupant > occupant > star of owner > owner)
+  confirmed explicitly and repeatedly in Reader III, across at least six independent passages in
+  different topical contexts (general house matters, health/disease, longevity/Bhadhakasthana, finance),
+  including one complete four-level ranking stated outright; independently corroborated in Reader IV's
+  own excerpt using near-identical language. High confidence - the other two v0.1.0 orderings were not
+  found anywhere in the retrieved text.
+  (2) **Retrograde treatment** - neither v0.1.0 position ("modulating factor" nor "flatly denies") was
+  correct; Krishnamurti's own words, in two separate worked examples, give a third, more precise rule: a
+  retrograde significator's promised result is conditional and "will fall through when it takes direct
+  motion," reinstated once the planet stations direct - a temporal/conditional rule, not a binary one.
+  (3) **Node treatment** - an explicit, four-times-repeated priority order for what houses Rahu/Ketu
+  signify (conjoined planet, then aspecting planet, then the sign lord as fallback), resolving the open
+  question of whether nodes need special-casing beyond `KP_CHAIN_V1`'s own chain output: yes, for house
+  signification specifically, layered on top of (not replacing) the existing certified chain.
+  (4) **Marriage promise/denial house groups**, for the specific question "will marriage happen with this
+  party" - positive 2, 7, 11, with Krishnamurti's own stated classical rationale quoted directly (2nd for
+  the new family member, 7th for the agreement, 11th for the resulting ties and progeny); negative 1, 6,
+  10, 12, with a rich, primary-source elaboration of the *specific reason* for denial when the sub-lord
+  also signifies each further house (2 -> lack of money; 5 -> a prior love affair exposed; 9 -> travel/
+  examination prevents attendance; etc.) - independently reconfirming v0.1.0's own question-granularity
+  hypothesis directly from primary text: the same book has three structurally different rule shapes (a
+  classical ~20-condition combination catalogue; a separate malefic-placement "promised but late" rule;
+  and this cuspal-sub-lord horary rule) for three genuinely different marriage-adjacent questions.
+- Retrieval limits disclosed precisely, not glossed over (`docs/KP_SIGNIFICATOR_SPEC.md` section 19.0):
+  these are scanned/OCR'd reprints, a single transcription pass, not a publisher-verified critical
+  edition; the marriage house-list finding rests specifically on Reader III's own horary chapter (its
+  application to natal charts is a disclosed, reasoned inference, not an unqualified primary citation for
+  the natal case - recorded as a new explicit non-claim); the children/5th-house parallel was searched
+  for and not found with comparable clarity, and is not pursued further.
+- Explicitly evaluated the instruction's own branching condition for switching to Parashari yoga ("only
+  recommend switching if the evidence establishes that KP cannot responsibly be frozen") and determined
+  it is **not met** - the evidence instead establishes KP CAN responsibly be frozen for a narrow V1, so no
+  switch is recommended, honoring the instruction's explicit prohibition on switching merely because
+  research was difficult.
+- Tests: `python -m pytest -q` -> **857 passed**, unchanged (no engine code touched this task).
+- Governance status: `check_adr_numbering.py` PASS (77 ADR entries, unchanged); `check_identifier_
+  families.py` PASS (28 registered DP identifiers, unchanged - this document is a specification, not a
+  `DP-NNN` paper); `check_retired_identifiers.py` PASS (0 violations).
+- Explicit non-claims / exclusions honored: does not implement KP significators; does not execute any
+  certification; does not ratify anything; does not arbitrarily select among the v0.1.0 disagreements
+  (each was resolved from cited primary-source evidence, or, where not resolvable - the children/5th-house
+  parallel - left explicitly open rather than guessed); does not reopen `DP-024`/`DP-025`; does not touch
+  FOUNDATION, closed Dasha items, H-03, or H10/H11; not pushed or merged, per explicit instruction.
+- Next genuine CEO decision required (`docs/KP_SIGNIFICATOR_SPEC.md` section 18, narrowed from four items
+  to three): (1) accept the primary-source resolution itself (section 19) as V1's frozen methodology
+  basis, given its disclosed evidentiary limits (scanned/OCR reprint, single transcription pass), or
+  require independent re-verification of the transcription first; (2) confirm the narrow V1 matter scope
+  (the single 7th-cusp marriage promise/denial judgment, now at medium-high confidence) or direct a
+  different/broader scope; (3) confirm the horary-to-natal inference (section 19.4's own caveat) as an
+  acceptable disclosed non-claim, or require it resolved further before certification-design work begins.
 
 ### 2026-08-25 - KP_SIGNIFICATOR_V1 specification drafted, NOT FROZEN: genuine methodology disagreements surfaced, task's own CEO decision point reached
 - Branch / commit SHA: `phase-g-governance` (local), this task's own commit on top of `670eaeb30a60
