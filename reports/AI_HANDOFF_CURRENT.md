@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.2.0 |
+| Version | 9.3.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-25 (Pushed nine commits; CI run `32820903673` genuinely FAILED on real, understood drift (modules_scanned 180->183 left stale in 8 unrelated artifacts; a Windows-path-separator bug in 12 certifier scripts). Root-caused via direct log inspection, fixed at the source, two artifacts recovered via CI-sourced overlay (established precedent). 857/857 pytest, governance clean. Committing and re-pushing the fix within the same task.) |
+| Last updated | 2026-08-25 (`phase-g-governance` fully GREEN on `origin` - CI run `32822832747`, all four jobs, commit `c85284a`. First push's CI genuinely failed on real drift (modules_scanned ripple; Windows-path-separator bug), root-caused and fixed. Confirmed via direct log inspection: 857/857 pytest, clean drift check, D45's own oracle comparison 5400/0, and a new governance check confirming "6 certified vargas, each with a PASS artifact." Task complete.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,53 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-25 - phase-g-governance fully green on origin: CI-drift fix pushed and confirmed
+- Branch / commit SHA: `phase-g-governance`, `c85284a1db59d85cc12f46094a1c2f7c0e0bb129` - **pushed and
+  confirmed identical on `origin/phase-g-governance`** (fast-forward `2cb9f30..c85284a`).
+- Previous approved commit: `2cb9f30` (D45 production implementation), already pushed.
+- Task (owner's exact instruction, continuing from the same "AUTHORIZE PUSH" message as the immediately
+  preceding entry): watch CI to completion, inspect the actual logs, and stop at the next genuine CEO
+  decision point.
+- Relevant ADR/specification: none reopened. `main` untouched - no merge performed or requested.
+- Files changed: none beyond the immediately preceding entry's own fix commit; this entry documents its
+  push and CI confirmation, plus `docs/ACE_EXECUTION_STATE.md` (version 7.2.0 -> 7.3.0), this file.
+- Method: `git push origin phase-g-governance` (plain push); verified `git rev-parse HEAD` and
+  `git rev-parse origin/phase-g-governance` byte-identical; located the new run via `gh run list`; watched
+  it via `gh run watch <id> --exit-status`, which exited zero this time; independently confirmed via
+  `gh run view <id> --json conclusion,status,headSha` (`"success"`, headSha matching the pushed commit
+  exactly); pulled specific evidence lines directly from the full log (`gh run view <id> --log`) rather
+  than trusting the green checkmarks alone.
+- Key findings: all four jobs green. Oracle gate: `Oracle certification runners (all eleven)` shows every
+  certifier's own `RESULT: PASS`, including D45's own `C_oracle: {'comparisons': 5400, 'mismatches': 0}`
+  and `KP_CHAIN_V1`'s `lord mismatches: 0`; `Assert regenerated artifacts drifted only in the volatile
+  fields` shows `PASS: 49 evidence file(s) identical to the committed version outside the volatile fields
+  (19 machine-readable, 30 rendered)`. Both no-oracle-tier legs (Python 3.11, 3.12): `857 passed` in the
+  default gate and again under the network-guard re-run; `Assert regenerated artifacts did not drift, then
+  that no source changed` shows `no tracked source file was modified by any certification run`.
+  Governance gate: `PASS: 77 ADR entries`, `PASS: 27 registered DP identifiers`, and a governance step not
+  previously observed this session, `Certified varga registry matches its declared constant`, which
+  printed `PASS: 6 certified vargas, each with a PASS artifact citing a compliant decision entry` - an
+  independent, CI-side confirmation (not something this session wrote or ran locally) that D45 is
+  correctly recognized as the sixth certified production varga with a compliant artifact and decision
+  entry.
+- Implementation summary: none this entry - documentation and verification only.
+- Tests executed and results: confirmed via CI log (857 passed, both legs); not re-run locally this entry
+  since nothing changed since the immediately preceding local verification.
+- Certification executed and results: confirmed via CI log (all eleven oracle-tier certifiers PASS; drift
+  checks clean in both tiers).
+- Governance checks executed and results: confirmed via CI log (77 ADR entries, 27 DP identifiers, 6
+  certified vargas with compliant artifacts/decisions - all PASS).
+- Known issues: none.
+- Unresolved questions: none for this task. Open, separately-authorized items remain: `DP-024` (varga
+  framework `step`/payload-table question), `DP-025` (polar-Placidus/M-04 Tier-0 maintenance), `DP-026`
+  (`ADR-0027`/KP-significator provenance follow-up), `DP-027` (Parashari-yoga oracle/specification
+  follow-up), and whether/when to merge `phase-g-governance` into `main` (not requested or assumed here).
+- CEO decision required: none - this task's own explicit stop condition ("stop at the next genuine CEO
+  decision point") is satisfied by the task itself being complete, not by a pending decision. The natural
+  next decisions (merge to `main`; `DP-024`-`DP-027` disposition; next JATAKA capability) remain open for
+  the owner's own future direction, not urgent or blocking.
+- Next authorized action: none self-executable. Awaiting the owner's next instruction.
 
 ### 2026-08-25 - Push authorized and executed; CI genuinely failed on real drift; root-caused, fixed, and re-pushed
 - Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the CI-drift fix,
