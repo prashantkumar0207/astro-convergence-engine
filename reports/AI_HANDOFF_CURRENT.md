@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 8.8.0 |
+| Version | 8.9.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-25 (`ADR-0076` (D45 implementation-readiness, PROPOSED) plus `DP-024`-`DP-027` drafted. D45's own twelve readiness items verified, eleven satisfied and independently cross-confirmed against PyJHora's own installed code; one (cell-width) deferred to certification gates. `VARGA_CERTIFICATION_ROADMAP.md` staleness corrected append-only. `ADR-0027` found itself unratified. No implementation. New genuine CEO decision point.) |
+| Last updated | 2026-08-25 (`ADR-0076` RATIFIED - D45 certification work authorized. `ADR-0077` (D45 certification design, PROPOSED) freezes the rule; cell-width representability empirically resolved (1.279e-11 arcsec max error, 3 boundary cases identified); independent derivation cross-checked against PyJHora, 36/36 agreement, treated as corroboration only. `DP-024`/`DP-025` deferred. `ADR-0027` withheld from ratification pending provenance audit - found 16 checklist items, not 11. PyJHora found to implement 233 yogas citing B.V. Raman. New genuine CEO decision point.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,106 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-25 - ADR-0076 RATIFIED; ADR-0077 (D45 certification design) drafted; DP-024/DP-025 deferred; ADR-0027 provenance audited, not ratified; PyJHora yoga oracle found
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with this task's own
+  files, on top of `1fc70fc`).
+- Previous approved commit: `1fc70fc` (the `ADR-0076`/`DP-024`-`027` commit, local-only, six commits
+  ahead of `origin/phase-g-governance`'s `c4d571a340b4baf873fbefb5661eb195937d2f51`).
+- Task (owner's exact instruction, abridged, nine numbered items): "CEO DECISION. 1. RATIFY ADR-0076. D45
+  (Akshavedamsa) certification work is authorized to begin. This authorizes certification work only, not
+  production implementation beyond what is strictly required by the already-defined certification scope.
+  2. DP-024 — DEFER. 3. DP-025 — DEFER for now... keep it as a separate Tier-0 maintenance item. 4.
+  DP-026 — DO NOT ratify ADR-0027 yet. First perform the necessary independent audit of ADR-0027's
+  provenance/source basis and determine whether it should become the governing KP-significator
+  methodology authority. You may prepare decision-readiness, but do not implement KP significators. 5.
+  DP-027 — DO NOT authorize yoga implementation. Oracle-availability research may proceed only as
+  decision-readiness research... 6. D45 certification: proceed through the established certification
+  workflow: freeze the exact rule/source; establish the authoritative reference; independently derive the
+  calculation; resolve/measure the 30/45 cell-width representability issue rather than assuming it is
+  acceptable; define boundary cases; define protected holdout; define negative controls; establish oracle
+  comparison; establish artifact/drift protection; define explicit non-claims; prepare the certification
+  ADR/artifacts. Important: Do not silently turn the PyJHora implementation into the normative authority
+  merely because it agrees with the roadmap. It is independent corroboration, not automatically normative
+  authority. Do not push or merge. Do not ratify any other ADR. Continue until the next genuine CEO
+  decision, methodology/source blocker, or certification-design question requiring my decision."
+- Relevant ADR/specification: `ADR-0076` (ratified via a new sub-entry); `ADR-0077` (new, PROPOSED - D45
+  certification design); `DP-024`/`DP-025` (marked DEFERRED); `DP-026`/`DP-027` (extended with new
+  sections); `ADR-0049` (negative-control precedent cited in `ADR-0077`); root `DECISION_LOG.md` D-002/
+  D-003 (tolerance/zero-categorical-tolerance principles cited in `ADR-0077`).
+- Files changed: `docs/DECISION_LOG.md` (`ADR-0076` ratification sub-entry; new `ADR-0077` entry),
+  `docs/decisions/README.md` (`DP-024`/`DP-025` marked DEFERRED), `docs/decisions/DP-026-d008-kp-
+  significator-methodology-readiness.md` (new section H, provenance audit; version 1.0.0 -> 1.1.0),
+  `docs/decisions/DP-027-parashari-yoga-methodology-readiness.md` (new section H, oracle-availability
+  research; version 1.0.0 -> 1.1.0), `docs/ACE_EXECUTION_STATE.md` (version 6.8.0 -> 6.9.0), this file.
+  No file under `docs/decisions/DP-024...`/`DP-025...` was edited beyond their own README.md status row -
+  both remain exactly as originally drafted, per the owner's own "defer" instruction requiring no further
+  work on either.
+- Method: direct investigation and genuine numerical verification, no subagent launched. **`ADR-0076`
+  ratification:** recorded via the established "ratification of a PROPOSED entry" sub-entry mechanism (mirroring
+  `ADR-0068`/`ADR-0074`), since `ADR-0076` was itself already drafted `PROPOSED` awaiting exactly this.
+  **`ADR-0027` provenance audit (`DP-026` section H):** re-read `ADR-0027`'s own Decision 4 text and
+  counted its semicolon-separated items directly, one by one, rather than trusting this session's own
+  prior citations - found sixteen, not eleven, a self-propagated miscount traced back through `DP-023`
+  and `DP-021`; re-read `ADR-0027`'s own Evidence line and confirmed it names no external KP-astrology
+  source; cross-referenced the checklist's own structural pattern against `ADR-0021` D1 (Mundane
+  validation) and `docs/VARGA_CERTIFICATION_ROADMAP.md` section 6 (varga certification requirements) to
+  establish it is this project's own repeated internal pattern, not a KP-authority citation. **PyJHora
+  yoga oracle research (`DP-027` section H):** located `jhora/horoscope/chart/yoga.py` in the same local
+  oracle venv already used for D45 (and for this project's other certifications); counted 233
+  individually-defined yoga functions (`grep -c "^def .*_yoga("`); read several docstrings directly,
+  finding a consistent "BVR-N" citation pattern; found one docstring spelling it out in full ("BVR-49
+  Kalanidhi Yoga (B.V. Raman #49)"), confirming the abbreviation's identity. **D45 certification design
+  (`ADR-0077`):** wrote a scratchpad-only (never committed to the repository) Python script implementing
+  the D45 rule entirely from the classical description, without importing PyJHora, then imported PyJHora
+  separately in the same script to cross-check 36 spot-check points spanning all three sign categories
+  and four segment positions each - zero mismatches. Used exact `Fraction` arithmetic (not floats) to
+  compute the true mathematical value at each of the 44 internal per-sign segment boundaries and compared
+  against the floating-point-computed segment index at each - found a maximum representation error of
+  3.553e-15 degrees (1.279e-11 arcsec) and exactly three boundaries (k=13, 26, 29) where the naive
+  floating-point floor computation disagrees with the exact-rational one by one segment; then separately
+  confirmed both the independent from-scratch derivation AND PyJHora's own implementation agree with EACH
+  OTHER at all three of those specific boundary values, establishing this is a boundary-convention
+  question (for the project's own existing tolerance-promotion convention), not an oracle-agreement risk.
+  Read `certification/VARGA_D12_V1_certification.json`'s own top-level schema directly (again, confirming
+  it from `ADR-0076`'s own earlier citation) to ensure `ADR-0077`'s own artifact-structure section is
+  accurate.
+- Key findings: `ADR-0027`'s checklist has sixteen items, not eleven, and cites no external KP authority -
+  its process-structure is this project's own repeated pattern, its domain vocabulary genuine but never
+  externally checked; recommended for future independent verification, not ratified this task, per
+  explicit instruction. PyJHora already implements 233 classical yogas citing B.V. Raman by name -
+  materially better oracle-availability evidence than `DP-027`'s own original assessment, explicitly
+  treated as corroboration only, per the owner's own explicit caution, not as authority to adopt. D45's
+  cell-width representability question is now genuinely resolved: negligible numerical error, and a real
+  but well-understood three-boundary floor-classification effect that the project's own existing
+  tolerance convention already knows how to handle - not a blocker, and not silently assumed away either.
+- Implementation summary: no engine/scripts/certification code touched; `engine/astrology/varga_d45.py`
+  does not exist and was not created. The scratchpad verification script lives outside the repository
+  entirely (session scratchpad directory), per instruction not to modify production code or certified
+  artifacts.
+- Tests executed and results: `python -m pytest -q` - 844/844 passed, unchanged.
+- Certification executed and results: none - no certification artifact touched, generated, or
+  regenerated; `ADR-0077` is a design, not an executed certification run.
+- Governance checks executed and results: `python scripts/check_adr_numbering.py` (77 ADR entries, up
+  from 76 - `ADR-0077` added), `python scripts/check_identifier_families.py` (27 DP identifiers,
+  unchanged - no new DP registered this task), `python scripts/check_retired_identifiers.py` (0
+  violations, clean on the first pass) - all PASS.
+- Known issues: none new - the cell-width question, previously open, is now resolved with a concrete
+  disposition (existing tolerance convention applies; three named boundary test cases required).
+- Unresolved questions: whether to ratify `ADR-0077` (which would authorize D45's own certification-
+  execution step - the actual writing and registration of the frozen rule, oracle comparison, and
+  artifact generation - as a separate, subsequent act); `DP-026`'s own further disposition (an
+  independent KP-source cross-check of `ADR-0027`'s checklist, and whether to ratify `ADR-0027` once that
+  is done); `DP-027`'s own further disposition (a fuller audit of PyJHora's 233 yoga definitions, and
+  whether to authorize specification-drafting decision-readiness next).
+- CEO decision required: this task's own new genuine stopping point, per the owner's explicit closing
+  instruction ("Continue until the next genuine CEO decision, methodology/source blocker, or
+  certification-design question requiring my decision") - review `ADR-0077` and rule on it, and/or act on
+  `DP-026`/`DP-027`'s own further items. No ADR beyond `ADR-0076` is ratified (per explicit instruction);
+  no capability is implemented.
+- Next authorized action: none self-executable. Awaiting the owner's review of `ADR-0077` and of
+  `DP-026`/`DP-027`'s own new findings, and, separately, authorization to push this task's commits if
+  desired.
 
 ### 2026-08-25 - ADR-0076 (D45 implementation-readiness, PROPOSED) + DP-024/DP-025/DP-026/DP-027 drafted; roadmap staleness corrected
 - Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with this task's own

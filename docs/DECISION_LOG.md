@@ -4463,12 +4463,13 @@ follow-up entry, matching the same mechanism just used for the `ADR-0063` addend
 ## ADR-0076 - D45 (Akshavedamsa) implementation-readiness audit (PROPOSED - prepared for CEO ratification, not yet declared)
 
 - **Date:** 2026-08-25
-- **Status:** PROPOSED - prepared per the owner's "CEO direction — proceed with DP-023 resolution"
-  instruction ("prepare the necessary ADR/implementation-readiness path, but do not implement D45 yet").
-  Not self-ratified, per the owner's own explicit item 7 ("Do not ratify any ADR yourself"). This entry
-  audits D45's readiness against the owner's own twelve-item checklist; it does not implement D45, does
-  not modify `engine/astrology/varga_rules.py`, `varga_registry.py`, or any certified artifact, and does
-  not itself authorize implementation.
+- **Status:** **ACCEPTED, on the owner's ratifying instruction recorded in the "Ratification of ADR-0076"
+  entry immediately below this entry's own text.** Originally drafted `PROPOSED` per the owner's "CEO
+  direction — proceed with DP-023 resolution" instruction ("prepare the necessary ADR/implementation-
+  readiness path, but do not implement D45 yet"), not self-ratified. Per this repository's own "change
+  only the status" discipline, this Status line is the only text in this entry edited to record
+  ratification - the Context, the item-by-item audit findings, Consequences, and Evidence below are
+  unchanged.
 - **Context:** `docs/decisions/DP-023-jataka-first-capability-exact-selection.md` (`ADR-0075`'s own
   ILLUSTRATIVE ruling having made non-Q8-§5-listed candidates eligible) recommended D45 (Akshavedamsa) as
   the exact first JATAKA capability at medium-high confidence, resolved from `docs/VARGA_CERTIFICATION_
@@ -4570,6 +4571,200 @@ follow-up entry, matching the same mechanism just used for the `ADR-0063` addend
   `docs/NEW_VARGA_IMPLEMENTATION_TEMPLATE.md` (the certification template this entry's own plan mirrors);
   `ADR-0049` (B-01/B-02 remediation, confirming the registry's own safety net is live for any future
   registration).
+
+#### Ratification of ADR-0076: D45 CERTIFICATION WORK AUTHORIZED TO BEGIN (2026-08-25)
+
+- **Status:** ACCEPTED. The owner instructed, as item 1 of a nine-item "CEO DECISION": "RATIFY ADR-0076.
+  D45 (Akshavedamsa) certification work is authorized to begin. This authorizes certification work only,
+  not production implementation beyond what is strictly required by the already-defined certification
+  scope." Per `docs/PROJECT_CONSTITUTION.md` s11, this instruction is the ratifying act; this entry
+  records it, matching the precedent already used throughout this session (`ADR-0068`, `ADR-0074`'s own
+  ratification sub-entries).
+- **Decision:** `ADR-0076` above (its full twelve-item readiness audit, Context, Determination, and
+  Consequences) is **ratified exactly as drafted, with no wording changed**. Its own `Status` line,
+  immediately above, is updated to point to this entry - the only edit made to that entry's text. **D45's
+  own certification work is authorized to begin as of 2026-08-25**, scoped exactly as `ADR-0076`'s own
+  Consequences paragraph describes: its own ADR (this one), a frozen `CyclicVargaRule` table, an
+  independent validator, oracle comparison against PyJHora's `akshavedamsa_chart`, a dense sweep and ULP
+  battery, a protected holdout, and `VARGA_D45_V1_certification.json`. **This ratification authorizes
+  certification-design and certification-verification work; it does not authorize production
+  implementation (writing or registering `engine/astrology/varga_d45.py`) beyond what the already-defined
+  certification scope strictly requires** - the owner's own explicit qualification, not weakened or
+  extended by this entry. The owner separately instructed (items 2-5 of the same "CEO DECISION," recorded
+  in full in the corresponding `DP-024`/`DP-025`/`DP-026`/`DP-027` updates, not restated here) that
+  `DP-024` and `DP-025` are deferred, that `ADR-0027` is explicitly **not** ratified pending its own
+  provenance audit, and that no Parashari-yoga specification or implementation is authorized - none of
+  which this entry touches or reinterprets.
+- **Consequences:** identical to `ADR-0076`'s own, now in force. No code touched by this ratification
+  itself. FOUNDATION, H-03, the eight `ADR-0072` cross-certifier findings, and every closed Dasha item
+  remain untouched. `DP-024`/`DP-025`/`DP-026`/`DP-027` remain separately open per the owner's own
+  item-by-item disposition.
+- **Evidence:** the owner's "CEO DECISION" instruction (item 1), quoted above; `ADR-0076` itself, commit
+  `1fc70fc049b43b93db9478134984c89abbeafb53`.
+
+---
+
+## ADR-0077 - D45 (Akshavedamsa) certification design: frozen rule, oracle, boundary/holdout/negative-control plan (PROPOSED - prepared for CEO ratification, not yet declared)
+
+- **Date:** 2026-08-25
+- **Status:** PROPOSED - prepared per the owner's "CEO DECISION" instruction item 6 ("D45 certification:
+  proceed through the established certification workflow... prepare the certification ADR/artifacts").
+  Not self-ratified, per the owner's own standing "Do not ratify any other ADR" instruction. **This entry
+  is a certification design - it freezes the rule and plans the certification work. It does not write or
+  register `engine/astrology/varga_d45.py`, does not modify `varga_registry.py`, and does not produce a
+  final `VARGA_D45_V1_certification.json` artifact.** Producing those is the separate, subsequent
+  certification-execution step this design authorizes the shape of, not itself performs.
+- **Context:** `ADR-0076` (ratified) confirmed D45's implementation readiness on eleven of twelve owner-
+  required items, deferring one (cell-width representability) to be resolved empirically rather than
+  assumed. This entry performs that empirical resolution and completes the remaining certification-design
+  work the owner's item 6 lists: freeze the exact rule/source; establish the authoritative reference;
+  independently derive the calculation; resolve/measure the cell-width question; define boundary cases;
+  define protected holdout; define negative controls; establish oracle comparison; establish artifact/
+  drift protection; define explicit non-claims. Per the owner's own explicit caution: **PyJHora's own
+  agreement with `docs/VARGA_CERTIFICATION_ROADMAP.md`'s stated construction is treated throughout as
+  independent corroboration, not as the normative authority** - the frozen rule below is stated and
+  justified on its own classical terms first, with PyJHora cited as a cross-check, not as the source of
+  truth.
+
+### 1. Frozen rule and source
+
+**Classical source:** Parashara/BPHS (Brihat Parashara Hora Shastra), the same source family already
+governing every certified `parashara`-school varga in this repository (D2, D3, D7, D9, D10, D12, D30).
+**Construction, frozen exactly as `docs/VARGA_CERTIFICATION_ROADMAP.md` section 4 states it:** forty-five
+equal divisions of 30/45 = 2/3 degree per sign; for a planet in a movable sign (Aries/Cancer/Libra/
+Capricorn), division 0 maps to Aries; for a fixed sign (Taurus/Leo/Scorpio/Aquarius), division 0 maps to
+Leo; for a dual sign (Gemini/Virgo/Sagittarius/Pisces), division 0 maps to Sagittarius; counting proceeds
+forward (no reversal) for all twelve source signs. **School:** `parashara`, matching the existing registry
+key.
+
+**Independent corroboration, not the source of authority:** PyJHora's own installed `akshavedamsa_chart`
+(`chart_method=1`, "Traditional Parasara Method") was inspected directly and reproduces this exact
+construction (movable/fixed/dual offsets of `+0`/`+4`/`+8` under its own 0-indexed sign convention,
+corresponding precisely to Aries/Leo/Sagittarius). This corroborates the roadmap's own citation from a
+second, independently-authored implementation; it does not itself establish the classical source - the
+roadmap's own section 4 citation, tracing to Parashara/BPHS, remains the frozen rule's actual authority.
+
+### 2. Independent derivation, performed and cross-checked
+
+A from-scratch reimplementation of the frozen rule (section 1), written without consulting or importing
+any PyJHora code, was run against PyJHora's own `akshavedamsa_chart` across 36 spot-check points spanning
+all three sign categories (movable/fixed/dual) and multiple segment positions (near-start, mid-segment,
+near-end, across four different segment indices including the first and last). **Result: zero
+mismatches** across all 36 points - the independent derivation and PyJHora's own implementation agree
+exactly everywhere checked. This satisfies the "independently derive the calculation" requirement as a
+genuine cross-check, not an assumption. (Script retained in the working session's own scratchpad, not
+part of this repository, per this entry not touching production code.)
+
+### 3. Cell-width representability - resolved and measured, not assumed
+
+**Measured directly, not assumed either way:** the segment width 30/45 = 2/3 degree is not exactly
+representable in IEEE-754 double precision (a repeating binary fraction, arithmetically the same class as
+D27's own already-flagged concern and the already-solved D7/D9 precedent). Computed the maximum
+representation error across all 44 internal per-sign segment boundaries using exact rational (`Fraction`)
+arithmetic as ground truth: **maximum error 3.553e-15 degrees = 1.279e-11 arcsec, at boundary k=25** -
+utterly negligible for any practical or certification purpose, many orders of magnitude below this
+project's own 0.5-arcsecond Tier-0 tolerance (root `DECISION_LOG.md` D-002).
+
+**A genuine, confirmed floor-classification effect, distinct from the representation error above:**
+evaluating `int(long // (30/45))` at the exact mathematical boundary (via `Fraction`) for each of the 44
+internal boundaries per sign finds **exactly 3 boundaries (k=13, 26, 29) where the floating-point floor
+computation assigns segment `k-1` instead of the mathematically exact `k`** - a genuine, reproducible,
+measured effect, not hypothetical. **Critically, both the independent derivation (section 2) and
+PyJHora's own implementation compute the identical result at all three of these boundary values** (cross-
+checked directly: k=13 -> both give D-sign 0; k=26 -> both give D-sign 1; k=29 -> both give D-sign 4) -
+meaning this is not a disagreement risk between the production implementation and its own oracle, but a
+**boundary-convention question**, exactly the class of question this project's own engine-wide 1e-10
+tolerance-promoted boundary convention (`longitude_utils.py`) already exists to resolve consistently
+across every certified capability. **Determination: not a blocker. Must be handled by the existing
+boundary convention, not a new one**, and the three identified boundary longitudes (k=13, 26, 29 within
+each of the 12 signs - 36 total across the full circle) are named as required boundary test cases
+(section 5).
+
+### 4. Sign/segment conventions and boundary behaviour
+
+Forward counting only (no direction reversal - unlike D60's own disputed even-sign-reversal question,
+not applicable to D45). Segment index via `int(long_in_sign // (30.0/45.0))`, promoted through this
+project's own existing 1e-10 tolerance convention at exact boundaries, consistent with every other
+certified varga. No division-specific exception is introduced.
+
+### 5. Boundary cases (required test set)
+
+The three floating-point-sensitive internal boundaries identified in section 3 (k=13, 26, 29 within a
+sign), instantiated across all 12 signs (36 cases); the first and last segment of each sign (segment 0
+and segment 44, testing the sign-transition edges); at least one case per movable/fixed/dual category to
+confirm the `+0`/`+4`/`+8` offset table; a 0-degree and near-30-degree (29.999...) longitude to test the
+sign-boundary handoff, mirroring the pattern already used in the existing five vargas' own holdout
+matrices.
+
+### 6. Protected holdout
+
+Drawn using the same methodology already governing D2/D3/D7/D9/D10/D12/D30's own holdouts
+(`docs/NEW_VARGA_IMPLEMENTATION_TEMPLATE.md`), generated independently of the boundary cases in section 5
+(which are deliberately chosen, not randomly drawn, and serve a different purpose), never used for tuning
+the rule table itself - a genuine holdout, not a re-labelled boundary set.
+
+### 7. Negative controls
+
+Mirroring `ADR-0049`'s own B-01/B-02 negative-control pattern (a real, planted violation, confirmed
+detected, confirmed restored): (a) a single-cell content tamper in the frozen `start_sign`/`direction`
+table, confirmed to change the computed content hash and fail Gate D; (b) a deliberately reversed
+direction for one sign, confirmed to be caught by the dense sweep against the frozen rule; (c) a
+mutated segment-width constant, confirmed to change the recomputed table and fail non-invasiveness.
+
+### 8. Oracle comparison
+
+PyJHora's own `akshavedamsa_chart(chart_method=1)`, matching the established per-division-named-function
+pattern this project already uses for D7 (`saptamsa_chart`) and D30 (`trimsamsa_chart`), run in the same
+isolated oracle venv already used for the five certified registry vargas. Zero categorical tolerance
+(root `DECISION_LOG.md` D-003's own KP-hierarchy zero-tolerance principle, applied here to categorical
+D-sign agreement), matching every other certified varga's own oracle-gate discipline.
+
+### 9. Artifact and drift protection
+
+`certification/VARGA_D45_V1_certification.json`, mirroring `VARGA_D12_V1_certification.json`'s own exact
+schema (confirmed by direct inspection this entry): `schema`, `adr` (this entry, once ratified and
+executed), `date`, `scope`, `rule`, `oracle`, `gates` (`A_table_integrity`, `B_dense_sweep`, `C_oracle`,
+`D_non_invasiveness`, `E_independent_validator`), `explicit_non_claims`, `environment`, `preconditions`,
+`result`. Covered by `scripts/check_artifact_drift.py` once generated, exactly as the five existing varga
+artifacts already are.
+
+### 10. Explicit non-claims
+
+The three non-Traditional-Parasara PyJHora chart methods (`chart_method=2/3/4`: Parivritti cyclical, even
+reversal, alternate/Somanatha) are not certified by this design and remain explicit non-claims. No
+interpretive/deity-based reading of D45 results is claimed - `VargaClassification` carries only D-sign,
+division index, and fraction, consistent with D45 needing no payload/label table (`DP-024`). No
+non-`parashara` school variant is claimed. The `step`-field and payload/label-table questions (`DP-024`)
+remain unresolved and are not required by, or resolved by, this design.
+
+### 11. What this entry does not do
+
+**Does not write or register `engine/astrology/varga_d45.py`.** Does not modify `varga_rules.py` or
+`varga_registry.py`. Does not generate a real `VARGA_D45_V1_certification.json` (no certifier has been
+run against a production module, because none exists yet). Does not run the dense sweep, ULP battery, or
+oracle comparison against production code - section 2's own 36-point cross-check was performed with a
+scratchpad-only reimplementation, explicitly not the production rule table this design specifies for
+future implementation. **Ratifying this entry authorizes the certification-execution step (writing the
+frozen rule as a registered `CyclicVargaRule`, and running the certifier described above) as a separate,
+subsequent act - not performed by this entry itself.**
+
+- **Consequences, if ratified:** this entry would freeze D45's own rule and certification design,
+  authorizing the certification-execution step (implementing the frozen `CyclicVargaRule`, building the
+  independent validator, running the oracle comparison, generating the holdout and negative controls,
+  producing `VARGA_D45_V1_certification.json`) as the next, separately-tracked act. No certified
+  calculation, certification artifact, or production code is touched by this entry itself.
+- **Evidence:** `ADR-0076` (D45's own readiness audit, ratified); `docs/VARGA_CERTIFICATION_ROADMAP.md`
+  section 4 (construction, source); direct inspection of `jhora.horoscope.chart.charts.akshavedamsa_chart`
+  and `jhora.const` (independent corroboration only, per this entry's own explicit framing); a from-
+  scratch independent derivation cross-checked against PyJHora across 36 spot-check points (zero
+  mismatches) and specifically at the three identified floating-point boundary cases (k=13, 26, 29 - both
+  implementations agree); exact-rational (`Fraction`) arithmetic used to measure the maximum cell-width
+  representation error (1.279e-11 arcsec) and to identify the three genuine floor-classification
+  boundaries, distinct from the representation-error question; direct inspection of
+  `certification/VARGA_D12_V1_certification.json`'s own schema; `docs/NEW_VARGA_IMPLEMENTATION_
+  TEMPLATE.md`; `ADR-0049` (negative-control precedent); root `DECISION_LOG.md` D-002 (0.5 arcsecond
+  Tier-0 tolerance, cited for scale comparison) and D-003 (zero categorical tolerance, applied to this
+  design's own oracle gate).
 
 ---
 
