@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.4.0 |
+| Version | 9.5.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-25 (**D45 (Akshavedamsa) IS NOW LIVE ON `main`** - PR #5 merged, merge commit `c49336d`. `main`'s own post-merge CI (`32825473827`) all four jobs green, confirmed directly: 857/857 pytest, 6 certified vargas, D45 5400/0 mismatches, artifact-drift clean both tiers. All six preconditions and eight post-merge checks the owner named independently verified. Task complete.) |
+| Last updated | 2026-08-25 (**`DP-028` drafted** - KP-significator/`D-008` decision-readiness continued from canonical `main` post-D45-merge. External research (K.S. Krishnamurti's own Six Readers; cuspal sub-lord theory; ruling planets; the Gondhalekar/Four-Step-Theory disambiguation) plus a PyJHora oracle-availability audit finding no dedicated KP significator function exists, contrasting `DP-027`'s 233-function Parashari-yoga finding. Recommends ratifying `ADR-0027` at medium-high confidence - not ratified. 857/857 tests, governance clean. Local commit only, not pushed.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,75 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-25 - DP-028 drafted: KP-significator external-verification decision-readiness, continuing from canonical main post-D45-merge
+- Branch / commit SHA: `phase-g-governance` (local), this task's own commit on top of `fa89648b639d4dd
+  7027b87e0f21c3bd45aaae9f4` (itself two documentation-only commits ahead of the pushed/merged
+  `c85284a`). `main` unchanged this task, still `c49336dd501301dde720aa8297fa181506fe64bd`.
+- Previous approved commit: `fa89648` on `phase-g-governance` (local, unpushed); `c49336d` on `main`
+  (the D45 JATAKA-milestone merge, PR #5, already CI-confirmed).
+- Task (owner's exact instruction): "CEO AUTHORIZATION — CONTINUE JATAKA ARCHITECTURE. Start from
+  canonical main after the D45 merge... Do the next highest-priority decision-readiness investigation,
+  not implementation... Prioritize the KP significator / D-008 methodology question if repository
+  evidence confirms it remains the highest-leverage unresolved item. Do not assume that merely because
+  it was previously recommended. Research the methodology question deeply enough to produce a genuine
+  decision paper [fifteen named elements: methodology, source, cusp handling, four-step variants,
+  ruling planets, isolation, provenance, oracle availability, validator feasibility, protected
+  validation, unresolved variants/non-claims, M-04 dependency, ADR-0027 ratification question]. Do not
+  implement KP significators. Do not ratify ADR-0027. If external authoritative research is required,
+  perform it and clearly distinguish external evidence from repository evidence. Draft/register the
+  appropriate DP decision-readiness paper... Do not push or merge unless separately authorized."
+- Relevant ADR/specification: root `DECISION_LOG.md` D-008; `ADR-0027` (PROPOSED, not ratified);
+  `DP-026` (extended, not rewritten); `DP-027` (cited for the oracle-availability comparison); `DP-025`
+  (cited, not reopened, for the polar-Placidus cusp dependency).
+- Files changed: `docs/decisions/DP-028-kp-significator-external-verification-readiness.md` (new, v1.0.0);
+  `docs/decisions/README.md` (v4.0.0 -> v4.1.0, `DP-028` registered before drafting per `ADR-0040`);
+  `docs/ACE_EXECUTION_STATE.md` (v7.4.0 -> v7.5.0); this file.
+- Method: state audit first (branch, HEAD, working tree, `origin/main`/`origin/phase-g-governance`,
+  governance-gate counts) before any edit. Re-confirmed KP significators as the correct investigation
+  target from repository evidence rather than assuming the prior recommendation still held (root
+  `D-008` and a scaffolded `ADR-0027` checklist exist; no equivalent exists for Parashari yoga).
+  Audited the local PyJHora installation (scratchpad `oracle_probe_venv`) for any KP significator/
+  ruling-planets/four-step function, mirroring `DP-027`'s own method for Parashari yoga. Performed four
+  `WebSearch` queries on K.S. Krishnamurti's own KP methodology, with every finding in `DP-028` section
+  C explicitly labelled as external, secondary-source-derived evidence, distinct from repository
+  evidence, and flagged as needing primary-source verification before being treated as frozen source
+  authority.
+- Key findings: (1) PyJHora has **no** dedicated KP significator/ruling-planets/four-step function -
+  only `utils.py::kp_lords_for_longitude()`, a generic lordship-chain calculator - a materially worse
+  oracle-availability position than Parashari yoga's own 233-function finding (`DP-027` section H),
+  reported honestly as a complicating factor rather than omitted. (2) External research: K.S.
+  Krishnamurti's own foundational "Six KP Readers" (~1971); cuspal sub-lord theory as the system's
+  central mechanism, structurally matching this project's own already-certified `KP_CHAIN_V1` SL/NL/
+  SB/SS hierarchy; a significator-selection priority rule; Ruling Planets' seven-factor, judgment-time/
+  horary-adjacent character. (3) Critical disambiguation: "Four Step Theory" was developed by a
+  **different, later author (Sunil Gondhalekar, ~1990)**, not part of Krishnamurti's original readers,
+  and is explicitly positioned in the literature as an *alternative* to Ruling Planets, not a
+  dependency of it - `ADR-0027` Decision 3's own four-way separation (significators; four-step; ruling
+  planets; horary) is now independently, externally corroborated, not merely process-prudent. (4) Cusp
+  handling's dependency on the still-deferred `DP-025` polar-Placidus gap is real but narrow - resolved
+  by recommending a `RISE_SET_V1`-style polar non-claim for a future spec, not by reopening `DP-025`.
+  (5) `ADR-0027`'s sixteen-item checklist (re-verified, matching `DP-026` section H.1's own prior
+  correction) survives external scrutiny intact; `DP-028` recommends ratifying `ADR-0027` at
+  medium-high confidence (raised from `DP-026`'s prior "not yet") but does not ratify it.
+- Tests: `python -m pytest -q` -> **857 passed**, unchanged (no engine code touched this task).
+- Governance status: `check_adr_numbering.py` PASS (77 ADR entries, unchanged); `check_identifier_
+  families.py` PASS (28 registered DP identifiers, up from 27); `check_retired_identifiers.py` PASS (0
+  violations, including the bare-"ADR-"-placeholder check this project has repeatedly needed to catch).
+- Explicit non-claims / exclusions honored: does not implement KP significators; does not ratify
+  `ADR-0027` or any ADR; does not reopen or resolve `DP-024`/`DP-025` (both remain DEFERRED exactly as
+  instructed); does not touch FOUNDATION, closed Dasha items, H-03, or H10/H11; does not decide the
+  KP-significators-vs-Parashari-yoga implementation-sequencing question, only surfaces the
+  oracle-availability asymmetry as evidence relevant to it; not pushed or merged, per explicit
+  instruction.
+- Next genuine CEO decision required (`DP-028` section K): (1) whether to ratify `ADR-0027` now, and if
+  so, whether to require its Evidence line amended first to cite `DP-028` section C's external findings,
+  or ratify as-is with `DP-028` cited alongside it; (2) whether to authorize `KP_SIGNIFICATOR_V1`
+  methodology-specification drafting next (still not implementation), scoped to core Krishnamurti
+  significators only per `DP-028` section H, with Four-Step and Ruling Planets named as explicitly
+  out-of-scope future variants; (3) how to weigh the newly-confirmed oracle-availability asymmetry
+  (KP significators: no dedicated oracle; Parashari yoga: 233 pre-built, attributed functions) for
+  which capability should actually be implemented first.
 
 ### 2026-08-25 - D45 JATAKA milestone merged to main: PR #5, merge commit c49336d, post-merge CI fully verified
 - Branch / commit SHA: `phase-g-governance` (local), `main` now at `c49336dd501301dde720aa8297fa181506fe64bd`
