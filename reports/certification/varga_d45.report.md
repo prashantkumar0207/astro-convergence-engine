@@ -6,20 +6,20 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 - Decision entry: ADR-0077
 - Supersedes provisional identifier: NOTHING_AUTHORISED
 - Date: 2026-08-25
-- Scope: D45 Akshavedamsa (Parashara variant, Traditional Parasara method / PyJHora chart_method=1). CERTIFICATION-EXECUTION STAGE ONLY: the frozen rule below is NOT registered in engine.astrology.varga_registry and engine/astrology/varga_d45.py does not exist. Production implementation is a separate, not-yet-authorized step (ADR-0077 section 11).
+- Scope: D45 Akshavedamsa (Parashara variant, Traditional Parasara method / PyJHora chart_method=1). Registered in production through the generic registry (engine.astrology.varga_d45, VARGA_D45_V1), discoverable via engine.astrology.divisional_chart.divisional_chart(snapshot, 45).
 - Result: **PASS**
 
 ## Preconditions
 
 - Data assets verified against CHECKSUMS.sha256: 3
-- Anti-fitting scan: 182 production modules, 0 findings
+- Anti-fitting scan: 183 production modules, 0 findings
 
 ## Gates
 
 - **A_table_integrity**: cells=12, mismatches=0
 - **B_dense_sweep**: points=51429, mismatches=0
 - **C_oracle**: comparisons=5400, mismatches=0
-- **D_non_invasiveness**: d45_unregistered=True
+- **D_non_invasiveness**: d45_registered=True, registered_rule_identity=is D45_PARASHARA (engine.astrology.varga_d45), rule_content_sha256=c8515e44be6e21e3e8c3298121b8c0e4687c0176d9da7e94f7d0aba53a8bf817
 - **E_independent_validator**: result=PASS
 - **F_boundary_cases**: cases_checked=60, mismatches=0
 - **G_protected_holdout**: points=26278, mismatches=0
@@ -32,7 +32,6 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 - Parivritti alternate / Somanatha akshavedamsa (PyJHora chart_method=4)
 - any per-division deity/label payload (VargaClassification carries only D-sign, division index, and fraction; D45 needs no payload/label table, per DP-024)
 - any non-parashara school variant
-- production registration - this run does NOT register D45 in varga_registry, and engine/astrology/varga_d45.py does not exist; production implementation is a separate, not-yet-authorized step
 - any other varga; each requires its own ADR and certification
 
 ## Evidence files

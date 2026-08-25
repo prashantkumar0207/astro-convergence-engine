@@ -1,26 +1,26 @@
 """VARGA_D45_V1 CERTIFICATION RUNNER (ADR-0077).
 
-**Certification-execution stage only.** Per the owner's explicit "CEO RATIFICATION —
-ADR-0077" instruction (2026-08-25): this script certifies the frozen D45 rule as a
-STANDALONE, UNREGISTERED object. It does not import, create, or modify
-engine/astrology/varga_d45.py, does not call register_varga_rule(), and the frozen
-rule defined below is not reachable via engine.astrology.varga_registry.get_varga_rule.
-Production implementation (writing and registering the module) is a separate,
-not-yet-authorized step.
+Certifies the PRODUCTION, registered D45 rule (engine.astrology.varga_d45,
+VARGA_D45_V1). Per the owner's "CEO AUTHORIZATION — D45 PRODUCTION
+IMPLEMENTATION" instruction (2026-08-25): D45 is now registered through the
+generic registry, exactly mirroring D2/D3/D7/D12/D30. The certified rule table
+is preserved exactly as frozen in ADR-0077 - this run does not alter it.
 
-Regenerates certification/VARGA_D45_V1_certification.json FROM SCRATCH on every run;
-the stored JSON is never accepted as proof.
+Regenerates certification/VARGA_D45_V1_certification.json FROM SCRATCH on every
+run; the stored JSON is never accepted as proof.
 
-Gates: A rule-table integrity; B dense mathematical sweep vs an independently coded
-classical rule; C external oracle (PyJHora's akshavedamsa_chart, Traditional Parasara
-method, zero categorical tolerance); D framework non-invasiveness (confirms the five
-existing certified vargas are unaffected and that D45 remains unregistered); E the
-independent validator (validate_d45_holdout.py, a from-scratch reimplementation); F
-the three genuine floating-point boundary cases identified in ADR-0077 (k=13, 26, 29
-per sign, out of 44 internal segment boundaries) plus sign/segment-edge cases; G a
-protected holdout, generated independently of the boundary cases and never used for
-tuning; H genuine negative controls (a real planted violation, confirmed detected,
-confirmed restored). Exit 0 = PASS, 3 = FAIL.
+Gates: A rule-table integrity; B dense mathematical sweep vs an independently
+coded classical rule; C external oracle (PyJHora's akshavedamsa_chart,
+Traditional Parasara method, zero categorical tolerance); D framework
+non-invasiveness (confirms the five pre-existing certified vargas are
+unaffected and that D45 is now correctly registered and discoverable); E the
+independent validator (validate_d45_holdout.py, a from-scratch reimplementation
+against the production registered rule); F the three genuine floating-point
+boundary cases identified in ADR-0077 (k=13, 26, 29 per sign, out of 44
+internal segment boundaries) plus sign/segment-edge cases; G a protected
+holdout, generated independently of the boundary cases and never used for
+tuning; H genuine negative controls (a real planted violation, confirmed
+detected, confirmed restored). Exit 0 = PASS, 3 = FAIL.
 """
 
 import subprocess
@@ -35,14 +35,14 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "scripts"))
 import certification_support as support  # noqa: E402
 
-import engine.astrology  # noqa: F401, E402  (registers production vargas; D45 is NOT among them)
+import engine.astrology  # noqa: F401, E402  (registers production vargas, including D45)
 from engine.astrology.varga_classifier import classify  # noqa: E402
+from engine.astrology.varga_d45 import D45_PARASHARA, D45_SCHOOL  # noqa: E402
 from engine.astrology.varga_registry import (  # noqa: E402
-    UnsupportedVargaError,
     get_varga_rule,
     registered_vargas,
 )
-from engine.astrology.varga_rules import CyclicVargaRule, rule_content_sha256  # noqa: E402
+from engine.astrology.varga_rules import rule_content_sha256  # noqa: E402
 
 try:
     from jhora.horoscope.chart.charts import akshavedamsa_chart
@@ -53,20 +53,15 @@ except Exception as error:  # pragma: no cover
     sys.exit(3)
 
 
-#: Frozen rule under certification (ADR-0077 section 1). NOT registered.
-#: Movable signs (Aries/Cancer/Libra/Capricorn) start at Aries (0).
-#: Fixed signs (Taurus/Leo/Scorpio/Aquarius) start at Leo (4).
-#: Dual signs (Gemini/Virgo/Sagittarius/Pisces) start at Sagittarius (8).
-#: Forward counting for all twelve source signs.
-D45_PARASHARA = CyclicVargaRule(
-    divisions=45,
-    start_sign=(0, 4, 8, 0, 4, 8, 0, 4, 8, 0, 4, 8),
-    direction=(1,) * 12,
-)
-
 #: The three genuine floating-point floor-classification boundaries identified in
 #: ADR-0077 section 3 (of 44 internal per-sign boundaries, k = 1..44).
 BOUNDARY_K_VALUES = (13, 26, 29)
+
+#: Content fingerprint of the certified D45 table, pinned (also pinned
+#: independently in engine/tests/test_varga_d45.py).
+CERTIFIED_D45_CONTENT_SHA256 = (
+    "c8515e44be6e21e3e8c3298121b8c0e4687c0176d9da7e94f7d0aba53a8bf817"
+)
 
 
 def fail(message):
@@ -152,25 +147,47 @@ def gate_c_oracle():
 
 def gate_d_non_invasiveness():
     from engine.astrology import CERTIFIED_PRODUCTION_VARGAS
+    from engine.astrology.divisional_chart import divisional_chart
+    from engine.astrology.varga_registry import UnsupportedVargaError
+    from engine.calculations.calculations import calculate
+    from engine.models.birth_data import BirthData
 
     if registered_vargas() != CERTIFIED_PRODUCTION_VARGAS:
-        fail(f"registry contents changed: {registered_vargas()}")
-    if (45, "parashara") in registered_vargas():
-        fail("D45 unexpectedly registered - this certification run must not register it")
-    try:
-        get_varga_rule(45, "parashara")
-        fail("D45 unexpectedly resolvable via get_varga_rule")
-    except UnsupportedVargaError:
-        pass
+        fail(f"registry contents: {registered_vargas()}")
+    if (45, D45_SCHOOL) not in registered_vargas():
+        fail("D45 not registered")
+    if get_varga_rule(45, D45_SCHOOL) is not D45_PARASHARA:
+        fail("registered D45 rule is not the certified module object")
+    if rule_content_sha256(D45_PARASHARA) != CERTIFIED_D45_CONTENT_SHA256:
+        fail("D45 content hash does not match the certified pinned value")
 
+    # Confirm the five pre-existing certified vargas are byte-for-byte
+    # unaffected by D45's registration - identity and content hash, not
+    # merely that a rule still exists under the key.
     hashes = {}
     for division, school in CERTIFIED_PRODUCTION_VARGAS:
         rule = get_varga_rule(division, school)
         hashes[f"D{division}_{school}"] = rule_content_sha256(rule)
 
+    snapshot = calculate(
+        BirthData(1985, 12, 21, 14, 40, 0.0, 25.6, 85.1333, "Asia/Kolkata")
+    ).snapshot
+    if type(divisional_chart(snapshot, 9)).__name__ != "NavamsaChart":
+        fail("D9 no longer served by the certified module")
+    if type(divisional_chart(snapshot, 10)).__name__ != "DashamsaChart":
+        fail("D10 no longer served by the certified module")
+    for division in (4, 16, 20, 24, 27, 40, 60):
+        try:
+            divisional_chart(snapshot, division)
+            fail(f"D{division} no longer refused")
+        except UnsupportedVargaError:
+            pass
+
     return {
         "registry": [list(entry) for entry in registered_vargas()],
-        "d45_unregistered": True,
+        "d45_registered": True,
+        "registered_rule_identity": "is D45_PARASHARA (engine.astrology.varga_d45)",
+        "rule_content_sha256": rule_content_sha256(D45_PARASHARA),
         "existing_certified_rule_hashes": hashes,
     }
 
@@ -222,7 +239,8 @@ def gate_f_boundary_cases():
 def gate_g_protected_holdout():
     # Generated independently of gate F's deliberately-chosen boundary cases, using
     # a different deterministic sequence (prime-step sampling), never used to tune
-    # D45_PARASHARA above - the rule was frozen (section 1) before this gate runs.
+    # D45_PARASHARA above - the rule was frozen (ADR-0077 section 1) before this
+    # gate runs and is unchanged by registration.
     mismatches = 0
     count = 0
     step = 0.0137  # irrational-ish w.r.t. 30/45 to avoid coinciding with gate B/F points
@@ -247,8 +265,8 @@ def gate_h_negative_controls():
     controls = []
 
     # Control 1: mutate the start_sign table (Aries offset changed from movable(0) to
-    # a wrong value), confirm gate_a's own check would now fail, confirm the
-    # untouched original remains correct.
+    # a wrong value), confirm the mutation is detectable, confirm the untouched
+    # original (imported from the production module) remains correct.
     mutated = replace(D45_PARASHARA, start_sign=(1,) + D45_PARASHARA.start_sign[1:])
     detected = mutated.start_sign[0] != D45_PARASHARA.start_sign[0]
     controls.append({"control": "start_sign[0] mutated 0->1", "detected": detected})
@@ -282,12 +300,14 @@ def gate_h_negative_controls():
     if not detected_3:
         fail("negative control 3 did not detect the planted mutation")
 
-    # Restoration check: confirm the original, untouched object still matches its
-    # own original hash (nothing above mutated D45_PARASHARA itself - replace()
-    # returns a new frozen instance).
+    # Restoration check: confirm the original, untouched production object still
+    # matches its own original hash (nothing above mutated D45_PARASHARA itself -
+    # replace() returns a new frozen instance; the registered object is untouched).
     restored_hash = rule_content_sha256(D45_PARASHARA)
     if restored_hash != original_hash:
         fail("D45_PARASHARA itself was mutated - this must never happen (dataclass is frozen)")
+    if get_varga_rule(45, D45_SCHOOL) is not D45_PARASHARA:
+        fail("D45's registered identity changed during negative-control testing")
 
     return {"controls": controls, "all_detected": True, "original_object_unmutated": True}
 
@@ -302,16 +322,15 @@ def main():
         "date": str(date.today()),
         "scope": (
             "D45 Akshavedamsa (Parashara variant, Traditional Parasara method / "
-            "PyJHora chart_method=1). CERTIFICATION-EXECUTION STAGE ONLY: the frozen "
-            "rule below is NOT registered in engine.astrology.varga_registry and "
-            "engine/astrology/varga_d45.py does not exist. Production implementation "
-            "is a separate, not-yet-authorized step (ADR-0077 section 11)."
+            "PyJHora chart_method=1). Registered in production through the generic "
+            "registry (engine.astrology.varga_d45, VARGA_D45_V1), discoverable via "
+            "engine.astrology.divisional_chart.divisional_chart(snapshot, 45)."
         ),
         "rule": {
             "kind": "CyclicVargaRule",
             "variant": "parashara (45 x 2/3 deg from movable Aries / fixed Leo / dual Sagittarius, forward)",
             "school_key": "parashara",
-            "registered": False,
+            "registered": True,
             "boundary_policy": (
                 "inherited locked convention: intra-sign boundaries promote within "
                 "1e-10 (longitude_utils.py); no D45-specific exception. Three genuine "
@@ -340,9 +359,6 @@ def main():
             "any per-division deity/label payload (VargaClassification carries only D-sign, "
             "division index, and fraction; D45 needs no payload/label table, per DP-024)",
             "any non-parashara school variant",
-            "production registration - this run does NOT register D45 in varga_registry, "
-            "and engine/astrology/varga_d45.py does not exist; production implementation "
-            "is a separate, not-yet-authorized step",
             "any other varga; each requires its own ADR and certification",
         ],
         "environment": {"python": sys.version.split()[0]},
@@ -351,13 +367,13 @@ def main():
     }
     out = support.emit(report, "VARGA_D45_V1_certification.json", "varga_d45", tee)
     print("=" * 60)
-    print("VARGA_D45_V1 CERTIFICATION (certification-execution stage; NOT registered)")
+    print("VARGA_D45_V1 CERTIFICATION (production-registered)")
     print("=" * 60)
     for name in ("A_table_integrity", "B_dense_sweep", "C_oracle", "F_boundary_cases",
                  "G_protected_holdout"):
         print(f"{name}: {report['gates'][name]}")
-    print("D_non_invasiveness: registry unchanged, D45 unregistered:",
-          report["gates"]["D_non_invasiveness"]["d45_unregistered"])
+    print("D_non_invasiveness: registry", report["gates"]["D_non_invasiveness"]["registry"],
+          "d45_registered:", report["gates"]["D_non_invasiveness"]["d45_registered"])
     print("E_independent_validator: PASS")
     print("H_negative_controls:", report["gates"]["H_negative_controls"]["all_detected"])
     print("archived          :", out.relative_to(ROOT))

@@ -1,11 +1,9 @@
 """Independent D45 Akshavedamsa holdout validator (ADR-0077).
 
-Validates the frozen D45 rule (imported from scripts/certify_d45.py, which owns the
-one frozen definition under certification - this rule is NOT registered in
-engine.astrology.varga_registry and engine/astrology/varga_d45.py does not exist)
-against a reference built INDEPENDENTLY inside this file: a per-sign lookup table
-constructed by direct sign-name enumeration (movable/fixed/dual triads), not the
-framework's own modular-arithmetic offsets.
+Validates the PRODUCTION, registered D45 rule (engine.astrology.varga_d45,
+VARGA_D45_V1) against a reference built INDEPENDENTLY inside this file: a
+per-sign lookup table constructed by direct sign-name enumeration (movable/
+fixed/dual triads), not the framework's own modular-arithmetic offsets.
 
 Run:  python validate_d45_holdout.py
 """
@@ -14,11 +12,10 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-sys.path.insert(0, str(Path(__file__).resolve().parent / "scripts"))
 
+import engine.astrology  # noqa: F401  (registers production vargas, including D45)
 from engine.astrology.varga_classifier import classify  # framework (SUBJECT)
-
-from certify_d45 import D45_PARASHARA  # the one frozen rule under certification
+from engine.astrology.varga_registry import get_varga_rule
 
 SIGNS = ("Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
          "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces")
@@ -70,7 +67,7 @@ def reference_d45(longitude: float):
 
 
 def main() -> int:
-    rule = D45_PARASHARA
+    rule = get_varga_rule(45, "parashara")
     failures = []
 
     dense = 0

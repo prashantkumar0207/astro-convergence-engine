@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.0.0 |
+| Version | 9.1.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-25 (**`ADR-0077` RATIFIED; D45 certification EXECUTED, all eight gates (A-H) PASS.** `certification/VARGA_D45_V1_certification.json` generated - real evidence, not design. Two genuine defects found and fixed during execution (a boundary-tolerance-convention gap in the independent validator; a negative-control mutation-index bug), not hidden. `engine/astrology/varga_d45.py` was never created; D45 remains unregistered. New genuine CEO decision point: production-implementation authorization.) |
+| Last updated | 2026-08-25 (**D45 PRODUCTION IMPLEMENTATION COMPLETE - JATAKA's first production capability.** `engine/astrology/varga_d45.py` created and registered; `CERTIFIED_PRODUCTION_VARGAS` now six entries. Full certification suite re-run: D45's own 8 gates PASS, all five pre-existing vargas and `SIGN_CONVENTION_V1` reconfirmed unaffected. 857/857 pytest. New genuine CEO decision point: push authorization.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,89 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-25 - D45 production implementation complete: JATAKA's first production capability, sixth certified varga
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the production-
+  implementation's own files, on top of `d83b3b0`).
+- Previous approved commit: `d83b3b0` (the `ADR-0077`-ratification/certification-execution commit,
+  local-only, eight commits ahead of `origin/phase-g-governance`'s
+  `c4d571a340b4baf873fbefb5661eb195937d2f51`).
+- Task (owner's exact instruction, abridged): "CEO AUTHORIZATION — D45 PRODUCTION IMPLEMENTATION. I
+  authorize production implementation of D45 based on the successfully completed and certified ADR-0077
+  execution. Implement engine/astrology/varga_d45.py and perform the minimum required registry/model/
+  integration work necessary to make D45 a production-usable certified Varga. Preserve the certified rule
+  exactly. Do not change the certified D45 mathematics merely for implementation convenience. Required:
+  production implementation; registry integration; provenance/variant declaration; tests; independent
+  regression coverage; certification-artifact drift protection; re-run the complete certification suite;
+  verify existing certified Vargas remain unchanged; verify D45 is now correctly discoverable/usable
+  through the production registry; genuine negative-control verification; full CI. Do not begin D24/D40/
+  D16/D27/etc. Do not touch DP-024/025/026/027. Do not touch Foundation, closed Dasha items, H-03 or
+  H10/H11. Do not begin interpretation, convergence, BTR, historical prediction or other Jataka
+  capabilities. Do not push or merge without separate authorization."
+- Relevant ADR/specification: `ADR-0077` (the certified design this implementation follows exactly);
+  `docs/NEW_VARGA_IMPLEMENTATION_TEMPLATE.md`/`engine/astrology/varga_d12.py` (the established production-
+  registration pattern mirrored precisely); `docs/VARGA_CERTIFICATION_ROADMAP.md` section 7 (the
+  documented sign-convention-recertification trap, encountered and correctly handled).
+- Files changed: `engine/astrology/varga_d45.py` (new - the production module), `engine/astrology/
+  __init__.py` (registers D45, extends `CERTIFIED_PRODUCTION_VARGAS`), `engine/tests/test_varga_d45.py`
+  (new - 13 tests), `engine/tests/test_varga_batch_d7_d30_d2.py`, `test_varga_d12.py`, `test_varga_d3.py`,
+  `test_varga_framework.py` (each had a hardcoded "still refused" division list needing `45` removed),
+  `engine/tests/test_sign_convention_certification.py` (new pinned `D45_parashara` sweep hash),
+  `scripts/certify_d45.py` (gate D rewritten to assert D45 is registered), `validate_d45_holdout.py`
+  (now validates the production registered rule), `certification/VARGA_D45_V1_certification.json` and its
+  reports (regenerated, production-registered framing), `certification/VARGA_D2/D3/D7/D12/D30_V1_
+  certification.json` and their reports (regenerated, byte-identical certified values, registry list now
+  shows six entries), `certification/SIGN_CONVENTION_V1_certification.json` and its reports (regenerated,
+  new D45 entry, five pre-existing hashes unchanged), `docs/ACE_EXECUTION_STATE.md` (version 7.0.0 ->
+  7.1.0), this file.
+- Method: mirrored `engine/astrology/varga_d12.py`'s exact structure for the new production module -
+  same frozen-rule-then-`ensure_registered()`-at-import pattern. Before writing any registry-integration
+  code, read `engine/astrology/divisional_chart.py` and `varga_chart_builder.py` directly and confirmed
+  both are fully generic (built during Phase A "so Phase D vargas plug in without new plumbing") - no
+  registry-dispatch or provenance-propagation code needed writing or changing; verified this empirically
+  by calling `divisional_chart(snapshot, 45)` directly and inspecting the returned `VargaChart`'s own
+  `varga`/`school`/`provenance` fields before writing any tests. Wrote `engine/tests/test_varga_d45.py`
+  by directly adapting `test_varga_d12.py`'s own test-by-test structure, computing D45's own genuine
+  content hash (`c8515e44be6e21e3e8c3298121b8c0e4687c0176d9da7e94f7d0aba53a8bf817`) rather than inventing
+  one. Searched the full tree for every other consumer that iterates the registry or hardcodes a varga
+  count, to avoid missing a legitimate required update (found and fixed four "still refused" test lists);
+  ran the full pytest suite BEFORE assuming completeness, which caught the sign-convention certifier's
+  own pinned-hash dependency - the exact trap `docs/VARGA_CERTIFICATION_ROADMAP.md` section 7 documents by
+  name - and fixed it by computing the genuine fresh hash via the certifier's own function, not by
+  guessing or disabling the check.
+- Key findings: registry integration, provenance propagation, and dispatch discoverability required zero
+  new plumbing beyond the two-file registration pattern (`varga_d45.py` + `__init__.py`) - the generic
+  Phase-A infrastructure already handled everything else, confirmed empirically rather than assumed. The
+  sign-convention certifier's own registry-iteration dependency (documented but easy to miss) was
+  encountered for real and handled correctly: a genuinely fresh hash was computed and pinned, not
+  fabricated. All five pre-existing certified vargas and D9/D10 were independently reconfirmed byte-
+  identical across two independent verification paths (each varga's own certifier, and the sign-
+  convention certifier's own cross-layer sweep) - no certified value changed anywhere.
+- Implementation summary: production code written and registered for the first time as part of JATAKA
+  (`engine/astrology/varga_d45.py`, `engine/astrology/__init__.py`). The certified rule table is
+  byte-for-byte identical to `ADR-0077`'s own frozen values - confirmed both by direct comparison and by
+  the content-hash pin matching the certification-execution run's own recorded hash.
+- Tests executed and results: `python -m pytest -q` - 857/857 passed (844 + 13 new from
+  `test_varga_d45.py`; four pre-existing tests updated for the legitimate `45`-now-supported change).
+- Certification executed and results: `python scripts/certify_d45.py` - PASS, all eight gates, now
+  confirming D45 **is** registered with the correct identity/content hash. `python scripts/certify_d2.py`/
+  `certify_d3.py`/`certify_d7.py`/`certify_d12.py`/`certify_d30.py` - all PASS, D9/D10 hashes byte-
+  identical, registry list now shows six entries as expected. `python scripts/certify_sign_convention.py`
+  - PASS, D45's own genuine sweep hash computed and recorded, five pre-existing hashes unchanged.
+- Governance checks executed and results: `python scripts/check_adr_numbering.py` (77 ADR entries,
+  unchanged), `python scripts/check_identifier_families.py` (27 DP identifiers, unchanged - no new DP
+  registered), `python scripts/check_retired_identifiers.py` (0 violations) - all PASS.
+- Known issues: none new.
+- Unresolved questions: what JATAKA capability or maintenance item to pursue next - `DP-024` (varga
+  framework `step`/payload-table question), `DP-025` (polar-Placidus/M-04 Tier-0 maintenance), `DP-026`
+  (`ADR-0027`/KP-significator provenance follow-up), `DP-027` (Parashari-yoga oracle/specification
+  follow-up) all remain open and untouched, per explicit instruction.
+- CEO decision required: this task's own new genuine stopping point, per the owner's explicit closing
+  instruction - review the evidence and decide whether to authorize a push of this task's commits. No
+  D24/D40/D16/D27/etc. work was begun; `DP-024`-`DP-027` were not touched; no interpretation/convergence/
+  BTR/historical-prediction/other-JATAKA-capability work was begun - all per explicit instruction.
+- Next authorized action: none self-executable. Awaiting the owner's review and, separately, authorization
+  to push this task's commits if desired.
 
 ### 2026-08-25 - ADR-0077 RATIFIED; D45 certification EXECUTED, all eight gates PASS; engine/astrology/varga_d45.py still does not exist
 - Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the certification
