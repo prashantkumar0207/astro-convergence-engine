@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.3.0 |
+| Version | 9.4.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-25 (`phase-g-governance` fully GREEN on `origin` - CI run `32822832747`, all four jobs, commit `c85284a`. First push's CI genuinely failed on real drift (modules_scanned ripple; Windows-path-separator bug), root-caused and fixed. Confirmed via direct log inspection: 857/857 pytest, clean drift check, D45's own oracle comparison 5400/0, and a new governance check confirming "6 certified vargas, each with a PASS artifact." Task complete.) |
+| Last updated | 2026-08-25 (**D45 (Akshavedamsa) IS NOW LIVE ON `main`** - PR #5 merged, merge commit `c49336d`. `main`'s own post-merge CI (`32825473827`) all four jobs green, confirmed directly: 857/857 pytest, 6 certified vargas, D45 5400/0 mismatches, artifact-drift clean both tiers. All six preconditions and eight post-merge checks the owner named independently verified. Task complete.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,89 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-25 - D45 JATAKA milestone merged to main: PR #5, merge commit c49336d, post-merge CI fully verified
+- Branch / commit SHA: `phase-g-governance` (local), `main` now at `c49336dd501301dde720aa8297fa181506fe64bd`
+  on `origin` - the merge commit itself (parents `d738520` + `c85284a`).
+- Previous approved commit: `c85284a` on `phase-g-governance` (the CI-green CI-drift-fix commit, already
+  pushed); `d738520` on `main` (the prior JATAKA-entry merge, PR #4).
+- Task (owner's exact instruction): "CEO AUTHORIZATION — MERGE D45 JATAKA MILESTONE. Merge the current
+  CI-green phase-g-governance state into main. Preconditions: verify current branch and exact SHA; verify
+  working tree; verify origin/phase-g-governance is exactly the CI-confirmed c85284a state; verify CI run
+  32822832747 is successful; verify no uncommitted tracked changes; verify main has no unexpected
+  independent work. Execute a standard two-parent merge via PR. No squash, no rebase, no force-push.
+  After merge: verify resulting origin/main SHA; verify source branch is contained in main; inspect the
+  resulting CI run directly to completion; confirm 857/857 tests, governance PASS, oracle PASS, D45
+  certification PASS and artifact-drift PASS; confirm D45 remains registered as the sixth certified
+  production Varga; confirm no unrelated production capability was introduced; confirm working tree
+  state. Do not start DP-024, DP-025, DP-026 or DP-027 yet. Do not modify production code during the
+  merge."
+- Relevant ADR/specification: `ADR-0074` (JATAKA entry), `ADR-0076`/`ADR-0077` (D45 readiness/
+  certification, both already ratified/merged), none reopened this task.
+- Files changed: none beyond the standard merge commit itself (`c49336d`, a plain two-parent merge, no
+  file edits by Claude as part of the merge action); `docs/ACE_EXECUTION_STATE.md` (version 7.3.0 ->
+  7.4.0), this file, as the post-merge documentation refresh.
+- Method: verified all six named preconditions directly before acting - `git branch --show-current`,
+  `git rev-parse HEAD`, `git status --porcelain`, `git fetch` + `git rev-parse origin/phase-g-governance`
+  (confirmed exactly `c85284a1db59d85cc12f46094a1c2f7c0e0bb129` - local HEAD was actually `df8d65a`, one
+  commit ahead with a documentation-only entry never pushed; correctly excluded from this merge since the
+  owner's own instruction explicitly named `c85284a` as "the CI-confirmed state" to merge), `gh run view
+  32822832747 --json conclusion,headSha` (confirmed `"success"` for that exact SHA), and `git log
+  origin/phase-g-governance..origin/main --oneline` (confirmed only `main`'s own three historical merge
+  commits, no independent work). Created the PR via `gh pr create --base main --head phase-g-governance`
+  (PR #5) - since nothing was pushed beyond `c85284a`, this correctly picked up the remote branch's own
+  current tip, not local HEAD; confirmed via `gh pr view 5 --json headRefOid` that the PR's own head SHA
+  was exactly `c85284a`. Waited for the PR's own CI run (`32825195900`) to complete green before merging -
+  did not merge on the strength of the earlier push-triggered run alone. Merged via `gh pr merge 5
+  --merge` (no `--squash`, no `--rebase`, no `-f`). Verified the resulting merge commit's own parents
+  directly (`git log -1 --format="%H%nparents: %P"` on `origin/main`) to confirm a genuine two-parent
+  merge, not a squash or fast-forward.
+- Key findings (post-merge verification, each independently confirmed, not assumed): resulting
+  `origin/main` SHA `c49336dd501301dde720aa8297fa181506fe64bd`, parents `d738520ffc796d07468e24a5b1
+  dddcfba3120c65` + `c85284a1db59d85cc12f46094a1c2f7c0e0bb129`. `git merge-base --is-ancestor c85284a
+  origin/main` returned true - the source branch's own tip is genuinely contained in `main`. `main`'s own
+  post-merge CI run (`32825473827`) watched to completion via `gh run watch --exit-status`, then its own
+  conclusion independently re-confirmed via `gh run view --json conclusion` (`"success"`) and by pulling
+  specific evidence lines directly from the full log (`gh run view --log`), not inferred from checkmarks:
+  `857 passed` on all four legs (both Python versions, both the default gate and the network-guard
+  re-run); the governance gate's own `Certified varga registry matches its declared constant` step -
+  present in this CI configuration for the first time observed this session - printed `PASS: 6 certified
+  vargas, each with a PASS artifact citing a compliant decision entry`, independent CI-side confirmation
+  that D45 is the sixth certified varga with a compliant artifact and decision entry; `77 ADR entries`;
+  `27 registered DP identifiers`; the oracle gate's own `Oracle certification runners (all eleven)` step
+  showed D45's own `C_oracle: {'comparisons': 5400, 'mismatches': 0}` and `KP_CHAIN_V1`'s own `lord
+  mismatches: 0`; both drift-assertion steps (oracle-tier and no-oracle-tier) printed `PASS: 49 evidence
+  file(s) identical to the committed version outside the volatile fields`, and the no-oracle-tier step
+  additionally printed `no tracked source file was modified by any certification run`. Directly inspected
+  `origin/main`'s own committed tree via `git show origin/main:engine/astrology/__init__.py` and `git show
+  origin/main:engine/astrology/varga_d45.py` to confirm `CERTIFIED_PRODUCTION_VARGAS` carries all six
+  entries (`2, 3, 7, 12, 30, 45`) and the D45 module itself is present, not merely inferred from the CI
+  log. Computed the full `git diff --stat d738520 c49336d` (75 files total; 23 under `engine/`/`scripts/`)
+  and confirmed the `engine/`/`scripts/` scope is exactly D45's own certification/implementation footprint
+  (the new module, its registration, its certifier/validator, the `.as_posix()` fixes, and the pinning-
+  test updates this segment's own work required) - no other production capability, no D24/D40/etc, no
+  Jaimini/BNN/Numerology/KP-significator/yoga code anywhere in the diff. Confirmed `git status --porcelain`
+  clean both before and after the merge.
+- Implementation summary: no production code modified by Claude as part of this task - the merge itself
+  is a standard, content-neutral two-parent merge commit; all engine/scripts content had already been
+  committed, certified, and CI-confirmed in prior tasks.
+- Tests executed and results: confirmed via `main`'s own post-merge CI log (857 passed, all four legs);
+  not re-run locally this task since nothing changed locally beyond the merge action itself (executed via
+  GitHub's own merge API, not a local `git merge`).
+- Certification executed and results: confirmed via `main`'s own post-merge CI log - all eleven oracle-
+  tier certifiers PASS (D45 5400/0 mismatches; KP_CHAIN 0 lord mismatches); artifact-drift PASS in both
+  tiers.
+- Governance checks executed and results: confirmed via `main`'s own post-merge CI log - 77 ADR entries,
+  27 registered DP identifiers, 6 certified vargas each with a compliant artifact/decision entry, all
+  PASS.
+- Known issues: none.
+- Unresolved questions: none for this task. `DP-024`-`DP-027` each remain open, separately-authorized
+  items, explicitly not started this task, per the owner's own instruction.
+- CEO decision required: none - this task's own explicit stop condition ("stop after the merge and CI
+  verification and report") is satisfied by full completion, not a pending decision. The natural next
+  decisions (`DP-024`-`DP-027` disposition; the next JATAKA capability) remain open for the owner's own
+  future direction.
+- Next authorized action: none self-executable. Awaiting the owner's next instruction.
 
 ### 2026-08-25 - phase-g-governance fully green on origin: CI-drift fix pushed and confirmed
 - Branch / commit SHA: `phase-g-governance`, `c85284a1db59d85cc12f46094a1c2f7c0e0bb129` - **pushed and
