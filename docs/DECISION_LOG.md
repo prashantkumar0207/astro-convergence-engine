@@ -1179,7 +1179,9 @@ at 0015..0017 is a reservation, not a lost entry, and a gap is not a monotonicit
 ## ADR-0027 - KP significator scope; clarification of root D-008 (ADR-0013 conflict 6)
 
 - **Date:** 2026-08-11
-- **Status:** PROPOSED - pending owner ratification (Q1).
+- **Status:** ACCEPTED. Evidence section amended and ratified by the owner's "CEO DECISION — DP-028"
+  (2026-08-25) - see "Amendment of ADR-0027" and "Ratification of ADR-0027" sub-entries immediately
+  following this entry's own text (which is otherwise unedited).
 - **Context:** Root D-008 names KP_SIGNIFICATOR_V1 as the next engineering tier and requires its
   methodology specification to be frozen before implementation. It was never superseded, while the
   2026-08-08/09 work spanned a much wider programme. `LOCK_MANIFEST.json` still records
@@ -1206,6 +1208,90 @@ at 0015..0017 is a reservation, not a lost entry, and a gap is not a monotonicit
   a prerequisite consideration for any significator work, since significators consume the chain.
 - **Evidence:** Root `DECISION_LOG.md` D-008; `LOCK_MANIFEST.json` tier table;
   `docs/KP_CHAIN_SPEC.md` non-claims; `reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md` H-07.
+
+#### Amendment of ADR-0027: Evidence section corrected and externally verified (2026-08-25)
+
+- **Status:** ACCEPTED (owner-directed amendment). The owner instructed, as item 1 of "CEO DECISION —
+  DP-028": "Amend ADR-0027's Evidence section to incorporate DP-028's external verification, without
+  changing the sixteen-item checklist itself. Explicitly correct the historical 'eleven-item' miscount
+  to sixteen and preserve provenance of the external verification." The full ten-item instruction this
+  entry and its following ratification sub-entry act on, quoted in full for the record: "CEO DECISION —
+  DP-028. 1. Amend ADR-0027's Evidence section to incorporate DP-028's external verification, without
+  changing the sixteen-item checklist itself. Explicitly correct the historical 'eleven-item' miscount to
+  sixteen and preserve provenance of the external verification. 2. Ratify ADR-0027 after that evidence
+  amendment. 3. Proceed with KP_SIGNIFICATOR_V1 methodology-specification drafting only. 4. Freeze V1
+  around core K.S. Krishnamurti significator methodology. 5. Explicitly exclude Four Step Theory, Ruling
+  Planets, horary-specific extensions and other variants from V1. 6. Do not implement KP significators.
+  7. Do not begin Parashari yoga implementation. 8. During specification drafting, independently verify
+  every methodology claim against named authoritative sources and identify disagreements/variants rather
+  than silently choosing one. 9. Continue autonomously through research and drafting. 10. Stop only when
+  the KP specification reaches a genuine CEO decision point requiring ratification or a substantive
+  methodological choice. Do not push or merge anything without separate authorization."
+- **Decision:** This entry amends `ADR-0027`'s own **Evidence line only**. `ADR-0027`'s Decisions 1-5
+  above, including the sixteen-item checklist in Decision 4, are **unchanged, word for word** - this
+  entry does not touch that text. Two things are corrected/added:
+  1. **The historical miscount is corrected.** `ADR-0027`'s own Decision 4 checklist has **sixteen
+     items**, not the "eleven items" this project repeatedly cited in `DP-021`, `DP-023`, and `DP-026`'s
+     own v1.0.0 text, none of which independently recounted it. The error was first caught and corrected
+     by `DP-026` section H.1 (an independent provenance audit), and re-confirmed by `DP-028` section B by
+     direct re-count of `ADR-0027`'s own text: (1) exact methodology, (2) source authority, (3) houses
+     considered, (4) star/sub/sub-sub logic, (5) four-step interpretation if applicable, (6) ruling
+     planets if included, (7) cusp handling, (8) retrograde treatment, (9) node treatment, (10) boundary
+     behaviour, (11) school and profile requirements, (12) independent validation protocol, (13) protected
+     holdout, (14) negative controls, (15) acceptance criteria, (16) explicit non-claims.
+  2. **External verification is now on the record.** `DP-026` section H.2 found `ADR-0027`'s original
+     Evidence line cited no external KP-astrology authority for its own checklist. `DP-028` performed that
+     verification (its own section C, `WebSearch`-sourced, explicitly secondary-source-derived and flagged
+     there for future primary-source confirmation, not treated as a primary citation): K.S. Krishnamurti's
+     own foundational "Six KP Readers" (~1968-1971); cuspal sub-lord theory as the system's central
+     mechanism, structurally matching this project's own already-certified `KP_CHAIN_V1` SL/NL/SB/SS
+     hierarchy; a significator-selection priority rule; Ruling Planets' seven-factor, judgment-time/
+     horary-adjacent character; and the critical disambiguation that "Four Step Theory" was developed by a
+     separate, later author (Sunil Gondhalekar, ~1990), not part of Krishnamurti's own original readers,
+     and is positioned in the literature as an alternative to Ruling Planets rather than a dependency of
+     it - independently corroborating `ADR-0027` Decision 3's own four-way scope separation.
+  This entry's own Evidence line (below) supersedes the original one **for citation purposes only**; the
+  original Evidence line, quoted in `ADR-0027`'s own text above, is left unedited as the historical record
+  of what was cited when the entry was first drafted.
+- **Consequences:** None to `ADR-0027`'s own substantive Decisions 1-5. This amendment strengthens the
+  Evidence provenance behind an already-existing checklist; it authorizes nothing by itself and is not a
+  ratification (see the following sub-entry for that).
+- **Evidence:** the owner's "CEO DECISION — DP-028" instruction (item 1), quoted above in full;
+  `docs/decisions/DP-028-kp-significator-external-verification-readiness.md` section C (external
+  verification) and section B (sixteen-item re-count), commit `6a7e3300bb5fac235c1a443d09b2a60d3c1298e3`;
+  `docs/decisions/DP-026-d008-kp-significator-methodology-readiness.md` section H.1 (the original
+  miscount correction) and H.2 (the original no-external-citation finding).
+
+#### Ratification of ADR-0027 (as amended above): KP SIGNIFICATOR SCOPE RATIFIED (2026-08-25)
+
+- **Status:** ACCEPTED. The owner instructed, as item 2 of the same "CEO DECISION — DP-028" quoted in
+  full in the immediately preceding amendment sub-entry: "Ratify ADR-0027 after that evidence amendment."
+  Per `docs/PROJECT_CONSTITUTION.md` s11, this instruction is the ratifying act; this entry records it,
+  matching the precedent already used throughout this session (`ADR-0068`, `ADR-0074`, `ADR-0075`,
+  `ADR-0076`, `ADR-0077`'s own ratification sub-entries).
+- **Decision:** `ADR-0027` above, **as amended by the immediately preceding sub-entry**, is ratified
+  exactly as drafted, with no further wording changed to either the original entry or the amendment. Its
+  own `Status` line, at the top of the original entry, is updated to point to this entry - the only
+  further edit made to that entry's own text beyond the Evidence-line amendment already recorded above.
+  As of 2026-08-25: **`ADR-0027`'s Decisions 1-5 are now in force.** D-008 is clarified (methodology
+  requirement stands and is generalised; the "next tier" sequencing claim remains superseded by
+  `ADR-0026`). KP significators remain **NOT authorised for implementation** (Decision 2, unchanged and
+  reaffirmed - see the owner's own items 6-7 of the same instruction, recorded in `DP-028`'s own update,
+  not restated here). The four-way scope separation (KP significators; four-step; ruling planets; horary -
+  Decision 3) is now ratified policy, not merely a proposal. The sixteen-item checklist (Decision 4) is
+  now the ratified, governing minimum-content requirement for any future `KP_SIGNIFICATOR_V1`
+  specification. `LOCK_MANIFEST.json` tier entries remain unedited (Decision 5, Q12 remains open).
+- **Consequences:** identical to `ADR-0027`'s own, now in force, plus the amendment's added evidence
+  provenance. No code touched by this ratification itself. The owner separately authorized (items 3-5 of
+  the same instruction, recorded in full in `DP-028`'s own update, not restated here) proceeding with
+  `KP_SIGNIFICATOR_V1` methodology-specification drafting only - frozen around core K.S. Krishnamurti
+  significator methodology, explicitly excluding Four Step Theory, Ruling Planets, horary-specific
+  extensions, and other variants from V1 - not implementation. Parashari yoga implementation remains not
+  begun (item 7). FOUNDATION, H-03, the eight `ADR-0072` cross-certifier findings, and every closed Dasha
+  item remain untouched.
+- **Evidence:** the owner's "CEO DECISION — DP-028" instruction (item 2), quoted in full in the preceding
+  amendment sub-entry; `ADR-0027` and its amendment, both above; `DP-028`, commit
+  `6a7e3300bb5fac235c1a443d09b2a60d3c1298e3`.
 
 ---
 

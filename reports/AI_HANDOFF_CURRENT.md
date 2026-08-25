@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.5.0 |
+| Version | 9.6.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-25 (**`DP-028` drafted** - KP-significator/`D-008` decision-readiness continued from canonical `main` post-D45-merge. External research (K.S. Krishnamurti's own Six Readers; cuspal sub-lord theory; ruling planets; the Gondhalekar/Four-Step-Theory disambiguation) plus a PyJHora oracle-availability audit finding no dedicated KP significator function exists, contrasting `DP-027`'s 233-function Parashari-yoga finding. Recommends ratifying `ADR-0027` at medium-high confidence - not ratified. 857/857 tests, governance clean. Local commit only, not pushed.) |
+| Last updated | 2026-08-25 (**`ADR-0027` AMENDED AND RATIFIED** - per "CEO DECISION — DP-028" items 1-2: Evidence section corrected (eleven-item miscount fixed to sixteen; `DP-028` external verification cited) via a new sub-entry, then ratified via a further sub-entry - `ADR-0027`'s own Decisions 1-5 left word-for-word unedited. `ADR-0027` is now `Status: ACCEPTED`. 857/857 tests, governance clean, 77 ADR entries (no new number consumed). Now proceeding, same task, into `KP_SIGNIFICATOR_V1` specification drafting per items 3-10. Local commit only, not pushed.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,52 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-25 - ADR-0027 amended and ratified; KP_SIGNIFICATOR_V1 methodology-specification drafting authorized and begun
+- Branch / commit SHA: `phase-g-governance` (local), this task's own commit on top of `6a7e3300bb5fac2
+  35c1a443d09b2a60d3c1298e3` (the `DP-028` commit). `main` unchanged, still `c49336d`.
+- Previous approved commit: `6a7e330` on `phase-g-governance` (local, unpushed).
+- Task (owner's exact instruction): "CEO DECISION — DP-028. 1. Amend ADR-0027's Evidence section to
+  incorporate DP-028's external verification, without changing the sixteen-item checklist itself.
+  Explicitly correct the historical 'eleven-item' miscount to sixteen and preserve provenance of the
+  external verification. 2. Ratify ADR-0027 after that evidence amendment. 3. Proceed with
+  KP_SIGNIFICATOR_V1 methodology-specification drafting only. 4. Freeze V1 around core K.S. Krishnamurti
+  significator methodology. 5. Explicitly exclude Four Step Theory, Ruling Planets, horary-specific
+  extensions and other variants from V1. 6. Do not implement KP significators. 7. Do not begin Parashari
+  yoga implementation. 8. During specification drafting, independently verify every methodology claim
+  against named authoritative sources and identify disagreements/variants rather than silently choosing
+  one. 9. Continue autonomously through research and drafting. 10. Stop only when the KP specification
+  reaches a genuine CEO decision point requiring ratification or a substantive methodological choice. Do
+  not push or merge anything without separate authorization."
+- Relevant ADR/specification: `ADR-0027` (amended and ratified this task); `DP-026`, `DP-028` (both
+  updated to reflect the ratification, not rewritten).
+- Files changed (amendment/ratification step): `docs/DECISION_LOG.md` (`ADR-0027`'s own `Status` line
+  updated to point to two new sub-entries - "Amendment of ADR-0027" and "Ratification of ADR-0027" -
+  Decisions 1-5 of the original entry left word-for-word unedited); `docs/decisions/README.md` (`DP-026`
+  row's own "eleven-element" miscount corrected to "sixteen-element"; `DP-028` row updated to mark
+  sections I/K.1-K.2 ADDRESSED; v4.1.0 -> v4.2.0); `docs/ACE_EXECUTION_STATE.md` (v7.5.0 -> v7.6.0); this
+  file.
+- Method: matched the "amend/ratify via a new sub-entry, edit only the original entry's own Status line"
+  mechanism used throughout this session (`ADR-0068`, `ADR-0074`, `ADR-0075`, `ADR-0076`, `ADR-0077`).
+  The amendment sub-entry supersedes `ADR-0027`'s own Evidence line **for citation purposes only** -
+  the original Evidence line, inside the original entry's own unedited text, is preserved as the
+  historical record of what was cited when the entry was first drafted in 2026-08-11. Confirmed via
+  `check_adr_numbering.py` that no new ADR number was consumed (still 77 entries) - the sub-entry
+  mechanism is additive text under the existing `ADR-0027` heading, not a new register entry.
+- Key findings: `ADR-0027`'s own sixteen-item checklist (Decision 4) required no substantive change -
+  `DP-028`'s external verification corroborated it rather than contradicting it. The only defect was
+  evidentiary (no external citation, and a repeated miscount of the item count), both now corrected.
+- Tests: `python -m pytest -q` -> **857 passed**, unchanged.
+- Governance status: `check_adr_numbering.py` PASS (77 ADR entries, unchanged - confirms no identifier
+  was consumed by the sub-entry mechanism); `check_identifier_families.py` PASS (28 registered DP
+  identifiers, unchanged); `check_retired_identifiers.py` PASS (0 violations).
+- Explicit non-claims / exclusions honored: `ADR-0027`'s own Decisions 1-5 text is unedited, only its
+  Status line and a superseding-for-citation Evidence note are added; KP significators remain not
+  authorised for implementation (Decision 2, unchanged); no Parashari yoga implementation begun; `DP-024`/
+  `DP-025` not reopened; FOUNDATION, H-03, H10/H11, closed Dasha items untouched; not pushed or merged.
+- Next: per items 3-10 of the same instruction, continuing within this same task into
+  `KP_SIGNIFICATOR_V1` methodology-specification drafting only (not implementation) - a separate,
+  forthcoming task-log entry will record that work's own outcome and stopping point.
 
 ### 2026-08-25 - DP-028 drafted: KP-significator external-verification decision-readiness, continuing from canonical main post-D45-merge
 - Branch / commit SHA: `phase-g-governance` (local), this task's own commit on top of `fa89648b639d4dd
