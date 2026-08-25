@@ -9,5 +9,5 @@ G_protected_holdout: {'points': 26278, 'mismatches': 0, 'methodology': 'prime-st
 D_non_invasiveness: registry [[2, 'parashara'], [3, 'parashara'], [7, 'parashara'], [12, 'parashara'], [30, 'parashara'], [45, 'parashara']] d45_registered: True
 E_independent_validator: PASS
 H_negative_controls: True
-archived          : certification\VARGA_D45_V1_certification.json
+archived          : certification/VARGA_D45_V1_certification.json
 RESULT            : PASS

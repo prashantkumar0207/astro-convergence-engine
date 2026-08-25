@@ -376,7 +376,7 @@ def main():
           "d45_registered:", report["gates"]["D_non_invasiveness"]["d45_registered"])
     print("E_independent_validator: PASS")
     print("H_negative_controls:", report["gates"]["H_negative_controls"]["all_detected"])
-    print("archived          :", out.relative_to(ROOT))
+    print("archived          :", out.relative_to(ROOT).as_posix())
     print("RESULT            : PASS")
 
 

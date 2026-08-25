@@ -351,7 +351,7 @@ def main():
     print(f"near-boundary     : {len(NEAR_BOUNDARY_CASE_IDS)} genuine cases (3 per profile, native only), "
           f"max {max(c['moon_distance_to_nearest_boundary_deg'] for c in near_boundary_coverage)} "
           f"deg from boundary (M-02, ADR-0072)")
-    print("archived          :", out.relative_to(ROOT))
+    print("archived          :", out.relative_to(ROOT).as_posix())
     print("RESULT            : PASS")
 
 

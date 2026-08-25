@@ -371,7 +371,7 @@ def main():
     for name in ("A_convention_integrity", "B_dense_sweep", "C_independent_reference", "D_non_invasiveness"):
         print(f"{name}: {report['gates'][name]}")
     print("E_independent_validator: PASS")
-    print("archived          :", out.relative_to(ROOT))
+    print("archived          :", out.relative_to(ROOT).as_posix())
     print("RESULT            : PASS")
 
 

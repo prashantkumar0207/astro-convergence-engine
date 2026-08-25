@@ -222,7 +222,7 @@ def main():
     print(f"D_non_invasiveness: registry {gate_d['registry']}, dispatch {gate_d['certified_dispatch']}, "
           f"D9 hash {gate_d['d9_sweep_sha256'][:16]}..., D10 hash {gate_d['d10_sweep_sha256'][:16]}...")
     print("E_independent_validator: PASS")
-    print("archived          :", out.relative_to(ROOT))
+    print("archived          :", out.relative_to(ROOT).as_posix())
     print("RESULT            : PASS")
 
 

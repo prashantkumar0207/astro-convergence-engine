@@ -2,7 +2,7 @@
 CURRENT-ENGINE HOLDOUT CERTIFICATION
 ================================================================
 ephemeris verified: 3 assets against CHECKSUMS.sha256
-anti-fitting scan : 180 modules, 0 findings
+anti-fitting scan : 183 modules, 0 findings
 profiles          : parashari_lahiri, kp_krishnamurti
 cases per profile : 11
 planet comparisons: 264

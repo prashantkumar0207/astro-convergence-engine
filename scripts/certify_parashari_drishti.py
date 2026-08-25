@@ -168,7 +168,7 @@ def main():
         gate = dict(report["gates"][name])
         gate.pop("node_divergence_note", None)
         print(f"{name}: {gate}")
-    print("archived          :", out.relative_to(ROOT))
+    print("archived          :", out.relative_to(ROOT).as_posix())
     print("RESULT            : PASS")
 
 
