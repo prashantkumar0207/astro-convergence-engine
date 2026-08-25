@@ -205,4 +205,4 @@ def test_every_real_supersession_claim_matches_its_own_division():
             f"{artifact.name} claims {claimed}, but its division authorises {expected}"
         )
         checked += 1
-    assert checked == 5, f"expected 5 varga artifacts, checked {checked}"
+    assert checked == 6, f"expected 6 varga artifacts, checked {checked}"

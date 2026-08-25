@@ -448,7 +448,7 @@ def main():
     print(f"max asc error     : {s['max_ascendant_error_arcsec']:.6f} arcsec")
     print(f"max cusp error    : {s['max_cusp_error_arcsec']:.6f} arcsec")
     print(f"ayanamsa Lahiri/KP: {aya_diff_arcmin:.3f} arcmin apart")
-    print(f"archived          : {outfile.relative_to(ROOT)}")
+    print(f"archived          : {outfile.relative_to(ROOT).as_posix()}")
     print(f"RESULT            : {s['result']}")
     if failures:
         for f_ in failures:

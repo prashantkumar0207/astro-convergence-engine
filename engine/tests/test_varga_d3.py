@@ -151,8 +151,9 @@ def test_certified_d1_d9_d10_dispatch_unchanged():
 
 
 def test_other_vargas_still_refused():
+    # D45 is excluded: certified and registered (ADR-0077, VARGA_D45_V1).
     snapshot = calculate(BIRTH, profile=PARASHARI_LAHIRI).snapshot
-    for division in (4, 16, 20, 24, 27, 40, 45, 60):
+    for division in (4, 16, 20, 24, 27, 40, 60):
         with pytest.raises(UnsupportedVargaError):
             divisional_chart(snapshot, division)
 

@@ -187,7 +187,7 @@ def main():
     print("=" * 60)
     for name, gate in report["gates"].items():
         print(f"{name}: {gate}")
-    print("archived          :", out.relative_to(ROOT))
+    print("archived          :", out.relative_to(ROOT).as_posix())
     print("RESULT            : PASS")
 
 

@@ -289,7 +289,7 @@ def main():
     print(f"C_declaration_coverage: {gates['C_declaration_coverage']['fields_proven']} fields proven "
           f"over {gates['C_declaration_coverage']['charts_swept']} charts, 0 mismatches")
     print(f"D_cross_layer        : {gates['D_cross_layer_agreement']['surface_checks']} checks, 0 mismatches")
-    print("archived             :", out.relative_to(ROOT))
+    print("archived             :", out.relative_to(ROOT).as_posix())
     print("RESULT               : PASS")
 
 

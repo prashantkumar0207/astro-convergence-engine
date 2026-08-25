@@ -3,10 +3,10 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | PROPOSED - research and planning only. No varga is authorised for implementation by this document. Pending owner ratification (docs/OPEN_QUESTIONS.md Q1). |
-| Version | 1.0.0 |
+| Status | PROPOSED - research and planning only. No varga is authorised for implementation by this document. Pending owner ratification (docs/OPEN_QUESTIONS.md Q1). Section 5's own recommended order is this document's own unratified opinion, not a normative sequencing decision, until this document's own status changes. |
+| Version | 1.0.1 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-11 |
+| Last updated | 2026-08-25 (section 2's B-01/B-02 status corrected - see Change history) |
 | Review cadence | TBD |
 
 # Varga Certification Roadmap
@@ -44,6 +44,16 @@ a rule matches the division it is registered under, so a D4 served by a twelve-d
 be accepted silently. B-02: a certified rule can be substituted at runtime and every
 non-invasiveness gate still passes, because Gate D compares registry keys and never rule content.
 Neither affects any published value. Both make the next registration less safe than it looks.
+
+**Correction (2026-08-25, see Change history v1.0.1): both are resolved.** `ADR-0049`
+(`Status: ACCEPTED`, 2026-08-17) remediated B-01 (`register_varga_rule` now cross-checks
+`rule.divisions`/`rule.division` against the registered division) and B-02 (`rule_content_sha256`
+content-identity pinning, checked by every certifier's own Gate D). Confirmed live in current code
+this correction. The paragraph above is left otherwise unedited, per this repository's practice of
+correcting rather than silently rewriting stale text; this note supersedes its "must be resolved"
+framing specifically for B-01/B-02. The `step`-field and payload/label-table proposals in section 3
+remain undecided as of this correction - see `docs/decisions/DP-024-varga-framework-step-payload-
+architecture.md`.
 
 ## 3. The two rule contracts, and what they cannot express
 
@@ -141,4 +151,5 @@ proposals requiring their own decisions.
 
 | Version | Date | Change |
 |---|---|---|
+| 1.0.1 | 2026-08-25 | **Correction, not a ratification.** Section 2's claim that B-01/B-02 "must be resolved before the next varga is added" was stale - both were remediated by `ADR-0049` (`Status: ACCEPTED`, 2026-08-17), confirmed live in current `engine/astrology/varga_registry.py`/`varga_rules.py` code this correction. A note is added inline (section 2) rather than rewriting the original paragraph, per this repository's practice of correcting rather than silently editing stale text. Status header clarified: section 5's recommended order remains this document's own unratified opinion, not normative, until the document's own status changes - it is not treated as ratified by this correction. Found and corrected per `docs/decisions/DP-023-jataka-first-capability-exact-selection.md` and the owner's explicit "audit the stale VARGA_CERTIFICATION_ROADMAP.md against the accepted ADRs and correct its status only through the appropriate append-only governance mechanism" instruction (2026-08-25). No other content changed; `Status: PROPOSED` unchanged - this document remains unratified and authorises nothing, exactly as before. |
 | 1.0.0 | 2026-08-11 | Created in the G1 work package from the 2026-08-11 architecture audit. |

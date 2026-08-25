@@ -1,7 +1,7 @@
 {
  "schema": "panchanga_v1_certification",
  "adr": "ADR-0055",
- "date": "2026-08-20",
+ "date": "2026-08-25",
  "scope": "Classification only, at a given instant: tithi, nakshatra (reused), yoga, karana, vara. FOUNDATION Panchanga first work package.",
  "conventions": {
   "boundary": "engine-wide 1e-10 promote-up, [start, end), applied uniformly to both certified profiles",
@@ -66,7 +66,7 @@
   "any other varga, dasha, or certified layer"
  ],
  "environment": {
-  "python": "3.11.15"
+  "python": "3.12.10"
  },
  "preconditions": {
   "data_assets": {
@@ -78,7 +78,7 @@
    }
   },
   "anti_fitting": {
-   "modules_scanned": 180,
+   "modules_scanned": 183,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."

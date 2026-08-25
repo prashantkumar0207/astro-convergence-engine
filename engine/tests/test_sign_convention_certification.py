@@ -29,6 +29,7 @@ CERTIFIED_SWEEP_HASHES = {
     "D7_parashara": "51f7acf701b1978990accbfcbedfbac6001446f2e31789077752e44c54c3b73c",
     "D12_parashara": "81b14663c6d66a8680e3697a25b9bd53c72897768e233b82f1dfcbc3eb1306ac",
     "D30_parashara": "8b10c2f7b1d8bd8c76406e2290b19f37e55899e78653b520896e9e662606f5a4",
+    "D45_parashara": "56a88127eb983a832e4016e0961c929b3accadcaf007def5210af2ab94818cce",
 }
 
 

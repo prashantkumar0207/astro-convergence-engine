@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 8.1.0 |
+| Version | 9.2.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-24 (CI-run-ID discrepancy resolved by direct GitHub Actions query - no fabrication, both runs genuine; canonical snapshot corrected. Full main-vs-phase-g-governance merge-readiness audit performed: READY, merge NOT performed, awaiting separate CEO merge authorization. No JATAKA implementation begun.) |
+| Last updated | 2026-08-25 (Pushed nine commits; CI run `32820903673` genuinely FAILED on real, understood drift (modules_scanned 180->183 left stale in 8 unrelated artifacts; a Windows-path-separator bug in 12 certifier scripts). Root-caused via direct log inspection, fixed at the source, two artifacts recovered via CI-sourced overlay (established precedent). 857/857 pytest, governance clean. Committing and re-pushing the fix within the same task.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,856 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-25 - Push authorized and executed; CI genuinely failed on real drift; root-caused, fixed, and re-pushed
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the CI-drift fix,
+  on top of `2cb9f30`, the pushed D45 production-implementation commit).
+- Previous approved commit: `2cb9f30` (D45 production implementation) - pushed to `origin/phase-g-
+  governance` this task, confirmed byte-identical remote SHA (`c4d571a..2cb9f30`, fast-forward).
+- Task (owner's exact instruction): "AUTHORIZE PUSH — push the current nine local commits to
+  phase-g-governance, verify remote SHA, run/watch CI to completion, inspect the actual logs, and stop at
+  the next genuine CEO decision point. Do not merge to main unless separately authorized."
+- Relevant ADR/specification: none reopened. Cites the established "TRANSIT_V1 evidence recovery"/CI-
+  sourced-overlay precedent from earlier this session, applied again here for two files.
+- Files changed (this fix, on top of the pushed commit): `scripts/certify_current_engine.py`,
+  `certify_d2.py`, `certify_d3.py`, `certify_d7.py`, `certify_d12.py`, `certify_d30.py`, `certify_d45.py`,
+  `certify_kp_chain.py`, `certify_parashari_drishti.py`, `certify_rise_set.py`,
+  `certify_sign_convention.py`, `certify_vimshottari.py` (each: one `print()` call fixed to use
+  `.as_posix()`), `certification/KP_CHAIN_V1_certification.json`, `PANCHANGA_V1_certification.json`,
+  `PARASHARI_DRISHTI_V1_certification.json`, `RISE_SET_V1_certification.json`,
+  `TRANSIT_V1_certification.json`, `TRIKALAM_V1_certification.json`, `VIMSHOTTARI_V1_certification.json`,
+  `current_engine_certification.json` (all regenerated or CI-recovered), plus their corresponding
+  `reports/certification/*.report.md`/`*.console.txt` files, `docs/ACE_EXECUTION_STATE.md` (version
+  7.1.0 -> 7.2.0), this file.
+- Method: pushed via `git push origin phase-g-governance` (plain push, no force); verified
+  `git rev-parse HEAD` and `git rev-parse origin/phase-g-governance` byte-identical; located the new run
+  via `gh run list --branch phase-g-governance`; watched it via `gh run watch <id> --exit-status`, which
+  exited nonzero - a genuine failure, not assumed clean from the push succeeding. Pulled the actual
+  failure text via `gh run view <id> --log-failed`, not just the pass/fail summary, and read every line
+  of the drift-check output directly. Diagnosed cause 1 (`modules_scanned` project-wide shift) by
+  recognizing the exact number (183) matched the three new files added to the scan-scope tuples two tasks
+  ago, and confirming which artifacts were NOT among those regenerated at that time. Diagnosed cause 2
+  (Windows path separator) by directly comparing the committed backslash-containing console lines against
+  CI's own forward-slash lines in the same failure log. Regenerated every affected non-swetest,
+  non-ULP-sensitive artifact locally, using the same local PyJHora installation (via `PYTHONPATH`) already
+  used for D45's own certification work. For the two exceptions - `current_engine_certification.json`
+  (needs the bundled Linux-ELF `swetest` binary, unrunnable on this Windows host) and
+  `TRANSIT_V1_certification.json` (a field-level Windows/Linux floating-point ULP discrepancy, confirmed
+  by direct three-way comparison: committed value, this session's own local Windows regeneration, and
+  CI's own regeneration - the committed and CI values matched exactly; only the local Windows value
+  differed) - downloaded the failed run's own uploaded artifacts (`gh run download <id> -n <artifact-
+  name> --dir <path>`, using the correct per-job artifact: `hermetic-certification-evidence-3.11` for the
+  no-oracle-tier `current_engine_certification.json`, `oracle-certification-evidence` for the oracle-tier
+  `TRANSIT_V1_certification.json`), diffed each field-by-field against the committed version to confirm
+  the only differences were volatile fields plus the one understood, deliberate change, then copied those
+  CI-produced files into place rather than trusting a locally-drifted regeneration.
+- Key findings: both CI failures were real, diagnosable, and entirely attributable to this session's own
+  prior work - not flakiness, not an environment problem to route around. The `modules_scanned` ripple
+  effect is a genuine class of risk worth naming going forward: changing `certification_support.py`'s own
+  scan-scope tuples has a project-wide effect on every certifier's own reported precondition count, not
+  just the certifier(s) directly being worked on - any future change to those tuples must regenerate
+  every certifier's own artifact, not only the ones under direct edit. The Windows-path-separator bug was
+  pre-existing in most of these scripts (not introduced this session, except for the one instance in the
+  newly-written `certify_d45.py`) but had simply never been triggered before, since this project's own
+  established practice is normally to regenerate certifiers only in the CI environment or to accept the
+  documented Windows/Linux gate-parity gap for swetest-dependent runs - running this many non-swetest
+  certifiers locally on Windows, back-to-back, surfaced it for the first time.
+- Implementation summary: twelve one-line `print()` fixes (no calculation logic touched). Nine
+  certification artifacts (plus their reports/transcripts) regenerated or CI-recovered, all differing from
+  the previously-committed versions only in the two understood, deliberate respects.
+- Tests executed and results: `python -m pytest -q` - 857/857 passed, unchanged.
+- Certification executed and results: `python scripts/check_artifact_drift.py` - every remaining diff
+  confirmed to be exactly the two understood changes (`modules_scanned` 180->183; backslash->forward-slash
+  console paths), nothing unexplained.
+- Governance checks executed and results: `python scripts/check_adr_numbering.py` (77 ADR entries,
+  unchanged), `python scripts/check_identifier_families.py` (27 DP identifiers, unchanged), `python
+  scripts/check_retired_identifiers.py` (0 violations) - all PASS.
+- Known issues: none new - both causes fully understood and fixed, not worked around.
+- Unresolved questions: whether the second CI run (after this fix is pushed) passes clean - to be
+  confirmed directly, not assumed, before this task's own genuine stopping point is reached.
+- CEO decision required: none yet - per the owner's own explicit "continue until the next genuine CEO
+  decision point" instruction, this task continues past this fix's own commit into pushing it and
+  watching the second CI run to completion, within the same turn.
+- Next authorized action: commit this fix, push it to `origin/phase-g-governance`, watch the resulting CI
+  run to completion, inspect its actual logs, and report the genuine result - continuing the same
+  authorized task.
+
+### 2026-08-25 - D45 production implementation complete: JATAKA's first production capability, sixth certified varga
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the production-
+  implementation's own files, on top of `d83b3b0`).
+- Previous approved commit: `d83b3b0` (the `ADR-0077`-ratification/certification-execution commit,
+  local-only, eight commits ahead of `origin/phase-g-governance`'s
+  `c4d571a340b4baf873fbefb5661eb195937d2f51`).
+- Task (owner's exact instruction, abridged): "CEO AUTHORIZATION — D45 PRODUCTION IMPLEMENTATION. I
+  authorize production implementation of D45 based on the successfully completed and certified ADR-0077
+  execution. Implement engine/astrology/varga_d45.py and perform the minimum required registry/model/
+  integration work necessary to make D45 a production-usable certified Varga. Preserve the certified rule
+  exactly. Do not change the certified D45 mathematics merely for implementation convenience. Required:
+  production implementation; registry integration; provenance/variant declaration; tests; independent
+  regression coverage; certification-artifact drift protection; re-run the complete certification suite;
+  verify existing certified Vargas remain unchanged; verify D45 is now correctly discoverable/usable
+  through the production registry; genuine negative-control verification; full CI. Do not begin D24/D40/
+  D16/D27/etc. Do not touch DP-024/025/026/027. Do not touch Foundation, closed Dasha items, H-03 or
+  H10/H11. Do not begin interpretation, convergence, BTR, historical prediction or other Jataka
+  capabilities. Do not push or merge without separate authorization."
+- Relevant ADR/specification: `ADR-0077` (the certified design this implementation follows exactly);
+  `docs/NEW_VARGA_IMPLEMENTATION_TEMPLATE.md`/`engine/astrology/varga_d12.py` (the established production-
+  registration pattern mirrored precisely); `docs/VARGA_CERTIFICATION_ROADMAP.md` section 7 (the
+  documented sign-convention-recertification trap, encountered and correctly handled).
+- Files changed: `engine/astrology/varga_d45.py` (new - the production module), `engine/astrology/
+  __init__.py` (registers D45, extends `CERTIFIED_PRODUCTION_VARGAS`), `engine/tests/test_varga_d45.py`
+  (new - 13 tests), `engine/tests/test_varga_batch_d7_d30_d2.py`, `test_varga_d12.py`, `test_varga_d3.py`,
+  `test_varga_framework.py` (each had a hardcoded "still refused" division list needing `45` removed),
+  `engine/tests/test_sign_convention_certification.py` (new pinned `D45_parashara` sweep hash),
+  `scripts/certify_d45.py` (gate D rewritten to assert D45 is registered), `validate_d45_holdout.py`
+  (now validates the production registered rule), `certification/VARGA_D45_V1_certification.json` and its
+  reports (regenerated, production-registered framing), `certification/VARGA_D2/D3/D7/D12/D30_V1_
+  certification.json` and their reports (regenerated, byte-identical certified values, registry list now
+  shows six entries), `certification/SIGN_CONVENTION_V1_certification.json` and its reports (regenerated,
+  new D45 entry, five pre-existing hashes unchanged), `docs/ACE_EXECUTION_STATE.md` (version 7.0.0 ->
+  7.1.0), this file.
+- Method: mirrored `engine/astrology/varga_d12.py`'s exact structure for the new production module -
+  same frozen-rule-then-`ensure_registered()`-at-import pattern. Before writing any registry-integration
+  code, read `engine/astrology/divisional_chart.py` and `varga_chart_builder.py` directly and confirmed
+  both are fully generic (built during Phase A "so Phase D vargas plug in without new plumbing") - no
+  registry-dispatch or provenance-propagation code needed writing or changing; verified this empirically
+  by calling `divisional_chart(snapshot, 45)` directly and inspecting the returned `VargaChart`'s own
+  `varga`/`school`/`provenance` fields before writing any tests. Wrote `engine/tests/test_varga_d45.py`
+  by directly adapting `test_varga_d12.py`'s own test-by-test structure, computing D45's own genuine
+  content hash (`c8515e44be6e21e3e8c3298121b8c0e4687c0176d9da7e94f7d0aba53a8bf817`) rather than inventing
+  one. Searched the full tree for every other consumer that iterates the registry or hardcodes a varga
+  count, to avoid missing a legitimate required update (found and fixed four "still refused" test lists);
+  ran the full pytest suite BEFORE assuming completeness, which caught the sign-convention certifier's
+  own pinned-hash dependency - the exact trap `docs/VARGA_CERTIFICATION_ROADMAP.md` section 7 documents by
+  name - and fixed it by computing the genuine fresh hash via the certifier's own function, not by
+  guessing or disabling the check.
+- Key findings: registry integration, provenance propagation, and dispatch discoverability required zero
+  new plumbing beyond the two-file registration pattern (`varga_d45.py` + `__init__.py`) - the generic
+  Phase-A infrastructure already handled everything else, confirmed empirically rather than assumed. The
+  sign-convention certifier's own registry-iteration dependency (documented but easy to miss) was
+  encountered for real and handled correctly: a genuinely fresh hash was computed and pinned, not
+  fabricated. All five pre-existing certified vargas and D9/D10 were independently reconfirmed byte-
+  identical across two independent verification paths (each varga's own certifier, and the sign-
+  convention certifier's own cross-layer sweep) - no certified value changed anywhere.
+- Implementation summary: production code written and registered for the first time as part of JATAKA
+  (`engine/astrology/varga_d45.py`, `engine/astrology/__init__.py`). The certified rule table is
+  byte-for-byte identical to `ADR-0077`'s own frozen values - confirmed both by direct comparison and by
+  the content-hash pin matching the certification-execution run's own recorded hash.
+- Tests executed and results: `python -m pytest -q` - 857/857 passed (844 + 13 new from
+  `test_varga_d45.py`; four pre-existing tests updated for the legitimate `45`-now-supported change).
+- Certification executed and results: `python scripts/certify_d45.py` - PASS, all eight gates, now
+  confirming D45 **is** registered with the correct identity/content hash. `python scripts/certify_d2.py`/
+  `certify_d3.py`/`certify_d7.py`/`certify_d12.py`/`certify_d30.py` - all PASS, D9/D10 hashes byte-
+  identical, registry list now shows six entries as expected. `python scripts/certify_sign_convention.py`
+  - PASS, D45's own genuine sweep hash computed and recorded, five pre-existing hashes unchanged.
+- Governance checks executed and results: `python scripts/check_adr_numbering.py` (77 ADR entries,
+  unchanged), `python scripts/check_identifier_families.py` (27 DP identifiers, unchanged - no new DP
+  registered), `python scripts/check_retired_identifiers.py` (0 violations) - all PASS.
+- Known issues: none new.
+- Unresolved questions: what JATAKA capability or maintenance item to pursue next - `DP-024` (varga
+  framework `step`/payload-table question), `DP-025` (polar-Placidus/M-04 Tier-0 maintenance), `DP-026`
+  (`ADR-0027`/KP-significator provenance follow-up), `DP-027` (Parashari-yoga oracle/specification
+  follow-up) all remain open and untouched, per explicit instruction.
+- CEO decision required: this task's own new genuine stopping point, per the owner's explicit closing
+  instruction - review the evidence and decide whether to authorize a push of this task's commits. No
+  D24/D40/D16/D27/etc. work was begun; `DP-024`-`DP-027` were not touched; no interpretation/convergence/
+  BTR/historical-prediction/other-JATAKA-capability work was begun - all per explicit instruction.
+- Next authorized action: none self-executable. Awaiting the owner's review and, separately, authorization
+  to push this task's commits if desired.
+
+### 2026-08-25 - ADR-0077 RATIFIED; D45 certification EXECUTED, all eight gates PASS; engine/astrology/varga_d45.py still does not exist
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the certification
+  execution's own files, on top of `5113eac`).
+- Previous approved commit: `5113eac` (the `ADR-0076`-ratification/`ADR-0077`-design commit, local-only,
+  seven commits ahead of `origin/phase-g-governance`'s `c4d571a340b4baf873fbefb5661eb195937d2f51`).
+- Task (owner's exact instruction, abridged): "CEO RATIFICATION — ADR-0077. I ratify ADR-0077 exactly as
+  drafted. Authorize execution of the D45 certification work only: write the frozen D45 rule; build the
+  independent validator; execute the defined oracle comparison; execute the defined boundary cases,
+  including k=13, 26, 29; execute the protected holdout; execute genuine negative controls; generate the
+  machine-readable certification artifact and human-readable report; establish artifact-drift protection
+  and CI coverage; preserve the explicit non-claims and provenance. Do not create or modify
+  engine/astrology/varga_d45.py yet. Production D45 implementation remains a separate authorization after
+  certification execution establishes the required evidence. Do not ratify DP-026 or DP-027... Do not
+  work on DP-024 or DP-025. Do not reopen Foundation, closed Dasha items, H-03, or H10/H11. Do not push or
+  merge without separate authorization. Continue until the next genuine CEO decision, certification
+  failure/blocker, or production-implementation authorization point."
+- Relevant ADR/specification: `ADR-0077` (ratified via a new sub-entry); `docs/NEW_VARGA_IMPLEMENTATION_
+  TEMPLATE.md`/`docs/VARGA_CERTIFICATION_ROADMAP.md` section 6 (the certification-requirements template
+  this run's gate structure mirrors); `ADR-0049` (negative-control precedent).
+- Files changed: `docs/DECISION_LOG.md` (`ADR-0077` ratification sub-entry), `scripts/certify_d45.py`
+  (new - the certifier), `validate_d45_holdout.py` (new - the independent validator),
+  `certification/VARGA_D45_V1_certification.json` (new - the machine-readable artifact),
+  `reports/certification/varga_d45.report.md` (new - human-readable), `reports/certification/
+  varga_d45.console.txt` (new - console transcript), `scripts/certification_support.py` (added
+  `certify_d45.py`/`validate_d45_holdout.py` to the anti-fitting scan scope), `.github/workflows/ci.yml`
+  (added `certify_d45.py` to the oracle-tier certifier loop, "all ten" -> "all eleven"),
+  `engine/tests/test_certification_preconditions.py` and `engine/tests/test_retired_identifier_gate_
+  scope.py` (updated pre-existing pinned counts - a correct, required consequence of legitimately adding
+  a sixth varga certifier, not a bypass), `docs/ACE_EXECUTION_STATE.md` (version 6.9.0 -> 7.0.0), this
+  file. **`engine/astrology/varga_d45.py` was NOT created; `engine/astrology/varga_registry.py` and
+  `varga_rules.py` were NOT modified**, per explicit instruction.
+- Method: the frozen D45 rule (a `CyclicVargaRule(divisions=45, start_sign=(0,4,8,0,4,8,0,4,8,0,4,8),
+  direction=(1,)*12)`) was defined as a module-level constant inside `scripts/certify_d45.py` itself -
+  never imported into or registered via `engine/astrology/varga_registry.py` - and passed directly to
+  the existing, already-certified, general-purpose `engine.astrology.varga_classifier.classify(longitude,
+  rule)` function, which accepts any rule object directly and has no registry dependency at all. This let
+  every gate run against the real, exact frozen rule without ever registering it. PyJHora was invoked via
+  a local installation found in the working session's own scratchpad (`oracle_probe_venv`, from earlier
+  this session's own D45 readiness research) - the main Python environment has no PyJHora installed, so
+  every certifier/validator run this task added that venv's `site-packages` to `PYTHONPATH` explicitly;
+  CI itself needs no such adjustment, since its own oracle-tier job installs PyJHora directly via
+  `requirements-oracle.lock` into the job's own environment.
+- Key findings (two genuine defects found and fixed during execution, not hidden or worked around -
+  itself evidence the gates are not rubber-stamps): (1) the independent validator's own first-draft
+  reference formula (a naive floor, `int(degree // width)`) disagreed with `classify()`'s own already-
+  correct, already-locked boundary-tolerance convention (`engine/astrology/longitude_utils.py`'s own
+  "promote within 1e-10" rule) at 347 boundary-adjacent points during the validator's own boundary-case
+  battery - not a defect in `classify()`, but a gap in the validator's own independent re-derivation,
+  which had not yet accounted for the documented convention; fixed by independently re-implementing that
+  same documented rule (`(degree + 1e-10) / width`) inside the validator's own code, sourced from the
+  convention's own written documentation, not by importing the production function. (2) During gate H
+  (negative controls), a planted direction-reversal mutation initially targeted the wrong tuple index
+  (`direction[0]`, Aries, while the test longitude was in Taurus) and, once corrected to the right index,
+  the first-chosen test longitude (segment index 18) landed on a mathematically degenerate point where
+  `(start+index)%12` and `(start-index)%12` coincide whenever `index` is a multiple of 6 - both errors
+  found and fixed (correct index targeted; a non-degenerate test longitude, segment index 10, chosen), the
+  control then re-confirmed to genuinely detect its own planted mutation.
+- Implementation summary: no calculation-engine production code touched (`engine/astrology/varga_d45.py`
+  does not exist; `varga_registry.py`/`varga_rules.py` unmodified). Certification-execution work only:
+  two new certifier/validator scripts, three new evidence files, two shared certification-infrastructure
+  files updated (scan scope, CI loop), two pre-existing governance-pinning tests updated to reflect the
+  legitimate new count.
+- Tests executed and results: `python -m pytest -q` - 844/844 passed (both updated pinning-test
+  assertions now pass for the correct, updated reason, not bypassed).
+- Certification executed and results: `python scripts/certify_d45.py` (via `PYTHONPATH`-injected PyJHora)
+  - **RESULT: PASS**, all eight gates green: A table integrity (12 cells, 0 mismatches); B dense sweep
+  (51,429 points, 0 mismatches); C oracle (5,400 comparisons against PyJHora's `akshavedamsa_chart`, 0
+  mismatches); D non-invasiveness (five existing certified vargas' own content hashes unchanged; D45
+  confirmed genuinely unregistered - `get_varga_rule(45, "parashara")` still raises
+  `UnsupportedVargaError`); E independent validator PASS; F boundary cases (60 checked, including k=13,
+  26, 29 for all 12 signs, 0 mismatches); G protected holdout (26,278 points, prime-step sampling
+  independent of the boundary cases, 0 mismatches); H negative controls (three planted mutations, all
+  detected; the frozen rule object itself confirmed unmutated, since `CyclicVargaRule` is frozen).
+  `python scripts/check_artifact_drift.py` - PASS, 46 pre-existing evidence files unaffected (the new D45
+  files are not yet tracked at HEAD, so drift protection activates once committed).
+- Governance checks executed and results: `python scripts/check_adr_numbering.py` (77 ADR entries,
+  unchanged - `ADR-0077` was already counted when drafted), `python scripts/check_identifier_families.py`
+  (27 DP identifiers, unchanged - no new DP registered this task), `python scripts/
+  check_retired_identifiers.py` (0 violations) - all PASS.
+- Known issues: none new.
+- Unresolved questions: whether to authorize production implementation (writing and registering
+  `engine/astrology/varga_d45.py`) - the explicit next stage both `ADR-0076` and `ADR-0077` reserved as a
+  separate act, not performed this task.
+- CEO decision required: this task's own new genuine stopping point, per the owner's explicit closing
+  instruction - review the certification evidence (`certification/VARGA_D45_V1_certification.json`,
+  `reports/certification/varga_d45.report.md`) and decide whether to authorize production implementation.
+  No production code was written; `DP-024`/`DP-025`/`DP-026`/`DP-027` were not touched, per explicit
+  instruction; no ADR beyond `ADR-0077` was ratified.
+- Next authorized action: none self-executable. Awaiting the owner's review of the certification evidence
+  and, separately, authorization to push this task's commits if desired.
+
+### 2026-08-25 - ADR-0076 RATIFIED; ADR-0077 (D45 certification design) drafted; DP-024/DP-025 deferred; ADR-0027 provenance audited, not ratified; PyJHora yoga oracle found
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with this task's own
+  files, on top of `1fc70fc`).
+- Previous approved commit: `1fc70fc` (the `ADR-0076`/`DP-024`-`027` commit, local-only, six commits
+  ahead of `origin/phase-g-governance`'s `c4d571a340b4baf873fbefb5661eb195937d2f51`).
+- Task (owner's exact instruction, abridged, nine numbered items): "CEO DECISION. 1. RATIFY ADR-0076. D45
+  (Akshavedamsa) certification work is authorized to begin. This authorizes certification work only, not
+  production implementation beyond what is strictly required by the already-defined certification scope.
+  2. DP-024 — DEFER. 3. DP-025 — DEFER for now... keep it as a separate Tier-0 maintenance item. 4.
+  DP-026 — DO NOT ratify ADR-0027 yet. First perform the necessary independent audit of ADR-0027's
+  provenance/source basis and determine whether it should become the governing KP-significator
+  methodology authority. You may prepare decision-readiness, but do not implement KP significators. 5.
+  DP-027 — DO NOT authorize yoga implementation. Oracle-availability research may proceed only as
+  decision-readiness research... 6. D45 certification: proceed through the established certification
+  workflow: freeze the exact rule/source; establish the authoritative reference; independently derive the
+  calculation; resolve/measure the 30/45 cell-width representability issue rather than assuming it is
+  acceptable; define boundary cases; define protected holdout; define negative controls; establish oracle
+  comparison; establish artifact/drift protection; define explicit non-claims; prepare the certification
+  ADR/artifacts. Important: Do not silently turn the PyJHora implementation into the normative authority
+  merely because it agrees with the roadmap. It is independent corroboration, not automatically normative
+  authority. Do not push or merge. Do not ratify any other ADR. Continue until the next genuine CEO
+  decision, methodology/source blocker, or certification-design question requiring my decision."
+- Relevant ADR/specification: `ADR-0076` (ratified via a new sub-entry); `ADR-0077` (new, PROPOSED - D45
+  certification design); `DP-024`/`DP-025` (marked DEFERRED); `DP-026`/`DP-027` (extended with new
+  sections); `ADR-0049` (negative-control precedent cited in `ADR-0077`); root `DECISION_LOG.md` D-002/
+  D-003 (tolerance/zero-categorical-tolerance principles cited in `ADR-0077`).
+- Files changed: `docs/DECISION_LOG.md` (`ADR-0076` ratification sub-entry; new `ADR-0077` entry),
+  `docs/decisions/README.md` (`DP-024`/`DP-025` marked DEFERRED), `docs/decisions/DP-026-d008-kp-
+  significator-methodology-readiness.md` (new section H, provenance audit; version 1.0.0 -> 1.1.0),
+  `docs/decisions/DP-027-parashari-yoga-methodology-readiness.md` (new section H, oracle-availability
+  research; version 1.0.0 -> 1.1.0), `docs/ACE_EXECUTION_STATE.md` (version 6.8.0 -> 6.9.0), this file.
+  No file under `docs/decisions/DP-024...`/`DP-025...` was edited beyond their own README.md status row -
+  both remain exactly as originally drafted, per the owner's own "defer" instruction requiring no further
+  work on either.
+- Method: direct investigation and genuine numerical verification, no subagent launched. **`ADR-0076`
+  ratification:** recorded via the established "ratification of a PROPOSED entry" sub-entry mechanism (mirroring
+  `ADR-0068`/`ADR-0074`), since `ADR-0076` was itself already drafted `PROPOSED` awaiting exactly this.
+  **`ADR-0027` provenance audit (`DP-026` section H):** re-read `ADR-0027`'s own Decision 4 text and
+  counted its semicolon-separated items directly, one by one, rather than trusting this session's own
+  prior citations - found sixteen, not eleven, a self-propagated miscount traced back through `DP-023`
+  and `DP-021`; re-read `ADR-0027`'s own Evidence line and confirmed it names no external KP-astrology
+  source; cross-referenced the checklist's own structural pattern against `ADR-0021` D1 (Mundane
+  validation) and `docs/VARGA_CERTIFICATION_ROADMAP.md` section 6 (varga certification requirements) to
+  establish it is this project's own repeated internal pattern, not a KP-authority citation. **PyJHora
+  yoga oracle research (`DP-027` section H):** located `jhora/horoscope/chart/yoga.py` in the same local
+  oracle venv already used for D45 (and for this project's other certifications); counted 233
+  individually-defined yoga functions (`grep -c "^def .*_yoga("`); read several docstrings directly,
+  finding a consistent "BVR-N" citation pattern; found one docstring spelling it out in full ("BVR-49
+  Kalanidhi Yoga (B.V. Raman #49)"), confirming the abbreviation's identity. **D45 certification design
+  (`ADR-0077`):** wrote a scratchpad-only (never committed to the repository) Python script implementing
+  the D45 rule entirely from the classical description, without importing PyJHora, then imported PyJHora
+  separately in the same script to cross-check 36 spot-check points spanning all three sign categories
+  and four segment positions each - zero mismatches. Used exact `Fraction` arithmetic (not floats) to
+  compute the true mathematical value at each of the 44 internal per-sign segment boundaries and compared
+  against the floating-point-computed segment index at each - found a maximum representation error of
+  3.553e-15 degrees (1.279e-11 arcsec) and exactly three boundaries (k=13, 26, 29) where the naive
+  floating-point floor computation disagrees with the exact-rational one by one segment; then separately
+  confirmed both the independent from-scratch derivation AND PyJHora's own implementation agree with EACH
+  OTHER at all three of those specific boundary values, establishing this is a boundary-convention
+  question (for the project's own existing tolerance-promotion convention), not an oracle-agreement risk.
+  Read `certification/VARGA_D12_V1_certification.json`'s own top-level schema directly (again, confirming
+  it from `ADR-0076`'s own earlier citation) to ensure `ADR-0077`'s own artifact-structure section is
+  accurate.
+- Key findings: `ADR-0027`'s checklist has sixteen items, not eleven, and cites no external KP authority -
+  its process-structure is this project's own repeated pattern, its domain vocabulary genuine but never
+  externally checked; recommended for future independent verification, not ratified this task, per
+  explicit instruction. PyJHora already implements 233 classical yogas citing B.V. Raman by name -
+  materially better oracle-availability evidence than `DP-027`'s own original assessment, explicitly
+  treated as corroboration only, per the owner's own explicit caution, not as authority to adopt. D45's
+  cell-width representability question is now genuinely resolved: negligible numerical error, and a real
+  but well-understood three-boundary floor-classification effect that the project's own existing
+  tolerance convention already knows how to handle - not a blocker, and not silently assumed away either.
+- Implementation summary: no engine/scripts/certification code touched; `engine/astrology/varga_d45.py`
+  does not exist and was not created. The scratchpad verification script lives outside the repository
+  entirely (session scratchpad directory), per instruction not to modify production code or certified
+  artifacts.
+- Tests executed and results: `python -m pytest -q` - 844/844 passed, unchanged.
+- Certification executed and results: none - no certification artifact touched, generated, or
+  regenerated; `ADR-0077` is a design, not an executed certification run.
+- Governance checks executed and results: `python scripts/check_adr_numbering.py` (77 ADR entries, up
+  from 76 - `ADR-0077` added), `python scripts/check_identifier_families.py` (27 DP identifiers,
+  unchanged - no new DP registered this task), `python scripts/check_retired_identifiers.py` (0
+  violations, clean on the first pass) - all PASS.
+- Known issues: none new - the cell-width question, previously open, is now resolved with a concrete
+  disposition (existing tolerance convention applies; three named boundary test cases required).
+- Unresolved questions: whether to ratify `ADR-0077` (which would authorize D45's own certification-
+  execution step - the actual writing and registration of the frozen rule, oracle comparison, and
+  artifact generation - as a separate, subsequent act); `DP-026`'s own further disposition (an
+  independent KP-source cross-check of `ADR-0027`'s checklist, and whether to ratify `ADR-0027` once that
+  is done); `DP-027`'s own further disposition (a fuller audit of PyJHora's 233 yoga definitions, and
+  whether to authorize specification-drafting decision-readiness next).
+- CEO decision required: this task's own new genuine stopping point, per the owner's explicit closing
+  instruction ("Continue until the next genuine CEO decision, methodology/source blocker, or
+  certification-design question requiring my decision") - review `ADR-0077` and rule on it, and/or act on
+  `DP-026`/`DP-027`'s own further items. No ADR beyond `ADR-0076` is ratified (per explicit instruction);
+  no capability is implemented.
+- Next authorized action: none self-executable. Awaiting the owner's review of `ADR-0077` and of
+  `DP-026`/`DP-027`'s own new findings, and, separately, authorization to push this task's commits if
+  desired.
+
+### 2026-08-25 - ADR-0076 (D45 implementation-readiness, PROPOSED) + DP-024/DP-025/DP-026/DP-027 drafted; roadmap staleness corrected
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with this task's own
+  files, on top of `759af32`).
+- Previous approved commit: `759af32` (the `DP-023` commit, local-only, five commits ahead of
+  `origin/phase-g-governance`'s `c4d571a340b4baf873fbefb5661eb195937d2f51`).
+- Task (owner's exact instruction, abridged, eight numbered items): "CEO direction — proceed with DP-023
+  resolution. Treat D45 (Akshavedamsa) as the recommended first JATAKA capability and prepare the
+  necessary ADR/implementation-readiness path, but do not implement D45 yet. Before implementation: 1.
+  Resolve the Varga framework step/payload-table architecture question in a narrow decision paper/ADR if
+  still genuinely open. 2. Audit the stale VARGA_CERTIFICATION_ROADMAP.md against the accepted ADRs and
+  correct its status only through the appropriate append-only governance mechanism. 3. Keep polar-
+  Placidus/M-04 completely separate as Tier-0 maintenance; prepare its own decision-readiness only. 4.
+  Prepare/authorize separate decision-readiness papers for D-008 KP significators and Parashari yoga
+  methodology, but do not implement either. 5. Do not treat the unratified Varga roadmap's ranking as
+  normative until its status is resolved. 6. Do not modify production code or certified artifacts yet.
+  7. Do not ratify any ADR yourself. 8. Continue until the next genuine CEO decision point." For D45
+  specifically, twelve items required verification before drafting its implementation ADR (classical
+  source/rule, school/tradition, mathematical formula, sign/segment conventions, boundary behaviour,
+  variant handling, authoritative oracle/reference, independent validator design, protected holdout,
+  certification artifact structure, explicit non-claims, dependency on the varga framework architecture).
+  Explicit instruction: if the step/payload architecture can be resolved from existing accepted
+  decisions and repository evidence, resolve it and continue; if it requires an owner choice, stop and
+  report the exact choice required.
+- Relevant ADR/specification: `ADR-0076` (new, PROPOSED - the D45 audit); `DP-024`/`DP-025`/`DP-026`/
+  `DP-027` (new); `docs/VARGA_CERTIFICATION_ROADMAP.md` (corrected, v1.0.0 -> v1.0.1); `ADR-0049` (cited,
+  confirms B-01/B-02 remediated); root `DECISION_LOG.md` D-008 and `docs/DECISION_LOG.md` `ADR-0027`
+  (both cited in full for `DP-026`); `docs/PARASHARI_DRISHTI_SPEC.md` (cited for `DP-027`).
+- Files changed: `docs/DECISION_LOG.md` (new `ADR-0076` entry), `docs/VARGA_CERTIFICATION_ROADMAP.md`
+  (staleness correction, append-only), `docs/decisions/DP-024-varga-framework-step-payload-
+  architecture.md` (new), `docs/decisions/DP-025-polar-placidus-m04-tier0-maintenance.md` (new), `docs/
+  decisions/DP-026-d008-kp-significator-methodology-readiness.md` (new), `docs/decisions/DP-027-
+  parashari-yoga-methodology-readiness.md` (new), `docs/decisions/README.md` (registered `DP-024`-
+  `DP-027` before drafting, per `ADR-0040`; version 3.9.0 -> 4.0.0), `docs/ACE_EXECUTION_STATE.md`
+  (version 6.7.0 -> 6.8.0), this file.
+- Method: direct investigation. Confirmed via `grep`/direct reads that no ADR resolves the varga
+  framework's own `step`-field or payload/label-table proposals, and via direct inspection of `engine/
+  astrology/varga_rules.py` that no `step` field exists on `CyclicVargaRule`; cross-referenced `docs/
+  VARGA_CERTIFICATION_ROADMAP.md` section 3's own payload-list (D16/D20/D27/D60 only) to confirm D45 is
+  not on it. Read root `DECISION_LOG.md` D-008 and `docs/DECISION_LOG.md` `ADR-0027` in full, then
+  searched for any later ratification of `ADR-0027` specifically - none found, confirming it remains
+  `Status: PROPOSED`. Searched `docs/OPEN_QUESTIONS.md`/`docs/DECISION_LOG.md`/root `DECISION_LOG.md` for
+  "yoga" - no governing decision found for Parashari yoga at all. **A genuine local oracle probe
+  performed for D45 specifically:** located an already-installed PyJHora package in a local scratchpad
+  venv (`oracle_probe_venv`), confirmed `jhora.horoscope.chart.charts.akshavedamsa_chart` exists (D45's
+  own dedicated function, matching the established per-division-named-function pattern already used for
+  D2/D3/D7/D12/D30's own certifiers), read its full implementation directly, and independently derived
+  that its `chart_method=1` ("Traditional Parasara Method") movable/fixed/dual offset arithmetic
+  (`+0`/`+4`/`+8`, using `jhora.const`'s own 0-indexed `movable_signs`/`fixed_signs`/`dual_signs` tuples)
+  corresponds exactly to Aries/Leo/Sagittarius - an exact, independent match to `docs/VARGA_
+  CERTIFICATION_ROADMAP.md` section 4's own stated construction. Read `certification/
+  VARGA_D12_V1_certification.json`'s own top-level schema directly to confirm the certification-artifact
+  structure `ADR-0076` describes for D45 is accurate, not assumed.
+- Key findings: the varga-framework `step`/payload-table questions are genuinely open but do not block
+  D45 (`DP-024`). `docs/VARGA_CERTIFICATION_ROADMAP.md` was stale on its own B-01/B-02 claim - corrected
+  inline plus an append-only change-history row; its `Status: PROPOSED` and non-normative ranking status
+  both explicitly preserved, per the owner's own instruction not to treat it as ratified. `ADR-0027`, the
+  actual source of the "eleven-element checklist" this project has repeatedly cited as authoritative for
+  `D-008`/KP significators, is itself still `Status: PROPOSED`, never ratified - a finding not previously
+  surfaced in `DP-021` or `DP-023`'s own earlier citations of this material. Parashari yoga has no
+  governing decision or checklist of any kind, unlike KP significators - a materially different readiness
+  state between the two "high-value but not methodology-ready" candidates `DP-023` had grouped together.
+  D45's own twelve readiness items: eleven satisfied, one (cell-width representability, 30/45 = 2/3
+  degree) explicitly deferred to the certification gates' own dense-sweep/ULP-battery rather than assumed
+  either way, mirroring how the already-solved D7/D9 precedent was itself resolved empirically rather
+  than assumed beforehand.
+- Implementation summary: no engine/scripts/certification code touched; no production code or certified
+  artifact modified, per explicit instruction. Governance-record, decision-paper, and one documentation
+  correction only.
+- Tests executed and results: `python -m pytest -q` - 844/844 passed, unchanged.
+- Certification executed and results: none - no certification artifact touched or regenerated.
+- Governance checks executed and results: `python scripts/check_adr_numbering.py` (76 ADR entries, up
+  from 75 - `ADR-0076` added), `python scripts/check_identifier_families.py` (27 DP identifiers, up from
+  23 - `DP-024` through `DP-027` registered), `python scripts/check_retired_identifiers.py` (0
+  violations, clean on the first pass) - all PASS.
+- Known issues: D45's own cell-width representability question remains open, deferred to the eventual
+  certification gates by design, not resolved this task.
+- Unresolved questions: whether to ratify `ADR-0076` (which would authorize D45's own certification work
+  to begin as a separate, subsequent act - not itself implementation); `DP-024`'s own step/payload-table
+  timing; `DP-025`'s polar-Placidus/M-04 authorization; `DP-026`'s `ADR-0027`-ratification and/or
+  `KP_SIGNIFICATOR_V1` specification-drafting authorization; `DP-027`'s oracle-availability-research
+  and/or specification-drafting authorization.
+- CEO decision required: this task's own new genuine stopping point, per the owner's explicit item 8
+  ("Continue until the next genuine CEO decision point") - review `ADR-0076`, `DP-024`, `DP-025`,
+  `DP-026`, `DP-027` and rule on any of their items. No ADR is self-ratified (per explicit item 7); no
+  capability is implemented (per explicit item 6/8).
+- Next authorized action: none self-executable. Awaiting the owner's review of the five new documents,
+  and, separately, authorization to push this task's commits if desired.
+
+### 2026-08-25 - DP-023 drafted: exact first-JATAKA-capability selection (D45 recommended), genuine CEO decision point
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with `DP-023`'s own
+  file and registration, on top of `728da71`).
+- Previous approved commit: `728da71` (the `DP-021` section-N resumption, local-only, four commits ahead
+  of `origin/phase-g-governance`'s `c4d571a340b4baf873fbefb5661eb195937d2f51`).
+- Task (owner's exact instruction, abridged): "CONTINUE — DP-021 FIRST JATAKA CAPABILITY DECISION. Do
+  not stop at the DP-022 ratification. Continue the already-authorized DP-021 investigation until the
+  actual first-capability CEO decision point... Evaluate at minimum: each remaining production Varga
+  candidate individually, not merely the Varga family; additional Parashari aspect coverage; Vimshottari
+  depth extension; Shadbala; polar-Placidus/M-04 maintenance separately; Parashari yoga methodology-
+  readiness; KP/D-008 significator methodology-readiness; Jaimini Chara karakas... Score each against
+  [ten named axes]... Do not simply repeat 'remaining Vargas' as the recommendation. Determine which
+  exact Varga, if Varga remains first, and prove why it should precede the alternatives. Resolve the
+  previously open Varga risk-order question from repository evidence. If the repository does not contain
+  enough evidence to determine the order, explicitly say so and create a narrower decision-readiness
+  paper rather than inventing an order. Likewise, do not treat polar-Placidus/M-04 as automatically part
+  of the Varga capability... Methodology-first rule: if the recommended capability lacks a frozen,
+  authoritative methodology, stop before implementation and produce the required methodology decision-
+  readiness paper. Do not write production code merely because the calculation is technically easy."
+  Required deliverable: a registered decision paper with exact candidate inventory, evidence, dependency
+  graph, scoring matrix, exact first-capability candidate, alternatives, risks, certification plan,
+  methodology/source requirements, explicit non-claims, recommendation and confidence, exact CEO decision
+  required. Hard boundary: no implementation of any candidate, no production/certified-artifact
+  modification, no polar-Placidus/M-04/KP-significator/Parashari-yoga/Jaimini-BNN-Numerology work begun,
+  no reopening FOUNDATION or any closed Dasha item.
+- Relevant ADR/specification: `DP-021` (extended, not contradicted - sections A-N unedited), `DP-022`/
+  `ADR-0075` (the governance ruling making non-listed candidates eligible), `docs/VARGA_CERTIFICATION_
+  ROADMAP.md` (the primary new evidence source this task), `ADR-0049` (B-01/B-02 remediation, used to
+  find the roadmap document stale on one point), `specs/PROJECT_CHARTER.md` (Jaimini-scope finding).
+- Files changed: `docs/decisions/DP-023-jataka-first-capability-exact-selection.md` (new), `docs/
+  decisions/README.md` (registered `DP-023` before drafting, per `ADR-0040`; version 3.8.0 -> 3.9.0),
+  `docs/ACE_EXECUTION_STATE.md` (version 6.6.0 -> 6.7.0), this file.
+- Method: direct investigation (no subagent launched - the required evidence was concentrated in one
+  already-known document, `docs/VARGA_CERTIFICATION_ROADMAP.md`, plus targeted greps/reads against
+  `docs/DECISION_LOG.md`, `engine/astrology/varga_registry.py`, `varga_rules.py`, and `specs/
+  PROJECT_CHARTER.md`). Read `docs/VARGA_CERTIFICATION_ROADMAP.md` in full (sections 1-9); cross-checked
+  its own section 2 claim that B-01/B-02 "must be resolved before the next varga is added" against
+  `ADR-0049`'s own text (already read earlier this session) and against live code
+  (`register_varga_rule`'s division cross-check, `rule_content_sha256`) - confirmed the roadmap document
+  is stale on this specific point (B-01/B-02 resolved 2026-08-17, roadmap never updated since
+  2026-08-11); confirmed no `step` field exists on `CyclicVargaRule` and no ADR resolves the section-3
+  payload/label-table proposal; grepped `engine/**/*.py` for "yoga" (only the panchanga anga and
+  provenance non-claims found, zero combination-yoga code, consistent with `DP-021`'s own earlier
+  finding); re-read `specs/PROJECT_CHARTER.md`'s "Analytical systems" section specifically checking for
+  Jaimini - confirmed absent, a finding not made in `DP-021`'s own original three-agent investigation.
+- Key findings: applying the owner's own methodology-first rule as an explicit filter to `docs/
+  VARGA_CERTIFICATION_ROADMAP.md` section 4's own confidence table excludes D20 and D60 (both flagged
+  "Medium... genuinely disputed" content confidence - D20's start triple, D60's even-sign reversal) and,
+  cross-referencing section 3's separately-stated payload/label-table gap list, also excludes D16 and D27
+  (need an undecided architecture decision - kalamsa/vimsamsa deities, nakshatra lord - before being a
+  legitimate analytical input) and D4 (needs an undecided Segment-vs-`step` contract choice) - leaving
+  D24, D40, and D45 as the only three of the eight remaining vargas with no disputed content and no
+  undecided architecture prerequisite. Of these three, the roadmap's own section 5 risk order places D45
+  in its second tier (grouped with D16 in the roadmap's own text, but D16 is excluded here on the payload
+  ground) while D24/D40 sit in the third tier - **making D45 (Akshavedamsa) the highest-ranked cleanly-
+  ready varga**, an inference this paper's own section E discloses as bridging two separate sections of
+  an unratified document, not a verbatim citation of an already-stated conclusion. Every non-varga
+  JATAKA-scope candidate investigated (aspect coverage, Shadbala, Parashari yoga, KP significators) fails
+  the methodology-first rule outright; Vimshottari depth extension passes as cleanly as D45 but scores
+  lower on architectural leverage/product value and reopens a just-closed area. Polar-Placidus/M-04 was
+  scored separately, on its own terms, per explicit instruction - not folded into the varga pick.
+- Implementation summary: no engine/scripts/certification code touched. Decision paper only.
+- Tests executed and results: `python -m pytest -q` - 844/844 passed, unchanged (105.87s).
+- Certification executed and results: none - no certification artifact touched or regenerated.
+- Governance checks executed and results: `python scripts/check_adr_numbering.py` (75 ADR entries,
+  unchanged), `python scripts/check_identifier_families.py` (23 DP identifiers, up from 22 - `DP-023`
+  registered), `python scripts/check_retired_identifiers.py` (0 violations, clean on the first pass) -
+  all PASS.
+- Known issues: D45's own cell width (30/45 = 2/3 degree, not exactly binary-representable) is flagged as
+  an unresolved technical question the roadmap's own section 4 table does not address for D45 the way it
+  explicitly does for D27 - disclosed, not resolved, in section E; the eventual certification work should
+  verify it.
+- Unresolved questions: all six items in `DP-023` section L - the first-capability selection itself; the
+  varga-framework `step`-field/payload-table timing; whether polar-Placidus/M-04 closure gets its own
+  JATAKA-labelled ADR or proceeds as Tier-0 maintenance; whether to authorize a `D-008` methodology paper;
+  whether a comparable Parashari-yoga paper should also be authorized; whether `docs/VARGA_CERTIFICATION_
+  ROADMAP.md` itself should be formally ratified.
+- CEO decision required: this task's own genuine stopping point, per the owner's explicit instruction -
+  review `DP-023` and act on any or all of its six items (section L). No capability is selected, no ADR
+  is drafted, and no implementation is authorized by this task.
+- Next authorized action: none self-executable. Awaiting the owner's review of `DP-023`, and, separately,
+  authorization to push this task's commits (this one plus the three preceding it) if desired.
+
+### 2026-08-25 - DP-021 resumed (section N): first-JATAKA-capability recommendation reached, genuine CEO decision point
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with `DP-021`'s new
+  section N, on top of `fe6ae02`).
+- Previous approved commit: `fe6ae02` (the `ADR-0075` ratification commit, local-only, three commits
+  ahead of `origin/phase-g-governance`'s `c4d571a340b4baf873fbefb5661eb195937d2f51`).
+- Task (owner's exact instruction, continuing directly from the same "CEO DECISION — DP-022" message):
+  "After ratification, continue automatically into the next decision-readiness task: resume DP-021 and
+  determine the strongest candidate for the first JATAKA capability. Do not implement that capability.
+  The next stopping point must be the genuine CEO decision point where you present: candidate
+  capabilities, dependencies, methodology readiness, certification difficulty, architectural leverage,
+  risk, recommended first capability, alternatives, exact CEO decision required. Do not stop merely
+  because the DP-022 ratification commit is complete. Continue until that next genuine CEO decision
+  point, blocker, or separate push-authorization checkpoint."
+- Relevant ADR/specification: `DP-021` (resumed, section N added, sections A-M unedited); `ADR-0075`
+  (the governance ruling that made all candidates, not just the four literally named in `Q8_CLOSURE_
+  MATRIX.md` s5, eligible for consideration); `D-008` (cited as the correct next step for the
+  KP-significator track, not implemented).
+- Files changed: `docs/decisions/DP-021-jataka-first-capability-decision-readiness.md` (new section N;
+  version 1.0.0 -> 1.1.0), `docs/ACE_EXECUTION_STATE.md` (version 6.5.0 -> 6.6.0), this file.
+- Method: direct synthesis of evidence already gathered in `DP-021` sections A-M (no new research agents
+  launched - the original three-agent investigation's evidence remained current), plus one targeted,
+  read-only code verification this task performed directly: re-checked the M-04 finding (`DrishtiChart`
+  provenance mislabeling), which `DP-021` section H.4 had flagged as "apparently still open, not
+  confirmed," against live source. Confirmed still live: `engine/models/drishti.py`'s own docstring
+  states `aspected_houses` "counts whole-sign houses from the lagna"; `engine/parashari/
+  drishti.py::graha_drishti_from_snapshot()` (line 84) computes `aspected_houses` via pure whole-sign
+  counting from the ascendant sign with no Placidus reference, while reusing `snapshot.provenance`
+  unmodified (line 63); the certified `PARASHARI_LAHIRI` profile hardcodes `house_system=b"P"`. No file
+  under `engine/` was modified - read-only verification only.
+- Key findings: scored all candidates (remaining vargas, Vimshottari depth extension, aspect-coverage
+  extension, karakas in all three senses, bhava/house-cusp gap-closure, Parashari yogas, KP significators,
+  planet strength) against the owner's six required axes in a comparison table (`DP-021` section N.2).
+  **Remaining production vargas** is the only candidate simultaneously methodology-ready (classical
+  formulas fixed and uncontested per division), low-certification-difficulty (five-times-proven template),
+  and low-risk - recommended as the first JATAKA capability at medium-high confidence, with the caveat
+  that no varga "risk order" is defined anywhere in this repository, so a short follow-up sub-decision
+  (which division first) would still be needed. **Polar-Placidus + M-04 closure** is recommended in
+  parallel, explicitly framed as Tier-0/FOUNDATION-tier certification-completion work rather than a new
+  JATAKA capability in its own right (it lives inside the already-locked Tier-0 kernel certification, not
+  a JATAKA-scope artifact), since it is narrow, `RISE_SET_V1`-precedented, and the one concretely
+  evidenced prerequisite for KP significators specifically. **Parashari yogas and KP significators are
+  the highest product-value candidates found, and both are genuinely not implementable yet** - neither is
+  missing calculation infrastructure (both build on already-certified sign/house/aspect/varga data); both
+  are missing a frozen, source-cited, owner-ratified methodology specification. Recommends authorizing a
+  dedicated `D-008` KP-significator methodology-specification decision-readiness paper (now confirmed
+  scope-eligible under `ADR-0075`, removing the doubt `DP-021`'s original section H.1 raised) as the
+  correct next step for that track - not implementation of either capability.
+- Implementation summary: no engine/scripts/certification code touched (the M-04 check was read-only).
+  Decision-paper resumption only.
+- Tests executed and results: `python -m pytest -q` - 844/844 passed, unchanged.
+- Certification executed and results: none - no certification artifact touched or regenerated.
+- Governance checks executed and results: `python scripts/check_adr_numbering.py` (75 ADR entries,
+  unchanged), `python scripts/check_identifier_families.py` (22 DP identifiers, unchanged),
+  `python scripts/check_retired_identifiers.py` (0 violations, clean on the first pass this time) - all
+  PASS.
+- Known issues: none new. The M-04 finding is now confirmed live (not merely flagged) but was not fixed
+  this task - fixing it would be implementation, outside this task's own decision-readiness scope.
+- Unresolved questions: all five items in `DP-021` section N.5 - the first-capability selection itself;
+  the varga risk-order follow-up if vargas is chosen; whether polar-Placidus/M-04 closure should carry
+  its own JATAKA-labelled ADR or proceed as ordinary Tier-0 maintenance; whether to authorize a `D-008`
+  methodology-specification paper; whether a comparable Parashari-yoga methodology paper should also be
+  authorized.
+- CEO decision required: this task's own genuine stopping point, per the owner's explicit instruction -
+  review `DP-021` section N and act on any or all of its five items (N.5). No capability is selected, no
+  ADR is drafted, and no implementation is authorized by this task.
+- Next authorized action: none self-executable. Awaiting the owner's review of `DP-021` section N, and,
+  separately, authorization to push this task's commits (this one plus the preceding `ADR-0075`
+  ratification commit) if desired.
+
+### 2026-08-25 - ADR-0075 RATIFIED: DP-022's ILLUSTRATIVE interpretation adopted; Q8 unedited
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the `ADR-0075`
+  entry and `DP-022` README-index update, on top of `ba5dbab`).
+- Previous approved commit: `ba5dbab1aba88ea69d6cea4354c13bcbd4a49684` (the `DP-022` commit, local-only,
+  two commits ahead of `origin/phase-g-governance`'s `c4d571a340b4baf873fbefb5661eb195937d2f51`).
+- Task (owner's exact instruction, abridged): "CEO DECISION — DP-022. I ratify DP-022's ILLUSTRATIVE
+  interpretation. Record the following as the owner's decision: 1. Q8_CLOSURE_MATRIX.md s5's
+  Implementation Scope list is ILLUSTRATIVE, not exhaustive. 2. A JATAKA capability not named in that
+  list may be proposed through its own decision-readiness -> ADR -> owner-ratification pathway without
+  first amending Q8 merely because it is absent from s5. 3. This interpretation does not itself
+  authorize implementation of any unlisted capability. 4. Every capability remains subject to its own
+  methodology specification, dependency analysis, system isolation, certification requirements, ADR and
+  explicit owner authorization. 5. s15's separate phase/capability authorization principle remains fully
+  in force. 6. Q8 should only be amended when a future decision actually requires changing an explicit
+  Q8 requirement or architectural boundary. 7. DP-021 should now be resumed for capability selection. 8.
+  Do not implement any capability as part of this ratification. 9. Do not reopen Foundation, H-03,
+  H10/H11, or any closed Dasha item." Required work: record via the established ADR/decision mechanism;
+  draft/update the appropriate ADR; preserve DP-022's original text; update state/handoff append-only;
+  run governance and full regression tests; do not push/merge without separate authorization. Then
+  continue automatically into resuming DP-021 for first-capability decision-readiness, stopping only at
+  the next genuine CEO decision point (candidates, dependencies, methodology readiness, certification
+  difficulty, architectural leverage, risk, recommendation, alternatives, exact CEO decision required) -
+  not merely because the ratification commit is complete.
+- Relevant ADR/specification: `ADR-0075` (new, this entry); `DP-022` (ratified, text preserved);
+  `Q8_CLOSURE_MATRIX.md` s5/s15 (unedited); `ADR-0048`, `ADR-0021` D3, `ADR-0063`, `ADR-0067` (the
+  precedent basis cited in `ADR-0075`'s own Evidence section).
+- Files changed: `docs/DECISION_LOG.md` (new `ADR-0075` entry, appended after `ADR-0074`'s ratification
+  sub-entry, ascending order preserved), `docs/decisions/DP-022-jataka-q8-implementation-scope-
+  governance.md` (three mechanical placeholder-identifier corrections only - see below), `docs/decisions/
+  README.md` (`DP-022` row marked ADDRESSED by `ADR-0075`; version 3.7.0 -> 3.8.0), `docs/
+  ACE_EXECUTION_STATE.md` (version 6.4.0 -> 6.5.0), this file.
+- Mechanism used: a new, top-level numbered ADR (`ADR-0075`), not the "ratification of a `PROPOSED`
+  entry" sub-entry mechanism used for `ADR-0068`/`ADR-0074` (that mechanism applies when the original
+  document was itself drafted as a `PROPOSED` ADR awaiting a status-only ratification edit; `DP-022` was
+  a decision paper, never itself an ADR, so the correct precedent is `ADR-0067`'s own treatment of
+  `DP-015` - a fresh ADR number that records the ratification and quotes the owner's decision in full).
+  All nine of the owner's numbered points recorded verbatim as `ADR-0075`'s own Decision section, none
+  reinterpreted, narrowed, or extended.
+- **A governance-hook finding, disclosed and corrected in-session:** the repository's own
+  `PostToolUse:Edit` governance hook (`scripts/check_retired_identifiers.py`, Pattern B) flagged, on
+  editing `docs/DECISION_LOG.md`, three pre-existing violations in `DP-022`'s own already-committed text
+  (two compound words, each combining a bare "ADR-" prefix with an ordinary English word, matching the
+  bare-`ADR-`-prefix pattern the hook exists to catch) that had not been caught when `DP-022` was first
+  written via the `Write` tool in the prior task (the hook appears to trigger on `Edit` calls, not
+  `Write`). Corrected mechanically - reworded to avoid the bare prefix entirely - with **no change to the
+  paper's own analysis, arguments, evidence, or conclusions**, matching this session's own established
+  `DP-018` precedent for exactly this class of correction. A fourth occurrence surfaced in `docs/
+  decisions/README.md`'s own new `DP-022` index row (quoting the flagged phrases) and was corrected the
+  same way before governance gates passed clean.
+- Implementation summary: no engine/scripts/certification code touched. Governance-record and
+  decision-paper-index changes only.
+- Tests executed and results: `python -m pytest -q` - 844/844 passed, unchanged.
+- Certification executed and results: none - no certification artifact touched or regenerated.
+- Governance checks executed and results: `python scripts/check_adr_numbering.py` (75 ADR entries, up
+  from 74 - `ADR-0075` added), `python scripts/check_identifier_families.py` (22 DP identifiers,
+  unchanged), `python scripts/check_retired_identifiers.py` (0 violations, after the three-plus-one
+  mechanical corrections above) - all PASS.
+- Known issues: none new.
+- Unresolved questions: none for this specific ratification - all nine of the owner's points were
+  recorded without ambiguity. The broader question of which JATAKA capability to select is the subject
+  of the immediately following, resumed `DP-021` task (see next entry).
+- CEO decision required: none for this ratification - fully executed per explicit, unambiguous
+  instruction. Per the owner's own explicit "continue automatically" instruction, this task does not stop
+  here; it proceeds directly into resuming `DP-021`.
+- Next authorized action: continue directly into resuming `DP-021`'s own capability-selection question,
+  per explicit instruction - see the immediately following task-log entry.
+
+### 2026-08-25 - DP-022 drafted: JATAKA/Q8 implementation-scope governance question (EXHAUSTIVE vs. ILLUSTRATIVE, decides nothing)
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the `DP-022` file
+  and registration, on top of `06ff564`).
+- Previous approved commit: `06ff564ba1628e8f694e58d07cce1f60c7de6d12` (the `DP-021` commit, local-only,
+  one commit ahead of `origin/phase-g-governance`'s `c4d571a340b4baf873fbefb5661eb195937d2f51`).
+  `origin/main` unchanged at `d738520ffc796d07468e24a5b1dddcfba3120c65` (PR #4 merge).
+- Task (owner's exact instruction, abridged): "CEO AUTHORIZATION — RESOLVE JATAKA/Q8
+  IMPLEMENTATION-SCOPE GOVERNANCE QUESTION. Begin the next decision-readiness task arising from DP-021.
+  Do not implement any capability. Do not modify production code. Do not select or ratify a JATAKA
+  capability. Investigate only whether Q8_CLOSURE_MATRIX.md s5's 'Implementation scope' list is: 1.
+  EXHAUSTIVE... or 2. ILLUSTRATIVE..." Required method: session-start audit; independent inspection of
+  Q8 s5/s15, `PROJECT_CHARTER`, governance standards, phase-entry/implementation-authorization ADRs, and
+  any prior example of work outside an initial roadmap list being subsequently authorized; trace
+  governance precedent across FOUNDATION exit, H-01/H-02, the Dasha roadmap, `ADR-0074`, `DP-021` itself;
+  specifically investigate whether an ADR can authorize a new JATAKA capability outside s5 without first
+  amending Q8; explicit instruction not to treat technical sensibility as governance authorization and
+  not to treat Claude Web's recommendation as authority (not applicable to this paper directly - no
+  external input was cited). Required output: a new `DP-0XX`, registered before drafting under
+  `ADR-0040`, containing exact governing text, evidence for each interpretation, arguments for
+  EXHAUSTIVE, arguments for ILLUSTRATIVE, precedent analysis, consequences of each, interaction with s15,
+  interaction with `ADR-0074`, whether a Q8 amendment is required, whether an ADR alone is sufficient,
+  recommendation with confidence, explicit non-claims, exact CEO decision required. Hard scope boundary:
+  no implementation of any named capability, no H-03/H10-H11/FOUNDATION/closed-Dasha-item modification,
+  no self-amendment of Q8, no self-ratification. Run the full relevant governance/regression tests; code
+  and certified values must remain untouched. Update canonical state/handoff records append-only. Stop
+  only at the genuine CEO decision point.
+- Relevant ADR/specification: none reopened or created. Cites `ADR-0048` (Q8 ratification), `ADR-0021`
+  D2/D3, `ADR-0067`/`DP-015` (the closest analogous-ambiguity precedent), `ADR-0074`, `ADR-0063`,
+  `specs/PROJECT_CHARTER.md`, `docs/PROJECT_CONSTITUTION.md`, `.claude/rules/governance.md` - all
+  read-only citations, none edited.
+- Files changed: `docs/decisions/DP-022-jataka-q8-implementation-scope-governance.md` (new),
+  `docs/decisions/README.md` (registered `DP-022` before drafting, per `ADR-0040`; version 3.6.0 ->
+  3.7.0), `docs/ACE_EXECUTION_STATE.md` (version 6.3.0 -> 6.4.0), this file.
+- Method: direct investigation (not delegated to a subagent, given the narrower, textual/precedent-
+  analysis nature of this task compared to `DP-021`'s broad capability inventory) - read
+  `Q8_CLOSURE_MATRIX.md` in full; grepped `docs/DECISION_LOG.md` for `ADR-0048`, `ADR-0021`, `ADR-0067`,
+  `ADR-0074` and read each in full; grepped `specs/PROJECT_CHARTER.md` for its "Analytical systems"
+  text; grepped `docs/PROJECT_CONSTITUTION.md` and `docs/DOCUMENTATION_STANDARD.md` for "amend"/
+  "amendment" (no defined procedure found in either); confirmed `Q8_CLOSURE_MATRIX.md`'s own two-version
+  change history has never touched sections 3-14.
+- Key findings: `Q8_CLOSURE_MATRIX.md` s5's "Each is a separate ADR and none is implied by phase entry"
+  sentence's grammatical antecedent is the four named items - it governs *how* they get authorized, and
+  is silent on whether unlisted items are eligible at all. FOUNDATION's own exit criterion ("every
+  capability above... production certified") textually ties phase exit to its own implementation-scope
+  list, supporting EXHAUSTIVE by structural analogy. `specs/PROJECT_CHARTER.md`'s own "additional systems
+  require their own specification and isolation rules" (senior in the `ADR-0042` hierarchy) and `ADR-0021`
+  D3's entity-vocabulary "provisional and extensible... a new entity kind requires an explicit
+  architectural decision" (the closest structural precedent found, though never yet exercised and at a
+  different governance layer) both support ILLUSTRATIVE. **No ADR has ever amended `Q8_CLOSURE_MATRIX.md`
+  sections 3-14**, and every capability actually pursued during FOUNDATION and the Dasha roadmap was
+  already named in its phase's own ratified text before being pursued - meaning there is no true
+  precedent, in either direction, of a phase-scope row being extended to cover something not originally
+  named. The one directly relevant, on-point precedent is `DP-015`/`ADR-0067`: it resolved an analogous
+  "does this Q8 phrase's reach extend beyond its literal named scope" ambiguity **narrowly, per-item**,
+  via a fresh addendum ADR layered on top of Q8 (never rewriting Q8's own text), and explicitly declined
+  to generalize that resolution to other items ("It is not silently generalized to any other FOUNDATION
+  item"). `ADR-0074` and s15 were both checked directly and found silent on this specific question -
+  neither supports nor forecloses either reading.
+- Implementation summary: no engine/scripts/certification code touched. Decision paper only.
+- Tests executed and results: `python -m pytest -q` - 844/844 passed, unchanged, confirming the
+  documentation-only change made no regression.
+- Certification executed and results: none - no certification artifact touched or regenerated.
+- Governance checks executed and results: `python scripts/check_adr_numbering.py` (74 ADR entries,
+  unchanged), `python scripts/check_identifier_families.py` (22 DP identifiers, up from 21 - `DP-022`
+  registered), `python scripts/check_retired_identifiers.py` (0 violations) - all PASS.
+- Known issues: none new.
+- Unresolved questions: all of `DP-022` section M - principally the EXHAUSTIVE-vs-ILLUSTRATIVE ruling
+  itself; if EXHAUSTIVE, how a Q8 amendment should be enacted (no formal procedure currently exists); if
+  ILLUSTRATIVE, whether the ruling applies generally or should be resolved narrowly per candidate
+  capability, matching the `ADR-0067` precedent's own stated preference; whether to resume `DP-021`'s own
+  capability-selection question now or wait for this paper's ratification first.
+- CEO decision required: rule on `DP-022`'s exhaustive-vs-illustrative question (or defer it per-
+  capability, per the `ADR-0067` precedent); this task deliberately stops at the decision point, per the
+  owner's own explicit instruction - no interpretation is adopted, no ADR is drafted, no capability is
+  selected or implementation-authorized.
+- Next authorized action: none self-executable. Awaiting CEO ruling on `DP-022`, resumption of `DP-021`'s
+  capability-selection work once that ruling is made, and a push authorization for this task's own
+  commit.
+
+### 2026-08-24 - DP-021 drafted: JATAKA first-capability decision-readiness (options only, no ADR, no implementation)
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the `DP-021` file
+  and registration, on top of `c4d571a` post-merge).
+- Previous approved commit: `c4d571a340b4baf873fbefb5661eb195937d2f51`, merged into `main` this session
+  via PR #4 (merge commit `d738520ffc796d07468e24a5b1dddcfba3120c65`, both PR CI run `32758690945` and
+  `main`'s own post-merge CI run `32759008459` green).
+- Task (owner's exact instruction, abridged): "CEO AUTHORIZATION — BEGIN JATAKA ARCHITECTURE /
+  CAPABILITY DECISION-READINESS INVESTIGATION... You are authorized to BEGIN THE JATAKA ARCHITECTURE /
+  CAPABILITY DECISION-READINESS INVESTIGATION. You are NOT authorized to implement a Jataka capability
+  yet." Supplied an "IMPORTANT INDEPENDENT INPUT" from a separate Claude Web audit (six claims about
+  bhava/house-cusp methodology, karakas, Parashari yogas, KP significators), explicitly framed as **not
+  predecided** and requiring testing against the repository. Required twelve investigation sections
+  (capability inventory; dependency graph; deep bhava/house-cusp investigation naming the "previously
+  identified polar-Placidus question"; candidate first capabilities A-E; system separation; certification
+  design; variant handling; JATAKA phase boundaries; sequencing; governance/DP registration; explicit
+  no-implementation constraints; a formal decision paper, sections A-M). Explicit stop condition: "Stop
+  at the genuine CEO decision point. Do not implement anything. Do not ratify your own recommendation.
+  Do not push anything without explicit push authorization. Do not merge anything."
+- Relevant ADR/specification: none reopened or created. Cites `ADR-0074` (JATAKA entry),
+  `Q8_CLOSURE_MATRIX.md` s5 (implementation scope), `docs/DECISION_LOG.md` D-008 (KP significator
+  methodology-freeze requirement), `docs/KP_CHAIN_SPEC.md`, `specs/PROJECT_CHARTER.md`, `docs/
+  PROJECT_ROADMAP.md` s1/s3, `docs/NEW_VARGA_IMPLEMENTATION_TEMPLATE.md`, `docs/
+  DASHA_CERTIFICATION_ROADMAP.md` - all read-only citations, none edited.
+- Files changed: `docs/decisions/DP-021-jataka-first-capability-decision-readiness.md` (new, sections
+  A-M as specified), `docs/decisions/README.md` (registered `DP-021` before drafting, per `ADR-0040`;
+  version 3.5.0 -> 3.6.0), `docs/ACE_EXECUTION_STATE.md` (version 6.1.0 -> 6.3.0), this file.
+- Method: three parallel, read-only Explore-agent research passes (isolated worktrees, no risk to the
+  working tree) - (1) full capability inventory across ~20 named areas, cross-checked against every
+  `certification/*.json` artifact's own `"result"` field and live source, not documentation inference;
+  (2) a dedicated 15-part deep investigation of house-cusp/bhava methodology; (3) a survey of every
+  JATAKA-relevant governing specification document and its own Status header. Synthesis, evidence
+  weighing, and paper authorship performed directly, not delegated.
+- Key findings: whole-sign D1 house assignment (Parashari) and Placidus cusp geometry with a full
+  SL/NL/SB/SS lordship chain (KP) are **both already certified** at different scopes - the genuine
+  remaining house-cusp gap is narrow: Placidus certification stops at 64.1 degrees N/S, polar behaviour
+  is explicitly undefined and unverified (documented consistently across 7+ repository files), and
+  `RISE_SET_V1`'s own certified `NO_RISE`/`NO_SET` structured-status pattern is a directly applicable,
+  unused precedent for handling it. Parashari yoga/rule evaluation and KP significators are both
+  genuinely absent (zero code); their real blocker in both cases is a **missing ratified methodology
+  specification** (for KP significators, `D-008`'s own eleven-element checklist, not yet started), not
+  missing calculation infrastructure, which is largely already built and certified. "Karakas" names three
+  unrelated concepts with zero shared code. Corrected one stale secondary source
+  (`certification/ENGINE_CAPABILITY_INVENTORY.json`, dated 2026-08-11) that still cited closed finding
+  H-04 as open. Tested the independent Claude Web audit's six claims individually against this evidence:
+  one confirmed strongly (KP significators genuinely need the polar-Placidus question resolved, per
+  `D-008`'s own "cusp handling" requirement), several found overstated or mis-scoped (Parashari yogas do
+  not actually depend on cusp geometry at all; "build bhava" overstates what remains, since most of it is
+  already certified). **Headline finding not present in the independent input:** `Q8_CLOSURE_MATRIX.md`
+  s5's own "Implementation scope" row names exactly four items (remaining vargas, Vimshottari depth/
+  convention extensions, aspect coverage, planet strength) - none of bhava, karakas, Parashari yogas, or
+  KP significators appears in that list, making it an open, load-bearing governance question (section H.1/
+  M.1 of the paper) whether that list is exhaustive or illustrative, prior to any capability choice.
+- Implementation summary: no engine/scripts/certification code touched. Decision paper only.
+- Tests executed and results: none run - no code changed; prior 844/844 pytest baseline unaffected.
+- Certification executed and results: none - no certification artifact touched or regenerated.
+- Governance checks executed and results: `python scripts/check_adr_numbering.py` (74 ADR entries,
+  unchanged), `python scripts/check_identifier_families.py` (21 DP identifiers, up from 20 - `DP-021`
+  registered), `python scripts/check_retired_identifiers.py` (0 violations) - all PASS.
+- Known issues: the M-04 finding (`DrishtiChart` provenance mislabels its own house-convention field)
+  was found apparently still present during the bhava investigation; whether a since-closed decision
+  supersedes it was not conclusively established and is flagged in the paper (section H.4) as requiring
+  independent verification, not resolved here.
+- Unresolved questions: all of section M in `DP-021` - principally whether `Q8_CLOSURE_MATRIX.md` s5's
+  implementation-scope list is exhaustive or illustrative; which of the four presented options to pursue;
+  varga risk order if a varga is chosen; whether polar-Placidus closure is FOUNDATION-tier maintenance or
+  a JATAKA-scoped decision; whether to authorize follow-up dedicated papers for `D-008` (KP significators)
+  and/or a Parashari yoga-rule specification.
+- CEO decision required: review `DP-021`; resolve the governing-scope question; select an option (or
+  request a narrower follow-up paper); this task deliberately stops at "DECISION PAPER READY," per the
+  owner's own explicit stop condition - no option is chosen, no ADR is drafted, no capability is
+  implementation-authorized.
+- Next authorized action: none self-executable. Awaiting CEO review of `DP-021` and a push authorization
+  for this task's own commit.
+
+### 2026-08-24 - phase-g-governance MERGED into main (PR #4): JATAKA-entry state now on main
+- Branch / commit SHA: `main` after merge = `d738520ffc796d07468e24a5b1dddcfba3120c65` (parents
+  `0e1ef115a647b8a44bf4d1a7af2a3cf3a8b96e03` + `c4d571a340b4baf873fbefb5661eb195937d2f51`).
+- Previous approved commit: `c4d571a340b4baf873fbefb5661eb195937d2f51` on `phase-g-governance`
+  (the CI-discrepancy-resolution + merge-readiness-audit commit, local-only at authorization time).
+- Task (owner's exact instruction, abridged): "CEO AUTHORIZATION — MERGE JATAKA-ENTRY STATE TO MAIN. I
+  authorize the merge of the current phase-g-governance state into main." Named source HEAD `931b6d0`;
+  required: merge via normal PR/standard process, no squash/rebase/force-push, no unrelated file changes,
+  no JATAKA capability implementation, no H-03/cross-certifier-finding/FOUNDATION/closed-Dasha-item work
+  in the same task; full post-merge verification and reporting; explicit instruction not to start JATAKA
+  architecture work in the same task.
+- Discrepancy flagged before acting: local HEAD was actually `c4d571a` (one commit ahead of the named
+  `931b6d0`), containing exactly the CI-discrepancy-resolution work the owner's own stated preconditions
+  and output requirement #11 presupposed as already present - pushed `c4d571a` to `phase-g-governance`
+  first (verified CI green, run `32758370489`) before opening the PR, with the reasoning disclosed to the
+  user prior to acting.
+- Relevant ADR/specification: `ADR-0074` (the state being merged), `Q8_CLOSURE_MATRIX.md` s5 - neither
+  reopened or edited by this task.
+- Files changed: none beyond the merge commit itself (a standard two-parent git merge, no file edits by
+  Claude in this task).
+- Execution: `gh pr create --base main --head phase-g-governance` (PR #4); waited for its own CI run
+  (`32758690945`, all four jobs green, read from the log); `gh pr merge 4 --merge` (standard merge commit,
+  not squash, not rebase, no force-push) - resulting `main` SHA `d738520`.
+- Post-merge verification, each performed directly, not assumed: `main`'s own CI run `32759008459` - all
+  four jobs green (844 passed both interpreters, 0 lord mismatches, drift PASS, 74 ADR entries, 20 DP
+  identifiers at merge time); `git show origin/main:docs/DECISION_LOG.md` confirms `ADR-0074` `Status:
+  ACCEPTED`; `git show origin/main:docs/ACE_EXECUTION_STATE.md` confirms `CURRENT_PHASE: JATAKA ENTERED`;
+  `grep -rn "JATAKA\|jataka" engine/ scripts/` on `main` excluding test files - zero hits, no JATAKA
+  production code; engine/scripts/certification content otherwise unchanged.
+- Tests executed and results: 844/844 pytest, confirmed via `main`'s own CI run `32759008459`.
+- Certification executed and results: oracle gate 0 lord mismatches, drift PASS on all relevant jobs -
+  confirmed via `main`'s own CI run.
+- Governance checks executed and results: 74 ADR entries, 20 DP identifiers - confirmed via `main`'s own
+  CI run.
+- Known issues: none new.
+- Unresolved questions: which JATAKA capability, if any, to authorize next (deferred to the subsequent
+  `DP-021` task, see entry above).
+- CEO decision required: none for the merge itself - fully executed per explicit authorization. JATAKA
+  capability selection remained open, addressed by the immediately following `DP-021` task.
+- Next authorized action: per the owner's own explicit instruction, JATAKA architecture work was not
+  begun in this same task - it followed as a separate, subsequent, explicitly-authorized task (`DP-021`,
+  see entry above).
 
 ### 2026-08-24 - JATAKA phase pre-flight: CI-run-ID discrepancy resolved (no fabrication); main-vs-phase-g-governance merge-readiness audit (READY, not performed)
 - Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the
