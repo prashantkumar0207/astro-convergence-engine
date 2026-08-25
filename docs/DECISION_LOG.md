@@ -4380,6 +4380,86 @@ follow-up entry, matching the same mechanism just used for the `ADR-0063` addend
 
 ---
 
+## ADR-0075 - Owner ratification of DP-022: `Q8_CLOSURE_MATRIX.md` s5's implementation-scope list is ILLUSTRATIVE, not exhaustive
+
+- **Date:** 2026-08-25
+- **Status:** **ACCEPTED.** It is accepted because the owner supplied the decision below as an explicit
+  ratification instruction ("CEO DECISION — DP-022. I ratify DP-022's ILLUSTRATIVE interpretation..."),
+  following the same evidentiary pattern already used throughout this session (`ADR-0063`, `ADR-0064`-
+  `ADR-0067`, `ADR-0069`-`ADR-0074`): the instruction reached the repository through a working session,
+  and this entry is what makes it authoritative, per `docs/PROJECT_CONSTITUTION.md` s7 and s11.
+- **Context:** `docs/decisions/DP-022-jataka-q8-implementation-scope-governance.md` (drafted 2026-08-25,
+  registered before drafting per `ADR-0040`) investigated whether `Q8_CLOSURE_MATRIX.md` s5's
+  "Implementation scope" row (remaining production vargas, Vimshottari depth/convention extensions,
+  aspect coverage, planet strength) is EXHAUSTIVE (only those four items may proceed without amending Q8)
+  or ILLUSTRATIVE (other JATAKA-appropriate capabilities may receive their own ADR without a prior Q8
+  amendment), a question `DP-021` section H.1/M.1 surfaced as the single most consequential unresolved
+  item before any JATAKA candidate capability not named in s5 - bhava/house-cusp gap-closure, karakas,
+  Parashari yogas, KP significators - is even eligible for its own ADR. `DP-022` presented exact governing
+  text, evidence and arguments for both readings, a precedent analysis, and a medium-confidence
+  recommendation toward ILLUSTRATIVE, without deciding the question itself, exactly as a decision paper
+  is required to do.
+- **Decision, recorded exactly as the owner's nine numbered points instructed, none reinterpreted,
+  narrowed, or extended beyond what the owner's own instruction states:**
+  1. **`Q8_CLOSURE_MATRIX.md` s5's Implementation Scope list is ILLUSTRATIVE, not exhaustive.** `DP-022`'s
+     recommendation (section K, medium confidence) is ratified.
+  2. **A JATAKA capability not named in that list may be proposed through its own decision-readiness ->
+     ADR -> owner-ratification pathway without first amending Q8 merely because it is absent from s5.**
+     This resolves `DP-022` section I ("whether an ADR alone is sufficient") in favor of "yes, provided
+     the ADR does the interpretive work explicitly" - see Decision 5 below for the s15 discipline this
+     remains subject to.
+  3. **This interpretation does not itself authorize implementation of any unlisted capability.** No
+     JATAKA capability - not bhava, not polar Placidus, not KP significators, not Parashari yogas, not
+     Jaimini, not any varga, not planet strength - is selected, specified, or implemented by this entry.
+  4. **Every capability remains subject to its own methodology specification, dependency analysis, system
+     isolation, certification requirements, ADR and explicit owner authorization.** Nothing about
+     `Q8_CLOSURE_MATRIX.md` s5's own "Certification gates," "Exit criteria," or "CEO approval" rows is
+     weakened, waived, or reinterpreted by this entry.
+  5. **`Q8_CLOSURE_MATRIX.md` s15's separate phase/capability authorization principle remains fully in
+     force**: "Q8 is CLOSED. No phase is thereby authorised - phase authorisation remains a separate,
+     per-phase, per-capability owner act." This entry does not weaken it; ratifying ILLUSTRATIVE widens
+     *which* capabilities are eligible to seek that separate act, not whether the act itself is still
+     required for every one of them.
+  6. **Q8 should only be amended when a future decision actually requires changing an explicit Q8
+     requirement or architectural boundary; it does not need to become a catalogue of every future
+     capability.** `Q8_CLOSURE_MATRIX.md` sections 3-14 remain unedited by this entry, consistent with
+     `ADR-0048` Decision 1's "no word... altered" treatment and with the `ADR-0063`/`ADR-0067` precedent
+     of resolving Q8-adjacent questions via a fresh ADR layered on top of the matrix rather than by
+     rewriting it.
+  7. **`DP-021` is to be resumed for capability selection / first-capability decision-readiness**, per the
+     owner's own explicit instruction to continue automatically into that task following this
+     ratification.
+  8. **No capability is implemented as part of this ratification.**
+  9. **FOUNDATION, H-03, the eight `ADR-0072` H10/H11 cross-certifier findings, and every closed Dasha
+     item (H-04/`ADR-0053`, H-05/`ADR-0069`, H-06/`ADR-0070`, H-08/`ADR-0071`, M-02/`ADR-0072`, the
+     boundary-proximity indicator/`ADR-0073`) are not reopened, altered, or reconsidered by this entry in
+     any way.**
+- **`DP-022`'s own text is unedited by this entry**, per this repository's standing "preserve a decision
+  paper's own drafted analysis; do not rewrite it" discipline (matching `ADR-0060`-`ADR-0074`'s own
+  uniform treatment of every ratified `DP-NNN` paper this session). `docs/decisions/README.md`'s index
+  row for `DP-022` is updated to record this ratification, per the same mechanical pattern used for every
+  prior `DP-NNN` closure in that table.
+- **Consequences:** Bhava/house-cusp gap-closure, karakas, Parashari yogas, KP significators, and any
+  other genuinely JATAKA-appropriate capability identified in `DP-021` or a future decision-readiness
+  paper are now eligible for their own decision-readiness -> ADR -> owner-ratification pathway, without a
+  prior Q8 amendment, **provided each such ADR explicitly states why the capability falls within JATAKA's
+  scope** (the interpretive-work requirement Decision 2 attaches, mirroring the `ADR-0067`/`DP-015`
+  precedent of resolving Q8-adjacent ambiguity explicitly rather than silently). No capability is thereby
+  selected, and `DP-021`'s own capability-selection question remains open, to be resumed as its own
+  continuation of this task. `Q8_CLOSURE_MATRIX.md` itself is unedited; its own change history (s16)
+  remains at version 1.1.0. No certified calculation, certification artifact, or production code is
+  touched by this entry.
+- **Evidence:** the owner's "CEO DECISION — DP-022" instruction, quoted and enumerated above in full;
+  `docs/decisions/DP-022-jataka-q8-implementation-scope-governance.md` v1.0.0 (commit `ba5dbab`),
+  sections A through M in full, particularly section K (recommendation) and section M (exact owner
+  decisions required); `Q8_CLOSURE_MATRIX.md` s5, s15 (quoted in `DP-022` and re-verified unedited by
+  this entry); `ADR-0048`, `ADR-0021` D2/D3, `ADR-0063`, `ADR-0067` (the precedent basis `DP-022` section
+  C traced and this decision applies). Post-change verification: `python -m pytest -q`; `scripts/
+  check_adr_numbering.py`, `scripts/check_identifier_families.py`, `scripts/check_retired_identifiers.py`
+  - exact results cited in this commit's message.
+
+---
+
 ## ADR template (copy, do not edit above the line)
 
 ## ADR-XXXX - <title>

@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 8.4.0 |
+| Version | 8.5.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-25 (`DP-022` - JATAKA/Q8 implementation-scope governance question, arising from `DP-021` s H.1/M.1 - drafted and registered: evidence and arguments for EXHAUSTIVE vs. ILLUSTRATIVE readings of `Q8_CLOSURE_MATRIX.md` s5, medium-confidence lean toward ILLUSTRATIVE, decides nothing, no Q8 amendment, no capability selected. Awaiting CEO ruling.) |
+| Last updated | 2026-08-25 (`ADR-0075` RATIFIED: `DP-022`'s ILLUSTRATIVE interpretation of `Q8_CLOSURE_MATRIX.md` s5 adopted - unlisted JATAKA capabilities are now eligible for their own ADR without a prior Q8 amendment. `Q8_CLOSURE_MATRIX.md` itself unedited. Resuming `DP-021` for first-capability decision-readiness per explicit instruction.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,73 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-25 - ADR-0075 RATIFIED: DP-022's ILLUSTRATIVE interpretation adopted; Q8 unedited
+- Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the `ADR-0075`
+  entry and `DP-022` README-index update, on top of `ba5dbab`).
+- Previous approved commit: `ba5dbab1aba88ea69d6cea4354c13bcbd4a49684` (the `DP-022` commit, local-only,
+  two commits ahead of `origin/phase-g-governance`'s `c4d571a340b4baf873fbefb5661eb195937d2f51`).
+- Task (owner's exact instruction, abridged): "CEO DECISION — DP-022. I ratify DP-022's ILLUSTRATIVE
+  interpretation. Record the following as the owner's decision: 1. Q8_CLOSURE_MATRIX.md s5's
+  Implementation Scope list is ILLUSTRATIVE, not exhaustive. 2. A JATAKA capability not named in that
+  list may be proposed through its own decision-readiness -> ADR -> owner-ratification pathway without
+  first amending Q8 merely because it is absent from s5. 3. This interpretation does not itself
+  authorize implementation of any unlisted capability. 4. Every capability remains subject to its own
+  methodology specification, dependency analysis, system isolation, certification requirements, ADR and
+  explicit owner authorization. 5. s15's separate phase/capability authorization principle remains fully
+  in force. 6. Q8 should only be amended when a future decision actually requires changing an explicit
+  Q8 requirement or architectural boundary. 7. DP-021 should now be resumed for capability selection. 8.
+  Do not implement any capability as part of this ratification. 9. Do not reopen Foundation, H-03,
+  H10/H11, or any closed Dasha item." Required work: record via the established ADR/decision mechanism;
+  draft/update the appropriate ADR; preserve DP-022's original text; update state/handoff append-only;
+  run governance and full regression tests; do not push/merge without separate authorization. Then
+  continue automatically into resuming DP-021 for first-capability decision-readiness, stopping only at
+  the next genuine CEO decision point (candidates, dependencies, methodology readiness, certification
+  difficulty, architectural leverage, risk, recommendation, alternatives, exact CEO decision required) -
+  not merely because the ratification commit is complete.
+- Relevant ADR/specification: `ADR-0075` (new, this entry); `DP-022` (ratified, text preserved);
+  `Q8_CLOSURE_MATRIX.md` s5/s15 (unedited); `ADR-0048`, `ADR-0021` D3, `ADR-0063`, `ADR-0067` (the
+  precedent basis cited in `ADR-0075`'s own Evidence section).
+- Files changed: `docs/DECISION_LOG.md` (new `ADR-0075` entry, appended after `ADR-0074`'s ratification
+  sub-entry, ascending order preserved), `docs/decisions/DP-022-jataka-q8-implementation-scope-
+  governance.md` (three mechanical placeholder-identifier corrections only - see below), `docs/decisions/
+  README.md` (`DP-022` row marked ADDRESSED by `ADR-0075`; version 3.7.0 -> 3.8.0), `docs/
+  ACE_EXECUTION_STATE.md` (version 6.4.0 -> 6.5.0), this file.
+- Mechanism used: a new, top-level numbered ADR (`ADR-0075`), not the "ratification of a `PROPOSED`
+  entry" sub-entry mechanism used for `ADR-0068`/`ADR-0074` (that mechanism applies when the original
+  document was itself drafted as a `PROPOSED` ADR awaiting a status-only ratification edit; `DP-022` was
+  a decision paper, never itself an ADR, so the correct precedent is `ADR-0067`'s own treatment of
+  `DP-015` - a fresh ADR number that records the ratification and quotes the owner's decision in full).
+  All nine of the owner's numbered points recorded verbatim as `ADR-0075`'s own Decision section, none
+  reinterpreted, narrowed, or extended.
+- **A governance-hook finding, disclosed and corrected in-session:** the repository's own
+  `PostToolUse:Edit` governance hook (`scripts/check_retired_identifiers.py`, Pattern B) flagged, on
+  editing `docs/DECISION_LOG.md`, three pre-existing violations in `DP-022`'s own already-committed text
+  (two compound words, each combining a bare "ADR-" prefix with an ordinary English word, matching the
+  bare-`ADR-`-prefix pattern the hook exists to catch) that had not been caught when `DP-022` was first
+  written via the `Write` tool in the prior task (the hook appears to trigger on `Edit` calls, not
+  `Write`). Corrected mechanically - reworded to avoid the bare prefix entirely - with **no change to the
+  paper's own analysis, arguments, evidence, or conclusions**, matching this session's own established
+  `DP-018` precedent for exactly this class of correction. A fourth occurrence surfaced in `docs/
+  decisions/README.md`'s own new `DP-022` index row (quoting the flagged phrases) and was corrected the
+  same way before governance gates passed clean.
+- Implementation summary: no engine/scripts/certification code touched. Governance-record and
+  decision-paper-index changes only.
+- Tests executed and results: `python -m pytest -q` - 844/844 passed, unchanged.
+- Certification executed and results: none - no certification artifact touched or regenerated.
+- Governance checks executed and results: `python scripts/check_adr_numbering.py` (75 ADR entries, up
+  from 74 - `ADR-0075` added), `python scripts/check_identifier_families.py` (22 DP identifiers,
+  unchanged), `python scripts/check_retired_identifiers.py` (0 violations, after the three-plus-one
+  mechanical corrections above) - all PASS.
+- Known issues: none new.
+- Unresolved questions: none for this specific ratification - all nine of the owner's points were
+  recorded without ambiguity. The broader question of which JATAKA capability to select is the subject
+  of the immediately following, resumed `DP-021` task (see next entry).
+- CEO decision required: none for this ratification - fully executed per explicit, unambiguous
+  instruction. Per the owner's own explicit "continue automatically" instruction, this task does not stop
+  here; it proceeds directly into resuming `DP-021`.
+- Next authorized action: continue directly into resuming `DP-021`'s own capability-selection question,
+  per explicit instruction - see the immediately following task-log entry.
 
 ### 2026-08-25 - DP-022 drafted: JATAKA/Q8 implementation-scope governance question (EXHAUSTIVE vs. ILLUSTRATIVE, decides nothing)
 - Branch / commit SHA: `phase-g-governance`, see `git log -1` (this entry commits with the `DP-022` file

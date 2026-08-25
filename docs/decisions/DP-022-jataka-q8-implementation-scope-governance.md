@@ -192,15 +192,15 @@ entry, per this repository's "change only what needs to change, append rather th
 ## E. Arguments for ILLUSTRATIVE
 
 1. `specs/PROJECT_CHARTER.md`'s own, senior-in-hierarchy "Additional systems require their own
-   specification and isolation rules" sentence directly names an ADR-level (not charter-amendment-level)
-   path for scope growth at the *system* level - and JATAKA's implementation-scope row is arguably
-   analogous in kind (a list of expected initial work, not a permanent ceiling), just at the
+   specification and isolation rules" sentence directly names a decision-paper-then-ADR path (not a
+   charter-amendment path) for scope growth at the *system* level - and JATAKA's implementation-scope row
+   is arguably analogous in kind (a list of expected initial work, not a permanent ceiling), just at the
    *capability*, not system, level.
 2. `ADR-0021` D3's entity-vocabulary pattern ("provisional and extensible... a new entity kind requires
    an explicit architectural decision") is the closest structural precedent in this repository's own
-   governance writing for "named list, growable via its own ADR, without rewriting the source document" -
-   and this project has shown, repeatedly (varga registry, DP-registration, ADR numbering), a general
-   preference for additive, ADR-gated extensibility over rigid enumeration.
+   governance writing for "named list, growable via its own decision, without rewriting the source
+   document" - and this project has shown, repeatedly (varga registry, DP-registration, ADR numbering), a
+   general preference for additive, decision-gated extensibility over rigid enumeration.
 3. `Q8_CLOSURE_MATRIX.md` s1's own framing ("something concrete to amend or reject") and its emphasis
    throughout ("Each is a separate ADR and none is implied by phase entry," repeated near-verbatim for
    FOUNDATION) reads, in context, primarily as a warning against **auto-authorization from phase entry
@@ -279,8 +279,8 @@ scope question is settled first.
 `specs/PROJECT_CHARTER.md`'s own explicit "additional systems require their own specification and
 isolation rules" language (a senior governing document already contemplating growth via ADR, not
 amendment) and the `ADR-0021` D3 entity-vocabulary structural precedent, both of which show this
-project's general governance instinct is toward additive, ADR-gated extensibility rather than closed
-enumeration. This is tempered by two genuine counter-considerations that keep confidence at medium
+project's general governance instinct is toward additive, decision-gated extensibility rather than
+closed enumeration. This is tempered by two genuine counter-considerations that keep confidence at medium
 rather than high: (1) JATAKA's own implementation-scope sentence, unlike the entity-vocabulary or charter
 text, contains no explicit "provisional"/"extensible"/"additional X require Y" language of its own - its
 silence could reflect either "this is closed" or "this simply wasn't addressed," and nothing in the
