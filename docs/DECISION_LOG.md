@@ -4460,6 +4460,119 @@ follow-up entry, matching the same mechanism just used for the `ADR-0063` addend
 
 ---
 
+## ADR-0076 - D45 (Akshavedamsa) implementation-readiness audit (PROPOSED - prepared for CEO ratification, not yet declared)
+
+- **Date:** 2026-08-25
+- **Status:** PROPOSED - prepared per the owner's "CEO direction — proceed with DP-023 resolution"
+  instruction ("prepare the necessary ADR/implementation-readiness path, but do not implement D45 yet").
+  Not self-ratified, per the owner's own explicit item 7 ("Do not ratify any ADR yourself"). This entry
+  audits D45's readiness against the owner's own twelve-item checklist; it does not implement D45, does
+  not modify `engine/astrology/varga_rules.py`, `varga_registry.py`, or any certified artifact, and does
+  not itself authorize implementation.
+- **Context:** `docs/decisions/DP-023-jataka-first-capability-exact-selection.md` (`ADR-0075`'s own
+  ILLUSTRATIVE ruling having made non-Q8-§5-listed candidates eligible) recommended D45 (Akshavedamsa) as
+  the exact first JATAKA capability at medium-high confidence, resolved from `docs/VARGA_CERTIFICATION_
+  ROADMAP.md`'s own evidence by applying a methodology-first filter that excludes D20/D60 (disputed
+  content) and D16/D27 (undecided payload architecture) and D4 (undecided contract choice). The owner
+  then directed treating D45 as the recommended first capability and preparing its implementation-
+  readiness path, without implementing it, subject to twelve explicit verification items.
+- **Readiness verification, item by item, each checked directly this entry, not assumed:**
+  1. **Exact classical source/rule:** Parashara/BPHS, per `docs/VARGA_CERTIFICATION_ROADMAP.md` section 4:
+     "forty-five parts; movable Aries, fixed Leo, dual Sagittarius." **Independently cross-checked against
+     PyJHora's own software implementation** (`jhora.horoscope.chart.charts.akshavedamsa_chart`,
+     `chart_method=1`, docstring "Traditional Parasara Method"): for each planet, `d_long = (long * 45) %
+     30`; the per-sign segment index `l = int(long // (30/45))`; the resulting D-sign is `l % 12` for a
+     movable source sign, `(l + 4) % 12` for fixed, `(l + 8) % 12` for dual - using PyJHora's own
+     `const.movable_signs = [0,3,6,9]`, `fixed_signs = [1,4,7,10]`, `dual_signs = [2,5,8,11]` (0-indexed,
+     Aries = 0, matching this project's own sign convention). The `+0`/`+4`/`+8` offsets correspond
+     exactly to Aries/Leo/Sagittarius under this indexing - an exact, independent confirmation of the
+     roadmap's own stated construction from a second, differently-authored source, satisfying this
+     project's own "second independent transcription" requirement (`docs/VARGA_CERTIFICATION_ROADMAP.md`
+     section 6). **SATISFIED, with independent cross-confirmation beyond the roadmap's own citation.**
+  2. **School/tradition:** `parashara`, matching the school key already used by all five certified
+     registry vargas (D2/D3/D7/D12/D30). **SATISFIED.**
+  3. **Mathematical formula:** as stated in item 1 - uniform 30/45-degree (2/3-degree) segments per sign,
+     forward counting, with a movable/fixed/dual start-triple offset. A plain `CyclicVargaRule` expresses
+     this fully (`divisions=45`, a 12-entry `start_sign` tuple derived from the three offsets, `direction`
+     all `+1`) - no new contract or the `docs/decisions/DP-024-varga-framework-step-payload-
+     architecture.md` proposals are needed, confirmed in that paper's own section 3. **SATISFIED.**
+  4. **Sign/segment conventions:** forward counting only (no direction reversal, unlike D60's own disputed
+     even-sign-reversal question); confirmed no `direction` entries other than `+1` are implied by either
+     source. **SATISFIED.**
+  5. **Boundary behaviour:** inherits the engine-wide 1e-10 tolerance-promoted boundary convention already
+     governing every certified varga (`longitude_utils.py`), no division-specific exception identified in
+     either source. **A genuine open technical question, disclosed, not resolved:** the 30/45-degree
+     (2/3-degree) segment width is not exactly binary-representable, arithmetically similar in kind to
+     D27's own explicitly-flagged width note and to the already-solved D7/D9 precedent - `docs/VARGA_
+     CERTIFICATION_ROADMAP.md` section 4 does not flag D45 with the same note it gives D27. This entry
+     does not resolve whether that omission reflects a genuine absence of practical risk or an oversight;
+     it is carried forward as a required check in the certification plan (item 10), not asserted either
+     way. **PARTIALLY SATISFIED - requires empirical verification during the dense-sweep/ULP-battery
+     gates, not before them.**
+  6. **Variant handling:** PyJHora itself catalogs three additional D45 methods beyond the Traditional
+     Parasara one certified here (`chart_method=2` "Parivritti cyclical," `3` "Parivritti even Reversal,"
+     `4` "Parivritti Alternate/Somanatha") - confirmed by direct inspection of `akshavedamsa_chart`'s own
+     docstring. **These three are explicit non-claims of any future D45 certification**, mirroring this
+     project's own established pattern (`PARASHARI_DRISHTI_V1`'s AS-A/AS-B, `TRIKALAM_V1`'s named variant
+     tables) - the Traditional Parasara method (`chart_method=1`) is the one construction both this
+     project's own roadmap and PyJHora's own primary/default method agree on without qualification.
+     **SATISFIED**, with the non-claim scope stated explicitly rather than left implicit.
+  7. **Authoritative oracle/reference:** PyJHora's `akshavedamsa_chart` (confirmed present and callable in
+     the isolated oracle venv already used for D2/D3/D7/D12/D30 certification), matching the established
+     per-division-named-function pattern (`saptamsa_chart` for D7, `trimsamsa_chart` for D30) rather than
+     a generic call. **SATISFIED - a real, already-available oracle exists**, not merely assumed.
+  8. **Independent validator design:** mirrors the already-proven pattern used for D2/D7/D12 (a
+     from-scratch reimplementation of the movable/fixed/dual offset arithmetic, importing nothing from
+     `engine/astrology/varga_d45.py` once it exists, cross-checked against both the production module and
+     the PyJHora oracle independently). **Design confirmed feasible; not yet built - building it is
+     implementation, outside this entry's own scope.**
+  9. **Protected holdout:** to be drawn from the same holdout-generation methodology already used for the
+     five certified registry vargas (`docs/NEW_VARGA_IMPLEMENTATION_TEMPLATE.md`'s own template), never
+     used for tuning. **Design confirmed feasible; not yet constructed.**
+  10. **Certification artifact structure:** to mirror the existing five artifacts' own schema exactly
+      (`certification/VARGA_D12_V1_certification.json`'s own top-level shape confirmed this entry:
+      `schema`, `adr`, `date`, `scope`, `rule`, `oracle`, `gates` [A table-integrity, B dense-sweep, C
+      oracle, D non-invasiveness, E independent-validator], `explicit_non_claims`, `environment`,
+      `preconditions`, `result`) - `VARGA_D45_V1_certification.json`, gate B/the dense sweep and gate C's
+      oracle comparison being where item 5's boundary-behaviour question gets empirically resolved, not
+      assumed. **SATISFIED as a design; not yet generated.**
+  11. **Explicit non-claims, for the eventual certification artifact:** the three non-Traditional-Parasara
+      chart methods (item 6); any interpretive/deity-based reading of D45 results (`VargaClassification`
+      carries only D-sign, division index, and fraction - no payload, consistent with D45 not needing the
+      `docs/decisions/DP-024...` payload-table proposal); any non-`parashara` school variant.
+  12. **Dependency on the varga-framework architecture (`docs/decisions/DP-024-varga-framework-step-
+      payload-architecture.md`):** confirmed independent - D45 needs neither the proposed `step` field
+      (no multi-sign stepping; its offsets are fixed movable/fixed/dual constants, not a stepped
+      progression) nor the payload/label-table proposal (D45 is not named among D16/D20/D27/D60 in
+      `docs/VARGA_CERTIFICATION_ROADMAP.md` section 3's own payload list). **`DP-024`'s own resolution,
+      whichever the owner selects, does not gate D45's own readiness.**
+- **Determination:** D45's implementation readiness is confirmed on eleven of twelve items, with one
+  (boundary behaviour / cell-width representability, item 5) requiring empirical verification during the
+  certification gates themselves rather than resolvable at the decision-readiness stage - consistent with
+  how D7's and D9's own analogous width questions were resolved (verified during certification, not
+  assumed beforehand). **No genuine methodology gap was found for D45** - unlike D16/D20/D27/D60/D4,
+  D45's construction is independently cross-confirmed by two sources (the roadmap's own classical-source
+  citation and PyJHora's own software implementation) and needs no undecided architecture prerequisite.
+- **Consequences, if ratified:** this entry would authorize D45's own certification work to begin - its
+  own ADR (this one, once ratified), a frozen `CyclicVargaRule` table, an independent validator, oracle
+  comparison against PyJHora's `akshavedamsa_chart`, a dense sweep and ULP battery (explicitly checking
+  item 5's own width question), a protected holdout, and `VARGA_D45_V1_certification.json`. **This entry
+  does not itself implement anything** - no file under `engine/` is touched by this entry; ratification
+  would authorize the certification work described above as a separate, subsequent act, exactly as
+  `ADR-0068`/`ADR-0074`'s own readiness-audit precedent required a further, explicit step before any
+  work began.
+- **Evidence:** `docs/decisions/DP-023-jataka-first-capability-exact-selection.md` (the D45 selection and
+  its own reasoning); `docs/VARGA_CERTIFICATION_ROADMAP.md` section 4 (construction, confidence);
+  `docs/decisions/DP-024-varga-framework-step-payload-architecture.md` (confirms no framework dependency
+  blocks D45); direct inspection of `jhora.horoscope.chart.charts.akshavedamsa_chart` and `jhora.const`
+  (movable/fixed/dual sign tuples), in the isolated oracle venv already used for this project's existing
+  varga certifications; direct inspection of `certification/VARGA_D12_V1_certification.json`'s own schema;
+  `docs/NEW_VARGA_IMPLEMENTATION_TEMPLATE.md` (the certification template this entry's own plan mirrors);
+  `ADR-0049` (B-01/B-02 remediation, confirming the registry's own safety net is live for any future
+  registration).
+
+---
+
 ## ADR template (copy, do not edit above the line)
 
 ## ADR-XXXX - <title>
