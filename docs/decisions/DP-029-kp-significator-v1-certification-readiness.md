@@ -3,10 +3,10 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | OPEN - decision paper. Presents readiness state and options. DECIDES NOTHING. Requires owner approval. |
-| Version | 1.1.0 |
+| Status | OPEN - decision paper. Presents readiness state and options; decides nothing itself. Sections 11/13's own open items are **ADDRESSED** by the owner's "CEO AUTHORIZATION — KP_SIGNIFICATOR_V1 CERTIFICATION DESIGN" instruction (2026-08-26, nine accepted decisions) - see section 14. The paper's own analysis remains the readiness record; `ADR-0078` is the resulting formal certification design. |
+| Version | 1.2.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-26 (section 13 added: blocker-specific primary-source resolution, per "CEO AUTHORIZATION — RESOLVE DP-029 BLOCKER") |
+| Last updated | 2026-08-26 (section 14 added: owner acceptance of sections 11/13's own open items recorded, per "CEO AUTHORIZATION — KP_SIGNIFICATOR_V1 CERTIFICATION DESIGN"; `ADR-0078` drafted as the resulting certification design) |
 | Review cadence | TBD |
 
 # DP-029. `KP_SIGNIFICATOR_V1` certification-readiness
@@ -408,9 +408,33 @@ not touch FOUNDATION, closed Dasha items, H-03, H10/H11, or `DP-024`. It does no
 owner accepts section 13.1's disclosed-inference basis - that remains an owner decision, per section 13.9.
 It does not push or merge.
 
+## 14. Owner acceptance recorded (2026-08-26)
+
+The owner's "CEO AUTHORIZATION — KP_SIGNIFICATOR_V1 CERTIFICATION DESIGN" instruction states nine
+decisions as already made, closing section 11's three original blocker-resolution options (Option 2
+selected) and section 13.9's four owner-facing acceptance items:
+1. The primary-source methodology basis (`KP_SIGNIFICATOR_SPEC.md` section 19) is accepted.
+2. The narrow 7th-cusp marriage promise/denial V1 scope is accepted.
+3. The horary-to-natal application is accepted **only** as an explicitly disclosed ACE inference/non-claim
+   - not as a direct primary-source citation for the natal case.
+4. `DP-029` section 11 Option 2 (a fresh, KP-scoped aspect calculation) is accepted; Options 1 and 3 are
+   not selected.
+5. Conjunction = same-sign occupancy, no orb (section 13.2's own resolution).
+6. Aspect = universal 7th, plus Mars 4th/8th, Jupiter 5th/9th, Saturn 3rd/10th (section 13.1/13.8's own
+   finding).
+7. The explicit-provenance requirement (the aspect convention is an ACE-defined inference from
+   Krishnamurti's own demonstrated usage, not a single verbatim citation) is retained.
+
+Per `docs/PROJECT_CONSTITUTION.md` s11, this is the owner's own decision, not a self-ratification by
+Claude. It is recorded here as the readiness paper's own closing state; the resulting formal certification
+design, consolidating this paper's own analysis (sections 1-10, 13) into a single ratifiable architecture
+per the owner's own further "determine the complete certification architecture" instruction, is drafted as
+`ADR-0078` (`Status: PROPOSED`, not self-ratified) - not duplicated here.
+
 ## Change history
 
 | Version | Date | Change |
 |---|---|---|
+| 1.2.0 | 2026-08-26 | Section 14 added, per "CEO AUTHORIZATION — KP_SIGNIFICATOR_V1 CERTIFICATION DESIGN": records the owner's own explicit acceptance of section 11's Option 2 selection and section 13.9's four owner-facing items (methodology basis; narrow V1 scope; horary-to-natal as disclosed inference only; the Option 2 aspect/conjunction rule with its own provenance requirement). Not a self-ratification - the owner's own instruction is the accepting act, recorded here per `docs/PROJECT_CONSTITUTION.md` s11. Drafted `ADR-0078` (`Status: PROPOSED`) as the resulting formal, complete certification-design architecture consolidating this paper's own sections 1-10/13, per the owner's further "determine the complete certification architecture" instruction - not duplicated in this paper. |
 | 1.1.0 | 2026-08-26 | Section 13 added, per "CEO AUTHORIZATION — RESOLVE DP-029 BLOCKER": re-searched the already-retrieved Reader III text (not a re-investigation of the frozen methodology) for the specific aspect/conjunction-definition question the blocker raised. Found Krishnamurti's own text explicitly de-prioritizes aspect-based judgment as his primary method and, where aspects do appear in significator-level worked examples, consistently uses the classical whole-sign Vedic graha-drishti convention ("Mars aspects Scorpio... according to the Hindus"; "Saturn aspects the 11th house") - the same angular rules already certified as `PARASHARI_DRISHTI_V1`, independently reimplementable under KP's own school-isolation discipline without importing or modifying that module. Found the only explicit orb value in Reader III (2°/5°/1°) is scoped specifically to a different, named technique - Chapter 83, "Annual Horoscope" (Varshaphala) - not the natal significator framework. Resolved the orb question cleanly: under the whole-sign convention, conjunction is a same-sign occupancy test needing no orb at all, eliminating the risk that motivated deprioritizing Option 2 in v1.0.0. Compared Option 2 against Option 3 objectively (section 13.7) and determined Option 2 is now the stronger choice - full V1 coverage, no orb-definition risk, no risk to `PARASHARI_DRISHTI_V1`. Conclusion: A, Option 2 is certifiable - gives the exact frozen rule (same-sign conjunction; universal 7th plus Mars 4th/8th, Jupiter 5th/9th, Saturn 3rd/10th special aspects; sign-lord fallback unchanged) with an explicit disclosure requirement (an ACE-defined inference from demonstrated usage, not a single verbatim citation). States explicitly that `KP_SIGNIFICATOR_SPEC.md` section 18's three earlier questions remain open, unaffected by this task, with a fourth, analogous item now added to that same family. Does not implement, does not modify `PARASHARI_DRISHTI_V1`, does not execute certification, does not push or merge. |
 | 1.0.0 | 2026-08-26 | Created. Per "CEO AUTHORIZATION — KP_SIGNIFICATOR_V1 CERTIFICATION-READINESS": investigates certification feasibility only, treating `KP_SIGNIFICATOR_SPEC.md` v0.2.0's methodology as already approved and not re-researched. Confirms most production inputs already certified and directly reusable (`KP_CHAIN_V1` cusp/planet chains, sign-lordship table, retrograde derivation convention, Placidus cusps); confirms the two genuinely new logic components (significator determination, promise/deny judgment) are low-ambiguity and fully specified; confirms no computational oracle exists (reaffirming `DP-028`, not re-researching); designs an independent-derivation-plus-holdout certification strategy, test corpus, artifact/validator/negative-control/CI plan, and certifies the horary-to-natal application as a disclosed ACE-defined inference via an already-precedented mechanism (`KP_CHAIN_SPEC.md` Decision KP-A). Identifies one genuine blocker - a conjunction-orb definition and aspect-computation reuse-vs-rebuild decision for the Rahu/Ketu-as-sub-lord case, not a rare edge case - and presents three resolution options without deciding among them. Determination: B, CERTIFIABLE WITH BLOCKER. Does not implement, does not execute certification, does not push or merge. |

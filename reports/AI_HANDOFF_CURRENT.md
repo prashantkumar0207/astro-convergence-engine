@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.10.0 |
+| Version | 9.11.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-26 (**`DP-029` section 13: its own certification-readiness blocker RESOLVED - A, Option 2 (fresh KP-scoped aspect calc) certifiable.** Re-searched already-retrieved Reader III text: Krishnamurti's own significator-level examples use the classical whole-sign Vedic aspect convention (same rules as certified `PARASHARI_DRISHTI_V1`, independently reimplementable without touching it); the only orb found is scoped to a different technique (Annual Horoscope), not natal significators. Resolved cleanly: conjunction = same-sign occupancy, no orb needed. Gives exact frozen rule + disclosure requirement. States `KP_SIGNIFICATOR_SPEC.md` section 18's three questions remain open, plus a fourth analogous item now added. 857/857 tests, governance clean (77 ADR, 29 DP). Local commit only, not pushed.) |
+| Last updated | 2026-08-26 (**`ADR-0078` DRAFTED (`PROPOSED`, not self-ratified): `KP_SIGNIFICATOR_V1` complete certification design.** Per the owner's own nine accepted decisions ("CEO AUTHORIZATION — KP_SIGNIFICATOR_V1 CERTIFICATION DESIGN"). Consolidates `KP_SIGNIFICATOR_SPEC.md` v0.2.0 + `DP-026`-`DP-029` into one ratifiable architecture: production inputs, the new KP-scoped aspect calculation, significator derivation/strength ordering, retrograde/node handling, cusp/sub-lord handling, a ten-gate (A-J) certification battery (more granular than `D45`'s eight, since no oracle exists), artifact schema, hermetic CI placement, explicit non-claims. `DP-029` section 14 records owner acceptance. 857/857 tests, governance clean (78 ADR, 29 DP). Not implemented, not executed, nothing pushed.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,60 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-26 - ADR-0078 drafted: KP_SIGNIFICATOR_V1 complete certification design (PROPOSED, not self-ratified)
+- Branch / commit SHA: `phase-g-governance` (local), this task's own commit on top of `e3bc011` (the
+  `DP-029` section-13 commit). `main` unchanged.
+- Task (owner's exact instruction): "CEO AUTHORIZATION — KP_SIGNIFICATOR_V1 CERTIFICATION DESIGN...
+  CEO decisions: accept the previously resolved primary-source methodology basis; accept the narrow
+  7th-cusp marriage promise/denial V1 scope; accept the horary→natal application only as an explicitly
+  disclosed ACE inference/non-claim; accept DP-029 Option 2... conjunction = same-sign occupancy, no orb;
+  aspect = universal 7th + Mars 4/8 + Jupiter 5/9 + Saturn 3/10; retain the explicit provenance... Now
+  proceed to KP_SIGNIFICATOR_V1 certification-design/readiness, not implementation. Determine the
+  complete certification architecture..." (sixteen named components). No production code, no
+  certification execution, no push/merge.
+- Relevant ADR/specification: `KP_SIGNIFICATOR_SPEC.md` v0.2.0; `DP-026`-`DP-029`; `ADR-0027`;
+  `ADR-0076`/`ADR-0077` (the `D45` two-stage readiness-then-design pattern this entry mirrors).
+- Files changed: `docs/DECISION_LOG.md` (new `ADR-0078`, `Status: PROPOSED`); `docs/decisions/
+  DP-029-kp-significator-v1-certification-readiness.md` (v1.1.0 -> v1.2.0, new section 14 recording
+  owner acceptance); `docs/decisions/README.md` (`DP-029` row updated, v4.3.0 -> v4.4.0);
+  `docs/ACE_EXECUTION_STATE.md`; this file.
+- Method: consolidated `KP_SIGNIFICATOR_SPEC.md`'s own frozen methodology and `DP-029`'s own certification-
+  feasibility analysis (sections 1-10, 13) into a single, complete, ratifiable design, mirroring
+  `ADR-0077`'s own structure and level of detail exactly (thirteen numbered sections). Recorded the
+  owner's own nine accepted decisions as the entry's own Status-line context, not re-derived or
+  re-decided. Designed the one genuinely new piece this task required beyond consolidation: the concrete
+  KP-scoped aspect-calculation logic (which signs each planet aspects; the same-sign conjunction test)
+  and a ten-gate (A-J) certification battery, more granular than `D45`'s own eight gates specifically
+  because no computational oracle exists for KP significators - Gate C (the independent validator) is
+  designed to carry the primary evidentiary weight, cross-checked at every other gate, not only a single
+  dense-sweep comparison.
+- Key findings/design decisions: house-matter evaluation must support a third "undetermined/mixed"
+  category (sub-lord signifies neither or both house groups), not force a binary promise/deny result, per
+  `D-003`'s own zero-tolerance discipline extended to categorical completeness. No oracle dependency means
+  the certifier needs no network access and can run in the standard hermetic CI tier on every push,
+  including the Windows-hermetic legs - a genuine structural simplification versus every oracle-tier
+  certifier this project has added to date. Every non-claim named across the full `DP-026`-`DP-029` chain
+  and `KP_SIGNIFICATOR_SPEC.md` itself is consolidated into one explicit non-claims section (Four-Step/
+  Ruling-Planets/horary exclusion; the polar-Placidus gap; the horary-to-natal inference; the aspect-
+  convention inference; the OCR-transcription caveat; the children/5th-house gap; the no-oracle
+  disclosure).
+- Tests: `python -m pytest -q` -> **857 passed**, unchanged (no engine code touched).
+- Governance status: `check_adr_numbering.py` PASS (78 ADR entries, up from 77 - correctly consuming
+  `ADR-0078`); `check_identifier_families.py` PASS (29 registered DP identifiers, unchanged - `DP-029` was
+  updated, not newly registered); `check_retired_identifiers.py` PASS (0 violations).
+- Explicit non-claims honored: does not implement `KP_SIGNIFICATOR_V1`; does not create
+  `engine/kp/significators.py`; does not execute any of the ten designed gates or create a certification
+  artifact; does not modify `KP_CHAIN_V1`, `engine/parashari/drishti.py`, `PARASHARI_DRISHTI_V1`, or
+  `sign_lord.py`; does not self-ratify `ADR-0078` (`DP-029` section 14 records the owner's own acceptance
+  of the underlying decisions explicitly as the owner's own act, not a self-ratification, per
+  `docs/PROJECT_CONSTITUTION.md` s11); FOUNDATION, H-03, H10/H11, closed Dasha items untouched; not
+  pushed or merged.
+- **Result: `ADR-0078` is `Status: PROPOSED`, prepared for CEO ratification, not yet declared.** Every
+  item that did not require owner judgment was resolved; nothing was left open that the owner's own nine
+  accepted decisions could have resolved. Exact CEO decision required: ratify `ADR-0078` exactly as
+  drafted, or amend and then ratify, before certification-execution work (mirroring `ADR-0077`'s own
+  ratification-then-execution pattern) can be authorized.
 
 ### 2026-08-26 - DP-029 section 13: certification-readiness blocker RESOLVED - A, Option 2 (KP-scoped aspect calc) certifiable
 - Branch / commit SHA: `phase-g-governance` (local), this task's own commit on top of `15e08a3` (the
