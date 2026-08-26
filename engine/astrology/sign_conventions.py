@@ -61,6 +61,11 @@ SIGN_FIELD_CONVENTIONS = {
     # --- not sign indexes at all ----------------------------------
     "KpChain.sign_name": (NOT_AN_INDEX, SCALAR, None),
     "KpChain.sign_lord": (NOT_AN_INDEX, SCALAR, None),
+    # KpSignificatorJudgment.signification_set is a tuple of HOUSE numbers
+    # (1-12, KP_SIGNIFICATOR_V1, ADR-0078), not zodiac sign numbers - it
+    # matches this gate's own naming heuristic ("sign" is a substring of
+    # "signification") by coincidence, not because it is sign-typed.
+    "KpSignificatorJudgment.signification_set": (NOT_AN_INDEX, TUPLE_OF_INDEXES, None),
 }
 
 #: Sign-producing functions and the convention of their return value.

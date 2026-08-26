@@ -6,10 +6,12 @@
 # nine validators, the legacy gate and three certification runners that CI
 # previously never ran.
 #
-#   no-oracle  : default pytest gate + ALL ELEVEN independent holdout validators
-#              + legacy kernel gate + the three non-oracle certification
-#              runners. A REPRESENTATIVE SUBSET is additionally re-run with an
-#              in-process network guard.
+#   no-oracle  : default pytest gate + the independent holdout validators
+#              + legacy kernel gate + the non-oracle certification runners
+#              (now including certify_kp_significator.py, ADR-0078 - no
+#              external oracle exists for KP significators, so it belongs
+#              here, not in the oracle-tier job below). A REPRESENTATIVE
+#              SUBSET is additionally re-run with an in-process network guard.
 #
 #              HONEST SCOPE, corrected 2026-08-13. This job is NOT network
 #              isolated: the runner has full egress, which it must in order to
@@ -111,6 +113,7 @@ jobs:
           python scripts/certify_kp_chain.py
           python scripts/certify_sign_convention.py
           python scripts/certify_rise_set.py
+          python scripts/certify_kp_significator.py
 
       - name: Re-run a representative subset under the in-process network guard
         run: |
@@ -118,10 +121,12 @@ jobs:
           python scripts/ci_no_network.py -m pytest -q
           python scripts/ci_no_network.py validate_d9_holdout.py
           python scripts/ci_no_network.py validate_kp_holdout.py
+          python scripts/ci_no_network.py validate_kp_significator_holdout.py
           python scripts/ci_no_network.py scripts/certify_current_engine.py
           python scripts/ci_no_network.py scripts/certify_kp_chain.py
           python scripts/ci_no_network.py scripts/certify_sign_convention.py
           python scripts/ci_no_network.py scripts/certify_rise_set.py
+          python scripts/ci_no_network.py scripts/certify_kp_significator.py
 
       - name: Assert the network guard actually blocks (negative control)
         run: |

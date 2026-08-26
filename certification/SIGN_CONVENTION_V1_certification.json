@@ -1,7 +1,7 @@
 {
  "schema": "sign_convention_v1_certification",
  "adr": "ADR-0012",
- "date": "2026-08-25",
+ "date": "2026-08-26",
  "scope": "explicit, machine-checked sign-index conventions across every layer; no certified value renumbered",
  "decisions": {
   "SC-A": "inert Sign value type as the shared convention carrier",
@@ -77,6 +77,11 @@
    "convention": "one_based",
    "shape": "scalar",
    "accessor": "sign"
+  },
+  "KpSignificatorJudgment.signification_set": {
+   "convention": "not_an_index",
+   "shape": "tuple_of_indexes",
+   "accessor": null
   },
   "NavamsaChart.ascendant_sign": {
    "convention": "zero_based",
@@ -306,7 +311,7 @@
    }
   },
   "anti_fitting": {
-   "modules_scanned": 183,
+   "modules_scanned": 187,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."

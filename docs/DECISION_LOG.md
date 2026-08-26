@@ -1179,7 +1179,9 @@ at 0015..0017 is a reservation, not a lost entry, and a gap is not a monotonicit
 ## ADR-0027 - KP significator scope; clarification of root D-008 (ADR-0013 conflict 6)
 
 - **Date:** 2026-08-11
-- **Status:** PROPOSED - pending owner ratification (Q1).
+- **Status:** ACCEPTED. Evidence section amended and ratified by the owner's "CEO DECISION — DP-028"
+  (2026-08-25) - see "Amendment of ADR-0027" and "Ratification of ADR-0027" sub-entries immediately
+  following this entry's own text (which is otherwise unedited).
 - **Context:** Root D-008 names KP_SIGNIFICATOR_V1 as the next engineering tier and requires its
   methodology specification to be frozen before implementation. It was never superseded, while the
   2026-08-08/09 work spanned a much wider programme. `LOCK_MANIFEST.json` still records
@@ -1206,6 +1208,90 @@ at 0015..0017 is a reservation, not a lost entry, and a gap is not a monotonicit
   a prerequisite consideration for any significator work, since significators consume the chain.
 - **Evidence:** Root `DECISION_LOG.md` D-008; `LOCK_MANIFEST.json` tier table;
   `docs/KP_CHAIN_SPEC.md` non-claims; `reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md` H-07.
+
+#### Amendment of ADR-0027: Evidence section corrected and externally verified (2026-08-25)
+
+- **Status:** ACCEPTED (owner-directed amendment). The owner instructed, as item 1 of "CEO DECISION —
+  DP-028": "Amend ADR-0027's Evidence section to incorporate DP-028's external verification, without
+  changing the sixteen-item checklist itself. Explicitly correct the historical 'eleven-item' miscount
+  to sixteen and preserve provenance of the external verification." The full ten-item instruction this
+  entry and its following ratification sub-entry act on, quoted in full for the record: "CEO DECISION —
+  DP-028. 1. Amend ADR-0027's Evidence section to incorporate DP-028's external verification, without
+  changing the sixteen-item checklist itself. Explicitly correct the historical 'eleven-item' miscount to
+  sixteen and preserve provenance of the external verification. 2. Ratify ADR-0027 after that evidence
+  amendment. 3. Proceed with KP_SIGNIFICATOR_V1 methodology-specification drafting only. 4. Freeze V1
+  around core K.S. Krishnamurti significator methodology. 5. Explicitly exclude Four Step Theory, Ruling
+  Planets, horary-specific extensions and other variants from V1. 6. Do not implement KP significators.
+  7. Do not begin Parashari yoga implementation. 8. During specification drafting, independently verify
+  every methodology claim against named authoritative sources and identify disagreements/variants rather
+  than silently choosing one. 9. Continue autonomously through research and drafting. 10. Stop only when
+  the KP specification reaches a genuine CEO decision point requiring ratification or a substantive
+  methodological choice. Do not push or merge anything without separate authorization."
+- **Decision:** This entry amends `ADR-0027`'s own **Evidence line only**. `ADR-0027`'s Decisions 1-5
+  above, including the sixteen-item checklist in Decision 4, are **unchanged, word for word** - this
+  entry does not touch that text. Two things are corrected/added:
+  1. **The historical miscount is corrected.** `ADR-0027`'s own Decision 4 checklist has **sixteen
+     items**, not the "eleven items" this project repeatedly cited in `DP-021`, `DP-023`, and `DP-026`'s
+     own v1.0.0 text, none of which independently recounted it. The error was first caught and corrected
+     by `DP-026` section H.1 (an independent provenance audit), and re-confirmed by `DP-028` section B by
+     direct re-count of `ADR-0027`'s own text: (1) exact methodology, (2) source authority, (3) houses
+     considered, (4) star/sub/sub-sub logic, (5) four-step interpretation if applicable, (6) ruling
+     planets if included, (7) cusp handling, (8) retrograde treatment, (9) node treatment, (10) boundary
+     behaviour, (11) school and profile requirements, (12) independent validation protocol, (13) protected
+     holdout, (14) negative controls, (15) acceptance criteria, (16) explicit non-claims.
+  2. **External verification is now on the record.** `DP-026` section H.2 found `ADR-0027`'s original
+     Evidence line cited no external KP-astrology authority for its own checklist. `DP-028` performed that
+     verification (its own section C, `WebSearch`-sourced, explicitly secondary-source-derived and flagged
+     there for future primary-source confirmation, not treated as a primary citation): K.S. Krishnamurti's
+     own foundational "Six KP Readers" (~1968-1971); cuspal sub-lord theory as the system's central
+     mechanism, structurally matching this project's own already-certified `KP_CHAIN_V1` SL/NL/SB/SS
+     hierarchy; a significator-selection priority rule; Ruling Planets' seven-factor, judgment-time/
+     horary-adjacent character; and the critical disambiguation that "Four Step Theory" was developed by a
+     separate, later author (Sunil Gondhalekar, ~1990), not part of Krishnamurti's own original readers,
+     and is positioned in the literature as an alternative to Ruling Planets rather than a dependency of
+     it - independently corroborating `ADR-0027` Decision 3's own four-way scope separation.
+  This entry's own Evidence line (below) supersedes the original one **for citation purposes only**; the
+  original Evidence line, quoted in `ADR-0027`'s own text above, is left unedited as the historical record
+  of what was cited when the entry was first drafted.
+- **Consequences:** None to `ADR-0027`'s own substantive Decisions 1-5. This amendment strengthens the
+  Evidence provenance behind an already-existing checklist; it authorizes nothing by itself and is not a
+  ratification (see the following sub-entry for that).
+- **Evidence:** the owner's "CEO DECISION — DP-028" instruction (item 1), quoted above in full;
+  `docs/decisions/DP-028-kp-significator-external-verification-readiness.md` section C (external
+  verification) and section B (sixteen-item re-count), commit `6a7e3300bb5fac235c1a443d09b2a60d3c1298e3`;
+  `docs/decisions/DP-026-d008-kp-significator-methodology-readiness.md` section H.1 (the original
+  miscount correction) and H.2 (the original no-external-citation finding).
+
+#### Ratification of ADR-0027 (as amended above): KP SIGNIFICATOR SCOPE RATIFIED (2026-08-25)
+
+- **Status:** ACCEPTED. The owner instructed, as item 2 of the same "CEO DECISION — DP-028" quoted in
+  full in the immediately preceding amendment sub-entry: "Ratify ADR-0027 after that evidence amendment."
+  Per `docs/PROJECT_CONSTITUTION.md` s11, this instruction is the ratifying act; this entry records it,
+  matching the precedent already used throughout this session (`ADR-0068`, `ADR-0074`, `ADR-0075`,
+  `ADR-0076`, `ADR-0077`'s own ratification sub-entries).
+- **Decision:** `ADR-0027` above, **as amended by the immediately preceding sub-entry**, is ratified
+  exactly as drafted, with no further wording changed to either the original entry or the amendment. Its
+  own `Status` line, at the top of the original entry, is updated to point to this entry - the only
+  further edit made to that entry's own text beyond the Evidence-line amendment already recorded above.
+  As of 2026-08-25: **`ADR-0027`'s Decisions 1-5 are now in force.** D-008 is clarified (methodology
+  requirement stands and is generalised; the "next tier" sequencing claim remains superseded by
+  `ADR-0026`). KP significators remain **NOT authorised for implementation** (Decision 2, unchanged and
+  reaffirmed - see the owner's own items 6-7 of the same instruction, recorded in `DP-028`'s own update,
+  not restated here). The four-way scope separation (KP significators; four-step; ruling planets; horary -
+  Decision 3) is now ratified policy, not merely a proposal. The sixteen-item checklist (Decision 4) is
+  now the ratified, governing minimum-content requirement for any future `KP_SIGNIFICATOR_V1`
+  specification. `LOCK_MANIFEST.json` tier entries remain unedited (Decision 5, Q12 remains open).
+- **Consequences:** identical to `ADR-0027`'s own, now in force, plus the amendment's added evidence
+  provenance. No code touched by this ratification itself. The owner separately authorized (items 3-5 of
+  the same instruction, recorded in full in `DP-028`'s own update, not restated here) proceeding with
+  `KP_SIGNIFICATOR_V1` methodology-specification drafting only - frozen around core K.S. Krishnamurti
+  significator methodology, explicitly excluding Four Step Theory, Ruling Planets, horary-specific
+  extensions, and other variants from V1 - not implementation. Parashari yoga implementation remains not
+  begun (item 7). FOUNDATION, H-03, the eight `ADR-0072` cross-certifier findings, and every closed Dasha
+  item remain untouched.
+- **Evidence:** the owner's "CEO DECISION — DP-028" instruction (item 2), quoted in full in the preceding
+  amendment sub-entry; `ADR-0027` and its amendment, both above; `DP-028`, commit
+  `6a7e3300bb5fac235c1a443d09b2a60d3c1298e3`.
 
 ---
 
@@ -4833,6 +4919,344 @@ subsequent act - not performed by this entry itself.**
   gates recorded); `reports/certification/varga_d45.report.md` and `varga_d45.console.txt` (the
   human-readable report and console transcript, generated in the same run); `reports/
   AI_HANDOFF_CURRENT.md`'s own task-log entry for this execution (full defect-and-fix narrative).
+
+---
+
+## ADR-0078 - `KP_SIGNIFICATOR_V1` certification design: frozen rule, KP-scoped aspect calculation, oracle-free validation battery, artifact/CI plan (PROPOSED - prepared for CEO ratification, not yet declared)
+
+- **Date:** 2026-08-26
+- **Status:** **ACCEPTED, on the owner's ratifying instruction recorded in the "Ratification of ADR-0078"
+  entry immediately below this entry's own text.** Originally drafted `PROPOSED` per the owner's "CEO
+  AUTHORIZATION — KP_SIGNIFICATOR_V1 CERTIFICATION DESIGN" instruction, which itself states nine accepted
+  decisions (methodology basis; narrow 7th-cusp scope; horary-to-natal disclosure; Option 2 aspect
+  approach; same-sign conjunction; the exact aspect table; provenance disclosure) as already made - this
+  entry formalizes those decisions into a complete, concrete certification design, per the same two-stage
+  pattern already used for `D45` (`ADR-0076` readiness -> `ADR-0077` certification design -> ratification
+  -> execution). Per this repository's own "change only the status" discipline, this Status line is the
+  only text in this entry edited to record ratification - the Context, the certification design (sections
+  1-13), Consequences, and Evidence below are unchanged. **This entry is a design only. It does not write
+  or register `engine/kp/significators.py`, does not modify any existing certified capability including
+  `KP_CHAIN_V1`/`engine/parashari/drishti.py`, and does not itself produce
+  `KP_SIGNIFICATOR_V1_certification.json` - certification execution remains a separate, not-yet-authorized
+  act.**
+- **Context:** `DP-026`-`DP-029` (decision-readiness), `KP_SIGNIFICATOR_SPEC.md` v0.2.0 (frozen
+  methodology, primary-sourced from K.S. Krishnamurti's own Readers II-IV), and `DP-029` (certification
+  feasibility, including section 13's blocker resolution) together establish everything this design
+  formalizes. Root `DECISION_LOG.md` `D-008` requires the methodology frozen and independently audited
+  before implementation; `ADR-0027` (amended, ratified) sets the sixteen-item specification checklist this
+  design satisfies. Nothing here reopens methodology already settled - this entry is architecture only.
+
+### 1. Frozen rule and source (recap, not re-derivation)
+
+**Classical source:** K.S. Krishnamurti's own Readers (I retrieved directly and confirmed foundational;
+III retrieved directly, the source of every specific rule below; IV partially retrieved), per
+`KP_SIGNIFICATOR_SPEC.md` section 2 and `DP-028`/`DP-029`'s own external verification - a scanned/OCR'd
+reprint, single transcription pass, disclosed precisely, not a publisher-verified critical edition.
+**Scope, frozen exactly as accepted:** a single judgment - does the 7th house cusp's KP cuspal sub-lord
+signify the marriage-promise house group (2, 7, 11) or the marriage-denial group (1, 6, 10, 12) - for a
+natal chart under the `KP_KRISHNAMURTI` profile. The underlying rule was demonstrated in Krishnamurti's
+own text via a horary illustration; its application to natal charts is retained, per explicit instruction,
+as a disclosed ACE-defined inference/non-claim, not a direct primary citation for the natal case.
+
+### 2. Production inputs and architecture
+
+Per `DP-029` sections 1-2, verified directly against the code, not assumed: the 7th cusp's own KP chain
+(`engine/kp/chart.py::kp_chart()`, certified `KP_CHAIN_V1`) supplies the cuspal sub-lord planet directly.
+Every planet's own KP chain (same substrate), house occupancy
+(`engine/astrology/house.py::whole_sign_house()`/`equal_house_from_ascendant()` - profile-agnostic in its
+own signature, confirmed reusable per `DP-029` section 3's own flagged distinction), sign lordship
+(`engine/astrology/sign_lord.py`), and retrograde status (`speed_longitude < 0`, the established
+convention already used by `KpBody`) are all already-certified, directly reusable inputs. No new
+astronomical calculation is required anywhere in this design. `KP_SIGNIFICATOR_V1` is a new, separately
+identified, separately content-hashed module (`engine/kp/significators.py`, not created by this entry)
+consuming these substrates read-only, per the isolation pattern `KP_CHAIN_V1` itself established.
+
+### 3. Independent KP-scoped aspect calculation (new, per `DP-029` section 13)
+
+**Frozen exactly as accepted, built as new code under `engine/kp/`, never importing or modifying
+`engine/parashari/drishti.py` or `PARASHARI_DRISHTI_V1`:**
+
+- **Conjunction:** two bodies are conjunct if and only if they occupy the same sign (zero orb - a direct
+  reuse of each body's own sign, already available from its longitude; no new orb-definition risk, per
+  `DP-029` section 13.2).
+- **Aspect:** every planet aspects the sign seventh from its own sign (universal aspect); Mars
+  additionally aspects the 4th and 8th signs from its own; Jupiter additionally aspects the 5th and 9th;
+  Saturn additionally aspects the 3rd and 10th. A planet P is "aspecting" body B if B's sign is in P's own
+  aspected-sign set. This is the classical whole-sign Vedic graha-drishti scheme, independently
+  implemented, not reused from the certified Parashari module - it shares its underlying angular rules
+  with `PARASHARI_DRISHTI_V1` only because both inherit the same classical foundation Krishnamurti's own
+  text explicitly invokes ("according to the Hindus," `DP-029` section 13.1), not because one imports the
+  other.
+- **Explicit provenance requirement:** every `KP_SIGNIFICATOR_V1` result whose judgment depends on this
+  convention carries a disclosure field stating the convention is an ACE-defined inference from
+  Krishnamurti's own demonstrated usage pattern (`DP-029` section 13.1), not a single verbatim primary
+  citation - the same disclosure discipline already used for `KP_CHAIN_SPEC.md`'s own Decision KP-A
+  boundary-tolerance convention and for this design's own horary-to-natal non-claim (section 1).
+
+### 4. Significator derivation and strength ordering
+
+Frozen exactly as `KP_SIGNIFICATOR_SPEC.md` section 19.1 established (Ordering A, confirmed across six
+independent Reader III passages): for a target house H, the planets signifying H are, in strength order
+from strongest to weakest: (1) planets posited in the star (nakshatra) of H's occupant; (2) H's occupant;
+(3) planets posited in the star of H's owner (sign lord); (4) H's owner. "Posited in the star of X" means:
+that planet's own `KP_CHAIN_V1` nakshatra-lord (NL) equals X. This is computed once per planet (not
+per-house) and reused across the significator-derivation pass for every house checked.
+
+### 5. Retrograde handling
+
+Frozen exactly as `KP_SIGNIFICATOR_SPEC.md` section 19.2 established: a promise made via a retrograde
+significator is disclosed as conditional, not treated as equivalent to a direct-motion promise - the
+result carries an explicit qualifier when the deciding significator (the 7th cuspal sub-lord, or any
+planet in its own qualifying chain per section 4) is retrograde at the chart's own epoch, rather than
+silently passing or failing the judgment. No new astronomical calculation - reuses the existing
+`speed_longitude < 0` derivation (section 2).
+
+### 6. Rahu/Ketu (node) substitution
+
+Frozen exactly as `KP_SIGNIFICATOR_SPEC.md` section 19.3 established, now made concrete by section 3's own
+aspect/conjunction design: if the deciding significator (the 7th cuspal sub-lord itself, or a planet
+being evaluated for what it signifies per section 4) is Rahu or Ketu, its own significations are
+determined by, in priority order: (1) the planet it is conjunct (section 3, same-sign test); (2) the
+planet aspecting it (section 3, whole-sign aspect test); (3) failing both, the lord of the sign it
+occupies (`engine/astrology/sign_lord.py`, already reusable). This priority order is unambiguous and
+primary-sourced (confirmed four times in Reader III, `DP-029` section 13.4) - only the underlying
+aspect/conjunction test needed this design's own new logic (section 3).
+
+### 7. Cusp/sub-lord handling and positive/negative house evaluation
+
+The 7th cusp's own sub-lord is read directly from `kp_chart(...).cusps[6].chain.sub_lord` (section 2). That
+planet's own significations are derived via section 4 (or, if it is a node, via section 6). The judgment:
+if the sub-lord's own signification set intersects {2, 7, 11}, the result is PROMISED; if it intersects
+only {1, 6, 10, 12} and not the promise set, the result is DENIED; if it intersects neither set, or
+intersects both, the result is UNDETERMINED/MIXED and must be disclosed as such, not forced into one
+bucket (per root `DECISION_LOG.md` D-003's zero-tolerance discipline extended to categorical completeness,
+and per `DP-029` section 6's own explicit requirement that mixed cases not be silently bucketed).
+
+### 8. Certification battery - gate design
+
+No external computational oracle exists (`DP-028` section D, `DP-029` section 4, reaffirmed, not
+re-researched) - the battery below is accordingly **more granular than `D45`'s own eight-gate pattern**,
+since no single oracle-comparison gate can carry cross-validation weight for the whole rule; each
+sub-rule earns its own dedicated gate instead:
+
+- **Gate A - table/rule integrity:** content-hash pinning of every frozen constant this design freezes -
+  the promise/deny house sets, Ordering A's own definition, the aspect table (Mars 4/8, Jupiter 5/9,
+  Saturn 3/10, universal 7th), the retrograde-disclosure rule, and the node-substitution priority order -
+  mirroring `D45`'s own Gate A.
+- **Gate B - dense sweep:** the 7th cusp longitude swept across the full 360° zodiac (mirroring the
+  ~51,429-point scale already established for `KP_CHAIN_V1`/`D45`), production versus the independent
+  validator (Gate C), zero-mismatch tolerance.
+- **Gate C - independent validator:** a from-scratch re-derivation of sections 3-7, importing nothing from
+  the production module (mirroring `validate_d45_holdout.py`/`validate_kp_holdout.py`'s own isolation
+  discipline) - this is the primary evidentiary gate in the absence of an oracle, and is compared against
+  production at every other gate below, not only Gate B.
+- **Gate D - non-invasiveness:** confirms `KP_SIGNIFICATOR_V1`'s own registration does not alter
+  `KP_CHAIN_V1`'s, `PARASHARI_DRISHTI_V1`'s, or `sign_lord.py`'s own content hashes or behaviour - the
+  isolation guarantee, checked mechanically, not merely asserted.
+- **Gate E - boundary cases:** the `KP_CHAIN_V1`-inherited sub-interval floating-point boundaries (already
+  documented, `docs/KP_CHAIN_SPEC.md`), applied specifically at the 7th cusp position, confirming a
+  sub-lord change at a boundary correctly propagates through the full judgment; plus sign-boundary edges
+  (29.9999...°/0.0001°) for the new aspect/conjunction logic itself.
+- **Gate F - retrograde cases:** charts where the deciding significator is retrograde at the test epoch,
+  confirming the conditional-disclosure qualifier fires correctly and only when appropriate.
+- **Gate G - node/aspect cases:** charts where the deciding significator is Rahu or Ketu, exercising all
+  three substitution-priority levels (conjunction, aspect, sign-lord fallback) and, within the aspect
+  level, at least one case per special-aspect rule (Mars, Jupiter, Saturn) plus the universal 7th - the
+  gate blocked in `DP-029` v1.0.0, now unblocked by section 3's own design.
+- **Gate H - strength-order cases:** constructed charts where the four-level Ordering A hierarchy is
+  load-bearing (different planets occupy each of the four significator roles for the same house, and the
+  choice between them changes the promise/deny verdict) - proving Ordering A is genuinely implemented, not
+  vacuously satisfied.
+- **Gate I - protected holdout:** prime-step deterministic sampling, independent of gates B and E-H,
+  mirroring `D45`'s own Gate G / `KP_CHAIN_V1`'s own holdout pattern.
+- **Gate J - negative controls:** planted mutations (swap the promise/deny house sets; corrupt Ordering A's
+  own priority sequence; corrupt the aspect table's own special-aspect assignments; reverse the node
+  substitution priority) confirmed genuinely detected - mirroring `D45`'s own Gate H, including its own
+  documented lesson that a negative control must itself be checked for degenerate/no-op mutations before
+  being trusted.
+
+### 9. Test corpus (consolidates `DP-029` section 6, now concrete)
+
+Positive cases (sub-lord significations intersect {2,7,11}); negative cases (intersect only {1,6,10,12});
+mixed/undetermined cases (section 7's own third category, explicitly not forced into positive or negative);
+boundary cases (Gate E); retrograde cases (Gate F); node/aspect cases (Gate G, all four substitution
+levels); strength-order cases (Gate H); the dense sweep (Gate B); the protected holdout (Gate I) - every
+CEO-named test-corpus category from `DP-029` section 6 is now covered by a specific, named gate.
+
+### 10. Oracle/reference strategy
+
+None exists (section 8's own preamble). The independent-validator-plus-protected-holdout strategy (Gates
+C, I) is the sole evidentiary basis, a genuinely weaker posture than every other certified capability in
+this project checked to date (`D45` had PyJHora corroboration; `KP_CHAIN_V1` had the `legacy/kp.py`
+equivalence oracle) - disclosed honestly in the artifact's own preconditions block, not concealed.
+
+### 11. Artifact schema and CI/drift gates
+
+`certification/KP_SIGNIFICATOR_V1_certification.json`, mirroring the established schema (`schema`, `adr`
+- this entry, once ratified and executed -, `date`, `scope`, `rule`, `gates` A-J per section 8,
+`explicit_non_claims`, `environment`, `preconditions` including the anti-fitting scan and the
+no-oracle disclosure, `result`). Covered by `scripts/check_artifact_drift.py` once generated. Added to
+`scripts/certification_support.py`'s own `CERTIFIER_SOURCES`/`VALIDATOR_SOURCES` scan scope at
+execution time, with the now-documented caveat (`docs/ACE_EXECUTION_STATE.md` v7.2.0) that doing so
+shifts `modules_scanned` for every other certifier's own artifact, requiring all affected artifacts to be
+regenerated in the same change. **No oracle dependency exists (section 10), so this certifier needs no
+network access and no PyJHora dependency - it runs in the standard hermetic/no-oracle CI tier**, on every
+push including the Windows-hermetic legs, unlike every oracle-tier certifier this project has added to
+date - a genuine structural simplification, per `DP-029` section 9's own finding.
+
+### 12. Explicit non-claims
+
+Four Step Theory, Ruling Planets, and horary-specific judgment are out of scope (`ADR-0027` Decision 3,
+reaffirmed). Charts with cusps inside the undefined polar-latitude band (`DP-025`, still deferred) are
+unverified/out of scope, mirroring `RISE_SET_V1`'s own polar non-claim. The horary-to-natal application of
+the promise/deny house groups is a disclosed ACE-defined inference, not a direct primary citation for the
+natal case (section 1). The aspect/conjunction convention (section 3) is likewise a disclosed ACE-defined
+inference from demonstrated usage, not a single verbatim citation. Source text is a scanned/OCR'd reprint,
+single transcription pass, not a publisher-verified critical edition. The children/5th-house parallel is
+not covered by V1 (`KP_SIGNIFICATOR_SPEC.md` section 19.5). No computational oracle corroborates this
+design (section 10) - certification rests on independent derivation and protected holdout alone.
+
+### 13. What this entry does not do
+
+**Does not write or register `engine/kp/significators.py`.** Does not modify `KP_CHAIN_V1`,
+`engine/parashari/drishti.py`, `PARASHARI_DRISHTI_V1`, or `sign_lord.py`. Does not generate a real
+`KP_SIGNIFICATOR_V1_certification.json` (no certifier has been run against a production module, because
+none exists yet). Does not execute any gate described in section 8. **Ratifying this entry would authorize
+the certification-execution step (writing the frozen rule and the KP-scoped aspect calculation as a
+standalone, unregistered module or scratchpad reference; building the independent validator; running all
+ten gates; generating the artifact) as a separate, subsequent act - not performed by this entry itself.**
+
+- **Consequences, if ratified:** this entry would freeze `KP_SIGNIFICATOR_V1`'s own complete certification
+  architecture, authorizing certification-execution work as the next, separately-tracked act. No certified
+  calculation, certification artifact, or production code is touched by this entry itself.
+- **Evidence:** `KP_SIGNIFICATOR_SPEC.md` v0.2.0 (frozen methodology); `DP-026`-`DP-029` (decision-
+  readiness and certification-feasibility chain); `DP-029` section 13 (the blocker resolution this
+  design's own section 3 formalizes); `docs/KP_CHAIN_SPEC.md` (the certified substrate consumed
+  throughout); the owner's own "CEO AUTHORIZATION — KP_SIGNIFICATOR_V1 CERTIFICATION DESIGN" instruction
+  (the nine accepted decisions this entry formalizes, quoted in the Status line above); root
+  `DECISION_LOG.md` `D-002`/`D-003` (tolerance and zero-categorical-tolerance standards, applied
+  throughout); `ADR-0049`/`D45`'s own certification-execution precedent (`ADR-0077`, its ratification
+  sub-entry) for the gate-lettering and negative-control discipline this design mirrors.
+
+#### Ratification of ADR-0078: `KP_SIGNIFICATOR_V1` CERTIFICATION DESIGN RATIFIED (2026-08-26)
+
+- **Status:** ACCEPTED. The owner instructed: "CEO RATIFICATION — ADR-0078. Ratify ADR-0078 exactly as
+  currently drafted. Do not alter its methodology, scope, certification architecture, non-claims, or
+  gates." Per `docs/PROJECT_CONSTITUTION.md` s11, this instruction is the ratifying act; this entry
+  records it, matching the precedent already used throughout this session (`ADR-0068`, `ADR-0074`,
+  `ADR-0075`, `ADR-0076`, `ADR-0077`'s own ratification sub-entries).
+- **Decision:** `ADR-0078` above (its full thirteen-section certification design, Context, Consequences,
+  and Evidence) is **ratified exactly as drafted, with no wording changed**. Its own `Status` line,
+  immediately above, is updated to point to this entry - the only edit made to that entry's own text.
+  **`KP_SIGNIFICATOR_V1`'s own complete certification design - frozen rule/scope, production inputs, the
+  independent KP-scoped aspect calculation, significator derivation and strength ordering, retrograde and
+  node handling, cusp/sub-lord handling, positive/negative/mixed house evaluation, the ten-gate (A-J)
+  certification battery, test corpus, oracle-free validation strategy, artifact schema, CI/drift-gate
+  plan, and explicit non-claims - is ratified as of 2026-08-26, exactly as drafted, with no methodology,
+  scope, architecture, non-claim, or gate altered.** Per `ADR-0078`'s own section 13 ("What this entry
+  does not do"), ratifying it authorizes the certification-execution step as a separate, subsequent act -
+  **not granted by this ratification itself**. No production code is written or modified by this entry;
+  `engine/kp/significators.py` is not created; `KP_CHAIN_V1`, `engine/parashari/drishti.py`,
+  `PARASHARI_DRISHTI_V1`, and `sign_lord.py` remain untouched; no certification artifact is generated.
+- **Consequences:** `KP_SIGNIFICATOR_V1`'s own certification design is now the ratified, governing
+  architecture for any future certification-execution work, mirroring `ADR-0077`'s own ratified design
+  standing as D45's governing architecture before its own separate execution authorization. Certification
+  execution itself remains a separate, not-yet-authorized act, per the owner's own explicit instruction to
+  "stop at that exact point" if execution requires separate authorization - it does, per `ADR-0078`
+  section 13's own explicit reservation, so it is not begun by this entry.
+- **Evidence:** the owner's "CEO RATIFICATION — ADR-0078" instruction, quoted above; `ADR-0078` itself,
+  commit `118bdc460d4b29ffdda267996f86a2ce0fc7ed94`.
+
+#### Certification execution of ADR-0078: `KP_SIGNIFICATOR_V1` CERTIFICATION EXECUTED, ALL TEN GATES PASS (2026-08-26)
+
+- **Status:** ACCEPTED. The owner separately instructed, after `ADR-0078`'s own ratification: "CEO
+  AUTHORIZATION — KP_SIGNIFICATOR_V1 CERTIFICATION EXECUTION. ADR-0078 is ratified... Authorize the
+  separate certification-execution step exactly within ADR-0078's frozen scope. Execute the complete
+  KP_SIGNIFICATOR_V1 certification... Do not broaden V1. Do not add interpretation, convergence, BTR,
+  historical prediction or other KP variants. Do not implement Four-Step Theory or Ruling Planets. Do
+  not silently turn the horary->natal inference into an established primary-source claim." Per
+  `docs/PROJECT_CONSTITUTION.md` s11, this instruction is the authorizing act for the execution `ADR-0078`
+  section 13 itself reserved as separate; this entry records the results, mirroring the D45 precedent's
+  own certification-execution recording (`ADR-0077`'s own ratification sub-entry).
+- **Decision:** Certification-execution work was performed exactly within `ADR-0078`'s own frozen scope,
+  producing genuine, regenerable evidence, not a design re-assertion:
+  1. The frozen rule (significator derivation via Ordering A, the promise/deny judgment, retrograde
+     disclosure, node substitution) and the KP-scoped aspect/conjunction calculation (`ADR-0078` section
+     3) were written as a standalone, **unregistered** implementation inside `scripts/
+     certify_kp_significator.py` - `engine/kp/significators.py` was not created or modified.
+  2. An independent, from-scratch validator (`validate_kp_significator_holdout.py`) was built, sharing
+     only the already-certified `KP_CHAIN_V1` substrate, structured differently from the certifier's own
+     code (explicit per-house tables built up front, rather than the certifier's own lazy per-call
+     membership tests), and using its own separate real-chart holdout sample.
+  3. All ten gates (A-J) were executed and PASS: A table/rule integrity; B dense sweep (12,960 points,
+     0 mismatches); C independent validator (PASS); D non-invasiveness (confirmed `KP_CHAIN_V1`,
+     `PARASHARI_DRISHTI_V1`, `sign_lord.py` and the `KP_KRISHNAMURTI` profile all unchanged, and that no
+     Parashari aspect code is imported anywhere in either file, checked via each rule function's own
+     source, not a whole-file text scan); E boundary cases (10,957 cases, 0 mismatches, the inherited
+     `KP_CHAIN_V1` sub-interval boundary set tested at the 7th cusp); F retrograde cases (2 cases, 0
+     mismatches); G node/aspect cases (8 cases, 0 mismatches, exercising all three substitution-priority
+     levels plus each special-aspect rule); H strength-order cases (3 cases, 0 mismatches, confirming
+     Ordering A's categories are independently recognized); I protected holdout (12 real, ephemeris-
+     driven charts, prime-step-independent of every synthetic case in gates E-H); J negative controls
+     (three genuine planted mutations - promise/deny house sets swapped, Ordering A's own "owner"
+     category removed, node-substitution priority reversed - all three detected).
+  4. The machine-readable certification artifact (`certification/KP_SIGNIFICATOR_V1_certification.json`)
+     and human-readable report (`reports/certification/kp_significator.report.md`) were generated in the
+     same run, per this project's own established `certification_support.emit()` mechanism.
+  5. `scripts/certify_kp_significator.py` and `validate_kp_significator_holdout.py` were added to
+     `scripts/certification_support.py`'s own `CERTIFIER_SOURCES`/`VALIDATOR_SOURCES` anti-fitting scan
+     scope (17/16, up from 16/15) and to `.github/workflows/ci.yml`'s no-oracle job (this capability
+     needs no external oracle, so it belongs in the hermetic tier, not the PyJHora-dependent oracle tier -
+     a genuine, disclosed structural simplification relative to `D45`).
+  **Four genuine defects were found and fixed during this execution, not hidden or worked around** - the
+  strongest available evidence these gates are not rubber-stamps:
+  (a) `KP_CHAIN_V1`'s own chain fields (`sign_lord`/`nakshatra_lord`/`sub_lord`) use KP's abbreviated
+  lord tokens (`Ke`/`Ve`/`Su`/`Mo`/`Ma`/`Ra`/`Ju`/`Sa`/`Me`), while `KpBody.name` uses full planet names -
+  found when the independent validator's own real-chart holdout failed every case with "missing body Me"
+  before the fix; resolved by applying the engine's own documented `KP_LORD_FULL_NAMES` map at every
+  point a chain lord field is consumed as a planet name, in both files.
+  (b) An off-by-one in the aspect-offset arithmetic: `ADR-0078`'s own house numbers (universal 7th; Mars
+  4th/8th; Jupiter 5th/9th; Saturn 3rd/10th) were used directly as zodiacal offsets instead of being
+  converted via `-1` (the 7th house from a sign is 6 signs ahead, not 7) - found by gate G's own
+  node/aspect cases, not by agreement between the certifier and the independent validator: **both
+  independently-written implementations made the identical conceptual mistake**, a finding recorded
+  honestly rather than glossed over, since it demonstrates why the deeper, structurally-targeted test
+  cases this design required are load-bearing, not merely a formality.
+  (c) Several of gate G's and gate J's own test-case constructions had accidental sign collisions (a
+  neutral-longitude placeholder planet coincidentally sharing the node's own sign or a genuine special-
+  aspect relationship with it), silently masking the intended conjunction/aspect-only scenario; resolved
+  by checking candidate placements directly against the actual `is_conjunct`/`is_aspecting` functions
+  before use, rather than trusting hand-derived "avoid" arithmetic a second time.
+  **Result: PASS on all ten gates (A-J).**
+- **Consequences:** `KP_SIGNIFICATOR_V1`'s own certification evidence now exists and is real, regenerable,
+  and gate-based - not a design assertion. `engine/kp/significators.py` does not exist; no capability is
+  registered or production-usable. Production implementation remains a separate, not-yet-authorized act.
+  **A genuine, disclosed limitation, not hidden**: this session's own local PyJHora oracle installation
+  (a scratchpad venv used earlier in this session) is currently broken (`numpy` fails to import correctly
+  in that environment - a pre-existing environment degradation, not caused by this task), so the eleven
+  PyJHora-dependent certifiers (`D2`, `D3`, `D7`, `D12`, `D30`, `D45`, `PANCHANGA_V1`, `PARASHARI_DRISHTI_V1`,
+  `TRANSIT_V1`, `TRIKALAM_V1`, `VIMSHOTTARI_V1`) and `current_engine_certification.json` (needs the
+  Linux-ELF-only bundled `swetest` binary, a pre-existing, already-documented Windows limitation) could
+  not be regenerated this task to pick up the `modules_scanned` 183 -> 185 shift the `CERTIFIER_SOURCES`/
+  `VALIDATOR_SOURCES` addition causes for every certifier using the default anti-fitting scan scope.
+  Every certifier that COULD be regenerated locally (`KP_CHAIN_V1`, `RISE_SET_V1`, `SIGN_CONVENTION_V1`,
+  plus `KP_SIGNIFICATOR_V1` itself) shows exactly the expected, understood drift - the `modules_scanned`
+  count only, confirmed via `scripts/check_artifact_drift.py` - and nothing else, evidence that the
+  scan-scope change is genuinely non-invasive to those capabilities' own certified content. The eleven +
+  one still-stale artifacts remain at their prior, committed `modules_scanned` value (unchanged on disk,
+  not touched, not hand-edited) pending either a restored local PyJHora/Linux-`swetest` environment or the
+  established CI-sourced-overlay recovery pattern once this branch is pushed and CI (where PyJHora and
+  `swetest` both work) regenerates them - this is a known, disclosed gap, not a defect in
+  `KP_SIGNIFICATOR_V1`'s own certification, which required no oracle of any kind.
+- **Evidence:** the owner's "CEO AUTHORIZATION — KP_SIGNIFICATOR_V1 CERTIFICATION EXECUTION" instruction,
+  quoted above; `certification/KP_SIGNIFICATOR_V1_certification.json` (the generated artifact, `result:
+  PASS`, all ten gates recorded); `reports/certification/kp_significator.report.md` and
+  `kp_significator.console.txt` (the human-readable report and console transcript, generated in the same
+  run); `scripts/check_artifact_drift.py` output (confirming `KP_CHAIN_V1`/`RISE_SET_V1`/
+  `SIGN_CONVENTION_V1` drift only in `modules_scanned`, nothing else); the full pytest suite (857/857,
+  after updating `engine/tests/test_certification_preconditions.py`'s own pinned `CERTIFIER_SOURCES`/
+  `VALIDATOR_SOURCES` counts, 16->17 and 15->16, the expected consequence of adding two genuinely new
+  files).
 
 ---
 
