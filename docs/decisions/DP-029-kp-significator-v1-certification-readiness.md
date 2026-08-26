@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | OPEN - decision paper. Presents readiness state and options. DECIDES NOTHING. Requires owner approval. |
-| Version | 1.0.0 |
+| Version | 1.1.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-26 |
+| Last updated | 2026-08-26 (section 13 added: blocker-specific primary-source resolution, per "CEO AUTHORIZATION — RESOLVE DP-029 BLOCKER") |
 | Review cadence | TBD |
 
 # DP-029. `KP_SIGNIFICATOR_V1` certification-readiness
@@ -229,7 +229,7 @@ also be the first KP-scope capability to need a cross-school reuse decision (Par
 logic consumed under a KP profile) - `KP_CHAIN_V1`'s own school-isolation design never needed this,
 since it built its own self-contained astronomical layer.
 
-## 11. Determination and the exact decision required
+## 11. Determination and the exact decision required (v1.0.0 - see section 13 for blocker resolution)
 
 **B. CERTIFIABLE WITH BLOCKER.**
 
@@ -267,17 +267,150 @@ already retrieved (or, if genuinely absent there, against a further, narrowly-sc
 before being treated as frozen - this is a small, bounded follow-up, not a reopening of the settled
 methodology.
 
+## 13. Blocker resolution (2026-08-26, this continuation task)
+
+Authorized by "CEO AUTHORIZATION — RESOLVE DP-029 BLOCKER": investigate the blocker specifically, with
+Option 2 (a fresh, KP-scoped aspect calculation) as the preferred path, resolving six named items from
+primary/authoritative KP sources without repeating DP-029's or the earlier methodology task's own
+research. This section re-searched the **same already-retrieved Reader III text** (`reader3.txt`, this
+project's own local extraction, unchanged since the prior task) for the specific, narrower question this
+blocker raises - not a re-investigation of the frozen methodology itself.
+
+### 13.1 Exact definition of KP planetary aspect relevant to significators [PRIMARY]
+
+Krishnamurti's own text does **not** present a separate, KP-invented aspect system. Two distinct
+conventions appear in Reader III, and Krishnamurti himself explicitly names the distinction:
+
+> "Westerners judge a planet whether it is favourable or unfavourable according to the nature of the
+> aspect the planet receives and, according to its situation. But I do not attach importance to the name
+> of the planet or its position etc. I give importance to the 27 zones in the zodiac and to the
+> subdivisions..."
+
+This is Krishnamurti's own explicit statement that aspect-based judgment is **not** his primary method
+(the nakshatra/sub-lord hierarchy is) - aspects appear only as a secondary/supporting factor. Where they
+do appear in his own worked examples at the house/significator level, the language used is consistently
+**classical Vedic whole-sign/whole-house** ("Mars aspects Scorpio... according to the Hindus"; "Saturn
+aspects the 11th house"; "Jupiter aspects your Lagna... Good aspect from Jupiter to the cusp of Lagna...
+Saturn to emaciation") - the **same convention already certified in this project as `PARASHARI_DRISHTI_V1`**,
+not a degree-exact Western one. The one place Reader III **does** use exact-degree, orb-based aspects
+(matching the Western convention it explicitly distinguishes itself from) is a **different, named
+technique - Chapter 83, "Annual Horoscope" (Varshaphala)** - not the natal cuspal-sub-lord significator
+framework this V1 uses.
+
+**Determination:** the classical whole-sign Hindu graha-drishti convention (universal 7th-house aspect for
+every planet, plus the special aspects: Mars 4th & 8th, Jupiter 5th & 9th, Saturn 3rd & 10th) is the
+convention consistent with Krishnamurti's own demonstrated usage for house/significator-level work. This
+is a **disclosed inference from usage pattern**, not a single verbatim "here is the complete KP aspect
+table" citation - Reader III's own scattered examples are consistent with it and never contradict it, but
+no one passage states the full special-aspect table in one place. This must be built as new, independently
+authored code under KP's own school-isolation discipline (never importing or modifying
+`engine/parashari/drishti.py`) - it happens to share its underlying classical angle rules with
+`PARASHARI_DRISHTI_V1` because both inherit the same shared classical Vedic foundation Krishnamurti's own
+text explicitly invokes ("according to the Hindus"), not because one is copied from the other.
+
+### 13.2 Conjunction orb [PRIMARY, with a clean resolution]
+
+The only explicit orb value found anywhere in Reader III - "2° for aspects among the major planets... 5°
+for Sun/Moon... conjunction, opposition, trine... only one degree" - is stated specifically within
+Chapter 83's own Annual Horoscope (Varshaphala) technique, confirmed by its own surrounding chapter text
+("While judging the annual horoscope, the astrologer has to give the orb..."). It is **not** presented as
+a general natal rule, and adopting it for the significator/node-substitution context would be a
+cross-technique borrowing, not a citation.
+
+**This is resolved cleanly, not left open, because of 13.1's own finding**: under the classical whole-sign
+convention Krishnamurti's own significator-level examples actually use, "conjunction" is naturally a
+**same-sign occupancy test** (two bodies conjunct if they occupy the same sign), not a tight exact-degree
+orb - structurally consistent with how KP's own house-occupancy and sign-lordship logic already works
+(section 2/3), and requiring **no new orb value or new orb-definition risk at all**. This eliminates the
+part of the original blocker that assumed an exact-degree orb was needed.
+
+### 13.3 Aspecting-planet step orb/rule [PRIMARY]
+
+Same resolution as 13.2, for the same reason: under the whole-sign convention, "aspects" is a discrete
+sign-to-sign relationship (is this sign the 7th from the aspecting planet's sign, or one of its special
+aspect signs), not a continuous degree measurement - no orb applies, and none needs to be defined.
+
+### 13.4 Rahu/Ketu substitution order - unambiguous [confirmed, not re-researched]
+
+Already resolved in `KP_SIGNIFICATOR_SPEC.md` section 19.3 (prior task, not repeated here): conjoined
+planet > aspecting planet > sign lord, stated explicitly and repeatedly (four times) in Reader III. This
+was never the open part of the blocker - only the underlying conjunction/aspect *definition* was.
+
+### 13.5 Independent validator and protected holdout - constructible [confirmed]
+
+Yes, straightforwardly, once 13.1-13.3's convention choice is accepted. A same-sign conjunction test and
+a whole-sign special-aspect table are both simple, deterministic, easily independently re-derived
+functions - no harder to validate from scratch than the significator-determination logic `DP-029` section
+5 already designed a strategy for. No new certification-design risk beyond what section 5-6 already cover.
+
+### 13.6 Authoritative computational oracle - none [reaffirmed, not re-researched]
+
+Unchanged from `DP-028`/`DP-029` section 4: no computational oracle exists for KP significators, and
+PyJHora is not assumed to be one, per explicit instruction. Not re-investigated this task.
+
+### 13.7 Option 2 versus Option 3, compared objectively
+
+| Dimension | Option 2 (fresh KP-scoped aspect calc) | Option 3 (exclude node-sub-lord case) |
+|---|---|---|
+| Risk to `PARASHARI_DRISHTI_V1` | None - new, isolated code, never imported or modified | None |
+| New orb-definition risk | **None**, per 13.2/13.3's own resolution (same-sign conjunction, whole-sign aspect - no orb needed) | N/A - not built |
+| Primary-source grounding | Disclosed inference from Krishnamurti's own consistent usage pattern (13.1), not a single verbatim citation | N/A |
+| V1 coverage | Full - handles the node-sub-lord case, a material, non-negligible share of the zodiac (`DP-029` section 3.3) | Reduced - the excluded share is left uncertified |
+| New code required | A same-sign conjunction test + a whole-sign special-aspect table (small, well-precedented in shape) | None |
+| Consistency with project precedent | Matches `KP_CHAIN_V1`'s own school-isolation discipline exactly (build KP's own copy rather than reuse cross-school) | Matches `RISE_SET_V1`'s own polar-non-claim precedent |
+
+**Option 2 is now the objectively stronger choice**: it was originally deprioritized in `DP-029` mainly
+because of an assumed orb-definition risk that 13.2/13.3 show does not actually exist under the
+convention Krishnamurti's own text demonstrates, and it preserves full V1 coverage rather than narrowing
+it. Option 3 remains a legitimate, lower-effort fallback if the owner prefers not to accept 13.1's own
+disclosed-inference basis for the aspect convention.
+
+### 13.8 Conclusion
+
+**A - Option 2 is certifiable.** The exact frozen KP aspect/conjunction rule, for `KP_SIGNIFICATOR_V1`'s
+own Rahu/Ketu-as-sub-lord substitution step:
+- **Conjunction**: two bodies occupy the same sign (zero orb; reuses the already-certified sign/house-
+  occupancy substrate, `DP-029` section 2).
+- **Aspect**: the classical whole-sign Vedic graha-drishti scheme - every planet aspects the sign 7th from
+  its own; Mars additionally aspects the 4th and 8th; Jupiter additionally aspects the 5th and 9th; Saturn
+  additionally aspects the 3rd and 10th - independently implemented as new, KP-scoped code, never
+  importing or modifying `engine/parashari/drishti.py`.
+- **Sign lord fallback**: unchanged, already resolved (`engine/astrology/sign_lord.py`, `DP-029` section
+  2).
+- **Disclosure requirement**: every V1 result whose judgment depends on this convention must carry an
+  explicit provenance note that the aspect/conjunction convention is an ACE-defined inference from
+  Krishnamurti's own demonstrated usage pattern (13.1), not a single verbatim primary citation - mirroring
+  the same disclosure already planned for the horary-to-natal house-list inference
+  (`KP_SIGNIFICATOR_SPEC.md` section 19.7).
+- **Certification plan**: unchanged from `DP-029` sections 5-6, 9 - the independent-derivation-plus-
+  protected-holdout strategy, test corpus, artifact/validator/negative-control/CI design all already
+  cover this cleanly (section 13.5); no redesign needed, only the addition of conjunction/aspect-specific
+  positive and negative test cases to the already-planned "Rahu/Ketu cases" corpus item.
+
+### 13.9 Status of the three earlier `KP_SIGNIFICATOR_SPEC.md` section 18 questions
+
+**Explicitly: none of the three are resolved by this task, and none were in scope to resolve.** This
+task investigated certification feasibility for one specific blocker; it did not touch, and does not
+change, `KP_SIGNIFICATOR_SPEC.md` section 18's own three items (accept the primary-source resolution
+itself; confirm the narrow V1 matter scope; confirm the horary-to-natal inference). They **remain open**,
+unaffected. This task adds a **fourth, closely analogous item** to that same family: whether to accept
+13.1's own disclosed-inference basis for the aspect/conjunction convention, alongside the other three -
+all four are owner-facing acceptance decisions, none self-ratified by this or any prior task.
+
 ## 12. Explicit non-claims
 
 This paper does not implement `KP_SIGNIFICATOR_V1`. It does not create `engine/kp/significators.py`. It
-does not execute certification or create a certification artifact. It does not choose among section 11's
-three resolution paths. It does not reopen `KP_SIGNIFICATOR_SPEC.md`'s own frozen methodology (sections
-19.1-19.4) or re-investigate Reader II-IV. It does not resolve `DP-025`'s own still-open polar-Placidus
-gap. It does not touch FOUNDATION, closed Dasha items, H-03, H10/H11, or `DP-024`. It does not push or
-merge.
+does not execute certification or create a certification artifact. It does not modify
+`engine/parashari/drishti.py` or `PARASHARI_DRISHTI_V1`. It does not reopen `KP_SIGNIFICATOR_SPEC.md`'s
+own frozen methodology (sections 19.1-19.4) or re-investigate Reader II-IV beyond the narrow blocker
+question section 13 addresses. It does not resolve `DP-025`'s own still-open polar-Placidus gap. It does
+not touch FOUNDATION, closed Dasha items, H-03, H10/H11, or `DP-024`. It does not choose whether the
+owner accepts section 13.1's disclosed-inference basis - that remains an owner decision, per section 13.9.
+It does not push or merge.
 
 ## Change history
 
 | Version | Date | Change |
 |---|---|---|
+| 1.1.0 | 2026-08-26 | Section 13 added, per "CEO AUTHORIZATION — RESOLVE DP-029 BLOCKER": re-searched the already-retrieved Reader III text (not a re-investigation of the frozen methodology) for the specific aspect/conjunction-definition question the blocker raised. Found Krishnamurti's own text explicitly de-prioritizes aspect-based judgment as his primary method and, where aspects do appear in significator-level worked examples, consistently uses the classical whole-sign Vedic graha-drishti convention ("Mars aspects Scorpio... according to the Hindus"; "Saturn aspects the 11th house") - the same angular rules already certified as `PARASHARI_DRISHTI_V1`, independently reimplementable under KP's own school-isolation discipline without importing or modifying that module. Found the only explicit orb value in Reader III (2°/5°/1°) is scoped specifically to a different, named technique - Chapter 83, "Annual Horoscope" (Varshaphala) - not the natal significator framework. Resolved the orb question cleanly: under the whole-sign convention, conjunction is a same-sign occupancy test needing no orb at all, eliminating the risk that motivated deprioritizing Option 2 in v1.0.0. Compared Option 2 against Option 3 objectively (section 13.7) and determined Option 2 is now the stronger choice - full V1 coverage, no orb-definition risk, no risk to `PARASHARI_DRISHTI_V1`. Conclusion: A, Option 2 is certifiable - gives the exact frozen rule (same-sign conjunction; universal 7th plus Mars 4th/8th, Jupiter 5th/9th, Saturn 3rd/10th special aspects; sign-lord fallback unchanged) with an explicit disclosure requirement (an ACE-defined inference from demonstrated usage, not a single verbatim citation). States explicitly that `KP_SIGNIFICATOR_SPEC.md` section 18's three earlier questions remain open, unaffected by this task, with a fourth, analogous item now added to that same family. Does not implement, does not modify `PARASHARI_DRISHTI_V1`, does not execute certification, does not push or merge. |
 | 1.0.0 | 2026-08-26 | Created. Per "CEO AUTHORIZATION — KP_SIGNIFICATOR_V1 CERTIFICATION-READINESS": investigates certification feasibility only, treating `KP_SIGNIFICATOR_SPEC.md` v0.2.0's methodology as already approved and not re-researched. Confirms most production inputs already certified and directly reusable (`KP_CHAIN_V1` cusp/planet chains, sign-lordship table, retrograde derivation convention, Placidus cusps); confirms the two genuinely new logic components (significator determination, promise/deny judgment) are low-ambiguity and fully specified; confirms no computational oracle exists (reaffirming `DP-028`, not re-researching); designs an independent-derivation-plus-holdout certification strategy, test corpus, artifact/validator/negative-control/CI plan, and certifies the horary-to-natal application as a disclosed ACE-defined inference via an already-precedented mechanism (`KP_CHAIN_SPEC.md` Decision KP-A). Identifies one genuine blocker - a conjunction-orb definition and aspect-computation reuse-vs-rebuild decision for the Rahu/Ketu-as-sub-lord case, not a rare edge case - and presents three resolution options without deciding among them. Determination: B, CERTIFIABLE WITH BLOCKER. Does not implement, does not execute certification, does not push or merge. |

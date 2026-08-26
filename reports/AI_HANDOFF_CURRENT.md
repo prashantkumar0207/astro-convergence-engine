@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.9.0 |
+| Version | 9.10.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-26 (**`DP-029`: `KP_SIGNIFICATOR_V1` certification-readiness - B, CERTIFIABLE WITH BLOCKER.** Methodology treated as frozen (v0.2.0), not re-researched. Most inputs already certified/reusable; no oracle exists (confirmed, not assumed); independent-derivation-plus-holdout strategy, test corpus, artifact/validator/CI design all concrete. One blocker: conjunction-orb definition + aspect-reuse-vs-rebuild decision for the Rahu/Ketu-as-sub-lord case (not a rare edge case) - three options presented, not decided. 857/857 tests, governance clean (77 ADR, 29 DP). Local commit only, not pushed.) |
+| Last updated | 2026-08-26 (**`DP-029` section 13: its own certification-readiness blocker RESOLVED - A, Option 2 (fresh KP-scoped aspect calc) certifiable.** Re-searched already-retrieved Reader III text: Krishnamurti's own significator-level examples use the classical whole-sign Vedic aspect convention (same rules as certified `PARASHARI_DRISHTI_V1`, independently reimplementable without touching it); the only orb found is scoped to a different technique (Annual Horoscope), not natal significators. Resolved cleanly: conjunction = same-sign occupancy, no orb needed. Gives exact frozen rule + disclosure requirement. States `KP_SIGNIFICATOR_SPEC.md` section 18's three questions remain open, plus a fourth analogous item now added. 857/857 tests, governance clean (77 ADR, 29 DP). Local commit only, not pushed.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,61 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-26 - DP-029 section 13: certification-readiness blocker RESOLVED - A, Option 2 (KP-scoped aspect calc) certifiable
+- Branch / commit SHA: `phase-g-governance` (local), this task's own commit on top of `15e08a3` (the
+  `DP-029` v1.0.0 commit). `main` unchanged.
+- Task (owner's exact instruction): "CEO AUTHORIZATION — RESOLVE DP-029 BLOCKER. Continue from
+  15e08a3... Do not repeat DP-029 or the earlier KP methodology research. Investigate the blocker
+  specifically: Preferred path to investigate: Option 2 — a KP-scoped aspect calculation. Determine
+  whether KP's Rahu/Ketu rule... can be implemented and independently certified without importing
+  Parashari aspect methodology," resolving six named items from primary sources, comparing Option 2
+  against Option 3 objectively, without modifying `PARASHARI_DRISHTI_V1`, without production code,
+  without certification execution, without push/merge.
+- Files changed: `docs/decisions/DP-029-kp-significator-v1-certification-readiness.md` (v1.0.0 -> v1.1.0,
+  new section 13); `docs/ACE_EXECUTION_STATE.md`; this file.
+- Method: re-searched the same already-retrieved Reader III text (`reader3.txt`, local scratchpad,
+  unchanged since the prior task) for the specific, narrower question this blocker raises - not a
+  re-investigation of the frozen methodology. Grepped for "aspect," then read full surrounding context
+  for the passages found, cross-checking multiple independent worked examples before drawing a
+  conclusion, per this project's own established discipline.
+- Key findings: Krishnamurti's own text explicitly states aspect-based judgment is not his primary method
+  ("I do not attach importance to the name of the planet or its position etc. I give importance to the 27
+  zones... and to the subdivisions"). Where aspects do appear in his own significator-level worked
+  examples, the language is consistently classical Vedic whole-sign ("Mars aspects Scorpio... according
+  to the Hindus"; "Saturn aspects the 11th house"; "Good aspect from Jupiter to the cusp of Lagna") - the
+  same angular rules already certified as `PARASHARI_DRISHTI_V1`, independently reimplementable under
+  KP's own school-isolation discipline without importing or modifying that module. The only explicit orb
+  value found anywhere in the retrieved text (2° major planets, 5° Sun/Moon, 1° conjunction/opposition/
+  trine) is scoped specifically to a different, named technique - Chapter 83, "Annual Horoscope"
+  (Varshaphala) - confirmed by its own surrounding chapter text, not the natal significator framework.
+  Resolved the orb question cleanly: under the whole-sign convention Krishnamurti's own examples
+  demonstrate, "conjunction" is naturally a same-sign occupancy test, needing no orb value at all -
+  eliminating the specific risk that had deprioritized Option 2 in `DP-029` v1.0.0.
+- Compared Option 2 against Option 3 objectively (a six-dimension table: risk to `PARASHARI_DRISHTI_V1`,
+  orb-definition risk, primary-source grounding, V1 coverage, new code required, consistency with project
+  precedent) and determined Option 2 is now the stronger choice.
+- Tests: `python -m pytest -q` -> **857 passed**, unchanged (no engine code touched).
+- Governance status: `check_adr_numbering.py` PASS (77 ADR entries, unchanged); `check_identifier_
+  families.py` PASS (29 registered DP identifiers, unchanged - this is an update to an existing paper);
+  `check_retired_identifiers.py` PASS (0 violations).
+- Explicit non-claims honored: does not implement `KP_SIGNIFICATOR_V1`; does not create
+  `engine/kp/significators.py`; does not modify `engine/parashari/drishti.py` or `PARASHARI_DRISHTI_V1`;
+  does not execute certification; does not reopen the frozen methodology or `DP-025`; FOUNDATION, H-03,
+  H10/H11, closed Dasha items untouched; not pushed or merged.
+- **Determination: A - Option 2 is certifiable.** Exact frozen rule: conjunction = same-sign occupancy
+  (zero orb); aspect = the classical whole-sign scheme (universal 7th for every planet, plus Mars 4th/8th,
+  Jupiter 5th/9th, Saturn 3rd/10th), independently implemented as new KP-scoped code; sign-lord fallback
+  unchanged. Requires an explicit disclosure on every V1 result that this convention is an ACE-defined
+  inference from demonstrated usage, not a single verbatim citation.
+- Status of the three earlier `KP_SIGNIFICATOR_SPEC.md` section 18 questions, stated explicitly per the
+  owner's own request: **none are resolved by this task and none were in scope to resolve** - they remain
+  open, unaffected. A fourth, closely analogous owner-facing acceptance item (accept this disclosed-
+  inference basis for the aspect/conjunction convention) is now added to that same family.
+- Exact CEO decision required: accept the four owner-facing items now on record (the three from
+  `KP_SIGNIFICATOR_SPEC.md` section 18 plus `DP-029` section 13.1's new fourth), or authorize
+  certification-design work (mirroring `ADR-0076`/`ADR-0077`) to proceed on the now-resolved Option 2
+  basis.
 
 ### 2026-08-26 - DP-029: KP_SIGNIFICATOR_V1 certification-readiness - B, CERTIFIABLE WITH BLOCKER
 - Branch / commit SHA: `phase-g-governance` (local), this task's own commit on top of `923c6b6` (the
