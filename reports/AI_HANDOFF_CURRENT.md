@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.14.0 |
+| Version | 9.15.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-26 (**`KP_SIGNIFICATOR_V1` PRODUCTION IMPLEMENTED - JATAKA's second production capability.** `engine/kp/significators.py` created (certified rule migrated exactly, content-hash pinned, no Parashari import - confirmed via AST); `engine/models/kp_significator.py` typed result; 15 new production tests; `scripts/certify_kp_significator.py` rewritten to certify the production module - all ten gates re-PASS, reproducing the certification-execution stage's own results exactly. One unrelated pinning-test gap found and correctly fixed (a sign-typed-field naming-heuristic false positive on `signification_set`). 872/872 tests (857 + 15 new), governance clean (78 ADR, 29 DP). Nothing pushed.) |
+| Last updated | 2026-08-26 (**`KP_SIGNIFICATOR_V1` merged to `main` (`fef113022d51923b54665c7cf48d88ce3fffc19b`); Parashari-yoga decision-readiness research performed next.** Per "CEO AUTHORIZATION - BEGIN PARASHARI YOGA V1 DECISION-READINESS": `docs/decisions/DP-027-parashari-yoga-methodology-readiness.md` extended to v1.2.0 (section J/K). Identifies Panch Mahapurusha Yoga (Ruchaka/Bhadra/Hamsa/Malavya/Sasa) as the strongest V1 candidate - direct BPHS verse, computable entirely from already-certified `engine.astrology.dignity` + `engine.astrology.house.whole_sign_house`, zero new astronomical/aspect calculation. Bhanga/cancellation/combustion scoped out of V1; retrograde scoped to disclosure-only. No implementation, no ADR drafted, `DP-024`/`DP-025` not reopened. 872/872 tests unchanged, governance clean (78 ADR, 29 DP). Nothing pushed.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,74 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-26 - KP_SIGNIFICATOR_V1 merged to main; Parashari-yoga (PARASHARI_YOGA_V1 candidate) decision-readiness research performed
+- Branch / commit SHA: `phase-g-governance` (local), this task's own commit on top of
+  `beb196bdd31a09f3c8a27ac4387c5cc6fe544a39` (itself already an ancestor of `main`'s own
+  `fef113022d51923b54665c7cf48d88ce3fffc19b`, the `KP_SIGNIFICATOR_V1` merge, PR #6, confirmed
+  in the prior task's own work). `main` unchanged by this task.
+- Task (owner's exact instruction): "CEO AUTHORIZATION - BEGIN PARASHARI YOGA V1 DECISION-READINESS.
+  Start with a narrowly scoped decision-readiness investigation for a possible PARASHARI_YOGA_V1. Do NOT
+  implement anything. Do NOT create production code. Do NOT assume PyJHora's 233 yoga functions
+  constitute authoritative methodology." Nine numbered questions: strongest primary-source support;
+  existing certified ACE foundations sufficiency; least methodological ambiguity; PyJHora corroboration
+  value; independent-validator derivability; protected-holdout meaningfulness; boundary/negative-control
+  requirements; minimum viable V1 scope; whether the methodology can be frozen without owner judgment.
+  "Prefer one or a very small number of tightly defined yogas over a large catalog. Reuse the successful
+  D45/KP process... Do not reopen D45, KP Significators, FOUNDATION, H-03, H10/H11 or closed Dasha
+  decisions. Do not reopen DP-024 or DP-025 unless the investigation discovers a direct dependency that
+  genuinely requires it. Stop only at the next genuine CEO decision point and report the exact decision
+  required. Optimize for minimum research necessary... do not repeat already-settled repository
+  investigations."
+- Relevant ADR/specification: `docs/decisions/DP-027-parashari-yoga-methodology-readiness.md` (extended
+  from v1.1.0 to v1.2.0 - no new `DP-NNN` registered; the existing paper was the less-duplicative vehicle,
+  consistent with this project's own "extend via new section" discipline).
+- Files changed: `docs/decisions/DP-027-parashari-yoga-methodology-readiness.md` (sections J and K added;
+  header/version/change-history updated); `docs/ACE_EXECUTION_STATE.md` (7.14.0 -> 7.15.0); this file
+  (9.14.0 -> 9.15.0). No engine, test, or certification-artifact file touched.
+- Method: read `DP-027`'s own existing v1.1.0 content in full first (per the "do not repeat already-
+  settled investigations" instruction) rather than re-deriving its section A-I findings. Located and read
+  two already-certified/tested repository primitives as candidate foundations - `engine/astrology/
+  dignity.py` + `engine/knowledge/data/dignities.json` (BPHS-cited exaltation/own-sign table, hand-entered
+  a second time in `engine/tests/test_dignity.py`) and `engine/astrology/house.py::whole_sign_house`
+  (already the documented Parashari D1 house-assignment standard). Ran two targeted web searches: the
+  first confirmed Panch Mahapurusha Yoga's own BPHS formation verse word-for-word against the same
+  R. Santhanam-lineage translation family already cited by `dignities.json`; the second specifically
+  probed for known ambiguity (bhanga/cancellation, retrograde, combustion) rather than assuming the base
+  rule was the only thing that could be contested.
+- Key findings: Panch Mahapurusha Yoga (Ruchaka/Bhadra/Hamsa/Malavya/Sasa - Mars/Mercury/Jupiter/Venus/
+  Saturn each in its own-or-exaltation sign in a kendra from Lagna) has a single, unanimous, directly-
+  quotable BPHS verse for its base formation rule - a stronger primary-source position than KP
+  significators required, and drawn from the exact same root text already governing every certified
+  Parashari-school capability in this repository (D2/D3/D7/D9/D10/D12/D30/D45, dignity.py itself). The
+  base rule is computable entirely from the two already-tested primitives above, applied to the Tier-0-
+  locked D1 kernel, with zero new astronomical calculation and zero new aspect logic - architecturally
+  simpler than `ADR-0078`'s own KP-scoped aspect calculation. Confirmed via search that bhanga/
+  cancellation conditions are genuinely multi-sourced and contested (one source calls a specific
+  cancellation chain "an untested concept") and that retrograde treatment is a live classical
+  disagreement - both scoped out of / down-graded for V1 accordingly (retrograde as a disclosed
+  qualifier only, mirroring `ADR-0078`'s own already-certified retrograde-as-disclosure pattern; bhanga
+  and combustion excluded from V1 entirely). Confirmed via `docs/DECISION_LOG.md` line 1912 that dignity
+  data sits outside Tier-0 lock and has never itself been through this project's own certification-gate
+  process - flagged as a narrow, non-blocking certification-design item, not a methodology-readiness
+  obstacle. PyJHora corroboration confirmed only partially (Ruchaka/Bhadra function names, already
+  grep-confirmed in `DP-027` section H.1; Hamsa/Malavya/Sasa not re-verified this task, honestly
+  disclosed as an open, non-blocking item, not assumed). Confirmed no direct dependency on `DP-024`/
+  `DP-025`; neither reopened.
+- Verification: `scripts/check_adr_numbering.py` PASS (78 ADR entries, unique/monotonic, unchanged - no
+  new ADR drafted); `scripts/check_identifier_families.py` PASS (29 registered DP identifiers, unchanged
+  - `DP-027` extended, not newly registered); `scripts/check_retired_identifiers.py` PASS; full pytest
+  suite 872/872, unchanged (no engine code touched). `git status` confirmed only `DP-027`'s own file
+  changed; the same pre-existing, never-touched untracked clutter noted at the start of this session
+  remains untouched.
+- Next genuine CEO decision point (`DP-027` section K): whether to authorize drafting a
+  `PARASHARI_YOGA_V1` ADR (methodology freeze) using the five Panch Mahapurusha yogas, the BPHS base
+  formation rule only (no bhanga/cancellation/combustion, retrograde as disclosure-only), and
+  `engine/astrology/dignity.py`'s existing values adopted as the new certification's own frozen,
+  content-hash-pinned source-of-truth - following the same D45/KP process template (research ->
+  methodology freeze -> ADR -> certification design -> certification execution -> production -> CI ->
+  merge), each its own separate owner authorization. Not yet performed; this task's own authorization was
+  decision-readiness only. Not pushed or merged (no push/merge authorization sought or given this task).
 
 ### 2026-08-26 - KP_SIGNIFICATOR_V1 PRODUCTION IMPLEMENTED: engine/kp/significators.py created, all ten gates re-PASS, JATAKA's second production capability
 - Branch / commit SHA: `phase-g-governance` (local), this task's own commit on top of the `KP_SIGNIFICATOR_V1`
