@@ -5167,6 +5167,97 @@ ten gates; generating the artifact) as a separate, subsequent act - not performe
 - **Evidence:** the owner's "CEO RATIFICATION — ADR-0078" instruction, quoted above; `ADR-0078` itself,
   commit `118bdc460d4b29ffdda267996f86a2ce0fc7ed94`.
 
+#### Certification execution of ADR-0078: `KP_SIGNIFICATOR_V1` CERTIFICATION EXECUTED, ALL TEN GATES PASS (2026-08-26)
+
+- **Status:** ACCEPTED. The owner separately instructed, after `ADR-0078`'s own ratification: "CEO
+  AUTHORIZATION — KP_SIGNIFICATOR_V1 CERTIFICATION EXECUTION. ADR-0078 is ratified... Authorize the
+  separate certification-execution step exactly within ADR-0078's frozen scope. Execute the complete
+  KP_SIGNIFICATOR_V1 certification... Do not broaden V1. Do not add interpretation, convergence, BTR,
+  historical prediction or other KP variants. Do not implement Four-Step Theory or Ruling Planets. Do
+  not silently turn the horary->natal inference into an established primary-source claim." Per
+  `docs/PROJECT_CONSTITUTION.md` s11, this instruction is the authorizing act for the execution `ADR-0078`
+  section 13 itself reserved as separate; this entry records the results, mirroring the D45 precedent's
+  own certification-execution recording (`ADR-0077`'s own ratification sub-entry).
+- **Decision:** Certification-execution work was performed exactly within `ADR-0078`'s own frozen scope,
+  producing genuine, regenerable evidence, not a design re-assertion:
+  1. The frozen rule (significator derivation via Ordering A, the promise/deny judgment, retrograde
+     disclosure, node substitution) and the KP-scoped aspect/conjunction calculation (`ADR-0078` section
+     3) were written as a standalone, **unregistered** implementation inside `scripts/
+     certify_kp_significator.py` - `engine/kp/significators.py` was not created or modified.
+  2. An independent, from-scratch validator (`validate_kp_significator_holdout.py`) was built, sharing
+     only the already-certified `KP_CHAIN_V1` substrate, structured differently from the certifier's own
+     code (explicit per-house tables built up front, rather than the certifier's own lazy per-call
+     membership tests), and using its own separate real-chart holdout sample.
+  3. All ten gates (A-J) were executed and PASS: A table/rule integrity; B dense sweep (12,960 points,
+     0 mismatches); C independent validator (PASS); D non-invasiveness (confirmed `KP_CHAIN_V1`,
+     `PARASHARI_DRISHTI_V1`, `sign_lord.py` and the `KP_KRISHNAMURTI` profile all unchanged, and that no
+     Parashari aspect code is imported anywhere in either file, checked via each rule function's own
+     source, not a whole-file text scan); E boundary cases (10,957 cases, 0 mismatches, the inherited
+     `KP_CHAIN_V1` sub-interval boundary set tested at the 7th cusp); F retrograde cases (2 cases, 0
+     mismatches); G node/aspect cases (8 cases, 0 mismatches, exercising all three substitution-priority
+     levels plus each special-aspect rule); H strength-order cases (3 cases, 0 mismatches, confirming
+     Ordering A's categories are independently recognized); I protected holdout (12 real, ephemeris-
+     driven charts, prime-step-independent of every synthetic case in gates E-H); J negative controls
+     (three genuine planted mutations - promise/deny house sets swapped, Ordering A's own "owner"
+     category removed, node-substitution priority reversed - all three detected).
+  4. The machine-readable certification artifact (`certification/KP_SIGNIFICATOR_V1_certification.json`)
+     and human-readable report (`reports/certification/kp_significator.report.md`) were generated in the
+     same run, per this project's own established `certification_support.emit()` mechanism.
+  5. `scripts/certify_kp_significator.py` and `validate_kp_significator_holdout.py` were added to
+     `scripts/certification_support.py`'s own `CERTIFIER_SOURCES`/`VALIDATOR_SOURCES` anti-fitting scan
+     scope (17/16, up from 16/15) and to `.github/workflows/ci.yml`'s no-oracle job (this capability
+     needs no external oracle, so it belongs in the hermetic tier, not the PyJHora-dependent oracle tier -
+     a genuine, disclosed structural simplification relative to `D45`).
+  **Four genuine defects were found and fixed during this execution, not hidden or worked around** - the
+  strongest available evidence these gates are not rubber-stamps:
+  (a) `KP_CHAIN_V1`'s own chain fields (`sign_lord`/`nakshatra_lord`/`sub_lord`) use KP's abbreviated
+  lord tokens (`Ke`/`Ve`/`Su`/`Mo`/`Ma`/`Ra`/`Ju`/`Sa`/`Me`), while `KpBody.name` uses full planet names -
+  found when the independent validator's own real-chart holdout failed every case with "missing body Me"
+  before the fix; resolved by applying the engine's own documented `KP_LORD_FULL_NAMES` map at every
+  point a chain lord field is consumed as a planet name, in both files.
+  (b) An off-by-one in the aspect-offset arithmetic: `ADR-0078`'s own house numbers (universal 7th; Mars
+  4th/8th; Jupiter 5th/9th; Saturn 3rd/10th) were used directly as zodiacal offsets instead of being
+  converted via `-1` (the 7th house from a sign is 6 signs ahead, not 7) - found by gate G's own
+  node/aspect cases, not by agreement between the certifier and the independent validator: **both
+  independently-written implementations made the identical conceptual mistake**, a finding recorded
+  honestly rather than glossed over, since it demonstrates why the deeper, structurally-targeted test
+  cases this design required are load-bearing, not merely a formality.
+  (c) Several of gate G's and gate J's own test-case constructions had accidental sign collisions (a
+  neutral-longitude placeholder planet coincidentally sharing the node's own sign or a genuine special-
+  aspect relationship with it), silently masking the intended conjunction/aspect-only scenario; resolved
+  by checking candidate placements directly against the actual `is_conjunct`/`is_aspecting` functions
+  before use, rather than trusting hand-derived "avoid" arithmetic a second time.
+  **Result: PASS on all ten gates (A-J).**
+- **Consequences:** `KP_SIGNIFICATOR_V1`'s own certification evidence now exists and is real, regenerable,
+  and gate-based - not a design assertion. `engine/kp/significators.py` does not exist; no capability is
+  registered or production-usable. Production implementation remains a separate, not-yet-authorized act.
+  **A genuine, disclosed limitation, not hidden**: this session's own local PyJHora oracle installation
+  (a scratchpad venv used earlier in this session) is currently broken (`numpy` fails to import correctly
+  in that environment - a pre-existing environment degradation, not caused by this task), so the eleven
+  PyJHora-dependent certifiers (`D2`, `D3`, `D7`, `D12`, `D30`, `D45`, `PANCHANGA_V1`, `PARASHARI_DRISHTI_V1`,
+  `TRANSIT_V1`, `TRIKALAM_V1`, `VIMSHOTTARI_V1`) and `current_engine_certification.json` (needs the
+  Linux-ELF-only bundled `swetest` binary, a pre-existing, already-documented Windows limitation) could
+  not be regenerated this task to pick up the `modules_scanned` 183 -> 185 shift the `CERTIFIER_SOURCES`/
+  `VALIDATOR_SOURCES` addition causes for every certifier using the default anti-fitting scan scope.
+  Every certifier that COULD be regenerated locally (`KP_CHAIN_V1`, `RISE_SET_V1`, `SIGN_CONVENTION_V1`,
+  plus `KP_SIGNIFICATOR_V1` itself) shows exactly the expected, understood drift - the `modules_scanned`
+  count only, confirmed via `scripts/check_artifact_drift.py` - and nothing else, evidence that the
+  scan-scope change is genuinely non-invasive to those capabilities' own certified content. The eleven +
+  one still-stale artifacts remain at their prior, committed `modules_scanned` value (unchanged on disk,
+  not touched, not hand-edited) pending either a restored local PyJHora/Linux-`swetest` environment or the
+  established CI-sourced-overlay recovery pattern once this branch is pushed and CI (where PyJHora and
+  `swetest` both work) regenerates them - this is a known, disclosed gap, not a defect in
+  `KP_SIGNIFICATOR_V1`'s own certification, which required no oracle of any kind.
+- **Evidence:** the owner's "CEO AUTHORIZATION — KP_SIGNIFICATOR_V1 CERTIFICATION EXECUTION" instruction,
+  quoted above; `certification/KP_SIGNIFICATOR_V1_certification.json` (the generated artifact, `result:
+  PASS`, all ten gates recorded); `reports/certification/kp_significator.report.md` and
+  `kp_significator.console.txt` (the human-readable report and console transcript, generated in the same
+  run); `scripts/check_artifact_drift.py` output (confirming `KP_CHAIN_V1`/`RISE_SET_V1`/
+  `SIGN_CONVENTION_V1` drift only in `modules_scanned`, nothing else); the full pytest suite (857/857,
+  after updating `engine/tests/test_certification_preconditions.py`'s own pinned `CERTIFIER_SOURCES`/
+  `VALIDATOR_SOURCES` counts, 16->17 and 15->16, the expected consequence of adding two genuinely new
+  files).
+
 ---
 
 ## ADR template (copy, do not edit above the line)

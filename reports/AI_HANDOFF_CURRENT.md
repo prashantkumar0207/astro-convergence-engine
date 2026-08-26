@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.12.0 |
+| Version | 9.13.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-26 (**`ADR-0078` RATIFIED: `KP_SIGNIFICATOR_V1`'s complete certification design is now the governing architecture.** Recorded via the established sub-entry mechanism, exactly as drafted, no methodology/scope/architecture/non-claim/gate altered - verified by direct diff. Only `docs/DECISION_LOG.md` changed; no production code or certification artifact touched. Per `ADR-0078`'s own section 13, ratification does not authorize certification execution - stopped at exactly that point. 857/857 tests, governance clean (78 ADR, unchanged; 29 DP). Nothing pushed.) |
+| Last updated | 2026-08-26 (**`KP_SIGNIFICATOR_V1` CERTIFICATION EXECUTED - ALL TEN GATES (A-J) PASS.** Standalone, unregistered rule + KP-scoped aspect calculation written in `scripts/certify_kp_significator.py`; independent from-scratch validator built; four genuine defects found and fixed (lord-abbreviation mismatch; an aspect-offset off-by-one both independent implementations shared; two test-case sign-collision bugs) - documented, not hidden. `engine/kp/significators.py` NOT created. CI/drift protection added (hermetic tier). Eleven PyJHora-dependent artifacts + `current_engine` stayed stale (disclosed environment limitation); the four regenerable ones show only expected drift. 857/857 tests, governance clean (78 ADR, 29 DP). Nothing pushed.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,124 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-26 - KP_SIGNIFICATOR_V1 certification EXECUTED: all ten gates (A-J) PASS, four genuine defects found and fixed
+- Branch / commit SHA: `phase-g-governance` (local), this task's own commit on top of the `ADR-0078`
+  ratification commit. `main` unchanged.
+- Task (owner's exact instruction): "CEO AUTHORIZATION — KP_SIGNIFICATOR_V1 CERTIFICATION EXECUTION.
+  ADR-0078 is ratified... Authorize the separate certification-execution step exactly within ADR-0078's
+  frozen scope. Execute the complete KP_SIGNIFICATOR_V1 certification: write the frozen KP rule
+  implementation required by the certification; implement the KP-scoped aspect calculation exactly as
+  ratified; build the independent-from-scratch validator; construct the positive, negative, boundary,
+  retrograde, node, cusp/sub-lord and mixed-house cases; use the protected holdout; execute genuine
+  negative controls; execute all ten certification gates A–J; generate the machine-readable certification
+  artifact and human-readable report; add artifact-drift protection and required CI integration; verify
+  that no Parashari aspect implementation is reused; preserve all explicit non-claims from ADR-0078. Do
+  not broaden V1. Do not add interpretation, convergence, BTR, historical prediction or other KP
+  variants. Do not implement Four-Step Theory or Ruling Planets. Do not silently turn the horary→natal
+  inference into an established primary-source claim. If a gate exposes a genuine defect, investigate and
+  fix it rather than weakening the gate. Document every real defect discovered. Re-run the complete
+  existing test suite and all relevant existing certification suites to prove non-invasiveness. Do not
+  push or merge."
+- Relevant ADR/specification: `ADR-0078` (the ratified certification design this execution implements
+  exactly); `KP_SIGNIFICATOR_SPEC.md` v0.2.0; `DP-026`-`DP-029`.
+- Files changed: `scripts/certify_kp_significator.py` (new - the frozen rule and KP-scoped aspect
+  calculation, standalone and unregistered); `validate_kp_significator_holdout.py` (new - independent
+  from-scratch validator, root level); `certification/KP_SIGNIFICATOR_V1_certification.json` (new
+  artifact); `reports/certification/kp_significator.report.md`/`.console.txt` (new); `scripts/
+  certification_support.py` (both new files added to `CERTIFIER_SOURCES`/`VALIDATOR_SOURCES`);
+  `.github/workflows/ci.yml` (added to the no-oracle/hermetic job, both the plain and network-guard
+  legs); `engine/tests/test_certification_preconditions.py` (pinned counts 16->17, 15->16); `docs/
+  DECISION_LOG.md` (new "Certification execution of ADR-0078" sub-entry); `certification/
+  KP_CHAIN_V1_certification.json`, `RISE_SET_V1_certification.json`, `SIGN_CONVENTION_V1_certification.json`
+  and their own reports (regenerated - `modules_scanned` drift only, confirmed via `check_artifact_drift.py`).
+- Method: implemented the frozen rule directly inside the certifier script (never `engine/kp/
+  significators.py`, per `ADR-0078` section 13's own explicit reservation): Placidus-cusp house
+  occupancy (a real correction from `ADR-0078`'s own assumption that `whole_sign_house` was reusable -
+  it is the wrong house system for KP's own unequal Placidus cusps); the KP-scoped aspect/conjunction
+  calculation (same-sign conjunction, universal 7th + Mars 4/8 + Jupiter 5/9 + Saturn 3/10), built as
+  new, isolated code, never importing `engine.parashari.drishti`; significator derivation via Ordering A;
+  node substitution; the promise/deny judgment with an explicit third "MIXED/UNDETERMINED" category. Built
+  `validate_kp_significator_holdout.py` as a genuinely separate reimplementation (its own per-house table
+  construction, its own real-chart holdout sample, sharing only the certified `KP_CHAIN_V1` substrate).
+  Iterated the two files together against real, executed runs - not merely reasoned about - catching and
+  fixing four real defects along the way (below) before all ten gates passed.
+- Key findings / defects found and fixed, documented per explicit instruction, not hidden:
+  1. **Lord-abbreviation mismatch.** `KP_CHAIN_V1`'s own `sign_lord`/`nakshatra_lord`/`sub_lord` chain
+     fields use KP's abbreviated tokens (`Ke`/`Ve`/`Su`/`Mo`/`Ma`/`Ra`/`Ju`/`Sa`/`Me`), documented in
+     `engine/kp/tables.py` as "KP practice abbreviates lords... those abbreviations are the KP layer's own
+     canonical tokens," while `KpBody.name` uses full planet names. Found when the independent validator's
+     own first real-chart holdout run failed every single case with "missing body Me." Fixed via the
+     engine's own documented `KP_LORD_FULL_NAMES` map, applied at every point a chain lord field is
+     consumed as a planet name, in both files independently.
+  2. **Aspect-offset off-by-one.** `ADR-0078`'s own house numbers (universal 7th; Mars 4th/8th; Jupiter
+     5th/9th; Saturn 3rd/10th) were used directly as zodiacal offsets instead of being converted via `-1`
+     (the 7th house from a sign is 6 signs ahead, not 7 - the classical opposition/180-degree relationship).
+     Found by gate G's own node/aspect test cases - **not** by disagreement between the certifier and the
+     independent validator, since **both independently-written implementations made the identical
+     conceptual mistake**. Recorded honestly as direct evidence for why the deeper, structurally-targeted
+     test cases this design required are load-bearing, not a formality - agreement between two
+     implementations does not catch a shared conceptual error.
+  3-4. **Two test-case construction bugs** (not algorithm bugs): a neutral-longitude placeholder planet
+     coincidentally sharing a node's own sign, and a hand-derived "avoid these signs" formula that itself
+     repeated defect 2's own off-by-one and additionally collapsed every candidate planet onto the same
+     single sign - both silently masked the intended conjunction-only/aspect-only/fallback-only scenarios
+     in gate G and the negative controls. Fixed by checking candidate placements directly against the
+     actual `is_conjunct`/`is_aspecting` functions before use, rather than trusting hand-derived arithmetic
+     a second time - the same "empirically verify, don't hand-derive-and-trust" discipline this project has
+     applied repeatedly elsewhere (e.g. `D45`'s own certification execution).
+  A fifth issue, a false-positive in gate D's own first-draft non-invasiveness scan (it flagged its own
+  disclosed, legitimate `engine.parashari.drishti` verification import as a violation via a naive
+  whole-file text scan), was also found and fixed - the scan now checks each rule function's own source
+  via `inspect.getsource` plus a scoped import-line check, not the whole file's text.
+- All ten gates PASS: A table/rule integrity; B dense sweep (12,960 points, 0 mismatches); C independent
+  validator (PASS); D non-invasiveness (`KP_CHAIN_V1`, `PARASHARI_DRISHTI_V1`, `sign_lord.py`, and the
+  `KP_KRISHNAMURTI` profile all confirmed unchanged; confirmed no Parashari aspect code imported anywhere);
+  E boundary cases (10,957, 0 mismatches); F retrograde cases (2, 0 mismatches); G node/aspect cases (8, 0
+  mismatches, all three substitution levels plus each special-aspect rule); H strength-order cases (3, 0
+  mismatches); I protected holdout (12 real ephemeris-driven charts, independent of gates E-H); J negative
+  controls (3 genuine planted mutations, all detected: promise/deny house sets swapped, Ordering A's own
+  "owner" category removed, node-substitution priority reversed).
+- Tests: `python -m pytest -q` -> **857 passed** (after updating the `CERTIFIER_SOURCES`/
+  `VALIDATOR_SOURCES` pinning-count test, the expected, required consequence of two genuinely new files).
+- Governance status: `check_adr_numbering.py` PASS (78 ADR entries, unchanged - the sub-entry mechanism
+  consumes no new identifier); `check_identifier_families.py` PASS (29 registered DP identifiers,
+  unchanged); `check_retired_identifiers.py` PASS (0 violations).
+- Oracle/reference limitations: no computational oracle exists for KP significators at all (reaffirmed,
+  not re-researched) - certification rests on the independent validator (gate C) and protected holdout
+  (gate I) alone, disclosed in the artifact's own `oracle` block as a genuinely weaker evidentiary posture
+  than every other certified capability in this project.
+- Non-invasiveness: **confirmed for everything checkable, honestly disclosed for what wasn't.** This
+  session's own local PyJHora oracle installation (a scratchpad venv used earlier this session) is
+  currently broken (`numpy` fails to import correctly - a pre-existing environment degradation, not caused
+  by this task, confirmed via direct diagnosis: `numpy.__version__` raises `AttributeError` even under the
+  venv's own interpreter directly, not merely a `PYTHONPATH`-mixing artifact), so the eleven PyJHora-
+  dependent certifiers (`D2`, `D3`, `D7`, `D12`, `D30`, `D45`, `PANCHANGA_V1`, `PARASHARI_DRISHTI_V1`,
+  `TRANSIT_V1`, `TRIKALAM_V1`, `VIMSHOTTARI_V1`) and `current_engine_certification.json` (the already-
+  documented Linux-`swetest`-only limitation) could not be regenerated this task to pick up the
+  `modules_scanned` 183->185 shift the `CERTIFIER_SOURCES`/`VALIDATOR_SOURCES` addition causes for every
+  certifier using the default anti-fitting scan scope. The four certifiers that COULD be regenerated
+  locally (`KP_CHAIN_V1`, `RISE_SET_V1`, `SIGN_CONVENTION_V1`, plus `KP_SIGNIFICATOR_V1` itself) show,
+  via `scripts/check_artifact_drift.py`, **only** the expected `modules_scanned` drift and nothing else -
+  real, direct evidence the scan-scope change is genuinely non-invasive wherever it could be checked. The
+  remaining eleven-plus-one stay at their prior committed value, unchanged on disk, never hand-edited
+  (per this project's own explicit rule against hand-editing certification artifacts), pending either a
+  restored PyJHora/Linux-`swetest` environment or the established CI-sourced-overlay recovery pattern once
+  this branch is pushed and CI (where both PyJHora and `swetest` work) regenerates them.
+- Explicit non-claims preserved from `ADR-0078`, all still present in the generated artifact: Four Step
+  Theory and Ruling Planets out of scope; horary/Prashna generally out of scope; the undefined polar-
+  latitude band unverified; the horary-to-natal application disclosed as an ACE-defined inference, not a
+  primary citation; the aspect/conjunction convention likewise disclosed as an ACE-defined inference; the
+  source text's own scanned/OCR single-transcription-pass status disclosed; the children/5th-house parallel
+  not covered; no computational oracle corroborates this design; Uranus/Neptune/Pluto and the Ascendant
+  excluded from the candidate pool; `engine/kp/significators.py` explicitly NOT created by this run.
+- **Certification status: PASS on all ten gates.** `engine/kp/significators.py` does not exist; no
+  capability is registered or production-usable - this is certification-execution evidence only, exactly
+  as `ADR-0078` section 13 reserves.
+- Exact next CEO decision required: whether to authorize `KP_SIGNIFICATOR_V1` production implementation
+  (writing and registering `engine/kp/significators.py`), mirroring `D45`'s own certification-execution-
+  then-production-implementation two-step pattern - or to direct other work (e.g. restoring the local
+  PyJHora environment to regenerate the eleven stale artifacts, or redirecting to Parashari yoga).
 
 ### 2026-08-26 - ADR-0078 ratified: KP_SIGNIFICATOR_V1 certification design now governing; certification execution NOT yet authorized
 - Branch / commit SHA: `phase-g-governance` (local), this task's own commit on top of `118bdc4` (the

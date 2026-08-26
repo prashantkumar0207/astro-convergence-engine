@@ -1,0 +1,186 @@
+{
+ "schema": "kp_significator_v1_certification",
+ "adr": "ADR-0078",
+ "date": "2026-08-26",
+ "scope": "KP_SIGNIFICATOR_V1: a single narrow judgment - does the 7th house cusp's KP cuspal sub-lord signify the marriage-promise house group (2,7,11) or the marriage-denial group (1,6,10,12) - for a natal chart under the KP_KRISHNAMURTI profile. Certification-execution stage only: the frozen rule and the KP-scoped aspect calculation live in this script as a standalone, UNREGISTERED implementation. engine/kp/significators.py is NOT created or modified by this run (ADR-0078 section 13).",
+ "rule": {
+  "significator_strength_order": "star-of-occupant > occupant > star-of-owner > owner (union test for V1's own binary judgment, ADR-0078 section 4)",
+  "promise_houses": [
+   2,
+   7,
+   11
+  ],
+  "deny_houses": [
+   1,
+   6,
+   10,
+   12
+  ],
+  "aspect_convention": "same-sign conjunction (no orb); universal 7th aspect for every planet, plus Mars 4th/8th, Jupiter 5th/9th, Saturn 3rd/10th (ADR-0078 section 3, KP-scoped, independently implemented)",
+  "node_substitution_priority": "conjoined planet > aspecting planet > sign lord fallback (ADR-0078 section 6)",
+  "retrograde_rule": "conditional-on-direct-motion disclosure qualifier, not a pass/fail gate (ADR-0078 section 5)",
+  "candidate_roster": [
+   "Sun",
+   "Moon",
+   "Mars",
+   "Mercury",
+   "Jupiter",
+   "Venus",
+   "Saturn",
+   "Rahu",
+   "Ketu"
+  ]
+ },
+ "oracle": {
+  "package": null,
+  "note": "no computational oracle exists for KP significators (DP-028 section D, DP-029 section 4); certification rests on the independent validator and protected holdout alone (ADR-0078 section 10)"
+ },
+ "gates": {
+  "A_table_integrity": {
+   "promise_houses": [
+    2,
+    7,
+    11
+   ],
+   "deny_houses": [
+    1,
+    6,
+    10,
+    12
+   ],
+   "special_aspects": {
+    "Mars": [
+     4,
+     8
+    ],
+    "Jupiter": [
+     5,
+     9
+    ],
+    "Saturn": [
+     3,
+     10
+    ]
+   },
+   "graha_roster": [
+    "Sun",
+    "Moon",
+    "Mars",
+    "Mercury",
+    "Jupiter",
+    "Venus",
+    "Saturn",
+    "Rahu",
+    "Ketu"
+   ]
+  },
+  "B_dense_sweep": {
+   "points": 12960,
+   "mismatches": 0,
+   "scope": "7th cusp longitude sweep, production wiring vs. independent kp_chain() call"
+  },
+  "C_independent_validator": {
+   "result": "PASS"
+  },
+  "D_non_invasiveness": {
+   "parashari_aspect_code_imported": false,
+   "kp_chain_v1_tables_unchanged": true,
+   "sign_lord_table_unchanged": true,
+   "parashari_drishti_v1_module_intact": true,
+   "kp_krishnamurti_profile_unchanged": true
+  },
+  "E_boundary_cases": {
+   "cases_checked": 10957,
+   "mismatches": 0,
+   "convention": "inherited KP_CHAIN_V1 sub-interval boundary set, tested at the 7th cusp"
+  },
+  "F_retrograde_cases": {
+   "cases_checked": 2,
+   "mismatches": 0,
+   "rule": "conditional-on-direct-motion disclosure qualifier (KP_SIGNIFICATOR_SPEC.md section 19.2)"
+  },
+  "G_node_aspect_cases": {
+   "cases_checked": 8,
+   "mismatches": 0,
+   "levels_exercised": [
+    "conjunction",
+    "aspect",
+    "sign_lord_fallback",
+    "special_aspects(Mars,Jupiter,Saturn)",
+    "universal_7th(Venus)"
+   ]
+  },
+  "H_strength_order_cases": {
+   "cases_checked": 3,
+   "mismatches": 0,
+   "categories_exercised": [
+    "owner",
+    "occupant"
+   ],
+   "note": "confirms Ordering A's categories are independently recognized; V1's own promise/deny judgment is a union test over the categories, not a priority selection - see ADR-0078 section 4"
+  },
+  "I_protected_holdout": {
+   "cases": 12,
+   "verdict_distribution": {
+    "MIXED": 6,
+    "DENIED": 3,
+    "PROMISED": 3
+   },
+   "methodology": "real ephemeris-driven charts, independent of every deliberately-constructed synthetic case in gates E-H, never used to tune any rule"
+  },
+  "J_negative_controls": {
+   "controls": [
+    {
+     "control": "promise/deny house sets swapped",
+     "detected": true
+    },
+    {
+     "control": "Ordering A 'owner' category removed",
+     "detected": true
+    },
+    {
+     "control": "node-substitution priority reversed (aspect before conjunction)",
+     "detected": true
+    }
+   ],
+   "all_detected": true,
+   "frozen_constants_unmutated": true
+  }
+ },
+ "explicit_non_claims": [
+  "Four Step Theory (Gondhalekar) - out of scope (ADR-0027 Decision 3)",
+  "Ruling Planets - out of scope, horary/judgment-time construct (ADR-0027 Decision 3)",
+  "horary/Prashna judgment generally - out of scope",
+  "charts with cusps inside the undefined polar-latitude band - unverified (DP-025, still deferred)",
+  "the horary-to-natal application of the promise/deny house groups is a disclosed ACE-defined inference, not a direct primary citation for the natal case",
+  "the aspect/conjunction convention is a disclosed ACE-defined inference from Krishnamurti's own demonstrated usage, not a single verbatim citation",
+  "source text is a scanned/OCR'd reprint, single transcription pass, not a publisher-verified critical edition",
+  "the children/5th-house parallel is not covered by V1",
+  "no computational oracle corroborates this design - independent derivation and protected holdout are the sole evidentiary basis",
+  "Uranus/Neptune/Pluto and the Ascendant are excluded from the candidate occupant/significator pool - not part of the certified KP_LORDS nine-graha cycle and never treated as significators in the retrieved primary text",
+  "engine/kp/significators.py is NOT created or registered by this run - this is certification-execution evidence only, production implementation is a separate, not-yet-authorized act (ADR-0078 section 13)"
+ ],
+ "environment": {
+  "python": "3.12.10"
+ },
+ "preconditions": {
+  "data_assets": {
+   "assets_verified": 3,
+   "sha256": {
+    "seas_18.se1": "a2cd8fc33807c78ca9a700c91c2e042258b12fc4796519e00781440b5ad8b2e2",
+    "semo_18.se1": "1ca07bd67c24374d77226180c20a4f9996cba013697894810518e7eb582ca4f7",
+    "sepl_18.se1": "ca1393ceab3a44fbc895887cf789c68819ae6a1cbc9b22225872dbe4ccd99a66"
+   }
+  },
+  "anti_fitting": {
+   "modules_scanned": 185,
+   "findings": [],
+   "justified_exceptions": [
+    "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."
+   ]
+  }
+ },
+ "result": "PASS",
+ "_artifact_name": "KP_SIGNIFICATOR_V1_certification.json",
+ "_slug": "kp_significator"
+}
