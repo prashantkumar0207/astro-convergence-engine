@@ -5,26 +5,26 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 
 - Decision entry: ADR-0078
 - Date: 2026-08-26
-- Scope: KP_SIGNIFICATOR_V1: a single narrow judgment - does the 7th house cusp's KP cuspal sub-lord signify the marriage-promise house group (2,7,11) or the marriage-denial group (1,6,10,12) - for a natal chart under the KP_KRISHNAMURTI profile. Certification-execution stage only: the frozen rule and the KP-scoped aspect calculation live in this script as a standalone, UNREGISTERED implementation. engine/kp/significators.py is NOT created or modified by this run (ADR-0078 section 13).
+- Scope: KP_SIGNIFICATOR_V1: a single narrow judgment - does the 7th house cusp's KP cuspal sub-lord signify the marriage-promise house group (2,7,11) or the marriage-denial group (1,6,10,12) - for a natal chart under the KP_KRISHNAMURTI profile. PRODUCTION implementation: engine.kp.significators, discoverable via engine.kp.significators.judge_marriage(chart).
 - Result: **PASS**
 
 ## Preconditions
 
 - Data assets verified against CHECKSUMS.sha256: 3
-- Anti-fitting scan: 185 production modules, 0 findings
+- Anti-fitting scan: 187 production modules, 0 findings
 
 ## Gates
 
-- **A_table_integrity**: see machine-readable results
+- **A_table_integrity**: content_sha256=0cb5aa8661c1d9b950c4d6f35d0b12baaf03aec3f28adc6937bbe257cd1f2ab9
 - **B_dense_sweep**: points=12960, mismatches=0, scope=7th cusp longitude sweep, production wiring vs. independent kp_chain() call
 - **C_independent_validator**: result=PASS
-- **D_non_invasiveness**: parashari_aspect_code_imported=False, kp_chain_v1_tables_unchanged=True, sign_lord_table_unchanged=True, parashari_drishti_v1_module_intact=True, kp_krishnamurti_profile_unchanged=True
+- **D_non_invasiveness**: production_module=engine.kp.significators, production_module_importable=True, content_sha256_matches_pinned=True, parashari_aspect_code_imported=False, kp_chain_v1_tables_unchanged=True, sign_lord_table_unchanged=True, parashari_drishti_v1_module_intact=True, kp_krishnamurti_profile_unchanged=True
 - **E_boundary_cases**: cases_checked=10957, mismatches=0, convention=inherited KP_CHAIN_V1 sub-interval boundary set, tested at the 7th cusp
 - **F_retrograde_cases**: cases_checked=2, mismatches=0
 - **G_node_aspect_cases**: cases_checked=8, mismatches=0
 - **H_strength_order_cases**: cases_checked=3, mismatches=0
 - **I_protected_holdout**: cases=12
-- **J_negative_controls**: all_detected=True, frozen_constants_unmutated=True
+- **J_negative_controls**: all_detected=True, frozen_constants_unmutated=True, production_module_unmutated=True
 
 ## Explicit non-claims
 
@@ -38,7 +38,7 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 - the children/5th-house parallel is not covered by V1
 - no computational oracle corroborates this design - independent derivation and protected holdout are the sole evidentiary basis
 - Uranus/Neptune/Pluto and the Ascendant are excluded from the candidate occupant/significator pool - not part of the certified KP_LORDS nine-graha cycle and never treated as significators in the retrieved primary text
-- engine/kp/significators.py is NOT created or registered by this run - this is certification-execution evidence only, production implementation is a separate, not-yet-authorized act (ADR-0078 section 13)
+- no interpretation, convergence, BTR, historical prediction, or other KP variant is implemented - engine.kp.significators exposes exactly this one frozen judgment
 
 ## Evidence files
 

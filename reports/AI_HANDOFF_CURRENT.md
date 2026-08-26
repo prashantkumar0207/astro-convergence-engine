@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.13.0 |
+| Version | 9.14.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-26 (**`KP_SIGNIFICATOR_V1` CERTIFICATION EXECUTED - ALL TEN GATES (A-J) PASS.** Standalone, unregistered rule + KP-scoped aspect calculation written in `scripts/certify_kp_significator.py`; independent from-scratch validator built; four genuine defects found and fixed (lord-abbreviation mismatch; an aspect-offset off-by-one both independent implementations shared; two test-case sign-collision bugs) - documented, not hidden. `engine/kp/significators.py` NOT created. CI/drift protection added (hermetic tier). Eleven PyJHora-dependent artifacts + `current_engine` stayed stale (disclosed environment limitation); the four regenerable ones show only expected drift. 857/857 tests, governance clean (78 ADR, 29 DP). Nothing pushed.) |
+| Last updated | 2026-08-26 (**`KP_SIGNIFICATOR_V1` PRODUCTION IMPLEMENTED - JATAKA's second production capability.** `engine/kp/significators.py` created (certified rule migrated exactly, content-hash pinned, no Parashari import - confirmed via AST); `engine/models/kp_significator.py` typed result; 15 new production tests; `scripts/certify_kp_significator.py` rewritten to certify the production module - all ten gates re-PASS, reproducing the certification-execution stage's own results exactly. One unrelated pinning-test gap found and correctly fixed (a sign-typed-field naming-heuristic false positive on `signification_set`). 872/872 tests (857 + 15 new), governance clean (78 ADR, 29 DP). Nothing pushed.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,89 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-26 - KP_SIGNIFICATOR_V1 PRODUCTION IMPLEMENTED: engine/kp/significators.py created, all ten gates re-PASS, JATAKA's second production capability
+- Branch / commit SHA: `phase-g-governance` (local), this task's own commit on top of the `KP_SIGNIFICATOR_V1`
+  certification-execution commit. `main` unchanged.
+- Task (owner's exact instruction): "CEO AUTHORIZATION — KP_SIGNIFICATOR_V1 PRODUCTION IMPLEMENTATION.
+  KP_SIGNIFICATOR_V1 certification is PASS at commit 78a104f... Authorize the separate production
+  implementation step, strictly within the frozen and certified V1 scope of ADR-0078. Implement and
+  register engine/kp/significators.py," preserving the certified rule/table content, the KP-scoped
+  aspect calculation, provenance and KP system isolation, integration with existing certified KP chart/
+  cusp infrastructure, no Parashari aspect reuse, strength ordering, retrograde treatment, Rahu/Ketu
+  substitution, the 7th-cusp marriage promise/denial scope, 2/7/11 positive and 1/6/10/12 negative
+  classification, and the disclosed horary→natal inference limitation - explicitly excluding Four-Step
+  Theory, Ruling Planets, horary extensions, interpretation, convergence, BTR, or other KP variants. Add
+  production tests and integration/regression coverage; re-run certification and the complete test suite;
+  verify the production implementation reproduces the certified results and alters nothing existing; use
+  genuine negative-control verification; do not weaken any gate; no push/merge.
+- Relevant ADR/specification: `ADR-0078` (the certified design and certification-execution record this
+  implementation migrates exactly, unaltered); `KP_SIGNIFICATOR_SPEC.md` v0.2.0.
+- Files changed: `engine/kp/significators.py` (new - the production module); `engine/models/
+  kp_significator.py` (new - the typed `KpSignificatorJudgment` result); `engine/kp/__init__.py`
+  (docstring updated, narrowly, to declare `KP_SIGNIFICATOR_V1` in scope); `engine/tests/
+  test_kp_significators.py` (new - 15 production tests); `scripts/certify_kp_significator.py` (rewritten
+  to certify the production module directly); `engine/astrology/sign_conventions.py` (one new declaration,
+  unrelated defect found along the way); `certification/KP_SIGNIFICATOR_V1_certification.json` and
+  `SIGN_CONVENTION_V1_certification.json` plus their own reports (regenerated).
+- Method: migrated the certified rule functions from the certifier script's own standalone copy into
+  `engine/kp/significators.py` verbatim in substance (same logic, now production-quality: docstrings,
+  a typed `KpSignificatorJudgment` return value instead of a dict, a `rule_content_sha256()` pinning
+  function). Rewrote the certifier to import the production module's own public functions instead of
+  containing its own embedded copy, extending gate D to confirm the production module's own content hash
+  and its own rule functions' code (not docstrings) never reference Parashari/drishti. Deliberately left
+  `validate_kp_significator_holdout.py` completely unchanged - still fully independent, importing nothing
+  from `engine.kp.significators` - per the explicit "do not weaken any gate" instruction, since ADR-0078
+  section 8 itself requires gate C to import nothing from the production module.
+- Key findings: re-running all ten gates against the production module reproduced the certification-
+  execution stage's own results EXACTLY, including an identical `I_protected_holdout` verdict distribution
+  (MIXED:6, DENIED:3, PROMISED:3) across the same twelve real charts - direct evidence the migration
+  preserved the certified rule byte-for-byte in behavior, not merely in intent. Gate D's own first two
+  drafts had a genuine false-positive (flagging the module's own disclosure docstring, which explicitly
+  states what it does NOT import, as if that prose were the reuse it disclaims) - fixed by scanning each
+  rule function's own code via `ast`, with the docstring stripped, rather than raw source text. Independently
+  verified via direct `ast.walk()` (not merely gate D's own self-report) that `engine/kp/significators.py`
+  imports only `hashlib`, `engine.kp.tables`, `engine.models.kp_chart`, and `engine.models.kp_significator`
+  - no Parashari code anywhere. A genuine, unrelated defect was found while running the full test suite:
+  `KpSignificatorJudgment.signification_set` coincidentally matches this project's own sign-typed-field
+  naming heuristic ("sign" is a literal substring of "signification"), tripping
+  `test_every_sign_typed_field_is_declared`. Resolved honestly, not routed around: added a `NOT_AN_INDEX`
+  declaration in `engine/astrology/sign_conventions.py`, mirroring the exact precedent already established
+  there for `KpChain.sign_name`/`sign_lord` - the field is genuinely a tuple of HOUSE numbers, not zodiac
+  sign numbers, a real distinction the declaration now records explicitly. This required regenerating
+  `SIGN_CONVENTION_V1`'s own certification artifact a second time this task.
+- Tests: `python -m pytest -q` -> **872 passed** (857 existing + 15 new in `test_kp_significators.py`).
+- Governance status: `check_adr_numbering.py` PASS (78 ADR entries, unchanged); `check_identifier_
+  families.py` PASS (29 registered DP identifiers, unchanged); `check_retired_identifiers.py` PASS (0
+  violations).
+- Non-invasiveness: `scripts/check_artifact_drift.py` shows only understood, deliberate drift - the
+  `KP_SIGNIFICATOR_V1` scope/rule text and new production-specific fields (exactly the certification-
+  execution-to-production transition this task performed), and `modules_scanned` incrementing to reflect
+  the two genuinely new files under `engine/` via the anti-fitting scan's own recursive directory scan -
+  not the `CERTIFIER_SOURCES`/`VALIDATOR_SOURCES` tuples, which were not touched this task. `KP_CHAIN_V1`,
+  `RISE_SET_V1`, `D45`, and every other previously-certified capability's own tests continue to pass
+  unchanged within the full 872-test suite, confirming nothing existing was altered.
+- Negative-control verification: the content-hash pinning test (`engine/tests/test_kp_significators.py`)
+  carries its own negative control - a mutated LOCAL copy of the frozen constants (never the production
+  module itself, since there is no dynamic registry to substitute into the way the Varga framework has),
+  confirmed to produce a different hash than the pinned certified value.
+- Explicit non-claims preserved, all still present in the regenerated artifact and the module's own
+  docstring: Four Step Theory and Ruling Planets out of scope; horary/Prashna generally out of scope; the
+  undefined polar-latitude band unverified; the horary-to-natal application disclosed as an ACE-defined
+  inference on every `KpSignificatorJudgment` result; the aspect/conjunction convention likewise disclosed;
+  the source text's own OCR/single-transcription-pass status disclosed; the children/5th-house parallel
+  not covered; no computational oracle corroborates this design; Uranus/Neptune/Pluto and the Ascendant
+  excluded from the candidate pool; no interpretation, convergence, BTR, historical prediction, or other
+  KP variant implemented.
+- Certification results: all ten gates (A-J) re-PASS against the production module - identical in
+  substance to the certification-execution stage's own results, now sourced from `engine.kp.significators`
+  instead of a standalone script-embedded copy.
+- **JATAKA's second production capability is now live locally**: `engine.kp.significators.judge_marriage(chart)`,
+  consuming a `kp_chart()`-built `KpChart` directly, returning a `KpSignificatorJudgment`.
+- Exact next CEO decision required: whether to authorize pushing `phase-g-governance` (making this
+  capability visible on the remote branch and triggering CI), or to direct other work (e.g. restoring the
+  local PyJHora environment to regenerate the eleven still-stale artifacts from the prior task, or the next
+  JATAKA capability).
 
 ### 2026-08-26 - KP_SIGNIFICATOR_V1 certification EXECUTED: all ten gates (A-J) PASS, four genuine defects found and fixed
 - Branch / commit SHA: `phase-g-governance` (local), this task's own commit on top of the `ADR-0078`

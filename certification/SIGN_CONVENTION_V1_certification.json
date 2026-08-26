@@ -78,6 +78,11 @@
    "shape": "scalar",
    "accessor": "sign"
   },
+  "KpSignificatorJudgment.signification_set": {
+   "convention": "not_an_index",
+   "shape": "tuple_of_indexes",
+   "accessor": null
+  },
   "NavamsaChart.ascendant_sign": {
    "convention": "zero_based",
    "shape": "scalar",
@@ -306,7 +311,7 @@
    }
   },
   "anti_fitting": {
-   "modules_scanned": 185,
+   "modules_scanned": 187,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."
