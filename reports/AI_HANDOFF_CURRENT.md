@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.8.0 |
+| Version | 9.9.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-25 (**`KP_SIGNIFICATOR_V1` specification v0.2.0 - MOST DISAGREEMENTS RESOLVED via direct primary-source retrieval.** K.S. Krishnamurti's own Reader II/III/IV located and directly retrieved (`archive.org`), resolving significator strength order, retrograde treatment, node treatment, and the marriage promise/denial house groups with verbatim primary quotes, disclosed retrieval-limit caveats. Determined explicitly that KP CAN responsibly be frozen for a narrow V1 - no switch to Parashari yoga recommended. Decision point narrowed from four items to three. Still NOT FROZEN. Does not implement. 857/857 tests, governance clean. Local commit only, not pushed.) |
+| Last updated | 2026-08-26 (**`DP-029`: `KP_SIGNIFICATOR_V1` certification-readiness - B, CERTIFIABLE WITH BLOCKER.** Methodology treated as frozen (v0.2.0), not re-researched. Most inputs already certified/reusable; no oracle exists (confirmed, not assumed); independent-derivation-plus-holdout strategy, test corpus, artifact/validator/CI design all concrete. One blocker: conjunction-orb definition + aspect-reuse-vs-rebuild decision for the Rahu/Ketu-as-sub-lord case (not a rare edge case) - three options presented, not decided. 857/857 tests, governance clean (77 ADR, 29 DP). Local commit only, not pushed.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,56 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-26 - DP-029: KP_SIGNIFICATOR_V1 certification-readiness - B, CERTIFIABLE WITH BLOCKER
+- Branch / commit SHA: `phase-g-governance` (local), this task's own commit on top of `923c6b6` (the
+  v0.2.0 specification commit). `main` unchanged.
+- Task (owner's exact instruction): "CEO AUTHORIZATION — KP_SIGNIFICATOR_V1 CERTIFICATION-READINESS.
+  Continue from the already completed KP_SIGNIFICATOR_SPEC.md v0.2.0 / commit 923c6b6. Do not repeat the
+  previous methodology research... Now investigate certification feasibility only," covering ten named
+  items (production inputs; already-certified inputs; new components; oracle availability; certification
+  strategy; test corpus; horary-to-natal certifiability; remaining methodology ambiguity; artifact/
+  validator/negative-control/CI design; comparison to existing patterns). No production code, no
+  certification execution, no push/merge.
+- Relevant ADR/specification: `docs/KP_SIGNIFICATOR_SPEC.md` v0.2.0 (methodology, unchanged this task);
+  `ADR-0027`; `docs/KP_CHAIN_SPEC.md` (the certified substrate); `ADR-0012`/`ADR-0036` (`PARASHARI_DRISHTI_V1`).
+- Files changed: `docs/decisions/DP-029-kp-significator-v1-certification-readiness.md` (new, v1.0.0);
+  `docs/decisions/README.md` (v4.2.0 -> v4.3.0, registered before drafting); `docs/ACE_EXECUTION_STATE.md`;
+  this file.
+- Method: dispatched a read-only `Explore` agent to verify, against the actual code (not assumption),
+  which production inputs already exist and are certified. Confirmed: `engine/kp/chart.py::kp_chart()`
+  already builds every cusp's own KP chain including the 7th cusp's sub-lord (certified `KP_CHAIN_V1`);
+  `engine/astrology/sign_lord.py` provides the sign-lordship table; retrograde status is derivable via an
+  already-used convention (`speed_longitude < 0`); Placidus cusps are confirmed and match `KP_CHAIN_V1`'s
+  own profile. Found `engine/parashari/drishti.py::graha_drishti_from_snapshot()` (`PARASHARI_DRISHTI_V1`)
+  raises `ParashariProfileError` on any non-Parashari-Lahiri profile, and that no conjunction-orb
+  definition exists anywhere in the certified engine (only transit-crossing logic, not a natal
+  planet-planet orb test) - both needed for the Rahu/Ketu-as-sub-lord substitution rule.
+- Key findings: certification design is otherwise concrete and ready - two genuinely new pieces of logic
+  (significator determination via Ordering A; the promise/deny judgment) are low-ambiguity and fully
+  specified by the already-frozen methodology; no oracle exists (reaffirmed, not re-researched); an
+  independent-derivation-plus-protected-holdout strategy is designable now, without oracle corroboration
+  - a genuinely weaker evidentiary posture than every other certified capability checked this task
+  (`D45` had PyJHora corroboration; `KP_CHAIN_V1` had the `legacy/kp.py` equivalence oracle), disclosed
+  honestly rather than glossed over. Certified the horary-to-natal application as a disclosed ACE-defined
+  inference, using the same precedented mechanism as `KP_CHAIN_SPEC.md`'s own Decision KP-A boundary-
+  tolerance convention. One genuine blocker: the conjunction-orb/aspect-reuse question above - not a rare
+  edge case, since KP's own nine-lord sub-lord cycle gives nodes a material, non-negligible share of
+  possible 7th-cusp sub-lords. Three resolution options presented (extend `PARASHARI_DRISHTI_V1`'s own
+  profile lock; build a fresh KP-scoped aspect calculation; narrow V1 to exclude the node-sub-lord case
+  via a disclosed non-claim), not decided.
+- Tests: `python -m pytest -q` -> **857 passed**, unchanged (no engine code touched).
+- Governance status: `check_adr_numbering.py` PASS (77 ADR entries, unchanged); `check_identifier_
+  families.py` PASS (29 registered DP identifiers, up from 28); `check_retired_identifiers.py` PASS (0
+  violations).
+- Explicit non-claims honored: does not implement `KP_SIGNIFICATOR_V1`; does not create
+  `engine/kp/significators.py`; does not execute certification or create a certification artifact; does
+  not reopen `KP_SIGNIFICATOR_SPEC.md`'s own frozen methodology or `DP-025`; FOUNDATION, H-03, H10/H11,
+  closed Dasha items untouched; not pushed or merged.
+- **Determination: B - CERTIFIABLE WITH BLOCKER.** Exact CEO decision required: choose among `DP-029`
+  section 11's three blocker-resolution options (extend `PARASHARI_DRISHTI_V1`'s profile lock; build a
+  fresh KP-scoped aspect calculation; or narrow V1 to exclude the node-sub-lord case), in addition to the
+  three items `KP_SIGNIFICATOR_SPEC.md` section 18 already named (still open, in parallel).
 
 ### 2026-08-25 - KP_SIGNIFICATOR_V1 specification v0.2.0: most methodology disagreements RESOLVED via direct primary-source retrieval (K.S. Krishnamurti's own Readers)
 - Branch / commit SHA: `phase-g-governance` (local), this task's own commit on top of `fb4b2c6` (the
