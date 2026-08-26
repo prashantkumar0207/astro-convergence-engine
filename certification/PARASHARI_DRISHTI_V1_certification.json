@@ -1,7 +1,7 @@
 {
  "schema": "parashari_drishti_v1_certification",
  "adr": "ADR-0012",
- "date": "2026-08-25",
+ "date": "2026-08-26",
  "scope": "Parashari graha drishti, full (purna) aspects; facts only",
  "decisions": {
   "AS-A": "full aspects only; sputa drishti (fractional) deferred",
@@ -40,7 +40,7 @@
   "yogas, strengths, interpretation"
  ],
  "environment": {
-  "python": "3.12.10"
+  "python": "3.11.16"
  },
  "preconditions": {
   "data_assets": {
@@ -52,7 +52,7 @@
    }
   },
   "anti_fitting": {
-   "modules_scanned": 183,
+   "modules_scanned": 187,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."

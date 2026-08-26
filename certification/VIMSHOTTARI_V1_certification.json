@@ -1,7 +1,7 @@
 {
  "schema": "vimshottari_v1_certification",
  "adr": "ADR-0007",
- "date": "2026-08-25",
+ "date": "2026-08-26",
  "scope": "Vimshottari maha/antar/pratyantar timelines, school-explicit seeding",
  "year_convention": {
   "profile": "vimshottari_mean_sidereal_year",
@@ -334,7 +334,7 @@
   "any distance-to-boundary claim beyond the nakshatra (seed) level: seed_nakshatra_boundary_arcsec (Dasha roadmap step 6, DP-020 Option 1, ADR-0073) does not cover antardasha/pratyantardasha period-transition boundaries, does not cover any KP-specific level, and is not a dasha-date-uncertainty figure. It must not be treated as equivalent to KP's own nearest_boundary_arcsec (which itself has an unresolved completeness defect, H-07) or to this certifier's own moon_distance_to_nearest_boundary_deg diagnostic (M-02)."
  ],
  "environment": {
-  "python": "3.12.10"
+  "python": "3.11.16"
  },
  "preconditions": {
   "data_assets": {
@@ -346,7 +346,7 @@
    }
   },
   "anti_fitting": {
-   "modules_scanned": 183,
+   "modules_scanned": 187,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."
