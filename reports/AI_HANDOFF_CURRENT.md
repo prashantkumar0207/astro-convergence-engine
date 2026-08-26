@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.11.0 |
+| Version | 9.12.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-26 (**`ADR-0078` DRAFTED (`PROPOSED`, not self-ratified): `KP_SIGNIFICATOR_V1` complete certification design.** Per the owner's own nine accepted decisions ("CEO AUTHORIZATION — KP_SIGNIFICATOR_V1 CERTIFICATION DESIGN"). Consolidates `KP_SIGNIFICATOR_SPEC.md` v0.2.0 + `DP-026`-`DP-029` into one ratifiable architecture: production inputs, the new KP-scoped aspect calculation, significator derivation/strength ordering, retrograde/node handling, cusp/sub-lord handling, a ten-gate (A-J) certification battery (more granular than `D45`'s eight, since no oracle exists), artifact schema, hermetic CI placement, explicit non-claims. `DP-029` section 14 records owner acceptance. 857/857 tests, governance clean (78 ADR, 29 DP). Not implemented, not executed, nothing pushed.) |
+| Last updated | 2026-08-26 (**`ADR-0078` RATIFIED: `KP_SIGNIFICATOR_V1`'s complete certification design is now the governing architecture.** Recorded via the established sub-entry mechanism, exactly as drafted, no methodology/scope/architecture/non-claim/gate altered - verified by direct diff. Only `docs/DECISION_LOG.md` changed; no production code or certification artifact touched. Per `ADR-0078`'s own section 13, ratification does not authorize certification execution - stopped at exactly that point. 857/857 tests, governance clean (78 ADR, unchanged; 29 DP). Nothing pushed.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,45 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-26 - ADR-0078 ratified: KP_SIGNIFICATOR_V1 certification design now governing; certification execution NOT yet authorized
+- Branch / commit SHA: `phase-g-governance` (local), this task's own commit on top of `118bdc4` (the
+  `ADR-0078` drafting commit). `main` unchanged.
+- Task (owner's exact instruction): "CEO RATIFICATION — ADR-0078. Ratify ADR-0078 exactly as currently
+  drafted. Do not alter its methodology, scope, certification architecture, non-claims, or gates. Record
+  the ratification using the established ADR ratification mechanism. After ratification: run governance
+  checks; run the full 857-test suite; verify no production code or certification artifact was changed;
+  commit the ratification locally; do not push or merge. Then proceed autonomously to the next step only
+  if it is explicitly authorized by ADR-0078's scope. If certification execution requires a separate
+  owner authorization, stop at that exact point."
+- Relevant ADR/specification: `ADR-0078` (ratified this task); `ADR-0077` (the `D45` ratification
+  precedent this mirrors exactly).
+- Files changed: `docs/DECISION_LOG.md` only (`ADR-0078`'s own `Status` line updated to point to a new
+  "Ratification of ADR-0078" sub-entry; sections 1-13, Context, Consequences, Evidence left word-for-word
+  unedited); `docs/ACE_EXECUTION_STATE.md`; this file.
+- Method: matched the "amend/ratify via a new sub-entry, edit only the original entry's own Status line"
+  mechanism used throughout this session (`ADR-0068`, `ADR-0074`, `ADR-0075`, `ADR-0076`, `ADR-0077`).
+  Confirmed via direct diff inspection (`git diff --stat` showing 39 insertions/7 deletions, entirely the
+  Status-line edit plus the new additive sub-entry) that no substantive text inside sections 1-13 was
+  altered. Confirmed via `check_adr_numbering.py` that no new ADR number was consumed (78 entries,
+  unchanged) - the sub-entry mechanism is additive text under the existing heading, not a new register
+  entry. Confirmed via `git status --short` that only `docs/DECISION_LOG.md` changed - no `engine/` file,
+  no `certification/` artifact.
+- Tests: `python -m pytest -q` -> **857 passed**, unchanged.
+- Governance status: `check_adr_numbering.py` PASS (78 ADR entries, unchanged); `check_identifier_
+  families.py` PASS (29 registered DP identifiers, unchanged); `check_retired_identifiers.py` PASS (0
+  violations).
+- Per `ADR-0078` section 13's own explicit reservation ("Ratifying this entry would authorize the
+  certification-execution step... as a separate, subsequent act - not performed by this entry itself"),
+  this ratification does **not** authorize certification execution. The owner's own instruction explicitly
+  directed stopping at exactly that point if execution needed separate authorization - it does, so it is
+  not begun. `engine/kp/significators.py` not created; `KP_CHAIN_V1`, `engine/parashari/drishti.py`,
+  `PARASHARI_DRISHTI_V1`, `sign_lord.py` untouched; no certification artifact generated; not pushed or
+  merged.
+- **Exact next CEO decision required:** whether to authorize `KP_SIGNIFICATOR_V1` certification execution
+  (writing the frozen rule and KP-scoped aspect calculation, building the independent validator, running
+  all ten gates A-J, generating `KP_SIGNIFICATOR_V1_certification.json`) - mirroring the separate
+  authorization `ADR-0077`'s own ratification received before `D45`'s certification execution began.
 
 ### 2026-08-26 - ADR-0078 drafted: KP_SIGNIFICATOR_V1 complete certification design (PROPOSED, not self-ratified)
 - Branch / commit SHA: `phase-g-governance` (local), this task's own commit on top of `e3bc011` (the

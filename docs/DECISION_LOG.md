@@ -4925,14 +4925,17 @@ subsequent act - not performed by this entry itself.**
 ## ADR-0078 - `KP_SIGNIFICATOR_V1` certification design: frozen rule, KP-scoped aspect calculation, oracle-free validation battery, artifact/CI plan (PROPOSED - prepared for CEO ratification, not yet declared)
 
 - **Date:** 2026-08-26
-- **Status:** PROPOSED - pending owner ratification. Drafted per the owner's "CEO AUTHORIZATION —
-  KP_SIGNIFICATOR_V1 CERTIFICATION DESIGN" instruction, which itself states nine accepted decisions
-  (methodology basis; narrow 7th-cusp scope; horary-to-natal disclosure; Option 2 aspect approach;
-  same-sign conjunction; the exact aspect table; provenance disclosure) as already made - this entry
-  formalizes those decisions into a complete, concrete certification design, per the same two-stage
+- **Status:** **ACCEPTED, on the owner's ratifying instruction recorded in the "Ratification of ADR-0078"
+  entry immediately below this entry's own text.** Originally drafted `PROPOSED` per the owner's "CEO
+  AUTHORIZATION — KP_SIGNIFICATOR_V1 CERTIFICATION DESIGN" instruction, which itself states nine accepted
+  decisions (methodology basis; narrow 7th-cusp scope; horary-to-natal disclosure; Option 2 aspect
+  approach; same-sign conjunction; the exact aspect table; provenance disclosure) as already made - this
+  entry formalizes those decisions into a complete, concrete certification design, per the same two-stage
   pattern already used for `D45` (`ADR-0076` readiness -> `ADR-0077` certification design -> ratification
-  -> execution). **This entry is a design only. It does not write or register
-  `engine/kp/significators.py`, does not modify any existing certified capability including
+  -> execution). Per this repository's own "change only the status" discipline, this Status line is the
+  only text in this entry edited to record ratification - the Context, the certification design (sections
+  1-13), Consequences, and Evidence below are unchanged. **This entry is a design only. It does not write
+  or register `engine/kp/significators.py`, does not modify any existing certified capability including
   `KP_CHAIN_V1`/`engine/parashari/drishti.py`, and does not itself produce
   `KP_SIGNIFICATOR_V1_certification.json` - certification execution remains a separate, not-yet-authorized
   act.**
@@ -5134,6 +5137,35 @@ ten gates; generating the artifact) as a separate, subsequent act - not performe
   `DECISION_LOG.md` `D-002`/`D-003` (tolerance and zero-categorical-tolerance standards, applied
   throughout); `ADR-0049`/`D45`'s own certification-execution precedent (`ADR-0077`, its ratification
   sub-entry) for the gate-lettering and negative-control discipline this design mirrors.
+
+#### Ratification of ADR-0078: `KP_SIGNIFICATOR_V1` CERTIFICATION DESIGN RATIFIED (2026-08-26)
+
+- **Status:** ACCEPTED. The owner instructed: "CEO RATIFICATION — ADR-0078. Ratify ADR-0078 exactly as
+  currently drafted. Do not alter its methodology, scope, certification architecture, non-claims, or
+  gates." Per `docs/PROJECT_CONSTITUTION.md` s11, this instruction is the ratifying act; this entry
+  records it, matching the precedent already used throughout this session (`ADR-0068`, `ADR-0074`,
+  `ADR-0075`, `ADR-0076`, `ADR-0077`'s own ratification sub-entries).
+- **Decision:** `ADR-0078` above (its full thirteen-section certification design, Context, Consequences,
+  and Evidence) is **ratified exactly as drafted, with no wording changed**. Its own `Status` line,
+  immediately above, is updated to point to this entry - the only edit made to that entry's own text.
+  **`KP_SIGNIFICATOR_V1`'s own complete certification design - frozen rule/scope, production inputs, the
+  independent KP-scoped aspect calculation, significator derivation and strength ordering, retrograde and
+  node handling, cusp/sub-lord handling, positive/negative/mixed house evaluation, the ten-gate (A-J)
+  certification battery, test corpus, oracle-free validation strategy, artifact schema, CI/drift-gate
+  plan, and explicit non-claims - is ratified as of 2026-08-26, exactly as drafted, with no methodology,
+  scope, architecture, non-claim, or gate altered.** Per `ADR-0078`'s own section 13 ("What this entry
+  does not do"), ratifying it authorizes the certification-execution step as a separate, subsequent act -
+  **not granted by this ratification itself**. No production code is written or modified by this entry;
+  `engine/kp/significators.py` is not created; `KP_CHAIN_V1`, `engine/parashari/drishti.py`,
+  `PARASHARI_DRISHTI_V1`, and `sign_lord.py` remain untouched; no certification artifact is generated.
+- **Consequences:** `KP_SIGNIFICATOR_V1`'s own certification design is now the ratified, governing
+  architecture for any future certification-execution work, mirroring `ADR-0077`'s own ratified design
+  standing as D45's governing architecture before its own separate execution authorization. Certification
+  execution itself remains a separate, not-yet-authorized act, per the owner's own explicit instruction to
+  "stop at that exact point" if execution requires separate authorization - it does, per `ADR-0078`
+  section 13's own explicit reservation, so it is not begun by this entry.
+- **Evidence:** the owner's "CEO RATIFICATION — ADR-0078" instruction, quoted above; `ADR-0078` itself,
+  commit `118bdc460d4b29ffdda267996f86a2ce0fc7ed94`.
 
 ---
 
