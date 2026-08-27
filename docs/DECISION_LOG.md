@@ -3,10 +3,10 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | ACTIVE REGISTER. **ACCEPTED (47): ADR-0001, ADR-0002, ADR-0005 through ADR-0012, ADR-0015, ADR-0016, ADR-0017, ADR-0033 through ADR-0037, ADR-0039 through ADR-0042, ADR-0044, ADR-0045, ADR-0046, ADR-0048 through ADR-0069**, owner-ratified across 2026-08-13, 2026-08-14, 2026-08-17, 2026-08-18, 2026-08-19, 2026-08-20, 2026-08-21 and 2026-08-22. **`ADR-0069` ratifies `DP-016` Option 1: H-05 closed via a new hermetic-tier test file (`engine/tests/test_vimshottari_hermetic_baseline.py`) freezing the already-oracle-validated Vimshottari anchor construction for five seed cases, plus a genuine negative control independently verified by actually mutating and reverting the production line in-session. No certified value changes; `certify_vimshottari.py`/`VIMSHOTTARI_V1_certification.json` untouched; M-03 scan surface confirmed unaffected. H-06/H-08/M-02/dasha boundary-proximity indicator not touched.** **`ADR-0068` records the owner's ratification of the FOUNDATION-exit readiness audit: "CEO RATIFICATION — FOUNDATION EXIT. I ratify ADR-0068 and declare FOUNDATION EXITED." All six `Q8_CLOSURE_MATRIX.md` s4 implementation-scope items have a settled, ratified disposition (rise/set, panchanga, `TRIKALAM_V1` certified and checkpointed; H-01/H-02 resolved; boundary-proximity indicators and civil-date rendering explicitly decoupled from the checkpoint by their own ratified decisions, `ADR-0067` and the `ADR-0063` addendum). **FOUNDATION IS FORMALLY EXITED AS OF 2026-08-22.** This does NOT authorize JATAKA - `Q8_CLOSURE_MATRIX.md` s5's own entry criteria (the Dasha roadmap's six steps, `docs/DASHA_CERTIFICATION_ROADMAP.md`, `Status: PROPOSED`) remain separately unmet. No certified calculation changed; no FOUNDATION item reopened; `phase-g-governance` not merged to `main`.** **`ADR-0067` ratifies `DP-015`: H-01/`ADR-0066`'s Q8 carve-out reading confirmed textually valid but novel, no precedent claimed; the carve-out's general reach beyond H-01/H-02 confirmed genuinely ambiguous, not silently generalized to any other FOUNDATION item; boundary-proximity indicators decoupled from the current FOUNDATION-exit checkpoint via `DP-015` §F "Option 3 (AMENDED)", ratified exactly as written - explicitly tracked as future work, not certified, does not gate exit, no future consumer may treat it as certified, any future consumer must certify first or explicitly refuse/gate, no certified values changed, no methodology specified here, a future decision paper determines it.** **`ADR-0066` ratifies `DP-014` Option 2: `find_crossings()` now raises `UnsupportedNodePolicyError` for Rahu/Ketu under any `node_policy` other than the certified mean node, converting H-01's silent transit-event incompleteness into an explicit refusal. No certified `TRANSIT_V1` value changes (confirmed by isolated-venv regeneration - only the already-understood ULP noise and volatile fields differed, and that regenerated artifact was discarded, not committed); Options 1/3 not chosen; Tier-0's Locked scope not touched.** **`ADR-0065` ratifies `DP-013`'s H-02 fix Option 1: `TransitEvent.declared_division`, an additive field classified from the exact `target_longitude`, with a new Gate E (genuine negative control) in `certify_transits.py`. No certified `TRANSIT_V1` value changes; Options 2/3 not chosen; Tier-0's Locked scope not touched.** **`ADR-0063` ratifies `DP-012` Option C: civil-date rendering for dasha boundaries is explicitly deferred, not authorized for implementation - `DP-012` itself unedited, per the established "paper is not the decision" discipline. A 2026-08-22 addendum to `ADR-0063` (**ratified**, `Status: ACCEPTED`, per the owner's "CEO RATIFICATION — ADR-0063 ADDENDUM" instruction) records a narrow qualification - `ADR-0063`'s original claim of independently satisfying `Q8_CLOSURE_MATRIX.md` s4 must not be relied upon without it, following `DP-015`'s finding that the carve-out's general reach is genuinely ambiguous - and explicitly decouples civil-date rendering from the current FOUNDATION-exit checkpoint, matching `ADR-0067`'s equivalent treatment of boundary-proximity indicators.** `ADR-0064` ratifies `DP-013` Option C (independent reference + PyJHora) and records the executed reproduction: H-02 independently confirmed for the Sun (2 of 12 sankranti, exact match to the original audit), PyJHora recorded as an evidenced limitation (cannot resolve the defect's own precision scale, by either method tested) rather than manufactured agreement. `TRANSIT_V1` unmodified by the reproduction itself; **pushed and CI-confirmed green** (run `32375941348`, all four jobs, both new steps genuinely executed under the hash-pinned oracle environment). A fix option was chosen 2026-08-21 - see `ADR-0065`.** **`ADR-0062` adds the permanent ACE execution-state mechanism (`docs/ACE_EXECUTION_STATE.md`) plus an explicit prohibition on the user relaying reports between Claude and ChatGPT - operationalizes `ADR-0056`'s already-ratified s11 point 3, does not reopen it.** **`ADR-0060` ratifies `DP-011` Option C seeded by Option B: Rahu Kalam/Yamaganda/Gulika become named, profile-selectable variants; the PyJHora 4.8.7 `trikalam()` convention is independently inspected, transcribed and frozen as the seed variant `PYJHORA_TRIKALAM_V1`. Authorizes only that one variant's implementation/certification work - does not itself certify it, does not authorize a second variant, and does not authorize Muhurta-specific consumption. `ADR-0061` records that implementation as built, locally verified, then **pushed and CI-confirmed green** (run `32358109807`, all four jobs, oracle job genuinely executing `TRIKALAM_V1`'s Gate F) - a 2026-08-20 evidence addendum records the CI confirmation and a recovered, expected M-03 drift finding (177->180, same class as `ADR-0053`/`ADR-0054`); a second 2026-08-20 addendum records a genuine ULP battery added to Gate C (exact sunrise weekday-rollover instant, with negative control), remediating a CEO-audit finding that the prior Gate C was a pinning/tolerance check, not a true ULP battery - **pushed and CI-confirmed green** (run `32361308330`, all four jobs, oracle-job log directly confirming `ulp_boundary_checked: True, ulp_negative_control_verified: True`). A third 2026-08-20 addendum records the **owner's acceptance of `TRIKALAM_V1`'s FOUNDATION per-capability checkpoint** - `TRIKALAM_V1` is now FOUNDATION checkpoint-accepted / production-certified. FOUNDATION's own phase-exit criteria remain open: civil-date rendering is now explicitly deferred by decision (`ADR-0063`, `DP-012` Option C), not implemented; H-01 and H-02 still lack any ratified decision paper.** **`ADR-0056` formalizes the four-role AI collaboration model (USER/CLAUDE/CHATGPT/CODEX); Codex is explicitly excluded from the ACE workflow. `ADR-0057` (CEO-audit HOLD remediation) adds ACE interaction mode and mandatory session-start audit to `specs/CLAUDE_WORKFLOW.md`. `ADR-0058` adds an execution-continuity rule (do not stop prematurely; five terminal stop conditions) to the same document; its `specs/CLAUDE_WORKFLOW.md` edit is committed (`20a9589e3d567bbf86e36b13bf2d61ca734e728e`). `ADR-0059` records the CEO-approved `PANCHANGA_V1` Gate F (genuine PyJHora external-oracle comparison for tithi/yoga/karana, nakshatra explicitly excluded): implemented, committed (`4177d6108236e64d07f6b23499307001f0d7c421`), pushed, and **CI-confirmed green** (run `32242462766`, all four jobs, oracle job genuinely executing Gate F: 66 comparisons, 0 mismatches, negative control verified) under the hash-pinned oracle environment. A 2026-08-19 evidence addendum to `ADR-0059` records the owner's acceptance of Panchanga's FOUNDATION per-capability checkpoint (`Q8_CLOSURE_MATRIX.md` s4); this does not close FOUNDATION's own phase-exit criteria, which still require Rahu Kalam/Yamaganda/Gulika, H-01, and H-02.** Tier-0 is **FORMALLY LOCKED** (ADR-0034), the only s12 Locked artifact. The registry vargas and the sign conventions are **owner-ratified but NOT s12 Locked** (ADR-0035 D3, ADR-0036 D3). **Q8 is now CLOSED** (ADR-0048); **Phase G exited and FOUNDATION entry criteria were independently confirmed satisfied** (this session's evidence reports). **FOUNDATION's first work package, rise/set, is CERTIFIED (`ADR-0054`, `RISE_SET_V1`)**: five owner-ratified conventions (upper-limb disc, standard -50' refraction, elevation accounted for, structured NO_RISE/NO_SET, conventions in `CalculationProfile`/`BirthData`), zero calculation impact on any existing certified capability, two genuine defects found and fixed during its own construction (recorded in the entry). **Panchanga classification-only work (tithi/vara/nakshatra/yoga/karana at a given instant) is now authorised (`ADR-0055`)**: engine-wide 1e-10 promote-up boundary convention, vara consumes the certified rise/set layer, element transition-timing deferred. **Rahu Kalam/Yamaganda/Gulika: `DP-011` (`ADR-0055` item 2's authorized paper) is now ratified (`ADR-0060`, Option C seeded by Option B) and its seed variant `PYJHORA_TRIKALAM_V1` is implemented and CI-confirmed (`ADR-0061`); a second variant remains explicitly NOT authorised.** No later phase (Muhurta, Varshaphal, Prashna, Mundane, BTR, Interpretation, Convergence, UI, ML) is thereby authorised - `docs/Q8_CLOSURE_MATRIX.md` s4 requires its own per-capability checkpoint for each. **Still PROPOSED: ADR-0003, ADR-0004, ADR-0013, ADR-0014, ADR-0018 through ADR-0032, ADR-0038, and ADR-0047.** `ADR-0047`'s originally-reported G5 sample accounting (22/22 complete, 16 independent, 4 ADB_MATCH, 2 unresolved, 14 events) was briefly, and **erroneously**, corrected to "12/22 attempted" by a 2026-08-18 addendum that has since been found (owner-directed forensic reconciliation) to rest on a conflation of the 22-person sample with an unrelated 5-person bridging pilot; a second, later 2026-08-18 addendum **restores 22/22 as the authoritative state** (16 independent, 4 ADB_MATCH: Fichera/Aimar/Serantoni/Bobet, 2 unresolved: Veen/Perquier, 14 independent events) and marks the "12/22" addendum SUPERSEDED/RETRACTED, preserved unedited. `ADR-0047` remains PROPOSED, not ratified, throughout. Ratification is per-entry; an owner existing is not the register being ratified. Includes the ADR-0018 remote-CI evidence addendum (2026-08-11), the ADR-0047 "12/22" addendum (2026-08-18, now retracted), and the ADR-0047 restoration addendum (2026-08-18). |
-| Version | 4.7.0 |
+| Status | ACTIVE REGISTER. **ACCEPTED (47): ADR-0001, ADR-0002, ADR-0005 through ADR-0012, ADR-0015, ADR-0016, ADR-0017, ADR-0033 through ADR-0037, ADR-0039 through ADR-0042, ADR-0044, ADR-0045, ADR-0046, ADR-0048 through ADR-0069**, owner-ratified across 2026-08-13, 2026-08-14, 2026-08-17, 2026-08-18, 2026-08-19, 2026-08-20, 2026-08-21 and 2026-08-22. **`ADR-0069` ratifies `DP-016` Option 1: H-05 closed via a new hermetic-tier test file (`engine/tests/test_vimshottari_hermetic_baseline.py`) freezing the already-oracle-validated Vimshottari anchor construction for five seed cases, plus a genuine negative control independently verified by actually mutating and reverting the production line in-session. No certified value changes; `certify_vimshottari.py`/`VIMSHOTTARI_V1_certification.json` untouched; M-03 scan surface confirmed unaffected. H-06/H-08/M-02/dasha boundary-proximity indicator not touched.** **`ADR-0068` records the owner's ratification of the FOUNDATION-exit readiness audit: "CEO RATIFICATION — FOUNDATION EXIT. I ratify ADR-0068 and declare FOUNDATION EXITED." All six `Q8_CLOSURE_MATRIX.md` s4 implementation-scope items have a settled, ratified disposition (rise/set, panchanga, `TRIKALAM_V1` certified and checkpointed; H-01/H-02 resolved; boundary-proximity indicators and civil-date rendering explicitly decoupled from the checkpoint by their own ratified decisions, `ADR-0067` and the `ADR-0063` addendum). **FOUNDATION IS FORMALLY EXITED AS OF 2026-08-22.** This does NOT authorize JATAKA - `Q8_CLOSURE_MATRIX.md` s5's own entry criteria (the Dasha roadmap's six steps, `docs/DASHA_CERTIFICATION_ROADMAP.md`, `Status: PROPOSED`) remain separately unmet. No certified calculation changed; no FOUNDATION item reopened; `phase-g-governance` not merged to `main`.** **`ADR-0067` ratifies `DP-015`: H-01/`ADR-0066`'s Q8 carve-out reading confirmed textually valid but novel, no precedent claimed; the carve-out's general reach beyond H-01/H-02 confirmed genuinely ambiguous, not silently generalized to any other FOUNDATION item; boundary-proximity indicators decoupled from the current FOUNDATION-exit checkpoint via `DP-015` §F "Option 3 (AMENDED)", ratified exactly as written - explicitly tracked as future work, not certified, does not gate exit, no future consumer may treat it as certified, any future consumer must certify first or explicitly refuse/gate, no certified values changed, no methodology specified here, a future decision paper determines it.** **`ADR-0066` ratifies `DP-014` Option 2: `find_crossings()` now raises `UnsupportedNodePolicyError` for Rahu/Ketu under any `node_policy` other than the certified mean node, converting H-01's silent transit-event incompleteness into an explicit refusal. No certified `TRANSIT_V1` value changes (confirmed by isolated-venv regeneration - only the already-understood ULP noise and volatile fields differed, and that regenerated artifact was discarded, not committed); Options 1/3 not chosen; Tier-0's Locked scope not touched.** **`ADR-0065` ratifies `DP-013`'s H-02 fix Option 1: `TransitEvent.declared_division`, an additive field classified from the exact `target_longitude`, with a new Gate E (genuine negative control) in `certify_transits.py`. No certified `TRANSIT_V1` value changes; Options 2/3 not chosen; Tier-0's Locked scope not touched.** **`ADR-0063` ratifies `DP-012` Option C: civil-date rendering for dasha boundaries is explicitly deferred, not authorized for implementation - `DP-012` itself unedited, per the established "paper is not the decision" discipline. A 2026-08-22 addendum to `ADR-0063` (**ratified**, `Status: ACCEPTED`, per the owner's "CEO RATIFICATION — ADR-0063 ADDENDUM" instruction) records a narrow qualification - `ADR-0063`'s original claim of independently satisfying `Q8_CLOSURE_MATRIX.md` s4 must not be relied upon without it, following `DP-015`'s finding that the carve-out's general reach is genuinely ambiguous - and explicitly decouples civil-date rendering from the current FOUNDATION-exit checkpoint, matching `ADR-0067`'s equivalent treatment of boundary-proximity indicators.** `ADR-0064` ratifies `DP-013` Option C (independent reference + PyJHora) and records the executed reproduction: H-02 independently confirmed for the Sun (2 of 12 sankranti, exact match to the original audit), PyJHora recorded as an evidenced limitation (cannot resolve the defect's own precision scale, by either method tested) rather than manufactured agreement. `TRANSIT_V1` unmodified by the reproduction itself; **pushed and CI-confirmed green** (run `32375941348`, all four jobs, both new steps genuinely executed under the hash-pinned oracle environment). A fix option was chosen 2026-08-21 - see `ADR-0065`.** **`ADR-0062` adds the permanent ACE execution-state mechanism (`docs/ACE_EXECUTION_STATE.md`) plus an explicit prohibition on the user relaying reports between Claude and ChatGPT - operationalizes `ADR-0056`'s already-ratified s11 point 3, does not reopen it.** **`ADR-0060` ratifies `DP-011` Option C seeded by Option B: Rahu Kalam/Yamaganda/Gulika become named, profile-selectable variants; the PyJHora 4.8.7 `trikalam()` convention is independently inspected, transcribed and frozen as the seed variant `PYJHORA_TRIKALAM_V1`. Authorizes only that one variant's implementation/certification work - does not itself certify it, does not authorize a second variant, and does not authorize Muhurta-specific consumption. `ADR-0061` records that implementation as built, locally verified, then **pushed and CI-confirmed green** (run `32358109807`, all four jobs, oracle job genuinely executing `TRIKALAM_V1`'s Gate F) - a 2026-08-20 evidence addendum records the CI confirmation and a recovered, expected M-03 drift finding (177->180, same class as `ADR-0053`/`ADR-0054`); a second 2026-08-20 addendum records a genuine ULP battery added to Gate C (exact sunrise weekday-rollover instant, with negative control), remediating a CEO-audit finding that the prior Gate C was a pinning/tolerance check, not a true ULP battery - **pushed and CI-confirmed green** (run `32361308330`, all four jobs, oracle-job log directly confirming `ulp_boundary_checked: True, ulp_negative_control_verified: True`). A third 2026-08-20 addendum records the **owner's acceptance of `TRIKALAM_V1`'s FOUNDATION per-capability checkpoint** - `TRIKALAM_V1` is now FOUNDATION checkpoint-accepted / production-certified. FOUNDATION's own phase-exit criteria remain open: civil-date rendering is now explicitly deferred by decision (`ADR-0063`, `DP-012` Option C), not implemented; H-01 and H-02 still lack any ratified decision paper.** **`ADR-0056` formalizes the four-role AI collaboration model (USER/CLAUDE/CHATGPT/CODEX); Codex is explicitly excluded from the ACE workflow. `ADR-0057` (CEO-audit HOLD remediation) adds ACE interaction mode and mandatory session-start audit to `specs/CLAUDE_WORKFLOW.md`. `ADR-0058` adds an execution-continuity rule (do not stop prematurely; five terminal stop conditions) to the same document; its `specs/CLAUDE_WORKFLOW.md` edit is committed (`20a9589e3d567bbf86e36b13bf2d61ca734e728e`). `ADR-0059` records the CEO-approved `PANCHANGA_V1` Gate F (genuine PyJHora external-oracle comparison for tithi/yoga/karana, nakshatra explicitly excluded): implemented, committed (`4177d6108236e64d07f6b23499307001f0d7c421`), pushed, and **CI-confirmed green** (run `32242462766`, all four jobs, oracle job genuinely executing Gate F: 66 comparisons, 0 mismatches, negative control verified) under the hash-pinned oracle environment. A 2026-08-19 evidence addendum to `ADR-0059` records the owner's acceptance of Panchanga's FOUNDATION per-capability checkpoint (`Q8_CLOSURE_MATRIX.md` s4); this does not close FOUNDATION's own phase-exit criteria, which still require Rahu Kalam/Yamaganda/Gulika, H-01, and H-02.** Tier-0 is **FORMALLY LOCKED** (ADR-0034), the only s12 Locked artifact. The registry vargas and the sign conventions are **owner-ratified but NOT s12 Locked** (ADR-0035 D3, ADR-0036 D3). **Q8 is now CLOSED** (ADR-0048); **Phase G exited and FOUNDATION entry criteria were independently confirmed satisfied** (this session's evidence reports). **FOUNDATION's first work package, rise/set, is CERTIFIED (`ADR-0054`, `RISE_SET_V1`)**: five owner-ratified conventions (upper-limb disc, standard -50' refraction, elevation accounted for, structured NO_RISE/NO_SET, conventions in `CalculationProfile`/`BirthData`), zero calculation impact on any existing certified capability, two genuine defects found and fixed during its own construction (recorded in the entry). **Panchanga classification-only work (tithi/vara/nakshatra/yoga/karana at a given instant) is now authorised (`ADR-0055`)**: engine-wide 1e-10 promote-up boundary convention, vara consumes the certified rise/set layer, element transition-timing deferred. **Rahu Kalam/Yamaganda/Gulika: `DP-011` (`ADR-0055` item 2's authorized paper) is now ratified (`ADR-0060`, Option C seeded by Option B) and its seed variant `PYJHORA_TRIKALAM_V1` is implemented and CI-confirmed (`ADR-0061`); a second variant remains explicitly NOT authorised.** No later phase (Muhurta, Varshaphal, Prashna, Mundane, BTR, Interpretation, Convergence, UI, ML) is thereby authorised - `docs/Q8_CLOSURE_MATRIX.md` s4 requires its own per-capability checkpoint for each. **Still PROPOSED: ADR-0003, ADR-0004, ADR-0013, ADR-0014, ADR-0018 through ADR-0032, ADR-0038, and ADR-0047.** **`ADR-0079` (`KP_SIGNIFICATOR_V1` certification-integrity repair) is now `ACCEPTED`, ratified 2026-08-28 per the owner's "CEO AUTHORIZATION — ADR-0079 RATIFICATION" instruction, recorded in the "Ratification of ADR-0079" sub-entry - `DP-030`'s own separate primary-source question remains fully open and unaddressed by this ratification.** `ADR-0047`'s originally-reported G5 sample accounting (22/22 complete, 16 independent, 4 ADB_MATCH, 2 unresolved, 14 events) was briefly, and **erroneously**, corrected to "12/22 attempted" by a 2026-08-18 addendum that has since been found (owner-directed forensic reconciliation) to rest on a conflation of the 22-person sample with an unrelated 5-person bridging pilot; a second, later 2026-08-18 addendum **restores 22/22 as the authoritative state** (16 independent, 4 ADB_MATCH: Fichera/Aimar/Serantoni/Bobet, 2 unresolved: Veen/Perquier, 14 independent events) and marks the "12/22" addendum SUPERSEDED/RETRACTED, preserved unedited. `ADR-0047` remains PROPOSED, not ratified, throughout. Ratification is per-entry; an owner existing is not the register being ratified. Includes the ADR-0018 remote-CI evidence addendum (2026-08-11), the ADR-0047 "12/22" addendum (2026-08-18, now retracted), and the ADR-0047 restoration addendum (2026-08-18). |
+| Version | 4.10.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-22 (ADR-0069 ratifies DP-016 Option 1: H-05 closed via a new hermetic Vimshottari anchor baseline plus a verified negative control, no certified value changes) |
+| Last updated | 2026-08-28 (ADR-0080 added, ACCEPTED: the owner's own "CEO decision: close DP-030 §5 Option 1 as sufficiently resolved for KP_SIGNIFICATOR_V1" - Reader IV independently corroborates the 2/7/11 vs 1/6/10/12 marriage grouping with worked examples, materially resolving the primary-source evidence question for the frozen V1 rule; the natal-application inference/non-claim is explicitly preserved, not resolved. No production code, frozen methodology, or certification artifact changed. DP-030's other three remediation paths and its own p.91 OCR-location detail are not reopened.) |
 | Review cadence | TBD |
 
 # Decision Log (ADR register)
@@ -5257,6 +5257,238 @@ ten gates; generating the artifact) as a separate, subsequent act - not performe
   after updating `engine/tests/test_certification_preconditions.py`'s own pinned `CERTIFIER_SOURCES`/
   `VALIDATOR_SOURCES` counts, 16->17 and 15->16, the expected consequence of adding two genuinely new
   files).
+
+---
+
+## ADR-0079 - `KP_SIGNIFICATOR_V1` certification-integrity repair: structural defect diagnosed, independently reproduced, and repaired under explicit CEO directive (PROPOSED - prepared for CEO ratification of the disposition, not yet declared)
+
+- **Date:** 2026-08-27
+- **Status:** **ACCEPTED, on the owner's ratifying instruction recorded in the "Ratification of ADR-0079"
+  entry immediately below this entry's own text.** Originally drafted `PROPOSED`. Recorded per this
+  repository's own rule that a genuine owner decision required and not inferable from an existing
+  ratified decision must stop and say exactly what is needed, rather than being guessed at or silently
+  absorbed into other work. The repair work itself (below) was executed under the owner's own explicit
+  "CEO DIRECTIVE - KP_SIGNIFICATOR_V1 CERTIFICATION REPAIR" instruction (2026-08-27), which is its own
+  standing authorization for the repair steps taken; what remained open for ratification was the
+  resulting disposition of the certification record - now ratified below - and `DP-030`'s own separate,
+  deeper primary-source question, which remains open (see "Not decided by this entry" below, unaffected
+  by this ratification). Per this repository's own "change only the status" discipline, this Status line
+  is the only edit made to this entry's own text.
+- **Context:** `DP-030` (`docs/decisions/DP-030-kp-significator-v1-remediation-readiness.md`, DRAFT,
+  2026-08-26) documents an external forensic experiment establishing that every runnable correctness
+  gate in `scripts/certify_kp_significator.py` reports PASS while every sub-lord the engine computes is
+  wrong, and attaches a draft `scripts/check_mutation_detection.py` as a standing mechanical check for
+  the defect class. That paper decides nothing and is not itself a decision entry.
+- **Independent confirmation (before any repair was made):** this session independently reproduced the
+  defect from scratch, not by reading `DP-030` and trusting its narrative, by (a) running the attached
+  draft script against the working tree at `ade89fa` (`phase-g-governance`) and (b) directly inspecting
+  `scripts/certify_kp_significator.py`'s and `validate_kp_significator_holdout.py`'s own source:
+
+  ```
+  $ python scripts/check_mutation_detection.py kp_significator
+  corruption verified: sub_lord wrong at 3600/3600 sampled longitudes
+    gate_b_dense_sweep             PASSED - blind to the wrong value (BAD)
+    gate_e_boundary_cases          PASSED - blind to the wrong value (BAD)
+    gate_f_retrograde_cases        PASSED - blind to the wrong value (BAD)
+    gate_g_node_aspect_cases       PASSED - blind to the wrong value (BAD)
+    gate_h_strength_order_cases    PASSED - blind to the wrong value (BAD)
+    gate_j_negative_controls       PASSED - blind to the wrong value (BAD)
+  RESULT: FAIL (exit 1)
+  ```
+
+  Directly confirmed further, beyond the draft script's own original scope: gate I (`gate_i_protected_
+  holdout`) ALSO passed blind under the identical live corruption, producing a genuinely different
+  verdict distribution (`MIXED:6/DENIED:3/PROMISED:3` pristine -> `MIXED:7/DENIED:3/PROMISED:2`
+  corrupted) while still returning PASS - because its own "independent" reference,
+  `_independent_judge_marriage_reference`, imported and called `engine.kp.significators.signification_
+  set()` directly (the module under test). Confirmed directly by source inspection: the `HOLDOUT` list
+  carried `id`/`date`/`time`/`lat`/`lon` only - no expected sub-lord, signification set, or verdict of
+  any kind, so nothing existed for a result to be wrong against. Confirmed directly: `validate_kp_
+  significator_holdout.py`'s own `real_holdout()` checked only `sub_lord in GRAHAS` (a valid-name sanity
+  check), never a comparison against any expected value.
+- **Repair executed** (per the CEO directive's own required outcomes; full detail in
+  `reports/AI_HANDOFF_CURRENT.md`'s own entry for this task and in the diffs of the files named below):
+  1. `HOLDOUT` in `scripts/certify_kp_significator.py` now carries STATIC `expected_sub_lord`/
+     `expected_signification_set`/`expected_verdict`/`expected_retrograde_qualifier` fields for all
+     twelve cases, generated once, offline, by calling ONLY `validate_kp_significator_holdout.py`'s own
+     from-scratch `judge()` function (never `engine.kp.significators`). `gate_i_protected_holdout` now
+     compares LIVE production output against these STATIC values; the circular `_independent_judge_
+     marriage_reference` function is removed.
+  2. `validate_kp_significator_holdout.py` gained a `static_holdout_check()` against the same twelve
+     frozen values (a determinism/regression guard for its own logic, honestly disclosed as such, not
+     oversold as independent proof by itself); its pre-existing `real_holdout()` is now explicitly
+     labelled a structural-sanity check, not correctness evidence. It still imports nothing from
+     `engine.kp.significators` (verified directly).
+  3. Gates B and E are now honestly labelled `wiring_coverage_not_correctness_evidence` in their own
+     returned dicts and in the module docstring, with a `disclosure` field explaining why (both sides
+     call the identical `kp_chain()` function). Gate G's own redundant circular sub-check is commented
+     accordingly, without changing its pass/fail behavior.
+  4. `scripts/check_mutation_detection.py` gained a second target, `kp_significator_logic`, which
+     monkeypatches `engine.kp.significators._signifies` (dropping the owner-membership clause - a
+     realistic wrong-implementation mistake that changes neither the frozen constants nor the content
+     hash) and requires the certifier's own gates to detect it. The original `kp_significator` target
+     (kp_chain substrate corruption) was extended to include the now-repaired gate I, which correctly
+     detects it (confirmed both targets now PASS - see "Mutation-gate proof" below).
+  5. **Literal on-disk proof, run for real as a subprocess exactly as CI would run it** (not simulated):
+     `engine/kp/significators.py`'s `_signifies` was edited to drop the owner clause, the actual
+     `python scripts/certify_kp_significator.py` was run, the file was restored via `git checkout --`,
+     and it was run again:
+
+     | Run | Method | Exit code | Result |
+     |---|---|---|---|
+     | Pristine | `python scripts/certify_kp_significator.py` | 0 | PASS |
+     | Corrupted (real file edit) | same command, `_signifies` owner clause removed on disk | 3 | `KP_SIGNIFICATOR_V1 CERTIFICATION FAIL: strength-order case failures: 1` |
+     | Restored (`git checkout -- engine/kp/significators.py`) | same command | 0 | PASS |
+  6. **Mutation-gate proof** (both standing, hermetic, in-process targets, run after the repair):
+     `kp_significator` (kp_chain substrate corruption) -> `RESULT: PASS (exit 0)`, `Detected by:
+     gate_i_protected_holdout`. `kp_significator_logic` (significator-computation corruption) ->
+     `RESULT: PASS (exit 0)`, `Detected by: gate_h_strength_order_cases, gate_i_protected_holdout,
+     gate_j_negative_controls`.
+  7. Production vs. independent-implementation agreement was directly re-verified on the twelve real
+     holdout charts: `engine.kp.significators.judge_marriage()`'s live output matches `validate_kp_
+     significator_holdout.py`'s own from-scratch `judge()` output on every field, for all twelve cases -
+     no separate methodological defect was found between the two independently-authored implementations,
+     so the already-ratified production module (`c6f58f5`) is preserved unchanged; `engine/kp/
+     significators.py` carries no net diff from this repair (the literal mutation test above edited and
+     then exactly restored it).
+  8. Full regression suite: 872/872, unchanged, both before and after the repair (the repair touches
+     only certification/validation tooling, never production code net of the reverted mutation test).
+- **Authorization provenance audit** (per the CEO directive's own item 9): `ADR-0027` (KP significators
+  root checklist) and `ADR-0078` (KP_SIGNIFICATOR_V1 design, ratified) both carry the owner's own
+  ratification sub-entries. The certification-execution step is recorded as a "Certification execution
+  of ADR-0078" sub-entry citing the owner's own "CEO AUTHORIZATION - KP_SIGNIFICATOR_V1 CERTIFICATION
+  EXECUTION" instruction verbatim. The production-implementation step is recorded in `reports/
+  AI_HANDOFF_CURRENT.md` and `docs/ACE_EXECUTION_STATE.md` citing the owner's own "CEO AUTHORIZATION -
+  KP_SIGNIFICATOR_V1 PRODUCTION IMPLEMENTATION" instruction verbatim, though (matching the D45 precedent
+  noted at the time) no separate `docs/DECISION_LOG.md` entry was created specifically for that
+  implementation step. **Conclusion: authorization for building the certification and the production
+  module was genuinely given by the owner and is traceably recorded, not missing and not incompletely
+  recorded in a way that requires invention.** The gap this entry addresses is evidentiary (the
+  certification's own gates did not prove what they claimed to prove), not a gap in who authorized the
+  building of the capability. This repair's own authorization is the CEO directive named at the top of
+  this entry; no authorization is invented or inferred beyond what that directive itself grants.
+- **Decision:** This entry does **not** select among `DP-030` section 5's four remediation options for
+  the SEPARATE, deeper question that paper also raises (whether the frozen verdict rule itself has
+  sufficient primary-source support - `DP-030` section 4 found the doctrine "genuinely disputed" and
+  found no worked examples in the two Readers retrieved). Per the CEO directive's own scope ("repair ONLY
+  the certification-integrity defect... while preserving the already-ratified KP methodology and
+  production implementation unless a separate methodological defect is proven"), and since re-
+  verification (item 7 above) found the two independent implementations agree and thus proved no such
+  separate methodological defect, this entry proposes only:
+  1. The "Certification execution of ADR-0078" entry's own text is **not edited** - per this
+     repository's rule against altering an already-recorded entry's substance - but its "ALL TEN GATES
+     PASS" claim should be read together with this entry: six of those ten gates (B, E, F, G, H, J)
+     supplied no correctness evidence at the time, confirmed by independent reproduction; gate I also did
+     not, confirmed further in this entry.
+  2. The certification-integrity repair described above is recorded as executed, not merely proposed:
+     `scripts/certify_kp_significator.py`, `validate_kp_significator_holdout.py`, and `scripts/
+     check_mutation_detection.py` now stand repaired, re-verified via both live monkeypatch and literal
+     on-disk mutation, with the full regression suite green. `certification/KP_SIGNIFICATOR_V1_
+     certification.json` is regenerated accordingly (still `result: PASS`, now against genuinely
+     load-bearing gates, with honest per-gate classification disclosed in the artifact itself).
+  3. `engine/kp/significators.py` (the ratified production module) is unchanged by this repair.
+- **Not decided by this entry, and not decided by anyone yet:** `DP-030`'s own section 4 finding - that
+  the frozen verdict rule's primary-source support is "genuinely disputed" and that no worked example was
+  found in the two Readers retrieved - remains open. Choosing among `DP-030` section 5's four options
+  (source real ground truth from Reader IV p.89 and re-certify; scope V1 down to refuse the verdict,
+  mirroring `ADR-0066`'s own `UnsupportedNodePolicyError` precedent; obtain/build an independent oracle;
+  revoke `KP_SIGNIFICATOR_V1` outright) is a genuine, separate owner decision this entry does not make.
+  Whether to wire `scripts/check_mutation_detection.py` into `.github/workflows/ci.yml` is likewise left
+  to the owner, per the CEO directive's own "do not modify unrelated capabilities" scope limit - this
+  repair delivers the gate verified and ready, not wired.
+- **Evidence:** `docs/decisions/DP-030-kp-significator-v1-remediation-readiness.md` v1.0.0 (external
+  forensic experiment, root-cause analysis, primary-source review); `scripts/check_mutation_detection.py`
+  (both targets, run and quoted above); the literal on-disk pristine/corrupted/restored run quoted above;
+  the twelve-case production-vs-independent cross-check; `engine/tests/test_kp_significators.py` and the
+  full `pytest` run, both 872/872 unchanged; the "Certification execution of ADR-0078" entry immediately
+  above (the record this entry corrects the evidentiary basis of, without editing its text).
+
+#### Ratification of ADR-0079: `KP_SIGNIFICATOR_V1` CERTIFICATION-INTEGRITY REPAIR RATIFIED (2026-08-28)
+
+The owner's exact instruction: "CEO AUTHORIZATION — ADR-0079 RATIFICATION. Ratify ADR-0079 exactly as
+currently drafted. Rules: Do not alter ADR-0079 sections 1–13 or its substantive content. Record
+ratification using the repository's established append-only ratification sub-entry mechanism, consistent
+with ADR-0077/ADR-0078. Do not choose or alter any DP-030 remediation option. Do not modify production
+code or certification artifacts. Do not push or merge."
+
+Per this instruction, and per the same mechanism used for `ADR-0077`/`ADR-0078`: ADR-0079's own entry
+text above is changed only in its **Status** line (now pointing here); no other line of sections 1-13
+(date, context, independent confirmation, repair executed, authorization provenance audit, decision, "not
+decided by this entry", evidence) is altered. Confirmed by direct diff before committing: the edit is
+exactly the Status-line replacement quoted above, nothing else in the entry's body changed.
+
+This ratification accepts ADR-0079's own disposition exactly as drafted: the certification-integrity
+defect diagnosis and independent reproduction are accepted as established; the repair (static-value
+protected holdout, honestly reclassified wiring gates, the extended hermetic mutation-detection gate, and
+the literal on-disk pristine/corrupted/restored proof) is accepted as executed and sufficient for its own
+stated scope; the already-ratified `ADR-0078` methodology and the `engine/kp/significators.py` production
+module are confirmed preserved, unchanged net of this repair. This ratification does **not** choose among
+`DP-030` section 5's four remediation options for the separate, still-open primary-source question, and
+does not authorize wiring `scripts/check_mutation_detection.py` into CI - both remain exactly as ADR-0079
+itself left them, per this instruction's own explicit constraints. No production code or certification
+artifact is touched by this ratification.
+
+**Evidence:** this sub-entry's own text (the sole addition); the unedited ADR-0079 entry immediately
+above; `docs/decisions/DP-030-kp-significator-v1-remediation-readiness.md` v1.1.0 (unchanged by this
+ratification).
+
+---
+
+## ADR-0080 - `DP-030` section 5 Option 1 closed: Reader IV primary-source evidence sufficiently resolves `KP_SIGNIFICATOR_V1`'s ground-truth question, natal-application inference preserved (ACCEPTED)
+
+- **Date:** 2026-08-28
+- **Status:** ACCEPTED, on the owner's own exact decision instruction, recorded directly (this decision
+  was made and stated by the owner, not proposed by Claude for ratification - it is recorded here as
+  `ACCEPTED` immediately, per the same directness this repository already uses for other owner-stated
+  decisions, e.g. `ADR-0068`'s own "I ratify... and declare..." pattern).
+- **Context:** `DP-030` section 5 presented four remediation options for `KP_SIGNIFICATOR_V1`'s
+  certification-integrity repair (`ADR-0079`, `ACCEPTED`) alongside a separate, deeper, still-open
+  question: whether K.S. Krishnamurti's own primary-source material provides sufficient ground truth for
+  the frozen marriage promise/denial house grouping (2, 7, 11 vs 1, 6, 10, 12). Option 1 named locating
+  and reading Reader IV's own "Sub Lord of the 7th cusp" chapter as the highest-value step toward
+  resolving this. Per "CEO AUTHORIZATION — DP-030 OPTION 1," that investigation was performed: Reader IV
+  was re-fetched directly (its own `djvu.txt` OCR output, bypassing the corrupted-font-encoding path that
+  had blocked the prior attempt) and read directly, not through a summarising pipeline. Findings were
+  recorded in `DP-030` section 11 and `KP_SIGNIFICATOR_SPEC.md` section 19.4's own updated caveat
+  (committed `6db27ce`).
+- **Decision:** The owner's exact instruction: **"CEO decision: close DP-030 §5 Option 1 as sufficiently
+  resolved for KP_SIGNIFICATOR_V1."** Recorded here with the owner's own required distinction preserved
+  exactly:
+  1. Reader IV independently corroborates the 2/7/11 positive and 1/6/10/12 negative marriage grouping
+     and provides worked examples (found in a general, non-horary "TIME OF MARRIAGE" chapter and in
+     several worked chart examples with real data, per `DP-030` section 11) - a second independent primary
+     Reader agreeing with Reader III's own already-quoted rationale (`KP_SIGNIFICATOR_SPEC.md` section
+     19.4).
+  2. **This materially resolves the primary-source evidence question for the frozen V1 rule.** `DP-030`
+     section 5 Option 1 is closed on this basis.
+  3. **The application of this rule to the narrow natal V1 scope remains a disclosed reasoned inference/
+     non-claim, not an unqualified natal primary-source citation.** No passage found in either Reader is
+     unambiguously and exclusively natal in framing (`DP-030` section 11 item 6;
+     `KP_SIGNIFICATOR_SPEC.md` section 19.4's own residual caveat and section 19.7 non-claim 9). This
+     caveat is **not** withdrawn, weakened, or reopened by this decision - it stands exactly as
+     previously disclosed, now on a stronger evidentiary footing.
+  4. This decision closes Option 1 only. It does **not** select among `DP-030` section 5's other three
+     remediation paths (obtain an independent oracle; scope V1 down to refuse the verdict; revoke
+     `KP_SIGNIFICATOR_V1`) - those addressed a different premise (insufficient primary-source support)
+     that this decision now finds does not hold, so they require no further action, but this entry does
+     not itself declare them moot in the register; a future entry may do so explicitly if the owner
+     wishes.
+  5. The `docs/decisions/README.md` "p.91 OCR-location issue" (`DP-030` section 11 item 5 - the TOC-listed
+     "Sub Lord of the 7th cusp" chapter itself could not be isolated as a contiguous OCR block) is **not**
+     reopened by this decision and remains exactly as recorded: an unread, un-investigated-further detail
+     that did not block resolution, since the same substantive content was found via direct reading
+     elsewhere in the same Reader.
+- **Consequences:** `KP_SIGNIFICATOR_V1`'s frozen production methodology (`ADR-0078`), its production
+  implementation (`engine/kp/significators.py`, commit `c6f58f5`), and its repaired certification
+  (`ADR-0079`, `certification/KP_SIGNIFICATOR_V1_certification.json`) are **unchanged by this decision** -
+  none is altered, none is regenerated. No production code is touched. `DP-030` itself is not closed as a
+  paper (its certification-integrity narrative and section 5's own text remain the dated record); only
+  the specific Option 1 sub-question is closed, recorded via this entry without editing `DP-030`'s own
+  committed text.
+- **Evidence:** `docs/decisions/DP-030-kp-significator-v1-remediation-readiness.md` section 11 (v1.2.0);
+  `docs/KP_SIGNIFICATOR_SPEC.md` section 19.4's updated caveat (v0.2.1); commit `6db27ce7db527f560313aa98e3bb598990305964`
+  (the Reader IV evidence recording, unedited by this entry); `ADR-0078`/`ADR-0079` (the methodology and
+  certification this decision leaves unchanged).
 
 ---
 

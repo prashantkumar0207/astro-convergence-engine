@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | DRAFT - NOT FROZEN, but substantially resolved via direct primary-source retrieval (section 19), per "CEO AUTHORIZATION — CONTINUE KP METHODOLOGY EVIDENCE RESOLUTION." Structured per `ADR-0027` Decision 4's sixteen-item checklist. Section 17's v0.1.0 disagreements are superseded by section 19 for the specific matter/question section 19 resolves; genuinely residual items are named in section 18. |
-| Version | 0.2.0 |
+| Version | 0.2.1 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-25 (section 19 added: direct primary-source retrieval and resolution) |
+| Last updated | 2026-08-28 (section 19.4's residual caveat updated with a pointer to `DP-030` section 11: Reader IV directly re-read, corroborating the same rule in a general, non-horary chapter; the horary-to-natal caveat itself is preserved, not resolved) |
 | Review cadence | TBD |
 
 # KP_SIGNIFICATOR_V1 methodology specification (DRAFT)
@@ -536,6 +536,15 @@ signifies once cusps are known), and no competing natal-specific list was found,
 natal charts is a reasonable, disclosed inference, not an unqualified primary-source natal citation. This
 is recorded as V1's own explicit non-claim addition (section 19.7).
 
+**Update (2026-08-28), per `DP-030` section 11:** Reader IV, re-fetched directly and read (not merely
+searched via a summarising pipeline), independently corroborates this exact rule and its classical
+rationale in a general, non-horary chapter ("TIME OF MARRIAGE," p.70) and in several worked chart
+examples with real data - not only in Reader III's own horary chapter as previously recorded here. This
+strengthens the rule's own evidentiary basis (a second independent primary Reader agrees) but **does not
+resolve the caveat above**: no passage found in either Reader is unambiguously and exclusively natal in
+framing, so the horary-to-natal application remains a reasoned inference, not an unqualified primary
+citation. See `DP-030` section 11 for the full finding.
+
 ### 19.5 Children/5th-house parallel - NOT resolved, not pursued further
 
 The 5th-house/children positive-negative equivalent was searched for in the retrieved Reader III/IV text
@@ -594,5 +603,6 @@ work, mirroring the `ADR-0076`/`ADR-0077` two-stage pattern already used for `D4
 
 | Version | Date | Change |
 |---|---|---|
+| 0.2.1 | 2026-08-28 | Per "CEO AUTHORIZATION - DP-030 OPTION 1": section 19.4's residual caveat updated with a pointer to `DP-030` section 11 - Reader IV, re-fetched directly and read (not via a summarising pipeline), independently corroborates the marriage-grouping rule and its classical rationale in a general, non-horary chapter and several worked examples with real chart data. The caveat itself (horary-to-natal application is a reasoned inference, not an unqualified citation) is explicitly preserved, not resolved - no passage found in either Reader is unambiguously natal-only. No other section edited; no methodology, frozen rule, or certification artifact changed. |
 | 0.2.0 | 2026-08-25 | Per "CEO AUTHORIZATION — CONTINUE KP METHODOLOGY EVIDENCE RESOLUTION": continued, persistent, targeted search located and directly retrieved K.S. Krishnamurti's own Reader II, Reader III, and Reader IV (`archive.org`, `kp-readers` collection and the standalone `kpreader-4-marriage-married-life-children` item), extracted to plain text locally and searched directly - genuine primary source, not secondary restatement, with retrieval limits (scanned/OCR reprint, single transcription pass, partial Reader IV excerpt) disclosed precisely in new section 19.0. Constructed the source/claim matrix the instruction required (section 19) and resolved, with direct verbatim primary-source quotes: the significator strength order (19.1, Ordering A confirmed at high confidence across six independent passages); retrograde treatment (19.2, a third, more precise "conditional on direct motion" rule, neither v0.1.0 position); node treatment (19.3, explicit conjoined-planet > aspecting-planet > sign-lord priority, confirmed four times); and the marriage promise/denial house groups for one specific, well-scoped question (19.4, positive 2/7/11, negative 1/6/10/12, with Krishnamurti's own classical rationale for the positive group and a rich per-additional-house elaboration of denial reasons) - independently reconfirming, from primary text, v0.1.0's own question-granularity hypothesis. Determined explicitly, per the instruction's own branching condition, that the evidence establishes KP CAN responsibly be frozen for a narrow V1, so no switch to Parashari yoga is recommended. Updated the V1 recommendation to medium-high confidence (19.6) and narrowed section 18's decision point from four gated items to three, all narrower than v0.1.0's. Does not implement KP significators. Does not ratify anything. Sections 17 and its own v0.1.0 findings preserved unedited as the prior-state record, each with an explicit pointer to where section 19 superseded it. |
 | 0.1.0 | 2026-08-25 | Created. Drafted per "CEO DECISION — DP-028" items 3-10, structured against `ADR-0027` Decision 4's sixteen-item checklist. External research (K.S. Krishnamurti's own Reader I directly inspected and confirmed foundational-only; Reader III sought but not located; *K.P. Dynamics* by Sri Satyanarayana Naik retrieved as the most substantial secondary source) independently verified against multiple sources per claim, surfacing genuine, evidenced disagreements rather than silently resolving them: three different significator-strength orderings (17.1); question-granular, source-disputed positive/negative house groups even within "marriage" alone (17.2); a retrograde-treatment tension between "modulating factor" and a direct KSK-attributed "denies its own result" claim (8); an open question on whether nodes need special-casing beyond `KP_CHAIN_V1`'s own certified chain output (9). Four Step Theory and Ruling Planets marked N/A, per explicit exclusion. Does not implement KP significators. Concludes NOT FROZEN - identifies four gated owner decisions (source-authority strategy, V1 matter scope, significator strength order, retrograde/node treatment) required before certification-design work can begin, mirroring the `D45` precedent's own methodology-first rule. |
