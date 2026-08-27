@@ -2,9 +2,9 @@
 
 | Field | Value |
 |---|---|
-| Status | DRAFT. Section 10 records that the certification-integrity defect this paper diagnosed has since been repaired under explicit CEO directive (2026-08-27) - see `ADR-0079`. This paper's own four remediation options (section 5) address a separate, deeper question (primary-source support for the frozen verdict rule itself) and remain undecided; no production module changed. |
-| Version | 1.1.0 |
-| Last updated | 2026-08-27 (section 10 added: repair executed and independently verified, per explicit CEO directive; see ADR-0079) |
+| Status | DRAFT. Section 10 records that the certification-integrity defect this paper diagnosed has since been repaired under explicit CEO directive (2026-08-27) - see `ADR-0079`. Section 11 records that section 4 item 2's own claim (Reader IV surfaced no worked example or verbatim grouping statement) is now corrected by direct evidence - Reader IV does contain both. Section 5's own four remediation options (primary-source support for the frozen verdict rule) remain undecided by this paper; the horary-to-natal caveat is preserved, not withdrawn. No production module or certification artifact changed. |
+| Version | 1.2.0 |
+| Last updated | 2026-08-28 (section 11 added: Reader IV re-fetched via its own djvu.txt OCR output, correcting section 4 item 2's claim - verbatim grouping statement and worked examples with real chart data found in a general, non-horary "TIME OF MARRIAGE" chapter and elsewhere; horary-to-natal caveat preserved, not resolved) |
 | Supersedes | Nothing. Extends `DP-029` section 4 and `ADR-0078`. |
 | Audited tree | `fef113022d51923b54665c7cf48d88ce3fffc19b` (`main`) |
 
@@ -79,6 +79,13 @@ inadequate search that produced it.** This is recorded because the reasoning
 was not sound at the time, even though the answer was.
 
 ## 4. Primary-source position
+
+**Item 2 below is superseded by section 11 (2026-08-28): Reader IV was re-fetched directly (its own
+`djvu.txt` OCR output, bypassing the corrupted-font-encoding PDF path this section's own retrieval used)
+and DOES contain both worked examples with real chart data and a verbatim statement of the grouping,
+found in multiple locations. This section's own text is preserved unedited below as the dated record of
+what was true at the time this paper was drafted; a reader relying on item 2's claim should read it
+together with section 11.**
 
 `KP_SIGNIFICATOR_SPEC.md` section 2 records Reader I as retrieved and
 "source authority is not yet resolved to primary-text confidence." This paper
@@ -221,9 +228,69 @@ verdict rule has sufficient primary-source support at all (section 4's "genuinel
 Reader IV p.89 unread) - a separate, deeper question this repair was not authorized to touch and did
 not touch. That decision remains fully open.
 
+## 11. Reader IV primary-source evidence (2026-08-28)
+
+Per "CEO AUTHORIZATION — DP-030 OPTION 1": investigated only whether Reader IV provides sufficiently
+explicit, reproducible ground truth for the disputed marriage-grouping rule. This section records what
+was found, using primary material already identified in section 4/`KP_SIGNIFICATOR_SPEC.md` section 19 -
+no new search strategy, only a different retrieval path for the same named source.
+
+**Retrieval.** Section 4 item 3's own `kp-readers` collection copy of Reader IV, previously blocked by a
+corrupted PDF font encoding, was fetched directly as its own `djvu.txt` OCR output (487KB,
+`archive.org/download/kp-readers/J_KP reader_4_Marriage-married-Life-Children_djvu.txt`) - a different
+extraction pipeline than the PDF-text path that failed before, not a new source. Read directly (`grep`/
+manual inspection of the raw text), not through a summarising fetch pipeline.
+
+**Findings, each independently verifiable at the URL above:**
+
+1. **A general (non-horary) chapter, "TIME OF MARRIAGE" (printed page 70), states the classical
+   rationale for the grouping in near-verbatim agreement with Reader III's own passage already quoted in
+   `KP_SIGNIFICATOR_SPEC.md` section 19.4**: *"By Marriage, it is meant that one more member is added to
+   the family which is indicated by the second house. This addition is on an agreement which is denoted
+   by the seventh house and such an additional member brings permanent tie of friendship for pleasure and
+   progeny, shown by the 11th house. That is why houses 2, 7 and 11 are examined to find out whether -
+   (a) marriage is promised or not..."* This directly contradicts section 4 item 2's claim that Reader IV
+   surfaced no verbatim statement of the grouping.
+2. **An explicit operative statement of the positive group**, in a worked chart example under the
+   heading "Is Marriage Premised?": *"Note the sub-lord of the 7th cusp. If it is a significator of house
+   7 or 2 or 11, marriage is promised."* Followed by real chart data (occupied houses, nakshatra lords,
+   node substitution) applying the rule to a specific chart - a genuine worked example with data, which
+   section 4 item 2 also claimed was absent.
+3. **The negative group stated operatively**, in a separate worked passage: *"if the sub is lord of 1, 6,
+   10 and is the significator of 12 houses, marriage cannot take place."* The same 1/6/10/12 set recurs
+   repeatedly elsewhere in the book in closely related contexts (marital discord, separation).
+4. **Several further worked examples** ("Is marriage promised?" - four separate occurrences of this
+   exact heading, with real dates and dasha periods) apply the identical 2/7/11 vs 1/6/10/12 test outside
+   any horary "query number" framing.
+5. **Not resolved by this reading**: the TOC-listed chapter itself, "Sub Lord of the 7th cusp" (item 30,
+   printed page 91 per the TOC - not page 89 as section 4 item 3 states; the discrepancy is unexplained
+   and not investigated further, out of this task's own scope), could not be isolated as a single
+   contiguous block in the OCR text (page markers in that range did not extract as clean boundaries). The
+   findings above come from elsewhere in the same book, not from that specific chapter.
+6. **The horary-versus-natal question, per this task's own explicit instruction, is NOT treated as
+   resolved.** No passage found in this reading is unambiguously and exclusively natal in framing - the
+   worked examples found interleave general chart-timing questions with query-time refinements (e.g.
+   ruling-planets-based selection among competing significators, already correctly excluded from V1's own
+   scope) in the same sections, without a clean structural separation between "horary illustration" and
+   "natal illustration" the way modern secondary sources frame it. This is itself evidence of a kind - it
+   is consistent with `KP_SIGNIFICATOR_SPEC.md` section 19.4's own prior observation that Krishnamurti's
+   own house-signification mechanism is presented chart-type-agnostically throughout - but it does not
+   itself constitute an explicit natal-only citation. **`KP_SIGNIFICATOR_SPEC.md` section 19.4's own
+   disclosed non-claim (the horary-to-natal application is a reasoned inference, not an unqualified
+   primary citation) is accordingly preserved, not withdrawn**, now on a materially stronger evidentiary
+   footing (a second independent primary Reader, including a general non-horary chapter, corroborates the
+   identical rule).
+
+**What this section does and does not establish.** It establishes that section 4 item 2's specific
+factual claim was inaccurate and corrects it (per section 4's own superseding note above, without editing
+that section's text). It does not select among section 5's four remediation options. It does not close
+this paper. It does not change the frozen rule, the production module, or any certification artifact -
+none was touched by this task.
+
 ## Revision history
 
 | Version | Date | Note |
 |---|---|---|
+| 1.2.0 | 2026-08-28 | Section 11 added, per "CEO AUTHORIZATION - DP-030 OPTION 1": Reader IV re-fetched directly (djvu.txt OCR output, bypassing the corrupted-font-encoding path that blocked section 4's own attempt) and read directly, not through a summarising pipeline. Corrects section 4 item 2's claim - Reader IV does contain a verbatim grouping statement (found in a general, non-horary "TIME OF MARRIAGE" chapter, p.70, near-identical to Reader III's own already-quoted rationale) and worked examples with real chart data. Section 4's own text preserved unedited, with a superseding pointer added. The TOC-listed "Sub Lord of the 7th cusp" chapter itself (page 91, not 89) remains unread - not isolated in the OCR text. The horary-to-natal caveat is explicitly preserved, not resolved: no passage found is unambiguously natal-only. Does not select among section 5's options; does not close this paper; no production code, frozen rule, or certification artifact touched. |
 | 1.1.0 | 2026-08-27 | Section 10 added: records the certification-integrity repair executed under explicit CEO directive, independently re-verified (static holdout, reclassified wiring gates, extended mutation gate proven both directions, literal on-disk pristine/corrupted/restored proof, no discrepancy found between production and the independent validator on any of the twelve holdout charts). Section 5's own four options, addressing the separate primary-source question, remain undecided - not touched by this repair. |
 | 1.0.0 | 2026-08-26 | Created following the forensic mutation experiment against `fef1130`. Records the executed evidence, identifies the structural root cause, corrects `DP-029` section 4's evidentiary basis while upholding its conclusion, extends the primary-source position to Readers III and IV, presents four options without selecting, and attaches a verified mutation-detection gate. Decides nothing; ratifies nothing; changes no production code. |
