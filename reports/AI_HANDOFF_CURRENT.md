@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.15.0 |
+| Version | 9.16.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-26 (**`KP_SIGNIFICATOR_V1` merged to `main` (`fef113022d51923b54665c7cf48d88ce3fffc19b`); Parashari-yoga decision-readiness research performed next.** Per "CEO AUTHORIZATION - BEGIN PARASHARI YOGA V1 DECISION-READINESS": `docs/decisions/DP-027-parashari-yoga-methodology-readiness.md` extended to v1.2.0 (section J/K). Identifies Panch Mahapurusha Yoga (Ruchaka/Bhadra/Hamsa/Malavya/Sasa) as the strongest V1 candidate - direct BPHS verse, computable entirely from already-certified `engine.astrology.dignity` + `engine.astrology.house.whole_sign_house`, zero new astronomical/aspect calculation. Bhanga/cancellation/combustion scoped out of V1; retrograde scoped to disclosure-only. No implementation, no ADR drafted, `DP-024`/`DP-025` not reopened. 872/872 tests unchanged, governance clean (78 ADR, 29 DP). Nothing pushed.) |
+| Last updated | 2026-08-27 (**KP_SIGNIFICATOR_V1 CERTIFICATION REPAIR.** An external forensic mutation experiment (`DP-030`) proved every gate in `scripts/certify_kp_significator.py` reported PASS while every computed sub-lord was wrong; independently reproduced this task, including a further finding that gate I was also blind. Repaired: `gate_i_protected_holdout` now compares production against STATIC values frozen from the independent validator's own logic; gates B/E honestly reclassified as wiring/coverage checks; a new hermetic mutation-detection target corrupts the significator computation directly and is detected; a literal on-disk edit-run-revert of `engine/kp/significators.py`, run as a real subprocess, proved pristine->PASS(0), corrupted->FAIL(3), restored->PASS(0). No separate methodological defect found - production module unchanged. Recorded as `ADR-0079` (`Status: PROPOSED`, awaiting owner ratification). 872/872 tests unchanged, governance clean (79 ADR, 30 DP). Nothing pushed.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,101 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-27 - KP_SIGNIFICATOR_V1 CERTIFICATION REPAIR: certification-integrity defect independently confirmed and repaired
+- Branch / commit SHA: `phase-g-governance` (local), this task's own commit on top of
+  `ade89fafb7d47a798d8ed40131f76ffd4c19528b`. `main` unchanged.
+- Task (owner's exact instruction): "CEO DIRECTIVE - KP_SIGNIFICATOR_V1 CERTIFICATION REPAIR. The
+  forensic experiment has confirmed CERTIFICATION INTEGRITY = FAIL. Do not start another capability. Do
+  not push. Do not merge. Do not self-authorize any new scope. First independently inspect the current
+  repository state and confirm the forensic findings. Then repair ONLY the certification-integrity
+  defect, while preserving the already-ratified KP methodology and production implementation unless a
+  separate methodological defect is proven." Ten numbered required outcomes: static independent expected
+  values in the protected holdout; a genuinely independent validator; a mutation gate proving pristine ->
+  PASS, corrupted -> FAIL, restored -> PASS against the actual computation; honest reclassification of
+  tautological gates; genuine independence for gates C/I; an honestly-disclosed certification artifact;
+  a full gate re-run plus the mutation proof; the full regression suite; an authorization-provenance
+  audit (no invented authorization); no new capability. Required an 11-part final report (SHA, files
+  changed, forensic confirmation, repaired architecture, mutation result, gate results, test count,
+  authorization result, certification status, remaining decision, commit SHA).
+- Relevant ADR/specification: `ADR-0078` (the certified design this repair does not alter); `ADR-0079`
+  (new this task, `Status: PROPOSED` - records the diagnosis and the repair, extending a draft entry
+  already present, uncommitted, in the working tree at task start); `docs/decisions/DP-030-kp-
+  significator-v1-remediation-readiness.md` (an external forensic-experiment decision paper, also
+  already present uncommitted at task start, extended to v1.1.0 with a repair-executed section).
+- Files changed: `scripts/certify_kp_significator.py` (HOLDOUT gained static `expected_*` fields; `gate_
+  i_protected_holdout` rewritten to compare production against them; the circular `_independent_judge_
+  marriage_reference` removed; gates B/E gained `classification`/`disclosure` fields; gate C's docstring
+  and returned dict updated; module docstring and report's `oracle`/`certification_integrity_repair`
+  fields updated); `validate_kp_significator_holdout.py` (gained `STATIC_HOLDOUT` + `static_holdout_
+  check()`; `real_holdout()` relabelled structural-sanity-only; docstring updated - still imports nothing
+  from `engine.kp.significators`, confirmed by direct inspection, unchanged); `scripts/check_mutation_
+  detection.py` (new `kp_significator_logic` target corrupting `engine.kp.significators._signifies`
+  directly; the original `kp_significator` target extended to patch `engine.kp.chart`'s own bound
+  `kp_chain` name too, and to include the now-repaired `gate_i_protected_holdout`); `docs/DECISION_LOG.md`
+  (`ADR-0079` extended from a diagnosis-only draft to a diagnosis-plus-repair record, header's PROPOSED
+  list updated); `docs/decisions/DP-030-...md` (section 10 added, v1.0.0 -> v1.1.0); `docs/decisions/
+  README.md` (DP-030's own index row updated for accuracy - repair executed, not merely proposed).
+  `engine/kp/significators.py`: temporarily edited for the literal mutation proof, then restored via
+  `git checkout --`; carries no net diff. `certification/KP_SIGNIFICATOR_V1_certification.json` and its
+  own report/console companions regenerated.
+- Method: read the pre-existing, uncommitted `DP-030` and `scripts/check_mutation_detection.py` draft
+  files found in the working tree at task start rather than assuming they were untrustworthy or
+  fabricating independent conclusions from scratch; verified their central technical claims by direct,
+  independent reproduction (re-running the attached mutation script fresh, and separately probing gates
+  I/C/D under the same live corruption via a standalone script, since the original draft script's own
+  gate list had excluded I, C and D) before treating any of their claims as established. Found, by direct
+  source reading (not merely by running the script), three further confirmations: `_independent_judge_
+  marriage_reference` imports `signification_set` from `engine.kp.significators` at the top of the
+  certifier file (the exact module under test); `HOLDOUT` entries carried only `id`/`date`/`time`/`lat`/
+  `lon`, no expected fields of any kind; `validate_kp_significator_holdout.py`'s own `real_holdout()`
+  checked only `sub_lord in GRAHAS`, never any expected value. Generated the STATIC replacement expected
+  values via a one-off offline script calling only the independent validator's own `judge()` function
+  (never `engine.kp.significators`) against the same twelve real charts, then hand-verified those values
+  against a fresh, separate run of production `judge_marriage()` on the same charts (found no
+  discrepancy on any of the twelve - the two independently-authored implementations agree, so the
+  already-ratified production module needed no change). Built the standing mutation-detection gate to
+  corrupt `_signifies` specifically (not `PROMISE_HOUSES`/`DENY_HOUSES`, which gate A already checks by
+  direct equality, and not the content hash, which only covers the frozen constants, not function logic)
+  to stress-test the deepest layer. Performed the literal on-disk proof last, as the most convincing,
+  least-simulated evidence: edited the real file, ran the real certifier as a real subprocess, captured
+  its real exit code and failure message, restored via `git checkout --`, and ran it again.
+- Key findings: the certification-integrity defect was real and structural, exactly as `DP-030` describes
+  - every comparison in six of ten gates reduced to `x != x` because both sides called the same function.
+  Independently found, beyond `DP-030`'s own original scope, that gate I was ALSO blind (a materially
+  different verdict distribution under corruption still reported PASS) because its own "independent"
+  reference called the production module's own `signification_set()` directly. No separate methodological
+  defect was found in `engine.kp.significators` itself - the independent validator reproduces its output
+  exactly on all twelve real holdout charts, both before and after the repair - so the already-ratified
+  production module and the ADR-0078 methodology it implements are preserved unchanged, per the CEO
+  directive's own "unless a separate methodological defect is proven" condition (none was).
+  Authorization-provenance audit: `ADR-0027`/`ADR-0078` and both prior authorization instructions
+  ("CEO AUTHORIZATION — KP_SIGNIFICATOR_V1 CERTIFICATION EXECUTION" and "...PRODUCTION IMPLEMENTATION")
+  are traceably recorded and genuinely owner-given; no authorization was missing or invented. `DP-030`'s
+  own separate, deeper question - whether the frozen verdict rule itself has adequate primary-source
+  support, given its own "genuinely disputed" doctrine finding and no worked example located in the two
+  Readers retrieved - was explicitly NOT touched, per the CEO directive's own "repair ONLY the
+  certification-integrity defect" scope limit; that remains open, and `DP-030` section 5's four options
+  for it were not chosen among.
+- Verification: `scripts/check_adr_numbering.py` PASS (79 ADR entries); `scripts/check_identifier_
+  families.py` PASS (30 registered DP identifiers); `scripts/check_retired_identifiers.py` PASS; full
+  pytest suite 872/872, unchanged; `scripts/certify_kp_significator.py` PASS (all ten gates, pristine);
+  `validate_kp_significator_holdout.py` PASS (dense sweep, structural-sanity holdout, static-expected
+  check, structural invariants, all zero failures); `scripts/check_mutation_detection.py kp_significator`
+  now PASS (detected by the repaired gate I, where it previously reported FAIL/blind before the repair);
+  `scripts/check_mutation_detection.py kp_significator_logic` PASS (detected by gates H, I, J); literal
+  on-disk `engine/kp/significators.py` edit-run-revert: pristine exit 0 PASS, corrupted exit 3 FAIL
+  ("strength-order case failures: 1"), restored exit 0 PASS, `git status` confirming zero net diff on
+  that file.
+- Next genuine CEO decision points (`ADR-0079`'s own "Not decided by this entry" section): (1) ratify,
+  amend, or reject `ADR-0079`'s disposition of the repair; (2) separately, decide among `DP-030` section
+  5's four options for the still-open primary-source question (source real ground truth from Reader IV
+  p.89 and re-certify; scope V1 down to refuse the verdict, mirroring `ADR-0066`'s own
+  `UnsupportedNodePolicyError` precedent; obtain/build an independent oracle; revoke `KP_SIGNIFICATOR_V1`
+  outright) or explicitly defer it; (3) whether to wire `scripts/check_mutation_detection.py` into
+  `.github/workflows/ci.yml` - deliberately left unwired, per the directive's own "do not modify
+  unrelated capabilities" scope limit. Not pushed or merged (no push/merge authorization sought or given
+  this task).
 
 ### 2026-08-26 - KP_SIGNIFICATOR_V1 merged to main; Parashari-yoga (PARASHARI_YOGA_V1 candidate) decision-readiness research performed
 - Branch / commit SHA: `phase-g-governance` (local), this task's own commit on top of

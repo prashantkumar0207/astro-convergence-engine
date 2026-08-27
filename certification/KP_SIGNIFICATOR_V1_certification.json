@@ -1,7 +1,7 @@
 {
  "schema": "kp_significator_v1_certification",
  "adr": "ADR-0078",
- "date": "2026-08-26",
+ "date": "2026-08-27",
  "scope": "KP_SIGNIFICATOR_V1: a single narrow judgment - does the 7th house cusp's KP cuspal sub-lord signify the marriage-promise house group (2,7,11) or the marriage-denial group (1,6,10,12) - for a natal chart under the KP_KRISHNAMURTI profile. PRODUCTION implementation: engine.kp.significators, discoverable via engine.kp.significators.judge_marriage(chart).",
  "rule": {
   "kind": "module-level frozen functions (engine.kp.significators)",
@@ -35,7 +35,15 @@
  },
  "oracle": {
   "package": null,
-  "note": "no computational oracle exists for KP significators (DP-028 section D, DP-029 section 4); certification rests on the independent validator and protected holdout alone (ADR-0078 section 10)"
+  "note": "no third-party computational oracle exists for KP significators (DP-028 section D, DP-029 section 4); certification rests on cross-implementation agreement between engine.kp.significators (production) and validate_kp_significator_holdout.py (an independently authored, from-scratch reimplementation) - gate I compares production against STATIC values frozen from the independent reimplementation's own output, and gate C runs that reimplementation's own battery standalone. This is agreement between two independently-written implementations of the same frozen rule, not external oracle validation, and is not evidence that the frozen rule itself matches primary KP doctrine (see docs/decisions/DP-030 section 4 for that separate, still-open question)."
+ },
+ "certification_integrity_repair": {
+  "date": "2026-08-27",
+  "authorization": "CEO DIRECTIVE - KP_SIGNIFICATOR_V1 CERTIFICATION REPAIR",
+  "defect_found": "an external forensic mutation experiment (2026-08-26) proved every gate in the prior version of this file reported PASS while the production module's computed sub-lord was wrong at 3600/3600 sampled longitudes; gate I's own 'independent' reference imported and called engine.kp.significators.signification_set() directly (x == x); the HOLDOUT list carried no expected values of any kind; gates B/E compared kp_chain() against itself and were presented as correctness evidence rather than wiring checks",
+  "reproduced_independently_this_repair": true,
+  "repair_summary": "gate I rewritten to compare production against STATIC expected values frozen from validate_kp_significator_holdout.py's own from-scratch logic; gates B/E honestly reclassified as wiring/coverage checks (see their own 'classification'/'disclosure' fields); scripts/check_mutation_detection.py extended with a hermetic gate that corrupts engine.kp.significators._signifies() directly and requires detection",
+  "record": "docs/decisions/DP-030-kp-significator-v1-remediation-readiness.md; docs/DECISION_LOG.md certification-integrity-correction sub-entry under ADR-0078"
  },
  "gates": {
   "A_table_integrity": {
@@ -80,10 +88,14 @@
   "B_dense_sweep": {
    "points": 12960,
    "mismatches": 0,
-   "scope": "7th cusp longitude sweep, production wiring vs. independent kp_chain() call"
+   "scope": "7th cusp longitude sweep, production wiring vs. a second call to the same kp_chain() function used internally by chart construction",
+   "classification": "wiring_coverage_not_correctness_evidence",
+   "disclosure": "both sides call the identical kp_chain() function; this proves the production module correctly WIRES that function's output into its own chart data structures across a dense sample, not that kp_chain()'s own values are correct (KP_CHAIN_V1 already certifies that separately against PyJHora) or that the significator-derivation logic downstream is correct (see gate I for that evidence). A prior version of this gate was presented as correctness evidence; corrected 2026-08-27 per the certification-integrity repair, see docs/decisions/DP-030."
   },
   "C_independent_validator": {
-   "result": "PASS"
+   "result": "PASS",
+   "classification": "corroborating_correctness_evidence",
+   "note": "separate-process reimplementation; since 2026-08-27 also checked against static expected data (see validate_kp_significator_holdout.py)"
   },
   "D_non_invasiveness": {
    "production_module": "engine.kp.significators",
@@ -98,7 +110,9 @@
   "E_boundary_cases": {
    "cases_checked": 10957,
    "mismatches": 0,
-   "convention": "inherited KP_CHAIN_V1 sub-interval boundary set, tested at the 7th cusp"
+   "convention": "inherited KP_CHAIN_V1 sub-interval boundary set, tested at the 7th cusp",
+   "classification": "wiring_coverage_not_correctness_evidence",
+   "disclosure": "the sub-lord portion of this gate calls the same kp_chain() function on both sides (see gate B's own disclosure); only the sign_of() boundary sweep is a genuine second, differently-implemented computation. A prior version of this gate was presented as correctness evidence; corrected 2026-08-27, see docs/decisions/DP-030."
   },
   "F_retrograde_cases": {
    "cases_checked": 2,
@@ -132,7 +146,9 @@
     "DENIED": 3,
     "PROMISED": 3
    },
-   "methodology": "real ephemeris-driven charts, independent of every deliberately-constructed synthetic case in gates E-H, never used to tune any rule"
+   "methodology": "production output compared against STATIC expected values frozen from validate_kp_significator_holdout.py's own from-scratch reimplementation (never regenerated by production code at certification time); real ephemeris-driven charts, independent of every deliberately-constructed synthetic case in gates E-H, never used to tune any rule",
+   "expected_value_provenance": "validate_kp_significator_holdout.py judge(), frozen 2026-08-27",
+   "classification": "correctness_evidence"
   },
   "J_negative_controls": {
    "controls": [
@@ -163,7 +179,7 @@
   "the aspect/conjunction convention is a disclosed ACE-defined inference from Krishnamurti's own demonstrated usage, not a single verbatim citation",
   "source text is a scanned/OCR'd reprint, single transcription pass, not a publisher-verified critical edition",
   "the children/5th-house parallel is not covered by V1",
-  "no computational oracle corroborates this design - independent derivation and protected holdout are the sole evidentiary basis",
+  "no third-party computational oracle corroborates this design - cross-implementation agreement (production vs. an independently-authored reimplementation) is the sole evidentiary basis, disclosed as such and not overstated as oracle validation",
   "Uranus/Neptune/Pluto and the Ascendant are excluded from the candidate occupant/significator pool - not part of the certified KP_LORDS nine-graha cycle and never treated as significators in the retrieved primary text",
   "no interpretation, convergence, BTR, historical prediction, or other KP variant is implemented - engine.kp.significators exposes exactly this one frozen judgment"
  ],
