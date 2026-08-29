@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.16.0 |
+| Version | 9.17.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-27 (**KP_SIGNIFICATOR_V1 CERTIFICATION REPAIR.** An external forensic mutation experiment (`DP-030`) proved every gate in `scripts/certify_kp_significator.py` reported PASS while every computed sub-lord was wrong; independently reproduced this task, including a further finding that gate I was also blind. Repaired: `gate_i_protected_holdout` now compares production against STATIC values frozen from the independent validator's own logic; gates B/E honestly reclassified as wiring/coverage checks; a new hermetic mutation-detection target corrupts the significator computation directly and is detected; a literal on-disk edit-run-revert of `engine/kp/significators.py`, run as a real subprocess, proved pristine->PASS(0), corrupted->FAIL(3), restored->PASS(0). No separate methodological defect found - production module unchanged. Recorded as `ADR-0079` (`Status: PROPOSED`, awaiting owner ratification). 872/872 tests unchanged, governance clean (79 ADR, 30 DP). Nothing pushed.) |
+| Last updated | 2026-08-28 (**Post-merge state refresh only.** `phase-g-governance` merged to `main` as `68daa9c58ee2a1c0fadedaf5cc9b13cdb9dab32f` (PR #7, verified genuine two-parent merge of `fef1130` + `95d4d74`), main's own post-merge CI (`33061298693`) confirmed green across all four jobs directly from the transcript (KP_SIGNIFICATOR_V1's repaired certification and the full 872-test count both read from the log, not re-run). `ADR-0079` and `ADR-0080` are both `ACCEPTED`; `DP-030` section 5 Option 1 is CLOSED. This entry only refreshes this file and `docs/ACE_EXECUTION_STATE.md` to reflect that verified state - no engine code, certification artifact, or other document touched. No new capability authorized; `DP-027` section K remains the sole open CEO decision.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,50 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-08-28 - Post-merge state refresh: docs/ACE_EXECUTION_STATE.md and this file updated to reflect verified merge/CI/governance reality
+- Branch / commit SHA: `phase-g-governance` (local), this task's own commit on top of
+  `95d4d746d4173bf15d5d2c73e6ba20ca667159f3` (already merged into `main` as `68daa9c`'s second parent).
+  `main` unchanged by this task (it was already at `68daa9c` before this task began, merged outside this
+  session).
+- Task (owner's exact instruction): "Refresh the two post-Phase-G state documents only. Verify Git state
+  and repository evidence first. Record that Phase G is merged at 68daa9c, ADR-0079 is ACCEPTED, ADR-0080
+  is ACCEPTED, and DP-030 §5 Option 1 is CLOSED. Do not implement or authorize any new engine capability.
+  Do not decide DP-027 §K. Make no other file changes. Run relevant governance checks, inspect the diff,
+  commit the documentation-only refresh, but do not push or merge."
+- Relevant ADR/specification: `ADR-0079` (`ACCEPTED`), `ADR-0080` (`ACCEPTED`), `DP-030` v1.2.1 (section 5
+  Option 1 closed) - none edited this task; only referenced.
+- Files changed: `docs/ACE_EXECUTION_STATE.md`, `reports/AI_HANDOFF_CURRENT.md` (this file). Nothing else.
+- Method: found the local checkout on `main` at task start (a change since the immediately prior
+  read-only audit, made outside this session) and verified rather than trusted the owner's own claimed
+  merge SHA before writing anything: `git rev-parse HEAD`/`origin/main` both resolved to
+  `68daa9c58ee2a1c0fadedaf5cc9b13cdb9dab32f`; `git log -1 --format="parents: %P"` on that commit showed
+  two parents, `fef113022d51923b54665c7cf48d88ce3fffc19b` and
+  `95d4d746d4173bf15d5d2c73e6ba20ca667159f3` (the exact `phase-g-governance` tip already CI-confirmed
+  green in the immediately prior audit), and its own message read "Merge pull request #7 from
+  prashantkumar0207/phase-g-governance" - a genuine merge, not a claim taken on faith. Checked `gh run
+  list --branch main` and `gh run view --json headSha,conclusion` for run `33061298693`: `headSha`
+  matched `68daa9c` exactly, `conclusion: success`. Log-inspected (not re-run) that run's own transcript
+  for `KP_SIGNIFICATOR_V1` certification output and the pytest summary line, confirming the repaired
+  certification (`I_protected_holdout` verdict distribution `MIXED:6/DENIED:3/PROMISED:3`, gate C's
+  `corroborating_correctness_evidence` classification) and `872 passed` both genuinely ran in CI for that
+  exact commit. Confirmed `ADR-0079`/`ADR-0080` text present in the merged tree via targeted `grep`.
+  Switched to `phase-g-governance` before editing, per this project's own git-safety rule against
+  committing directly on `main` without explicit per-action authorization - this task's instruction asked
+  for a commit but did not grant that specific authorization, so the commit was made on the working
+  branch instead, matching this session's own established pattern of follow-up work continuing there
+  after a merge.
+- Key findings: the owner's claimed merge SHA, ADR statuses, and DP-030 closure were all independently
+  confirmed accurate against live Git and CI state, not merely restated from memory. No discrepancy found
+  between the claimed state and the verified state.
+- Verification: `scripts/check_adr_numbering.py` PASS (80 ADR entries); `scripts/check_identifier_
+  families.py` PASS (30 registered DP identifiers); `scripts/check_retired_identifiers.py` PASS. No
+  pytest/certification re-run - main's own CI transcript for the exact merged commit already provides
+  stronger, more current evidence than a local re-run would, and no code was touched this task.
+- Next genuine CEO decision point: `DP-027` section K only - whether to authorize drafting a
+  `PARASHARI_YOGA_V1` ADR using the Panch Mahapurusha candidate and scope found in that paper's own
+  section J, direct a different candidate/scope, or defer. Not decided this task, per explicit
+  instruction. Not pushed or merged (no push/merge authorization sought or given this task).
 
 ### 2026-08-27 - KP_SIGNIFICATOR_V1 CERTIFICATION REPAIR: certification-integrity defect independently confirmed and repaired
 - Branch / commit SHA: `phase-g-governance` (local), this task's own commit on top of
