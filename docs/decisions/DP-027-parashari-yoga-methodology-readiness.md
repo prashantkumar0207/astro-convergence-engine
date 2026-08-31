@@ -3,10 +3,10 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | OPEN - decision paper. Presents readiness state and options. DECIDES NOTHING. Requires owner approval. **Section L records a CEO HOLD disposition on a proposed `PARASHARI_YOGA_V1` ADR/certification-design draft - not itself a ratification; no ADR number assigned.** |
-| Version | 1.3.0 |
+| Status | OPEN - decision paper. Presents readiness state and options. DECIDES NOTHING. Requires owner approval. **Section L records a CEO HOLD disposition on a proposed `PARASHARI_YOGA_V1` ADR/certification-design draft - not itself a ratification; no ADR number assigned. Section M records the owner's authorization to draft the ADR only - drafting is not yet performed, and the ADR is not thereby ratified.** |
+| Version | 1.4.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-29 (section L added: CEO disposition - HOLD - of a proposed `PARASHARI_YOGA_V1` ADR/certification-design draft produced and revised in conversation, never before persisted to this repository. Records eleven specific methodology/governance corrections: production `dignity.py` must never serve as the certification oracle; certification-side dignity-table independence is implementation-independence only, not source/edition-independence, until a genuinely different edition is checked; the exhaustive-enumeration space is corrected to 5 grahas x 12 graha signs x 12 ascendant signs = 720 cases, house-derived through real production plumbing; the Mercury-exaltation-only mutation is identified as undetectable (Mercury's exaltation sign already lies in its own own-sign set) and replacement mutations are specified; PyJHora is confirmed optional, non-normative corroboration, limited to the two functions actually verified; the D1 calculation/house entrypoint is confirmed, no longer an open question absent contrary evidence; moolatrikona exclusion is confirmed factually inert for these five yogas, not merely a textual-reading choice; certification-meaning and historical-validation-inapplicability language is specified for the eventual artifact. Authorizes nothing further - no ADR ratification, certification design, certification execution, implementation, or convergence integration.) |
+| Last updated | 2026-08-29 (section M added: the owner's own "proceed" instruction, interpreted narrowly per explicit CEO directive, persisted as authorization to draft the `PARASHARI_YOGA_V1` ADR only - not to ratify it, not to design or execute certification, not to implement, not to integrate with convergence. Binds the future draft to incorporate every applicable section-L correction, named by reference, section L's own text unedited.) |
 | Review cadence | TBD |
 
 # DP-027. Parashari yoga/rule-combination-evaluation methodology-specification decision-readiness
@@ -472,10 +472,68 @@ silently resolve any certification-design mechanic not explicitly addressed abov
 of the certifier/validator table-sharing question raised in the conversational draft's own open items
 remains genuinely open, not decided here).
 
+## M. Authorization to draft the `PARASHARI_YOGA_V1` ADR (2026-08-29)
+
+Per "CEO DIRECTIVE - PERSIST AUTHORIZATION FOR PARASHARI_YOGA_V1 ADR DRAFTING": the owner's own instruction
+was the single word **"proceed,"** given in direct response to a directive that itself instructed it be
+interpreted **narrowly**, as authorization for the next required governance step only. This section
+persists that authorization, and that authorization only. It does not draft the ADR itself.
+
+### M.1 What is authorized
+
+**The owner authorizes drafting the `PARASHARI_YOGA_V1` methodology ADR.** Drafting is the **only** newly
+authorized scope at this step. The future ADR, when drafted, is **not thereby ratified** by this
+authorization - ratification remains a distinct, later, separately-required owner act, exactly as it was
+for every other certified capability in this project (`ADR-0078`'s own drafting and its later, separate
+ratification are the direct precedent).
+
+### M.2 What remains separately unauthorized
+
+Certification design, certification execution, implementation, and convergence integration each remain
+**separately unauthorized** by this section, exactly as `L.12` already stated and as this directive itself
+restates. No ADR number is assigned or reserved by this section - assigning one is a step for the drafting
+task itself, per this project's own `check_adr_numbering.py`-mediated "get the next free number at drafting
+time" convention, not something to pre-allocate here. No `mahapurusha_yoga.py` or any other `engine/` file
+is created or modified by this section, and none is authorized by it.
+
+### M.3 Binding constraint: the future ADR must incorporate every applicable §L correction
+
+This authorization is conditioned on the future ADR draft incorporating **all** applicable corrections
+already recorded in section L, restated here by name only, not re-derived or altered - section L's own
+text (`L.3`-`L.11`) remains the authoritative detail, unedited:
+
+- BPHS as the sole normative methodology (`L.7`).
+- The five Panch Mahapurusha yogas only, base formation rule only - no broader catalog.
+- No bhanga/cancellation logic; no combustion gating; retrograde as a disclosed qualifier only, never a
+  gate (`L.1`, section J.8, carried forward unedited).
+- No predictive or interpretive efficacy claim (`L.10`).
+- Production `engine/astrology/dignity.py` must never serve as the certification oracle (`L.3`).
+- Certification-side dignity data must be implementation-independent, with its own source/edition
+  provenance honestly disclosed - and not described as source/edition-independent merely for being
+  separately transcribed (`L.4`).
+- If certification is later authorized, exhaustive enumeration is the real 5 x 12 x 12 = 720-case
+  longitude/sign/house plumbing space, house-derived through actual production plumbing, never an
+  asserted flag (`L.5`).
+- The Mercury-exaltation-only mutation is invalid as a negative control; a detectable replacement is
+  required (`L.6`).
+- PyJHora remains optional corroboration only, never the normative oracle; only the functions actually
+  verified (`ruchaka_yoga`, `bhadra_yoga`) may be claimed (`L.7`).
+- The D1 calculation/house entrypoint (`PARASHARI_LAHIRI`, `zodiac_sign`, `whole_sign_house`) and its
+  1-based convention must be stated explicitly (`L.8`).
+- Protected historical validation remains inapplicable to this deterministic formation-condition
+  certification (`L.11`).
+
+### M.4 Not decided by this section
+
+This section does not choose the future ADR's own exact wording, does not resolve the certifier/validator
+table-sharing question `L.12` already left open, and does not decide when drafting will actually occur -
+it records only that the owner has authorized it to occur, on the terms above.
+
 ## Change history
 
 | Version | Date | Change |
 |---|---|---|
+| 1.4.0 | 2026-08-29 | Section M added, per "CEO DIRECTIVE - PERSIST AUTHORIZATION FOR PARASHARI_YOGA_V1 ADR DRAFTING": persists the owner's own "proceed" instruction, interpreted narrowly as authorization to draft the `PARASHARI_YOGA_V1` ADR only. Not a ratification; no ADR number assigned or reserved. Certification design, certification execution, implementation, and convergence integration all remain separately unauthorized. Binds any future draft to incorporate every applicable section-L correction by name; section L's own text unedited. No `engine/` file created or modified; none authorized by this section. |
 | 1.3.0 | 2026-08-29 | Section L added: CEO disposition (HOLD) of a proposed `PARASHARI_YOGA_V1` ADR/certification-design draft produced and revised in conversation, never before persisted to this repository - no ADR number assigned, no ratification. Eleven specific corrections recorded verbatim in substance: production `dignity.py` barred from serving as its own certification oracle; certification-side dignity-table independence clarified as implementation-independence only, not source/edition-independence; exhaustive enumeration corrected to the real 720-case longitude/sign/house plumbing space; the Mercury-exaltation-only mutation identified as undetectable and replacement mutations specified; PyJHora confirmed optional/non-normative, limited to the two functions actually verified; the D1 calculation/house entrypoint confirmed; moolatrikona exclusion confirmed factually inert for these five yogas; certification-meaning and historical-validation-inapplicability language specified for the eventual artifact. Authorizes nothing further. |
 | 1.2.0 | 2026-08-26 | Section J added: candidate-yoga decision-readiness research per explicit "CEO AUTHORIZATION - BEGIN PARASHARI YOGA V1 DECISION-READINESS" instruction (research only). Identifies Panch Mahapurusha Yoga (Ruchaka/Bhadra/Hamsa/Malavya/Sasa) as the strongest single candidate: a direct, unanimous BPHS verse for the base formation rule, computable entirely from two already-existing, already-tested primitives (`engine.astrology.dignity`, `engine.astrology.house.whole_sign_house`) with zero new astronomical or aspect calculation - architecturally simpler than KP_SIGNIFICATOR_V1. Confirms bhanga/cancellation and retrograde treatment are the genuinely contested elements (mirroring `ADR-0078`'s own already-resolved retrograde-as-disclosure pattern) and scopes them out of V1 accordingly. Confirms no direct dependency on `DP-024`/`DP-025`; neither reopened. Section K restates the exact CEO decision required for this specific candidate, without editing section I. Answers all nine of the owner's numbered decision-readiness questions. Does not draft a specification; does not authorize implementation. | 
 | 1.1.0 | 2026-08-25 | Section H added: oracle-availability decision-readiness research, per explicit CEO instruction (research only). Found PyJHora already carries a dedicated 233-function yoga-detection module (`jhora/horoscope/chart/yoga.py`), each function citing a consistent, named, numbered source ("BVR-N" = B.V. Raman) - confirmed directly by inspecting the same local oracle installation already used for this project's other certifications. Materially lowers `DP-023`'s own "oracle unconfirmed" certification-difficulty assessment. Explicitly does not claim PyJHora/B.V. Raman as the normative methodology this project must adopt - independent corroboration only, per the owner's own explicit caution. Raises confidence on the revised recommendation to medium-high. Does not draft a specification; does not authorize implementation. |
