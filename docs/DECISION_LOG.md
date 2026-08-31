@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | ACTIVE REGISTER. **ACCEPTED (47): ADR-0001, ADR-0002, ADR-0005 through ADR-0012, ADR-0015, ADR-0016, ADR-0017, ADR-0033 through ADR-0037, ADR-0039 through ADR-0042, ADR-0044, ADR-0045, ADR-0046, ADR-0048 through ADR-0069**, owner-ratified across 2026-08-13, 2026-08-14, 2026-08-17, 2026-08-18, 2026-08-19, 2026-08-20, 2026-08-21 and 2026-08-22. **`ADR-0069` ratifies `DP-016` Option 1: H-05 closed via a new hermetic-tier test file (`engine/tests/test_vimshottari_hermetic_baseline.py`) freezing the already-oracle-validated Vimshottari anchor construction for five seed cases, plus a genuine negative control independently verified by actually mutating and reverting the production line in-session. No certified value changes; `certify_vimshottari.py`/`VIMSHOTTARI_V1_certification.json` untouched; M-03 scan surface confirmed unaffected. H-06/H-08/M-02/dasha boundary-proximity indicator not touched.** **`ADR-0068` records the owner's ratification of the FOUNDATION-exit readiness audit: "CEO RATIFICATION — FOUNDATION EXIT. I ratify ADR-0068 and declare FOUNDATION EXITED." All six `Q8_CLOSURE_MATRIX.md` s4 implementation-scope items have a settled, ratified disposition (rise/set, panchanga, `TRIKALAM_V1` certified and checkpointed; H-01/H-02 resolved; boundary-proximity indicators and civil-date rendering explicitly decoupled from the checkpoint by their own ratified decisions, `ADR-0067` and the `ADR-0063` addendum). **FOUNDATION IS FORMALLY EXITED AS OF 2026-08-22.** This does NOT authorize JATAKA - `Q8_CLOSURE_MATRIX.md` s5's own entry criteria (the Dasha roadmap's six steps, `docs/DASHA_CERTIFICATION_ROADMAP.md`, `Status: PROPOSED`) remain separately unmet. No certified calculation changed; no FOUNDATION item reopened; `phase-g-governance` not merged to `main`.** **`ADR-0067` ratifies `DP-015`: H-01/`ADR-0066`'s Q8 carve-out reading confirmed textually valid but novel, no precedent claimed; the carve-out's general reach beyond H-01/H-02 confirmed genuinely ambiguous, not silently generalized to any other FOUNDATION item; boundary-proximity indicators decoupled from the current FOUNDATION-exit checkpoint via `DP-015` §F "Option 3 (AMENDED)", ratified exactly as written - explicitly tracked as future work, not certified, does not gate exit, no future consumer may treat it as certified, any future consumer must certify first or explicitly refuse/gate, no certified values changed, no methodology specified here, a future decision paper determines it.** **`ADR-0066` ratifies `DP-014` Option 2: `find_crossings()` now raises `UnsupportedNodePolicyError` for Rahu/Ketu under any `node_policy` other than the certified mean node, converting H-01's silent transit-event incompleteness into an explicit refusal. No certified `TRANSIT_V1` value changes (confirmed by isolated-venv regeneration - only the already-understood ULP noise and volatile fields differed, and that regenerated artifact was discarded, not committed); Options 1/3 not chosen; Tier-0's Locked scope not touched.** **`ADR-0065` ratifies `DP-013`'s H-02 fix Option 1: `TransitEvent.declared_division`, an additive field classified from the exact `target_longitude`, with a new Gate E (genuine negative control) in `certify_transits.py`. No certified `TRANSIT_V1` value changes; Options 2/3 not chosen; Tier-0's Locked scope not touched.** **`ADR-0063` ratifies `DP-012` Option C: civil-date rendering for dasha boundaries is explicitly deferred, not authorized for implementation - `DP-012` itself unedited, per the established "paper is not the decision" discipline. A 2026-08-22 addendum to `ADR-0063` (**ratified**, `Status: ACCEPTED`, per the owner's "CEO RATIFICATION — ADR-0063 ADDENDUM" instruction) records a narrow qualification - `ADR-0063`'s original claim of independently satisfying `Q8_CLOSURE_MATRIX.md` s4 must not be relied upon without it, following `DP-015`'s finding that the carve-out's general reach is genuinely ambiguous - and explicitly decouples civil-date rendering from the current FOUNDATION-exit checkpoint, matching `ADR-0067`'s equivalent treatment of boundary-proximity indicators.** `ADR-0064` ratifies `DP-013` Option C (independent reference + PyJHora) and records the executed reproduction: H-02 independently confirmed for the Sun (2 of 12 sankranti, exact match to the original audit), PyJHora recorded as an evidenced limitation (cannot resolve the defect's own precision scale, by either method tested) rather than manufactured agreement. `TRANSIT_V1` unmodified by the reproduction itself; **pushed and CI-confirmed green** (run `32375941348`, all four jobs, both new steps genuinely executed under the hash-pinned oracle environment). A fix option was chosen 2026-08-21 - see `ADR-0065`.** **`ADR-0062` adds the permanent ACE execution-state mechanism (`docs/ACE_EXECUTION_STATE.md`) plus an explicit prohibition on the user relaying reports between Claude and ChatGPT - operationalizes `ADR-0056`'s already-ratified s11 point 3, does not reopen it.** **`ADR-0060` ratifies `DP-011` Option C seeded by Option B: Rahu Kalam/Yamaganda/Gulika become named, profile-selectable variants; the PyJHora 4.8.7 `trikalam()` convention is independently inspected, transcribed and frozen as the seed variant `PYJHORA_TRIKALAM_V1`. Authorizes only that one variant's implementation/certification work - does not itself certify it, does not authorize a second variant, and does not authorize Muhurta-specific consumption. `ADR-0061` records that implementation as built, locally verified, then **pushed and CI-confirmed green** (run `32358109807`, all four jobs, oracle job genuinely executing `TRIKALAM_V1`'s Gate F) - a 2026-08-20 evidence addendum records the CI confirmation and a recovered, expected M-03 drift finding (177->180, same class as `ADR-0053`/`ADR-0054`); a second 2026-08-20 addendum records a genuine ULP battery added to Gate C (exact sunrise weekday-rollover instant, with negative control), remediating a CEO-audit finding that the prior Gate C was a pinning/tolerance check, not a true ULP battery - **pushed and CI-confirmed green** (run `32361308330`, all four jobs, oracle-job log directly confirming `ulp_boundary_checked: True, ulp_negative_control_verified: True`). A third 2026-08-20 addendum records the **owner's acceptance of `TRIKALAM_V1`'s FOUNDATION per-capability checkpoint** - `TRIKALAM_V1` is now FOUNDATION checkpoint-accepted / production-certified. FOUNDATION's own phase-exit criteria remain open: civil-date rendering is now explicitly deferred by decision (`ADR-0063`, `DP-012` Option C), not implemented; H-01 and H-02 still lack any ratified decision paper.** **`ADR-0056` formalizes the four-role AI collaboration model (USER/CLAUDE/CHATGPT/CODEX); Codex is explicitly excluded from the ACE workflow. `ADR-0057` (CEO-audit HOLD remediation) adds ACE interaction mode and mandatory session-start audit to `specs/CLAUDE_WORKFLOW.md`. `ADR-0058` adds an execution-continuity rule (do not stop prematurely; five terminal stop conditions) to the same document; its `specs/CLAUDE_WORKFLOW.md` edit is committed (`20a9589e3d567bbf86e36b13bf2d61ca734e728e`). `ADR-0059` records the CEO-approved `PANCHANGA_V1` Gate F (genuine PyJHora external-oracle comparison for tithi/yoga/karana, nakshatra explicitly excluded): implemented, committed (`4177d6108236e64d07f6b23499307001f0d7c421`), pushed, and **CI-confirmed green** (run `32242462766`, all four jobs, oracle job genuinely executing Gate F: 66 comparisons, 0 mismatches, negative control verified) under the hash-pinned oracle environment. A 2026-08-19 evidence addendum to `ADR-0059` records the owner's acceptance of Panchanga's FOUNDATION per-capability checkpoint (`Q8_CLOSURE_MATRIX.md` s4); this does not close FOUNDATION's own phase-exit criteria, which still require Rahu Kalam/Yamaganda/Gulika, H-01, and H-02.** Tier-0 is **FORMALLY LOCKED** (ADR-0034), the only s12 Locked artifact. The registry vargas and the sign conventions are **owner-ratified but NOT s12 Locked** (ADR-0035 D3, ADR-0036 D3). **Q8 is now CLOSED** (ADR-0048); **Phase G exited and FOUNDATION entry criteria were independently confirmed satisfied** (this session's evidence reports). **FOUNDATION's first work package, rise/set, is CERTIFIED (`ADR-0054`, `RISE_SET_V1`)**: five owner-ratified conventions (upper-limb disc, standard -50' refraction, elevation accounted for, structured NO_RISE/NO_SET, conventions in `CalculationProfile`/`BirthData`), zero calculation impact on any existing certified capability, two genuine defects found and fixed during its own construction (recorded in the entry). **Panchanga classification-only work (tithi/vara/nakshatra/yoga/karana at a given instant) is now authorised (`ADR-0055`)**: engine-wide 1e-10 promote-up boundary convention, vara consumes the certified rise/set layer, element transition-timing deferred. **Rahu Kalam/Yamaganda/Gulika: `DP-011` (`ADR-0055` item 2's authorized paper) is now ratified (`ADR-0060`, Option C seeded by Option B) and its seed variant `PYJHORA_TRIKALAM_V1` is implemented and CI-confirmed (`ADR-0061`); a second variant remains explicitly NOT authorised.** No later phase (Muhurta, Varshaphal, Prashna, Mundane, BTR, Interpretation, Convergence, UI, ML) is thereby authorised - `docs/Q8_CLOSURE_MATRIX.md` s4 requires its own per-capability checkpoint for each. **Still PROPOSED: ADR-0003, ADR-0004, ADR-0013, ADR-0014, ADR-0018 through ADR-0032, ADR-0038, and ADR-0047.** **`ADR-0079` (`KP_SIGNIFICATOR_V1` certification-integrity repair) is now `ACCEPTED`, ratified 2026-08-28 per the owner's "CEO AUTHORIZATION — ADR-0079 RATIFICATION" instruction, recorded in the "Ratification of ADR-0079" sub-entry - `DP-030`'s own separate primary-source question remains fully open and unaddressed by this ratification.** `ADR-0047`'s originally-reported G5 sample accounting (22/22 complete, 16 independent, 4 ADB_MATCH, 2 unresolved, 14 events) was briefly, and **erroneously**, corrected to "12/22 attempted" by a 2026-08-18 addendum that has since been found (owner-directed forensic reconciliation) to rest on a conflation of the 22-person sample with an unrelated 5-person bridging pilot; a second, later 2026-08-18 addendum **restores 22/22 as the authoritative state** (16 independent, 4 ADB_MATCH: Fichera/Aimar/Serantoni/Bobet, 2 unresolved: Veen/Perquier, 14 independent events) and marks the "12/22" addendum SUPERSEDED/RETRACTED, preserved unedited. `ADR-0047` remains PROPOSED, not ratified, throughout. Ratification is per-entry; an owner existing is not the register being ratified. Includes the ADR-0018 remote-CI evidence addendum (2026-08-11), the ADR-0047 "12/22" addendum (2026-08-18, now retracted), and the ADR-0047 restoration addendum (2026-08-18). |
-| Version | 4.12.0 |
+| Version | 4.13.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-31 (ADR-0081 ratified, per the owner's own "CEO AUTHORIZATION — RATIFY ADR-0081" instruction, given after an independent CEO audit of commit `824ed17` returned a `PASS` verdict. Recorded via the "Ratification of ADR-0081" sub-entry: `PARASHARI_YOGA_V1`'s methodology and certification design accepted exactly as drafted - five-yoga Panch Mahapurusha scope, BPHS formation rule, moolatrikona-inertness finding, certification-oracle-integrity requirements, corrected 720-case enumeration with separate logical/plumbing gates, detectable-mutation requirements, PyJHora limited to its two verified functions. Ratification does not authorize certification design finalization, certification execution, implementation, or convergence integration - each remains separately unauthorized.) |
+| Last updated | 2026-08-31 (two governance-record sub-entries added under `ADR-0081`, per explicit "CEO-AUTHORIZED REMEDIATION — PR #10 — GOVERNANCE RECORD ONLY" instruction closing a HOLD: the "Certification execution of ADR-0081" sub-entry permanently records the owner's own prior "CEO AUTHORIZATION — PARASHARI_YOGA_V1 CERTIFICATION" instruction and its all-ten-gates-PASS result (commit `35e26a1`); the "Evidence addendum to ADR-0081: CI-sourced recovery" sub-entry permanently records the owner's own prior CI-sourced-overlay recovery authorization and the resulting `modules_scanned` 187->189 recovery of thirteen artifacts via CI run `33383652760` (commit `e6376de`). Neither sub-entry edits `ADR-0081`'s own entry text, its ratification sub-entry, methodology, gates, or any certification artifact - append-only, closing a prior gap where these two authorizations existed only in conversation, not in the repository.) |
 | Review cadence | TBD |
 
 # Decision Log (ADR register)
@@ -5750,6 +5750,111 @@ certification execution, which required its own later, separate "CEO AUTHORIZATI
 **Evidence:** this sub-entry's own text (the sole addition); the unedited ADR-0081 entry immediately above;
 the independent CEO audit report (commit `824ed17` audited, `PASS` verdict, this conversation); `DP-027`
 section M (the authorization to draft, unedited by this ratification).
+
+#### Certification execution of ADR-0081: `PARASHARI_YOGA_V1` CERTIFICATION EXECUTED, ALL TEN GATES PASS (2026-08-31)
+
+- **Status:** ACCEPTED. The owner separately instructed, after `ADR-0081`'s own ratification: "CEO
+  AUTHORIZATION — PARASHARI_YOGA_V1 CERTIFICATION. ... The CEO now explicitly authorizes the NEXT
+  GOVERNANCE PHASE: FINALIZE AND EXECUTE THE ADR-0081 CERTIFICATION PROTOCOL. This authorization is ONLY
+  for certification of the ratified methodology. ... DO NOT: implement PARASHARI_YOGA_V1 as production
+  engine functionality [or] create engine/parashari/mahapurusha_yoga.py ... modify ADR-0081 methodology
+  ... merge to main ... push unless separately authorized ... weaken, remove, bypass, or redefine a
+  certification gate merely to obtain PASS. ... STOP after the certification result and commit. Do not
+  proceed to production implementation even if certification PASSes." Per
+  `docs/PROJECT_CONSTITUTION.md` s11, this instruction is the authorizing act for the execution step
+  `ADR-0081`'s own ratification sub-entry above explicitly reserved as separate; this entry records the
+  results, mirroring the `KP_SIGNIFICATOR_V1` precedent (`ADR-0078`'s own "Certification execution of
+  ADR-0078" sub-entry).
+- **Decision:** Certification-execution work was performed exactly within `ADR-0081`'s own frozen scope,
+  producing genuine, regenerable evidence, not a design re-assertion:
+  1. The frozen five-yoga predicate (Ruchaka, Bhadra, Hamsa, Malavya, Sasa; kendra houses {1,4,7,10} via
+     sign offsets {0,3,6,9}; own-sign or exaltation dignity) was written as a standalone, **unregistered**
+     implementation inside `scripts/certify_parashari_yoga.py`, using an independently-transcribed dignity
+     table - `engine/parashari/mahapurusha_yoga.py` was not created or modified.
+  2. An independent, from-scratch validator (`validate_parashari_yoga_holdout.py`) was built importing
+     none of `engine.astrology.dignity`/`house`/`signs`, re-deriving sign/house arithmetic and a third,
+     differently-structured dignity transcription of its own.
+  3. All ten gates (A-I, including the CEO-required split of logical-methodology correctness Gate B from
+     chart/longitude-plumbing correctness Gate B2) were executed and PASS: A table/rule integrity; B the
+     full 5x12x12=720-case logical enumeration (0 mismatches); B2 1,728 real-longitude plumbing cases; C
+     independent validator; D non-invasiveness; E boundary cases (verified against `zodiac_sign`'s actual,
+     asymmetric promotion behaviour); F retrograde treatment; G multi-yoga real-chart cases; H the
+     static independent-reference regression (renamed from "protected holdout" per explicit CEO
+     instruction to avoid confusion with the unrelated `ADR-0047` dataset-forensics concept); I negative
+     controls, including the CEO-required replacement mutation set for Mercury (whose exaltation sign
+     overlaps its own-sign set, making an exaltation-only mutation undetectable) - a non-overlapping
+     exaltation mutation (Mars), a Mercury own-sign corruption away from the overlap, and an AND->OR
+     predicate corruption, each independently confirmed via a literal on-disk mutation to cause the
+     relevant gate to FAIL, then restored to PASS.
+  4. The machine-readable certification artifact (`certification/PARASHARI_YOGA_V1_certification.json`)
+     and human-readable report/transcript were generated in the same run.
+  5. `scripts/certify_parashari_yoga.py` and `validate_parashari_yoga_holdout.py` were added to
+     `scripts/certification_support.py`'s own `CERTIFIER_SOURCES`/`VALIDATOR_SOURCES` anti-fitting scan
+     scope (18/17, up from 17/16).
+  **Result: PASS on all ten gates (A-I).**
+- **Consequences:** `PARASHARI_YOGA_V1`'s own certification evidence now exists and is real, regenerable,
+  and gate-based - not a design assertion. `engine/parashari/mahapurusha_yoga.py` does not exist; no
+  capability is registered or production-usable. Production implementation remains a separate,
+  not-yet-authorized act, exactly as this instruction's own closing line requires. Registering the two new
+  certifier/validator sources legitimately grew the anti-fitting scan surface (187 -> 189), aging every
+  other already-committed certification artifact's own `modules_scanned` field - the identical, already-
+  understood drift class this repository has resolved before (commit `beb196b`; the `ADR-0061` evidence
+  addendum earlier in this register records the same class for `TRIKALAM_V1`); recovery of the affected
+  artifacts is recorded separately below, not performed by this entry.
+- **Evidence:** the owner's "CEO AUTHORIZATION — PARASHARI_YOGA_V1 CERTIFICATION" instruction, quoted
+  above (full text in this conversation's transcript); commit `35e26a1` ("PARASHARI_YOGA_V1
+  CERTIFICATION EXECUTED: all ten gates (A-I, incl. B2) PASS");
+  `certification/PARASHARI_YOGA_V1_certification.json` (`result: PASS`, all ten gates recorded);
+  `reports/certification/parashari_yoga.report.md` and `.console.txt`.
+
+#### Evidence addendum to ADR-0081: CI-sourced recovery of stale `modules_scanned` certification artifacts (2026-08-31)
+
+- **Status:** ACCEPTED. After the scan-scope growth above was disclosed and partially remediated locally
+  (commit `3ac7dd4`, the three hermetic certifiers this Windows host can regenerate without PyJHora), the
+  owner instructed, once that commit was pushed: "The commit 3ac7dd4 has now been pushed to
+  origin/phase-g-governance by the owner. Proceed ONLY with the established CI-sourced-overlay recovery
+  for the remaining modules_scanned=187 oracle-tier certification artifacts and current_engine identified
+  in your previous report. Do not modify production engine code. Do not modify ADR-0081. Do not modify
+  ratification records. Do not alter any certification methodology or gate. Do not manually manufacture
+  artifact values. Use CI to obtain the genuinely regenerated artifacts, compare them against the
+  committed versions, and apply only the established repository-approved overlay/recovery procedure. Do
+  not merge to main. Do not begin production implementation." A separate, narrower instruction ("CEO
+  AUTHORIZATION — NARROW CI PRECONDITION TEST CORRECTION") additionally authorized updating exactly the
+  two hardcoded source counts in `engine/tests/test_certification_preconditions.py` (17->18, 16->17;
+  commit `25ddb6a`) after CI's own full pytest run - not run locally per this task's own explicit
+  instruction - surfaced that pre-existing governance guard breaking on the same registration.
+- **Decision:** Following the established `beb196b`/`ADR-0061`-evidence-addendum precedent (retain the
+  registration, regenerate the affected artifacts, rather than preserving stale evidence or removing the
+  registration), the thirteen still-stale artifacts (the eleven oracle-tier certifiers the owner
+  enumerated, `current_engine`, and `RISE_SET_V1` - a genuine additional finding beyond the owner's own
+  enumerated list, root-caused to an earlier over-broad "swetest"-keyword classification error and
+  disclosed as such at the time, not silently included or excluded) were recovered by downloading CI run
+  `33383652760`'s own uploaded evidence bundles (`oracle-certification-evidence`,
+  `hermetic-certification-evidence-3.12`) via `gh run download` and adopting those files directly - never
+  hand-edited or manually computed. Before adoption, every file was verified field-by-field (a flattened-
+  JSON diff) against the committed version: in all thirteen files, the **only** differences were
+  `modules_scanned` (187 -> 189) and fields already on `check_artifact_drift.py`'s own `VOLATILE` list
+  (`date`, `run.executed_utc`, `run.source_revision`, `environment.python`, etc.) - zero non-volatile,
+  non-`modules_scanned` differences found anywhere. This recovery does not certify or re-certify any of
+  these thirteen capabilities' own methodology or content; per `.claude/rules/certification.md`, a stored
+  certification artifact is history, not proof of anything current, and recovering these files from CI
+  restores each one to the same evidence class every other certified artifact in this repository already
+  relies on - a regenerated, CI-confirmed record of a specific past run - not an independent proof merely
+  because a file exists on disk. The actual evidence is CI run `33383652760` itself (all four jobs green
+  for commit `25ddb6a`, later reconfirmed for commit `e6376de` by CI run `33388100581`) and the
+  field-by-field verification methodology, not artifact possession.
+- **Consequences:** All previously-stale certification artifacts now carry `modules_scanned: 189`,
+  matching the current scan surface; no substantive certified value, gate, tolerance, or verdict in any of
+  the thirteen files changed. No `engine/`, `scripts/`, or `docs/` production/methodology file was touched
+  by this recovery. `PARASHARI_YOGA_V1`/`KP_CHAIN_V1`/`KP_SIGNIFICATOR_V1`/`SIGN_CONVENTION_V1` (already
+  corrected in the two commits above) were not touched again.
+- **Evidence:** the owner's "Proceed ONLY with the established CI-sourced-overlay recovery..." and "CEO
+  AUTHORIZATION — NARROW CI PRECONDITION TEST CORRECTION" instructions, quoted/described above (full text
+  in this conversation's transcript); commit `25ddb6a` (M-03 count fix, 30 tests passed); commit
+  `e6376dea07e14f458198fa2132ddd813923f42ce` (the recovery itself, 27 files changed: 13 certification
+  JSONs, 13 `.report.md`, 1 `.console.txt`); CI run `33383652760` (source of the recovered evidence) and
+  CI run `33388100581` (all four jobs green for the resulting commit `e6376de`); `scripts/
+  check_retired_identifiers.py` - PASS.
 
 ---
 

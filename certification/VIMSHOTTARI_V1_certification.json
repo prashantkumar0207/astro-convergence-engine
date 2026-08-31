@@ -1,7 +1,7 @@
 {
  "schema": "vimshottari_v1_certification",
  "adr": "ADR-0007",
- "date": "2026-08-26",
+ "date": "2026-08-31",
  "scope": "Vimshottari maha/antar/pratyantar timelines, school-explicit seeding",
  "year_convention": {
   "profile": "vimshottari_mean_sidereal_year",
@@ -346,7 +346,7 @@
    }
   },
   "anti_fitting": {
-   "modules_scanned": 187,
+   "modules_scanned": 189,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."
