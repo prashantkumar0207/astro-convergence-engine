@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | ACTIVE REGISTER. **ACCEPTED (47): ADR-0001, ADR-0002, ADR-0005 through ADR-0012, ADR-0015, ADR-0016, ADR-0017, ADR-0033 through ADR-0037, ADR-0039 through ADR-0042, ADR-0044, ADR-0045, ADR-0046, ADR-0048 through ADR-0069**, owner-ratified across 2026-08-13, 2026-08-14, 2026-08-17, 2026-08-18, 2026-08-19, 2026-08-20, 2026-08-21 and 2026-08-22. **`ADR-0069` ratifies `DP-016` Option 1: H-05 closed via a new hermetic-tier test file (`engine/tests/test_vimshottari_hermetic_baseline.py`) freezing the already-oracle-validated Vimshottari anchor construction for five seed cases, plus a genuine negative control independently verified by actually mutating and reverting the production line in-session. No certified value changes; `certify_vimshottari.py`/`VIMSHOTTARI_V1_certification.json` untouched; M-03 scan surface confirmed unaffected. H-06/H-08/M-02/dasha boundary-proximity indicator not touched.** **`ADR-0068` records the owner's ratification of the FOUNDATION-exit readiness audit: "CEO RATIFICATION — FOUNDATION EXIT. I ratify ADR-0068 and declare FOUNDATION EXITED." All six `Q8_CLOSURE_MATRIX.md` s4 implementation-scope items have a settled, ratified disposition (rise/set, panchanga, `TRIKALAM_V1` certified and checkpointed; H-01/H-02 resolved; boundary-proximity indicators and civil-date rendering explicitly decoupled from the checkpoint by their own ratified decisions, `ADR-0067` and the `ADR-0063` addendum). **FOUNDATION IS FORMALLY EXITED AS OF 2026-08-22.** This does NOT authorize JATAKA - `Q8_CLOSURE_MATRIX.md` s5's own entry criteria (the Dasha roadmap's six steps, `docs/DASHA_CERTIFICATION_ROADMAP.md`, `Status: PROPOSED`) remain separately unmet. No certified calculation changed; no FOUNDATION item reopened; `phase-g-governance` not merged to `main`.** **`ADR-0067` ratifies `DP-015`: H-01/`ADR-0066`'s Q8 carve-out reading confirmed textually valid but novel, no precedent claimed; the carve-out's general reach beyond H-01/H-02 confirmed genuinely ambiguous, not silently generalized to any other FOUNDATION item; boundary-proximity indicators decoupled from the current FOUNDATION-exit checkpoint via `DP-015` §F "Option 3 (AMENDED)", ratified exactly as written - explicitly tracked as future work, not certified, does not gate exit, no future consumer may treat it as certified, any future consumer must certify first or explicitly refuse/gate, no certified values changed, no methodology specified here, a future decision paper determines it.** **`ADR-0066` ratifies `DP-014` Option 2: `find_crossings()` now raises `UnsupportedNodePolicyError` for Rahu/Ketu under any `node_policy` other than the certified mean node, converting H-01's silent transit-event incompleteness into an explicit refusal. No certified `TRANSIT_V1` value changes (confirmed by isolated-venv regeneration - only the already-understood ULP noise and volatile fields differed, and that regenerated artifact was discarded, not committed); Options 1/3 not chosen; Tier-0's Locked scope not touched.** **`ADR-0065` ratifies `DP-013`'s H-02 fix Option 1: `TransitEvent.declared_division`, an additive field classified from the exact `target_longitude`, with a new Gate E (genuine negative control) in `certify_transits.py`. No certified `TRANSIT_V1` value changes; Options 2/3 not chosen; Tier-0's Locked scope not touched.** **`ADR-0063` ratifies `DP-012` Option C: civil-date rendering for dasha boundaries is explicitly deferred, not authorized for implementation - `DP-012` itself unedited, per the established "paper is not the decision" discipline. A 2026-08-22 addendum to `ADR-0063` (**ratified**, `Status: ACCEPTED`, per the owner's "CEO RATIFICATION — ADR-0063 ADDENDUM" instruction) records a narrow qualification - `ADR-0063`'s original claim of independently satisfying `Q8_CLOSURE_MATRIX.md` s4 must not be relied upon without it, following `DP-015`'s finding that the carve-out's general reach is genuinely ambiguous - and explicitly decouples civil-date rendering from the current FOUNDATION-exit checkpoint, matching `ADR-0067`'s equivalent treatment of boundary-proximity indicators.** `ADR-0064` ratifies `DP-013` Option C (independent reference + PyJHora) and records the executed reproduction: H-02 independently confirmed for the Sun (2 of 12 sankranti, exact match to the original audit), PyJHora recorded as an evidenced limitation (cannot resolve the defect's own precision scale, by either method tested) rather than manufactured agreement. `TRANSIT_V1` unmodified by the reproduction itself; **pushed and CI-confirmed green** (run `32375941348`, all four jobs, both new steps genuinely executed under the hash-pinned oracle environment). A fix option was chosen 2026-08-21 - see `ADR-0065`.** **`ADR-0062` adds the permanent ACE execution-state mechanism (`docs/ACE_EXECUTION_STATE.md`) plus an explicit prohibition on the user relaying reports between Claude and ChatGPT - operationalizes `ADR-0056`'s already-ratified s11 point 3, does not reopen it.** **`ADR-0060` ratifies `DP-011` Option C seeded by Option B: Rahu Kalam/Yamaganda/Gulika become named, profile-selectable variants; the PyJHora 4.8.7 `trikalam()` convention is independently inspected, transcribed and frozen as the seed variant `PYJHORA_TRIKALAM_V1`. Authorizes only that one variant's implementation/certification work - does not itself certify it, does not authorize a second variant, and does not authorize Muhurta-specific consumption. `ADR-0061` records that implementation as built, locally verified, then **pushed and CI-confirmed green** (run `32358109807`, all four jobs, oracle job genuinely executing `TRIKALAM_V1`'s Gate F) - a 2026-08-20 evidence addendum records the CI confirmation and a recovered, expected M-03 drift finding (177->180, same class as `ADR-0053`/`ADR-0054`); a second 2026-08-20 addendum records a genuine ULP battery added to Gate C (exact sunrise weekday-rollover instant, with negative control), remediating a CEO-audit finding that the prior Gate C was a pinning/tolerance check, not a true ULP battery - **pushed and CI-confirmed green** (run `32361308330`, all four jobs, oracle-job log directly confirming `ulp_boundary_checked: True, ulp_negative_control_verified: True`). A third 2026-08-20 addendum records the **owner's acceptance of `TRIKALAM_V1`'s FOUNDATION per-capability checkpoint** - `TRIKALAM_V1` is now FOUNDATION checkpoint-accepted / production-certified. FOUNDATION's own phase-exit criteria remain open: civil-date rendering is now explicitly deferred by decision (`ADR-0063`, `DP-012` Option C), not implemented; H-01 and H-02 still lack any ratified decision paper.** **`ADR-0056` formalizes the four-role AI collaboration model (USER/CLAUDE/CHATGPT/CODEX); Codex is explicitly excluded from the ACE workflow. `ADR-0057` (CEO-audit HOLD remediation) adds ACE interaction mode and mandatory session-start audit to `specs/CLAUDE_WORKFLOW.md`. `ADR-0058` adds an execution-continuity rule (do not stop prematurely; five terminal stop conditions) to the same document; its `specs/CLAUDE_WORKFLOW.md` edit is committed (`20a9589e3d567bbf86e36b13bf2d61ca734e728e`). `ADR-0059` records the CEO-approved `PANCHANGA_V1` Gate F (genuine PyJHora external-oracle comparison for tithi/yoga/karana, nakshatra explicitly excluded): implemented, committed (`4177d6108236e64d07f6b23499307001f0d7c421`), pushed, and **CI-confirmed green** (run `32242462766`, all four jobs, oracle job genuinely executing Gate F: 66 comparisons, 0 mismatches, negative control verified) under the hash-pinned oracle environment. A 2026-08-19 evidence addendum to `ADR-0059` records the owner's acceptance of Panchanga's FOUNDATION per-capability checkpoint (`Q8_CLOSURE_MATRIX.md` s4); this does not close FOUNDATION's own phase-exit criteria, which still require Rahu Kalam/Yamaganda/Gulika, H-01, and H-02.** Tier-0 is **FORMALLY LOCKED** (ADR-0034), the only s12 Locked artifact. The registry vargas and the sign conventions are **owner-ratified but NOT s12 Locked** (ADR-0035 D3, ADR-0036 D3). **Q8 is now CLOSED** (ADR-0048); **Phase G exited and FOUNDATION entry criteria were independently confirmed satisfied** (this session's evidence reports). **FOUNDATION's first work package, rise/set, is CERTIFIED (`ADR-0054`, `RISE_SET_V1`)**: five owner-ratified conventions (upper-limb disc, standard -50' refraction, elevation accounted for, structured NO_RISE/NO_SET, conventions in `CalculationProfile`/`BirthData`), zero calculation impact on any existing certified capability, two genuine defects found and fixed during its own construction (recorded in the entry). **Panchanga classification-only work (tithi/vara/nakshatra/yoga/karana at a given instant) is now authorised (`ADR-0055`)**: engine-wide 1e-10 promote-up boundary convention, vara consumes the certified rise/set layer, element transition-timing deferred. **Rahu Kalam/Yamaganda/Gulika: `DP-011` (`ADR-0055` item 2's authorized paper) is now ratified (`ADR-0060`, Option C seeded by Option B) and its seed variant `PYJHORA_TRIKALAM_V1` is implemented and CI-confirmed (`ADR-0061`); a second variant remains explicitly NOT authorised.** No later phase (Muhurta, Varshaphal, Prashna, Mundane, BTR, Interpretation, Convergence, UI, ML) is thereby authorised - `docs/Q8_CLOSURE_MATRIX.md` s4 requires its own per-capability checkpoint for each. **Still PROPOSED: ADR-0003, ADR-0004, ADR-0013, ADR-0014, ADR-0018 through ADR-0032, ADR-0038, and ADR-0047.** **`ADR-0079` (`KP_SIGNIFICATOR_V1` certification-integrity repair) is now `ACCEPTED`, ratified 2026-08-28 per the owner's "CEO AUTHORIZATION — ADR-0079 RATIFICATION" instruction, recorded in the "Ratification of ADR-0079" sub-entry - `DP-030`'s own separate primary-source question remains fully open and unaddressed by this ratification.** `ADR-0047`'s originally-reported G5 sample accounting (22/22 complete, 16 independent, 4 ADB_MATCH, 2 unresolved, 14 events) was briefly, and **erroneously**, corrected to "12/22 attempted" by a 2026-08-18 addendum that has since been found (owner-directed forensic reconciliation) to rest on a conflation of the 22-person sample with an unrelated 5-person bridging pilot; a second, later 2026-08-18 addendum **restores 22/22 as the authoritative state** (16 independent, 4 ADB_MATCH: Fichera/Aimar/Serantoni/Bobet, 2 unresolved: Veen/Perquier, 14 independent events) and marks the "12/22" addendum SUPERSEDED/RETRACTED, preserved unedited. `ADR-0047` remains PROPOSED, not ratified, throughout. Ratification is per-entry; an owner existing is not the register being ratified. Includes the ADR-0018 remote-CI evidence addendum (2026-08-11), the ADR-0047 "12/22" addendum (2026-08-18, now retracted), and the ADR-0047 restoration addendum (2026-08-18). |
-| Version | 4.10.0 |
+| Version | 4.11.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-28 (ADR-0080 added, ACCEPTED: the owner's own "CEO decision: close DP-030 §5 Option 1 as sufficiently resolved for KP_SIGNIFICATOR_V1" - Reader IV independently corroborates the 2/7/11 vs 1/6/10/12 marriage grouping with worked examples, materially resolving the primary-source evidence question for the frozen V1 rule; the natal-application inference/non-claim is explicitly preserved, not resolved. No production code, frozen methodology, or certification artifact changed. DP-030's other three remediation paths and its own p.91 OCR-location detail are not reopened.) |
+| Last updated | 2026-08-31 (ADR-0081 added, PROPOSED, NOT RATIFIED: `PARASHARI_YOGA_V1` methodology and certification design - Panch Mahapurusha Yoga (Ruchaka/Bhadra/Hamsa/Malavya/Sasa), BPHS base formation rule only, drafted per the owner's own "CEO DIRECTIVE - PERSIST AUTHORIZATION FOR PARASHARI_YOGA_V1 ADR DRAFTING" and "CEO DECISION - RESOLVE ADR DRAFTING AMBIGUITY" instructions, incorporating every applicable correction from `DP-027` sections L/M: dignity.py barred from serving as its own certification oracle; the implementation-independence-vs-source/edition-independence distinction; the real 5x12x12=720 enumeration space with logical-enumeration and plumbing-integration kept as separate gates; the invalid Mercury-exaltation-only mutation and its required replacements; PyJHora limited to its two verified functions; moolatrikona exclusion confirmed inert. Methodology approval in principle does not constitute ratification. No certification design finalized, no certification executed, no production code changed.) |
 | Review cadence | TBD |
 
 # Decision Log (ADR register)
@@ -5489,6 +5489,237 @@ ratification).
   `docs/KP_SIGNIFICATOR_SPEC.md` section 19.4's updated caveat (v0.2.1); commit `6db27ce7db527f560313aa98e3bb598990305964`
   (the Reader IV evidence recording, unedited by this entry); `ADR-0078`/`ADR-0079` (the methodology and
   certification this decision leaves unchanged).
+
+---
+
+## ADR-0081 - `PARASHARI_YOGA_V1` methodology and certification design: Panch Mahapurusha Yoga (PROPOSED - NOT RATIFIED, drafting only authorized)
+
+- **Date:** 2026-08-31
+- **Status:** **PROPOSED. NOT RATIFIED.** Drafted per the owner's own "CEO DIRECTIVE - PERSIST
+  AUTHORIZATION FOR PARASHARI_YOGA_V1 ADR DRAFTING" (authorizing drafting only, persisted as
+  `docs/decisions/DP-027-parashari-yoga-methodology-readiness.md` section M) and the subsequent "CEO
+  DECISION - RESOLVE ADR DRAFTING AMBIGUITY" (authorizing this entry's real, repository-evidence-derived
+  number and its placement in this register). **Methodology approval in principle, recorded in `DP-027`
+  section L, does NOT constitute ratification of this entry.** Ratification is a distinct, separate,
+  not-yet-given owner act - the same two-stage pattern already used for `ADR-0077`/`ADR-0078`
+  (drafted `PROPOSED`, ratified later via a separate sub-entry). **This entry does NOT authorize
+  certification design, certification execution, implementation, or convergence integration.** Each
+  remains its own, separate, not-yet-given authorization, exactly as it was for `KP_SIGNIFICATOR_V1`.
+- **Context:** `DP-027` (candidate identification, sections J-K; oracle-availability research, section H),
+  its own CEO-reviewed and revised proposal (section L, HOLD disposition with eleven corrections), and its
+  own authorization-to-draft (section M) together establish everything this entry formalizes. No new
+  research was performed to draft this entry - every substantive claim below traces to `DP-027` section
+  L/M or to direct inspection of the already-certified code it names. `docs/PARASHARI_DRISHTI_SPEC.md`'s
+  own "strengths, yogas, and judgments out of scope" statement is the only prior repository statement on
+  combination yogas; nothing in this entry reopens or narrows the already-certified `PARASHARI_DRISHTI_V1`.
+
+### 1. Frozen scope and source (recap, not re-derivation)
+
+**Exactly five yogas, and only these five:** Ruchaka (Mars), Bhadra (Mercury), Hamsa (Jupiter), Malavya
+(Venus), Sasa (Saturn) - collectively "Panch Mahapurusha Yoga." No other yoga (Raja yoga, Dhana yoga,
+Sunapha/Anapha/Kemadruma/Adhi, or any of PyJHora's remaining ~228 catalogued yogas) is in scope.
+
+**Classical source: Brihat Parashara Hora Shastra (BPHS)**, the same root text already governing every
+certified Parashari-school capability in this project (D2, D3, D7, D9, D10, D12, D30, D45,
+`engine/astrology/dignity.py`). Verse, per the R. Santhanam-lineage translation family
+`engine/knowledge/data/dignities.json` itself already cites, cross-confirmed against an independent
+BPHS translation page (`DP-027` section J.1): *"When Mars, Mercury, Jupiter, Venus and Saturn, being in
+their own, or exaltation Rasi, be in Kendra to Lagna, they give rise to Ruchaka, Bhadra, Hamsa, Malavya
+and Sasa Yogas."* **Explicit non-claim, carried forward from `DP-027`: this is a translated-edition
+citation, not verified against the original Sanskrit or a second, independent published edition.**
+
+### 2. Formal computational rule
+
+For each graha g in {Mars, Mercury, Jupiter, Venus, Saturn}:
+
+```
+yoga_present(g) := house_of(g) in {1, 4, 7, 10}   (whole-sign, from Lagna)
+                   AND (is_own_sign(g, sign_of(g)) OR is_exalted(g, sign_of(g)))
+```
+
+**Deliberate, verse-driven exclusion, stated as a finding, not merely a choice (`DP-027` section L.9):**
+BPHS's own verse names "own, or exaltation Rasi" only - it does not name moolatrikona.
+`engine.astrology.dignity.is_moolatrikona` exists but is deliberately not used. Independently confirmed
+against `engine/knowledge/data/dignities.json`'s own data: for all five grahas relevant to this rule, each
+graha's own moolatrikona sign is already a member of that same graha's own own-sign set (e.g. Mars:
+moolatrikona sign 1/Aries, already in own_signs {1, 8}). **Moolatrikona exclusion is therefore inert for
+this predicate - the computed result is identical whether moolatrikona is separately considered or not**,
+not merely a textual-reading preference.
+
+### 3. Production dependencies (reused, not duplicated)
+
+No new astronomical calculation and no new aspect logic of any kind. This design consumes, read-only:
+
+- The Tier-0-Locked D1 kernel's own sidereal planet longitudes and Lagna longitude, via
+  `engine.calculations.calculations.calculate` under the `PARASHARI_LAHIRI` profile - this project's
+  established Parashari D1 calculation entrypoint.
+- `engine.astrology.signs.zodiac_sign` for 1-based sign assignment (Aries = 1 ... Pisces = 12) - already
+  declared `ONE_BASED` in `engine/astrology/sign_conventions.py`'s own `SIGN_FUNCTION_CONVENTIONS` table.
+- `engine.astrology.house.whole_sign_house` for 1-based whole-sign house assignment from the ascendant -
+  already the documented Parashari D1 convention (that module's own docstring: "The Parashari D1 chart
+  builder uses WHOLE SIGN"). House 1 = the ascendant's own sign; house N = the sign (N-1) positions ahead
+  of the ascendant's sign, mod 12.
+- `engine.astrology.dignity.is_own_sign`/`is_exalted` (`engine/astrology/dignity.py:39,61`) as the
+  **production** dignity source - see section 4 for why this must not double as the certification's own
+  oracle.
+
+A new, separately-identified module (naming below, provisional) consumes these substrates exactly as
+`KP_SIGNIFICATOR_V1` consumed `KP_CHAIN_V1` - never modifying them, never duplicating their logic.
+
+### 4. Certification-oracle integrity (per `DP-027` section L.3-L.4, non-negotiable)
+
+**`engine/astrology/dignity.py`/`dignities.json` may remain the production dependency (section 3) but MUST
+NOT serve as the certification's own oracle / expected-answer source.** A module that both computes the
+answer and supplies its own certification's "expected" answer is exactly the structural defect the
+`KP_SIGNIFICATOR_V1` certification-integrity repair (`ADR-0079`) found and corrected; this design commits,
+in advance, not to repeat it.
+
+Certification design, when separately authorized, must instead carry its own, separately hand-transcribed
+dignity table. **Two distinct independence claims must never be conflated, per `DP-027` section L.4's own
+precise distinction, restated here as binding:**
+
+- **Implementation independence** - a second, separately-authored piece of code that does not import or
+  call the production module. A fresh transcription of the *same* cited BPHS edition satisfies this.
+- **Source/edition independence** - verification against a genuinely *different* classical source, edition,
+  translator, or page. A fresh transcription of the identical cited edition does **NOT** satisfy this, and
+  must never be described as if it did.
+
+Edition, translator, and page provenance for both the production citation and any certification-side
+transcription must be recorded explicitly when certification design is separately authorized. Source-level
+correctness of the cited edition itself, beyond that one edition, remains an explicit non-claim unless
+separately established.
+
+### 5. Boundary and exceptional cases
+
+Sign-membership boundaries (a graha at 0deg/29.999...deg of an own-sign or exaltation sign) and kendra/
+non-kendra house boundaries are both inherited directly from `zodiac_sign()`/`whole_sign_house()`'s own
+already-tested boundary behaviour - no new tolerance or boundary mathematics is introduced by this design.
+Ascendant-sign boundaries (the ascendant itself at a sign edge) are likewise resolved entirely through
+`zodiac_sign()`, not by any new logic this design adds. The polar-latitude band remains unverified
+project-wide (`DP-025`, still deferred, not reopened here); this design inherits that same disclosed
+non-claim, not a new one. A chart may show zero, one, or more than one yoga simultaneously - independent
+per-graha predicates, not mutually exclusive, and this must be exercised directly in any future test corpus
+(zero-yoga, exactly-one, and multiple-simultaneous cases).
+
+### 6. Variant handling - retrograde, bhanga, combustion
+
+**Retrograde is a disclosed, per-graha qualifier only - never a pass/fail gate.** Each of the five grahas
+carries its own independent `retrograde_qualifier: bool`, populated whenever that graha's own yoga
+condition is evaluated. A single global qualifier is deliberately rejected: the five yogas are independent
+per-graha predicates (section 5), so one chart can show, for example, a retrograde Mars in yoga
+simultaneously with a direct Jupiter in yoga - a single field would conflate two different motion states.
+
+**Bhanga (cancellation) is excluded from V1 entirely - not a qualifier, an exclusion.** `DP-027` section
+J.3 found cancellation conditions multi-sourced and contested (one source's own chain independently
+described elsewhere as "an untested concept"). This design reports raw formation-condition presence only.
+
+**Combustion is excluded from V1 entirely, with no qualifier field at all** - every source `DP-027`
+checked treats combustion as a modern addition, not a BPHS-verse condition, a stronger exclusion than
+retrograde's own (which at least appears in secondary discussion).
+
+### 7. Certification battery - gate design (design only, not executed)
+
+No third-party computational oracle carries normative weight for this rule (section 9). The battery below
+is built with the `KP_SIGNIFICATOR_V1` certification-integrity repair's own lessons already incorporated,
+not retrofitted later, per `DP-027` section L.5-L.6:
+
+- **Gate A - table/constant integrity:** the certification's own independently-transcribed dignity table
+  (section 4), content-hash pinned - never `dignities.json`'s own values. A separate, explicit sub-check
+  confirms production `dignity.py` agrees with this table on the five relevant grahas, as evidence, not
+  assumption.
+- **Gate B - logical-enumeration correctness:** exhaustive enumeration over the derived state space - for
+  each of the 5 grahas, every combination of graha sign (12) and ascendant sign (12), i.e. **5 x 12 x 12 =
+  720 cases** - verifying `yoga_present`'s own boolean logic in isolation, with sign/house membership
+  supplied as already-known values (no real longitude involved). This is a genuinely different concern
+  from Gate B2 and must never be merged into one reported number with it, per the repaired
+  `KP_SIGNIFICATOR_V1` certifier's own corrected discipline.
+- **Gate B2 - longitude/ascendant plumbing integration:** real sidereal longitudes and ascendant values run
+  through the actual production wiring (`zodiac_sign`, `whole_sign_house`) to prove a real longitude
+  correctly resolves to the sign and house membership Gate B's own logic layer assumes.
+- **Gate C - independent validator:** a from-scratch, production-code-free reimplementation, run as a
+  separate process, importing nothing from the production module - genuine independence demonstrated by
+  its own distinct code structure, not merely asserted by label (per `DP-027` section L, item 21 of the
+  authorizing directive).
+- **Gate D - non-invasiveness:** confirms the module imports nothing beyond `dignity`/`house`/the Tier-0
+  kernel; confirms no Parashari drishti, KP, or future Jaimini/Nadi/BNN/Tajik module is touched.
+- **Gate E - boundary cases:** sign-membership, kendra-house, and ascendant-sign edges (section 5).
+- **Gate F - multi-yoga real-chart cases:** zero/one/multiple-yoga charts (section 5).
+- **Gate G - retrograde-qualifier disclosure:** per-graha qualifier populated correctly, confirmed never
+  gating the verdict (section 6).
+- **Gate H - static independent-reference regression:** production output on real charts compared against
+  STATIC values pre-frozen from the independent validator's own output (Gate C) - named specifically, per
+  `DP-027`'s own prior correction, to avoid confusion with this project's separate "protected historical
+  validation" (`ADR-0047`-style dataset-forensics) concept, which does not apply here (section 10). This
+  comparison must not be circular: the static values must originate from Gate C's own independent
+  implementation, never regenerated by the production module at certification time.
+- **Gate I - negative controls:** planted mutations, each required to change the certification's own frozen
+  content hash and be independently caught. **The Mercury-exaltation-only mutation is explicitly invalid
+  and must not be used**: Mercury's exaltation sign (Virgo) is already a member of Mercury's own own-sign
+  set (Gemini, Virgo), so the rule's own `OR` can mask a corrupted exaltation value for Mercury specifically
+  - the own-sign branch alone still yields the correct answer for Virgo. Required controls instead: a
+  **non-overlapping exaltation mutation** for Mars, Jupiter, Venus, or Saturn (grahas whose exaltation sign
+  is not already one of their own signs); a **Mercury mutation that corrupts its own-sign data** (since
+  exaltation-only corruption is insufficient for this specific graha); and an AND-to-OR corruption of the
+  rule's own combining logic (section 2) - the single most realistic wrong-implementation mistake for this
+  rule's shape. Every mutation gate must demonstrate the relevant certification evidence actually FAILS
+  under the mutation, run and observed - not merely execute without error.
+
+### 8. What this entry does not do
+
+**Does not create `engine/parashari/mahapurusha_yoga.py`** (naming provisional, per `DP-027` section L -
+not confirmed final, not ratified as an implementation decision by naming it here) **or any other
+`engine/` file.** Does not modify `dignity.py`, `house.py`, the Tier-0 kernel, `PARASHARI_DRISHTI_V1`, or
+any other certified capability. Does not generate `certification/PARASHARI_YOGA_V1_certification.json` -
+no certifier has been run, because no production module exists yet. Does not execute any gate described in
+section 7. **Ratifying this entry would authorize certification-design finalization and certification
+execution as a separate, subsequent act - not performed by this entry itself, and not authorized merely by
+this entry's own existence as a `PROPOSED` draft.**
+
+### 9. Oracle/reference strategy
+
+**PyJHora is optional corroboration only and is never the normative oracle - BPHS remains the sole
+normative methodology.** Only the two functions actually verified to exist in PyJHora's own `yoga.py` -
+`ruchaka_yoga` and `bhadra_yoga` - may be claimed as corroborating evidence. **Hamsa, Malavya, and Sasa's
+own PyJHora function names were never verified and no coverage of them is claimed.** If PyJHora is used at
+a future certification-execution stage and its own computed result disagrees with BPHS's own stated rule,
+that disagreement must be explicitly classified (e.g. a PyJHora implementation variant, a translation
+difference, or a genuine open question) and must never silently change this entry's own frozen,
+BPHS-sourced methodology.
+
+### 10. Certification meaning and non-claims
+
+**Certification PASS, if this design is later executed, means ONLY: computational correctness of the
+implementation of BPHS's own stated Ruchaka/Bhadra/Hamsa/Malavya/Sasa formation condition, verified
+against independently-sourced expected data (section 4's own independence distinction).** It does **NOT**
+mean, and must never be represented as meaning, astrological efficacy, predictive validity, real-world
+outcome validity, or any proven effect of a yoga on a person's life. This distinction must appear in the
+certification artifact's own `result`/`scope` fields directly, not only in this governance record, per
+`DP-027` section L.10.
+
+**Protected historical validation (this project's `ADR-0047`-style dataset-forensics discipline) is not
+applicable to this design.** V1 makes no predictive or interpretive claim - there is nothing for a
+historical-outcome dataset to validate against. A future version making a predictive/interpretive claim
+would require its own separate authorization and this project's own protected-validation framework; neither
+is implied or pre-authorized here.
+
+Further non-claims, all carried forward from `DP-027` unedited in substance: no bhanga/cancellation logic
+of any kind (section 6); no combustion gating (section 6); no strength or graded-presence output - present-
+or-absent only; no other yoga (section 1); no varga (D9/D10/other divisional chart) participation - D1 only,
+per the BPHS verse's own scope; no Shadbala/`planet_strength.py` dependency of any kind.
+
+- **Consequences, if ratified:** this entry would freeze `PARASHARI_YOGA_V1`'s own complete methodology and
+  certification architecture, authorizing certification-design finalization and execution as the next,
+  separately-tracked act - mirroring exactly the `ADR-0078` -> certification-execution -> production
+  precedent already completed for `KP_SIGNIFICATOR_V1`. No certified calculation, certification artifact, or
+  production code is touched by this entry itself.
+- **Evidence:** `docs/decisions/DP-027-parashari-yoga-methodology-readiness.md` v1.4.0, sections H, J, K, L,
+  M (candidate identification, oracle-availability research, CEO HOLD disposition and its eleven
+  corrections, authorization to draft); `engine/astrology/dignity.py`/`engine/knowledge/data/dignities.json`
+  (production dignity source, independently re-verified against `engine/tests/test_dignity.py`'s own
+  hand-entered table); `engine/astrology/house.py` (whole-sign Parashari D1 convention);
+  `engine/astrology/sign_conventions.py` (1-based sign-function convention); `ADR-0078`/`ADR-0079` (the
+  direct KP_SIGNIFICATOR_V1 certification-design and certification-integrity-repair precedents this design
+  mirrors and, in section 4/7, explicitly avoids repeating).
 
 ---
 
