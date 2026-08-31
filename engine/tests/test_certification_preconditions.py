@@ -55,8 +55,8 @@ def test_anti_fitting_scan_is_clean():
 def test_anti_fitting_scan_covers_every_declared_certification_source():
     """M-03: additions or removals from the certification surface are explicit."""
 
-    assert len(support.CERTIFIER_SOURCES) == 17
-    assert len(support.VALIDATOR_SOURCES) == 16
+    assert len(support.CERTIFIER_SOURCES) == 18
+    assert len(support.VALIDATOR_SOURCES) == 17
     assert support.FIXTURE_SOURCES == ("brihat_fixtures.py",)
     discovered_certifiers = {
         str(path.relative_to(ROOT)).replace("\\", "/")
