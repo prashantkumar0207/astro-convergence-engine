@@ -2,7 +2,7 @@
  "schema": "varga_d30_v1_certification",
  "adr": "ADR-0011",
  "supersedes_provisional_id": "ADR-VARGA-D30-001",
- "date": "2026-08-26",
+ "date": "2026-08-31",
  "scope": "D30 Trimsamsa (Parashara variant): unequal tara-graha segments",
  "rule": {
   "kind": "SegmentVargaRule",
@@ -85,7 +85,7 @@
    }
   },
   "anti_fitting": {
-   "modules_scanned": 187,
+   "modules_scanned": 189,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."
