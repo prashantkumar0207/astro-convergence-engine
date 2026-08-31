@@ -58,6 +58,7 @@ CERTIFIER_SOURCES = (
     "scripts/certify_d45.py", "scripts/certify_d7.py", "scripts/certify_kp_chain.py",
     "scripts/certify_kp_significator.py",
     "scripts/certify_panchanga.py", "scripts/certify_parashari_drishti.py",
+    "scripts/certify_parashari_yoga.py",
     "scripts/certify_rise_set.py", "scripts/certify_sign_convention.py",
     "scripts/certify_tier0.py", "scripts/certify_transits.py",
     "scripts/certify_trikalam.py", "scripts/certify_vimshottari.py",
@@ -69,6 +70,7 @@ VALIDATOR_SOURCES = (
     "validate_d9_holdout.py", "validate_kp_holdout.py",
     "validate_kp_significator_holdout.py",
     "validate_panchanga_holdout.py", "validate_parashari_drishti_holdout.py",
+    "validate_parashari_yoga_holdout.py",
     "validate_rise_set_holdout.py", "validate_transits_holdout.py",
     "validate_trikalam_holdout.py", "validate_vimshottari_holdout.py",
 )

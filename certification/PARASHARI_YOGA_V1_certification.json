@@ -1,0 +1,223 @@
+{
+ "schema": "parashari_yoga_v1_certification",
+ "adr": "ADR-0081",
+ "date": "2026-08-31",
+ "scope": "PARASHARI_YOGA_V1: the five Panch Mahapurusha yogas (Ruchaka/Bhadra/Hamsa/Malavya/Sasa) - BPHS base formation rule only (own-sign-or-exaltation-sign AND kendra-to-Lagna, whole-sign) for a natal D1 chart under the PARASHARI_LAHIRI profile. Rule under certification is a STANDALONE implementation embedded in this certifier - not engine/parashari/mahapurusha_yoga.py, no production module is authorized or created this execution.",
+ "rule": {
+  "kind": "standalone module-level functions embedded in this certifier (scripts/certify_parashari_yoga.py) - not a registered production module",
+  "yoga_grahas": [
+   "Mars",
+   "Mercury",
+   "Jupiter",
+   "Venus",
+   "Saturn"
+  ],
+  "yoga_names": {
+   "Mars": "Ruchaka",
+   "Mercury": "Bhadra",
+   "Jupiter": "Hamsa",
+   "Venus": "Malavya",
+   "Saturn": "Sasa"
+  },
+  "kendra_houses": [
+   1,
+   4,
+   7,
+   10
+  ],
+  "kendra_offsets": [
+   0,
+   3,
+   6,
+   9
+  ],
+  "predicate": "kendra_house(g) AND (own_sign(g) OR exalted(g)) - moolatrikona deliberately excluded, confirmed inert for these five grahas (ADR-0081 section 2)",
+  "content_sha256": "93fb4daa21b567aa90486d3e88c05fda9732527a9982bef2d69ed7f11bd3ad13"
+ },
+ "oracle": {
+  "package": null,
+  "note": "no third-party computational oracle used this execution; PyJHora not invoked (local environment previously found degraded; only ruchaka_yoga/bhadra_yoga were ever confirmed to exist as named functions, per DP-027 H.1/J.4, not re-verified here). Certification rests on cross-implementation agreement between the embedded rule (production dignity.py/house.py) and validate_parashari_yoga_holdout.py (an independently authored, from-scratch reimplementation) - gate H compares the embedded rule against STATIC values frozen from that independent reimplementation's own output."
+ },
+ "gates": {
+  "A_table_integrity": {
+   "yoga_grahas": [
+    "Mars",
+    "Mercury",
+    "Jupiter",
+    "Venus",
+    "Saturn"
+   ],
+   "kendra_houses": [
+    1,
+    4,
+    7,
+    10
+   ],
+   "kendra_offsets": [
+    0,
+    3,
+    6,
+    9
+   ],
+   "dignity_table": {
+    "Mars": {
+     "own_signs": [
+      1,
+      8
+     ],
+     "exaltation_sign": 10
+    },
+    "Mercury": {
+     "own_signs": [
+      3,
+      6
+     ],
+     "exaltation_sign": 6
+    },
+    "Jupiter": {
+     "own_signs": [
+      9,
+      12
+     ],
+     "exaltation_sign": 4
+    },
+    "Venus": {
+     "own_signs": [
+      2,
+      7
+     ],
+     "exaltation_sign": 12
+    },
+    "Saturn": {
+     "own_signs": [
+      10,
+      11
+     ],
+     "exaltation_sign": 7
+    }
+   },
+   "production_dignity_cross_check": "PASS - 0 mismatches across all 5 grahas x 12 signs",
+   "content_sha256": "93fb4daa21b567aa90486d3e88c05fda9732527a9982bef2d69ed7f11bd3ad13",
+   "classification": "correctness_evidence",
+   "disclosure": "the independently-transcribed table is IMPLEMENTATION independent of production dignity.py (fresh transcription, no import), NOT source/edition independent (same cited BPHS edition) - per ADR-0081 section 4's own precise distinction, not overclaimed here."
+  },
+  "B_logical_enumeration": {
+   "cases": 720,
+   "mismatches": 0,
+   "space": "5 grahas x 12 graha signs x 12 ascendant signs = 720",
+   "classification": "correctness_evidence",
+   "disclosure": "expected values from this file's own independently-transcribed dignity table; actual values from the embedded rule, which consumes production engine.astrology.dignity - genuine cross-implementation agreement over the full state space, not a self-comparison."
+  },
+  "B2_longitude_plumbing": {
+   "cases": 1728,
+   "mismatches": 0,
+   "classification": "correctness_evidence",
+   "disclosure": "verifies real longitude -> sign/house resolution via the actual zodiac_sign()/whole_sign_house() production functions; does not re-test the yoga predicate's own boolean logic (gate_b's concern)."
+  },
+  "C_independent_validator": {
+   "result": "PASS",
+   "classification": "corroborating_correctness_evidence",
+   "note": "separate-process, from-scratch reimplementation; does not import engine.astrology.dignity, engine.astrology.house, or engine.astrology.signs - independently re-derives sign-of-longitude and whole-sign-house arithmetic itself"
+  },
+  "D_non_invasiveness": {
+   "embedded_rule_isolated_from_kp_jaimini_nadi_drishti": true,
+   "production_dignity_module_importable": true,
+   "production_house_module_importable": true,
+   "content_sha256_matches_pinned": true
+  },
+  "E_boundary_cases": {
+   "cases": 36,
+   "mismatches": 0,
+   "convention": "sign-membership edges, including the documented internal 1e-10 promote-up tolerance and its absence at the 360/0 wrap, empirically verified against zodiac_sign() directly; ascendant-sign edges for whole_sign_house()"
+  },
+  "F_multi_yoga_cases": {
+   "cases": 3,
+   "mismatches": 0,
+   "scenarios": [
+    "zero_yogas",
+    "exactly_one",
+    "multiple_simultaneous"
+   ]
+  },
+  "G_retrograde_disclosure": {
+   "cases": 3,
+   "mismatches": 0,
+   "rule": "per-graha disclosed qualifier, never a pass/fail gate (ADR-0081 section 6)"
+  },
+  "H_static_reference_regression": {
+   "cases": 40,
+   "charts": 8,
+   "verdict_totals": {
+    "present": 5,
+    "absent": 35
+   },
+   "methodology": "embedded-rule output compared against STATIC expected values frozen from validate_parashari_yoga_holdout.py's own from-scratch judge() (never regenerated by this file's own rule at certification time); real ephemeris-driven charts",
+   "classification": "correctness_evidence",
+   "name": "static independent-reference regression",
+   "disclosure": "named to avoid confusion with this project's separate protected historical validation concept (ADR-0047-style dataset forensics), which does not apply here - this is not a predictive-outcome validation"
+  },
+  "I_negative_controls": {
+   "controls": [
+    {
+     "control": "non-overlapping exaltation mutation (Mars, exaltation corrupted away from its real sign 10)",
+     "tested_at": "Mars at sign 10 (Capricorn), house 10 (kendra)",
+     "original": true,
+     "corrupted": false,
+     "detected": true
+    },
+    {
+     "control": "Mercury own-sign data corruption (sign 3/Gemini dropped, tested away from the exaltation-sign overlap at sign 6)",
+     "tested_at": "Mercury at sign 3 (Gemini), house 1 (kendra)",
+     "original": true,
+     "corrupted": false,
+     "detected": true
+    },
+    {
+     "control": "AND-to-OR predicate corruption",
+     "tested_at": "Venus at its own sign (Taurus), a non-kendra house",
+     "original": false,
+     "corrupted": true,
+     "detected": true
+    }
+   ],
+   "all_detected": true,
+   "frozen_constants_unmutated": true
+  }
+ },
+ "explicit_non_claims": [
+  "no bhanga/cancellation logic of any kind (ADR-0081 section 6)",
+  "no combustion gating, no qualifier field at all (ADR-0081 section 6)",
+  "retrograde is a disclosed qualifier only, never a pass/fail gate (section 6)",
+  "no strength or graded-presence output - present-or-absent only",
+  "no other yoga - Raja/Dhana/Sunapha/Anapha/Kemadruma/Adhi and the remaining PyJHora-catalogued yogas are all out of scope",
+  "no varga (D9/D10/other divisional chart) participation - D1 only",
+  "no Shadbala/planet_strength.py dependency of any kind",
+  "no interpretive or predictive claim - this certification establishes only that the ratified formation-condition methodology is correctly and independently computed and reproducibly validated, never that a yoga predicts or correlates with any real-world outcome",
+  "protected historical validation is not applicable - no future-event outcome, historical prediction dataset, or protected predictive holdout is used",
+  "translated-edition caveat carried forward from ADR-0081/DP-027: the BPHS citation is not verified against the original Sanskrit or a second, independent published edition",
+  "no engine/ production module is created or modified by this certification"
+ ],
+ "environment": {
+  "python": "3.12.10"
+ },
+ "preconditions": {
+  "data_assets": {
+   "assets_verified": 3,
+   "sha256": {
+    "seas_18.se1": "a2cd8fc33807c78ca9a700c91c2e042258b12fc4796519e00781440b5ad8b2e2",
+    "semo_18.se1": "1ca07bd67c24374d77226180c20a4f9996cba013697894810518e7eb582ca4f7",
+    "sepl_18.se1": "ca1393ceab3a44fbc895887cf789c68819ae6a1cbc9b22225872dbe4ccd99a66"
+   }
+  },
+  "anti_fitting": {
+   "modules_scanned": 189,
+   "findings": [],
+   "justified_exceptions": [
+    "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."
+   ]
+  }
+ },
+ "result": "PASS",
+ "_artifact_name": "PARASHARI_YOGA_V1_certification.json",
+ "_slug": "parashari_yoga"
+}
