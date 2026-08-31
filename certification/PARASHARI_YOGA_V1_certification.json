@@ -2,9 +2,9 @@
  "schema": "parashari_yoga_v1_certification",
  "adr": "ADR-0081",
  "date": "2026-08-31",
- "scope": "PARASHARI_YOGA_V1: the five Panch Mahapurusha yogas (Ruchaka/Bhadra/Hamsa/Malavya/Sasa) - BPHS base formation rule only (own-sign-or-exaltation-sign AND kendra-to-Lagna, whole-sign) for a natal D1 chart under the PARASHARI_LAHIRI profile. Rule under certification is a STANDALONE implementation embedded in this certifier - not engine/parashari/mahapurusha_yoga.py, no production module is authorized or created this execution.",
+ "scope": "PARASHARI_YOGA_V1: the five Panch Mahapurusha yogas (Ruchaka/Bhadra/Hamsa/Malavya/Sasa) - BPHS base formation rule only (own-sign-or-exaltation-sign AND kendra-to-Lagna, whole-sign) for a natal D1 chart under the PARASHARI_LAHIRI profile. Rule under certification is the REAL PRODUCTION module engine/parashari/mahapurusha_yoga.py, authorized by the owner's 'CEO AUTHORIZATION - PARASHARI_YOGA_V1 PRODUCTION IMPLEMENTATION' instruction and recorded in docs/DECISION_LOG.md under ADR-0081.",
  "rule": {
-  "kind": "standalone module-level functions embedded in this certifier (scripts/certify_parashari_yoga.py) - not a registered production module",
+  "kind": "engine/parashari/mahapurusha_yoga.py - registered production module",
   "yoga_grahas": [
    "Mars",
    "Mercury",
@@ -32,11 +32,12 @@
    9
   ],
   "predicate": "kendra_house(g) AND (own_sign(g) OR exalted(g)) - moolatrikona deliberately excluded, confirmed inert for these five grahas (ADR-0081 section 2)",
-  "content_sha256": "93fb4daa21b567aa90486d3e88c05fda9732527a9982bef2d69ed7f11bd3ad13"
+  "certifier_content_sha256": "93fb4daa21b567aa90486d3e88c05fda9732527a9982bef2d69ed7f11bd3ad13",
+  "production_content_sha256": "498dedb155f3b9e704c48929aef06f9060967aa3820ae62b25af4b90392f8bf0"
  },
  "oracle": {
   "package": null,
-  "note": "no third-party computational oracle used this execution; PyJHora not invoked (local environment previously found degraded; only ruchaka_yoga/bhadra_yoga were ever confirmed to exist as named functions, per DP-027 H.1/J.4, not re-verified here). Certification rests on cross-implementation agreement between the embedded rule (production dignity.py/house.py) and validate_parashari_yoga_holdout.py (an independently authored, from-scratch reimplementation) - gate H compares the embedded rule against STATIC values frozen from that independent reimplementation's own output."
+  "note": "no third-party computational oracle used this execution; PyJHora not invoked (local environment previously found degraded; only ruchaka_yoga/bhadra_yoga were ever confirmed to exist as named functions, per DP-027 H.1/J.4, not re-verified here). Certification rests on cross-implementation agreement between the real production module (engine.parashari.mahapurusha_yoga, itself consuming production dignity.py/house.py) and validate_parashari_yoga_holdout.py (an independently authored, from-scratch reimplementation) - gate H compares LIVE production output against STATIC values frozen from that independent reimplementation's own output."
  },
  "gates": {
   "A_table_integrity": {
@@ -106,7 +107,7 @@
    "mismatches": 0,
    "space": "5 grahas x 12 graha signs x 12 ascendant signs = 720",
    "classification": "correctness_evidence",
-   "disclosure": "expected values from this file's own independently-transcribed dignity table; actual values from the embedded rule, which consumes production engine.astrology.dignity - genuine cross-implementation agreement over the full state space, not a self-comparison."
+   "disclosure": "expected values from this file's own independently-transcribed dignity table; actual values from PRODUCTION engine.parashari.mahapurusha_yoga._yoga_predicate_from_sign_and_house, which consumes production engine.astrology.dignity - genuine cross-implementation agreement over the full state space, not a self-comparison."
   },
   "B2_longitude_plumbing": {
    "cases": 1728,
@@ -117,13 +118,15 @@
   "C_independent_validator": {
    "result": "PASS",
    "classification": "corroborating_correctness_evidence",
-   "note": "separate-process, from-scratch reimplementation; does not import engine.astrology.dignity, engine.astrology.house, or engine.astrology.signs - independently re-derives sign-of-longitude and whole-sign-house arithmetic itself"
+   "note": "separate-process, from-scratch reimplementation; does not import engine.astrology.dignity, engine.astrology.house, engine.astrology.signs, or engine.parashari.mahapurusha_yoga - independently re-derives sign-of-longitude and whole-sign-house arithmetic itself"
   },
   "D_non_invasiveness": {
-   "embedded_rule_isolated_from_kp_jaimini_nadi_drishti": true,
+   "production_module": "engine/parashari/mahapurusha_yoga.py",
+   "production_module_isolated_from_kp_jaimini_nadi_drishti": true,
+   "production_module_content_sha256_matches_pinned": true,
    "production_dignity_module_importable": true,
    "production_house_module_importable": true,
-   "content_sha256_matches_pinned": true
+   "certifier_content_sha256_matches_pinned": true
   },
   "E_boundary_cases": {
    "cases": 36,
@@ -140,9 +143,10 @@
    ]
   },
   "G_retrograde_disclosure": {
-   "cases": 3,
+   "cases": 11,
    "mismatches": 0,
-   "rule": "per-graha disclosed qualifier, never a pass/fail gate (ADR-0081 section 6)"
+   "structural_proof": "yoga_present() signature carries no retrograde parameter - the verdict predicate is structurally incapable of consuming retrograde state (ADR-0081 section 6)",
+   "live_disclosure_check": "Y1_london_1850: MahapurushaYogaChart.retrograde_qualifier matches the real speed_longitude sign, and `present` matches the retrograde-blind yoga_present(), on the real production pipeline"
   },
   "H_static_reference_regression": {
    "cases": 40,
@@ -151,7 +155,7 @@
     "present": 5,
     "absent": 35
    },
-   "methodology": "embedded-rule output compared against STATIC expected values frozen from validate_parashari_yoga_holdout.py's own from-scratch judge() (never regenerated by this file's own rule at certification time); real ephemeris-driven charts",
+   "methodology": "LIVE production engine.parashari.mahapurusha_yoga.mahapurusha_yoga() output compared against STATIC expected values frozen from validate_parashari_yoga_holdout.py's own from-scratch judge() (never regenerated by production at certification time); real ephemeris-driven charts",
    "classification": "correctness_evidence",
    "name": "static independent-reference regression",
    "disclosure": "named to avoid confusion with this project's separate protected historical validation concept (ADR-0047-style dataset forensics), which does not apply here - this is not a predictive-outcome validation"
@@ -181,7 +185,8 @@
     }
    ],
    "all_detected": true,
-   "frozen_constants_unmutated": true
+   "frozen_constants_unmutated": true,
+   "note": "in-process synthetic controls against the imported production predicate; a separate, one-time literal on-disk mutation proof against the real production file is recorded in docs/DECISION_LOG.md, not repeated here"
   }
  },
  "explicit_non_claims": [
@@ -195,7 +200,7 @@
   "no interpretive or predictive claim - this certification establishes only that the ratified formation-condition methodology is correctly and independently computed and reproducibly validated, never that a yoga predicts or correlates with any real-world outcome",
   "protected historical validation is not applicable - no future-event outcome, historical prediction dataset, or protected predictive holdout is used",
   "translated-edition caveat carried forward from ADR-0081/DP-027: the BPHS citation is not verified against the original Sanskrit or a second, independent published edition",
-  "no engine/ production module is created or modified by this certification"
+  "production implementation is scoped exactly to ADR-0081 - no convergence, UI, API, bhanga, combustion, strength, additional yoga, additional varga, or dasha integration exists in engine/parashari/mahapurusha_yoga.py"
  ],
  "environment": {
   "python": "3.12.10"
@@ -210,7 +215,7 @@
    }
   },
   "anti_fitting": {
-   "modules_scanned": 189,
+   "modules_scanned": 190,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."

@@ -3,18 +3,21 @@
 Certifies the RATIFIED PARASHARI_YOGA_V1 methodology (ADR-0081, ratified via
 docs/DECISION_LOG.md "Ratification of ADR-0081", commit bf01a327).
 
-**This file is NOT engine/parashari/mahapurusha_yoga.py and does not create
-one.** Per the owner's own explicit "CEO AUTHORIZATION - PARASHARI_YOGA_V1
-CERTIFICATION" instruction, no production engine module is authorized this
-task. The rule under certification is embedded here as a standalone
-implementation, mirroring the exact precedent already used for
-KP_SIGNIFICATOR_V1's own certification-execution stage (scripts/
-certify_kp_significator.py, before its own later, separately-authorized
-production-implementation task): the embedded rule consumes the already-
-certified production substrate ADR-0081 section 3 names
-(engine.astrology.dignity, engine.astrology.house, engine.astrology.signs,
-the Tier-0 kernel) exactly as that section specifies, but is not itself
-registered anywhere as a production capability.
+**Post-production-implementation revision.** Production implementation was
+authorized by the owner's "CEO AUTHORIZATION - PARASHARI_YOGA_V1 PRODUCTION
+IMPLEMENTATION" instruction, recorded in docs/DECISION_LOG.md as a governance
+sub-entry under ADR-0081. `engine/parashari/mahapurusha_yoga.py` now exists
+and every gate below tests THAT real production module directly - never an
+embedded copy of its own logic. This mirrors exactly the precedent already
+set for KP_SIGNIFICATOR_V1: certify_kp_significator.py was rewritten, after
+production implementation, to import engine.kp.significators directly rather
+than continuing to test a standalone stand-in
+(docs/DECISION_LOG.md "Certification execution of ADR-0078" / the ADR-0079
+repair's own item 7, "production vs. independent-implementation agreement
+... directly re-verified"). Certification is not treated as proof merely
+because this module exists - every gate is re-run for real against the real
+production code, per the owner's own explicit "do not treat implementation
+itself as proof" instruction.
 
 Regenerates certification/PARASHARI_YOGA_V1_certification.json FROM SCRATCH
 on every run; the stored JSON is never accepted as proof.
@@ -27,27 +30,30 @@ dignity table, content-hash pinned - NOT engine/knowledge/data/dignities.json,
 cross-checked against production for evidence, never treated as the
 production values themselves); B logical-enumeration correctness (the real
 5x12x12=720-case derived state space, expected values from this file's own
-independent table, actual values from the embedded rule which itself
-consumes production dignity.py - genuine cross-implementation-and-data
+independent table, actual values from the PRODUCTION rule
+engine.parashari.mahapurusha_yoga._yoga_predicate_from_sign_and_house, which
+itself consumes production dignity.py - genuine cross-implementation-and-data
 agreement evidence, not a self-comparison); B2 longitude/ascendant plumbing
 integration (real longitude values through the actual zodiac_sign/
-whole_sign_house production wiring, proving Gate B's own sign/house
-assumptions hold for real data - a DIFFERENT concern from B, never merged
-into one number); C independent validator (validate_parashari_yoga_holdout.py,
-a from-scratch reimplementation that does not import engine.astrology.dignity,
-engine.astrology.house, or engine.astrology.signs - independently re-derives
-sign-of-longitude and whole-sign-house arithmetic itself, per the owner's own
-explicit "do not use production house calculation as the oracle for the
-independent logical predicate" instruction); D non-invasiveness; E boundary
-cases; F multi-yoga real-chart cases; G retrograde-qualifier disclosure;
-H static independent-reference regression (real charts, embedded-rule output
-compared against STATIC values frozen from the independent validator's own
-output, never regenerated live - named to avoid confusion with this
-project's separate "protected historical validation" concept, which does not
-apply here); I negative controls and mutation detection (a non-overlapping
-exaltation mutation, a Mercury own-sign-data mutation, an AND-to-OR predicate
-corruption - each demonstrated to actually flip a real, chosen comparison,
-not merely executed).
+whole_sign_house production wiring); C independent validator
+(validate_parashari_yoga_holdout.py, a from-scratch reimplementation that
+does not import engine.astrology.dignity, engine.astrology.house,
+engine.astrology.signs, or engine.parashari.mahapurusha_yoga); D
+non-invasiveness (checked directly against the real production module's own
+source, not a copy); E boundary cases; F multi-yoga cases (via the
+production yoga_present()); G retrograde-qualifier disclosure (a structural
+proof that the production verdict predicate cannot consume retrograde state,
+plus a live disclosure-correctness check against a real production chart);
+H static independent-reference regression (real charts, LIVE production
+output from engine.parashari.mahapurusha_yoga.mahapurusha_yoga() compared
+against STATIC values frozen from the independent validator's own output -
+the genuine production-vs-independent-evidence agreement proof); I negative
+controls and mutation detection (each demonstrated to actually flip a real,
+chosen comparison against the imported production predicate, not merely
+executed - see also the separate, one-time literal on-disk mutation proof
+performed against the real production file during this task, recorded in
+docs/DECISION_LOG.md, not repeated automatically here since editing the real
+file on every run would be destructive).
 
 No third-party computational oracle is used this execution. PyJHora is not
 invoked: this project's own local PyJHora environment was found degraded in
@@ -61,6 +67,7 @@ Exit code 0 = PASS, 3 = FAIL.
 """
 
 import hashlib
+import inspect
 import sys
 from datetime import date
 from pathlib import Path
@@ -71,25 +78,27 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "scripts"))
 import certification_support as support  # noqa: E402
 
+import engine.parashari.mahapurusha_yoga as production_module  # noqa: E402
 from engine.astrology.dignity import is_exalted, is_own_sign  # noqa: E402
 from engine.astrology.house import whole_sign_house  # noqa: E402
 from engine.astrology.signs import zodiac_sign  # noqa: E402
 from engine.astronomy.profile import PARASHARI_LAHIRI  # noqa: E402
 from engine.calculations.calculations import calculate  # noqa: E402
 from engine.models.birth_data import BirthData  # noqa: E402
+from engine.parashari.mahapurusha_yoga import (  # noqa: E402
+    KENDRA_HOUSES,
+    YOGA_GRAHAS,
+    YOGA_NAMES,
+    _yoga_predicate_from_sign_and_house,
+    mahapurusha_yoga,
+    yoga_present,
+)
 
-#: The five Panch Mahapurusha yogas (ADR-0081 section 1). No other graha,
-#: no other yoga.
-YOGA_GRAHAS = ("Mars", "Mercury", "Jupiter", "Venus", "Saturn")
-YOGA_NAMES = {"Mars": "Ruchaka", "Mercury": "Bhadra", "Jupiter": "Hamsa",
-              "Venus": "Malavya", "Saturn": "Sasa"}
-
-#: Kendra houses from Lagna, whole-sign (ADR-0081 section 2/3), and their
-#: corresponding zero-based sign offsets from the ascendant's own sign
-#: (house N = ascendant_sign + offset, offset = N - 1). Both forms are
-#: frozen and their correspondence is asserted directly by gate_a below,
-#: per the CEO's own explicit "kendra conversion" requirement.
-KENDRA_HOUSES = frozenset({1, 4, 7, 10})
+#: Corresponding zero-based sign offsets from the ascendant's own sign
+#: (house N = ascendant_sign + offset, offset = N - 1), used only for the
+#: gate_b enumeration formula and the gate_a correspondence check - not a
+#: production dependency (production derives house membership via
+#: whole_sign_house() directly, never via this offset set).
 KENDRA_OFFSETS = frozenset({0, 3, 6, 9})
 
 #: Independently transcribed from BPHS's own graha-guna chapter (the same
@@ -110,13 +119,24 @@ CERTIFIED_DIGNITY_TABLE = {
 }
 
 
-#: Content fingerprint of the frozen rule constants above, pinned as a
-#: literal hardcoded value from a prior intentional run (NOT computed from
-#: itself, which would trivially always match and defeat the point of a
-#: pin - mirrors engine.kp.significators's own
-#: CERTIFIED_KP_SIGNIFICATOR_CONTENT_SHA256 pattern exactly).
+#: Content fingerprint of this file's OWN frozen rule constants above
+#: (independently-transcribed dignity table plus kendra sets), pinned as a
+#: literal hardcoded value from a prior intentional run. Unchanged by the
+#: production-implementation revision: YOGA_GRAHAS/KENDRA_HOUSES are now
+#: imported from production rather than defined locally, but their VALUES
+#: are identical, so this hash is unchanged from the pre-implementation
+#: certification-execution run.
 CERTIFIED_PARASHARI_YOGA_CONTENT_SHA256 = (
     "93fb4daa21b567aa90486d3e88c05fda9732527a9982bef2d69ed7f11bd3ad13"
+)
+
+#: Content fingerprint of the PRODUCTION module's own frozen rule constants
+#: (engine.parashari.mahapurusha_yoga.rule_content_sha256()), pinned as a
+#: literal hardcoded value computed once from the real file on disk
+#: immediately after implementation - mirrors CERTIFIED_KP_SIGNIFICATOR_
+#: CONTENT_SHA256's own pattern in certify_kp_significator.py exactly.
+CERTIFIED_PRODUCTION_CONTENT_SHA256 = (
+    "498dedb155f3b9e704c48929aef06f9060967aa3820ae62b25af4b90392f8bf0"
 )
 
 
@@ -141,51 +161,32 @@ def rule_content_sha256() -> str:
     return hashlib.sha256(payload).hexdigest()
 
 
-# --------------------------------------------------------- Embedded rule
-# The rule under certification (ADR-0081 sections 2-3). Standalone: never
-# registered as engine/parashari/mahapurusha_yoga.py or any other engine/
-# file. Consumes already-certified production substrate exactly as ADR-0081
-# section 3 authorizes - the reuse itself is the point, not a shortcut.
-
-def _yoga_predicate_from_sign_and_house(graha: str, graha_sign: int, house: int) -> bool:
-    """The pure boolean combining logic (kendra AND (own-sign OR exalted)),
-    isolated from any longitude/sign-of derivation, consuming PRODUCTION
-    dignity.py directly - this is genuinely what gate_b cross-checks against
-    the independently-transcribed CERTIFIED_DIGNITY_TABLE's own implied
-    logic, not a self-comparison."""
-
-    return house in KENDRA_HOUSES and (
-        is_own_sign(graha, graha_sign) or is_exalted(graha, graha_sign)
-    )
+def _birth_data(case) -> BirthData:
+    year, month, day = (int(x) for x in case["date"].split("-"))
+    hour, minute, second = (int(x) for x in case["time"].split(":"))
+    return BirthData(year, month, day, hour, minute, float(second),
+                      case["lat"], case["lon"], "UTC")
 
 
-def yoga_present(graha: str, graha_longitude: float, ascendant_longitude: float) -> bool:
-    """The full rule, from real longitudes, via the production plumbing
-    (zodiac_sign, whole_sign_house) ADR-0081 section 3 names."""
+def _build_chart(case):
+    """Raw longitudes/ascendant/retrograde for one case, via the certified
+    Tier-0 kernel - used by gates that need synthetic-style, per-field
+    access (E's ascendant sweep reuses fixed longitudes; G's live-disclosure
+    check needs the real speed_longitude signs directly)."""
 
-    graha_sign = zodiac_sign(graha_longitude)
-    house = whole_sign_house(graha_longitude, ascendant_longitude)
-    return _yoga_predicate_from_sign_and_house(graha, graha_sign, house)
+    result = calculate(_birth_data(case), profile=PARASHARI_LAHIRI)
+    snapshot = result.snapshot
+    lons = {g: snapshot.sidereal_planets[g].longitude for g in YOGA_GRAHAS}
+    retro = {g: snapshot.sidereal_planets[g].speed_longitude < 0 for g in YOGA_GRAHAS}
+    return lons, snapshot.houses.ascendant, retro
 
 
-def judge_mahapurusha(planet_longitudes: dict, ascendant_longitude: float,
-                       retrograde: dict | None = None) -> dict:
-    """Judge all five yogas for one chart. `planet_longitudes` maps graha
-    name -> longitude for at least the five YOGA_GRAHAS. `retrograde` maps
-    graha name -> bool (speed_longitude < 0), the established project
-    convention; defaults to all-direct if omitted (synthetic cases)."""
+def _present_only(lons: dict, asc: float) -> dict:
+    """Certifier-local orchestration only (not a rule duplicate): calls the
+    PRODUCTION yoga_present() once per graha, for gates that exercise
+    synthetic longitude scenarios rather than a real snapshot."""
 
-    retrograde = retrograde or {}
-    result = {}
-    for graha in YOGA_GRAHAS:
-        lon = planet_longitudes[graha]
-        present = yoga_present(graha, lon, ascendant_longitude)
-        result[graha] = {
-            "yoga": YOGA_NAMES[graha],
-            "present": present,
-            "retrograde_qualifier": bool(retrograde.get(graha, False)),
-        }
-    return result
+    return {g: yoga_present(g, lons[g], asc) for g in YOGA_GRAHAS}
 
 
 # --------------------------------------------------------------- Gates
@@ -214,7 +215,7 @@ def gate_a_table_integrity():
              f"table: {mismatches[:5]}")
 
     if rule_content_sha256() != CERTIFIED_PARASHARI_YOGA_CONTENT_SHA256:
-        fail("PARASHARI_YOGA_V1 content hash does not match the certified pinned value")
+        fail("PARASHARI_YOGA_V1 certifier content hash does not match the certified pinned value")
 
     return {
         "yoga_grahas": list(YOGA_GRAHAS),
@@ -237,7 +238,10 @@ def gate_b_logical_enumeration():
     """Exhaustive enumeration over the real derived state space: 5 grahas x
     12 graha signs x 12 ascendant signs = 720 cases. Pure predicate logic;
     no real longitude is involved (see gate_b2 for that concern, kept
-    strictly separate per explicit CEO instruction)."""
+    strictly separate per explicit CEO instruction). `actual` is computed
+    via the PRODUCTION module's own _yoga_predicate_from_sign_and_house -
+    genuine cross-implementation-and-data agreement, not a self-comparison
+    against a certifier-local copy."""
 
     cases = 0
     mismatches = 0
@@ -261,7 +265,8 @@ def gate_b_logical_enumeration():
             "space": "5 grahas x 12 graha signs x 12 ascendant signs = 720",
             "classification": "correctness_evidence",
             "disclosure": "expected values from this file's own independently-transcribed "
-                           "dignity table; actual values from the embedded rule, which "
+                           "dignity table; actual values from PRODUCTION engine.parashari."
+                           "mahapurusha_yoga._yoga_predicate_from_sign_and_house, which "
                            "consumes production engine.astrology.dignity - genuine "
                            "cross-implementation agreement over the full state space, not "
                            "a self-comparison."}
@@ -306,18 +311,32 @@ def gate_c_independent_validator():
     return {"result": "PASS",
             "classification": "corroborating_correctness_evidence",
             "note": "separate-process, from-scratch reimplementation; does not import "
-                    "engine.astrology.dignity, engine.astrology.house, or "
-                    "engine.astrology.signs - independently re-derives sign-of-longitude "
-                    "and whole-sign-house arithmetic itself"}
+                    "engine.astrology.dignity, engine.astrology.house, "
+                    "engine.astrology.signs, or engine.parashari.mahapurusha_yoga - "
+                    "independently re-derives sign-of-longitude and whole-sign-house "
+                    "arithmetic itself"}
 
 
 def gate_d_non_invasiveness():
     import ast
-    import inspect
 
-    this_module = sys.modules[__name__]
+    # The production module itself - checked directly against its own real
+    # source, not a certifier-local copy.
+    if not hasattr(production_module, "mahapurusha_yoga"):
+        fail("engine.parashari.mahapurusha_yoga.mahapurusha_yoga is missing - "
+             "production module unexpectedly altered")
+    if not hasattr(production_module, "graha_mahapurusha_from_snapshot"):
+        fail("engine.parashari.mahapurusha_yoga.graha_mahapurusha_from_snapshot is "
+             "missing - production module unexpectedly altered")
+    if production_module.rule_content_sha256() != CERTIFIED_PRODUCTION_CONTENT_SHA256:
+        fail("engine.parashari.mahapurusha_yoga content hash does not match the "
+             "certified pinned value")
+
     rule_functions = (
-        _yoga_predicate_from_sign_and_house, yoga_present, judge_mahapurusha,
+        production_module._yoga_predicate_from_sign_and_house,
+        production_module.yoga_present,
+        production_module.graha_mahapurusha_from_snapshot,
+        production_module.mahapurusha_yoga,
     )
     for func in rule_functions:
         source = inspect.getsource(func)
@@ -333,13 +352,18 @@ def gate_d_non_invasiveness():
             fail(f"{func.__name__} references a Parashari-drishti/KP/Jaimini/Nadi module in "
                  f"its own code - system isolation violated")
 
-    own_source = inspect.getsource(this_module)
-    for line_no, line in enumerate(own_source.splitlines(), start=1):
-        stripped = line.strip()
-        if stripped.startswith(("import engine.parashari.drishti", "from engine.parashari.drishti",
-                                 "import engine.kp", "from engine.kp")):
-            fail(f"certify_parashari_yoga.py:{line_no} imports a Parashari-drishti/KP module "
-                 f"- must never be reused")
+    # The production module's own file on disk - real import lines, not a
+    # docstring disclosure (a docstring naming what is NOT imported must
+    # never false-flag this check).
+    production_module_path = Path(production_module.__file__)
+    for path in (production_module_path, Path(__file__),
+                 ROOT / "validate_parashari_yoga_holdout.py"):
+        for line_no, line in enumerate(path.read_text().splitlines(), start=1):
+            stripped = line.strip()
+            if stripped.startswith(("import engine.parashari.drishti", "from engine.parashari.drishti",
+                                     "import engine.kp", "from engine.kp")):
+                fail(f"{path.name}:{line_no} imports a Parashari-drishti/KP module "
+                     f"- must never be reused")
 
     from engine.astrology.dignity import is_exalted as _ie, is_own_sign as _io
     if not (_ie and _io):
@@ -349,10 +373,12 @@ def gate_d_non_invasiveness():
         fail("engine.astrology.house.whole_sign_house is missing - module unexpectedly altered")
 
     return {
-        "embedded_rule_isolated_from_kp_jaimini_nadi_drishti": True,
+        "production_module": "engine/parashari/mahapurusha_yoga.py",
+        "production_module_isolated_from_kp_jaimini_nadi_drishti": True,
+        "production_module_content_sha256_matches_pinned": True,
         "production_dignity_module_importable": True,
         "production_house_module_importable": True,
-        "content_sha256_matches_pinned": rule_content_sha256() == CERTIFIED_PARASHARI_YOGA_CONTENT_SHA256,
+        "certifier_content_sha256_matches_pinned": rule_content_sha256() == CERTIFIED_PARASHARI_YOGA_CONTENT_SHA256,
     }
 
 
@@ -411,35 +437,39 @@ def gate_e_boundary_cases():
 
 
 def gate_f_multi_yoga_cases():
+    """Zero/one/multiple-yoga scenarios, via the PRODUCTION yoga_present()
+    (through the _present_only() orchestration helper, which calls no rule
+    logic of its own)."""
+
     cases = 0
     mismatches = 0
     # Zero yogas: every graha placed own+exalt-free and out of kendra.
     zero_lons = {"Mars": 45.0, "Mercury": 75.0, "Jupiter": 195.0, "Venus": 225.0, "Saturn": 15.0}
     asc = 105.0  # Cancer rising (sign 4)
-    result0 = judge_mahapurusha(zero_lons, asc)
+    result0 = _present_only(zero_lons, asc)
     cases += 1
-    if any(v["present"] for v in result0.values()):
+    if any(result0.values()):
         mismatches += 1
 
     # Exactly one: Mars at Aries (own sign) in the 1st house (kendra), Lagna in Aries.
     one_lons = dict(zero_lons)
     one_lons["Mars"] = 10.0  # Aries
     asc_one = 0.0  # Aries rising -> Mars in house 1
-    result1 = judge_mahapurusha(one_lons, asc_one)
+    result1 = _present_only(one_lons, asc_one)
     cases += 1
-    present_count = sum(1 for v in result1.values() if v["present"])
-    if present_count != 1 or not result1["Mars"]["present"]:
+    present_count = sum(1 for v in result1.values() if v)
+    if present_count != 1 or not result1["Mars"]:
         mismatches += 1
 
     # Multiple simultaneous: Mars (Aries/own, house1) and Saturn (Capricorn/own, house10)
     # both satisfied with Aries rising.
     multi_lons = dict(one_lons)
     multi_lons["Saturn"] = 285.0  # Capricorn (sign 10), house 10 from Aries lagna
-    result_multi = judge_mahapurusha(multi_lons, asc_one)
+    result_multi = _present_only(multi_lons, asc_one)
     cases += 1
-    if not (result_multi["Mars"]["present"] and result_multi["Saturn"]["present"]):
+    if not (result_multi["Mars"] and result_multi["Saturn"]):
         mismatches += 1
-    if sum(1 for v in result_multi.values() if v["present"]) < 2:
+    if sum(1 for v in result_multi.values() if v) < 2:
         mismatches += 1
 
     if mismatches:
@@ -449,34 +479,48 @@ def gate_f_multi_yoga_cases():
 
 
 def gate_g_retrograde_disclosure():
-    cases = 0
+    """Two proofs, both against the real production module: (1) a
+    STRUCTURAL proof that the verdict predicate is incapable of consuming
+    retrograde state at all (yoga_present()'s own signature carries no
+    retrograde parameter - stronger than a runtime regression, since it
+    holds for every possible input, not just the cases tested); (2) a LIVE
+    disclosure-correctness check that MahapurushaYogaChart.retrograde_
+    qualifier, produced by the real production pipeline on a real chart,
+    matches the real speed_longitude sign."""
+
+    signature = inspect.signature(yoga_present)
+    if "retrograde" in signature.parameters:
+        fail("yoga_present() unexpectedly gained a retrograde parameter - the verdict "
+             "predicate must remain structurally incapable of consuming it")
+
+    cases = 1  # the structural proof above counts as one checked invariant
     mismatches = 0
-    lons = {"Mars": 10.0, "Mercury": 75.0, "Jupiter": 195.0, "Venus": 225.0, "Saturn": 15.0}
-    asc = 0.0
-    retro = {"Mars": True}
-    result = judge_mahapurusha(lons, asc, retrograde=retro)
-    cases += 1
-    if result["Mars"]["retrograde_qualifier"] is not True:
-        mismatches += 1
-    cases += 1
-    if result["Jupiter"]["retrograde_qualifier"] is not False:
-        mismatches += 1
-    # The qualifier must never affect the boolean verdict: compare against
-    # the identical chart with Mars direct.
-    result_direct = judge_mahapurusha(lons, asc, retrograde={})
-    cases += 1
-    if result["Mars"]["present"] != result_direct["Mars"]["present"]:
-        mismatches += 1
+    case = HOLDOUT[0]
+    lons, asc, retro = _build_chart(case)
+    chart = mahapurusha_yoga(_birth_data(case))
+    for result in chart.results:
+        cases += 1
+        if result.retrograde_qualifier != retro[result.graha]:
+            mismatches += 1
+        cases += 1
+        if result.present != yoga_present(result.graha, lons[result.graha], asc):
+            mismatches += 1
     if mismatches:
         fail(f"retrograde-disclosure case failures: {mismatches}/{cases}")
     return {"cases": cases, "mismatches": 0,
-            "rule": "per-graha disclosed qualifier, never a pass/fail gate (ADR-0081 section 6)"}
+            "structural_proof": "yoga_present() signature carries no retrograde parameter - "
+                                 "the verdict predicate is structurally incapable of consuming "
+                                 "retrograde state (ADR-0081 section 6)",
+            "live_disclosure_check": f"{case['id']}: MahapurushaYogaChart.retrograde_qualifier "
+                                      f"matches the real speed_longitude sign, and `present` "
+                                      f"matches the retrograde-blind yoga_present(), on the "
+                                      f"real production pipeline"}
 
 
 #: Real ephemeris-driven holdout charts (ADR-0081 section 7, Gate H). Static
 #: expected_* fields generated ONCE, offline, from
 #: validate_parashari_yoga_holdout.py's own from-scratch judge() - never by
-#: calling this file's own judge_mahapurusha() at certification time. This
+#: calling the production module's own output at certification time. This
 #: is the certification-integrity lesson from ADR-0079, applied from the
 #: outset per explicit CEO instruction, not retrofitted.
 HOLDOUT = [
@@ -499,40 +543,33 @@ HOLDOUT = [
 ]
 
 
-def _build_chart(case):
-    year, month, day = (int(x) for x in case["date"].split("-"))
-    hour, minute, second = (int(x) for x in case["time"].split(":"))
-    result = calculate(
-        BirthData(year, month, day, hour, minute, float(second), case["lat"], case["lon"], "UTC"),
-        profile=PARASHARI_LAHIRI,
-    )
-    snapshot = result.snapshot
-    lons = {g: snapshot.sidereal_planets[g].longitude for g in YOGA_GRAHAS}
-    retro = {g: snapshot.sidereal_planets[g].speed_longitude < 0 for g in YOGA_GRAHAS}
-    return lons, snapshot.houses.ascendant, retro
-
-
 def gate_h_static_reference_regression():
+    """The genuine production-vs-independent-evidence agreement proof: LIVE
+    output from the real engine.parashari.mahapurusha_yoga.mahapurusha_yoga()
+    - through calculate(), the real Tier-0 kernel, real dignity.py/house.py -
+    compared against STATIC values frozen from validate_parashari_yoga_
+    holdout.py's own from-scratch judge()."""
+
     cases = 0
     mismatches = 0
     verdict_totals = {"present": 0, "absent": 0}
     for case in HOLDOUT:
-        lons, asc, retro = _build_chart(case)
-        result = judge_mahapurusha(lons, asc, retrograde=retro)
-        for graha in YOGA_GRAHAS:
+        chart = mahapurusha_yoga(_birth_data(case))
+        for result in chart.results:
             cases += 1
-            actual = result[graha]["present"]
-            expected = case["expected"][graha]
+            actual = result.present
+            expected = case["expected"][result.graha]
             verdict_totals["present" if actual else "absent"] += 1
             if actual != expected:
                 mismatches += 1
-                fail(f"holdout mismatch on {case['id']}/{graha}: production={actual} "
+                fail(f"holdout mismatch on {case['id']}/{result.graha}: production={actual} "
                      f"expected(static)={expected}")
     return {"cases": cases, "charts": len(HOLDOUT), "verdict_totals": verdict_totals,
-            "methodology": "embedded-rule output compared against STATIC expected values "
-                            "frozen from validate_parashari_yoga_holdout.py's own "
-                            "from-scratch judge() (never regenerated by this file's own "
-                            "rule at certification time); real ephemeris-driven charts",
+            "methodology": "LIVE production engine.parashari.mahapurusha_yoga.mahapurusha_yoga() "
+                            "output compared against STATIC expected values frozen from "
+                            "validate_parashari_yoga_holdout.py's own from-scratch judge() "
+                            "(never regenerated by production at certification time); real "
+                            "ephemeris-driven charts",
             "classification": "correctness_evidence",
             "name": "static independent-reference regression",
             "disclosure": "named to avoid confusion with this project's separate protected "
@@ -542,16 +579,21 @@ def gate_h_static_reference_regression():
 
 
 def gate_i_negative_controls():
+    """In-process synthetic mutation controls against the imported
+    PRODUCTION predicate (_yoga_predicate_from_sign_and_house). A separate,
+    one-time literal on-disk mutation proof (real file edit, real
+    subprocess run, observed FAIL, restored, observed PASS again) was
+    additionally performed against the real production file during this
+    implementation task and is recorded in docs/DECISION_LOG.md - not
+    repeated automatically here, since editing the real file on every run
+    would be destructive rather than a regression guard."""
+
     controls = []
 
     # Control 1: non-overlapping exaltation mutation (Mars: exalt=10, not in
     # own_signs={1,8} - a "clean" corruption with no own-sign overlap).
-    # Tested AT sign 10 (Capricorn), house 1 (kendra) via Aries-rising Lagna
-    # is wrong (Capricorn from Aries = house 10, itself kendra) - construct
-    # directly: Mars at 10deg into Capricorn (sign 10, longitude 285.0),
-    # Lagna at Aries (asc_sign 1) -> house = (10-1)%12+1 = 10, a kendra house.
-    mars_lon = 285.0  # Capricorn, sign 10
-    asc = 0.0  # Aries
+    # Mars at 10deg into Capricorn (sign 10), Lagna at Aries (asc_sign 1) ->
+    # house = (10-1)%12+1 = 10, a kendra house.
     original = _yoga_predicate_from_sign_and_house("Mars", 10, 10)
     if not original:
         fail("negative control 1 setup invalid: Mars should show Ruchaka at its own exaltation")
@@ -611,9 +653,14 @@ def gate_i_negative_controls():
         fail("negative control 3 did not detect the planted mutation")
 
     if rule_content_sha256() != CERTIFIED_PARASHARI_YOGA_CONTENT_SHA256:
-        fail("frozen constants were mutated by the negative-control testing itself")
+        fail("frozen certifier constants were mutated by the negative-control testing itself")
+    if production_module.rule_content_sha256() != CERTIFIED_PRODUCTION_CONTENT_SHA256:
+        fail("frozen production constants were mutated by the negative-control testing itself")
 
-    return {"controls": controls, "all_detected": True, "frozen_constants_unmutated": True}
+    return {"controls": controls, "all_detected": True, "frozen_constants_unmutated": True,
+            "note": "in-process synthetic controls against the imported production predicate; "
+                    "a separate, one-time literal on-disk mutation proof against the real "
+                    "production file is recorded in docs/DECISION_LOG.md, not repeated here"}
 
 
 def main():
@@ -627,14 +674,13 @@ def main():
             "PARASHARI_YOGA_V1: the five Panch Mahapurusha yogas (Ruchaka/Bhadra/Hamsa/"
             "Malavya/Sasa) - BPHS base formation rule only (own-sign-or-exaltation-sign "
             "AND kendra-to-Lagna, whole-sign) for a natal D1 chart under the "
-            "PARASHARI_LAHIRI profile. Rule under certification is a STANDALONE "
-            "implementation embedded in this certifier - not engine/parashari/"
-            "mahapurusha_yoga.py, no production module is authorized or created this "
-            "execution."
+            "PARASHARI_LAHIRI profile. Rule under certification is the REAL PRODUCTION "
+            "module engine/parashari/mahapurusha_yoga.py, authorized by the owner's "
+            "'CEO AUTHORIZATION - PARASHARI_YOGA_V1 PRODUCTION IMPLEMENTATION' "
+            "instruction and recorded in docs/DECISION_LOG.md under ADR-0081."
         ),
         "rule": {
-            "kind": "standalone module-level functions embedded in this certifier "
-                    "(scripts/certify_parashari_yoga.py) - not a registered production module",
+            "kind": "engine/parashari/mahapurusha_yoga.py - registered production module",
             "yoga_grahas": list(YOGA_GRAHAS),
             "yoga_names": YOGA_NAMES,
             "kendra_houses": sorted(KENDRA_HOUSES),
@@ -642,7 +688,8 @@ def main():
             "predicate": "kendra_house(g) AND (own_sign(g) OR exalted(g)) - moolatrikona "
                          "deliberately excluded, confirmed inert for these five grahas "
                          "(ADR-0081 section 2)",
-            "content_sha256": rule_content_sha256(),
+            "certifier_content_sha256": rule_content_sha256(),
+            "production_content_sha256": production_module.rule_content_sha256(),
         },
         "oracle": {"package": None, "note": "no third-party computational oracle used this "
                                              "execution; PyJHora not invoked (local "
@@ -650,13 +697,15 @@ def main():
                                              "ruchaka_yoga/bhadra_yoga were ever confirmed to "
                                              "exist as named functions, per DP-027 H.1/J.4, "
                                              "not re-verified here). Certification rests on "
-                                             "cross-implementation agreement between the "
-                                             "embedded rule (production dignity.py/house.py) "
-                                             "and validate_parashari_yoga_holdout.py (an "
-                                             "independently authored, from-scratch "
-                                             "reimplementation) - gate H compares the embedded "
-                                             "rule against STATIC values frozen from that "
-                                             "independent reimplementation's own output."},
+                                             "cross-implementation agreement between the real "
+                                             "production module (engine.parashari."
+                                             "mahapurusha_yoga, itself consuming production "
+                                             "dignity.py/house.py) and validate_parashari_"
+                                             "yoga_holdout.py (an independently authored, "
+                                             "from-scratch reimplementation) - gate H compares "
+                                             "LIVE production output against STATIC values "
+                                             "frozen from that independent reimplementation's "
+                                             "own output."},
         "gates": {
             "A_table_integrity": gate_a_table_integrity(),
             "B_logical_enumeration": gate_b_logical_enumeration(),
@@ -687,7 +736,9 @@ def main():
             "translated-edition caveat carried forward from ADR-0081/DP-027: the BPHS "
             "citation is not verified against the original Sanskrit or a second, "
             "independent published edition",
-            "no engine/ production module is created or modified by this certification",
+            "production implementation is scoped exactly to ADR-0081 - no convergence, "
+            "UI, API, bhanga, combustion, strength, additional yoga, additional varga, "
+            "or dasha integration exists in engine/parashari/mahapurusha_yoga.py",
         ],
         "environment": {"python": sys.version.split()[0]},
         "preconditions": preconditions,
@@ -695,7 +746,7 @@ def main():
     }
     out = support.emit(report, "PARASHARI_YOGA_V1_certification.json", "parashari_yoga", tee)
     print("=" * 60)
-    print("PARASHARI_YOGA_V1 CERTIFICATION (standalone rule, not production-registered)")
+    print("PARASHARI_YOGA_V1 CERTIFICATION (production module engine/parashari/mahapurusha_yoga.py)")
     print("=" * 60)
     for name, gate in report["gates"].items():
         print(f"{name}: {gate}")
