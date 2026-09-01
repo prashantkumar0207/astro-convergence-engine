@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | ACTIVE REGISTER. **ACCEPTED (47): ADR-0001, ADR-0002, ADR-0005 through ADR-0012, ADR-0015, ADR-0016, ADR-0017, ADR-0033 through ADR-0037, ADR-0039 through ADR-0042, ADR-0044, ADR-0045, ADR-0046, ADR-0048 through ADR-0069**, owner-ratified across 2026-08-13, 2026-08-14, 2026-08-17, 2026-08-18, 2026-08-19, 2026-08-20, 2026-08-21 and 2026-08-22. **`ADR-0069` ratifies `DP-016` Option 1: H-05 closed via a new hermetic-tier test file (`engine/tests/test_vimshottari_hermetic_baseline.py`) freezing the already-oracle-validated Vimshottari anchor construction for five seed cases, plus a genuine negative control independently verified by actually mutating and reverting the production line in-session. No certified value changes; `certify_vimshottari.py`/`VIMSHOTTARI_V1_certification.json` untouched; M-03 scan surface confirmed unaffected. H-06/H-08/M-02/dasha boundary-proximity indicator not touched.** **`ADR-0068` records the owner's ratification of the FOUNDATION-exit readiness audit: "CEO RATIFICATION — FOUNDATION EXIT. I ratify ADR-0068 and declare FOUNDATION EXITED." All six `Q8_CLOSURE_MATRIX.md` s4 implementation-scope items have a settled, ratified disposition (rise/set, panchanga, `TRIKALAM_V1` certified and checkpointed; H-01/H-02 resolved; boundary-proximity indicators and civil-date rendering explicitly decoupled from the checkpoint by their own ratified decisions, `ADR-0067` and the `ADR-0063` addendum). **FOUNDATION IS FORMALLY EXITED AS OF 2026-08-22.** This does NOT authorize JATAKA - `Q8_CLOSURE_MATRIX.md` s5's own entry criteria (the Dasha roadmap's six steps, `docs/DASHA_CERTIFICATION_ROADMAP.md`, `Status: PROPOSED`) remain separately unmet. No certified calculation changed; no FOUNDATION item reopened; `phase-g-governance` not merged to `main`.** **`ADR-0067` ratifies `DP-015`: H-01/`ADR-0066`'s Q8 carve-out reading confirmed textually valid but novel, no precedent claimed; the carve-out's general reach beyond H-01/H-02 confirmed genuinely ambiguous, not silently generalized to any other FOUNDATION item; boundary-proximity indicators decoupled from the current FOUNDATION-exit checkpoint via `DP-015` §F "Option 3 (AMENDED)", ratified exactly as written - explicitly tracked as future work, not certified, does not gate exit, no future consumer may treat it as certified, any future consumer must certify first or explicitly refuse/gate, no certified values changed, no methodology specified here, a future decision paper determines it.** **`ADR-0066` ratifies `DP-014` Option 2: `find_crossings()` now raises `UnsupportedNodePolicyError` for Rahu/Ketu under any `node_policy` other than the certified mean node, converting H-01's silent transit-event incompleteness into an explicit refusal. No certified `TRANSIT_V1` value changes (confirmed by isolated-venv regeneration - only the already-understood ULP noise and volatile fields differed, and that regenerated artifact was discarded, not committed); Options 1/3 not chosen; Tier-0's Locked scope not touched.** **`ADR-0065` ratifies `DP-013`'s H-02 fix Option 1: `TransitEvent.declared_division`, an additive field classified from the exact `target_longitude`, with a new Gate E (genuine negative control) in `certify_transits.py`. No certified `TRANSIT_V1` value changes; Options 2/3 not chosen; Tier-0's Locked scope not touched.** **`ADR-0063` ratifies `DP-012` Option C: civil-date rendering for dasha boundaries is explicitly deferred, not authorized for implementation - `DP-012` itself unedited, per the established "paper is not the decision" discipline. A 2026-08-22 addendum to `ADR-0063` (**ratified**, `Status: ACCEPTED`, per the owner's "CEO RATIFICATION — ADR-0063 ADDENDUM" instruction) records a narrow qualification - `ADR-0063`'s original claim of independently satisfying `Q8_CLOSURE_MATRIX.md` s4 must not be relied upon without it, following `DP-015`'s finding that the carve-out's general reach is genuinely ambiguous - and explicitly decouples civil-date rendering from the current FOUNDATION-exit checkpoint, matching `ADR-0067`'s equivalent treatment of boundary-proximity indicators.** `ADR-0064` ratifies `DP-013` Option C (independent reference + PyJHora) and records the executed reproduction: H-02 independently confirmed for the Sun (2 of 12 sankranti, exact match to the original audit), PyJHora recorded as an evidenced limitation (cannot resolve the defect's own precision scale, by either method tested) rather than manufactured agreement. `TRANSIT_V1` unmodified by the reproduction itself; **pushed and CI-confirmed green** (run `32375941348`, all four jobs, both new steps genuinely executed under the hash-pinned oracle environment). A fix option was chosen 2026-08-21 - see `ADR-0065`.** **`ADR-0062` adds the permanent ACE execution-state mechanism (`docs/ACE_EXECUTION_STATE.md`) plus an explicit prohibition on the user relaying reports between Claude and ChatGPT - operationalizes `ADR-0056`'s already-ratified s11 point 3, does not reopen it.** **`ADR-0060` ratifies `DP-011` Option C seeded by Option B: Rahu Kalam/Yamaganda/Gulika become named, profile-selectable variants; the PyJHora 4.8.7 `trikalam()` convention is independently inspected, transcribed and frozen as the seed variant `PYJHORA_TRIKALAM_V1`. Authorizes only that one variant's implementation/certification work - does not itself certify it, does not authorize a second variant, and does not authorize Muhurta-specific consumption. `ADR-0061` records that implementation as built, locally verified, then **pushed and CI-confirmed green** (run `32358109807`, all four jobs, oracle job genuinely executing `TRIKALAM_V1`'s Gate F) - a 2026-08-20 evidence addendum records the CI confirmation and a recovered, expected M-03 drift finding (177->180, same class as `ADR-0053`/`ADR-0054`); a second 2026-08-20 addendum records a genuine ULP battery added to Gate C (exact sunrise weekday-rollover instant, with negative control), remediating a CEO-audit finding that the prior Gate C was a pinning/tolerance check, not a true ULP battery - **pushed and CI-confirmed green** (run `32361308330`, all four jobs, oracle-job log directly confirming `ulp_boundary_checked: True, ulp_negative_control_verified: True`). A third 2026-08-20 addendum records the **owner's acceptance of `TRIKALAM_V1`'s FOUNDATION per-capability checkpoint** - `TRIKALAM_V1` is now FOUNDATION checkpoint-accepted / production-certified. FOUNDATION's own phase-exit criteria remain open: civil-date rendering is now explicitly deferred by decision (`ADR-0063`, `DP-012` Option C), not implemented; H-01 and H-02 still lack any ratified decision paper.** **`ADR-0056` formalizes the four-role AI collaboration model (USER/CLAUDE/CHATGPT/CODEX); Codex is explicitly excluded from the ACE workflow. `ADR-0057` (CEO-audit HOLD remediation) adds ACE interaction mode and mandatory session-start audit to `specs/CLAUDE_WORKFLOW.md`. `ADR-0058` adds an execution-continuity rule (do not stop prematurely; five terminal stop conditions) to the same document; its `specs/CLAUDE_WORKFLOW.md` edit is committed (`20a9589e3d567bbf86e36b13bf2d61ca734e728e`). `ADR-0059` records the CEO-approved `PANCHANGA_V1` Gate F (genuine PyJHora external-oracle comparison for tithi/yoga/karana, nakshatra explicitly excluded): implemented, committed (`4177d6108236e64d07f6b23499307001f0d7c421`), pushed, and **CI-confirmed green** (run `32242462766`, all four jobs, oracle job genuinely executing Gate F: 66 comparisons, 0 mismatches, negative control verified) under the hash-pinned oracle environment. A 2026-08-19 evidence addendum to `ADR-0059` records the owner's acceptance of Panchanga's FOUNDATION per-capability checkpoint (`Q8_CLOSURE_MATRIX.md` s4); this does not close FOUNDATION's own phase-exit criteria, which still require Rahu Kalam/Yamaganda/Gulika, H-01, and H-02.** Tier-0 is **FORMALLY LOCKED** (ADR-0034), the only s12 Locked artifact. The registry vargas and the sign conventions are **owner-ratified but NOT s12 Locked** (ADR-0035 D3, ADR-0036 D3). **Q8 is now CLOSED** (ADR-0048); **Phase G exited and FOUNDATION entry criteria were independently confirmed satisfied** (this session's evidence reports). **FOUNDATION's first work package, rise/set, is CERTIFIED (`ADR-0054`, `RISE_SET_V1`)**: five owner-ratified conventions (upper-limb disc, standard -50' refraction, elevation accounted for, structured NO_RISE/NO_SET, conventions in `CalculationProfile`/`BirthData`), zero calculation impact on any existing certified capability, two genuine defects found and fixed during its own construction (recorded in the entry). **Panchanga classification-only work (tithi/vara/nakshatra/yoga/karana at a given instant) is now authorised (`ADR-0055`)**: engine-wide 1e-10 promote-up boundary convention, vara consumes the certified rise/set layer, element transition-timing deferred. **Rahu Kalam/Yamaganda/Gulika: `DP-011` (`ADR-0055` item 2's authorized paper) is now ratified (`ADR-0060`, Option C seeded by Option B) and its seed variant `PYJHORA_TRIKALAM_V1` is implemented and CI-confirmed (`ADR-0061`); a second variant remains explicitly NOT authorised.** No later phase (Muhurta, Varshaphal, Prashna, Mundane, BTR, Interpretation, Convergence, UI, ML) is thereby authorised - `docs/Q8_CLOSURE_MATRIX.md` s4 requires its own per-capability checkpoint for each. **Still PROPOSED: ADR-0003, ADR-0004, ADR-0013, ADR-0014, ADR-0018 through ADR-0032, ADR-0038, and ADR-0047.** **`ADR-0079` (`KP_SIGNIFICATOR_V1` certification-integrity repair) is now `ACCEPTED`, ratified 2026-08-28 per the owner's "CEO AUTHORIZATION — ADR-0079 RATIFICATION" instruction, recorded in the "Ratification of ADR-0079" sub-entry - `DP-030`'s own separate primary-source question remains fully open and unaddressed by this ratification.** `ADR-0047`'s originally-reported G5 sample accounting (22/22 complete, 16 independent, 4 ADB_MATCH, 2 unresolved, 14 events) was briefly, and **erroneously**, corrected to "12/22 attempted" by a 2026-08-18 addendum that has since been found (owner-directed forensic reconciliation) to rest on a conflation of the 22-person sample with an unrelated 5-person bridging pilot; a second, later 2026-08-18 addendum **restores 22/22 as the authoritative state** (16 independent, 4 ADB_MATCH: Fichera/Aimar/Serantoni/Bobet, 2 unresolved: Veen/Perquier, 14 independent events) and marks the "12/22" addendum SUPERSEDED/RETRACTED, preserved unedited. `ADR-0047` remains PROPOSED, not ratified, throughout. Ratification is per-entry; an owner existing is not the register being ratified. Includes the ADR-0018 remote-CI evidence addendum (2026-08-11), the ADR-0047 "12/22" addendum (2026-08-18, now retracted), and the ADR-0047 restoration addendum (2026-08-18). |
-| Version | 4.16.0 |
+| Version | 4.17.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-09-01 (`ADR-0082` ratified, per the owner's own "CEO RATIFICATION — ADR-0082" instruction: D24 (Siddhamsa) is now the owner-ratified fourth JATAKA capability - an explicit sequencing/product decision made after `DP-031` section J's comparative study found the D24-vs-D40 evidence genuinely tied, not a methodology-superiority claim over D40, which remains a valid future candidate. Recorded via the "Ratification of ADR-0082" sub-entry: authorizes exactly capability selection and methodology ratification (BPHS source with a verbatim verse citation, the odd-Leo/even-Cancer forward construction, `parashara` school, a measured zero-error boundary result). Does not authorize certification design/execution for `VARGA_D24_V1` or production implementation of `engine/astrology/varga_d24.py`, each remaining separate, not-yet-given authorizations. `docs/decisions/DP-024-varga-framework-step-payload-architecture.md` remains deferred, neither resolved nor broadened.) |
+| Last updated | 2026-09-01 (`ADR-0083` added, `PROPOSED`, not yet ratified: D24's own certification design and execution - a standalone, unregistered `CyclicVargaRule` in new `scripts/certify_d24.py`, all nine gates (A-I) PASS, including a literal on-disk mutation proof. Certification execution was performed in the same task as this entry's own drafting, before ratification - an explicitly disclosed sequencing departure from this register's own usual design-then-ratify-then-execute precedent, made under a terser "design/execution" authorization than this register's fuller instructions elsewhere; not self-ratified, still requires its own separate owner ratifying instruction. Two genuine, disclosed defects were found and fixed: a boundary-test construction error (not a production defect) and a pre-existing governance-guard hardcoded count (`test_every_real_supersession_claim_matches_its_own_division`, 6->7). `engine/astrology/varga_d24.py` does not exist; production implementation remains separately unauthorized. Not pushed, not merged.) |
 | Review cadence | TBD |
 
 # Decision Log (ADR register)
@@ -6160,6 +6160,167 @@ ratification, certification authorization, and production implementation into on
   untouched.
 - **Evidence:** the owner's "CEO RATIFICATION — ADR-0082" instruction, quoted above; `ADR-0082` itself,
   commit `4968d1448c5bc11916f5f7cbbe291d8cec72ee63`.
+
+---
+
+## ADR-0083 - D24 (Siddhamsa) certification design and execution: standalone rule, all nine gates PASS (PROPOSED - prepared for CEO ratification, not yet declared)
+
+- **Date:** 2026-09-01
+- **Status:** PROPOSED. Drafted and executed per the owner's own explicit authorization, obtained in two
+  steps this task: the owner replied "Authorised" to the prior report without specifying scope; asked to
+  disambiguate (per this project's own "if a genuine owner decision is required and cannot be inferred,
+  stop and say exactly what is needed" rule), the owner selected "VARGA_D24_V1 certification design/
+  execution" from an explicit menu, whose own offered description read: "Begin designing and executing
+  D24's certification battery (frozen CyclicVargaRule, independent validator, oracle comparison, boundary/
+  holdout/negative controls, certification artifact) - mirroring ADR-0077's role after ADR-0076. No
+  production engine/ file yet." **Disclosed explicitly, not glossed over: unlike every certification-
+  design ADR in this register (`ADR-0077`, `ADR-0078`, `ADR-0081`), this entry's own certification
+  execution was performed in the SAME task as its own drafting, before this entry itself was ratified -**
+  because the owner's own authorization bundled "design/execution" as one selected item, distinct from the
+  fuller, separately-staged "CEO RATIFICATION" instructions this register otherwise uses, each naming a
+  specific decision entry.
+  This entry is **not self-ratified** - it still requires its own separate owner ratifying instruction, per
+  this repository's own unbroken "the owner ratifies decisions; you do not" rule; the sequencing departure
+  (design-and-execute-then-ratify, rather than design-then-ratify-then-execute) is a disclosed judgment
+  call made under a terser authorization than this register's own usual precedent, offered here for the
+  owner's own explicit review and correction if this reading was wrong.
+- **Context:** `ADR-0082` (ratified) selected D24 as the fourth JATAKA capability and froze its own
+  methodology (Parashara/BPHS source, odd-Leo/even-Cancer forward construction, `parashara` school) but
+  explicitly reserved certification design/execution as "the next, separately-tracked act." This entry
+  performs that act, mirroring `ADR-0077`'s own role after `ADR-0076` for D45.
+
+### 1. Frozen rule (unchanged from `ADR-0082`, re-stated for this entry's own completeness)
+
+Twenty-four equal divisions of 30/24 = 1.25 degrees per sign; odd source signs (0-based Aries=0, Gemini=2,
+Leo=4, Libra=6, Sagittarius=8, Aquarius=10) start from Leo (index 4); even source signs (Taurus=1,
+Cancer=3, Virgo=5, Scorpio=7, Capricorn=9, Pisces=11) start from Cancer (index 3); forward counting
+(direction +1) for all twelve. School: `parashara`. Instantiated as a standalone, **UNREGISTERED**
+`CyclicVargaRule` object inside new `scripts/certify_d24.py` - `engine/astrology/varga_d24.py` was **not**
+created, and `engine/astrology/varga_registry.py` was **not** modified, exactly per `ADR-0082` section 5's
+own reservation. The standalone rule is classified via the already-certified generic framework
+(`engine.astrology.varga_classifier.classify`, `engine.astrology.varga_rules.CyclicVargaRule` - pure
+functions/dataclasses already exercised by six certified vargas, with no registry coupling), mirroring
+exactly how `PARASHARI_YOGA_V1`'s own certification-execution stage consumed already-certified production
+substrate without registering a new capability.
+
+### 2. Independent derivation and cross-implementation agreement
+
+A from-scratch, structurally different reimplementation (`validate_d24_holdout.py`) was built: an explicit
+24-entry sign-name lookup table per source sign, materialized via direct zodiacal-order enumeration - not
+the certifier's own modular-arithmetic `(start_sign[source] + division_index) % 12` construction, and
+importing nothing from `engine.astrology` or `scripts/certify_d24.py`. Ten deterministic sample longitudes
+were classified by this validator's own `reference_d24()`, frozen once as `STATIC_HOLDOUT` (Gate I below);
+the certifier's own live `classify()` output is compared against those frozen values - genuine cross-
+implementation agreement between two independently-coded implementations of the same classical rule, never
+a self-comparison, matching the `PARASHARI_YOGA_V1`/`KP_SIGNIFICATOR_V1` post-`ADR-0079` certification-
+integrity discipline from the outset.
+
+### 3. Cell-width representability - measured, not assumed (carried forward from `ADR-0082` section 3)
+
+The 30/24 = 5/4 = 1.25-degree cell width is exactly representable in IEEE-754 double precision, computed
+via exact rational (`Fraction`) arithmetic in `ADR-0082`'s own preparation: zero representation error, zero
+floor-classification boundary mismatches across all 23 internal per-sign boundaries - cleaner than D45's
+own measured 3.553e-15-degree error and three genuine boundary mismatches. Re-confirmed empirically this
+entry via Gate F (300 boundary cases, 0 mismatches).
+
+**A genuine defect was found and fixed in this entry's own Gate F, not in production, disclosed per this
+project's own evidentiary discipline:** the sign-transition edge probe was first constructed as
+`sign * 30.0 + math.nextafter(30.0, -math.inf)`, intended to sit just below the next sign's own boundary.
+Direct inspection found this addition itself rounds UP to exactly `(sign+1)*30.0` in IEEE-754 double
+precision for every sign except Aries (confirmed empirically: e.g. sign=1 gives exactly `60.0`, not a
+value below it), because the intended sub-ULP epsilon is lost during the addition at larger magnitudes.
+`classify()`'s own source (`engine/astrology/varga_classifier.py`, read directly) uses plain `int(longitude
+// 30.0)` for the sign boundary with no promotion at all - the test's own naive construction, not
+`classify()`, was wrong. Fixed by computing the probe at the target magnitude directly
+(`math.nextafter((sign+1)*30.0, -math.inf)`); re-run, 300/300 cases pass, 0 mismatches. This is the
+identical failure class already documented this session for `zodiac_sign()`'s own boundary tests
+(`PARASHARI_YOGA_V1`'s Gate E) - a test-construction defect, found and fixed, not a production defect.
+
+### 4. Boundary cases, protected holdout, negative controls
+
+**Gate F (boundary cases):** the 23 internal per-sign division boundaries (276 cases) plus sign-transition
+edges (24 cases) - 300 total, 0 mismatches. **Gate G (protected holdout):** prime-step deterministic
+sampling (0.0137-degree step), independent of Gate B/F's own points, never used to tune the frozen rule -
+26,278 points, 0 mismatches. **Gate H (negative controls):** three genuine planted mutations - a
+`start_sign[0]` tamper, a `direction[1]` reversal, and a content-hash check - each independently confirmed
+to actually change the relevant comparison, then confirmed the original standalone object remains
+unmutated (Python's `dataclasses.replace()` returns a new instance; `D24_SIDDHAMSA` itself is never
+touched).
+
+**Literal on-disk mutation proof, performed for real as a subprocess exactly as CI would run it, mirroring
+the `ADR-0079`/`PARASHARI_YOGA_V1` evidentiary standard:** pristine `python scripts/certify_d24.py` ->
+exit 0, PASS. `_LEO, _CANCER = 4, 3` changed to `4, 2` directly in `scripts/certify_d24.py` on disk -> same
+command -> exit 3, `D24 CERTIFICATION FAIL: static reference mismatch on H2_taurus_mid: got=(3,13)
+expected=(4,13)` (Gate I catching the real, planted corruption). Reverted directly (this file is new this
+entry, no committed prior version to `git checkout --` from) -> same command -> exit 0, PASS.
+
+### 5. Oracle/reference strategy - genuine, disclosed limitation
+
+**No third-party computational oracle was executed this task.** This host's own local PyJHora environment
+remains degraded (numpy import failure), an already-disclosed, unchanged limitation carried forward from
+`PARASHARI_YOGA_V1`'s own certification-execution stage. **Read-only corroboration only, not executed
+agreement:** `PyJHora`'s own published source (`naturalstupid/PyJHora`, GitHub, `chaturvimsamsa_chart()`)
+was read directly this task (also recorded in `ADR-0082` section 1): its default/Traditional-Parasara
+method (`even_dirn=1`, `odd_base=4`/Leo, `even_base=3`/Cancer) matches this frozen construction exactly;
+its two non-default variants (`PARASARA_EVEN_REVERSE`, `PARASARA_EVEN_DOUBLE_REVERSE`) are excluded as
+explicit non-claims, mirroring D45's own three excluded PyJHora methods. Genuine oracle execution is
+deferred to this project's own CI hash-pinned oracle environment, exactly as every oracle-tier certifier's
+own established pattern already requires - `certify_d24.py` was added to `.github/workflows/ci.yml`'s
+oracle-tier certifier loop **is explicitly NOT performed by this entry** (matching the "no push, no
+CI-workflow change" boundary below); this remains a disclosed future step, not silently assumed done.
+
+### 6. Artifact and drift protection
+
+`certification/VARGA_D24_V1_certification.json` generated, mirroring the existing certified-varga
+artifacts' own schema (`schema`, `adr`, `supersedes_provisional_id` - `"NOTHING_AUTHORISED"`, matching
+D45's own identical value, since D24 is not in `ADR-0014` D1's replacement map - `date`, `scope`, `rule`,
+`oracle`, `gates`, `explicit_non_claims`, `environment`, `preconditions`, `result`). `scripts/certify_d24.py`
+and `validate_d24_holdout.py` added to `scripts/certification_support.py`'s own `CERTIFIER_SOURCES`/
+`VALIDATOR_SOURCES` anti-fitting scan scope (19/18, up from 18/17). `engine/tests/
+test_certification_preconditions.py` (M-03) counts updated to match (19/18). **A second, genuine,
+pre-existing governance guard was found and fixed, disclosed here in full:**
+`engine/tests/test_retired_identifier_gate_scope.py::test_every_real_supersession_claim_matches_its_own_
+division` globs every `certification/VARGA_D*_V1_certification.json` and asserts each carries a
+`supersedes_provisional_id` field matching `scripts/check_retired_identifiers.py::authorised_supersession()`
+for its own division, with a hardcoded `assert checked == 6` (the six vargas certified before this entry).
+`VARGA_D24_V1_certification.json` initially omitted the field entirely, failing this test; fixed by adding
+`"supersedes_provisional_id": "NOTHING_AUTHORISED"` to the certifier's own report (D24 is not in
+`_VARGA_BY_DIVISION`, exactly as D45 is not) and updating the hardcoded count to 7. Full pytest re-run
+after both fixes: 872/872 passed, unchanged.
+
+### 7. What this entry does not do
+
+**Does not write or register `engine/astrology/varga_d24.py`.** Does not modify `varga_rules.py` or
+`varga_registry.py`. Does not modify any existing certification artifact's own substantive content (only
+`preconditions.anti_fitting.modules_scanned`, the identical collateral-drift class this session has now
+resolved four times, changes in already-committed artifacts - see Consequences). Does not add
+`certify_d24.py` to `.github/workflows/ci.yml`'s oracle-tier loop (section 5). Does not push. Does not
+merge. Does not begin production implementation of D24. Does not begin any other JATAKA capability. Does
+not resolve `docs/decisions/DP-024-varga-framework-step-payload-architecture.md` - D24's own contract
+freezes without it, exactly as `ADR-0082` section 1 already established.
+
+- **Consequences:** D24's own certification evidence now exists and is real, regenerable, and gate-based -
+  all nine gates (A-I) PASS. `engine/astrology/varga_d24.py` does not exist; no capability is registered or
+  production-usable. Production implementation remains a separate, not-yet-authorized act. Registering the
+  two new certifier/validator sources legitimately grew the anti-fitting scan surface (190 -> 192; the
+  certifier and validator together account for two, not one, matching the KP/Parashari-significator
+  precedent of a paired addition), aging every other already-committed certification artifact's own
+  `modules_scanned` field - the identical, now four-times-resolved drift class this session has handled
+  before (`beb196b`; the `ADR-0081` sub-entries). The five certifiers this Windows host can regenerate
+  without PyJHora (`KP_CHAIN_V1`, `KP_SIGNIFICATOR_V1`, `SIGN_CONVENTION_V1`, `RISE_SET_V1`,
+  `PARASHARI_YOGA_V1` - now hermetic since its own production module needs no oracle) were regenerated in
+  this same task, each verified via a flattened-field diff to differ from its own committed version in
+  `modules_scanned` alone. The oracle-tier certifiers plus `current_engine` remain at their prior committed
+  value, disclosed and unresolved by this entry - pending the same CI-sourced-overlay recovery pattern
+  already used repeatedly, once pushed.
+- **Evidence:** `ADR-0082` (D24 selection and frozen methodology); `scripts/certify_d24.py` (the standalone
+  certifier, all nine gates A-I recorded PASS); `validate_d24_holdout.py` (the independent validator);
+  `certification/VARGA_D24_V1_certification.json` (`result: PASS`); the literal on-disk mutation proof
+  (section 4); `python -m pytest -q` (872/872, both before this task via `git stash` and after); `scripts/
+  check_artifact_drift.py` (five hermetic artifacts, `modules_scanned`-only drift, confirmed via flattened-
+  field diff); `check_adr_numbering.py`, `check_retired_identifiers.py`, `check_identifier_families.py`
+  (all PASS); `engine/tests/test_certification_preconditions.py` and `test_retired_identifier_gate_scope.py`
+  (both green after the two narrow, disclosed fixes in section 6).
 
 ---
 
