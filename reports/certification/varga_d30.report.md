@@ -5,14 +5,14 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 
 - Decision entry: ADR-0011
 - Supersedes provisional identifier: ADR-VARGA-D30-001
-- Date: 2026-08-31
+- Date: 2026-09-01
 - Scope: D30 Trimsamsa (Parashara variant): unequal tara-graha segments
 - Result: **PASS**
 
 ## Preconditions
 
 - Data assets verified against CHECKSUMS.sha256: 3
-- Anti-fitting scan: 189 production modules, 0 findings
+- Anti-fitting scan: 190 production modules, 0 findings
 
 ## Gates
 
