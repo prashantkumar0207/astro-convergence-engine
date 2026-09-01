@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | ACTIVE REGISTER. **ACCEPTED (47): ADR-0001, ADR-0002, ADR-0005 through ADR-0012, ADR-0015, ADR-0016, ADR-0017, ADR-0033 through ADR-0037, ADR-0039 through ADR-0042, ADR-0044, ADR-0045, ADR-0046, ADR-0048 through ADR-0069**, owner-ratified across 2026-08-13, 2026-08-14, 2026-08-17, 2026-08-18, 2026-08-19, 2026-08-20, 2026-08-21 and 2026-08-22. **`ADR-0069` ratifies `DP-016` Option 1: H-05 closed via a new hermetic-tier test file (`engine/tests/test_vimshottari_hermetic_baseline.py`) freezing the already-oracle-validated Vimshottari anchor construction for five seed cases, plus a genuine negative control independently verified by actually mutating and reverting the production line in-session. No certified value changes; `certify_vimshottari.py`/`VIMSHOTTARI_V1_certification.json` untouched; M-03 scan surface confirmed unaffected. H-06/H-08/M-02/dasha boundary-proximity indicator not touched.** **`ADR-0068` records the owner's ratification of the FOUNDATION-exit readiness audit: "CEO RATIFICATION — FOUNDATION EXIT. I ratify ADR-0068 and declare FOUNDATION EXITED." All six `Q8_CLOSURE_MATRIX.md` s4 implementation-scope items have a settled, ratified disposition (rise/set, panchanga, `TRIKALAM_V1` certified and checkpointed; H-01/H-02 resolved; boundary-proximity indicators and civil-date rendering explicitly decoupled from the checkpoint by their own ratified decisions, `ADR-0067` and the `ADR-0063` addendum). **FOUNDATION IS FORMALLY EXITED AS OF 2026-08-22.** This does NOT authorize JATAKA - `Q8_CLOSURE_MATRIX.md` s5's own entry criteria (the Dasha roadmap's six steps, `docs/DASHA_CERTIFICATION_ROADMAP.md`, `Status: PROPOSED`) remain separately unmet. No certified calculation changed; no FOUNDATION item reopened; `phase-g-governance` not merged to `main`.** **`ADR-0067` ratifies `DP-015`: H-01/`ADR-0066`'s Q8 carve-out reading confirmed textually valid but novel, no precedent claimed; the carve-out's general reach beyond H-01/H-02 confirmed genuinely ambiguous, not silently generalized to any other FOUNDATION item; boundary-proximity indicators decoupled from the current FOUNDATION-exit checkpoint via `DP-015` §F "Option 3 (AMENDED)", ratified exactly as written - explicitly tracked as future work, not certified, does not gate exit, no future consumer may treat it as certified, any future consumer must certify first or explicitly refuse/gate, no certified values changed, no methodology specified here, a future decision paper determines it.** **`ADR-0066` ratifies `DP-014` Option 2: `find_crossings()` now raises `UnsupportedNodePolicyError` for Rahu/Ketu under any `node_policy` other than the certified mean node, converting H-01's silent transit-event incompleteness into an explicit refusal. No certified `TRANSIT_V1` value changes (confirmed by isolated-venv regeneration - only the already-understood ULP noise and volatile fields differed, and that regenerated artifact was discarded, not committed); Options 1/3 not chosen; Tier-0's Locked scope not touched.** **`ADR-0065` ratifies `DP-013`'s H-02 fix Option 1: `TransitEvent.declared_division`, an additive field classified from the exact `target_longitude`, with a new Gate E (genuine negative control) in `certify_transits.py`. No certified `TRANSIT_V1` value changes; Options 2/3 not chosen; Tier-0's Locked scope not touched.** **`ADR-0063` ratifies `DP-012` Option C: civil-date rendering for dasha boundaries is explicitly deferred, not authorized for implementation - `DP-012` itself unedited, per the established "paper is not the decision" discipline. A 2026-08-22 addendum to `ADR-0063` (**ratified**, `Status: ACCEPTED`, per the owner's "CEO RATIFICATION — ADR-0063 ADDENDUM" instruction) records a narrow qualification - `ADR-0063`'s original claim of independently satisfying `Q8_CLOSURE_MATRIX.md` s4 must not be relied upon without it, following `DP-015`'s finding that the carve-out's general reach is genuinely ambiguous - and explicitly decouples civil-date rendering from the current FOUNDATION-exit checkpoint, matching `ADR-0067`'s equivalent treatment of boundary-proximity indicators.** `ADR-0064` ratifies `DP-013` Option C (independent reference + PyJHora) and records the executed reproduction: H-02 independently confirmed for the Sun (2 of 12 sankranti, exact match to the original audit), PyJHora recorded as an evidenced limitation (cannot resolve the defect's own precision scale, by either method tested) rather than manufactured agreement. `TRANSIT_V1` unmodified by the reproduction itself; **pushed and CI-confirmed green** (run `32375941348`, all four jobs, both new steps genuinely executed under the hash-pinned oracle environment). A fix option was chosen 2026-08-21 - see `ADR-0065`.** **`ADR-0062` adds the permanent ACE execution-state mechanism (`docs/ACE_EXECUTION_STATE.md`) plus an explicit prohibition on the user relaying reports between Claude and ChatGPT - operationalizes `ADR-0056`'s already-ratified s11 point 3, does not reopen it.** **`ADR-0060` ratifies `DP-011` Option C seeded by Option B: Rahu Kalam/Yamaganda/Gulika become named, profile-selectable variants; the PyJHora 4.8.7 `trikalam()` convention is independently inspected, transcribed and frozen as the seed variant `PYJHORA_TRIKALAM_V1`. Authorizes only that one variant's implementation/certification work - does not itself certify it, does not authorize a second variant, and does not authorize Muhurta-specific consumption. `ADR-0061` records that implementation as built, locally verified, then **pushed and CI-confirmed green** (run `32358109807`, all four jobs, oracle job genuinely executing `TRIKALAM_V1`'s Gate F) - a 2026-08-20 evidence addendum records the CI confirmation and a recovered, expected M-03 drift finding (177->180, same class as `ADR-0053`/`ADR-0054`); a second 2026-08-20 addendum records a genuine ULP battery added to Gate C (exact sunrise weekday-rollover instant, with negative control), remediating a CEO-audit finding that the prior Gate C was a pinning/tolerance check, not a true ULP battery - **pushed and CI-confirmed green** (run `32361308330`, all four jobs, oracle-job log directly confirming `ulp_boundary_checked: True, ulp_negative_control_verified: True`). A third 2026-08-20 addendum records the **owner's acceptance of `TRIKALAM_V1`'s FOUNDATION per-capability checkpoint** - `TRIKALAM_V1` is now FOUNDATION checkpoint-accepted / production-certified. FOUNDATION's own phase-exit criteria remain open: civil-date rendering is now explicitly deferred by decision (`ADR-0063`, `DP-012` Option C), not implemented; H-01 and H-02 still lack any ratified decision paper.** **`ADR-0056` formalizes the four-role AI collaboration model (USER/CLAUDE/CHATGPT/CODEX); Codex is explicitly excluded from the ACE workflow. `ADR-0057` (CEO-audit HOLD remediation) adds ACE interaction mode and mandatory session-start audit to `specs/CLAUDE_WORKFLOW.md`. `ADR-0058` adds an execution-continuity rule (do not stop prematurely; five terminal stop conditions) to the same document; its `specs/CLAUDE_WORKFLOW.md` edit is committed (`20a9589e3d567bbf86e36b13bf2d61ca734e728e`). `ADR-0059` records the CEO-approved `PANCHANGA_V1` Gate F (genuine PyJHora external-oracle comparison for tithi/yoga/karana, nakshatra explicitly excluded): implemented, committed (`4177d6108236e64d07f6b23499307001f0d7c421`), pushed, and **CI-confirmed green** (run `32242462766`, all four jobs, oracle job genuinely executing Gate F: 66 comparisons, 0 mismatches, negative control verified) under the hash-pinned oracle environment. A 2026-08-19 evidence addendum to `ADR-0059` records the owner's acceptance of Panchanga's FOUNDATION per-capability checkpoint (`Q8_CLOSURE_MATRIX.md` s4); this does not close FOUNDATION's own phase-exit criteria, which still require Rahu Kalam/Yamaganda/Gulika, H-01, and H-02.** Tier-0 is **FORMALLY LOCKED** (ADR-0034), the only s12 Locked artifact. The registry vargas and the sign conventions are **owner-ratified but NOT s12 Locked** (ADR-0035 D3, ADR-0036 D3). **Q8 is now CLOSED** (ADR-0048); **Phase G exited and FOUNDATION entry criteria were independently confirmed satisfied** (this session's evidence reports). **FOUNDATION's first work package, rise/set, is CERTIFIED (`ADR-0054`, `RISE_SET_V1`)**: five owner-ratified conventions (upper-limb disc, standard -50' refraction, elevation accounted for, structured NO_RISE/NO_SET, conventions in `CalculationProfile`/`BirthData`), zero calculation impact on any existing certified capability, two genuine defects found and fixed during its own construction (recorded in the entry). **Panchanga classification-only work (tithi/vara/nakshatra/yoga/karana at a given instant) is now authorised (`ADR-0055`)**: engine-wide 1e-10 promote-up boundary convention, vara consumes the certified rise/set layer, element transition-timing deferred. **Rahu Kalam/Yamaganda/Gulika: `DP-011` (`ADR-0055` item 2's authorized paper) is now ratified (`ADR-0060`, Option C seeded by Option B) and its seed variant `PYJHORA_TRIKALAM_V1` is implemented and CI-confirmed (`ADR-0061`); a second variant remains explicitly NOT authorised.** No later phase (Muhurta, Varshaphal, Prashna, Mundane, BTR, Interpretation, Convergence, UI, ML) is thereby authorised - `docs/Q8_CLOSURE_MATRIX.md` s4 requires its own per-capability checkpoint for each. **Still PROPOSED: ADR-0003, ADR-0004, ADR-0013, ADR-0014, ADR-0018 through ADR-0032, ADR-0038, and ADR-0047.** **`ADR-0079` (`KP_SIGNIFICATOR_V1` certification-integrity repair) is now `ACCEPTED`, ratified 2026-08-28 per the owner's "CEO AUTHORIZATION — ADR-0079 RATIFICATION" instruction, recorded in the "Ratification of ADR-0079" sub-entry - `DP-030`'s own separate primary-source question remains fully open and unaddressed by this ratification.** `ADR-0047`'s originally-reported G5 sample accounting (22/22 complete, 16 independent, 4 ADB_MATCH, 2 unresolved, 14 events) was briefly, and **erroneously**, corrected to "12/22 attempted" by a 2026-08-18 addendum that has since been found (owner-directed forensic reconciliation) to rest on a conflation of the 22-person sample with an unrelated 5-person bridging pilot; a second, later 2026-08-18 addendum **restores 22/22 as the authoritative state** (16 independent, 4 ADB_MATCH: Fichera/Aimar/Serantoni/Bobet, 2 unresolved: Veen/Perquier, 14 independent events) and marks the "12/22" addendum SUPERSEDED/RETRACTED, preserved unedited. `ADR-0047` remains PROPOSED, not ratified, throughout. Ratification is per-entry; an owner existing is not the register being ratified. Includes the ADR-0018 remote-CI evidence addendum (2026-08-11), the ADR-0047 "12/22" addendum (2026-08-18, now retracted), and the ADR-0047 restoration addendum (2026-08-18). |
-| Version | 4.14.0 |
+| Version | 4.15.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-31 ("Production implementation authorization and execution of ADR-0081" sub-entry added, per the owner's own "CEO AUTHORIZATION — PARASHARI_YOGA_V1 PRODUCTION IMPLEMENTATION" instruction: records the explicit JATAKA-scope interpretation `ADR-0075` requires (citing `DP-021`'s own classification), ratifies `engine/parashari/mahapurusha_yoga.py` as the production module path, and records its implementation and fresh post-implementation verification - all ten certification gates re-run and PASS against the real module (`certify_parashari_yoga.py` rewritten to test it directly, no longer a standalone stand-in), a literal on-disk mutation proof against the real file, 872/872 pytest unchanged, and the disclosed residual `modules_scanned` 189->190 drift (four hermetic certifiers regenerated this same entry; eleven oracle-tier plus `current_engine` remain pending the established CI-sourced-overlay pattern). `ADR-0081`'s own entry text and its three prior sub-entries remain unedited. No push, no merge - not authorized by this entry.) |
+| Last updated | 2026-09-01 (`ADR-0082` added, `PROPOSED`, not yet ratified: selects D24 (Siddhamsa) as the fourth JATAKA capability - an explicit CEO sequencing/product decision made after `DP-031` section J's comparative study found the D24-vs-D40 evidence genuinely tied, not a claim D24 is methodologically superior to D40, which remains a valid future candidate. Performs the `ADR-0075` JATAKA-scope interpretive statement (D24 is literally named in `Q8_CLOSURE_MATRIX.md` s5, so the burden is minimal). Freezes D24's own methodology (BPHS source with a verbatim verse citation retrieved this task, the odd-Leo/even-Cancer forward construction, `parashara` school, and a measured zero-error/zero-boundary-mismatch representability result, cleaner than D45's own). Explicitly preserves the capability-selection / methodology-ratification / certification-authorization / production-implementation distinction: this entry performs only the first two; `docs/decisions/DP-024-varga-framework-step-payload-architecture.md` remains deferred, neither resolved nor broadened.) |
 | Review cadence | TBD |
 
 # Decision Log (ADR register)
@@ -5976,6 +5976,151 @@ section M (the authorization to draft, unedited by this ratification).
   above); `python -m pytest -q` (872 passed, both before and after); `scripts/check_artifact_drift.py`,
   `check_adr_numbering.py`, `check_retired_identifiers.py`, `check_identifier_families.py` (all PASS);
   `engine/tests/test_certification_preconditions.py` (30/30 passed, unchanged).
+
+---
+
+## ADR-0082 - D24 (Siddhamsa) selected as the fourth JATAKA capability: sequencing decision and frozen methodology (PROPOSED - prepared for CEO ratification, not yet declared)
+
+- **Date:** 2026-09-01
+- **Status:** PROPOSED. Drafted per the owner's own "CEO AUTHORIZATION — PROCEED WITH D24 SELECTION/ADR
+  WORK" instruction: "The CEO has selected D24 as the fourth JATAKA capability... Create the appropriate
+  D24-specific ADR following the repository's established ADR governance and precedent. The ADR must
+  perform the JATAKA-scope interpretive work required by ADR-0075." Not self-ratified - this entry
+  requires its own separate owner ratifying instruction, mirroring `ADR-0076`'s own identical precedent
+  for D45.
+- **Context:** `docs/decisions/DP-031-jataka-next-capability-decision-readiness.md` re-evaluated the
+  JATAKA candidate set now that D45, `KP_SIGNIFICATOR_V1`, and `PARASHARI_YOGA_V1` are each implemented
+  and certified, isolating D24 and D40 as the only two candidates simultaneously methodology-ready,
+  dependency-clean, and requiring no `DP-024` resolution (section F). `DP-031` section J, added per a
+  separate "CEO AUTHORIZATION — D24 vs D40 METHODOLOGY ADJUDICATION" instruction, performed a narrowly
+  scoped comparative methodology study of the two and found the evidence **genuinely tied** across every
+  axis compared - source clarity, boundary/interval cleanliness, dependencies, certification-template fit,
+  and JATAKA-scope basis were all equal; the two marginal asymmetries found (D24's stronger verbatim BPHS
+  citation; D40's simpler no-reversal structure) did not rise to a real tiebreaker. `DP-031` section J
+  explicitly declined to select either, per the owner's own instruction not to manufacture a winner.
+
+### 1. Selection rationale - explicit, not a methodology finding
+
+**D24 is selected here as a CEO sequencing/product decision, made after `DP-031` section J found no
+methodology-based winner between D24 and D40 - not because this entry or any prior paper found D24
+intrinsically more authoritative, accurate, or methodologically superior to D40.** This distinction is
+stated explicitly, per the owner's own explicit instruction, because every other capability selection
+recorded in this register (D45 over D16/D20/D24/D27/D40/D60; the KP and Parashari yoga tracks) was made
+*because* the evidence favoured one candidate - this is the first JATAKA selection in this project's
+history made on a tied record, and the record must not be read retroactively as if D24 had won on the
+merits. **D40 remains a valid future JATAKA candidate**, unaffected by this entry - nothing in `DP-031`
+section J, this entry, or any future D24 certification work diminishes D40's own equal standing; a future
+ADR selecting D40 would rest on the identical evidentiary basis this entry does, a sequencing choice, not
+a corrected methodology judgment.
+
+**`docs/decisions/DP-024-varga-framework-step-payload-architecture.md` remains DEFERRED and is neither
+resolved nor broadened by this entry.** `DP-031` section J.1 item 7 (D24) established directly that D24's
+own computational contract freezes without any `DP-024` decision: `VargaClassification` (`engine/
+astrology/varga_classifier.py`) already scopes every certified varga, D45 included, to `d_sign`,
+`division_index`, and `fraction` only, with no deity/payload output for any of them - D24's own real
+classical deity tradition (section 3 below) is excluded from this design as a disclosed non-claim, the
+same treatment `ADR-0077` section 10 already gave D45's own deity tradition, not a new architecture
+decision manufactured to avoid `DP-024`.
+
+### 2. JATAKA-scope interpretive work, required by `ADR-0075`
+
+`ADR-0075` (ratifying `DP-022`'s ILLUSTRATIVE reading of `Q8_CLOSURE_MATRIX.md` s5) requires that a JATAKA
+capability's own ADR "explicitly state why the capability falls within JATAKA's scope" when the capability
+is not literally named in s5's own implementation-scope text - the requirement `ADR-0081` (Parashari yoga)
+had to satisfy via a later governance sub-entry after initially omitting it. **D24 does not carry that
+burden**: `Q8_CLOSURE_MATRIX.md` s5's own "Implementation scope" row names "remaining production vargas in
+the roadmap's risk order" directly, and D24 is one of the eight vargas `docs/VARGA_CERTIFICATION_ROADMAP.md`
+section 4 enumerates as remaining. D24's JATAKA-scope eligibility is therefore established by s5's own
+literal text, not by `ADR-0075`'s illustrative-extension mechanism - stated explicitly here, per the
+owner's own instruction, rather than left implicit the way `ADR-0076`/`ADR-0077` (D45) left it.
+
+### 3. Frozen methodology - source, rule, school
+
+**Classical source:** Parashara/BPHS, the same source family already governing every certified
+`parashara`-school varga in this repository (D2, D3, D7, D9, D10, D12, D30, D45). **Construction, frozen
+exactly as `docs/VARGA_CERTIFICATION_ROADMAP.md` section 4 states it and independently cross-confirmed
+this task against a verbatim retrieved verse citation** (BPHS Sarga 6, Shlokas 2-23, via a secondary
+BPHS-sourced page, `DP-031` section J.1 item 1): twenty-four equal divisions of 30/24 = 1.25 degrees per
+sign; for an odd source sign (Aries, Gemini, Leo, Libra, Sagittarius, Aquarius), division 0 maps to Leo;
+for an even source sign (Taurus, Cancer, Virgo, Scorpio, Capricorn, Pisces), division 0 maps to Cancer;
+counting proceeds forward (no reversal) for all twelve source signs. **School:** `parashara`, matching the
+existing registry key.
+
+**Independent corroboration, not the source of authority** (mirroring `ADR-0077`'s own explicit framing
+for D45): PyJHora's own `chaturvimsamsa_chart()` function, read directly from its published source
+(`naturalstupid/PyJHora`, GitHub - not executed locally, this Windows host's own PyJHora environment
+remaining degraded, an already-disclosed, unchanged limitation), offers a default/Traditional-Parasara
+method (`even_dirn=1`, `odd_base=4`/Leo, `even_base=3`/Cancer) matching this frozen construction exactly,
+alongside two named alternates (`PARASARA_EVEN_REVERSE`, `PARASARA_EVEN_DOUBLE_REVERSE`) that no source
+retrieved this task or `DP-031` section J.1 describes as a competing reading of the primary construction -
+excluded as explicit non-claims below, mirroring D45's own three excluded PyJHora methods.
+
+**Boundary/interval behaviour - measured, not assumed, mirroring `ADR-0077`'s own method for D45:** the
+30/24 = 5/4 = 1.25-degree cell width is exactly representable in IEEE-754 double precision (computed via
+exact rational (`Fraction`) arithmetic this task and in `DP-031` section J.1 item 5): zero representation
+error, zero floor-classification boundary mismatches across all 23 internal per-sign boundaries - a
+materially cleaner result than D45's own measured 3.553e-15-degree error and three genuine boundary
+mismatches (k=13, 26, 29). No division-specific boundary exception is introduced; D24 inherits the
+engine's own existing, already-certified 1e-10 promote-up tolerance convention without modification.
+
+### 4. Explicit non-claims
+
+**No interpretive/deity-based reading of D24 results is claimed.** BPHS names twelve presiding deities
+(Skanda, Parusdhara, Anala, Vishwakarma, Bhaga, Mitra, Maya, Antaka, Vrisha-Dwaja, Govinda, Madana, Bhima)
+repeating twice per sign, with the deity sequence itself (not the sign-mapping direction) running in
+reverse for even signs - a real classical tradition, found this task (`DP-031` section J.1 item 3) and not
+previously flagged by `docs/VARGA_CERTIFICATION_ROADMAP.md`'s own "No" payload-gap entry for D24.
+`VargaClassification` carries only `d_sign`, `division_index`, and `fraction`, consistent with every other
+certified varga including D45; no payload/label-table extension is claimed or required (section 1).
+
+The two non-default PyJHora `chart_method` variants (`PARASARA_EVEN_REVERSE`, `PARASARA_EVEN_DOUBLE_
+REVERSE`) are not certified by this design and remain explicit non-claims. No non-`parashara` school
+variant is claimed. `docs/VARGA_CERTIFICATION_ROADMAP.md` and `docs/decisions/DP-024-varga-framework-
+step-payload-architecture.md` remain unratified/deferred respectively and are not thereby ratified or
+resolved by this entry. The BPHS citation retrieved this task and in `DP-031` section J.1 is a translated-
+edition/secondary-page citation, not verified against the original Sanskrit or a second independently-
+published English edition - an explicit non-claim, mirroring `ADR-0081` section 1's identical caveat.
+
+### 5. What this entry does not do
+
+**Preserves the four-stage distinction the owner's own instruction requires**, matching this project's own
+established D45/KP/Parashari-yoga precedent of never collapsing capability selection, methodology
+ratification, certification authorization, and production implementation into one authorizing act:
+
+1. **Capability selection** (section 1) and **methodology ratification** (section 3) are what this entry,
+   if ratified, performs.
+2. **Certification authorization** - designing and executing D24's own certification battery (frozen rule
+   as a registered `CyclicVargaRule`, independent validator, oracle comparison, boundary/holdout/negative-
+   control plan, `VARGA_D24_V1_certification.json`) - is **NOT authorized by this entry** and remains a
+   separate, subsequent act, mirroring `ADR-0076` -> `ADR-0077`'s own two-stage precedent for D45. No
+   certifier is run, no certification artifact is generated or modified by this entry.
+3. **Production implementation** - writing or registering `engine/astrology/varga_d24.py` - is **NOT
+   authorized by this entry**, remains further downstream than certification authorization itself, and
+   requires its own separate, explicit owner instruction, mirroring the precedent already established for
+   D45 (`ADR-0077`'s own ratification explicitly reserved this), `KP_SIGNIFICATOR_V1`, and
+   `PARASHARI_YOGA_V1`.
+4. Does not modify any file under `engine/`. Does not modify any certification artifact. Does not run or
+   regenerate any certifier. Does not resolve or broaden `docs/decisions/DP-024-varga-framework-step-
+   payload-architecture.md` (section 1). Does not begin any other JATAKA capability. Does not touch
+   `DP-031`'s own file text (unedited, cross-referenced only via `docs/decisions/README.md`'s own index
+   row). Does not push or merge anything.
+
+- **Consequences, if ratified:** this entry would formally select D24 as the fourth JATAKA capability and
+  freeze its own methodology (source, rule, school, boundary behaviour), explicitly on a sequencing basis
+  given `DP-031` section J's tied finding - not a methodology-superiority claim over D40, which remains a
+  valid future candidate on the identical evidentiary basis. `DP-024` remains deferred, neither resolved
+  nor broadened. Ratification would authorize certification-design work as the next, separately-tracked
+  act - not performed by this entry itself, exactly as `ADR-0076`'s own ratification authorized `ADR-0077`
+  as a separate subsequent act for D45.
+- **Evidence:** `docs/decisions/DP-031-jataka-next-capability-decision-readiness.md` sections A-F (next-
+  capability re-evaluation) and J (the D24-vs-D40 comparative study, tied finding); `docs/
+  VARGA_CERTIFICATION_ROADMAP.md` section 4 (construction, source); a verbatim BPHS verse citation (Sarga
+  6, Shlokas 2-23) retrieved this task; direct reading of `PyJHora`'s own published `chaturvimsamsa_chart()`
+  source (`naturalstupid/PyJHora`, GitHub); exact-rational (`Fraction`) boundary/representability
+  measurement performed this task (zero error, zero floor-classification mismatches); `engine/astrology/
+  varga_classifier.py`'s own `VargaClassification` schema (D-sign-only scope, confirmed by direct read);
+  `ADR-0075` (JATAKA-scope interpretive requirement); `ADR-0076`/`ADR-0077` (the direct D45 two-stage
+  selection/methodology-then-certification precedent this entry mirrors).
 
 ---
 
