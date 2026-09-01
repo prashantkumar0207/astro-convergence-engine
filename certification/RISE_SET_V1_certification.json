@@ -51,7 +51,7 @@
   "any other varga, dasha, or certified layer; each requires its own ADR and certification"
  ],
  "environment": {
-  "python": "3.12.14"
+  "python": "3.12.10"
  },
  "preconditions": {
   "data_assets": {
@@ -63,7 +63,7 @@
    }
   },
   "anti_fitting": {
-   "modules_scanned": 189,
+   "modules_scanned": 190,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."

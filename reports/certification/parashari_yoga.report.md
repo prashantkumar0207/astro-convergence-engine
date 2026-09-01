@@ -5,13 +5,13 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 
 - Decision entry: ADR-0081
 - Date: 2026-08-31
-- Scope: PARASHARI_YOGA_V1: the five Panch Mahapurusha yogas (Ruchaka/Bhadra/Hamsa/Malavya/Sasa) - BPHS base formation rule only (own-sign-or-exaltation-sign AND kendra-to-Lagna, whole-sign) for a natal D1 chart under the PARASHARI_LAHIRI profile. Rule under certification is a STANDALONE implementation embedded in this certifier - not engine/parashari/mahapurusha_yoga.py, no production module is authorized or created this execution.
+- Scope: PARASHARI_YOGA_V1: the five Panch Mahapurusha yogas (Ruchaka/Bhadra/Hamsa/Malavya/Sasa) - BPHS base formation rule only (own-sign-or-exaltation-sign AND kendra-to-Lagna, whole-sign) for a natal D1 chart under the PARASHARI_LAHIRI profile. Rule under certification is the REAL PRODUCTION module engine/parashari/mahapurusha_yoga.py, authorized by the owner's 'CEO AUTHORIZATION - PARASHARI_YOGA_V1 PRODUCTION IMPLEMENTATION' instruction and recorded in docs/DECISION_LOG.md under ADR-0081.
 - Result: **PASS**
 
 ## Preconditions
 
 - Data assets verified against CHECKSUMS.sha256: 3
-- Anti-fitting scan: 189 production modules, 0 findings
+- Anti-fitting scan: 190 production modules, 0 findings
 
 ## Gates
 
@@ -19,10 +19,10 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 - **B_logical_enumeration**: cases=720, mismatches=0, space=5 grahas x 12 graha signs x 12 ascendant signs = 720, classification=correctness_evidence
 - **B2_longitude_plumbing**: cases=1728, mismatches=0, classification=correctness_evidence
 - **C_independent_validator**: result=PASS, classification=corroborating_correctness_evidence
-- **D_non_invasiveness**: embedded_rule_isolated_from_kp_jaimini_nadi_drishti=True, production_dignity_module_importable=True, production_house_module_importable=True, content_sha256_matches_pinned=True
+- **D_non_invasiveness**: production_module=engine/parashari/mahapurusha_yoga.py, production_module_isolated_from_kp_jaimini_nadi_drishti=True, production_module_content_sha256_matches_pinned=True, production_dignity_module_importable=True, production_house_module_importable=True, certifier_content_sha256_matches_pinned=True
 - **E_boundary_cases**: cases=36, mismatches=0
 - **F_multi_yoga_cases**: cases=3, mismatches=0
-- **G_retrograde_disclosure**: cases=3, mismatches=0, rule=per-graha disclosed qualifier, never a pass/fail gate (ADR-0081 section 6)
+- **G_retrograde_disclosure**: cases=11, mismatches=0
 - **H_static_reference_regression**: cases=40, charts=8, classification=correctness_evidence, name=static independent-reference regression
 - **I_negative_controls**: all_detected=True, frozen_constants_unmutated=True
 
@@ -38,7 +38,7 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 - no interpretive or predictive claim - this certification establishes only that the ratified formation-condition methodology is correctly and independently computed and reproducibly validated, never that a yoga predicts or correlates with any real-world outcome
 - protected historical validation is not applicable - no future-event outcome, historical prediction dataset, or protected predictive holdout is used
 - translated-edition caveat carried forward from ADR-0081/DP-027: the BPHS citation is not verified against the original Sanskrit or a second, independent published edition
-- no engine/ production module is created or modified by this certification
+- production implementation is scoped exactly to ADR-0081 - no convergence, UI, API, bhanga, combustion, strength, additional yoga, additional varga, or dasha integration exists in engine/parashari/mahapurusha_yoga.py
 
 ## Evidence files
 

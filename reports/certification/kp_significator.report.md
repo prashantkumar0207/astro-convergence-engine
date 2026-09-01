@@ -11,7 +11,7 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 ## Preconditions
 
 - Data assets verified against CHECKSUMS.sha256: 3
-- Anti-fitting scan: 189 production modules, 0 findings
+- Anti-fitting scan: 190 production modules, 0 findings
 
 ## Gates
 
