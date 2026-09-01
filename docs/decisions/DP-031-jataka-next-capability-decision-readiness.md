@@ -3,10 +3,10 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | OPEN - decision paper. Presents options and a recommendation. DECIDES NOTHING. Requires owner approval. |
-| Version | 1.0.0 |
+| Status | OPEN - decision paper. Presents options and a recommendation. DECIDES NOTHING. Requires owner approval. Section J records a narrowly scoped D24-vs-D40 comparative study finding the evidence genuinely tied - no winner manufactured. |
+| Version | 1.1.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-09-01 |
+| Last updated | 2026-09-01 (section J added: D24 vs D40 comparative methodology study, per "CEO AUTHORIZATION — D24 vs D40 METHODOLOGY ADJUDICATION"; sections A-I unedited) |
 | Review cadence | TBD |
 
 # DP-031. Next JATAKA capability decision-readiness
@@ -233,8 +233,204 @@ certification artifact, or touch FOUNDATION, Tier-0, or any already-closed Dasha
 6. Whether polar-Placidus + M-04 closure should now be authorized as Tier-0/FOUNDATION-tier maintenance,
    independent of whichever JATAKA capability is chosen (unchanged open item from `DP-021`/`DP-023`).
 
+## J. D24 vs D40 comparative methodology study (resumption, 2026-09-01)
+
+Authorized by the owner's explicit "CEO AUTHORIZATION — D24 vs D40 METHODOLOGY ADJUDICATION" instruction:
+"DP-031 is accepted as decision-readiness work. Its conclusion that D24 and D40 are the two strongest
+remaining candidates is accepted without treating either as selected. Perform a narrowly scoped
+comparative methodology study of D24 and D40 only." Sections A-I above are unedited. This section does
+not select a capability, does not create an ADR, does not implement anything, and does not resolve
+`DP-024`. Per the owner's own explicit instruction, `DP-024`'s general Varga step/payload architecture is
+resolved for neither candidate here - section J.3 below states why that was found unnecessary, not
+assumed.
+
+**Method note:** since `PyJHora` cannot be executed locally on this Windows host (its own environment
+remains degraded - numpy import failure, a pre-existing, already-disclosed limitation, unchanged since
+`ADR-0081`/`PARASHARI_YOGA_V1`), corroboration below was obtained by (a) direct primary-source retrieval
+of Brihat Parashara Hora Shastra commentary/translation pages via web search and fetch, and (b) direct
+reading of `PyJHora`'s own published source code (`naturalstupid/PyJHora`, GitHub, `charts.py`), not by
+running it. This is read-only verification of external sources, not a repository change and not a claim
+of executed oracle agreement - genuine oracle execution (matching `ADR-0077`'s own PyJHora cross-check for
+D45) would still need to happen in this project's own CI hash-pinned oracle environment, exactly as every
+other oracle-tier certifier in this project already requires.
+
+### J.1 Per-candidate findings against the owner's thirteen required items
+
+**D24 (Siddhamsa / Chaturvimshamsha):**
+
+1. **Authoritative source/rule basis:** Parashara/BPHS, matching `docs/VARGA_CERTIFICATION_ROADMAP.md`
+   section 4's own citation. A verbatim verse citation was located and retrieved this task (not merely a
+   secondary paraphrase): "The Chaturvimshamsha distribution commences from Simha and Karkata,
+   respectively, for an odd and an even Rashi," cited to BPHS Sarga 6, Shlokas 2-23 (via
+   barbarapijan.com's own BPHS-sourced page). At least three independent modern sources, checked
+   separately, agree on this exact construction.
+2. **Competing schools or variants:** none found for the core sign-mapping rule. `PyJHora`'s own
+   `chaturvimsamsa_chart()` function (read directly from its published source) offers three named
+   `chart_method` variants: the default/Traditional method (odd -> Leo, even -> Cancer, both forward,
+   `even_dirn=1`), `PARASARA_EVEN_REVERSE` (even-sign counting direction reversed), and
+   `PARASARA_EVEN_DOUBLE_REVERSE` (even signs start from Leo's own base instead of Cancer's). **These
+   exist as named alternate options in an independently-authored library, not as evidence the mainstream
+   construction is disputed** - every external primary/secondary source independently retrieved this task
+   describes only the plain forward-forward construction, with no source found describing the reversed
+   variants as a competing textual tradition. This mirrors D45's own precedent exactly: `ADR-0077` found
+   three non-Traditional-Parasara `PyJHora` chart methods for D45 and excluded them as non-claims without
+   treating their existence as evidence of dispute in the certified construction.
+3. **Unresolved interpretive disputes:** none in the sign-mapping itself. A real, but payload-only,
+   convention exists and was not previously surfaced by `docs/VARGA_CERTIFICATION_ROADMAP.md`'s own "No"
+   payload-gap claim for D24: BPHS names twelve presiding deities (Skanda, Parusdhara, Anala, Vishwakarma,
+   Bhaga, Mitra, Maya, Antaka, Vrisha-Dwaja, Govinda, Madana, Bhima) that repeat twice per sign, and for
+   **even** signs specifically, the deity sequence itself runs in reverse (starting from Bhima) - this is
+   the actual referent of "reverse" in the classical tradition, not the sign-mapping direction, confirmed
+   across multiple independently-retrieved sources. See J.3 for why this does not create a `DP-024`
+   dependency.
+4. **Exact computational rule:** `d_sign = (base + direction * division_index) mod 12`, `base = 4`
+   (Leo, 0-indexed) for odd source signs, `base = 3` (Cancer, 0-indexed) for even source signs,
+   `direction = +1` (forward) for both - a `CyclicVargaRule`, structurally simpler than D45's own
+   three-category (movable/fixed/dual) construction, since D24 has only two categories (odd/even).
+5. **Boundary/interval behaviour:** cell width = 30/24 = 5/4 = 1.25 degrees exactly. **Measured directly
+   this task via exact rational (`Fraction`) arithmetic, mirroring `ADR-0077`'s own method for D45:** 1.25
+   degrees is exactly representable in IEEE-754 double precision (`Fraction(float(Fraction(30,24)))` equals
+   the exact fraction `5/4`) - **zero representation error, zero floor-classification boundary mismatches
+   across all 23 internal per-sign boundaries**, computed directly, not assumed. This is a materially
+   cleaner result than D45's own measured 3.553e-15-degree error and three genuine floor-classification
+   mismatches (k=13, 26, 29) - D24 needs no special boundary-convention justification beyond the engine's
+   own existing, already-certified promote-up tolerance.
+6. **Required dependencies:** Tier-0 sidereal-longitude kernel only, already certified. No dependency on
+   any other candidate or on D24's own deity payload.
+7. **Contract freezable without general Varga architecture:** **Yes.** The D-sign classification (item 4)
+   requires no payload/label-table decision. The deity finding in item 3 is real but, per this project's
+   own established and unbroken precedent, out of scope: `VargaClassification` (`engine/astrology/
+   varga_classifier.py`, read directly this task) carries only `d_sign`, `division_index`, `fraction` for
+   every certified varga today, including D45, D30, and every other already-certified division - none
+   exposes a deity/lord payload despite most classical vargas, D24 included, having their own named
+   deity or lord traditions. D24's own future ADR can scope deity output as an explicit non-claim,
+   mirroring `ADR-0077` section 10's identical treatment for D45 ("No interpretive/deity-based reading of
+   D45 results is claimed"). This is a disclosed scoping choice, not an avoided architecture question -
+   flagged for the eventual ADR to state explicitly, not silently omitted the way `docs/
+   VARGA_CERTIFICATION_ROADMAP.md`'s own "No" payload-gap entry currently does.
+8. **Oracle/reference availability:** `PyJHora`'s own `chaturvimsamsa_chart()` exists, confirmed by direct
+   source read, with an identifiable default/Traditional-Parasara method matching the frozen construction
+   (item 4). Not executed locally (method note above); execution would occur in CI's own hash-pinned
+   oracle environment, matching every other oracle-tier certifier.
+9. **Independent-validation feasibility:** straightforward - a from-scratch two-category modular
+   reimplementation, the same shape of validator already built five times for D2/D3/D7/D12/D30/D45.
+10. **Certification-gate feasibility:** fits the existing, six-times-proven `docs/
+    NEW_VARGA_IMPLEMENTATION_TEMPLATE.md` checklist directly; `CyclicVargaRule`, no new contract needed.
+11. **Historical/holdout validation feasibility:** standard established pattern (real ephemeris-driven
+    protected holdout, drawn independently of boundary cases) applies without modification.
+12. **Implementation complexity and risk:** Low - simpler than D45's own three-category rule, with a
+    cleaner (zero-error) boundary result than D45's own measured result.
+13. **JATAKA-scope basis under `ADR-0075`:** not needed - D24 is literally named in `Q8_CLOSURE_MATRIX.md`
+    s5's own "remaining production vargas" text; no interpretive JATAKA-scope work is required, unlike
+    `PARASHARI_YOGA_V1`/`KP_SIGNIFICATOR_V1`.
+
+**D40 (Khavedamsa):**
+
+1. **Authoritative source/rule basis:** Parashara/BPHS, matching the roadmap's own citation. Multiple
+   independent modern sources retrieved this task agree: "the knowledge of the Lords of Khavedamsha in
+   respect of odd signs is to be commencing from Aries and for even signs from Libra" - attributed to BPHS
+   but, unlike D24, no verbatim Sanskrit-verse/Sarga-and-Shloka citation was located in the sources
+   retrieved this task, only consistent paraphrase across independent sites. This is a real, if narrower,
+   evidentiary gap relative to D24's own located verbatim citation - disclosed, not glossed over.
+2. **Competing schools or variants:** `PyJHora`'s own `khavedamsa_chart()` (read directly from source)
+   offers four named `chart_method` variants: the default/Traditional method (odd -> Aries, even -> Libra,
+   both forward), Parivritti Cyclic, Even Reverse, and Parivritti Alternate. As with D24, no source
+   retrieved this task describes the non-default variants as a competing reading of the same construction
+   rather than a separate, clearly-labelled alternate tradition - mirroring D45's own precedent of
+   excluding non-Traditional-Parasara methods as explicit non-claims, not evidence of dispute.
+3. **Unresolved interpretive disputes:** none in the sign-mapping. D40 also carries a real classical deity
+   tradition not mentioned in the roadmap's own "No" payload-gap entry: twelve deities (Vishnu, Chandra,
+   Marichi, Twashta, Dhata, Siva, Ravi, Yama, Yakeshesha, Gandharva, Kala, Varuna) cycling through the
+   forty divisions - but, unlike D24, **in the same order for all signs**, with no even-sign reversal of
+   any kind (sign mapping or deity sequence) found in any source retrieved this task. D40's own overall
+   structure is therefore marginally simpler than D24's (no reversal anywhere), though this has no effect
+   on the certified D-sign contract, which excludes deity output for both, per J.1(D24) item 7's reasoning
+   applied identically here.
+4. **Exact computational rule:** `d_sign = (base + division_index) mod 12`, `base = 0` (Aries) for odd
+   source signs, `base = 6` (Libra, 0-indexed) for even source signs, forward only - a `CyclicVargaRule`,
+   the simplest two-category shape in this comparison (no direction variable needed at all, since both
+   categories count forward).
+5. **Boundary/interval behaviour:** cell width = 30/40 = 3/4 = 0.75 degrees exactly. **Measured directly
+   this task, mirroring D24's own method:** exactly representable in IEEE-754 double precision - **zero
+   representation error, zero floor-classification boundary mismatches across all 39 internal per-sign
+   boundaries.** Identical clean result to D24, both materially better than D45's own measured result.
+6. **Required dependencies:** Tier-0 sidereal-longitude kernel only, identical to D24.
+7. **Contract freezable without general Varga architecture:** **Yes**, for the identical reason given for
+   D24 (item 7 there) - `VargaClassification`'s own established D-sign-only scope, with deity output as a
+   disclosed non-claim for D40's own future ADR.
+8. **Oracle/reference availability:** `PyJHora`'s own `khavedamsa_chart()` exists, confirmed by direct
+   source read, with an identifiable default/Traditional-Parasara method matching the frozen construction.
+   Same execution caveat as D24 (method note above).
+9. **Independent-validation feasibility:** straightforward, arguably the simplest of any candidate
+   evaluated in this project's own JATAKA-varga work (no direction variable, only an offset).
+10. **Certification-gate feasibility:** fits the existing template directly, identical to D24.
+11. **Historical/holdout validation feasibility:** standard established pattern, unmodified.
+12. **Implementation complexity and risk:** Low, marginally simpler in shape than D24 (no reversal
+    anywhere in either the sign-mapping or, per item 3, the deity sequence), though this simplicity does
+    not translate into a certification-relevant advantage since deity output is out of scope for both.
+13. **JATAKA-scope basis under `ADR-0075`:** not needed, identical to D24 - literally named in
+    `Q8_CLOSURE_MATRIX.md` s5.
+
+### J.2 Direct comparison, methodology-first criteria (mirroring `DP-023`'s own filter)
+
+| Axis | D24 | D40 | Differentiated? |
+|---|---|---|---|
+| Source clarity | High; verbatim BPHS verse citation located | High; consistent paraphrase across sources, no verbatim verse located | Marginal edge, D24 (stronger citation) |
+| Sign-mapping dispute | None found | None found | Tied |
+| Deity/payload tradition | Real, with an even-sign reversal in the deity sequence specifically | Real, no reversal anywhere | Marginal edge, D40 (simpler structure), but irrelevant to the certified D-sign scope (both excluded identically) |
+| Computational rule complexity | Two-category, with a direction variable (though both categories are forward in the default method) | Two-category, no direction variable | Marginal edge, D40 (simpler) |
+| Boundary/interval cleanliness | Exact representability, zero mismatches (measured) | Exact representability, zero mismatches (measured) | Tied |
+| Dependencies | Tier-0 only | Tier-0 only | Tied |
+| Freezable without `DP-024` | Yes, via disclosed non-claim | Yes, via disclosed non-claim | Tied |
+| Oracle availability (source-confirmed, not executed) | Confirmed via `PyJHora` source read | Confirmed via `PyJHora` source read | Tied |
+| Certification-template fit | Direct, six-times-proven | Direct, six-times-proven | Tied |
+| JATAKA-scope basis | Literal `Q8_CLOSURE_MATRIX.md` s5 naming | Literal `Q8_CLOSURE_MATRIX.md` s5 naming | Tied |
+
+### J.3 Conclusion: no selection can yet be justified between D24 and D40
+
+**The evidence is genuinely tied.** The two marginal differences found this task (D24's stronger verbatim
+source citation; D40's structurally simpler two-category rule with no reversal anywhere) point in opposite
+directions and are each too narrow to serve as a real tiebreaker - neither affects certification
+feasibility, dependency readiness, boundary cleanliness (both measured identically clean), or JATAKA-scope
+eligibility, all of which are exactly equal. `docs/VARGA_CERTIFICATION_ROADMAP.md` section 5 itself groups
+D24 and D40 together in its own risk order without ranking one above the other, and this task's own
+deeper, independently-sourced investigation does not surface a reason to break that tie either. **Per the
+owner's own explicit instruction not to manufacture a winner: this paper does not recommend D24 over D40
+or D40 over D24.** If a choice is wanted despite the tie, it would have to rest on a basis this repository
+does not currently evidence one way or the other (product-value preference, implementation-order
+convenience, or simply the owner's own direction) - not on methodology, source authority, or certification
+readiness, all four of which are equal.
+
+**`DP-024` is not resolved, and was found unnecessary to resolve for either candidate** (J.1 item 7,
+both): the newly-discovered deity-payload traditions for both D24 and D40 are real but excludable via the
+same disclosed-non-claim scoping this project has already applied to every certified varga, D45 included.
+No part of `DP-024`'s general architecture question needed to be answered to reach this conclusion, per
+the owner's own explicit instruction.
+
+### J.4 Explicit non-claims (this section)
+
+Does not select D24 or D40. Does not create an ADR. Does not resolve `DP-024`. Does not claim `PyJHora`
+execution or oracle agreement was performed - only that named, source-confirmed functions exist for both,
+corroborating the frozen construction's own shape; genuine oracle comparison remains future certification-
+execution work, in CI's own hash-pinned environment. Does not claim the BPHS citations retrieved this task
+were checked against the original Sanskrit or a second independently-published English edition - both
+remain translated-edition citations, consistent with this project's own standing disclosure discipline
+(`ADR-0081` section 1's identical caveat for its own BPHS citation). Does not modify any production code,
+certification artifact, or existing ADR. Does not treat `docs/VARGA_CERTIFICATION_ROADMAP.md` as ratified.
+
+### J.5 Exact CEO decision required (this section)
+
+1. Whether to select D24, D40, both (in either order), or neither, given the tied evidence (J.3) - this
+   section does not recommend one over the other.
+2. If a tiebreaker is wanted despite the tie, on what basis (this section identifies none the repository
+   itself currently evidences).
+3. Whether the newly-found deity-payload traditions for D24 and D40 (J.1 item 3, both) should be recorded
+   anywhere before either capability's own ADR is drafted, or left for that ADR's own non-claims section,
+   matching `ADR-0077`'s own precedent for D45.
+
 ## Change history
 
 | Version | Date | Change |
 |---|---|---|
+| 1.1.0 | 2026-09-01 | Section J added, per "CEO AUTHORIZATION — D24 vs D40 METHODOLOGY ADJUDICATION": a narrowly scoped comparative methodology study of D24 and D40 only, against the owner's own thirteen required items. Retrieved a verbatim BPHS verse citation for D24 (Sarga 6, Shlokas 2-23) and consistent-paraphrase corroboration for D40, both via external web research; read PyJHora's own published source code directly (not executed locally, per this host's already-disclosed degraded PyJHora environment) confirming named D24/D40 chart functions with an identifiable Traditional-Parasara default matching the frozen construction for both, with non-default variants excluded as non-claims mirroring ADR-0077's own D45 precedent; measured cell-width representability and floor-classification boundary behaviour for both via exact-rational (Fraction) arithmetic, finding both exactly representable with zero boundary mismatches - cleaner than D45's own measured result. Discovered a real classical deity/payload tradition for both D24 and D40, not previously flagged by docs/VARGA_CERTIFICATION_ROADMAP.md's own "No" payload-gap entries; found this does not create an unavoidable DP-024 dependency for either, since VargaClassification's own established scope already excludes deity output for every certified varga including D45 - a disclosed non-claim, not an avoided architecture question. Concludes the evidence between D24 and D40 is genuinely tied across every axis compared; does not manufacture a winner, per explicit instruction. Sections A-I unedited. No ADR drafted, no capability selected, no code implemented, DP-024 not resolved. |
 | 1.0.0 | 2026-09-01 | Created. Re-evaluates the JATAKA candidate set now that D45, `KP_SIGNIFICATOR_V1`, and `PARASHARI_YOGA_V1` are each implemented and certified. Confirms D24/D40 remain unimplemented and, by the same methodology-first filter `DP-023` applied to select D45, are the only candidates simultaneously methodology-ready, dependency-clean, and free of any framework decision. Explicitly does not resolve `DP-024`'s deferred Varga step/payload architecture, and does not select another Varga merely by roadmap-ordering inertia - reasoning is re-derived from current repository evidence, not assumed carried over from `DP-023`. Newly scores two extension tracks not evaluable at `DP-023`'s time (KP significator extensions: Four Step Theory, Ruling Planets, horary; Parashari yoga extensions: further yoga families, bhanga/cancellation logic) against the owner's own ten required axes, finding both eligible in principle under `ADR-0075` but neither methodology-ready, each requiring its own dedicated readiness paper before selection. Recommends D24/D40 (co-equal, medium-high confidence) as the next capability if a Varga is wanted, with Vimshottari depth extension as a lower-value fallback. Options and a recommendation only; decides nothing; no capability selected, no ADR drafted, no code implemented. |
