@@ -6472,6 +6472,139 @@ freezes without it, exactly as `ADR-0082` section 1 already established.
 
 ---
 
+## ADR-0085 - `VARGA_D45_V1` certification-integrity finding: the `divisional_chart(snapshot, 45)`/`build_varga_chart()` composition layer has no D45-specific exact-value verification (PROPOSED - drafting only authorized, not ratified)
+
+- **Date:** 2026-09-02
+- **Status:** PROPOSED. Drafted per the owner's explicit "CEO authorization — Draft D45 certification-integrity
+  remediation ADR only" instruction, following a read-only certification-integrity investigation across
+  `PARASHARI_YOGA_V1`/`VARGA_D45_V1`/`KP_SIGNIFICATOR_V1` (this conversation) and a subsequent, independent,
+  fresh-worktree reproduction focused on `VARGA_D45_V1` specifically, both performed against repository state
+  at HEAD `b8f5121c815401dc9f8bbcc20ebb7c6cb02971b9`. **This entry is not self-ratified** - it requires its own
+  separate owner ratifying instruction, per this repository's own unbroken "the owner ratifies decisions; you
+  do not" rule. Drafting this entry authorizes nothing beyond its own text existing as a proposal: no file
+  under `engine/`, `scripts/certify_d45.py`, `validate_d45_holdout.py`, any test file, `certification/`, or
+  `.github/workflows/ci.yml` is touched by this entry.
+- **Context:** `ADR-0076` (D45 implementation-readiness, ratified) and `ADR-0077` (D45 certification design,
+  ratified; its own ratification sub-entry additionally records certification-execution, "Result: PASS on all
+  eight gates (A-H)") together govern `VARGA_D45_V1`. Production implementation followed via a separate "CEO
+  AUTHORIZATION - D45 PRODUCTION IMPLEMENTATION" instruction (commit `2cb9f30`); no dedicated
+  `DECISION_LOG.md` sub-entry recording that specific authorization was found during this investigation - a
+  pre-existing governance-completeness gap, noted here for completeness, not corrected by this entry, since
+  correcting it is outside this entry's own narrow scope. The certification-integrity precedent this entry
+  follows is `ADR-0079`/`DP-030` (`KP_SIGNIFICATOR_V1`'s own certification-integrity repair): a genuine defect
+  found via independent forensic mutation, reproduced, and recorded as its own decision entry rather than a
+  silent edit to the ratified `ADR-0078` or to `certify_kp_significator.py`. This entry follows that same
+  discipline for a structurally analogous, independently-discovered `VARGA_D45_V1` defect.
+
+### 1. What was found, precisely - not overstated, not understated
+
+**The initially reported exact `sign`/`division_number` field swap was NOT completely undetected.** A first
+mutation of `engine/astrology/varga_chart_builder.py`'s `build_varga_chart()` (swapping `sign=c.d_sign,
+division_number=c.division_number` to `sign=c.division_number, division_number=c.d_sign` in the per-planet
+`VargaPlanet` construction) was applied in a disposable `git worktree` and the full local `pytest -q` suite
+(872 tests) was re-run against it. Result: **2 of 872 tests failed** -
+`engine/tests/test_varga_framework.py::test_varga_chart_carries_snapshot_provenance` and `engine/tests/
+test_sign_convention.py::test_declarations_match_live_values_and_accessors`. Both are **generic, D45-unrelated
+range/convention-sanity checks** (`1 <= division_number <= divisions`, `0 <= sign <= 11`, an object-graph
+index-convention walker), exercised in the first case against a **synthetic** rule (`SYNTHETIC_CYCLIC`), never
+against D45's own `D45_PARASHARA` rule or a D45-specific expected value. Direct arithmetic confirms this catch
+is coincidental, not guaranteed: for D45's real `divisions=45`, the mutated `division_number` field only
+violates its own range check when the true `d_sign` happens to be 0 (Aries) - roughly 1 chart in 12 - and even
+that depends on which unrelated generic test happens to exercise which data, not on any D45-specific
+verification.
+
+**The underlying defect is genuine and remains fully confirmed: there is currently no D45-specific exact-value
+verification of the `divisional_chart(snapshot, 45)`/`build_varga_chart()` composition layer anywhere in this
+repository.** Confirmed by direct inspection: every gate in `scripts/certify_d45.py` (A, B, C, E, F, G, H)
+calls `classify()` directly, never `divisional_chart`/`build_varga_chart` (zero matches by grep, outside the
+certifier's own textual scope-description string); `engine/tests/test_varga_d45.py`'s one test that does call
+`divisional_chart(snapshot, 45)` (`test_d45_served_through_dispatcher_with_provenance`) checks only
+`.varga`/`.school`/`.provenance`, never `.ascendant` or `.planets`' own field values; and the original
+production-implementation commit's own message (`2cb9f30`) records the identical shallow verification
+("`divisional_chart(snapshot, 45)` returns a `VargaChart` with `varga=45`, `school='parashara'`, and the
+snapshot's own provenance passed through unchanged") - the gap has existed, unnoticed, since D45's own
+production implementation on 2026-08-25.
+
+**A second, independently constructed mutation - planet cross-wiring - demonstrates this is a real,
+deterministic, HIGH-severity blind spot, not a hypothetical one.** In the composition loop, each planet after
+the first was made to receive the PREVIOUS planet's classification (`use_c = _prev_c if _prev_c is not None
+else c`) instead of its own - a realistic loop-variable-reuse mistake, deliberately chosen so every resulting
+value (`sign` 0-11, `division_number` 1-45) still satisfies every generic range/convention check that
+incidentally caught the first mutation. Applied fresh, in a new disposable worktree, full `pytest -q` re-run:
+**872/872 passed, exit 0 - completely undetected.** `snapshot.sidereal_planets` iterates in stable, deterministic
+dict order in this project's own Python runtime, so this bug class would be 100% reproducible on every
+production chart if it existed, not a rare or probabilistic exposure.
+
+**Consequence for how the existing certification result must be represented:** `ADR-0077`'s "Result: PASS on
+all eight gates (A-H)" remains literally true - every gate that exists does pass, exactly as recorded, and
+that entry's own text is not touched or reinterpreted by this one. But it must not be represented, or relied
+upon, as proof that the `divisional_chart(snapshot, 45)`/`build_varga_chart()` composition/plumbing layer is
+independently verified - it is not. Any future citation of `VARGA_D45_V1`'s certification must be read subject
+to this qualification, mirroring exactly the qualification pattern `ADR-0083`'s own ratification sub-entry
+already established for D24's Gate C (local certification PASS explicitly distinguished from a separate,
+disclosed evidentiary gap).
+
+### 2. Remediation design (design only - nothing below is implemented by this entry)
+
+- **Required exact-value independent checks:** a new certification gate exercising `divisional_chart(snapshot,
+  45)`/`build_varga_chart()` directly (not `classify()` in isolation) against a real snapshot, comparing every
+  resulting `VargaPlanet`/`VargaPosition`'s `sign`, `division_number`, `fraction`, and `source_longitude` field
+  - not merely a derived boolean/verdict - against values independently computed by `validate_d45_holdout.py`'s
+  own from-scratch logic, extended to cover full-chart composition rather than `classify()` alone.
+- **Required genuine production-mutation/re-execution evidence:** the existing `H_negative_controls` gate
+  compares a hand-written mutated *copy* of the frozen rule object against the unmutated original in-process -
+  it never monkeypatches the real, imported `build_varga_chart`/`classify` and re-runs the real certifier gates
+  against that mutated state. Remediation must instead mirror `scripts/check_mutation_detection.py`'s own
+  methodology (built for the `ADR-0079`/`DP-030` `KP_SIGNIFICATOR_V1` repair): genuinely monkeypatch the real
+  production composition code in-process, re-run the real gate functions, and observe a real, reachable
+  `fail()`/`sys.exit` - not a synthetic side-by-side comparison.
+- **Required negative controls:** at minimum, the two mutations reproduced in section 1 (the field-order swap
+  and the planet cross-wiring case), each demonstrated to flip the new gate's own comparison, then confirmed
+  restored - matching this repository's own standing "a gate that cannot fail is not evidence" discipline.
+- **Regeneration, not editing, of the certification artifact:** `certification/VARGA_D45_V1_certification.json`
+  must be regenerated from a corrected `scripts/certify_d45.py` once the new gate exists and is authorized -
+  **never hand-edited** - per this repository's own "a stored certification artifact is history, not proof;
+  never hand-edit them" rule. The current artifact is not touched by this entry and must not be touched except
+  by a full certifier re-run once remediation is separately authorized and implemented.
+- **No oracle/CI implication:** this is a hermetic, in-repository composition check; no new PyJHora dependency,
+  no `.github/workflows/ci.yml` change is required or proposed by this design.
+
+### 3. What this entry does not do
+
+**Does not modify** `engine/astrology/varga_chart_builder.py`, `engine/astrology/varga_d45.py`, any other file
+under `engine/`, `scripts/certify_d45.py`, `validate_d45_holdout.py`, any test file, any file under
+`certification/`, or `.github/workflows/ci.yml`. **Does not** implement the new gate, the extended validator,
+or the mutation-detection harness described in section 2 - each remains a separate, not-yet-authorized act.
+**Does not** regenerate or alter `certification/VARGA_D45_V1_certification.json`. **Does not** reopen, edit, or
+reinterpret `ADR-0076`'s or `ADR-0077`'s own ratified text - both remain byte-unchanged, confirmed by this
+entry touching only `docs/DECISION_LOG.md`'s own append-only register. **Does not** touch D24 implementation,
+D24 Gate C, `.github/workflows/ci.yml`, or `docs/decisions/DP-024-varga-framework-step-payload-architecture.md`,
+which remains `DEFERRED`, untouched. **Does not** push or merge. **Does not** self-ratify.
+
+- **Consequences, if ratified:** this entry would formally record the certification-integrity finding above as
+  the governing repository record, distinct from and not reopening `ADR-0077`'s own text, and would authorize
+  drafting-stage acknowledgement only - not the remediation work itself (section 2), which requires its own
+  separate, subsequent owner authorization, exactly mirroring how `ADR-0079` (the repair) followed `DP-030`
+  (the readiness paper) as two distinct owner acts for `KP_SIGNIFICATOR_V1`. Until that separate authorization
+  is given and remediation is implemented and re-certified, `VARGA_D45_V1`'s own certification must be cited
+  with the qualification in section 1's closing paragraph.
+- **Evidence:** the owner's "CEO authorization — Draft D45 certification-integrity remediation ADR only"
+  instruction, quoted in substance above; the prior read-only three-capability certification-integrity
+  investigation (this conversation); the subsequent, independent, fresh-`git worktree` D45-specific
+  reproduction (this conversation) - full `pytest -q` baseline (872 passed) and under each of two real,
+  applied-and-reverted mutations to `engine/astrology/varga_chart_builder.py` (field-swap: 870 passed, 2
+  failed, both generic/non-D45-specific; cross-wiring: 872 passed, 0 failed); direct grep confirming no gate in
+  `scripts/certify_d45.py` calls `divisional_chart`/`build_varga_chart`; direct reading of `engine/tests/
+  test_varga_d45.py`, `engine/tests/test_varga_framework.py`, `engine/tests/test_sign_convention.py`, `engine/
+  astrology/varga_chart_builder.py`; `git show --stat 2cb9f30` (the original production-implementation
+  commit's own shallow verification claim); `ADR-0076`, `ADR-0077` (read fresh, unedited by this entry);
+  `ADR-0079`/`docs/decisions/DP-030-kp-significator-v1-remediation-readiness.md` and `scripts/
+  check_mutation_detection.py` (the precedent methodology this entry's own section 2 requires be mirrored);
+  `certification/VARGA_D45_V1_certification.json` (read fresh, confirmed untouched); `python scripts/
+  check_adr_numbering.py` (84 -> 85, PASS both before and after this entry's own addition).
+
+---
+
 ## ADR template (copy, do not edit above the line)
 
 ## ADR-XXXX - <title>
