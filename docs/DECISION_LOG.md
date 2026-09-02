@@ -6392,14 +6392,15 @@ freezes without it, exactly as `ADR-0082` section 1 already established.
 ## ADR-0084 - `.github/workflows/ci.yml` governance-gate repair: narrow, named exemption for D24's pre-production certification artifact (PROPOSED - prepared for CEO ratification, not yet declared)
 
 - **Date:** 2026-09-02
-- **Status:** PROPOSED. Implemented per the owner's explicit "CEO AUTHORIZATION — D24 CI Governance
-  Registry Fix" instruction ("Proceed with the narrowly scoped governance fix identified in the D24
-  CI/Governance Blocker Investigation... Create the appropriate ADR/decision record required for this
-  governance change before modifying the workflow"), following a prior read-only "D24 Gate-C Readiness
-  Audit" and "D24 CI/Governance Blocker Investigation" (this conversation) that diagnosed the defect and
-  identified its precedent. This entry is **not self-ratified** - it requires its own separate owner
-  ratifying instruction, per this repository's own unbroken "the owner ratifies decisions; you do not"
-  rule.
+- **Status:** **ACCEPTED, on the owner's ratifying instruction recorded in the "Ratification of ADR-0084"
+  entry immediately below this entry's own text.** Originally drafted `PROPOSED. Implemented` per the
+  owner's explicit "CEO AUTHORIZATION — D24 CI Governance Registry Fix" instruction ("Proceed with the
+  narrowly scoped governance fix identified in the D24 CI/Governance Blocker Investigation... Create the
+  appropriate ADR/decision record required for this governance change before modifying the workflow"),
+  following a prior read-only "D24 Gate-C Readiness Audit" and "D24 CI/Governance Blocker Investigation"
+  (this conversation) that diagnosed the defect and identified its precedent. Per this repository's own
+  "change only the status" discipline, this Status line is the only text in this entry edited to record
+  ratification - the Context, Decision, Consequences, and Evidence below are unchanged.
 - **Context:** `.github/workflows/ci.yml`'s governance job step "Certified varga registry matches its
   declared constant" asserts `{certification/VARGA_D*_V1_certification.json on disk} ==
   {engine.astrology.CERTIFIED_PRODUCTION_VARGAS}` as a two-directional set equality. `ADR-0083` (D24
@@ -6469,6 +6470,26 @@ freezes without it, exactly as `ADR-0082` section 1 already established.
   logic against three cases - real repository state (PASS), a simulated missing-declared-artifact case
   (correctly FAILS), and a simulated stray-unlisted-artifact case (correctly FAILS) - before the workflow
   file itself was edited.
+
+#### Ratification of ADR-0084: D24 CI GOVERNANCE-GATE REPAIR RATIFIED (2026-09-02)
+
+- **Status:** ACCEPTED. The owner instructed: "RATIFY ADR-0084. Ratify ADR-0084 exactly as currently
+  drafted." Per `docs/PROJECT_CONSTITUTION.md` s11, this instruction is the ratifying act; this entry
+  records it, matching the precedent already used throughout this session for every other ratification
+  sub-entry in this register.
+- **Decision:** `ADR-0084` above (its full Context, Decision, Consequences, and Evidence) is **ratified
+  exactly as drafted, with no wording changed**. Its own `Status` line, immediately above, is the only edit
+  made to that entry's text - confirmed by direct diff before committing. Verified, at ratification, still
+  current: the live `.github/workflows/ci.yml` `ALLOWED_PRE_PRODUCTION` exemption still contains exactly one
+  entry (`VARGA_D24_V1_certification.json`, citing `ADR-0083`), unchanged since drafting; the governance job
+  of the most recent CI run on this branch (`33623911203`) passed. `docs/decisions/
+  DP-024-varga-framework-step-payload-architecture.md` remains `DEFERRED`, untouched.
+- **Consequences:** the narrowed governance-gate check and its negative control, already live in
+  `.github/workflows/ci.yml`, now have a finalized decision record. No file is touched by this ratification.
+  `ADR-0086`'s own remediation design remains separately unauthorized for implementation.
+- **Evidence:** the owner's "RATIFY ADR-0084" instruction, quoted above; `ADR-0084` itself, commit
+  `d1fce68604f3a3d2eee5a341ff73e062c12278ef` (as corrected for wording accuracy in commit
+  `b8f5121c815401dc9f8bbcc20ebb7c6cb02971b9`); CI run `33623911203` (governance job: success).
 
 ---
 
