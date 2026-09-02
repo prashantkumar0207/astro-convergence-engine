@@ -6665,15 +6665,18 @@ which remains `DEFERRED`, untouched. **Does not** push or merge. **Does not** se
 ## ADR-0086 - `PARASHARI_YOGA_V1` certification-integrity finding: `graha_mahapurusha_from_snapshot()`'s composition layer has no independently-verified `house_number`/`sign_number` evidence (PROPOSED - drafting only authorized, not ratified)
 
 - **Date:** 2026-09-02
-- **Status:** PROPOSED. Drafted per the owner's explicit "ACTION 2 — PARASHARI YOGA... The CEO authorizes
-  drafting only of a new certification-integrity ADR for `PARASHARI_YOGA_V1`, based on the already-established
-  finding from the prior investigation" instruction, following the read-only three-capability
-  certification-integrity investigation performed earlier this conversation (`PARASHARI_YOGA_V1`/
-  `VARGA_D45_V1`/`KP_SIGNIFICATOR_V1`) and the final Phase-G governance-readiness audit that confirmed the
-  finding remains unaddressed and the relevant files unchanged since. **This entry is not self-ratified** - it
-  requires its own separate owner ratifying instruction. Drafting this entry authorizes nothing beyond its own
-  text existing as a proposal: `engine/`, `scripts/certify_parashari_yoga.py`, any certification artifact,
-  `.github/workflows/ci.yml`, and `ADR-0081`'s own ratified text are all untouched by this entry.
+- **Status:** **ACCEPTED, on the owner's ratifying instruction recorded in the "Ratification of ADR-0086"
+  entry immediately below this entry's own text.** Originally drafted `PROPOSED` per the owner's explicit
+  "ACTION 2 — PARASHARI YOGA... The CEO authorizes drafting only of a new certification-integrity ADR for
+  `PARASHARI_YOGA_V1`, based on the already-established finding from the prior investigation" instruction,
+  following the read-only three-capability certification-integrity investigation performed earlier this
+  conversation (`PARASHARI_YOGA_V1`/`VARGA_D45_V1`/`KP_SIGNIFICATOR_V1`) and the final Phase-G
+  governance-readiness audit that confirmed the finding remains unaddressed and the relevant files unchanged
+  since. Per this repository's own "change only the status" discipline, this Status line is the only text in
+  this entry edited to record ratification - the Context, sections 1-4, Consequences, and Evidence below are
+  unchanged. Ratifying this entry authorizes nothing beyond formally accepting the finding and remediation
+  design as the governing record: `engine/`, `scripts/certify_parashari_yoga.py`, any certification artifact,
+  `.github/workflows/ci.yml`, and `ADR-0081`'s own ratified text remain untouched by this entry.
 - **Context:** `ADR-0081` (`PARASHARI_YOGA_V1` methodology and certification design, ratified) and its own
   "Certification execution of ADR-0081" sub-entry ("Result: PASS on all ten gates (A-I)") together govern
   `PARASHARI_YOGA_V1`. This entry follows the identical certification-integrity precedent `ADR-0085` established
@@ -6804,6 +6807,46 @@ separate disposition. **Does not** push or merge. **Does not** self-ratify.
   parashari/mahapurusha_yoga.py` and `scripts/certify_parashari_yoga.py` confirming both unchanged since the
   original investigation; `certification/PARASHARI_YOGA_V1_certification.json` (read fresh, confirmed untouched);
   `python scripts/check_adr_numbering.py` (85 -> 86, PASS both before and after this entry's own addition).
+
+#### Ratification of ADR-0086: `PARASHARI_YOGA_V1` CERTIFICATION-INTEGRITY FINDING RATIFIED (2026-09-02)
+
+- **Status:** ACCEPTED. The owner instructed: "RATIFY ADR-0086. Ratify ADR-0086 exactly as currently drafted
+  at commit aceca6361be0841f7aabee9329cc3568d35757ec." Per `docs/PROJECT_CONSTITUTION.md` s11, this
+  instruction is the ratifying act; this entry records it, matching the precedent already used throughout
+  this session for every other ratification sub-entry in this register, including `ADR-0085`'s own identical
+  treatment for `VARGA_D45_V1`.
+- **Decision:** `ADR-0086` above (its full Context, sections 1-4, Consequences, and Evidence) is **ratified
+  exactly as drafted, with no wording changed**. Its own `Status` line, immediately above, is the only edit
+  made to that entry's text - confirmed by direct diff against commit `aceca6361be0841f7aabee9329cc3568d357
+  57ec` before committing, showing zero substantive change since drafting. This ratification accepts, as the
+  governing repository record:
+  1. The precise finding in section 1: the real, reproduced argument-order mutation in `graha_mahapurusha_
+     from_snapshot()`'s `whole_sign_house()` call, undetected by all ten existing gates because the kendra
+     offset set is symmetric under negation mod 12; `house_number`/`sign_number` as the specific affected
+     public outputs; why each existing gate misses it; the two control mutations that ARE correctly caught.
+  2. The distinction in section 2 between this confirmed, `PARASHARI_YOGA_V1`-scoped defect and the broader,
+     explicitly unaudited residual risk across every other certified capability's own negative-control gate -
+     neither resolved nor expanded by this ratification.
+  3. The qualification that `ADR-0081`'s own "PASS on all ten gates (A-I)" result must not be represented, or
+     relied upon, as proof that `graha_mahapurusha_from_snapshot()`'s composition/plumbing is independently
+     verified for `house_number`/`sign_number`.
+  4. The remediation design in section 3, as a design only - **ratifying this entry does NOT authorize its
+     implementation.** Writing the new exact-value gate, rebuilding the negative-control gate to genuinely
+     monkeypatch and re-execute the real production function, adding the required negative controls, or
+     regenerating `certification/PARASHARI_YOGA_V1_certification.json` each remain their own, separate,
+     not-yet-given authorization - exactly mirroring `ADR-0085`'s own ratification-then-separate-
+     implementation-authorization sequence for `VARGA_D45_V1`.
+  `ADR-0081` remains unedited and unreopened by this ratification. `docs/decisions/
+  DP-024-varga-framework-step-payload-architecture.md` remains `DEFERRED`, untouched; D24 and `ADR-0084` are
+  untouched.
+- **Consequences:** `PARASHARI_YOGA_V1`'s certification-integrity finding is now the ratified, governing
+  record - any future citation of `PARASHARI_YOGA_V1`'s certification must be read subject to the
+  qualification in decision point 3 above. No file under `engine/`, `scripts/certify_parashari_yoga.py`,
+  `validate_parashari_yoga_holdout.py`, any test file, `certification/`, or `.github/workflows/ci.yml` is
+  touched by this ratification. The remediation design remains unimplemented pending a separate owner
+  authorization.
+- **Evidence:** the owner's "RATIFY ADR-0086" instruction, quoted above; `ADR-0086` itself, commit
+  `aceca6361be0841f7aabee9329cc3568d35757ec`.
 
 ---
 
