@@ -2,10 +2,13 @@
  "schema": "varga_d24_v1_certification",
  "adr": "ADR-0083",
  "supersedes_provisional_id": "NOTHING_AUTHORISED",
- "date": "2026-09-01",
- "scope": "D24 Siddhamsa (Chaturvimshamsha), Parashara/BPHS variant, Traditional Parasara construction. Rule under certification is a STANDALONE, UNREGISTERED CyclicVargaRule instance embedded in this certifier - not engine/astrology/varga_d24.py, no production module is authorized or created this execution.",
+ "date": "2026-09-02",
+ "scope": "D24 Siddhamsa (Chaturvimshamsha), Parashara/BPHS variant, Traditional Parasara construction. Registered in production through the generic registry (engine.astrology.varga_d24, VARGA_D24_V1), discoverable via engine.astrology.divisional_chart.divisional_chart(snapshot, 24).",
  "rule": {
-  "kind": "standalone CyclicVargaRule instance embedded in this certifier (scripts/certify_d24.py) - not a registered production rule",
+  "kind": "CyclicVargaRule",
+  "variant": "parashara (24 x 1.25 deg, odd source signs start Leo / even source signs start Cancer, forward)",
+  "school_key": "parashara",
+  "registered": true,
   "divisions": 24,
   "school": "parashara",
   "construction": "odd source signs start Leo (index 4), even source signs start Cancer (index 3), forward counting for all twelve",
@@ -34,10 +37,48 @@
    "read_only_corroboration": "PyJHora's own published source (naturalstupid/PyJHora, GitHub, chaturvimsamsa_chart()) was read directly this task (ADR-0083 section 1/8): its default/Traditional-Parasara method (even_dirn=1, odd_base=4/Leo, even_base=3/Cancer) matches this frozen construction exactly. This is read-only source inspection, not executed oracle agreement.",
    "classification": "disclosed_gap_not_correctness_evidence"
   },
-  "D_isolation": {
-   "certifier_never_imports_varga_registry_or_varga_d24": true,
-   "engine_astrology_varga_d24_absent": true,
-   "content_sha256_matches_pinned": true
+  "D_non_invasiveness": {
+   "registry": [
+    [
+     2,
+     "parashara"
+    ],
+    [
+     3,
+     "parashara"
+    ],
+    [
+     7,
+     "parashara"
+    ],
+    [
+     12,
+     "parashara"
+    ],
+    [
+     24,
+     "parashara"
+    ],
+    [
+     30,
+     "parashara"
+    ],
+    [
+     45,
+     "parashara"
+    ]
+   ],
+   "d24_registered": true,
+   "registered_rule_identity": "is D24_SIDDHAMSA (engine.astrology.varga_d24)",
+   "rule_content_sha256": "2ea83b5ad2dd53218f074d1b5e410bd3ec1806ad1ce5d4e053453715da4287f9",
+   "existing_certified_rule_hashes": {
+    "D2_parashara": "b78745de5d815b6635cca62d9d872c6dd7acd0a8cdbc5e5ecf53a0bc78ee1859",
+    "D3_parashara": "11c561c05413ebc9d8b791c0c22e42e6a91efe2cbdaceaa1f6eeac66d9e957f4",
+    "D7_parashara": "42c0f474138d98a37e1a9963866a2d0f86621fa67c73069e897fef48024aeead",
+    "D12_parashara": "224ece371b1fd024a49d545556e2f9b842343c44c17b9af666b7052b5e6cd195",
+    "D30_parashara": "deacd958cf19b7641c4f8cb086ad27d8a5efaeb6e38b594dc0cd4113a25794d3",
+    "D45_parashara": "c8515e44be6e21e3e8c3298121b8c0e4687c0176d9da7e94f7d0aba53a8bf817"
+   }
   },
   "E_independent_validator": {
    "result": "PASS",
@@ -80,12 +121,11 @@
   }
  },
  "explicit_non_claims": [
-  "no oracle execution this run - PyJHora unavailable locally, deferred to CI",
+  "no oracle execution this run - PyJHora unavailable locally, deferred to CI; certify_d24.py is NOT wired into .github/workflows/ci.yml's oracle-tier loop by this production-implementation revision - that remains a separate, not-yet-authorized act (ADR-0083's own ratification)",
   "any per-division deity/label payload (VargaClassification carries only D-sign, division index, and fraction; deity output is out of scope, mirroring D45's own identical treatment - ADR-0083 section 4)",
   "the two non-default PyJHora chart_method variants (PARASARA_EVEN_REVERSE, PARASARA_EVEN_DOUBLE_REVERSE) - excluded, mirroring D45's own three excluded PyJHora methods",
   "any non-parashara school variant",
   "any other varga; each requires its own ADR and certification",
-  "no engine/ production module is created or modified by this certification",
   "translated-edition caveat: the BPHS citation (Sarga 6, Shlokas 2-23) is not verified against the original Sanskrit or a second independently-published English edition"
  ],
  "environment": {
@@ -101,7 +141,7 @@
    }
   },
   "anti_fitting": {
-   "modules_scanned": 192,
+   "modules_scanned": 193,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."
