@@ -5,14 +5,14 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 
 - Decision entry: ADR-0010
 - Supersedes provisional identifier: ADR-VARGA-D12-001
-- Date: 2026-09-01
+- Date: 2026-09-02
 - Scope: D12 Dwadasamsa (Parashara variant); first production use of the CyclicVargaRule path
 - Result: **PASS**
 
 ## Preconditions
 
 - Data assets verified against CHECKSUMS.sha256: 3
-- Anti-fitting scan: 190 production modules, 0 findings
+- Anti-fitting scan: 192 production modules, 0 findings
 
 ## Gates
 
