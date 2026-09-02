@@ -1,3 +1,5 @@
+horoscope /home/runner/work added to system path ['/home/runner/work/astro-convergence-engine/astro-convergence-engine/scripts', '/home/runner/work/astro-convergence-engine/astro-convergence-engine', '/home/runner/work/astro-convergence-engine/astro-convergence-engine/scripts', '/opt/hostedtoolcache/Python/3.11.16/x64/lib/python311.zip', '/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11', '/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/lib-dynload', '/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages', '/home/runner/work']
+/home/runner added to system path ['/home/runner/work/astro-convergence-engine/astro-convergence-engine/scripts', '/home/runner/work/astro-convergence-engine/astro-convergence-engine', '/home/runner/work/astro-convergence-engine/astro-convergence-engine/scripts', '/opt/hostedtoolcache/Python/3.11.16/x64/lib/python311.zip', '/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11', '/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/lib-dynload', '/opt/hostedtoolcache/Python/3.11.16/x64/lib/python3.11/site-packages', '/home/runner/work', '/home/runner']
 ============================================================
 VARGA_D45_V1 CERTIFICATION (production-registered)
 ============================================================
@@ -9,5 +11,6 @@ G_protected_holdout: {'points': 26278, 'mismatches': 0, 'methodology': 'prime-st
 D_non_invasiveness: registry [[2, 'parashara'], [3, 'parashara'], [7, 'parashara'], [12, 'parashara'], [30, 'parashara'], [45, 'parashara']] d45_registered: True
 E_independent_validator: PASS
 H_negative_controls: True
+I_composition_verification: PASS
 archived          : certification/VARGA_D45_V1_certification.json
 RESULT            : PASS
