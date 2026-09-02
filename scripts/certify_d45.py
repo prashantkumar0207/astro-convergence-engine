@@ -49,13 +49,17 @@ from engine.astrology.varga_registry import (  # noqa: E402
 )
 from engine.astrology.varga_rules import rule_content_sha256  # noqa: E402
 
-try:
-    from jhora.horoscope.chart.charts import akshavedamsa_chart
-    import importlib.metadata
-    PYJHORA_VERSION = importlib.metadata.version("PyJHora")
-except Exception as error:  # pragma: no cover
-    print("D45 CERTIFICATION FAIL: PyJHora oracle unavailable:", error)
-    sys.exit(3)
+#: Set by gate_c_oracle() itself, lazily, the first time it runs (ADR-0085
+#: Gate C import-structure change). Deliberately NOT imported at module
+#: level: PyJHora is required only by Gate C, and every other gate in this
+#: file - including the new Gate I (ADR-0085) - needs none of it. Moving
+#: this import out of module scope does not change Gate C's own behaviour
+#: in any way: it still hard-fails with the identical message and exit code
+#: the instant it actually runs without PyJHora present, exactly as before -
+#: only the MOMENT that failure occurs moves from "at import" to "when Gate
+#: C executes," so the other eight gates become independently importable
+#: and runnable on a host where PyJHora is unavailable.
+PYJHORA_VERSION = None
 
 
 #: The three genuine floating-point floor-classification boundaries identified in
@@ -133,6 +137,16 @@ def gate_b_dense_sweep():
 
 
 def gate_c_oracle():
+    global PYJHORA_VERSION
+
+    try:
+        from jhora.horoscope.chart.charts import akshavedamsa_chart
+        import importlib.metadata
+        PYJHORA_VERSION = importlib.metadata.version("PyJHora")
+    except Exception as error:  # pragma: no cover
+        print("D45 CERTIFICATION FAIL: PyJHora oracle unavailable:", error)
+        sys.exit(3)
+
     mismatches = 0
     comparisons = 0
     per_sign = 450
@@ -362,6 +376,24 @@ def gate_i_composition_verification():
 def main():
     tee = support.start_transcript()
     preconditions = support.preflight()
+
+    # Computed into a local first, in the same order as before, so
+    # PYJHORA_VERSION (set by gate_c_oracle() itself, lazily - see the
+    # ADR-0085 Gate C import-structure change above) is already known by
+    # the time the "oracle" field below is built. Gate call order and
+    # results are otherwise unchanged.
+    gates = {
+        "A_table_integrity": gate_a_table_integrity(),
+        "B_dense_sweep": gate_b_dense_sweep(),
+        "C_oracle": gate_c_oracle(),
+        "D_non_invasiveness": gate_d_non_invasiveness(),
+        "E_independent_validator": gate_e_validator(),
+        "F_boundary_cases": gate_f_boundary_cases(),
+        "G_protected_holdout": gate_g_protected_holdout(),
+        "H_negative_controls": gate_h_negative_controls(),
+        "I_composition_verification": gate_i_composition_verification(),
+    }
+
     report = {
         "schema": "varga_d45_v1_certification",
         "adr": "ADR-0077",
@@ -389,17 +421,7 @@ def main():
         },
         "oracle": {"package": "PyJHora", "version": PYJHORA_VERSION,
                    "function": "akshavedamsa_chart method 1 Traditional Parasara (pure longitude math)"},
-        "gates": {
-            "A_table_integrity": gate_a_table_integrity(),
-            "B_dense_sweep": gate_b_dense_sweep(),
-            "C_oracle": gate_c_oracle(),
-            "D_non_invasiveness": gate_d_non_invasiveness(),
-            "E_independent_validator": gate_e_validator(),
-            "F_boundary_cases": gate_f_boundary_cases(),
-            "G_protected_holdout": gate_g_protected_holdout(),
-            "H_negative_controls": gate_h_negative_controls(),
-            "I_composition_verification": gate_i_composition_verification(),
-        },
+        "gates": gates,
         "explicit_non_claims": [
             "Parivritti cyclical akshavedamsa (PyJHora chart_method=2)",
             "Parivritti even-reversal akshavedamsa (PyJHora chart_method=3)",
