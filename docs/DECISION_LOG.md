@@ -6641,6 +6641,151 @@ which remains `DEFERRED`, untouched. **Does not** push or merge. **Does not** se
 
 ---
 
+## ADR-0086 - `PARASHARI_YOGA_V1` certification-integrity finding: `graha_mahapurusha_from_snapshot()`'s composition layer has no independently-verified `house_number`/`sign_number` evidence (PROPOSED - drafting only authorized, not ratified)
+
+- **Date:** 2026-09-02
+- **Status:** PROPOSED. Drafted per the owner's explicit "ACTION 2 — PARASHARI YOGA... The CEO authorizes
+  drafting only of a new certification-integrity ADR for `PARASHARI_YOGA_V1`, based on the already-established
+  finding from the prior investigation" instruction, following the read-only three-capability
+  certification-integrity investigation performed earlier this conversation (`PARASHARI_YOGA_V1`/
+  `VARGA_D45_V1`/`KP_SIGNIFICATOR_V1`) and the final Phase-G governance-readiness audit that confirmed the
+  finding remains unaddressed and the relevant files unchanged since. **This entry is not self-ratified** - it
+  requires its own separate owner ratifying instruction. Drafting this entry authorizes nothing beyond its own
+  text existing as a proposal: `engine/`, `scripts/certify_parashari_yoga.py`, any certification artifact,
+  `.github/workflows/ci.yml`, and `ADR-0081`'s own ratified text are all untouched by this entry.
+- **Context:** `ADR-0081` (`PARASHARI_YOGA_V1` methodology and certification design, ratified) and its own
+  "Certification execution of ADR-0081" sub-entry ("Result: PASS on all ten gates (A-I)") together govern
+  `PARASHARI_YOGA_V1`. This entry follows the identical certification-integrity precedent `ADR-0085` established
+  for `VARGA_D45_V1` - a genuine defect found via independent mutation testing, reproduced, and recorded as its
+  own decision entry rather than a silent edit to the ratified `ADR-0081` or to `scripts/certify_parashari_yoga.py`
+  - itself mirroring the `ADR-0079`/`DP-030` `KP_SIGNIFICATOR_V1` precedent.
+
+### 1. What was found, precisely
+
+**A real, on-disk argument-order mutation of `engine/parashari/mahapurusha_yoga.py`'s
+`graha_mahapurusha_from_snapshot()` - swapping `house = whole_sign_house(body.longitude, ascendant_longitude)`
+to `whole_sign_house(ascendant_longitude, body.longitude)` - passes all ten of `PARASHARI_YOGA_V1`'s existing
+certification gates (A-I), applied and reverted in a disposable `git worktree`, `python scripts/
+certify_parashari_yoga.py` run end-to-end.** This is not a coincidence of insufficient sampling: `whole_sign_
+house(a, b) = (zodiac_sign(a) - zodiac_sign(b)) % 12 + 1`, and the kendra offset set `{0, 3, 6, 9}` (the four
+houses `yoga_present()` treats as kendra) is closed under negation mod 12 - `{-0, -3, -6, -9} mod 12 = {0, 9, 6,
+3}`, the identical set. Swapping the two arguments therefore ALWAYS preserves whether a given graha resolves to
+a kendra house, for every longitude, even though it silently corrupts the actual computed house number. Verified
+directly by computing both the correct and swapped house number for all 40 (chart, graha) pairs in the
+certifier's own 8-chart `HOLDOUT`: the raw house number differs in most pairs (e.g. `Y1_london_1850/Mars`:
+house 5 vs. house 9), but the kendra-membership boolean never differs across any of the 40.
+
+**The affected public outputs are `MahapurushaYogaResult.house_number` and `.sign_number`** - real, documented,
+frozen dataclass fields of the module's own public chart object (`engine/parashari/mahapurusha_yoga.py`'s own
+docstring: `sign_number` "the graha's own 1-based occupied sign," `house_number` "the graha's own 1-based
+whole-sign house from the Lagna"). Confirmed by direct grep: neither field name appears anywhere in `scripts/
+certify_parashari_yoga.py` or `validate_parashari_yoga_holdout.py` - every gate reads only the derived boolean
+`present` (or `retrograde_qualifier`), never the two fields the mutation actually corrupts. A consumer reading
+`chart.results[i].house_number` today would receive a value with zero certification coverage for exactly this
+corruption class.
+
+**Why the existing gates missed it, gate by gate:** Gates B/B2 call `zodiac_sign()`/`whole_sign_house()`
+directly, with their own correct argument order, never through `graha_mahapurusha_from_snapshot()`'s own call
+site - they cannot see a bug specific to that call site. Gate G compares `chart.results[i].present` against a
+second, independent call to `yoga_present()` on the SAME real longitude - but only for `HOLDOUT[0]` (a chart
+where every graha's `present` is already `False` for dignity reasons unrelated to house), so the one case it
+checks cannot expose a house-classification bug. Gate H (`gate_h_negative_controls`) never touches
+`graha_mahapurusha_from_snapshot()` or the real `whole_sign_house()` call site at all - its three controls
+compare a locally hand-written `_predicate_..._corrupted()` function's output against a call to the imported,
+UNMUTATED, real `_yoga_predicate_from_sign_and_house` - a synthetic side-by-side comparison, never a genuine
+monkeypatch of the real production function followed by re-execution of the real certifier gates, exactly the
+same class of weakness `ADR-0085` identified and remediated for `VARGA_D45_V1`'s own prior Gate H.
+
+**Two control mutations confirm this is a narrow, specific gap, not a wholesale certification failure.** A
+sign-derivation corruption (using the ascendant's own longitude instead of the graha's own for `graha_sign`) WAS
+correctly caught by Gate H (static reference regression). A `KENDRA_HOUSES` constant tamper WAS correctly caught
+by Gate A (table integrity). Only the specific argument-order swap in the real production composition call is
+invisible to every existing gate, and specifically because of the kendra set's own mod-12 negation symmetry.
+
+**Consequence for how the existing certification result must be represented:** `ADR-0081`'s own "Certification
+execution" sub-entry, "Result: PASS on all ten gates (A-I)," remains a literal, true statement about the ten
+named gates as written - every one of them does pass, and that sub-entry's own text is not touched or
+reinterpreted by this entry. It must not be represented, or relied upon, as proof that
+`graha_mahapurusha_from_snapshot()`'s own composition/plumbing is independently verified for `house_number`/
+`sign_number` - it is not. Any future citation of `PARASHARI_YOGA_V1`'s certification must be read subject to
+this qualification, mirroring exactly the qualification `ADR-0085` established for `VARGA_D45_V1` and `ADR-0083`
+established for D24's Gate C.
+
+### 2. Confirmed defect vs. broader unaudited residual risk
+
+**Confirmed, reproduced, HIGH severity, scoped to `PARASHARI_YOGA_V1` specifically:** the argument-order mutation
+above, independently applied and reverted this session, real production file, real subprocess run of the real
+certifier.
+
+**Broader residual risk, explicitly NOT confirmed by this entry:** the same structural pattern - an in-process
+synthetic negative-control gate that never monkeypatches the real production function - is present in every
+other certified capability's own negative-control gate (D2/D3/D7/D12/D30, `TRANSIT_V1`, `VIMSHOTTARI_V1`,
+`PANCHANGA_V1`, `TRIKALAM_V1`, `PARASHARI_DRISHTI_V1`, `RISE_SET_V1`, `SIGN_CONVENTION_V1`, `KP_CHAIN_V1`,
+Tier-0/`current_engine`), none of which this entry, the prior investigation, or `ADR-0085` examined. This is an
+unquantified, out-of-scope residual risk - neither confirmed defective nor cleared - and is explicitly not
+resolved, narrowed, or expanded by this entry.
+
+### 3. Remediation design (design only - nothing below is implemented by this entry)
+
+- **Required exact-value independent check:** a new certification gate exercising
+  `graha_mahapurusha_from_snapshot()`/`mahapurusha_yoga()` directly against a real snapshot, checking every
+  resulting `MahapurushaYogaResult`'s `house_number` and `sign_number` field - not merely the derived `present`
+  boolean - against a value independently computed on that same graha's own real longitude, mirroring exactly
+  the pattern `ADR-0085` section 2 required and `VARGA_D45_V1`'s own new Gate I implements
+  (`validate_d45_holdout.py`'s `verify_composition()`).
+- **Required genuine production-mutation/re-execution evidence:** rebuild `gate_h_negative_controls` (or add a
+  new gate) to genuinely monkeypatch the real, imported `engine.parashari.mahapurusha_yoga.graha_mahapurusha_
+  from_snapshot` (or the underlying `whole_sign_house`/`zodiac_sign` call sites) in-process, re-run the real
+  composition-verification check against the mutated state, and observe a real, reachable `fail()`/`sys.exit` -
+  never a synthetic side-by-side comparison against a hand-written corrupted copy. Mirrors `scripts/
+  check_mutation_detection.py`'s own established methodology (`ADR-0079`/`DP-030`) and `VARGA_D45_V1`'s own new
+  `run_mutation_self_check()` (`ADR-0085`).
+- **Required negative controls, appropriate to the discovered mutation:** at minimum, the exact argument-order
+  swap reproduced in section 1, genuinely monkeypatched and re-executed, demonstrated to flip the new gate's own
+  comparison and then confirmed restored. A second control targeting `sign_number` specifically (e.g. a
+  `zodiac_sign()` call-site substitution) is recommended so the two affected fields are not covered by a single
+  control alone.
+- **Regeneration, not editing, of the certification artifact:** `certification/PARASHARI_YOGA_V1_certification.json`
+  must be regenerated from a corrected `scripts/certify_parashari_yoga.py` once the new gate exists and is
+  separately authorized - **never hand-edited** - per this repository's own "a stored certification artifact is
+  history, not proof; never hand-edit them" rule, identical to `ADR-0085` section 2's own requirement.
+- **No oracle/CI implication:** this is a hermetic, in-repository composition check, consuming only already-
+  certified `dignity.py`/`house.py`/`signs.py` and the production module itself; no third-party oracle and no
+  `.github/workflows/ci.yml` change is required or proposed by this design.
+
+### 4. What this entry does not do
+
+**Does not modify** `engine/parashari/mahapurusha_yoga.py`, any other file under `engine/`, `scripts/
+certify_parashari_yoga.py`, `validate_parashari_yoga_holdout.py`, any test file, any file under `certification/`,
+or `.github/workflows/ci.yml`. **Does not** implement the new gate, the extended validator, or the
+mutation-detection harness described in section 3 - each remains a separate, not-yet-authorized act. **Does not**
+regenerate or alter `certification/PARASHARI_YOGA_V1_certification.json`. **Does not** reopen, edit, or
+reinterpret `ADR-0081`'s own ratified text, which remains byte-unchanged - confirmed by this entry touching only
+`docs/DECISION_LOG.md`'s own append-only register. **Does not** resolve, narrow, or expand the broader residual-risk
+question in section 2 for any other certified capability. **Does not** touch D24, `DP-024`, or `ADR-0084`'s own
+separate disposition. **Does not** push or merge. **Does not** self-ratify.
+
+- **Consequences, if ratified:** this entry would formally record the certification-integrity finding above as
+  the governing repository record for `PARASHARI_YOGA_V1`, distinct from and not reopening `ADR-0081`'s own
+  text, and would authorize drafting-stage acknowledgement only - not the remediation work itself (section 3),
+  which requires its own separate, subsequent owner authorization, exactly mirroring `ADR-0085`'s own
+  ratification-then-separate-implementation-authorization sequence for `VARGA_D45_V1`. Until that separate
+  authorization is given and remediation is implemented and re-certified, `PARASHARI_YOGA_V1`'s own certification
+  must be cited with the qualification in section 1's closing paragraph.
+- **Evidence:** the owner's "ACTION 2 — PARASHARI YOGA" instruction, quoted in substance above; the prior
+  read-only three-capability certification-integrity investigation (this conversation) - the real, applied-and-
+  reverted argument-order mutation in a disposable `git worktree`, all ten gates PASS; the two control mutations
+  (sign-derivation corruption, `KENDRA_HOUSES` tamper) both correctly caught; direct grep confirming `house_
+  number`/`sign_number` appear nowhere in `scripts/certify_parashari_yoga.py` or `validate_parashari_yoga_
+  holdout.py`; direct reading of `engine/parashari/mahapurusha_yoga.py`, `scripts/certify_parashari_yoga.py`;
+  `ADR-0081` (read fresh, unedited by this entry); `ADR-0085`/`ADR-0079`/`DP-030`/`scripts/
+  check_mutation_detection.py` (the precedent methodology section 3 requires be mirrored); `git log` on `engine/
+  parashari/mahapurusha_yoga.py` and `scripts/certify_parashari_yoga.py` confirming both unchanged since the
+  original investigation; `certification/PARASHARI_YOGA_V1_certification.json` (read fresh, confirmed untouched);
+  `python scripts/check_adr_numbering.py` (85 -> 86, PASS both before and after this entry's own addition).
+
+---
+
 ## ADR template (copy, do not edit above the line)
 
 ## ADR-XXXX - <title>
