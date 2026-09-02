@@ -6431,10 +6431,15 @@ freezes without it, exactly as `ADR-0082` section 1 already established.
   2. **A negative control is added** ("Negative control, the varga-registry gate must actually fail on a
      stray artifact") proving the narrowed check still rejects a planted, unlisted `VARGA_D99_V1_
      certification.json` (division 99 does not exist, is not declared, is not in the allow-list). It runs
-     the identical `check()` function body used by the real assertion (the same "same code, not a copy"
-     discipline this file's own identifier-gate and numbering-gate negative controls already use) against a
-     `tempfile.TemporaryDirectory()` copy of the real artifacts plus the planted file, never mutating the
-     real `certification/` directory.
+     the same three decision-logic/error-computation branches as the real assertion's own `check()`
+     (missing-declared-artifact, unlisted-extra-artifact, per-artifact PASS/adr validation) - a separate
+     copy, in its own CI step, since a bash heredoc cannot share Python state with another step; the two
+     copies differ only in two inline comments and the negative control's narrower return value (`errors`
+     alone, not the real assertion's `(errors, declared, artifacts, expected)` tuple), verified textually
+     identical in the three branches themselves. This is the same "same logic, not a divergent copy"
+     discipline this file's own identifier-gate and numbering-gate negative controls already use, applied
+     here as closely as two separate heredocs allow. Runs against a `tempfile.TemporaryDirectory()` copy of
+     the real artifacts plus the planted file, never mutating the real `certification/` directory.
   3. **Per-artifact evidence-quality checks (result == PASS, a well-formed `adr` field) are now applied to
      every artifact on disk, including the allow-listed one** - strictly additive rigor, not a reduction:
      D24's own artifact is still required to show `PASS` and cite a real ADR, exactly as every registered
