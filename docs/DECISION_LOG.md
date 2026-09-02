@@ -6389,6 +6389,84 @@ freezes without it, exactly as `ADR-0082` section 1 already established.
 
 ---
 
+## ADR-0084 - `.github/workflows/ci.yml` governance-gate repair: narrow, named exemption for D24's pre-production certification artifact (PROPOSED - prepared for CEO ratification, not yet declared)
+
+- **Date:** 2026-09-02
+- **Status:** PROPOSED. Implemented per the owner's explicit "CEO AUTHORIZATION — D24 CI Governance
+  Registry Fix" instruction ("Proceed with the narrowly scoped governance fix identified in the D24
+  CI/Governance Blocker Investigation... Create the appropriate ADR/decision record required for this
+  governance change before modifying the workflow"), following a prior read-only "D24 Gate-C Readiness
+  Audit" and "D24 CI/Governance Blocker Investigation" (this conversation) that diagnosed the defect and
+  identified its precedent. This entry is **not self-ratified** - it requires its own separate owner
+  ratifying instruction, per this repository's own unbroken "the owner ratifies decisions; you do not"
+  rule.
+- **Context:** `.github/workflows/ci.yml`'s governance job step "Certified varga registry matches its
+  declared constant" asserts `{certification/VARGA_D*_V1_certification.json on disk} ==
+  {engine.astrology.CERTIFIED_PRODUCTION_VARGAS}` as a two-directional set equality. `ADR-0083` (D24
+  certification design/execution, ratified) created `certification/VARGA_D24_V1_certification.json`
+  without registering D24 in `CERTIFIED_PRODUCTION_VARGAS` - an intentional, disclosed, ratified act per
+  `ADR-0082`/`ADR-0083`'s explicit four-stage capability-authorization distinction (selection ->
+  methodology -> certification design/execution -> production implementation, each requiring its own
+  separate owner act). Once pushed, CI run `33514456513`'s governance job failed with `FAIL: artifact set
+  [...includes VARGA_D24_V1_certification.json...] != declared [...six vargas, no D24...]` - independently
+  reproduced locally this task, not merely read from the CI log.
+- **Precedent, established this task by direct history inspection, not assumed:** this check has existed
+  since commit `c18150b` (2026-08-11), predating D24. Every prior varga's certification-execution commit
+  and production-registration commit were pushed to `origin` together, in the same push - confirmed for D45
+  specifically: `d83b3b0` (`ADR-0077` ratified, certification-execution, standalone/unregistered) and
+  `2cb9f30` (D45 production implementation) are 19 minutes apart, same author, and `gh run list` shows
+  **zero** CI runs against `d83b3b0` alone. The check's "every artifact implies a declared registry entry"
+  direction has therefore never actually been exercised against a genuinely certified-but-unregistered
+  varga before D24; the check's real, load-bearing invariant - "every declared/registered varga has a
+  passing certification artifact" - is not in question and is not touched by this entry.
+- **Decision:**
+  1. **The reverse-direction check is narrowed, not dropped.** `.github/workflows/ci.yml`'s governance-gate
+     step is changed from bare set equality to: (a) every varga in `CERTIFIED_PRODUCTION_VARGAS` must still
+     have a corresponding `VARGA_D*_V1_certification.json` artifact - **enforced exactly as before, with no
+     change** - and (b) any artifact present on disk that does **not** correspond to a declared registry
+     entry must appear in an explicit, small, named `ALLOWED_PRE_PRODUCTION` set, each entry commented with
+     its own governing ADR. Currently exactly one entry: `"VARGA_D24_V1_certification.json"`, citing
+     `ADR-0083`. Any other, unlisted extra artifact still fails the check - this is a per-named-artifact
+     exemption, not a general relaxation.
+  2. **A negative control is added** ("Negative control, the varga-registry gate must actually fail on a
+     stray artifact") proving the narrowed check still rejects a planted, unlisted `VARGA_D99_V1_
+     certification.json` (division 99 does not exist, is not declared, is not in the allow-list). It runs
+     the identical `check()` function body used by the real assertion (the same "same code, not a copy"
+     discipline this file's own identifier-gate and numbering-gate negative controls already use) against a
+     `tempfile.TemporaryDirectory()` copy of the real artifacts plus the planted file, never mutating the
+     real `certification/` directory.
+  3. **Per-artifact evidence-quality checks (result == PASS, a well-formed `adr` field) are now applied to
+     every artifact on disk, including the allow-listed one** - strictly additive rigor, not a reduction:
+     D24's own artifact is still required to show `PASS` and cite a real ADR, exactly as every registered
+     varga's artifact already is.
+  4. **Does not** modify `scripts/certify_d24.py`, any other certifier, or any certification artifact's own
+     content. **Does not** register D24 in `CERTIFIED_PRODUCTION_VARGAS` or create `engine/astrology/
+     varga_d24.py`. **Does not** perform any Gate C/oracle work (the separate, not-yet-authorized rework
+     identified in the prior investigation). **Does not** resolve `docs/decisions/
+     DP-024-varga-framework-step-payload-architecture.md`, which remains `DEFERRED`. **Does not** push or
+     merge.
+- **Consequences:** the governance job's varga-registry check now tolerates exactly the one, explicitly
+  named pre-production artifact this repository currently has (its governing ADR cited in the allow-list
+  comment), while continuing to fail on (a)
+  any declared/registered varga missing its artifact and (b) any other unlisted extra artifact - including
+  a future accidental or orphaned one. This does not, by itself, resolve the separate, disclosed
+  `modules_scanned` collateral-drift failures already observed in the no-oracle and oracle jobs' own drift
+  assertions for this push (routine, previously handled via the established CI-sourced-artifact-recovery
+  pattern, unrelated to this entry). It does not wire `certify_d24.py` into any CI job, and does not create
+  or advance Gate C oracle evidence - both remain separate, not-yet-authorized acts.
+- **Evidence:** the owner's "CEO AUTHORIZATION — D24 CI Governance Registry Fix" instruction, quoted above;
+  the prior "D24 Gate-C Readiness Audit" and "D24 CI/Governance Blocker Investigation" (this conversation,
+  read-only, no file changes); `git log -p --all -- .github/workflows/ci.yml` (commit `c18150b`, 2026-08-11,
+  introduced the check); `git show --stat d83b3b0 2cb9f30`, `git diff d83b3b0 2cb9f30 --
+  scripts/certify_d45.py` (confirms D45's `gate_c_oracle()` used a standalone, unregistered rule object,
+  unchanged by later production registration); `gh run list`/`gh run view 33514456513 --json jobs` (governance
+  job failure, independently reproduced locally); local prototype verification of the narrowed `check()`
+  logic against three cases - real repository state (PASS), a simulated missing-declared-artifact case
+  (correctly FAILS), and a simulated stray-unlisted-artifact case (correctly FAILS) - before the workflow
+  file itself was edited.
+
+---
+
 ## ADR template (copy, do not edit above the line)
 
 ## ADR-XXXX - <title>
