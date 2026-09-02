@@ -6475,15 +6475,18 @@ freezes without it, exactly as `ADR-0082` section 1 already established.
 ## ADR-0085 - `VARGA_D45_V1` certification-integrity finding: the `divisional_chart(snapshot, 45)`/`build_varga_chart()` composition layer has no D45-specific exact-value verification (PROPOSED - drafting only authorized, not ratified)
 
 - **Date:** 2026-09-02
-- **Status:** PROPOSED. Drafted per the owner's explicit "CEO authorization — Draft D45 certification-integrity
-  remediation ADR only" instruction, following a read-only certification-integrity investigation across
-  `PARASHARI_YOGA_V1`/`VARGA_D45_V1`/`KP_SIGNIFICATOR_V1` (this conversation) and a subsequent, independent,
-  fresh-worktree reproduction focused on `VARGA_D45_V1` specifically, both performed against repository state
-  at HEAD `b8f5121c815401dc9f8bbcc20ebb7c6cb02971b9`. **This entry is not self-ratified** - it requires its own
-  separate owner ratifying instruction, per this repository's own unbroken "the owner ratifies decisions; you
-  do not" rule. Drafting this entry authorizes nothing beyond its own text existing as a proposal: no file
-  under `engine/`, `scripts/certify_d45.py`, `validate_d45_holdout.py`, any test file, `certification/`, or
-  `.github/workflows/ci.yml` is touched by this entry.
+- **Status:** **ACCEPTED, on the owner's ratifying instruction recorded in the "Ratification of ADR-0085"
+  entry immediately below this entry's own text.** Originally drafted `PROPOSED` per the owner's own "CEO
+  authorization — Draft D45 certification-integrity remediation ADR only" instruction, following a read-only
+  certification-integrity investigation across `PARASHARI_YOGA_V1`/`VARGA_D45_V1`/`KP_SIGNIFICATOR_V1` (this
+  conversation) and a subsequent, independent, fresh-worktree reproduction focused on `VARGA_D45_V1`
+  specifically, both performed against repository state at HEAD `b8f5121c815401dc9f8bbcc20ebb7c6cb02971b9`.
+  Per this repository's own "change only the status" discipline, this Status line is the only text in this
+  entry edited to record ratification - the Context, sections 1-3, Consequences, and Evidence below are
+  unchanged. Drafting this entry authorized nothing beyond its own text existing as a proposal, and this
+  ratification does not itself broaden that: no file under `engine/`, `scripts/certify_d45.py`,
+  `validate_d45_holdout.py`, any test file, `certification/`, or `.github/workflows/ci.yml` is touched by this
+  entry.
 - **Context:** `ADR-0076` (D45 implementation-readiness, ratified) and `ADR-0077` (D45 certification design,
   ratified; its own ratification sub-entry additionally records certification-execution, "Result: PASS on all
   eight gates (A-H)") together govern `VARGA_D45_V1`. Production implementation followed via a separate "CEO
@@ -6602,6 +6605,39 @@ which remains `DEFERRED`, untouched. **Does not** push or merge. **Does not** se
   check_mutation_detection.py` (the precedent methodology this entry's own section 2 requires be mirrored);
   `certification/VARGA_D45_V1_certification.json` (read fresh, confirmed untouched); `python scripts/
   check_adr_numbering.py` (84 -> 85, PASS both before and after this entry's own addition).
+
+#### Ratification of ADR-0085: `VARGA_D45_V1` CERTIFICATION-INTEGRITY FINDING RATIFIED (2026-09-02)
+
+- **Status:** ACCEPTED. The owner instructed: "RATIFY ADR-0085." Per `docs/PROJECT_CONSTITUTION.md` s11, this
+  instruction is the ratifying act; this entry records it, matching the precedent already used throughout this
+  session (`ADR-0082`, `ADR-0083`, and every other ratification sub-entry in this register).
+- **Decision:** `ADR-0085` above (its full Context, sections 1-3, Consequences, and Evidence) is **ratified
+  exactly as drafted, with no wording changed**. Its own `Status` line, immediately above, is the only edit
+  made to that entry's text - confirmed by direct diff before committing. This ratification accepts, as the
+  governing repository record:
+  1. The precise, three-part finding in section 1: the initially reported field-swap mutation was caught by
+     2/872 tests, both generic and D45-unrelated; the underlying composition-layer verification gap is
+     genuine; the independently constructed cross-wiring mutation passed 872/872, confirming a real,
+     deterministic, HIGH-severity blind spot.
+  2. The qualification that `ADR-0077`'s own "PASS on all eight gates (A-H)" result must not be represented,
+     or relied upon, as proof that the `divisional_chart(snapshot, 45)`/`build_varga_chart()` composition
+     layer is independently verified.
+  3. The remediation design in section 2, as a design only - **ratifying this entry does NOT authorize its
+     implementation.** Writing the new exact-value gate, extending `validate_d45_holdout.py`, building the
+     monkeypatch-based mutation-detection harness, adding negative controls, or regenerating
+     `certification/VARGA_D45_V1_certification.json` each remain their own, separate, not-yet-given
+     authorization - exactly as `ADR-0085` section 3 and Consequences already state, and exactly mirroring how
+     `DP-030`'s ratification did not itself authorize `ADR-0079`'s own repair work, which required its own
+     later, separate instruction.
+  `ADR-0076` and `ADR-0077` remain unedited and unreopened by this ratification. `docs/decisions/
+  DP-024-varga-framework-step-payload-architecture.md` remains `DEFERRED`, untouched.
+- **Consequences:** `VARGA_D45_V1`'s certification-integrity finding is now the ratified, governing record -
+  any future citation of `VARGA_D45_V1`'s certification must be read subject to the qualification in decision
+  point 2 above. No file under `engine/`, `scripts/certify_d45.py`, `validate_d45_holdout.py`, any test file,
+  `certification/`, or `.github/workflows/ci.yml` is touched by this ratification. The remediation design
+  remains unimplemented pending a separate owner authorization.
+- **Evidence:** the owner's "RATIFY ADR-0085" instruction, quoted above; `ADR-0085` itself, commit
+  `2f7298a1f9181ad0ca09e7526bc87dfeb406d6b7`.
 
 ---
 
