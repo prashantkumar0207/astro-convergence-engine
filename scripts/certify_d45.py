@@ -20,7 +20,12 @@ boundary cases identified in ADR-0077 (k=13, 26, 29 per sign, out of 44
 internal segment boundaries) plus sign/segment-edge cases; G a protected
 holdout, generated independently of the boundary cases and never used for
 tuning; H genuine negative controls (a real planted violation, confirmed
-detected, confirmed restored). Exit 0 = PASS, 3 = FAIL.
+detected, confirmed restored); I composition/plumbing verification (ADR-0085)
+- exercises divisional_chart(snapshot, 45)/build_varga_chart() directly, which
+gates A/B/F/G never do, checking every field of every body against an
+independent cross-check plus a genuine in-process monkeypatch mutation
+self-check (see validate_d45_holdout.py's own verify_composition()/
+run_mutation_self_check()). Exit 0 = PASS, 3 = FAIL.
 """
 
 import subprocess
@@ -312,6 +317,48 @@ def gate_h_negative_controls():
     return {"controls": controls, "all_detected": True, "original_object_unmutated": True}
 
 
+def gate_i_composition_verification():
+    """ADR-0085: exercises the REAL production composition entry point,
+    divisional_chart(snapshot, 45) / build_varga_chart(), which gates A-H
+    above never call (each tests classify() directly - a genuinely different
+    concern, per validate_d45_holdout.py's own verify_composition()
+    docstring). Runs validate_d45_holdout.py as a subprocess, mirroring gate
+    E's own established pattern, and requires BOTH: (1) every field of every
+    body in a real 5-chart holdout matches an independent cross-check, and
+    (2) a genuine, real, in-process monkeypatch-based mutation self-check
+    (three distinct corruptions of the real build_varga_chart, never a
+    synthetic side-by-side comparison) is independently detected and the
+    production function is confirmed restored afterward.
+
+    This is the standing regression guard against the certification-
+    integrity finding ADR-0085 records: a real planet cross-wiring
+    corruption of build_varga_chart() was independently reproduced to pass
+    all 872 of this repository's existing tests silently before this gate
+    existed."""
+
+    result = subprocess.run(
+        [sys.executable, str(ROOT / "validate_d45_holdout.py")],
+        capture_output=True, text=True)
+    if (result.returncode != 0
+            or "D45 COMPOSITION VERIFICATION PASSED" not in result.stdout
+            or "D45 COMPOSITION MUTATION DETECTION PASSED" not in result.stdout):
+        fail(f"composition verification failed: {result.stdout[-1600:]} {result.stderr[-800:]}")
+    return {
+        "result": "PASS",
+        "classification": "correctness_evidence_and_mutation_detection",
+        "scope": "divisional_chart(snapshot, 45)/build_varga_chart() field-level composition "
+                 "(source_longitude, sign, division_number, fraction) for the ascendant and "
+                 "every planet, across a fixed 5-chart real holdout, plus a genuine in-process "
+                 "monkeypatch mutation self-check (field-order swap, planet cross-wiring, "
+                 "source_longitude corruption) against the real production function",
+        "disclosure": "distinct from gates A/B/F/G, which test classify() directly and never "
+                       "exercise build_varga_chart()'s own field assignment; distinct from gate H, "
+                       "whose negative controls compare a hand-written mutated COPY against the "
+                       "unmutated rule object in-process rather than genuinely monkeypatching and "
+                       "re-executing the real production function (ADR-0085)",
+    }
+
+
 def main():
     tee = support.start_transcript()
     preconditions = support.preflight()
@@ -351,6 +398,7 @@ def main():
             "F_boundary_cases": gate_f_boundary_cases(),
             "G_protected_holdout": gate_g_protected_holdout(),
             "H_negative_controls": gate_h_negative_controls(),
+            "I_composition_verification": gate_i_composition_verification(),
         },
         "explicit_non_claims": [
             "Parivritti cyclical akshavedamsa (PyJHora chart_method=2)",
@@ -376,6 +424,7 @@ def main():
           "d45_registered:", report["gates"]["D_non_invasiveness"]["d45_registered"])
     print("E_independent_validator: PASS")
     print("H_negative_controls:", report["gates"]["H_negative_controls"]["all_detected"])
+    print("I_composition_verification:", report["gates"]["I_composition_verification"]["result"])
     print("archived          :", out.relative_to(ROOT).as_posix())
     print("RESULT            : PASS")
 
