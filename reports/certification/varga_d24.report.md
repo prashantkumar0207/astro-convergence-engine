@@ -5,7 +5,7 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 
 - Decision entry: ADR-0083
 - Supersedes provisional identifier: NOTHING_AUTHORISED
-- Date: 2026-09-02
+- Date: 2026-09-03
 - Scope: D24 Siddhamsa (Chaturvimshamsha), Parashara/BPHS variant, Traditional Parasara construction. Registered in production through the generic registry (engine.astrology.varga_d24, VARGA_D24_V1), discoverable via engine.astrology.divisional_chart.divisional_chart(snapshot, 24).
 - Result: **PASS**
 
@@ -18,7 +18,7 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 
 - **A_table_integrity**: cells=12, mismatches=0, content_sha256=2ea83b5ad2dd53218f074d1b5e410bd3ec1806ad1ce5d4e053453715da4287f9
 - **B_dense_sweep**: points=51429, mismatches=0
-- **C_corroboration_disclosure**: oracle_executed=False, classification=disclosed_gap_not_correctness_evidence
+- **C_oracle**: comparisons=5400, mismatches=0
 - **D_non_invasiveness**: d24_registered=True, registered_rule_identity=is D24_SIDDHAMSA (engine.astrology.varga_d24), rule_content_sha256=2ea83b5ad2dd53218f074d1b5e410bd3ec1806ad1ce5d4e053453715da4287f9
 - **E_independent_validator**: result=PASS, classification=corroborating_correctness_evidence
 - **F_boundary_cases**: cases=300, mismatches=0
@@ -28,7 +28,6 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 
 ## Explicit non-claims
 
-- no oracle execution this run - PyJHora unavailable locally, deferred to CI; certify_d24.py is NOT wired into .github/workflows/ci.yml's oracle-tier loop by this production-implementation revision - that remains a separate, not-yet-authorized act (ADR-0083's own ratification)
 - any per-division deity/label payload (VargaClassification carries only D-sign, division index, and fraction; deity output is out of scope, mirroring D45's own identical treatment - ADR-0083 section 4)
 - the two non-default PyJHora chart_method variants (PARASARA_EVEN_REVERSE, PARASARA_EVEN_DOUBLE_REVERSE) - excluded, mirroring D45's own three excluded PyJHora methods
 - any non-parashara school variant
