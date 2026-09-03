@@ -4,7 +4,7 @@ VARGA_D12_V1 CERTIFICATION
 A_table_integrity: {'cells': 24, 'mismatches': 0}
 B_dense_sweep: {'points': 51429, 'mismatches': 0}
 C_oracle: {'comparisons': 3600, 'mismatches': 0}
-D_non_invasiveness: registry [[2, 'parashara'], [3, 'parashara'], [7, 'parashara'], [12, 'parashara'], [24, 'parashara'], [30, 'parashara'], [45, 'parashara']], dispatch intact, D9 hash ca444f10dd17fb46..., D10 hash 78cd000fc7d16f40...
+D_non_invasiveness: registry [[2, 'parashara'], [3, 'parashara'], [7, 'parashara'], [12, 'parashara'], [24, 'parashara'], [30, 'parashara'], [40, 'parashara'], [45, 'parashara']], dispatch intact, D9 hash ca444f10dd17fb46..., D10 hash 78cd000fc7d16f40...
 E_independent_validator: PASS
 archived          : certification/VARGA_D12_V1_certification.json
 RESULT            : PASS

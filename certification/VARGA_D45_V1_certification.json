@@ -56,6 +56,10 @@
      "parashara"
     ],
     [
+     40,
+     "parashara"
+    ],
+    [
      45,
      "parashara"
     ]
@@ -70,6 +74,7 @@
     "D12_parashara": "224ece371b1fd024a49d545556e2f9b842343c44c17b9af666b7052b5e6cd195",
     "D24_parashara": "2ea83b5ad2dd53218f074d1b5e410bd3ec1806ad1ce5d4e053453715da4287f9",
     "D30_parashara": "deacd958cf19b7641c4f8cb086ad27d8a5efaeb6e38b594dc0cd4113a25794d3",
+    "D40_parashara": "056e3e8af182568e9e2eaa5a1f54d86c40f7d97a53ece610f1e3105eb7a41006",
     "D45_parashara": "c8515e44be6e21e3e8c3298121b8c0e4687c0176d9da7e94f7d0aba53a8bf817"
    }
   },
@@ -137,7 +142,7 @@
    }
   },
   "anti_fitting": {
-   "modules_scanned": 195,
+   "modules_scanned": 196,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."

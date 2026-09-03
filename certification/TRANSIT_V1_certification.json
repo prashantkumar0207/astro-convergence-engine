@@ -268,7 +268,7 @@
    }
   },
   "anti_fitting": {
-   "modules_scanned": 195,
+   "modules_scanned": 196,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."
