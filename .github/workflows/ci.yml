@@ -459,6 +459,9 @@ jobs:
               "VARGA_D24_V1_certification.json",  # ADR-0083: certification
                   # design/execution only; production registration not yet
                   # separately authorized.
+              "VARGA_D40_V1_certification.json",  # ADR-0087: certification
+                  # design/execution only; production registration not yet
+                  # separately authorized.
           }
 
           def check(cert_dir):
@@ -508,6 +511,7 @@ jobs:
           # artifacts; the real certification/ directory is never touched.
           ALLOWED_PRE_PRODUCTION = {
               "VARGA_D24_V1_certification.json",
+              "VARGA_D40_V1_certification.json",
           }
 
           def check(cert_dir):
