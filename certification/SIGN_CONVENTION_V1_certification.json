@@ -1,7 +1,7 @@
 {
  "schema": "sign_convention_v1_certification",
  "adr": "ADR-0012",
- "date": "2026-08-31",
+ "date": "2026-09-03",
  "scope": "explicit, machine-checked sign-index conventions across every layer; no certified value renumbered",
  "decisions": {
   "SC-A": "inert Sign value type as the shared convention carrier",
@@ -132,6 +132,7 @@
     "D3_parashara": "71672e052fc5877fce4e6b8bc0ab1160f9e776e4b6e85a8e2f16386024e673a0",
     "D7_parashara": "51f7acf701b1978990accbfcbedfbac6001446f2e31789077752e44c54c3b73c",
     "D12_parashara": "81b14663c6d66a8680e3697a25b9bd53c72897768e233b82f1dfcbc3eb1306ac",
+    "D24_parashara": "b377e5df545c9fdc595ead2b2c448715914832e39c4622244a6d13f105ce55cb",
     "D30_parashara": "8b10c2f7b1d8bd8c76406e2290b19f37e55899e78653b520896e9e662606f5a4",
     "D45_parashara": "56a88127eb983a832e4016e0961c929b3accadcaf007def5210af2ab94818cce"
    },
@@ -287,7 +288,7 @@
    }
   },
   "D_cross_layer_agreement": {
-   "surface_checks": 64987,
+   "surface_checks": 69986,
    "mismatches": 0,
    "surfaces": 6
   }
@@ -299,7 +300,7 @@
   "nakshatra and division-index conventions are out of scope for V1"
  ],
  "environment": {
-  "python": "3.12.10"
+  "python": "3.11.16"
  },
  "preconditions": {
   "data_assets": {
@@ -311,7 +312,7 @@
    }
   },
   "anti_fitting": {
-   "modules_scanned": 190,
+   "modules_scanned": 195,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."

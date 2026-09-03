@@ -53,7 +53,13 @@ chosen comparison against the imported production predicate, not merely
 executed - see also the separate, one-time literal on-disk mutation proof
 performed against the real production file during this task, recorded in
 docs/DECISION_LOG.md, not repeated automatically here since editing the real
-file on every run would be destructive).
+file on every run would be destructive); J composition/plumbing verification
+(ADR-0086) - exercises graha_mahapurusha_from_snapshot() directly, checking
+the house_number/sign_number public fields no other gate reads, plus a
+genuine in-process monkeypatch mutation self-check including the exact
+argument-order corruption ADR-0086's own governing investigation found
+undetected by gates A-I (see validate_parashari_yoga_holdout.py's own
+verify_composition()/run_mutation_self_check()).
 
 No third-party computational oracle is used this execution. PyJHora is not
 invoked: this project's own local PyJHora environment was found degraded in
@@ -663,6 +669,51 @@ def gate_i_negative_controls():
                     "production file is recorded in docs/DECISION_LOG.md, not repeated here"}
 
 
+def gate_j_composition_verification():
+    """ADR-0086: exercises the REAL production composition entry point,
+    engine.parashari.mahapurusha_yoga.mahapurusha_yoga()/graha_mahapurusha_
+    from_snapshot(), checking the two public fields (house_number,
+    sign_number) no other gate ever reads - Gate I above only ever compares
+    the derived `present` boolean, and its own negative controls are
+    in-process synthetic (a hand-written corrupted copy compared against the
+    unmutated real function), never a genuine monkeypatch of the real
+    production code. Runs validate_parashari_yoga_holdout.py as a subprocess,
+    mirroring gate_c_independent_validator's own established pattern, and
+    requires BOTH: (1) every checked field of every graha in a real 6-chart
+    holdout matches a THIRD, from-scratch independent reference (this file's
+    own CERTIFIED_DIGNITY_TABLE plays no part; the reference lives entirely
+    inside validate_parashari_yoga_holdout.py), and (2) a genuine, real,
+    in-process monkeypatch-based mutation self-check - including the exact
+    argument-order corruption the governing investigation (ADR-0086)
+    reproduced, which every one of this certifier's own ten prior gates
+    passed undetected - is independently detected and the production
+    function is confirmed restored afterward."""
+
+    import subprocess
+
+    result = subprocess.run(
+        [sys.executable, str(ROOT / "validate_parashari_yoga_holdout.py")],
+        capture_output=True, text=True)
+    if (result.returncode != 0
+            or "PARASHARI_YOGA_V1 COMPOSITION VERIFICATION PASSED" not in result.stdout
+            or "PARASHARI_YOGA_V1 COMPOSITION MUTATION DETECTION PASSED" not in result.stdout):
+        fail(f"composition verification failed: {result.stdout[-1600:]} {result.stderr[-800:]}")
+    return {
+        "result": "PASS",
+        "classification": "correctness_evidence_and_mutation_detection",
+        "scope": "mahapurusha_yoga()/graha_mahapurusha_from_snapshot() field-level composition "
+                 "(house_number, sign_number) for every graha, across a fixed 6-chart real "
+                 "holdout, plus a genuine in-process monkeypatch mutation self-check (the exact "
+                 "reproduced whole_sign_house() argument-order swap, plus a sign_number-targeted "
+                 "wrong-body-longitude corruption) against the real production function",
+        "disclosure": "distinct from gates B/B2/G, which never exercise graha_mahapurusha_from_"
+                       "snapshot()'s own call sites directly; distinct from gate I, whose negative "
+                       "controls compare a hand-written mutated COPY against the unmutated real "
+                       "function in-process rather than genuinely monkeypatching and re-executing "
+                       "the real production function (ADR-0086)",
+    }
+
+
 def main():
     tee = support.start_transcript()
     preconditions = support.preflight()
@@ -717,6 +768,7 @@ def main():
             "G_retrograde_disclosure": gate_g_retrograde_disclosure(),
             "H_static_reference_regression": gate_h_static_reference_regression(),
             "I_negative_controls": gate_i_negative_controls(),
+            "J_composition_verification": gate_j_composition_verification(),
         },
         "explicit_non_claims": [
             "no bhanga/cancellation logic of any kind (ADR-0081 section 6)",

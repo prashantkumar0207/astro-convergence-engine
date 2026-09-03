@@ -278,13 +278,14 @@ jobs:
       - name: Verify ephemeris asset checksums
         run: sha256sum --check CHECKSUMS.sha256
 
-      - name: Oracle certification runners (all eleven)
+      - name: Oracle certification runners (all twelve)
         run: |
           set -e
           for c in scripts/certify_d2.py \
                    scripts/certify_d3.py \
                    scripts/certify_d7.py \
                    scripts/certify_d12.py \
+                   scripts/certify_d24.py \
                    scripts/certify_d30.py \
                    scripts/certify_d45.py \
                    scripts/certify_vimshottari.py \
@@ -447,24 +448,103 @@ jobs:
           import json, sys
           from pathlib import Path
           import engine.astrology as ast
-          declared = set(tuple(x) for x in ast.CERTIFIED_PRODUCTION_VARGAS)
-          # Every certified varga must have an artifact, and every varga
-          # artifact must correspond to a certified registry entry.
-          artifacts = {p.name for p in Path("certification").glob("VARGA_D*_V1_certification.json")}
-          expected = {f"VARGA_D{d}_V1_certification.json" for d, _ in declared}
-          errors = []
-          if artifacts != expected:
-              errors.append(f"artifact set {sorted(artifacts)} != declared {sorted(expected)}")
-          for name in sorted(artifacts & expected):
-              report = json.loads((Path("certification") / name).read_text())
-              if report.get("result") != "PASS":
-                  errors.append(f"{name}: result is not PASS")
-              if not report.get("adr", "").startswith("ADR-"):
-                  errors.append(f"{name}: missing or malformed adr field")
+
+          # ADR-0084: a narrow, explicit, per-artifact exemption for a
+          # certification artifact that genuinely exists ahead of its own
+          # production registration (ADR-0082/ADR-0083's deliberate
+          # certify-then-register sequencing for D24). Any OTHER unlisted
+          # artifact still fails this check below - this is not a general
+          # relaxation of the invariant.
+          ALLOWED_PRE_PRODUCTION = {
+              "VARGA_D24_V1_certification.json",  # ADR-0083: certification
+                  # design/execution only; production registration not yet
+                  # separately authorized.
+              "VARGA_D40_V1_certification.json",  # ADR-0087: certification
+                  # design/execution only; production registration not yet
+                  # separately authorized.
+          }
+
+          def check(cert_dir):
+              declared = set(tuple(x) for x in ast.CERTIFIED_PRODUCTION_VARGAS)
+              expected = {f"VARGA_D{d}_V1_certification.json" for d, _ in declared}
+              artifacts = {p.name for p in cert_dir.glob("VARGA_D*_V1_certification.json")}
+              errors = []
+              # Every declared/registered varga must have its artifact - unchanged.
+              missing = expected - artifacts
+              if missing:
+                  errors.append(f"declared vargas missing their certification artifact: {sorted(missing)}")
+              # Any artifact with no declared registry entry must be explicitly
+              # named above, or it fails.
+              unlisted_extra = artifacts - expected - ALLOWED_PRE_PRODUCTION
+              if unlisted_extra:
+                  errors.append(f"artifact(s) with no declared registry entry and not in the "
+                                 f"explicit pre-production allow-list: {sorted(unlisted_extra)}")
+              for name in sorted(artifacts):
+                  report = json.loads((cert_dir / name).read_text())
+                  if report.get("result") != "PASS":
+                      errors.append(f"{name}: result is not PASS")
+                  if not report.get("adr", "").startswith("ADR-"):
+                      errors.append(f"{name}: missing or malformed adr field")
+              return errors, declared, artifacts, expected
+
+          errors, declared, artifacts, expected = check(Path("certification"))
           if errors:
               for e in errors:
                   print("FAIL:", e)
               sys.exit(1)
           print(f"PASS: {len(declared)} certified vargas, each with a PASS artifact "
-                f"citing a compliant decision entry")
+                f"citing a compliant decision entry; "
+                f"{len(artifacts - expected)} explicit pre-production artifact(s) accounted for")
+          PY
+
+      - name: Negative control, the varga-registry gate must actually fail on a stray artifact
+        run: |
+          python - <<'PY'
+          import json, sys, tempfile, shutil
+          from pathlib import Path
+          import engine.astrology as ast
+
+          # SAME check() body as the real assertion above (ADR-0084) - a copy
+          # of the rule could silently drift from the rule, so this control
+          # exists to prove the exemption stays narrow, not that some
+          # unrelated logic behaves. Operates on a temporary copy of the real
+          # artifacts; the real certification/ directory is never touched.
+          ALLOWED_PRE_PRODUCTION = {
+              "VARGA_D24_V1_certification.json",
+              "VARGA_D40_V1_certification.json",
+          }
+
+          def check(cert_dir):
+              declared = set(tuple(x) for x in ast.CERTIFIED_PRODUCTION_VARGAS)
+              expected = {f"VARGA_D{d}_V1_certification.json" for d, _ in declared}
+              artifacts = {p.name for p in cert_dir.glob("VARGA_D*_V1_certification.json")}
+              errors = []
+              missing = expected - artifacts
+              if missing:
+                  errors.append(f"declared vargas missing their certification artifact: {sorted(missing)}")
+              unlisted_extra = artifacts - expected - ALLOWED_PRE_PRODUCTION
+              if unlisted_extra:
+                  errors.append(f"artifact(s) with no declared registry entry and not in the "
+                                 f"explicit pre-production allow-list: {sorted(unlisted_extra)}")
+              for name in sorted(artifacts):
+                  report = json.loads((cert_dir / name).read_text())
+                  if report.get("result") != "PASS":
+                      errors.append(f"{name}: result is not PASS")
+                  if not report.get("adr", "").startswith("ADR-"):
+                      errors.append(f"{name}: missing or malformed adr field")
+              return errors
+
+          with tempfile.TemporaryDirectory() as tmp:
+              tmp_dir = Path(tmp)
+              for p in Path("certification").glob("VARGA_D*_V1_certification.json"):
+                  shutil.copy(p, tmp_dir / p.name)
+              # Planted stray artifact: division 99 does not exist, is not
+              # declared, and is not in ALLOWED_PRE_PRODUCTION.
+              (tmp_dir / "VARGA_D99_V1_certification.json").write_text(
+                  json.dumps({"result": "PASS", "adr": "ADR-0000"}))
+              errors = check(tmp_dir)
+          if not errors:
+              print("varga-registry gate did NOT flag a planted stray artifact; its PASS above is worthless")
+              sys.exit(1)
+          print(f"negative control passed: planted stray artifact was caught ({errors})")
           PY

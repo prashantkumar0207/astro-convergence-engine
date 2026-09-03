@@ -20,7 +20,12 @@ boundary cases identified in ADR-0077 (k=13, 26, 29 per sign, out of 44
 internal segment boundaries) plus sign/segment-edge cases; G a protected
 holdout, generated independently of the boundary cases and never used for
 tuning; H genuine negative controls (a real planted violation, confirmed
-detected, confirmed restored). Exit 0 = PASS, 3 = FAIL.
+detected, confirmed restored); I composition/plumbing verification (ADR-0085)
+- exercises divisional_chart(snapshot, 45)/build_varga_chart() directly, which
+gates A/B/F/G never do, checking every field of every body against an
+independent cross-check plus a genuine in-process monkeypatch mutation
+self-check (see validate_d45_holdout.py's own verify_composition()/
+run_mutation_self_check()). Exit 0 = PASS, 3 = FAIL.
 """
 
 import subprocess
@@ -44,13 +49,17 @@ from engine.astrology.varga_registry import (  # noqa: E402
 )
 from engine.astrology.varga_rules import rule_content_sha256  # noqa: E402
 
-try:
-    from jhora.horoscope.chart.charts import akshavedamsa_chart
-    import importlib.metadata
-    PYJHORA_VERSION = importlib.metadata.version("PyJHora")
-except Exception as error:  # pragma: no cover
-    print("D45 CERTIFICATION FAIL: PyJHora oracle unavailable:", error)
-    sys.exit(3)
+#: Set by gate_c_oracle() itself, lazily, the first time it runs (ADR-0085
+#: Gate C import-structure change). Deliberately NOT imported at module
+#: level: PyJHora is required only by Gate C, and every other gate in this
+#: file - including the new Gate I (ADR-0085) - needs none of it. Moving
+#: this import out of module scope does not change Gate C's own behaviour
+#: in any way: it still hard-fails with the identical message and exit code
+#: the instant it actually runs without PyJHora present, exactly as before -
+#: only the MOMENT that failure occurs moves from "at import" to "when Gate
+#: C executes," so the other eight gates become independently importable
+#: and runnable on a host where PyJHora is unavailable.
+PYJHORA_VERSION = None
 
 
 #: The three genuine floating-point floor-classification boundaries identified in
@@ -128,6 +137,16 @@ def gate_b_dense_sweep():
 
 
 def gate_c_oracle():
+    global PYJHORA_VERSION
+
+    try:
+        from jhora.horoscope.chart.charts import akshavedamsa_chart
+        import importlib.metadata
+        PYJHORA_VERSION = importlib.metadata.version("PyJHora")
+    except Exception as error:  # pragma: no cover
+        print("D45 CERTIFICATION FAIL: PyJHora oracle unavailable:", error)
+        sys.exit(3)
+
     mismatches = 0
     comparisons = 0
     per_sign = 450
@@ -176,7 +195,7 @@ def gate_d_non_invasiveness():
         fail("D9 no longer served by the certified module")
     if type(divisional_chart(snapshot, 10)).__name__ != "DashamsaChart":
         fail("D10 no longer served by the certified module")
-    for division in (4, 16, 20, 24, 27, 40, 60):
+    for division in (4, 16, 20, 27, 40, 60):  # D24 excluded: certified/registered (ADR-0082/0083, VARGA_D24_V1)
         try:
             divisional_chart(snapshot, division)
             fail(f"D{division} no longer refused")
@@ -312,9 +331,69 @@ def gate_h_negative_controls():
     return {"controls": controls, "all_detected": True, "original_object_unmutated": True}
 
 
+def gate_i_composition_verification():
+    """ADR-0085: exercises the REAL production composition entry point,
+    divisional_chart(snapshot, 45) / build_varga_chart(), which gates A-H
+    above never call (each tests classify() directly - a genuinely different
+    concern, per validate_d45_holdout.py's own verify_composition()
+    docstring). Runs validate_d45_holdout.py as a subprocess, mirroring gate
+    E's own established pattern, and requires BOTH: (1) every field of every
+    body in a real 5-chart holdout matches an independent cross-check, and
+    (2) a genuine, real, in-process monkeypatch-based mutation self-check
+    (three distinct corruptions of the real build_varga_chart, never a
+    synthetic side-by-side comparison) is independently detected and the
+    production function is confirmed restored afterward.
+
+    This is the standing regression guard against the certification-
+    integrity finding ADR-0085 records: a real planet cross-wiring
+    corruption of build_varga_chart() was independently reproduced to pass
+    all 872 of this repository's existing tests silently before this gate
+    existed."""
+
+    result = subprocess.run(
+        [sys.executable, str(ROOT / "validate_d45_holdout.py")],
+        capture_output=True, text=True)
+    if (result.returncode != 0
+            or "D45 COMPOSITION VERIFICATION PASSED" not in result.stdout
+            or "D45 COMPOSITION MUTATION DETECTION PASSED" not in result.stdout):
+        fail(f"composition verification failed: {result.stdout[-1600:]} {result.stderr[-800:]}")
+    return {
+        "result": "PASS",
+        "classification": "correctness_evidence_and_mutation_detection",
+        "scope": "divisional_chart(snapshot, 45)/build_varga_chart() field-level composition "
+                 "(source_longitude, sign, division_number, fraction) for the ascendant and "
+                 "every planet, across a fixed 5-chart real holdout, plus a genuine in-process "
+                 "monkeypatch mutation self-check (field-order swap, planet cross-wiring, "
+                 "source_longitude corruption) against the real production function",
+        "disclosure": "distinct from gates A/B/F/G, which test classify() directly and never "
+                       "exercise build_varga_chart()'s own field assignment; distinct from gate H, "
+                       "whose negative controls compare a hand-written mutated COPY against the "
+                       "unmutated rule object in-process rather than genuinely monkeypatching and "
+                       "re-executing the real production function (ADR-0085)",
+    }
+
+
 def main():
     tee = support.start_transcript()
     preconditions = support.preflight()
+
+    # Computed into a local first, in the same order as before, so
+    # PYJHORA_VERSION (set by gate_c_oracle() itself, lazily - see the
+    # ADR-0085 Gate C import-structure change above) is already known by
+    # the time the "oracle" field below is built. Gate call order and
+    # results are otherwise unchanged.
+    gates = {
+        "A_table_integrity": gate_a_table_integrity(),
+        "B_dense_sweep": gate_b_dense_sweep(),
+        "C_oracle": gate_c_oracle(),
+        "D_non_invasiveness": gate_d_non_invasiveness(),
+        "E_independent_validator": gate_e_validator(),
+        "F_boundary_cases": gate_f_boundary_cases(),
+        "G_protected_holdout": gate_g_protected_holdout(),
+        "H_negative_controls": gate_h_negative_controls(),
+        "I_composition_verification": gate_i_composition_verification(),
+    }
+
     report = {
         "schema": "varga_d45_v1_certification",
         "adr": "ADR-0077",
@@ -342,16 +421,7 @@ def main():
         },
         "oracle": {"package": "PyJHora", "version": PYJHORA_VERSION,
                    "function": "akshavedamsa_chart method 1 Traditional Parasara (pure longitude math)"},
-        "gates": {
-            "A_table_integrity": gate_a_table_integrity(),
-            "B_dense_sweep": gate_b_dense_sweep(),
-            "C_oracle": gate_c_oracle(),
-            "D_non_invasiveness": gate_d_non_invasiveness(),
-            "E_independent_validator": gate_e_validator(),
-            "F_boundary_cases": gate_f_boundary_cases(),
-            "G_protected_holdout": gate_g_protected_holdout(),
-            "H_negative_controls": gate_h_negative_controls(),
-        },
+        "gates": gates,
         "explicit_non_claims": [
             "Parivritti cyclical akshavedamsa (PyJHora chart_method=2)",
             "Parivritti even-reversal akshavedamsa (PyJHora chart_method=3)",
@@ -376,6 +446,7 @@ def main():
           "d45_registered:", report["gates"]["D_non_invasiveness"]["d45_registered"])
     print("E_independent_validator: PASS")
     print("H_negative_controls:", report["gates"]["H_negative_controls"]["all_detected"])
+    print("I_composition_verification:", report["gates"]["I_composition_verification"]["result"])
     print("archived          :", out.relative_to(ROOT).as_posix())
     print("RESULT            : PASS")
 

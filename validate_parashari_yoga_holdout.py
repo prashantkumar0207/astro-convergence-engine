@@ -1,4 +1,4 @@
-"""Independent PARASHARI_YOGA_V1 holdout validator (ADR-0081).
+"""Independent PARASHARI_YOGA_V1 holdout validator (ADR-0081, ADR-0086).
 
 A from-scratch reimplementation of the PARASHARI_YOGA_V1-specific logic
 (sign-of-longitude, whole-sign house-from-ascendant, the own-sign/exaltation
@@ -233,6 +233,219 @@ _FROZEN_EXPECTED = [
 ]
 
 
+def _birth_data(case):
+    year, month, day = (int(x) for x in case["date"].split("-"))
+    hour, minute, second = (int(x) for x in case["time"].split(":"))
+    return BirthData(year, month, day, hour, minute, float(second), case["lat"], case["lon"], "UTC")
+
+
+def verify_composition(cases=INDEPENDENT_HOLDOUT):
+    """
+    ADR-0086: exercises the REAL production composition entry point -
+    engine.parashari.mahapurusha_yoga.mahapurusha_yoga(), which calls
+    graha_mahapurusha_from_snapshot() - and checks the two public fields the
+    governing investigation found uncovered by every existing certification
+    gate: MahapurushaYogaResult.house_number and .sign_number (every prior
+    gate only ever reads the derived boolean `present`).
+
+    Expected values come from THIS file's own from-scratch sign_number()/
+    house_of_ascendant() (independently re-derived, never importing
+    engine.astrology.signs/house - see module docstring), applied to a
+    longitude/ascendant pair independently extracted via a second, separate
+    call to the certified Tier-0 kernel (_build_chart) - not read off the
+    chart under test. A genuine wiring cross-check, not a self-comparison:
+    an argument-order or wrong-variable bug in graha_mahapurusha_from_
+    snapshot()'s own call sites changes the PRODUCTION side only, since the
+    independent reference here shares no code path with it at all (a THIRD,
+    from-scratch implementation, distinct even from the production functions
+    D45's own equivalent check reuses).
+
+    Returns a list of mismatch descriptions; empty means every checked field
+    of every graha in every case matched exactly.
+    """
+    from engine.parashari.mahapurusha_yoga import mahapurusha_yoga
+
+    mismatches = []
+    for case in cases:
+        chart = mahapurusha_yoga(_birth_data(case))
+        lons, asc = _build_chart(case)
+        for result in chart.results:
+            graha_lon = lons[result.graha]
+            expected_sign = sign_number(graha_lon)
+            expected_house = house_of_ascendant(graha_lon, asc)
+            if result.sign_number != expected_sign:
+                mismatches.append(
+                    f"{case['id']}/{result.graha}: sign_number={result.sign_number} "
+                    f"expected={expected_sign}")
+            if result.house_number != expected_house:
+                mismatches.append(
+                    f"{case['id']}/{result.graha}: house_number={result.house_number} "
+                    f"expected={expected_house}")
+    return mismatches
+
+
+def _corrupt_graha_mahapurusha_argument_order():
+    """The exact, real, reproduced argument-order swap the governing
+    investigation found (ADR-0086 section 1): whole_sign_house(body.
+    longitude, ascendant_longitude) swapped to whole_sign_house(ascendant_
+    longitude, body.longitude) - undetected by all ten of PARASHARI_YOGA_V1's
+    prior gates because the kendra offset set {0,3,6,9} is symmetric under
+    negation mod 12, so `present` never changes even though house_number
+    does. Disguised as source-level code (module/name/qualname preserved),
+    matching scripts/check_mutation_detection.py's own established
+    convention - a wrong implementation actually written into the module
+    would carry exactly this metadata."""
+
+    import engine.parashari.mahapurusha_yoga as prod
+    from engine.astrology.house import whole_sign_house
+    from engine.astrology.signs import zodiac_sign
+    import swisseph as swe
+
+    pristine = prod.graha_mahapurusha_from_snapshot
+
+    def corrupted(snapshot):
+        provenance = snapshot.provenance
+        if provenance is None:
+            raise prod.ParashariYogaProfileError("snapshot carries no provenance")
+        if provenance.profile_name != prod.PARASHARI_LAHIRI.name:
+            raise prod.ParashariYogaProfileError(
+                "Panch Mahapurusha Yoga requires the parashari_lahiri profile, got "
+                f"'{provenance.profile_name}'"
+            )
+        if provenance.ayanamsa_mode != swe.SIDM_LAHIRI:
+            raise prod.ParashariYogaProfileError("snapshot ayanamsa does not match Parashari")
+        ascendant_longitude = snapshot.houses.ascendant
+        ascendant_sign = zodiac_sign(ascendant_longitude)
+        results = []
+        for graha in prod.YOGA_GRAHAS:
+            body = snapshot.sidereal_planets[graha]
+            graha_sign = zodiac_sign(body.longitude)
+            house = whole_sign_house(ascendant_longitude, body.longitude)  # MUTATION: swapped
+            present = prod._yoga_predicate_from_sign_and_house(graha, graha_sign, house)
+            results.append(prod.MahapurushaYogaResult(
+                graha=graha, yoga=prod.YOGA_NAMES[graha], sign_number=graha_sign,
+                house_number=house, present=present,
+                retrograde_qualifier=body.speed_longitude < 0,
+            ))
+        return prod.MahapurushaYogaChart(
+            ascendant_sign=ascendant_sign, results=tuple(results), provenance=provenance)
+
+    corrupted.__module__ = pristine.__module__
+    corrupted.__name__ = pristine.__name__
+    corrupted.__qualname__ = getattr(pristine, "__qualname__", pristine.__name__)
+    return pristine, corrupted
+
+
+def _corrupt_graha_mahapurusha_sign_number():
+    """A second control targeting sign_number specifically (ADR-0086 section
+    3): graha_sign wrongly derived from the ASCENDANT's own longitude
+    instead of the graha's own - a realistic wrong-variable-captured
+    mistake. house_number stays correct, isolating the sign_number field."""
+
+    import engine.parashari.mahapurusha_yoga as prod
+    from engine.astrology.house import whole_sign_house
+    from engine.astrology.signs import zodiac_sign
+    import swisseph as swe
+
+    pristine = prod.graha_mahapurusha_from_snapshot
+
+    def corrupted(snapshot):
+        provenance = snapshot.provenance
+        if provenance is None:
+            raise prod.ParashariYogaProfileError("snapshot carries no provenance")
+        if provenance.profile_name != prod.PARASHARI_LAHIRI.name:
+            raise prod.ParashariYogaProfileError(
+                "Panch Mahapurusha Yoga requires the parashari_lahiri profile, got "
+                f"'{provenance.profile_name}'"
+            )
+        if provenance.ayanamsa_mode != swe.SIDM_LAHIRI:
+            raise prod.ParashariYogaProfileError("snapshot ayanamsa does not match Parashari")
+        ascendant_longitude = snapshot.houses.ascendant
+        ascendant_sign = zodiac_sign(ascendant_longitude)
+        results = []
+        for graha in prod.YOGA_GRAHAS:
+            body = snapshot.sidereal_planets[graha]
+            graha_sign = zodiac_sign(ascendant_longitude)  # MUTATION: wrong body's longitude
+            house = whole_sign_house(body.longitude, ascendant_longitude)
+            present = prod._yoga_predicate_from_sign_and_house(graha, graha_sign, house)
+            results.append(prod.MahapurushaYogaResult(
+                graha=graha, yoga=prod.YOGA_NAMES[graha], sign_number=graha_sign,
+                house_number=house, present=present,
+                retrograde_qualifier=body.speed_longitude < 0,
+            ))
+        return prod.MahapurushaYogaChart(
+            ascendant_sign=ascendant_sign, results=tuple(results), provenance=provenance)
+
+    corrupted.__module__ = pristine.__module__
+    corrupted.__name__ = pristine.__name__
+    corrupted.__qualname__ = getattr(pristine, "__qualname__", pristine.__name__)
+    return pristine, corrupted
+
+
+_MUTATION_CONTROLS = (
+    ("argument_order_swap", _corrupt_graha_mahapurusha_argument_order),
+    ("sign_number_wrong_body", _corrupt_graha_mahapurusha_sign_number),
+)
+
+
+def run_mutation_self_check():
+    """
+    ADR-0086: genuine, real, in-process monkeypatch-and-re-execution
+    mutation detection - mirroring scripts/check_mutation_detection.py's own
+    established methodology (ADR-0079/DP-030) and VARGA_D45_V1's own
+    run_mutation_self_check() (ADR-0085). NOT a synthetic side-by-side
+    comparison of a hand-written "corrupted" copy - the weakness ADR-0086
+    itself found in scripts/certify_parashari_yoga.py's own gate_i_negative_
+    controls. The REAL engine.parashari.mahapurusha_yoga.graha_mahapurusha_
+    from_snapshot is replaced in-process; mahapurusha_yoga() resolves it via
+    the module's own global namespace at call time, so calling the real,
+    unmodified top-level mahapurusha_yoga() genuinely exercises the
+    corrupted code path. verify_composition() is then re-run for real
+    against that corrupted state, and a genuine mismatch is observed - then
+    the pristine function is restored and verify_composition() is
+    re-confirmed to pass again.
+
+    Never touches any file on disk. Returns (all_detected: bool, results:
+    list of per-control dicts).
+    """
+    import engine.parashari.mahapurusha_yoga as prod
+
+    clean = verify_composition()
+    if clean:
+        raise AssertionError(
+            f"cannot run the mutation self-check: verify_composition() already reports "
+            f"mismatches against the PRISTINE production code: {clean[:5]}"
+        )
+
+    results = []
+    all_detected = True
+    for control_name, corrupt_factory in _MUTATION_CONTROLS:
+        pristine, corrupted = corrupt_factory()
+        prod.graha_mahapurusha_from_snapshot = corrupted
+        try:
+            mismatches_under_mutation = verify_composition()
+        finally:
+            prod.graha_mahapurusha_from_snapshot = pristine
+
+        detected = bool(mismatches_under_mutation)
+        results.append({
+            "control": control_name,
+            "detected": detected,
+            "sample_mismatch": mismatches_under_mutation[0] if mismatches_under_mutation else None,
+        })
+        if not detected:
+            all_detected = False
+
+    restored = verify_composition()
+    if restored:
+        raise AssertionError(
+            f"production graha_mahapurusha_from_snapshot was not correctly restored after "
+            f"mutation testing: {restored[:5]}"
+        )
+
+    return all_detected, results
+
+
 def main():
     print("=" * 60)
     print("INDEPENDENT PARASHARI_YOGA_V1 VALIDATION")
@@ -264,6 +477,35 @@ def main():
 
     print()
     print("RESULT: ALL INDEPENDENT PARASHARI_YOGA_V1 CASES PASSED")
+
+    print()
+    print("=" * 60)
+    print("PARASHARI_YOGA_V1 COMPOSITION/PLUMBING VERIFICATION (ADR-0086)")
+    print("=" * 60)
+    composition_mismatches = verify_composition()
+    print(f"Composition cases checked: {len(INDEPENDENT_HOLDOUT)} charts x 5 grahas, "
+          f"house_number/sign_number fields")
+    if composition_mismatches:
+        print(f"FAILURES: {len(composition_mismatches)}; first: {composition_mismatches[:5]}")
+        print("RESULT: PARASHARI_YOGA_V1 COMPOSITION VERIFICATION FAILED")
+        return 1
+    print("RESULT: PARASHARI_YOGA_V1 COMPOSITION VERIFICATION PASSED")
+
+    print()
+    print("=" * 60)
+    print("PARASHARI_YOGA_V1 COMPOSITION MUTATION SELF-CHECK (ADR-0086)")
+    print("=" * 60)
+    all_detected, mutation_results = run_mutation_self_check()
+    for result in mutation_results:
+        status = "DETECTED" if result["detected"] else "MISSED (BAD)"
+        print(f"  {result['control']:28s} {status}")
+        if not result["detected"]:
+            print("    (no mismatch reported under this corruption)")
+    if not all_detected:
+        print("RESULT: PARASHARI_YOGA_V1 COMPOSITION MUTATION SELF-CHECK FAILED - "
+              "at least one control was not detected")
+        return 1
+    print("RESULT: PARASHARI_YOGA_V1 COMPOSITION MUTATION DETECTION PASSED")
     print("=" * 60)
     return 0
 

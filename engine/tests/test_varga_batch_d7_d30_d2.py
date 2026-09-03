@@ -222,7 +222,7 @@ def test_certified_d1_d9_d10_dispatch_unchanged():
 def test_remaining_vargas_still_refused():
     # D45 is excluded: certified and registered (ADR-0077, VARGA_D45_V1).
     snapshot = calculate(BIRTH).snapshot
-    for division in (4, 16, 20, 24, 27, 40, 60):
+    for division in (4, 16, 20, 27, 40, 60):  # D24 excluded: certified/registered (ADR-0082/0083, VARGA_D24_V1)
         with pytest.raises(UnsupportedVargaError):
             divisional_chart(snapshot, division)
 

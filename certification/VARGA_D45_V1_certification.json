@@ -2,7 +2,7 @@
  "schema": "varga_d45_v1_certification",
  "adr": "ADR-0077",
  "supersedes_provisional_id": "NOTHING_AUTHORISED",
- "date": "2026-09-01",
+ "date": "2026-09-03",
  "scope": "D45 Akshavedamsa (Parashara variant, Traditional Parasara method / PyJHora chart_method=1). Registered in production through the generic registry (engine.astrology.varga_d45, VARGA_D45_V1), discoverable via engine.astrology.divisional_chart.divisional_chart(snapshot, 45).",
  "rule": {
   "kind": "CyclicVargaRule",
@@ -48,6 +48,10 @@
      "parashara"
     ],
     [
+     24,
+     "parashara"
+    ],
+    [
      30,
      "parashara"
     ],
@@ -64,6 +68,7 @@
     "D3_parashara": "11c561c05413ebc9d8b791c0c22e42e6a91efe2cbdaceaa1f6eeac66d9e957f4",
     "D7_parashara": "42c0f474138d98a37e1a9963866a2d0f86621fa67c73069e897fef48024aeead",
     "D12_parashara": "224ece371b1fd024a49d545556e2f9b842343c44c17b9af666b7052b5e6cd195",
+    "D24_parashara": "2ea83b5ad2dd53218f074d1b5e410bd3ec1806ad1ce5d4e053453715da4287f9",
     "D30_parashara": "deacd958cf19b7641c4f8cb086ad27d8a5efaeb6e38b594dc0cd4113a25794d3",
     "D45_parashara": "c8515e44be6e21e3e8c3298121b8c0e4687c0176d9da7e94f7d0aba53a8bf817"
    }
@@ -103,6 +108,12 @@
    ],
    "all_detected": true,
    "original_object_unmutated": true
+  },
+  "I_composition_verification": {
+   "result": "PASS",
+   "classification": "correctness_evidence_and_mutation_detection",
+   "scope": "divisional_chart(snapshot, 45)/build_varga_chart() field-level composition (source_longitude, sign, division_number, fraction) for the ascendant and every planet, across a fixed 5-chart real holdout, plus a genuine in-process monkeypatch mutation self-check (field-order swap, planet cross-wiring, source_longitude corruption) against the real production function",
+   "disclosure": "distinct from gates A/B/F/G, which test classify() directly and never exercise build_varga_chart()'s own field assignment; distinct from gate H, whose negative controls compare a hand-written mutated COPY against the unmutated rule object in-process rather than genuinely monkeypatching and re-executing the real production function (ADR-0085)"
   }
  },
  "explicit_non_claims": [
@@ -126,7 +137,7 @@
    }
   },
   "anti_fitting": {
-   "modules_scanned": 190,
+   "modules_scanned": 195,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."

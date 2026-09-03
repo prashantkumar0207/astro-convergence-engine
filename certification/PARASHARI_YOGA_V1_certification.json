@@ -1,7 +1,7 @@
 {
  "schema": "parashari_yoga_v1_certification",
  "adr": "ADR-0081",
- "date": "2026-08-31",
+ "date": "2026-09-02",
  "scope": "PARASHARI_YOGA_V1: the five Panch Mahapurusha yogas (Ruchaka/Bhadra/Hamsa/Malavya/Sasa) - BPHS base formation rule only (own-sign-or-exaltation-sign AND kendra-to-Lagna, whole-sign) for a natal D1 chart under the PARASHARI_LAHIRI profile. Rule under certification is the REAL PRODUCTION module engine/parashari/mahapurusha_yoga.py, authorized by the owner's 'CEO AUTHORIZATION - PARASHARI_YOGA_V1 PRODUCTION IMPLEMENTATION' instruction and recorded in docs/DECISION_LOG.md under ADR-0081.",
  "rule": {
   "kind": "engine/parashari/mahapurusha_yoga.py - registered production module",
@@ -187,6 +187,12 @@
    "all_detected": true,
    "frozen_constants_unmutated": true,
    "note": "in-process synthetic controls against the imported production predicate; a separate, one-time literal on-disk mutation proof against the real production file is recorded in docs/DECISION_LOG.md, not repeated here"
+  },
+  "J_composition_verification": {
+   "result": "PASS",
+   "classification": "correctness_evidence_and_mutation_detection",
+   "scope": "mahapurusha_yoga()/graha_mahapurusha_from_snapshot() field-level composition (house_number, sign_number) for every graha, across a fixed 6-chart real holdout, plus a genuine in-process monkeypatch mutation self-check (the exact reproduced whole_sign_house() argument-order swap, plus a sign_number-targeted wrong-body-longitude corruption) against the real production function",
+   "disclosure": "distinct from gates B/B2/G, which never exercise graha_mahapurusha_from_snapshot()'s own call sites directly; distinct from gate I, whose negative controls compare a hand-written mutated COPY against the unmutated real function in-process rather than genuinely monkeypatching and re-executing the real production function (ADR-0086)"
   }
  },
  "explicit_non_claims": [
@@ -215,7 +221,7 @@
    }
   },
   "anti_fitting": {
-   "modules_scanned": 190,
+   "modules_scanned": 192,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."

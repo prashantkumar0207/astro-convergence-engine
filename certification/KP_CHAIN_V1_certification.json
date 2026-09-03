@@ -1,7 +1,7 @@
 {
  "schema": "kp_chain_v1_certification",
  "adr": "ADR-0006",
- "date": "2026-08-31",
+ "date": "2026-09-03",
  "scope": "KP lordship chain (SL/NL/SB/SS) and KP fact charts under kp_krishnamurti",
  "explicit_non_claims": [
   "significators (Tier-1 KP_SIGNIFICATOR_V1; spec must be frozen first, D-008)",
@@ -11,7 +11,7 @@
   "dashas"
  ],
  "environment": {
-  "python": "3.12.10",
+  "python": "3.11.16",
   "swisseph": "2.10.03"
  },
  "gates": {
@@ -44,7 +44,7 @@
    }
   },
   "anti_fitting": {
-   "modules_scanned": 190,
+   "modules_scanned": 195,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."

@@ -429,7 +429,8 @@ def test_dispatcher_rejects_unimplemented_vargas_with_and_without_school():
 
     # REPLACED: refusal list shrinks as vargas are certified per their ADRs.
     # D45 removed: certified and registered (ADR-0077, VARGA_D45_V1).
-    for division in (4, 16, 20, 24, 27, 40, 60):
+    # D24 removed: certified and registered (ADR-0082/0083, VARGA_D24_V1).
+    for division in (4, 16, 20, 27, 40, 60):
         with pytest.raises(UnsupportedVargaError):
             divisional_chart(snapshot, division)
 
