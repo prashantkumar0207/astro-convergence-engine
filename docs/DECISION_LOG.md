@@ -6850,6 +6850,96 @@ separate disposition. **Does not** push or merge. **Does not** self-ratify.
 
 ---
 
+## ADR-0087 - D40 (Khavedamsa) selected as the next JATAKA capability: sequencing decision and frozen methodology (PROPOSED - prepared for CEO ratification, not yet declared)
+
+- **Date:** 2026-09-03
+- **Status:** PROPOSED. Drafted per the owner's explicit "CEO AUTHORIZATION — BEGIN D40 ENGINE DEVELOPMENT"
+  instruction, Option (a) ("Draft the D40 selection + frozen-methodology ADR, following the established D24
+  workflow"), after a read-only investigation this conversation found no D40 selection or methodology ADR
+  exists and stopped rather than inferring one. This entry is **not self-ratified** - it requires its own
+  separate owner ratifying instruction. Drafting authorizes nothing beyond its own text existing as a
+  proposal: no file under `engine/`, `scripts/`, `certification/`, or `.github/workflows/ci.yml` is touched
+  by this entry.
+- **Context:** `DP-031` (decision-readiness, `Status: OPEN`) section J is a narrowly scoped comparative
+  methodology study of D24 and D40 only, concluding the evidence between them is **genuinely tied** and
+  explicitly declining to manufacture a winner. `ADR-0082` subsequently selected D24 first, as "a sequencing
+  decision, not a methodology-superiority finding," and explicitly left D40 "a valid future candidate,"
+  never ruled out. This entry performs that deferred selection for D40, mirroring `ADR-0082`'s own structure
+  and discipline exactly.
+
+### 1. Selection rationale - explicit, not a methodology finding
+
+D40 is selected as the next JATAKA capability by the owner's own sequencing choice, not because `DP-031`
+section J found it superior to D24 - it explicitly did not, and this entry does not reopen or reinterpret
+that tie. D24 remains ratified and already certified/implemented (`ADR-0082`/`ADR-0083`); this entry does
+not touch that work.
+
+### 2. JATAKA-scope interpretive work, required by `ADR-0075`
+
+Minimal, identical reasoning to `ADR-0082` section 2: D40 is literally named in `Q8_CLOSURE_MATRIX.md` s5's
+own illustrative implementation-scope list, so `ADR-0075`'s ILLUSTRATIVE-not-exhaustive interpretation
+requires no additional interpretive work here.
+
+### 3. Frozen methodology - source, rule, school
+
+**Classical source:** Parashara/BPHS, matching `docs/VARGA_CERTIFICATION_ROADMAP.md`'s own citation and
+multiple independent modern sources retrieved during `DP-031` section J: "the knowledge of the Lords of
+Khavedamsha in respect of odd signs is to be commencing from Aries and for even signs from Libra." **Disclosed
+gap, not glossed over:** unlike D24, no verbatim Sanskrit-verse/Sarga-and-Shloka citation was located - only
+consistent paraphrase across independent sites (`DP-031` section J.1(D40) item 1).
+
+**Frozen computational rule (`CyclicVargaRule` shape):** forty equal divisions of 30/40 = 3/4 degree per
+sign. `d_sign = (base + division_index) mod 12`, where `base = 0` (Aries) for odd source signs and `base = 6`
+(Libra, 0-indexed) for even source signs, forward counting only for all twelve source signs - no direction
+variable needed, the simplest two-category shape among the candidates `DP-031` compared. **School:**
+`parashara`, matching the existing registry key. No content-hash pin is established by this entry - that is
+the certification-execution stage's own act, mirroring `ADR-0082`/`ADR-0083`'s precedent exactly; this entry
+freezes the rule's own construction, not a computed artifact.
+
+**Independent corroboration, not the source of authority:** `PyJHora`'s own `khavedamsa_chart()`, read
+directly from its published source (not executed locally - this host's own PyJHora environment remains
+degraded), offers a default/Traditional-Parasara method (odd -> Aries, even -> Libra, both forward) matching
+this frozen construction exactly, alongside three named non-default variants (Parivritti Cyclic, Even
+Reverse, Parivritti Alternate) excluded as explicit non-claims, mirroring D45's own three excluded methods
+and D24's own two.
+
+**Boundary/interval behaviour - measured, not assumed (`DP-031` section J.1(D40) item 5):** the 30/40 = 0.75
+degree cell width is exactly representable in IEEE-754 double precision - zero representation error, zero
+floor-classification boundary mismatches across all 39 internal per-sign boundaries, an identically clean
+result to D24's own and materially better than D45's own measured result.
+
+### 4. Explicit non-claims
+
+No per-division deity/label payload: D40 carries a real classical deity tradition (twelve deities cycling
+through the forty divisions, in the same order for all signs, no reversal) not previously flagged by the
+roadmap's own "No" payload-gap entry - excluded from the certified D-sign contract for the identical reason
+`ADR-0082` section 4 already established for D24 (`VargaClassification` carries only D-sign, division index,
+and fraction for every certified varga, including D45). This does not create an unavoidable `DP-024`
+dependency; `DP-024` remains `DEFERRED`, untouched, exactly as for D24. No non-`parashara` school variant. No
+other varga. Translated-edition/paraphrase caveat carried forward from `DP-031` section J.1(D40) item 1,
+stated above.
+
+### 5. What this entry does not do
+
+**Does not create `engine/astrology/varga_d40.py`, `scripts/certify_d40.py`, or `validate_d40_holdout.py`.**
+Does not modify `varga_registry.py`, `.github/workflows/ci.yml`, or any existing certification artifact.
+Does not perform certification design or execution - a separate, subsequent, not-yet-authorized act,
+mirroring exactly how `ADR-0082` reserved that step for `ADR-0083`. Does not authorize production
+implementation or CI oracle wiring. Does not resolve `DP-024`, which remains `DEFERRED`. Does not reopen
+`ADR-0082`/`ADR-0083`'s own D24 selection or certification. Does not push or merge.
+
+- **Consequences, if ratified:** this entry would freeze D40's own methodology and authorize
+  certification-design/execution as the next, separately-tracked act - mirroring exactly the
+  `ADR-0082` -> `ADR-0083` -> production-implementation -> CI-oracle-wiring precedent already completed for
+  D24. No certified calculation, certification artifact, or production code is touched by this entry itself.
+- **Evidence:** `docs/decisions/DP-031-jataka-next-capability-decision-readiness.md` section J (the
+  comparative methodology study; `Status: OPEN`, decides nothing); `ADR-0082` (the D24 selection/methodology
+  precedent this entry mirrors); `docs/VARGA_CERTIFICATION_ROADMAP.md` (construction, source); direct
+  reading of `Q8_CLOSURE_MATRIX.md` s5 (D40 named); the owner's "CEO AUTHORIZATION — BEGIN D40 ENGINE
+  DEVELOPMENT" instruction and its Option (a) follow-up, quoted in substance above.
+
+---
+
 ## ADR template (copy, do not edit above the line)
 
 ## ADR-XXXX - <title>
