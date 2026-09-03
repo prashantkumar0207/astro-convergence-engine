@@ -6853,13 +6853,15 @@ separate disposition. **Does not** push or merge. **Does not** self-ratify.
 ## ADR-0087 - D40 (Khavedamsa) selected as the next JATAKA capability: sequencing decision and frozen methodology (PROPOSED - prepared for CEO ratification, not yet declared)
 
 - **Date:** 2026-09-03
-- **Status:** PROPOSED. Drafted per the owner's explicit "CEO AUTHORIZATION — BEGIN D40 ENGINE DEVELOPMENT"
-  instruction, Option (a) ("Draft the D40 selection + frozen-methodology ADR, following the established D24
-  workflow"), after a read-only investigation this conversation found no D40 selection or methodology ADR
-  exists and stopped rather than inferring one. This entry is **not self-ratified** - it requires its own
-  separate owner ratifying instruction. Drafting authorizes nothing beyond its own text existing as a
-  proposal: no file under `engine/`, `scripts/`, `certification/`, or `.github/workflows/ci.yml` is touched
-  by this entry.
+- **Status:** **ACCEPTED, on the owner's ratifying instruction recorded in the "Ratification of ADR-0087"
+  entry immediately below this entry's own text.** Originally drafted `PROPOSED` per the owner's explicit
+  "CEO AUTHORIZATION — BEGIN D40 ENGINE DEVELOPMENT" instruction, Option (a) ("Draft the D40 selection +
+  frozen-methodology ADR, following the established D24 workflow"), after a read-only investigation this
+  conversation found no D40 selection or methodology ADR exists and stopped rather than inferring one. Per
+  this repository's own "change only the status" discipline, this Status line is the only text in this entry
+  edited to record ratification - the Context, sections 1-5, Consequences, and Evidence below are unchanged.
+  Ratification authorizes selection and frozen methodology only: no file under `engine/`, `scripts/`,
+  `certification/`, or `.github/workflows/ci.yml` is touched by this entry.
 - **Context:** `DP-031` (decision-readiness, `Status: OPEN`) section J is a narrowly scoped comparative
   methodology study of D24 and D40 only, concluding the evidence between them is **genuinely tied** and
   explicitly declining to manufacture a winner. `ADR-0082` subsequently selected D24 first, as "a sequencing
@@ -6937,6 +6939,23 @@ implementation or CI oracle wiring. Does not resolve `DP-024`, which remains `DE
   precedent this entry mirrors); `docs/VARGA_CERTIFICATION_ROADMAP.md` (construction, source); direct
   reading of `Q8_CLOSURE_MATRIX.md` s5 (D40 named); the owner's "CEO AUTHORIZATION — BEGIN D40 ENGINE
   DEVELOPMENT" instruction and its Option (a) follow-up, quoted in substance above.
+
+#### Ratification of ADR-0087: D40 SELECTION AND METHODOLOGY RATIFIED (2026-09-03)
+
+- **Status:** ACCEPTED. The owner instructed: "Ratify ADR-0087 exactly as drafted. Do not modify its
+  substantive methodology or scope. Change only the ADR status to ACCEPTED and append the ratification
+  sub-entry." Per `docs/PROJECT_CONSTITUTION.md` s11, this instruction is the ratifying act.
+- **Decision:** `ADR-0087` above (its full Context, sections 1-5, Consequences, and Evidence) is **ratified
+  exactly as drafted, with no wording changed** - confirmed by direct diff before committing. This
+  ratification accepts D40's selection (a sequencing decision, not a `DP-031` tie reversal) and its frozen
+  methodology (section 3) as the governing record. **Does NOT authorize** certification design/execution,
+  production implementation, CI wiring, or any change to `DP-024`/`ADR-0082`/`ADR-0083` - each remains its
+  own, separate, not-yet-given authorization, exactly as `ADR-0087` section 5 already states.
+- **Consequences:** D40's methodology is now the ratified, governing record for any future certification-
+  design work. No file under `engine/`, `scripts/`, `certification/`, or `.github/workflows/ci.yml` is
+  touched by this ratification.
+- **Evidence:** the owner's ratifying instruction, quoted above; `ADR-0087` itself, commit
+  `bd28c5fd2f7948b4c38df8c37463b81f4022723e`.
 
 ---
 
