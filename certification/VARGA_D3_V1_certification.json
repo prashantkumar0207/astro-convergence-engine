@@ -2,7 +2,7 @@
  "schema": "varga_d3_v1_certification",
  "adr": "ADR-0009",
  "supersedes_provisional_id": "ADR-VARGA-D3-001",
- "date": "2026-09-02",
+ "date": "2026-09-03",
  "scope": "D3 Drekkana (Parashara variant) as the generic registry's first production entry",
  "rule": {
   "kind": "SegmentVargaRule",
@@ -47,6 +47,10 @@
      "parashara"
     ],
     [
+     24,
+     "parashara"
+    ],
+    [
      30,
      "parashara"
     ],
@@ -85,7 +89,7 @@
    }
   },
   "anti_fitting": {
-   "modules_scanned": 192,
+   "modules_scanned": 193,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."

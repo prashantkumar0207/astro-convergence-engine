@@ -1,7 +1,7 @@
 {
  "schema": "trikalam_v1_certification",
  "adr": "ADR-0060",
- "date": "2026-09-02",
+ "date": "2026-09-03",
  "scope": "Exactly one variant, PYJHORA_TRIKALAM_V1: Rahu Kalam, Yamaganda, Gulika window computation at a given calendar day and location. No Muhurta-specific consumption; no second variant.",
  "variant": "PYJHORA_TRIKALAM_V1",
  "oracle": {
@@ -99,7 +99,7 @@
    }
   },
   "anti_fitting": {
-   "modules_scanned": 192,
+   "modules_scanned": 193,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."
