@@ -11,14 +11,14 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 ## Preconditions
 
 - Data assets verified against CHECKSUMS.sha256: 3
-- Anti-fitting scan: 195 production modules, 0 findings
+- Anti-fitting scan: 196 production modules, 0 findings
 
 ## Gates
 
 - **A_non_invasiveness**: sweep_points=54697, d9_sweep_sha256=58b133367fba404976f3e562fd46ed50bd332006b8c7107415e9d3a3a9263c5e, d10_sweep_sha256=5678aecfe9576ca81ecf818566b9a9302ffb62eeb5a7cfcce8cc2f86504ab9e3
 - **B_sign_type**: signs=12, mismatches=0, inert=True
 - **C_declaration_coverage**: charts_swept=192, fields_proven=17, mismatches=0
-- **D_cross_layer_agreement**: surface_checks=69986, mismatches=0, surfaces=6
+- **D_cross_layer_agreement**: surface_checks=74985, mismatches=0, surfaces=6
 
 ## Explicit non-claims
 

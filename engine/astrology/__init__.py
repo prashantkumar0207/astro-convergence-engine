@@ -15,6 +15,7 @@ from engine.astrology import varga_d7  # noqa: F401  (registers D7)
 from engine.astrology import varga_d12  # noqa: F401  (registers D12)
 from engine.astrology import varga_d24  # noqa: F401  (registers D24)
 from engine.astrology import varga_d30  # noqa: F401  (registers D30)
+from engine.astrology import varga_d40  # noqa: F401  (registers D40)
 from engine.astrology import varga_d45  # noqa: F401  (registers D45)
 
 #: The sanctioned registry contents, sorted as registered_vargas()
@@ -27,5 +28,6 @@ CERTIFIED_PRODUCTION_VARGAS = (
     (12, "parashara"),   # ADR-0010, VARGA_D12_V1
     (24, "parashara"),   # ADR-0082/ADR-0083, VARGA_D24_V1
     (30, "parashara"),   # ADR-0011, VARGA_D30_V1
+    (40, "parashara"),   # ADR-0087, VARGA_D40_V1
     (45, "parashara"),   # ADR-0077, VARGA_D45_V1
 )
