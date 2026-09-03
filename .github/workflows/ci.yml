@@ -278,13 +278,14 @@ jobs:
       - name: Verify ephemeris asset checksums
         run: sha256sum --check CHECKSUMS.sha256
 
-      - name: Oracle certification runners (all eleven)
+      - name: Oracle certification runners (all twelve)
         run: |
           set -e
           for c in scripts/certify_d2.py \
                    scripts/certify_d3.py \
                    scripts/certify_d7.py \
                    scripts/certify_d12.py \
+                   scripts/certify_d24.py \
                    scripts/certify_d30.py \
                    scripts/certify_d45.py \
                    scripts/certify_vimshottari.py \

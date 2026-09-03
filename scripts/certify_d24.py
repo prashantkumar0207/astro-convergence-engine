@@ -17,31 +17,28 @@ Gates (ADR-0083, mirroring D45's own certification-design discipline):
 
 A table/constant integrity (the frozen start_sign/direction table,
 content-hash pinned); B dense mathematical sweep vs an independently coded
-classical reference; C corroboration disclosure (PyJHora's own published
-source was read directly this task - see ADR-0083 section 1/8 - but cannot
-be executed in this local environment; genuine oracle execution remains
-deferred to this project's own CI hash-pinned oracle environment - this
-production-implementation revision does NOT wire certify_d24.py into CI,
-exactly as ADR-0083's own ratification requires that remain a separate,
-not-yet-authorized act); D non-invasiveness (confirms the six pre-existing
-certified vargas are unaffected and that D24 is now correctly registered
-and discoverable); E independent validator (validate_d24_holdout.py, a
-from-scratch reimplementation importing nothing from engine.astrology);
-F boundary cases (sign-transition edges; the exact internal division
-boundaries, empirically confirmed representable with zero floor-
-classification effect - ADR-0083 section 3); G protected holdout
-(independent of the boundary cases, never used for tuning); H negative
-controls (a real planted violation, confirmed detected, confirmed the
-production D24_SIDDHAMSA object itself remains unmutated - a frozen
-dataclass, so replace() returns a new instance).
+classical reference; C external oracle (PyJHora's chaturvimsamsa_chart,
+Traditional Parasara method chart_method=1, zero categorical tolerance -
+this project's own CI hash-pinned oracle environment; genuine execution,
+not disclosure - see the CI import-structure change ADR-0085 established
+for D45's own Gate C, mirrored here); D non-invasiveness (confirms the six
+pre-existing certified vargas are unaffected and that D24 is now correctly
+registered and discoverable); E independent validator
+(validate_d24_holdout.py, a from-scratch reimplementation importing
+nothing from engine.astrology); F boundary cases (sign-transition edges;
+the exact internal division boundaries, empirically confirmed
+representable with zero floor-classification effect - ADR-0083 section 3);
+G protected holdout (independent of the boundary cases, never used for
+tuning); H negative controls (a real planted violation, confirmed
+detected, confirmed the production D24_SIDDHAMSA object itself remains
+unmutated - a frozen dataclass, so replace() returns a new instance).
 
-No third-party computational oracle is used this execution. PyJHora is not
-invoked: this project's own local PyJHora environment remains degraded
-(numpy import failure, an already-disclosed, unchanged limitation). ADR-0083
-section 1 records that PyJHora's own published source (`naturalstupid/
-PyJHora`, GitHub) was read directly and its default/Traditional-Parasara
-`chaturvimsamsa_chart()` method matches this frozen construction exactly -
-read-only corroboration, not executed oracle agreement.
+PyJHora is required by Gate C only, imported lazily inside that function
+(not at module scope), so every other gate remains importable and runnable
+on a host without PyJHora - mirroring exactly the ADR-0085 Gate C
+import-structure change already applied to scripts/certify_d45.py. Gate C
+itself still hard-fails, with the identical exit code, the instant it
+actually runs without PyJHora present.
 
 Exit code 0 = PASS, 3 = FAIL.
 """
@@ -64,6 +61,11 @@ from engine.astrology.varga_registry import (  # noqa: E402
     registered_vargas,
 )
 from engine.astrology.varga_rules import rule_content_sha256  # noqa: E402
+
+#: Set by gate_c_oracle() itself, lazily, the first time it runs (mirroring
+#: the ADR-0085 Gate C import-structure change already applied to
+#: scripts/certify_d45.py). PyJHora is required only by Gate C.
+PYJHORA_VERSION = None
 
 #: Frozen exactly as ADR-0083 section 1 states it (BPHS Sarga 6, Shlokas
 #: 2-23): odd source signs (0-based Aries=0, Gemini=2, Leo=4, Libra=6,
@@ -140,21 +142,43 @@ def gate_b_dense_sweep():
     return {"points": points, "mismatches": 0}
 
 
-def gate_c_corroboration_disclosure():
-    return {
-        "oracle_executed": False,
-        "reason": "PyJHora unavailable in this local environment (numpy import failure, "
-                  "an already-disclosed, pre-existing limitation) - genuine oracle "
-                  "execution deferred to this project's own CI hash-pinned oracle "
-                  "environment, per every oracle-tier certifier's own established pattern.",
-        "read_only_corroboration": "PyJHora's own published source "
-                  "(naturalstupid/PyJHora, GitHub, chaturvimsamsa_chart()) was read "
-                  "directly this task (ADR-0083 section 1/8): its default/Traditional-"
-                  "Parasara method (even_dirn=1, odd_base=4/Leo, even_base=3/Cancer) "
-                  "matches this frozen construction exactly. This is read-only source "
-                  "inspection, not executed oracle agreement.",
-        "classification": "disclosed_gap_not_correctness_evidence",
-    }
+def gate_c_oracle():
+    """Genuine external-oracle gate (ADR-0083 section 1/8, executed per this
+    task's own explicit CI-oracle authorization). PyJHora's chaturvimsamsa_
+    chart, Traditional Parasara method (chart_method=1 - the same default
+    ADR-0082/0083 already established matches this frozen construction
+    exactly), compared against classify(D24_SIDDHAMSA) at zero categorical
+    tolerance, mirroring D45's own gate_c_oracle() call pattern exactly (the
+    same PyJHora library's own uniform per-division varga-function
+    interface: `func([["L", (source, within)]], chart_method=N)`, already
+    verified correct for D45's akshavedamsa_chart, D7's saptamsa_chart, and
+    D30's trimsamsa_chart)."""
+
+    global PYJHORA_VERSION
+
+    try:
+        from jhora.horoscope.chart.charts import chaturvimsamsa_chart
+        import importlib.metadata
+        PYJHORA_VERSION = importlib.metadata.version("PyJHora")
+    except Exception as error:  # pragma: no cover
+        print("D24 CERTIFICATION FAIL: PyJHora oracle unavailable:", error)
+        sys.exit(3)
+
+    mismatches = 0
+    comparisons = 0
+    per_sign = 450
+    for source in range(12):
+        for i in range(per_sign):
+            within = (i + 0.5) * (30.0 / per_sign)  # midpoints, no boundary dust
+            oracle = chaturvimsamsa_chart([["L", (source, within)]], chart_method=1)
+            oracle_sign = oracle[0][1][0]
+            ours = classify(source * 30.0 + within, D24_SIDDHAMSA)
+            if ours.d_sign != oracle_sign:
+                mismatches += 1
+            comparisons += 1
+    if mismatches:
+        fail(f"oracle mismatches: {mismatches}")
+    return {"comparisons": comparisons, "mismatches": 0}
 
 
 def gate_d_non_invasiveness():
@@ -361,6 +385,23 @@ def gate_i_static_reference_regression():
 def main():
     tee = support.start_transcript()
     preconditions = support.preflight()
+
+    # Computed into a local first, in the same order as before, so
+    # PYJHORA_VERSION (set by gate_c_oracle() itself, lazily) is already
+    # known by the time the "oracle" field below is built - mirroring
+    # scripts/certify_d45.py's own identical ordering fix (ADR-0085).
+    gates = {
+        "A_table_integrity": gate_a_table_integrity(),
+        "B_dense_sweep": gate_b_dense_sweep(),
+        "C_oracle": gate_c_oracle(),
+        "D_non_invasiveness": gate_d_non_invasiveness(),
+        "E_independent_validator": gate_e_independent_validator(),
+        "F_boundary_cases": gate_f_boundary_cases(),
+        "G_protected_holdout": gate_g_protected_holdout(),
+        "H_negative_controls": gate_h_negative_controls(),
+        "I_static_reference_regression": gate_i_static_reference_regression(),
+    }
+
     report = {
         "schema": "varga_d24_v1_certification",
         "adr": "ADR-0083",
@@ -384,23 +425,10 @@ def main():
                              "start Cancer (index 3), forward counting for all twelve",
             "content_sha256": rule_content_sha256(D24_SIDDHAMSA),
         },
-        "oracle": gate_c_corroboration_disclosure(),
-        "gates": {
-            "A_table_integrity": gate_a_table_integrity(),
-            "B_dense_sweep": gate_b_dense_sweep(),
-            "C_corroboration_disclosure": gate_c_corroboration_disclosure(),
-            "D_non_invasiveness": gate_d_non_invasiveness(),
-            "E_independent_validator": gate_e_independent_validator(),
-            "F_boundary_cases": gate_f_boundary_cases(),
-            "G_protected_holdout": gate_g_protected_holdout(),
-            "H_negative_controls": gate_h_negative_controls(),
-            "I_static_reference_regression": gate_i_static_reference_regression(),
-        },
+        "oracle": {"package": "PyJHora", "version": PYJHORA_VERSION,
+                   "function": "chaturvimsamsa_chart method 1 Traditional Parasara (pure longitude math)"},
+        "gates": gates,
         "explicit_non_claims": [
-            "no oracle execution this run - PyJHora unavailable locally, deferred to CI; "
-            "certify_d24.py is NOT wired into .github/workflows/ci.yml's oracle-tier "
-            "loop by this production-implementation revision - that remains a separate, "
-            "not-yet-authorized act (ADR-0083's own ratification)",
             "any per-division deity/label payload (VargaClassification carries only "
             "D-sign, division index, and fraction; deity output is out of scope, "
             "mirroring D45's own identical treatment - ADR-0083 section 4)",
