@@ -1,7 +1,7 @@
 {
  "schema": "sign_convention_v1_certification",
  "adr": "ADR-0012",
- "date": "2026-09-02",
+ "date": "2026-09-03",
  "scope": "explicit, machine-checked sign-index conventions across every layer; no certified value renumbered",
  "decisions": {
   "SC-A": "inert Sign value type as the shared convention carrier",
@@ -300,7 +300,7 @@
   "nakshatra and division-index conventions are out of scope for V1"
  ],
  "environment": {
-  "python": "3.12.10"
+  "python": "3.11.16"
  },
  "preconditions": {
   "data_assets": {
@@ -312,7 +312,7 @@
    }
   },
   "anti_fitting": {
-   "modules_scanned": 193,
+   "modules_scanned": 195,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."

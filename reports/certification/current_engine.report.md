@@ -11,10 +11,10 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 
 ## Run metadata
 
-- source_revision: c8c447336d6660ddcb9711ac59fcece7a9c49a9d
+- source_revision: 33ddd1759188d3bd40aee5d1ac7bdb869db7a7da
 - working_tree_dirty: True
 - engine_version: 0.3.0
-- executed_utc: 2026-09-03T08:02:06Z
+- executed_utc: 2026-09-03T09:37:24Z
 - python: 3.11.16
 - holdout_cases: H1_london_1823, H2_newyork_1900, H3_sydney_1946, H4_delhi_1979, H5_reykjavik_1992, H6_quito_2010, H7_tokyo_2033, H8_mumbai_2077, H9_paris_2350, H10_boundary_moon_a, H11_boundary_moon_b
 - reference_binary: swetest 2.10.03 (bundled, version-verified at runtime)
@@ -22,7 +22,7 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 ## Preconditions
 
 - Data assets verified against CHECKSUMS.sha256: 3
-- Anti-fitting scan: 193 production modules, 0 findings
+- Anti-fitting scan: 195 production modules, 0 findings
 
 ## Summary
 
