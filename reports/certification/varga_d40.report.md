@@ -6,20 +6,20 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 - Decision entry: ADR-0087
 - Supersedes provisional identifier: NOTHING_AUTHORISED
 - Date: 2026-09-03
-- Scope: D40 Khavedamsa, Parashara/BPHS variant, Traditional Parasara construction. Rule under certification is a STANDALONE, UNREGISTERED CyclicVargaRule instance embedded in this certifier - not engine/astrology/varga_d40.py, no production module is authorized or created this execution.
+- Scope: D40 Khavedamsa, Parashara/BPHS variant, Traditional Parasara construction. Registered in production through the generic registry (engine.astrology.varga_d40, VARGA_D40_V1), discoverable via engine.astrology.divisional_chart.divisional_chart(snapshot, 40).
 - Result: **PASS**
 
 ## Preconditions
 
 - Data assets verified against CHECKSUMS.sha256: 3
-- Anti-fitting scan: 195 production modules, 0 findings
+- Anti-fitting scan: 196 production modules, 0 findings
 
 ## Gates
 
 - **A_table_integrity**: cells=12, mismatches=0, content_sha256=056e3e8af182568e9e2eaa5a1f54d86c40f7d97a53ece610f1e3105eb7a41006
 - **B_dense_sweep**: points=51429, mismatches=0
 - **C_corroboration_disclosure**: oracle_executed=False, classification=disclosed_gap_not_correctness_evidence
-- **D_isolation**: certifier_never_imports_varga_registry_or_varga_d40=True, engine_astrology_varga_d40_absent=True, content_sha256_matches_pinned=True
+- **D_non_invasiveness**: d40_registered=True, registered_rule_identity=is D40_KHAVEDAMSA (engine.astrology.varga_d40), rule_content_sha256=056e3e8af182568e9e2eaa5a1f54d86c40f7d97a53ece610f1e3105eb7a41006
 - **E_independent_validator**: result=PASS, classification=corroborating_correctness_evidence
 - **F_boundary_cases**: cases=492, mismatches=0
 - **G_protected_holdout**: points=26278, mismatches=0
@@ -28,12 +28,11 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 
 ## Explicit non-claims
 
-- no oracle execution this run - PyJHora unavailable locally, deferred to CI; certify_d40.py is NOT wired into .github/workflows/ci.yml's oracle-tier loop by this certification-execution task - that remains a separate, not-yet-authorized act
+- no oracle execution this run - PyJHora unavailable locally, deferred to CI; certify_d40.py is NOT wired into .github/workflows/ci.yml's oracle-tier loop by this production-implementation task - that remains a separate, not-yet-authorized act (the owner's explicit boundary)
 - any per-division deity/label payload (VargaClassification carries only D-sign, division index, and fraction; deity output is out of scope, mirroring D24/D45's own identical treatment - ADR-0087 section 4)
 - the three non-default PyJHora chart_method variants (Parivritti Cyclic, Even Reverse, Parivritti Alternate) - excluded, mirroring D24's own two and D45's own three excluded PyJHora methods
 - any non-parashara school variant
 - any other varga; each requires its own ADR and certification
-- no engine/ production module is created or modified by this certification
 - paraphrase-only caveat: the BPHS citation is corroborated by consistent modern paraphrase across independent sources, not a located verbatim Sanskrit verse/Sarga-and-Shloka citation (ADR-0087 section 3, DP-031 section J.1(D40) item 1)
 
 ## Evidence files

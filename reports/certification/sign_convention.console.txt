@@ -1,9 +1,9 @@
 ============================================================
 SIGN_CONVENTION_V1 CERTIFICATION
 ============================================================
-A_non_invasiveness   : 54697 points, D9 58b133367fba4049..., D10 5678aecfe9576ca8..., 7 registry vargas hashed
+A_non_invasiveness   : 54697 points, D9 58b133367fba4049..., D10 5678aecfe9576ca8..., 8 registry vargas hashed
 B_sign_type          : {'signs': 12, 'mismatches': 0, 'inert': True}
 C_declaration_coverage: 17 fields proven over 192 charts, 0 mismatches
-D_cross_layer        : 69986 checks, 0 mismatches
+D_cross_layer        : 74985 checks, 0 mismatches
 archived             : certification/SIGN_CONVENTION_V1_certification.json
 RESULT               : PASS
