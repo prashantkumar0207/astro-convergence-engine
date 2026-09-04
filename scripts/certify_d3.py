@@ -12,6 +12,15 @@ non-invasiveness (registry contents, certified dispatch types,
 refusals, plus fresh D9/D10 dense+ULP sweep hashes recorded for
 cross-commit comparison against the published baseline); E the
 independent validator. Exit 0 = PASS, 3 = FAIL.
+
+Composition-layer note (post-audit MEDIUM-1, ADR-0088): these gates verify
+the frozen rule and classify()-level correctness, not the shared
+engine.astrology.varga_chart_builder.build_varga_chart() composition path
+that engine.astrology.divisional_chart.divisional_chart() routes every
+registry-served division through identically. That shared path's own
+mutation-detection coverage is supplied by VARGA_D45_V1's Gate I
+(ADR-0085), not by this certifier - a real, previously undocumented
+dependency, recorded in ADR-0088, not duplicated here.
 """
 
 import hashlib

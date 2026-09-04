@@ -26,6 +26,16 @@ gates A/B/F/G never do, checking every field of every body against an
 independent cross-check plus a genuine in-process monkeypatch mutation
 self-check (see validate_d45_holdout.py's own verify_composition()/
 run_mutation_self_check()). Exit 0 = PASS, 3 = FAIL.
+
+Shared-dependency note (post-audit MEDIUM-1, ADR-0088): build_varga_chart()
+is the SAME function every registry-routed division's divisional_chart()
+call resolves to (D2/D3/D7/D12/D24/D30/D40, not only D45). None of those
+sibling certifiers has its own composition-mutation gate; this Gate I is
+their only mutation-detection coverage of that shared path. See ADR-0088
+for the full record. Gate-I naming note (MEDIUM-2): D24's and D40's own
+Gate I are static reference-regression gates, a different, non-mutation
+mechanism that happens to share the same letter positionally - not a claim
+of equivalent coverage.
 """
 
 import subprocess

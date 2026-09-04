@@ -48,6 +48,19 @@ default/Traditional-Parasara `khavedamsa_chart()` method matches this
 frozen construction exactly - read-only corroboration, not executed oracle
 agreement.
 
+Gate-I naming note (post-audit MEDIUM-2, ADR-0088): this file's Gate I and
+VARGA_D45_V1's Gate I share a letter but are materially different
+mechanisms - this Gate I is static independent-reference regression (LIVE
+output vs. frozen STATIC values), while D45's Gate I is a genuine
+composition/plumbing mutation-verification gate (monkeypatches the real
+production composition function and confirms re-execution detects it).
+The letter is a positional artifact of each file's own gate count, not a
+claim of equivalent mechanism; see ADR-0088 for the full classification
+and the related composition-layer note (MEDIUM-1) - this certifier has no
+composition-mutation gate of its own and relies on D45's Gate I for that
+coverage of the shared build_varga_chart() path, exactly as D2/D3/D7/D12/
+D24/D30 do.
+
 Exit code 0 = PASS, 3 = FAIL.
 """
 

@@ -6957,6 +6957,129 @@ implementation or CI oracle wiring. Does not resolve `DP-024`, which remains `DE
 - **Evidence:** the owner's ratifying instruction, quoted above; `ADR-0087` itself, commit
   `bd28c5fd2f7948b4c38df8c37463b81f4022723e`.
 
+## ADR-0088 - Post-audit remediation: D40/PR #13 authorization traceability, shared composition-layer dependency, and Gate-I naming classification (ACCEPTED)
+
+- **Date:** 2026-09-04
+- **Status:** ACCEPTED. The owner issued a direct "ASTRO CONVERGENCE ENGINE - ONE-SHOT POST-AUDIT
+  REMEDIATION" instruction responding to an independent Claude Web audit of `main@186eec7` (verdict
+  HOLD), directing this exact remediation: "Use the repository's established ADR / Decision Log /
+  governance mechanism... The record should clearly distinguish: 1. historical fact, 2. evidence
+  available in GitHub, 3. what remains unknowable from GitHub, 4. current resolution/ratification if
+  applicable. The objective is traceability, not rewriting history." Per `docs/PROJECT_CONSTITUTION.md`
+  s11, this instruction is the ratifying act for recording the findings below - it authorizes
+  documenting the traceability gaps found by the audit; it does **not** authorize backdating a GitHub
+  approval, and none is recorded here that did not occur.
+- **Context:** the audit found two governance/traceability findings (its own HIGH-2 and MEDIUM-3) and
+  two documentation gaps (MEDIUM-1, MEDIUM-2) concerning the D40 production-implementation chain
+  (`a79c70d4b28a21c9a14fe182cfd99a5bc3626e16`, PR #13, merge commit `186eec7ec77427e8e27f5d1e95078d15a77b4068`)
+  and the shared varga-composition certification architecture. None of the four reopens D40's ratified
+  methodology (`ADR-0087`), D24's (`ADR-0082`/`ADR-0083`), or any certified rule; none weakens a gate.
+
+### 1. HIGH-2: PR #13 merge-authorization traceability
+
+**1a. Historical fact.** PR #13 ("D40 production implementation: engine/astrology/varga_d40.py") was
+opened by `prashantkumar0207` at `2026-09-03T12:12:43Z` and merged by `prashantkumar0207` (the same
+account) at `2026-09-03T12:37:24Z` via a standard merge commit, `186eec7ec77427e8e27f5d1e95078d15a77b4068`,
+whose two parents are `1ad0783bc1e72703647bb1f3d16dd56b19e5d6ba` (prior `main`) and
+`7e7ecf40b119042c1b434a6be02cf5f6cca7e93b` (the PR's own head, itself `a79c70d` plus a separately
+authorized CI-sourced artifact-drift recovery). PR #13's own description stated the D40 production
+commit was CEO-authorized and that the PR should not be merged without separate CEO approval.
+
+**1b. Evidence available in GitHub**, queried fresh via `gh pr view 13 --json reviews,comments,
+reviewDecision` (2026-09-04): zero reviews, zero comments, empty `reviewDecision` - no GitHub-native
+review/approval/comment artifact exists on PR #13. `gh api repos/prashantkumar0207/astro-convergence-
+engine/branches/main/protection` returns `404 Branch not protected` (fresh, 2026-09-04): `main` carries
+no branch-protection rule, so GitHub itself required no separate approval before any push-capable
+account - including the one that opened the PR - could merge it. The merging account is the repository
+owner's own authenticated GitHub identity, the same account that authored the PR.
+
+**1c. What remains unknowable from GitHub.** GitHub's own record cannot show, and this entry does not
+claim it shows, a distinct pre-merge review/approval event for PR #13. Whether the owner's real-time
+authorization for this specific merge preceded the `gh pr merge 13` invocation cannot be established
+from GitHub artifacts alone - `docs/PROJECT_CONSTITUTION.md` s7 is explicit that conversation text with
+an AI collaborator is "input material, never authoritative project memory," and s11 that "audit findings
+are verified against the artifact, not trusted."
+
+**1d. Current resolution, recorded through this repository's own established mechanism.** This project's
+own governance history (e.g. the "Production implementation authorization and execution of ADR-0081"
+sub-entry above, and every `ADR-0082`-`ADR-0087` ratification) has, throughout, treated a quoted owner
+instruction, transcribed into this append-only log, as the sanctioned way a conversational authorization
+enters the repository's authoritative record - `docs/PROJECT_CONSTITUTION.md` s7's own stated exception:
+"External claims enter only through fixtures or decision entries." Applying that same established
+mechanism here, for the first time for this specific merge: the owner's instruction authorizing the PR
+#13 merge, given via the Claude Code session that performed it, read in full part: "I authorize merging
+PR #13 into main. Merge PR #13 using the repository's established GitHub PR workflow. Do not make any
+additional source, CI, artifact, or ADR changes before merging. Do not use force push or rewrite
+history. ... Do not begin D40 oracle wiring or any other follow-up after the merge. Stop for CEO
+review." This entry records that quote for the first time - it is a **retrospective governance closure
+of the traceability gap** (the repository now carries a written record of the authorization channel
+used), **not fabricated evidence that a GitHub review or approval occurred before the merge**, and not a
+claim that any GitHub-visible artifact has changed. No branch-protection rule or PR-review requirement
+is adopted by this entry; whether to adopt one going forward remains a separate, undecided question for
+the owner.
+
+### 2. MEDIUM-3: D40 production commit's missing quoted-authorization convention
+
+**2a. Historical fact.** Sibling production-implementation commits quote their authorizing instruction
+verbatim in the commit message itself - e.g. `c8c4473` (D24): `Per the owner's "CEO AUTHORIZATION --
+BEGIN D24 PRODUCTION IMPLEMENTATION" instruction...`. Commit `a79c70d4b28a21c9a14fe182cfd99a5bc3626e16`
+(D40) does not follow this convention: its message states the production registration and its
+consequences in detail but never quotes the owner's authorizing instruction verbatim.
+
+**2b. What this entry does and does not do.** Per the owner's explicit instruction, `a79c70d` is **not**
+amended and no history is rewritten. This entry supplies, append-only, the quoted-instruction record
+`a79c70d` itself omitted: the owner's instruction authorizing D40 production implementation, given via
+the Claude Code session that performed the work, opened "D40 Production Implementation - AUTHORIZED" and
+included the governing boundary, quoted here in full part: "Implement D40 (Khavedamsa) production
+support strictly according to ACCEPTED ADR-0087 and its frozen methodology... Governance boundary: D40
+production implementation is authorized. Any separate CI-oracle wiring, new methodology decision, change
+to ADR-0087, or unrelated architectural decision is not authorized. Stop rather than infer approval. Do
+not push or merge. Stop at the CEO-review boundary with a committed local implementation." As with
+section 1d above, this is a retrospective governance record supplying a citation the historical commit
+itself lacks, not an alteration of that commit or a claim that the commit message says something it does
+not.
+
+### 3. MEDIUM-1: shared `build_varga_chart()` composition-layer dependency, now documented
+
+**Finding.** `engine/astrology/divisional_chart.py` routes every registry-served division - currently
+D2, D3, D7, D12, D24, D30, D40, and D45 - through the identical shared
+`engine.astrology.varga_chart_builder.build_varga_chart()` call (verified: it is the only call site of
+that function in `engine/`). `VARGA_D45_V1`'s own Gate I (`ADR-0085`) is the only certifier that
+genuinely mutation-tests that shared composition path; none of D2/D3/D7/D12/D24/D30/D40's own
+certifiers does (each verifies its own frozen rule and `classify()`-level correctness only). This
+dependency was real and previously undocumented anywhere in the certification artifacts or scripts.
+
+**Resolution.** A "Composition-layer note" citing this entry was added to the module docstring of each
+of `scripts/certify_d2.py`, `certify_d3.py`, `certify_d7.py`, `certify_d12.py`, `certify_d24.py`,
+`certify_d30.py`, and `certify_d40.py`, and a matching "Shared-dependency note" was added to
+`scripts/certify_d45.py`'s own docstring. No gate, methodology, schema, or certification artifact
+changed - documentation only, per the owner's explicit instruction not to duplicate a mutation
+framework merely for table symmetry.
+
+### 4. MEDIUM-2: Gate-I naming disambiguation
+
+**Finding.** `scripts/certify_d24.py`'s and `scripts/certify_d40.py`'s own Gate I (static
+independent-reference regression: LIVE output vs. frozen STATIC values) and `scripts/certify_d45.py`'s
+Gate I (genuine composition/plumbing mutation verification) share a letter that is a positional artifact
+of each file's own gate count, not a claim of equivalent mechanism.
+
+**Resolution.** A "Gate-I naming note" was added to `certify_d24.py`'s and `certify_d40.py`'s own
+docstrings, and a matching note to `certify_d45.py`'s, explicitly classifying each: D24/D40 Gate I =
+static regression/reference evidence; D45 Gate I = composition mutation verification. No gate identifier,
+certification artifact schema, test, or historical evidence was renamed or altered - per the owner's
+explicit instruction, this is a documentation clarification only, chosen over a broad rename because a
+rename would touch artifact schemas, tests, and protected historical evidence for no correctness gain.
+
+- **Consequences:** no certified rule, gate, methodology, or artifact schema is changed by this entry.
+  Sections 1 and 2 close two traceability gaps as governance records, without asserting GitHub evidence
+  that does not exist. Sections 3 and 4 make two previously-implicit architectural facts explicit in the
+  certifier docstrings, cited back to this entry.
+- **Evidence:** `gh pr view 13 --json reviews,comments,reviewDecision` (2026-09-04, zero reviews/
+  comments/decision); `gh api .../branches/main/protection` (2026-09-04, 404 not protected); `git show -s
+  --format='%H %ci'` for `a79c70d`, `186eec7`, `7e7ecf40`; `git log -1 --format=%B c8c4473` (quoted
+  convention example); `grep -rn build_varga_chart engine/astrology/*.py` (single call site); the owner's
+  two quoted instructions above, reproduced from the Claude Code session that received them.
+
 ---
 
 ## ADR template (copy, do not edit above the line)

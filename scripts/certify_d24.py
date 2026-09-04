@@ -31,7 +31,11 @@ representable with zero floor-classification effect - ADR-0083 section 3);
 G protected holdout (independent of the boundary cases, never used for
 tuning); H negative controls (a real planted violation, confirmed
 detected, confirmed the production D24_SIDDHAMSA object itself remains
-unmutated - a frozen dataclass, so replace() returns a new instance).
+unmutated - a frozen dataclass, so replace() returns a new instance); I
+static reference regression (LIVE production output compared against
+STATIC values frozen from validate_d24_holdout.py's own independent
+reference - NOT a composition-mutation gate; see the naming-collision
+note below).
 
 PyJHora is required by Gate C only, imported lazily inside that function
 (not at module scope), so every other gate remains importable and runnable
@@ -39,6 +43,19 @@ on a host without PyJHora - mirroring exactly the ADR-0085 Gate C
 import-structure change already applied to scripts/certify_d45.py. Gate C
 itself still hard-fails, with the identical exit code, the instant it
 actually runs without PyJHora present.
+
+Gate-I naming note (post-audit MEDIUM-2, ADR-0088): this file's Gate I and
+VARGA_D45_V1's Gate I share a letter but are materially different
+mechanisms - this Gate I is static reference/regression evidence (LIVE
+output vs. frozen STATIC values), while D45's Gate I is a genuine
+composition/plumbing mutation-verification gate (monkeypatches the real
+production composition function and confirms re-execution detects it).
+The letter is a positional artifact of each file's own gate count, not a
+claim of equivalent mechanism; see ADR-0088 for the full classification
+and the related composition-layer note (MEDIUM-1) - this certifier has no
+composition-mutation gate of its own and relies on D45's Gate I for that
+coverage of the shared build_varga_chart() path, exactly as D2/D3/D7/D12/
+D30/D40 do.
 
 Exit code 0 = PASS, 3 = FAIL.
 """
