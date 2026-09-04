@@ -7080,6 +7080,246 @@ rename would touch artifact schemas, tests, and protected historical evidence fo
   convention example); `grep -rn build_varga_chart engine/astrology/*.py` (single call site); the owner's
   two quoted instructions above, reproduced from the Claude Code session that received them.
 
+## ADR-0089 - D16 (Shodasamsa) selected as a JATAKA capability: sequencing decision and frozen methodology (PROPOSED - prepared for CEO ratification, not yet declared)
+
+- **Date:** 2026-09-04
+- **Status:** PROPOSED. Drafted per the owner's explicit "OWNER RATIFICATION - PROCEED WITH ALL THREE,
+  WITH THE FOLLOWING BOUNDARIES" instruction (2026-09-04), item 1: "Proceed with D16... Proceed through
+  the normal capability-specific selection and methodology-freeze governance process," and item 5: "You
+  are authorized now to prepare the required governance records for D16 and D4... clearly mark anything
+  requiring my ratification." **This entry is drafted only - it is not ratified by the instruction that
+  authorized drafting it**, exactly as `ADR-0082`'s and `ADR-0087`'s own drafting stages were distinct
+  from their later, separate ratification instructions. Ratification requires the owner's own subsequent
+  "Ratify ADR-0089 exactly as drafted" (or equivalent) instruction, per this repository's established
+  "change only the Status line" discipline.
+- **Context:** `docs/decisions/DP-032-d16-d27-d4-methodology-readiness.md` (`Status: OPEN`, decides
+  nothing) Part B found D16's own D-sign geometry fits `engine.astrology.varga_rules.CyclicVargaRule`
+  exactly as coded today - independently confirmed live this task
+  (`CyclicVargaRule(divisions=16, start_sign=(0,4,8,0,4,8,...), direction=(1,)*12)` constructs without
+  error) - and recommended `READY_FOR_SELECTION` conditional on the owner accepting the same deity-
+  exclusion precedent already recorded for D24 (`ADR-0082` section 4), D40 (`ADR-0087` section 4), and
+  D45 (`ADR-0077` section 10). The owner's ratification instruction accepts exactly that condition for
+  D16 (item 1: "Exclude deity/payload output from the certified production contract, following the
+  established D24/D40/D45 precedent. Do not introduce a new payload architecture for D16.").
+
+### 1. Selection rationale - explicit, not a methodology finding
+
+D16 is selected as a JATAKA capability by the owner's own sequencing choice, per the ratification
+instruction's item 1 ("Proceed with D16"), following `DP-032`'s own readiness finding. This entry does
+not reopen or reinterpret `DP-031`'s own still-open items 3-6 (`docs/decisions/DP-031-...md` section I) -
+those govern JATAKA candidate-set questions broader than this specific capability and remain separately
+open, unaffected by this selection.
+
+### 2. JATAKA-scope interpretive work, required by `ADR-0075`
+
+Minimal, identical reasoning to `ADR-0082` section 2 and `ADR-0087` section 2: D16 is literally named in
+`Q8_CLOSURE_MATRIX.md` section 5's own illustrative implementation-scope list ("remaining production
+vargas in the roadmap's risk order"; `docs/VARGA_CERTIFICATION_ROADMAP.md` section 4 names D16 among the
+eight remaining divisions), so `ADR-0075`'s ILLUSTRATIVE-not-exhaustive interpretation requires no
+additional interpretive work here.
+
+### 3. Frozen methodology - source, rule, school
+
+**Classical source:** Parashara/BPHS, the same source family as every certified `parashara`-school varga
+in this repository. **Disclosed gap, matching D40's own precedent, not glossed over:** no verbatim
+Sanskrit verse/Sarga-and-Shloka citation was independently verified this task - only consistent secondary
+paraphrase (two independent transcriptions of R. Santhanam's published English translation, chapter 6,
+verse ~16, plus multiple further independent secondary astrology-reference sites, all converging on the
+identical construction - `DP-032` Part B section B.B).
+
+**Frozen computational rule (`CyclicVargaRule` shape):** sixteen equal divisions of 30/16 = 1.875 degrees
+per sign. For a movable source sign (Aries, Cancer, Libra, Capricorn), division 0 maps to Aries (index
+0); for a fixed source sign (Taurus, Leo, Scorpio, Aquarius), division 0 maps to Leo (index 4); for a
+dual source sign (Gemini, Virgo, Sagittarius, Pisces), division 0 maps to Sagittarius (index 8). Forward
+counting only (direction +1) for all twelve source signs - no reversal variant is claimed. **School:**
+`parashara`, matching the existing registry key. No content-hash pin is established by this entry - that
+is the certification-execution stage's own act, mirroring `ADR-0082`/`ADR-0083` and `ADR-0087`'s own
+precedent exactly; this entry freezes the rule's own construction, not a computed artifact.
+
+**Independent corroboration, not the source of authority:** PyJHora's own `shodasamsa_chart()` function
+(alias `kalamsa_chart()`), read directly from its published source (`naturalstupid/PyJHora`, GitHub,
+`src/jhora/horoscope/chart/charts.py` lines 980-1016 - not executed locally, this host's own PyJHora
+environment remaining degraded, an already-disclosed, unchanged limitation), offers a default/Traditional-
+Parasara method matching this frozen construction exactly (movable/fixed/dual -> Aries(0)/Leo(4)/
+Sagittarius(8), `HOUSE_5=4`/`HOUSE_9=8` independently confirmed against `src/jhora/const.py`), alongside
+three named non-default variants (`PARIVRITTI_EVEN_REVERSE`, `PARIVRITTI_CYCLIC`,
+`SOMANATHA_PARIVRITTI_ALTERNATE`) excluded as explicit non-claims, mirroring D24's own two and D45's own
+three excluded PyJHora methods.
+
+**Boundary/interval behaviour - measured, not assumed:** the 30/16 = 15/8-degree cell width is exactly
+representable in IEEE-754 double precision (denominator is a power of two, confirmed via exact `Fraction`
+arithmetic this task and independently in `DP-032` section B.F), with zero floor-classification boundary
+mismatches across a full absolute-longitude sweep of all 12 signs x 16 divisions (192 boundaries) -
+matching D24's and D40's own clean results, unlike D45's own three genuine boundary mismatches. No
+division-specific boundary exception is introduced; D16 inherits the engine's own existing,
+already-certified 1e-10 promote-up tolerance convention without modification.
+
+### 4. Explicit non-claims
+
+**No interpretive/deity-based reading of D16 results is claimed**, per the owner's own explicit item-1
+instruction. BPHS names a Brahma/Vishnu/Shiva/Surya deity cycle over the sixteen parts, reversed for even
+signs (`DP-032` section B.B) - excluded from the certified D-sign contract for the identical reason
+`ADR-0082` section 4, `ADR-0087` section 4, and `ADR-0077` section 10 already established for D24/D40/
+D45 (`VargaClassification` carries only D-sign, division index, and fraction for every certified varga).
+This does not create an unavoidable `DP-024` dependency: per the owner's own item-1 instruction ("Do not
+introduce a new payload architecture for D16"), `DP-024`'s Option B (payload/label-table architecture)
+is not resolved and not required by this entry - `DP-032` section B.H independently confirms D16's own
+geometry needs no `DP-024` resolution of any kind, Option A or B, once deity output is excluded. `DP-024`
+remains `DEFERRED`, untouched. No non-`parashara` school variant. No other varga. Secondary-source-only
+caveat carried forward from `DP-032` section B.B, stated above.
+
+### 5. What this entry does not do
+
+**Does not create `engine/astrology/varga_d16.py`, `scripts/certify_d16.py`, or
+`validate_d16_holdout.py`.** Does not modify `varga_registry.py`, `.github/workflows/ci.yml`, or any
+existing certification artifact. Does not perform certification design or execution - a separate,
+subsequent, not-yet-authorized act, mirroring exactly how `ADR-0082` reserved that step for `ADR-0083`
+and how `ADR-0087` reserved it for its own later, separately-authorized certification-execution
+instruction. Does not authorize production implementation or CI oracle wiring. Does not resolve
+`DP-024`, which remains `DEFERRED`. Does not reopen `DP-031`'s own still-open items 3-6, or any prior
+capability's own selection/certification. Does not push or merge.
+
+- **Consequences, if ratified:** this entry would freeze D16's own methodology and authorize
+  certification-design/execution as the next, separately-tracked act - mirroring exactly the
+  `ADR-0082` -> `ADR-0083` -> production-implementation -> CI-oracle-wiring precedent already completed
+  for D24, and the equivalent `ADR-0087` precedent completed for D40. No certified calculation,
+  certification artifact, or production code is touched by this entry itself.
+- **Evidence:** `docs/decisions/DP-032-d16-d27-d4-methodology-readiness.md` Part B (the readiness
+  investigation this entry follows; `Status: OPEN`, decides nothing); `ADR-0082`/`ADR-0087` (the D24/D40
+  selection/methodology precedent this entry mirrors); `docs/VARGA_CERTIFICATION_ROADMAP.md` (construction
+  citation source); direct reading of `Q8_CLOSURE_MATRIX.md` section 5 (D16 named); live re-verification
+  this task that `CyclicVargaRule(divisions=16, start_sign=(0,4,8,0,4,8,0,4,8,0,4,8), direction=(1,)*12)`
+  constructs without error; the owner's "OWNER RATIFICATION - PROCEED WITH ALL THREE" instruction, quoted
+  in substance above.
+
+## ADR-0090 - D4 (Chaturthamsa) selected as a JATAKA capability: sequencing decision and frozen methodology (`SegmentVargaRule`, `DP-024` Option A2) (PROPOSED - prepared for CEO ratification, not yet declared)
+
+- **Date:** 2026-09-04
+- **Status:** PROPOSED. Drafted per the owner's explicit "OWNER RATIFICATION - PROCEED WITH ALL THREE,
+  WITH THE FOLLOWING BOUNDARIES" instruction (2026-09-04), item 2: "Proceed with D4. Select A2: use
+  SegmentVargaRule. Do NOT modify the shared CyclicVargaRule/Cyclic classifier architecture merely to
+  support D4... Keep the implementation isolated to D4 wherever technically possible. Proceed through
+  the normal capability-specific selection and methodology-freeze governance process." **This entry is
+  drafted only - it is not ratified by the instruction that authorized drafting it**, per the identical
+  discipline stated in `ADR-0089` above; ratification requires the owner's own subsequent explicit
+  instruction.
+- **Context:** `docs/decisions/DP-032-...md` Part A found D4's own construction requires a 3-sign step
+  per division, which `engine.astrology.varga_rules.CyclicVargaRule` cannot express as coded -
+  independently reconfirmed live this task (`CyclicVargaRule(divisions=4, start_sign=(0,)*12,
+  direction=(3,)*12)` raises `InvalidVargaRuleError: direction entries must be +1 or -1, got 3`) -
+  and identified two resolution paths, `DP-024` section 4 Option A1 (add a `step` field to
+  `CyclicVargaRule`, a shared-contract change) and Option A2 (`SegmentVargaRule`, isolated to D4, no
+  framework change, mirroring D3's own precedent exactly). The owner's ratification instruction selects
+  **Option A2 for D4 specifically** - this entry does **not** resolve `DP-024`'s own Option A question in
+  general; a future kendra/trikona-stepped varga remains free to select A1 on its own, separate merits.
+
+### 1. Selection rationale - explicit, not a methodology finding
+
+D4 is selected as a JATAKA capability by the owner's own sequencing choice (item 2: "Proceed with D4"),
+following `DP-032`'s own readiness finding. As with `ADR-0089`, this does not reopen `DP-031` section I's
+own still-open items.
+
+### 2. JATAKA-scope interpretive work, required by `ADR-0075`
+
+Identical reasoning to `ADR-0089` section 2: D4 is literally named in `Q8_CLOSURE_MATRIX.md` section 5's
+own illustrative implementation-scope list (`docs/VARGA_CERTIFICATION_ROADMAP.md` section 4 names D4
+among the eight remaining divisions), so `ADR-0075`'s ILLUSTRATIVE-not-exhaustive interpretation requires
+no additional interpretive work here.
+
+### 3. Frozen methodology - source, rule, school
+
+**Classical source:** Parashara/BPHS. **Disclosed gap, matching D16's own precedent:** no verbatim
+Sanskrit verse/Sarga-and-Shloka citation was independently verified this task - only consistent secondary
+paraphrase (two independent transcriptions of R. Santhanam's published English translation, chapter 6,
+verse ~9: "the Lords of the 4 Kendras from a Rasi are the rulers of respective Chaturthamsa of a Rasi,
+commencing from Aries" - `DP-032` Part A section A.B).
+
+**Frozen computational rule (`SegmentVargaRule` shape, per the owner's explicit Option A2 selection):**
+four equal segments of 30/4 = 7.5 degrees per sign. For each 0-based source sign `s`, division `l`
+(0-3) maps to target sign `(s + 3*l) mod 12` - the source sign itself, then its 4th, 7th, and 10th houses
+counted from it (the four kendras from the source sign). Written out explicitly, not left at prose level
+(per `DP-032` section A.C's own independent derivation, cross-checked against PyJHora's `f2=3` construction
+in `_chaturthamsa_parasara()`):
+
+| Source sign | Division 0 | Division 1 | Division 2 | Division 3 |
+|---|---|---|---|---|
+| Aries (0) | Aries | Cancer | Libra | Capricorn |
+| Taurus (1) | Taurus | Leo | Scorpio | Aquarius |
+| Gemini (2) | Gemini | Virgo | Sagittarius | Pisces |
+| Cancer (3) | Cancer | Libra | Capricorn | Aries |
+| Leo (4) | Leo | Scorpio | Aquarius | Taurus |
+| Virgo (5) | Virgo | Sagittarius | Pisces | Gemini |
+| Libra (6) | Libra | Capricorn | Aries | Cancer |
+| Scorpio (7) | Scorpio | Aquarius | Taurus | Leo |
+| Sagittarius (8) | Sagittarius | Pisces | Gemini | Virgo |
+| Capricorn (9) | Capricorn | Aries | Cancer | Libra |
+| Aquarius (10) | Aquarius | Taurus | Leo | Scorpio |
+| Pisces (11) | Pisces | Gemini | Virgo | Sagittarius |
+
+Uniform across all twelve source signs - no odd/even, no movable/fixed/dual, no triplicity distinction
+(independently confirmed this task: every source sign's four targets are exactly the other three members
+of its own modality group plus itself, in kendra order). **School:** `parashara`. No content-hash pin is
+established by this entry, mirroring `ADR-0089`/`ADR-0082`/`ADR-0087`'s own precedent exactly.
+
+**Architectural isolation, per the owner's explicit instruction:** this construction uses
+`engine.astrology.varga_rules.SegmentVargaRule` exactly as D2 and D3 already do - 12 per-source-sign
+tuples of `(width_degrees, target_sign)` pairs, `division=4` self-declared per the dataclass's own B-01
+protection. **`CyclicVargaRule`, `varga_classifier.py`'s `_classify_cyclic()`, and every currently-
+registered `CyclicVargaRule`-based varga (D2 [note: D2 is itself `SegmentVargaRule`, not affected either
+way], D7, D12, D24, D30, D40, D45) are untouched by this construction** - `DP-024`'s Option A1 (the
+`step` field) is not implemented, not required, and remains available for a future capability to select
+independently.
+
+**Independent corroboration, not the source of authority:** PyJHora's own `chaturthamsa_chart()` function,
+`chart_method=1` (Traditional Parasara), read directly from its published source (`src/jhora/horoscope/
+chart/charts.py` lines 631-665, `_chaturthamsa_parasara()`, `f2=3`) - not executed locally, this host's
+own PyJHora environment remaining degraded - matches this frozen construction exactly, alongside three
+named non-default variants (`PARIVRITTI_CYCLIC`, `PARIVRITTI_EVEN_REVERSE`,
+`SOMANATHA_PARIVRITTI_ALTERNATE`) excluded as explicit non-claims.
+
+**Boundary/interval behaviour - measured, not assumed:** the 30/4 = 15/2-degree cell width is exactly
+representable in IEEE-754 double precision, zero floor-classification boundary mismatches across a full
+absolute-longitude sweep of all 12 signs x 4 divisions (48 boundaries) - confirmed via exact `Fraction`
+arithmetic and independently in `DP-032` section A.F. No division-specific boundary exception is
+introduced; D4 inherits the engine's own existing 1e-10 promote-up tolerance convention unmodified.
+
+### 4. Explicit non-claims
+
+**No interpretive/deity-based reading of D4 results is claimed**, per the owner's own explicit item-2
+instruction ("Exclude D4 deity/payload output from the certified production contract, following the
+established precedent"). `DP-032` section A.B/A.H discloses, for the first time in this repository, that
+D4 carries its own named per-division deity payload (the four Kumaras: Sanaka, Sanandana, Sanatkumara,
+Sanatana, one per kendra part) - a genuine finding `docs/VARGA_CERTIFICATION_ROADMAP.md` section 3's own
+payload-gap enumeration (D16/D20/D27/D60) omitted. This entry excludes that payload from the certified
+D-sign contract, identically to `ADR-0089` section 4's treatment of D16 and to `ADR-0082`/`ADR-0087`/
+`ADR-0077`'s own established precedent for D24/D40/D45. `DP-024`'s Option B (payload architecture) is
+therefore not required by this entry either, matching `ADR-0089`. No non-`parashara` school variant. No
+other varga. Secondary-source-only caveat carried forward from `DP-032` section A.B, stated above.
+
+### 5. What this entry does not do
+
+**Does not create `engine/astrology/varga_d4.py`, `scripts/certify_d4.py`, or
+`validate_d4_holdout.py`.** Does not modify `varga_registry.py`, `varga_rules.py`, `varga_classifier.py`,
+`.github/workflows/ci.yml`, or any existing certification artifact - the isolation the owner's item-2
+instruction requires is a design commitment recorded here, to be verified again by direct diff at the
+production-implementation stage, exactly as every prior capability's own production commit verified its
+own non-invasiveness claim before, not merely after, writing code. Does not perform certification design
+or execution. Does not authorize production implementation or CI oracle wiring. Does not resolve
+`DP-024`'s own Option A question in general - only records that D4 specifically uses Option A2. Does not
+reopen `DP-031` section I. Does not push or merge.
+
+- **Consequences, if ratified:** this entry would freeze D4's own methodology (as a `SegmentVargaRule`,
+  isolated construction) and authorize certification-design/execution as the next, separately-tracked
+  act, mirroring the `ADR-0082`/`ADR-0087` precedent. `DP-024`'s general Option A1/A2 question remains
+  open for any future capability that needs it; this entry answers it only for D4.
+- **Evidence:** `docs/decisions/DP-032-...md` Part A (the readiness investigation this entry follows);
+  `docs/decisions/DP-024-varga-framework-step-payload-architecture.md` section 4 (the A1/A2 options this
+  entry chooses between, for D4 only); `ADR-0082`/`ADR-0087` (the selection/methodology precedent this
+  entry mirrors); `engine/astrology/varga_d3.py` (the `SegmentVargaRule`-for-a-multi-sign-jump precedent
+  this entry follows exactly); live re-verification this task that `CyclicVargaRule(divisions=4,
+  start_sign=(0,)*12, direction=(3,)*12)` raises `InvalidVargaRuleError`; the owner's "OWNER RATIFICATION
+  - PROCEED WITH ALL THREE" instruction, quoted in substance above.
+
 ---
 
 ## ADR template (copy, do not edit above the line)

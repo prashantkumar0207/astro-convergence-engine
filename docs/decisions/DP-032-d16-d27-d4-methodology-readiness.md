@@ -3,10 +3,10 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | OPEN - decision paper. Presents readiness findings and options. DECIDES NOTHING. Requires owner approval. Does not resolve `DP-024`. Does not select, implement, certify, or CI-wire any capability. |
-| Version | 1.0.0 |
+| Status | OPEN - decision paper. Presents readiness findings and options. DECIDES NOTHING. Requires owner approval. Does not resolve `DP-024`. Does not select, implement, certify, or CI-wire any capability. Part F (added 2026-09-04) records the owner's authorization of future D27 primary-source research only - not a methodology freeze, not a selection. |
+| Version | 1.1.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-09-04 |
+| Last updated | 2026-09-04 (Part F added: D27 research authorization) |
 | Review cadence | TBD |
 
 # DP-032. Combined methodology-readiness investigation: D16 (Shodasamsa), D27 (Saptavimsamsa/Nakshatramsa/Bhamsa), D4 (Chaturthamsa)
@@ -537,8 +537,35 @@ the roadmap's own text did not previously identify by name).
    d. Whether any of D16/D27/D4 should be selected next at all, versus another JATAKA candidate
       (`DP-031` §I items 3-6 remain separately open, unaffected by this paper).
 
+## Part F: D27 research authorization (addendum, 2026-09-04) - NOT a methodology freeze
+
+**Owner instruction, quoted in full part:** "OWNER RATIFICATION - PROCEED WITH ALL THREE, WITH THE
+FOLLOWING BOUNDARIES" (2026-09-04), item 3: "Proceed with D27 as a research candidate. Authorize further
+primary-source research specifically to resolve the Variant 1 vs Variant 2 source conflict. Do NOT
+select either interpretation merely because PyJHora or secondary sources favor it. D27 must remain
+blocked from methodology freeze/implementation until the source conflict is properly resolved or I
+separately provide explicit risk-acceptance authorization. PyJHora remains corroborative evidence, not
+normative authority."
+
+**What this addendum records:** the owner has authorized a **future, separate research task** to attempt
+to resolve section C.D's own disclosed conflict (the "commences from Aries... for all the 12 Rasis"
+reading vs. the fire/earth/air/water triplicity reading) against better primary-source evidence than this
+paper obtained. **This authorization is not itself that research** - no such research is performed by
+this addendum, and section C.D's conflict remains exactly as unresolved as this paper's own 1.0.0 version
+left it. No interpretation is selected here, by PyJHora's default or by Variant 1's stronger convergent-
+secondary count, per the owner's own explicit instruction.
+
+**What remains true regardless of this addendum:** D27 is a JATAKA research candidate, not a selected
+capability - unlike D16 (`ADR-0089`, PROPOSED) and D4 (`ADR-0090`, PROPOSED), **no selection or frozen-
+methodology ADR is drafted for D27 by this addendum or by any other record as of this entry.** D27 may
+not proceed to methodology freeze, certification design, or implementation until section C.D is resolved
+by one of the two paths section C.G/Part E already named: genuine primary-source verification, or the
+owner's own explicit, separate risk-acceptance authorization naming Variant 1 (or Variant 2) and
+disclosing the residual risk. Neither has occurred as of this entry.
+
 ## Change history
 
 | Version | Date | Change |
 |---|---|---|
+| 1.1.0 | 2026-09-04 | Part F added (append-only; Parts A-E and the 1.0.0 change-history row below unedited, confirmed by diff): records the owner's explicit authorization of future D27 primary-source research to resolve section C.D's conflict, per "OWNER RATIFICATION - PROCEED WITH ALL THREE" item 3. Explicitly NOT a methodology freeze, NOT a selection, and does not perform the authorized research itself - section C.D remains exactly as unresolved as version 1.0.0 left it. Companion to `ADR-0089` (D16) and `ADR-0090` (D4), both drafted `PROPOSED` this same task, neither yet ratified. |
 | 1.0.0 | 2026-09-04 | Created. Combined methodology-readiness investigation for D16, D27, D4 under the owner's explicit "DP-024 METHODOLOGY-READINESS INVESTIGATION" authorization. Establishes D16 geometry needs no `DP-024` resolution (payload/Option B only); D4 genuinely needs Option A/A2; D27 needs neither `DP-024` option for its geometry but carries its own unresolved source-conflict (section C.D) this paper could not close. Discloses a previously-unflagged D4 deity payload and a `varga_rules.py` module-docstring inaccuracy (lists D4 as `CyclicVargaRule`-covered; the enforced `direction in {+1,-1}` constraint contradicts this for D4's real 3-sign step). Decides nothing; selects nothing; implements nothing; does not resolve `DP-024`. |
