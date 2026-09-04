@@ -1,0 +1,122 @@
+{
+ "schema": "varga_d4_v1_certification",
+ "adr": "ADR-0090",
+ "supersedes_provisional_id": "NOTHING_AUTHORISED",
+ "date": "2026-09-04",
+ "scope": "D4 Chaturthamsa, Parashara/BPHS variant, Traditional Parasara construction. Rule under certification is a STANDALONE, UNREGISTERED SegmentVargaRule instance embedded in this certifier - not engine/astrology/varga_d4.py, no production module is authorized or created this execution. DP-024 Option A2 (SegmentVargaRule) selected for D4 specifically, per the owner's explicit instruction - CyclicVargaRule is untouched.",
+ "rule": {
+  "kind": "standalone SegmentVargaRule instance embedded in this certifier (scripts/certify_d4.py) - not a registered production rule",
+  "divisions": 4,
+  "school": "parashara",
+  "construction": "division l (0-3) of source sign s maps to target (s + 3*l) mod 12 - the four kendras from the source sign, uniform for all twelve source signs",
+  "content_sha256": "9c5e1a460458fc8348ad8b02c2eecaba65ee77cc4eefa35735c8a548e691a031"
+ },
+ "oracle": {
+  "oracle_executed": false,
+  "reason": "PyJHora unavailable in this local environment (numpy import failure, an already-disclosed, pre-existing limitation) - genuine oracle execution deferred to this project's own CI hash-pinned oracle environment, per every oracle-tier certifier's own established pattern.",
+  "read_only_corroboration": "PyJHora's own published source (naturalstupid/PyJHora, GitHub, chaturthamsa_chart(), _chaturthamsa_parasara(), f2=3) was read directly during DP-032 section A.B (ADR-0090 section 3): its default/Traditional-Parasara method (kendra step of 3 signs per division, uniform for all source signs) matches this frozen construction exactly. This is read-only source inspection, not executed oracle agreement.",
+  "classification": "disclosed_gap_not_correctness_evidence"
+ },
+ "gates": {
+  "A_table_integrity": {
+   "cells": 48,
+   "mismatches": 0,
+   "content_sha256": "9c5e1a460458fc8348ad8b02c2eecaba65ee77cc4eefa35735c8a548e691a031",
+   "disclosure": "division l (0-3) of source sign s maps to target (s + 3*l) mod 12 - the source sign itself, then its 4th, 7th, and 10th houses (the four kendras from the source sign), uniform for all twelve source signs - Parashara/BPHS, DP-032 section A (ADR-0090 section 3)"
+  },
+  "B_dense_sweep": {
+   "points": 51429,
+   "mismatches": 0
+  },
+  "C_corroboration_disclosure": {
+   "oracle_executed": false,
+   "reason": "PyJHora unavailable in this local environment (numpy import failure, an already-disclosed, pre-existing limitation) - genuine oracle execution deferred to this project's own CI hash-pinned oracle environment, per every oracle-tier certifier's own established pattern.",
+   "read_only_corroboration": "PyJHora's own published source (naturalstupid/PyJHora, GitHub, chaturthamsa_chart(), _chaturthamsa_parasara(), f2=3) was read directly during DP-032 section A.B (ADR-0090 section 3): its default/Traditional-Parasara method (kendra step of 3 signs per division, uniform for all source signs) matches this frozen construction exactly. This is read-only source inspection, not executed oracle agreement.",
+   "classification": "disclosed_gap_not_correctness_evidence"
+  },
+  "D_isolation": {
+   "certifier_never_imports_varga_registry_or_varga_d4": true,
+   "certifier_never_imports_cyclicvargarule": true,
+   "engine_astrology_varga_d4_absent": true,
+   "content_sha256_matches_pinned": true,
+   "varga_rules_py_sha256": "47ea22a89eb206f0d7da62bf4a1534f5737cd3944bb1b5e57012c6a350030bb7",
+   "varga_rules_py_unchanged_from_baseline": true
+  },
+  "E_independent_validator": {
+   "result": "PASS",
+   "classification": "corroborating_correctness_evidence",
+   "note": "separate-process, from-scratch reimplementation; does not import engine.astrology.varga_classifier, engine.astrology.varga_rules, or this certifier's own D4_CHATURTHAMSA object"
+  },
+  "F_boundary_cases": {
+   "cases": 60,
+   "mismatches": 0,
+   "convention": "engine-wide 1e-10 tolerance-promoted boundary convention (longitude_utils.py), unmodified; no D4-specific exception - cell width 30/4=7.5deg is exactly representable in IEEE-754 double precision (ADR-0090 section 3), zero floor-classification effect, identical clean result to D24's/D40's own"
+  },
+  "G_protected_holdout": {
+   "points": 26278,
+   "mismatches": 0,
+   "methodology": "prime-step deterministic sampling, independent of gate B/F points, never used to tune the frozen rule"
+  },
+  "H_negative_controls": {
+   "controls": [
+    {
+     "control": "segments[0][0] target mutated 0->5 (wrong value)",
+     "detected": true
+    },
+    {
+     "control": "Aries (mutated source) division 0 target flip detected",
+     "detected": true
+    },
+    {
+     "control": "Taurus (unmutated source) unaffected by Aries-only mutation",
+     "detected": true
+    },
+    {
+     "control": "content hash changes on mutation",
+     "detected": true
+    }
+   ],
+   "all_detected": true,
+   "original_object_unmutated": true
+  },
+  "I_static_reference_regression": {
+   "cases": 10,
+   "mismatches": 0,
+   "methodology": "LIVE certifier output (classify() + the standalone D4_CHATURTHAMSA rule) compared against STATIC values frozen from validate_d4_holdout.py's own from-scratch reference_d4() (never regenerated by this certifier's own rule at certification time)",
+   "classification": "correctness_evidence"
+  }
+ },
+ "explicit_non_claims": [
+  "no oracle execution this run - PyJHora unavailable locally, deferred to CI; certify_d4.py is NOT wired into .github/workflows/ci.yml's oracle-tier loop by this certification-execution task - that remains a separate, not-yet-authorized act",
+  "any per-division deity/label payload (VargaClassification carries only D-sign, division index, and fraction; deity output is out of scope, mirroring D16/D24/D40/D45's own identical treatment - ADR-0090 section 4; DP-032 section A.H first disclosed D4's own four-Kumara deity payload)",
+  "the three non-default PyJHora chart_method variants (Parivritti Cyclic, Parivritti Even Reverse, Somanatha Parivritti Alternate) - excluded, mirroring D24's own two and D45's own three excluded PyJHora methods",
+  "any non-parashara school variant",
+  "any other varga; each requires its own ADR and certification",
+  "no engine/ production module is created or modified by this certification",
+  "no change of any kind to engine/astrology/varga_rules.py or varga_classifier.py - DP-024 Option A1 (the step field) is NOT implemented by this certification, mechanically verified by Gate D",
+  "paraphrase-only caveat: the BPHS citation is corroborated by consistent modern paraphrase across independent sources, not a located verbatim Sanskrit verse/Sarga-and-Shloka citation (ADR-0090 section 3, DP-032 section A.B)"
+ ],
+ "environment": {
+  "python": "3.12.10"
+ },
+ "preconditions": {
+  "data_assets": {
+   "assets_verified": 3,
+   "sha256": {
+    "seas_18.se1": "a2cd8fc33807c78ca9a700c91c2e042258b12fc4796519e00781440b5ad8b2e2",
+    "semo_18.se1": "1ca07bd67c24374d77226180c20a4f9996cba013697894810518e7eb582ca4f7",
+    "sepl_18.se1": "ca1393ceab3a44fbc895887cf789c68819ae6a1cbc9b22225872dbe4ccd99a66"
+   }
+  },
+  "anti_fitting": {
+   "modules_scanned": 200,
+   "findings": [],
+   "justified_exceptions": [
+    "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."
+   ]
+  }
+ },
+ "result": "PASS",
+ "_artifact_name": "VARGA_D4_V1_certification.json",
+ "_slug": "varga_d4"
+}
