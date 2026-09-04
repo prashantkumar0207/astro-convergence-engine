@@ -3,10 +3,10 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | OPEN - decision paper. Presents readiness findings and options. DECIDES NOTHING. Requires owner approval. Does not resolve `DP-024`. Does not select, implement, certify, or CI-wire any capability. Part F (added 2026-09-04) records the owner's authorization of future D27 primary-source research only - not a methodology freeze, not a selection. Part G (added 2026-09-04) records the exact remediation of two self-audit findings in the D16/D4 certifiers - flags, without fixing, that the same weakness likely exists in the already-accepted D24/D40 certifiers, a separate owner decision. |
-| Version | 1.2.0 |
+| Status | OPEN - decision paper. Presents readiness findings and options. DECIDES NOTHING. Requires owner approval. Does not resolve `DP-024`. Does not select, implement, certify, or CI-wire any capability. Part F (added 2026-09-04) records the owner's authorization of future D27 primary-source research only - not a methodology freeze, not a selection. Part G (added 2026-09-04) records the exact remediation of two self-audit findings in the D16/D4 certifiers - flags, without fixing, that the same weakness likely exists in the already-accepted D24/D40 certifiers, a separate owner decision. Part H (added 2026-09-04) closes that separate owner decision: records the read-only D24/D40 audit findings (both weaknesses absent) and the owner's resulting no-remediation, template-only closure. |
+| Version | 1.3.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-09-04 (Part G added: D16/D4 certification-code remediation, closes Findings 1/2) |
+| Last updated | 2026-09-04 (Part H added: D24/D40 audit findings and owner closure decision recorded) |
 | Review cadence | TBD |
 
 # DP-032. Combined methodology-readiness investigation: D16 (Shodasamsa), D27 (Saptavimsamsa/Nakshatramsa/Bhamsa), D4 (Chaturthamsa)
@@ -647,10 +647,73 @@ constructions and their content hashes are byte-for-byte unchanged - confirmed: 
 `9c5e1a46...` for D4, identical before and after); register D16 or D4 in `CERTIFIED_PRODUCTION_VARGAS`;
 wire either into CI; touch D27; or resolve `DP-024`.
 
+## Part H: D24/D40 audit closure - the "separate owner decision" Part H's own predecessor flagged (addendum, 2026-09-04)
+
+**Authorization:** the owner's "READ-ONLY SELF-AUDIT" instruction extended to an audit-only
+investigation of whether Part G's Findings 1 and 2 also exist in `scripts/certify_d24.py`/
+`scripts/certify_d40.py` ("Do NOT modify anything yet"), followed by "CEO AUTHORIZATION - TEMPLATE
+UPDATE ONLY", which closed that investigation with an explicit no-remediation decision and authorized
+only a documentation update to `docs/NEW_VARGA_IMPLEMENTATION_TEMPLATE.md`. This Part H itself is
+recorded under a further, distinct instruction: "CEO AUTHORIZATION GRANTED - DOCUMENTATION-ONLY DP-032
+PART H CLOSURE ADDENDUM."
+
+**Method.** Direct code reading of `engine/astrology/varga_d24.py`/`varga_d40.py` and both certifiers,
+plus disposable `git worktree` mutation testing (`git worktree add --detach`, mutate a copy of the real
+production file there, run, observe, `git worktree remove --force` immediately - the same methodology
+used for the original D16/D4 self-audit, never touching the primary working tree).
+
+**Finding 1 (shared-helper self-reference) - ABSENT in both D24 and D40.** Their production rules
+(`engine/astrology/varga_d24.py`, `varga_d40.py`) are hardcoded literal tuples in a separate file, with
+no helper function shared with the certifiers' own `_independent_d24_sign()`/`_independent_d40_sign()`.
+**Empirically confirmed**: mutating the literal tuples in disposable worktree copies caused immediate
+failure at Gate A for both - there is no shared-construction path for Finding 1's failure mode to hide
+behind.
+
+**Finding 2 (unenforced hash check) - ABSENT as a live bug in both.** Both `gate_d_non_invasiveness()`
+functions contain a real `if hash != pinned: fail(...)`. **Empirically confirmed for D40**: its Gate C
+is disclosure-only and does not block; corrupting only the pinned hash constant in a worktree produced
+a genuine Gate D failure. **For D24, confirmed by direct code reading only, not empirically exercised
+locally**: Gate C is a real, PyJHora-executing oracle call that runs before Gate D and unconditionally
+fails on this Windows host (`No module named 'jhora'`) - the same pre-existing Windows/Linux
+gate-parity limitation `.claude/rules/certification.md` already documents, not a new defect. This
+distinction (D40 empirically proven; D24 code-read only, due to the Gate C/PyJHora ordering dependency)
+is stated here precisely rather than glossed into a single "confirmed" claim for both.
+
+**Secondary, minor gap noted in both (not remediated here):** neither D24's nor D40's Gate H carries a
+dedicated negative control that exercises the real hash-enforcement path directly, the way the
+remediated D16/D4 certifiers now do (Part G, Finding 2 remediation). This is a rigor gap, not a live
+defect - the enforcement path itself is real and present; only a targeted test of it is missing.
+
+**Validator independence, reconfirmed:** `validate_d24_holdout.py`/`validate_d40_holdout.py` import
+only `sys` and `pathlib.Path` (grep-confirmed), matching the same independence standard applied to
+D16/D4.
+
+**Owner's closure decision, recorded verbatim in substance:** "CEO AUTHORIZATION - TEMPLATE UPDATE
+ONLY" closed the D24/D40 investigation with **no remediation** - explicitly: do not modify
+`certify_d24.py`/`certify_d40.py`, do not modify their certification artifacts, do not reopen their
+certification, do not add the optional Gate-H controls at this time - and authorized **only** a
+documentation update to `docs/NEW_VARGA_IMPLEMENTATION_TEMPLATE.md`, so that future standalone
+certifiers are built to the stronger, Part-G-established standard from the start rather than by
+per-capability discovery.
+
+**What was done under that authorization:** `docs/NEW_VARGA_IMPLEMENTATION_TEMPLATE.md` updated
+1.0.0 -> 1.1.0 (commit `bccc175929bdaff4c7d1db4b3edcc6b8d1e2acc0`): corrected Step 2's stale
+validator-independence description and stale "five gates" reference, and added Step 2a codifying
+requirements A-F (independent-import discipline; gates A/B/F/G routed through the real reference
+directly; load-bearing content-hash enforcement; negative controls on the real enforcement path;
+evidenced, not assumed, validator independence; disclosure of environmental/oracle limitations).
+
+**This addendum does not:** modify `scripts/certify_d24.py`, `scripts/certify_d40.py`, their
+certification artifacts, or their production registration; reopen D24's or D40's certification; wire
+anything into CI; touch D27; resolve `DP-024`; or alter Part G's own findings for D16/D4, which stand
+as remediated. The "separate owner decision" Part G's own limitation 2 named is, as of this addendum,
+closed: no further action on D24/D40 is authorized or pending.
+
 ## Change history
 
 | Version | Date | Change |
 |---|---|---|
+| 1.3.0 | 2026-09-04 | Part H added (append-only; Parts A-G and all prior change-history rows below unedited, confirmed by diff): closes the "separate owner decision" Part G's limitation 2 flagged. Records the read-only D24/D40 audit findings (Finding 1 absent in both, empirically confirmed via disposable git-worktree mutation testing; Finding 2 absent as a live bug in both, empirically confirmed for D40, confirmed by direct code reading only for D24 due to Gate C's PyJHora dependency blocking Gate D locally) and the owner's "CEO AUTHORIZATION - TEMPLATE UPDATE ONLY" closure decision: no remediation to D24/D40, documentation-only update to `docs/NEW_VARGA_IMPLEMENTATION_TEMPLATE.md` (1.0.0 -> 1.1.0, commit `bccc175`). |
 | 1.2.0 | 2026-09-04 | Part G added (append-only; Parts A-F and both prior change-history rows below unedited, confirmed by diff): records the exact remediation of the two findings from the read-only self-audit of commit `32cb116` - closes the shared-content-helper gap in gates A/B/F/G (Finding 1) and makes gate D's content-hash pin load-bearing (Finding 2), for `scripts/certify_d16.py` and `scripts/certify_d4.py` only. Flags, but does not fix, the same likely-present weakness in the already-accepted `certify_d40.py`/`certify_d24.py` precedent as a separate owner decision. |
 | 1.1.0 | 2026-09-04 | Part F added (append-only; Parts A-E and the 1.0.0 change-history row below unedited, confirmed by diff): records the owner's explicit authorization of future D27 primary-source research to resolve section C.D's conflict, per "OWNER RATIFICATION - PROCEED WITH ALL THREE" item 3. Explicitly NOT a methodology freeze, NOT a selection, and does not perform the authorized research itself - section C.D remains exactly as unresolved as version 1.0.0 left it. Companion to `ADR-0089` (D16) and `ADR-0090` (D4), both drafted `PROPOSED` this same task, neither yet ratified. |
 | 1.0.0 | 2026-09-04 | Created. Combined methodology-readiness investigation for D16, D27, D4 under the owner's explicit "DP-024 METHODOLOGY-READINESS INVESTIGATION" authorization. Establishes D16 geometry needs no `DP-024` resolution (payload/Option B only); D4 genuinely needs Option A/A2; D27 needs neither `DP-024` option for its geometry but carries its own unresolved source-conflict (section C.D) this paper could not close. Discloses a previously-unflagged D4 deity payload and a `varga_rules.py` module-docstring inaccuracy (lists D4 as `CyclicVargaRule`-covered; the enforced `direction in {+1,-1}` constraint contradicts this for D4's real 3-sign step). Decides nothing; selects nothing; implements nothing; does not resolve `DP-024`. |
