@@ -107,6 +107,13 @@ jobs:
         # requires PyJHora unconditionally for Gate F (genuine external-
         # oracle comparison, CEO-approved 2026-08-19), matching every one
         # of the oracle-tier runners' own import-guard pattern exactly.
+        # certify_parashari_yoga.py added here (post-audit remediation,
+        # HIGH-1): it was production-registered/certified but never wired
+        # into either CI job. It imports no PyJHora/swetest anywhere (only
+        # disclosure text mentions PyJHora, never a real call) and needs no
+        # network access, matching this job's other four runners exactly -
+        # not the oracle job, which is reserved for genuine external-oracle
+        # comparison.
         run: |
           set -e
           python scripts/certify_current_engine.py
@@ -114,6 +121,7 @@ jobs:
           python scripts/certify_sign_convention.py
           python scripts/certify_rise_set.py
           python scripts/certify_kp_significator.py
+          python scripts/certify_parashari_yoga.py
 
       - name: Re-run a representative subset under the in-process network guard
         run: |
@@ -127,6 +135,7 @@ jobs:
           python scripts/ci_no_network.py scripts/certify_sign_convention.py
           python scripts/ci_no_network.py scripts/certify_rise_set.py
           python scripts/ci_no_network.py scripts/certify_kp_significator.py
+          python scripts/ci_no_network.py scripts/certify_parashari_yoga.py
 
       - name: Assert the network guard actually blocks (negative control)
         run: |
