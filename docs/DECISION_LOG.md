@@ -7083,15 +7083,14 @@ rename would touch artifact schemas, tests, and protected historical evidence fo
 ## ADR-0089 - D16 (Shodasamsa) selected as a JATAKA capability: sequencing decision and frozen methodology (PROPOSED - prepared for CEO ratification, not yet declared)
 
 - **Date:** 2026-09-04
-- **Status:** PROPOSED. Drafted per the owner's explicit "OWNER RATIFICATION - PROCEED WITH ALL THREE,
-  WITH THE FOLLOWING BOUNDARIES" instruction (2026-09-04), item 1: "Proceed with D16... Proceed through
-  the normal capability-specific selection and methodology-freeze governance process," and item 5: "You
-  are authorized now to prepare the required governance records for D16 and D4... clearly mark anything
-  requiring my ratification." **This entry is drafted only - it is not ratified by the instruction that
-  authorized drafting it**, exactly as `ADR-0082`'s and `ADR-0087`'s own drafting stages were distinct
-  from their later, separate ratification instructions. Ratification requires the owner's own subsequent
-  "Ratify ADR-0089 exactly as drafted" (or equivalent) instruction, per this repository's established
-  "change only the Status line" discipline.
+- **Status:** **ACCEPTED, on the owner's ratifying instruction recorded in the "Ratification of ADR-0089"
+  entry immediately below this entry's own text.** Originally drafted `PROPOSED` per the owner's own
+  "OWNER RATIFICATION - PROCEED WITH ALL THREE, WITH THE FOLLOWING BOUNDARIES" instruction (2026-09-04),
+  item 5 ("You are authorized now to prepare the required governance records for D16 and D4... clearly
+  mark anything requiring my ratification"). Per this repository's own "change only the status" discipline
+  (already applied throughout `ADR-0074`/`ADR-0082`/`ADR-0087`), this Status line is the only text in this
+  entry edited to record ratification - the Context, sections 1-5, Consequences, and Evidence below are
+  unchanged.
 - **Context:** `docs/decisions/DP-032-d16-d27-d4-methodology-readiness.md` (`Status: OPEN`, decides
   nothing) Part B found D16's own D-sign geometry fits `engine.astrology.varga_rules.CyclicVargaRule`
   exactly as coded today - independently confirmed live this task
@@ -7192,17 +7191,37 @@ capability's own selection/certification. Does not push or merge.
   constructs without error; the owner's "OWNER RATIFICATION - PROCEED WITH ALL THREE" instruction, quoted
   in substance above.
 
+#### Ratification of ADR-0089: D16 SELECTION AND METHODOLOGY RATIFIED (2026-09-04)
+
+- **Status:** ACCEPTED. The owner instructed: "CEO RATIFICATION - ADR-0089 AND ADR-0090... I RATIFY
+  ADR-0089 (D16 selection + frozen methodology) exactly as drafted... D16: Selection authorized. Frozen
+  methodology authorized exactly as ADR-0089. Deity/payload output remains excluded from the certified
+  contract as specified. Proceed to the next authorized stage: certification-design work. Do not jump
+  directly to production implementation or CI wiring." Per `docs/PROJECT_CONSTITUTION.md` s11, this
+  instruction is the ratifying act.
+- **Decision:** `ADR-0089` above (its full Context, sections 1-5, Consequences, and Evidence) is
+  **ratified exactly as drafted, with no wording changed** - confirmed by direct diff before committing.
+  This ratification accepts D16's selection (a sequencing decision under `Q8_CLOSURE_MATRIX.md` section
+  5's own text) and its frozen methodology (section 3: `CyclicVargaRule`, movable/fixed/dual ->
+  Aries(0)/Leo(4)/Sagittarius(8), forward, `parashara` school; deity output excluded per section 4) as
+  the governing record. **Authorizes certification-design work as the next stage** (the owner's own
+  explicit instruction, quoted above). **Does NOT authorize** production implementation or CI wiring -
+  each remains its own, separate, not-yet-given authorization, exactly as `ADR-0089` section 5 already
+  states and as `ADR-0082`/`ADR-0083` -> production -> CI-wiring's own precedent required for D24.
+- **Consequences:** D16's methodology is now the ratified, governing record for certification-design
+  work. No file under `engine/`, `scripts/`, `certification/`, or `.github/workflows/ci.yml` is touched
+  by this ratification itself.
+- **Evidence:** the owner's ratifying instruction, quoted above; `ADR-0089` itself, commit `332fb9a`.
+
 ## ADR-0090 - D4 (Chaturthamsa) selected as a JATAKA capability: sequencing decision and frozen methodology (`SegmentVargaRule`, `DP-024` Option A2) (PROPOSED - prepared for CEO ratification, not yet declared)
 
 - **Date:** 2026-09-04
-- **Status:** PROPOSED. Drafted per the owner's explicit "OWNER RATIFICATION - PROCEED WITH ALL THREE,
-  WITH THE FOLLOWING BOUNDARIES" instruction (2026-09-04), item 2: "Proceed with D4. Select A2: use
-  SegmentVargaRule. Do NOT modify the shared CyclicVargaRule/Cyclic classifier architecture merely to
-  support D4... Keep the implementation isolated to D4 wherever technically possible. Proceed through
-  the normal capability-specific selection and methodology-freeze governance process." **This entry is
-  drafted only - it is not ratified by the instruction that authorized drafting it**, per the identical
-  discipline stated in `ADR-0089` above; ratification requires the owner's own subsequent explicit
-  instruction.
+- **Status:** **ACCEPTED, on the owner's ratifying instruction recorded in the "Ratification of ADR-0090"
+  entry immediately below this entry's own text.** Originally drafted `PROPOSED` per the owner's own
+  "OWNER RATIFICATION - PROCEED WITH ALL THREE, WITH THE FOLLOWING BOUNDARIES" instruction (2026-09-04),
+  item 5 ("prepare the required governance records for D16 and D4"). Per this repository's own "change
+  only the status" discipline, this Status line is the only text in this entry edited to record
+  ratification - the Context, sections 1-5, Consequences, and Evidence below are unchanged.
 - **Context:** `docs/decisions/DP-032-...md` Part A found D4's own construction requires a 3-sign step
   per division, which `engine.astrology.varga_rules.CyclicVargaRule` cannot express as coded -
   independently reconfirmed live this task (`CyclicVargaRule(divisions=4, start_sign=(0,)*12,
@@ -7319,6 +7338,29 @@ reopen `DP-031` section I. Does not push or merge.
   this entry follows exactly); live re-verification this task that `CyclicVargaRule(divisions=4,
   start_sign=(0,)*12, direction=(3,)*12)` raises `InvalidVargaRuleError`; the owner's "OWNER RATIFICATION
   - PROCEED WITH ALL THREE" instruction, quoted in substance above.
+
+#### Ratification of ADR-0090: D4 SELECTION AND METHODOLOGY RATIFIED (2026-09-04)
+
+- **Status:** ACCEPTED. The owner instructed: "CEO RATIFICATION - ADR-0089 AND ADR-0090... I RATIFY
+  ADR-0090 (D4 selection + frozen methodology using SegmentVargaRule / DP-024 Option A2) exactly as
+  drafted... D4: Selection authorized. Frozen methodology authorized exactly as ADR-0090.
+  SegmentVargaRule / Option A2 is the selected architecture. Deity/payload output remains excluded as
+  specified. Proceed to the next authorized stage: certification-design work. Do not jump directly to
+  production implementation or CI wiring." Per `docs/PROJECT_CONSTITUTION.md` s11, this instruction is
+  the ratifying act.
+- **Decision:** `ADR-0090` above (its full Context, sections 1-5, Consequences, and Evidence) is
+  **ratified exactly as drafted, with no wording changed** - confirmed by direct diff before committing.
+  This ratification accepts D4's selection, its frozen `SegmentVargaRule` methodology (section 3: the
+  full 12x4 kendra-step-3 table, isolated from `CyclicVargaRule`/the classifier/every currently-registered
+  varga), and `DP-024` Option A2 chosen for D4 specifically (not a general framework resolution) as the
+  governing record. **Authorizes certification-design work as the next stage.** **Does NOT authorize**
+  production implementation or CI wiring, and does NOT resolve `DP-024`'s own Option A question for any
+  future capability beyond D4 - each remains its own, separate, not-yet-given authorization, exactly as
+  `ADR-0090` section 5 already states.
+- **Consequences:** D4's methodology is now the ratified, governing record for certification-design work.
+  No file under `engine/`, `scripts/`, `certification/`, or `.github/workflows/ci.yml` is touched by this
+  ratification itself.
+- **Evidence:** the owner's ratifying instruction, quoted above; `ADR-0090` itself, commit `332fb9a`.
 
 ---
 
