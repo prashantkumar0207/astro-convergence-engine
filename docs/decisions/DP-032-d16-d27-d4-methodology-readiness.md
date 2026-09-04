@@ -3,10 +3,10 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | OPEN - decision paper. Presents readiness findings and options. DECIDES NOTHING. Requires owner approval. Does not resolve `DP-024`. Does not select, implement, certify, or CI-wire any capability. Part F (added 2026-09-04) records the owner's authorization of future D27 primary-source research only - not a methodology freeze, not a selection. |
-| Version | 1.1.0 |
+| Status | OPEN - decision paper. Presents readiness findings and options. DECIDES NOTHING. Requires owner approval. Does not resolve `DP-024`. Does not select, implement, certify, or CI-wire any capability. Part F (added 2026-09-04) records the owner's authorization of future D27 primary-source research only - not a methodology freeze, not a selection. Part G (added 2026-09-04) records the exact remediation of two self-audit findings in the D16/D4 certifiers - flags, without fixing, that the same weakness likely exists in the already-accepted D24/D40 certifiers, a separate owner decision. |
+| Version | 1.2.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-09-04 (Part F added: D27 research authorization) |
+| Last updated | 2026-09-04 (Part G added: D16/D4 certification-code remediation, closes Findings 1/2) |
 | Review cadence | TBD |
 
 # DP-032. Combined methodology-readiness investigation: D16 (Shodasamsa), D27 (Saptavimsamsa/Nakshatramsa/Bhamsa), D4 (Chaturthamsa)
@@ -563,9 +563,94 @@ by one of the two paths section C.G/Part E already named: genuine primary-source
 owner's own explicit, separate risk-acceptance authorization naming Variant 1 (or Variant 2) and
 disclosing the residual risk. Neither has occurred as of this entry.
 
+## Part G: D16/D4 certification-code remediation (addendum, 2026-09-04) - closes the two self-audit findings
+
+**Authorization:** the owner's "DP-032 - REMEDIATION OF SELF-AUDIT HOLD" instruction (2026-09-04),
+scoped explicitly to the two findings below, on `scripts/certify_d16.py` and `scripts/certify_d4.py`
+only. Does not touch D27, `CERTIFIED_PRODUCTION_VARGAS`, CI, `DP-024`, or any unrelated capability.
+
+**Finding 1 - insufficient independence of classical content.** A prior read-only self-audit of commit
+`32cb116` (this branch) empirically demonstrated, via a planted mutation in a disposable scratch copy of
+each certifier (never committed), that gates A, B, F, and G compared `classify()` output against an
+in-file helper (`_start_for_source()` for D16, `_KENDRA_OFFSETS` for D4) that shared its classical-
+content encoding with the rule object those same gates were meant to check - so a content-transcription
+error in that shared source passed gates A, B, C, D, E, F, G, and H undetected, caught only by gate I's
+own 10 static points.
+
+**Root cause, exactly:** the "independently coded classical reference" gates A/B/F/G called was not, in
+fact, independent of the disputed content - only of the `D16_SHODASAMSA`/`D4_CHATURTHAMSA` *object*, not
+of the *function* that built it.
+
+**Remediation, exactly:** both `_independent_d16_sign()` and `_independent_d4_sign()` were removed.
+Gates A, B, F, and G now import `validate_d16_holdout.py`/`validate_d4_holdout.py` directly (pure
+computation modules, already proven to import nothing from `engine.astrology`, already independently
+typed by sign name/kendra-offset rather than by the certifier's own integer-set construction) and
+compare against their `reference_d16()`/`reference_d4()` functions - genuinely separate code, not a
+second copy of the same content.
+
+**What is genuinely independent now, stated precisely:** gates A, B, F, and G verify `classify()` +
+`CyclicVargaRule`/`SegmentVargaRule`'s own arithmetic against a reference sourced from a file with zero
+shared code path to the rule's own construction. Gate E remains the same black-box subprocess check it
+always was. Gate I remains a comparison against *frozen, static* values from that same independent file,
+protecting specifically against future drift in the validator itself (a distinct concern from what A/B/F/G
+now cover) - **gate I remains necessary**, not redundant, per this addendum's own analysis (task item 4).
+
+**Adversarial re-verification, not merely asserted:** the exact mutations the original audit used (D16's
+fixed/dual start-sign swap; D4's corrupted kendra-offset tuple `(0,4,7,10)`) were re-applied to disposable
+scratch copies of the remediated certifiers and re-run. Both are now caught at **Gate A** - the first
+gate, earlier than the design even required - rather than surviving to gate I. Every static analysis and
+scratch file used for this verification was deleted immediately after use; none is present in this
+commit.
+
+**Docstring/gate-naming overclaim, corrected:** both certifiers' module docstrings and each affected
+gate's own returned `"verified_against"` field now state precisely what each gate checks against, instead
+of the prior "vs an independently coded classical reference" phrasing, which did not distinguish
+arithmetic independence from content independence.
+
+**Finding 2 - Gate D hash was reported, not enforced.** `content_sha256_matches_pinned` was computed and
+included in the certification artifact but no `fail()` call was ever conditioned on it being `False` - a
+divergence between the frozen rule's live content hash and its pinned value would not have stopped
+certification on its own.
+
+**Remediation, exactly:** a `_content_hash_matches(rule)` helper was extracted in each certifier; gate D
+now calls it and fails certification if it returns `False`. Gate H gained a dedicated negative control
+that calls this *same* helper (not a separately simulated comparison) against a deliberately mutated rule
+object, proving it correctly returns `False` for the mutation and `True` for the real, unmutated rule.
+
+**Adversarial re-verification:** the *pinned hash constant itself* (not the rule) was altered to a
+dummy value in a disposable scratch copy of each certifier and re-run - both now fail at gate D with an
+explicit message naming the mismatch. The scratch copies were deleted immediately after; the pristine
+certifiers were re-run afterward and confirmed to still PASS.
+
+**Remaining limitations, disclosed, not glossed over:**
+1. Gates A/B/F/G's independence still rests on `validate_d16_holdout.py`/`validate_d4_holdout.py` being
+   genuinely, structurally separate from their certifiers - true today (verified: distinct lookup
+   mechanisms, zero shared helper functions, zero `engine.astrology` imports), but not mechanically
+   enforced against a future edit that reintroduces coupling. No such mechanical enforcement is added by
+   this addendum; it would be a larger, separate architectural change this task's scope does not cover.
+2. **This same pre-remediation weakness (Findings 1 and 2, both) very likely exists, unexamined, in the
+   already-accepted `certify_d40.py` precedent** (`ADR-0087`) this whole certification pattern was
+   originally mirrored from - confirmed present in the version extracted from commit `f407ca2` during the
+   original audit. **This is not fixed here.** Fixing D24's or D40's own already-merged, already-CI-green
+   certifiers is explicitly out of this task's authorized scope (`main`-merged capabilities, not DP-032's
+   own D16/D4). **This is flagged as a prerequisite for a separate owner decision**, not resolved
+   unilaterally: whether to authorize an equivalent remediation for D24/D40 (and, if a `SegmentVargaRule`
+   sibling ever exists again, for D3's own certifier), and whether this remediation pattern (import the
+   real validator directly into the certifier) should become a documented, standing requirement in
+   `docs/NEW_VARGA_IMPLEMENTATION_TEMPLATE.md` for all future standalone certifiers rather than
+   discovered ad hoc per capability.
+3. Gate I's own 10-point static holdout is unchanged by this addendum; it was never the source of the
+   weakness, only the sole prior line of defense against it.
+
+**This addendum does not:** re-freeze or alter ADR-0089's or ADR-0090's own methodology (the frozen rule
+constructions and their content hashes are byte-for-byte unchanged - confirmed: `e86961e4...` for D16,
+`9c5e1a46...` for D4, identical before and after); register D16 or D4 in `CERTIFIED_PRODUCTION_VARGAS`;
+wire either into CI; touch D27; or resolve `DP-024`.
+
 ## Change history
 
 | Version | Date | Change |
 |---|---|---|
+| 1.2.0 | 2026-09-04 | Part G added (append-only; Parts A-F and both prior change-history rows below unedited, confirmed by diff): records the exact remediation of the two findings from the read-only self-audit of commit `32cb116` - closes the shared-content-helper gap in gates A/B/F/G (Finding 1) and makes gate D's content-hash pin load-bearing (Finding 2), for `scripts/certify_d16.py` and `scripts/certify_d4.py` only. Flags, but does not fix, the same likely-present weakness in the already-accepted `certify_d40.py`/`certify_d24.py` precedent as a separate owner decision. |
 | 1.1.0 | 2026-09-04 | Part F added (append-only; Parts A-E and the 1.0.0 change-history row below unedited, confirmed by diff): records the owner's explicit authorization of future D27 primary-source research to resolve section C.D's conflict, per "OWNER RATIFICATION - PROCEED WITH ALL THREE" item 3. Explicitly NOT a methodology freeze, NOT a selection, and does not perform the authorized research itself - section C.D remains exactly as unresolved as version 1.0.0 left it. Companion to `ADR-0089` (D16) and `ADR-0090` (D4), both drafted `PROPOSED` this same task, neither yet ratified. |
 | 1.0.0 | 2026-09-04 | Created. Combined methodology-readiness investigation for D16, D27, D4 under the owner's explicit "DP-024 METHODOLOGY-READINESS INVESTIGATION" authorization. Establishes D16 geometry needs no `DP-024` resolution (payload/Option B only); D4 genuinely needs Option A/A2; D27 needs neither `DP-024` option for its geometry but carries its own unresolved source-conflict (section C.D) this paper could not close. Discloses a previously-unflagged D4 deity payload and a `varga_rules.py` module-docstring inaccuracy (lists D4 as `CyclicVargaRule`-covered; the enforced `direction in {+1,-1}` constraint contradicts this for D4's real 3-sign step). Decides nothing; selects nothing; implements nothing; does not resolve `DP-024`. |

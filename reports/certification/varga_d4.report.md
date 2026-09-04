@@ -21,8 +21,8 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 - **C_corroboration_disclosure**: oracle_executed=False, classification=disclosed_gap_not_correctness_evidence
 - **D_isolation**: certifier_never_imports_varga_registry_or_varga_d4=True, certifier_never_imports_cyclicvargarule=True, engine_astrology_varga_d4_absent=True, content_sha256_matches_pinned=True, varga_rules_py_sha256=47ea22a89eb206f0d7da62bf4a1534f5737cd3944bb1b5e57012c6a350030bb7, varga_rules_py_unchanged_from_baseline=True
 - **E_independent_validator**: result=PASS, classification=corroborating_correctness_evidence
-- **F_boundary_cases**: cases=60, mismatches=0
-- **G_protected_holdout**: points=26278, mismatches=0
+- **F_boundary_cases**: cases=60, mismatches=0, verified_against=validate_d4_holdout.reference_d4() (imported directly)
+- **G_protected_holdout**: points=26278, mismatches=0, verified_against=validate_d4_holdout.reference_d4() (imported directly)
 - **H_negative_controls**: all_detected=True, original_object_unmutated=True
 - **I_static_reference_regression**: cases=10, mismatches=0, classification=correctness_evidence
 
