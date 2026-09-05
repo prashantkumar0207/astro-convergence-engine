@@ -7364,6 +7364,119 @@ reopen `DP-031` section I. Does not push or merge.
 
 ---
 
+## ADR-0091 - `DP-032` and Queue B (independent Claude Web repository audit) formally closed: six findings independently verified and dispositioned, no outstanding mandatory remediation (ACCEPTED)
+
+- **Date:** 2026-09-05
+- **Status:** ACCEPTED. The owner issued a direct "CEO FINAL CLOSURE AUTHORIZATION - DP-032 + QUEUE B"
+  instruction: "The Final Closure Audit has been reviewed and accepted... CEO decision: CLOSE DP-032 AND
+  QUEUE B," with the state it approves stated explicitly ("HEAD: 596263a26f0c42bc5f11bd556d3243d6653f5a2a...
+  No outstanding HIGH or MEDIUM remediation... Finding 6 LOW: explicitly accepted/deferred and
+  non-blocking... D16/D4 production implementation and CI wiring remain NOT AUTHORIZED"). Per
+  `docs/PROJECT_CONSTITUTION.md` s11, this instruction is the ratifying act. This entry exists because
+  `.claude/rules/governance.md` requires an explicit owner instruction to be recorded as a decision entry
+  when none exists yet, and because - verified directly before writing it - the token "Queue B" appeared
+  **nowhere** in the tracked tree: the entire audit stream, its six independent verifications and all six
+  owner dispositions existed only as conversation, which `docs/PROJECT_CONSTITUTION.md` s7 classifies as
+  "input material, not truth."
+- **Context:** an independent Claude Web audit of `main@186eec7` raised six findings (two HIGH, three
+  MEDIUM, one LOW). Four were remediated at the time under `ADR-0088` and commit `5875307`. The owner then
+  directed a fresh, read-only, finding-by-finding independent re-verification against current repository
+  state, explicitly instructing that no Claude Web finding be assumed correct. That verification ran across
+  Findings 1-6 in order, each stopping for owner review. This entry records the result and the closure. It
+  reopens no certified rule, no ratified methodology, and no gate.
+
+### 1. `DP-032` closure
+
+`DP-032`'s authorized work stream is **closed** at `596263a26f0c42bc5f11bd556d3243d6653f5a2a`. Its D16 and
+D4 questions were addressed by `ADR-0089` and `ADR-0090` (both ACCEPTED); Part G recorded the D16/D4
+certification-code self-audit remediation; Part H recorded the D24/D40 audit closure and the owner's
+no-remediation decision. **`DP-032` is NOT marked "ADDRESSED" in the `DP-015`-`DP-020` sense**, because its
+D27 question was deliberately not decided: Part F authorizes future primary-source research only, expressly
+"not a methodology freeze, not a selection." `DP-024` likewise remains unresolved in general - `ADR-0090`
+answered its Option A2 question for D4 alone.
+
+### 2. Queue B findings 1-6: verified dispositions
+
+1. **HIGH - Parashari Yoga CI wiring. CONFIRMED, already remediated.** `scripts/certify_parashari_yoga.py`
+   is wired into the hermetic job's "Non-oracle certification runners" step and its network-guard mirror
+   (`.github/workflows/ci.yml`), by commit `5875307` (PR #14, merge `69aa4bf`), confirmed an ancestor of the
+   closure SHA. Hermeticity re-verified independently: no PyJHora/`swisseph` import exists in the certifier,
+   only disclosure text.
+2. **HIGH - PR #13 CEO-approval traceability. CONFIRMED, already remediated** by `ADR-0088` §1. Re-queried
+   fresh 2026-09-05, independently of that entry's own prior evidence: `gh pr view 13` (zero reviews, zero
+   comments, empty `reviewDecision`), `gh api .../pulls/13/reviews` -> `[]`, `gh api .../issues/13/timeline`
+   (no review or approval event of any kind), `gh api .../branches/main/protection` -> `404 Branch not
+   protected`. No GitHub-native approval artifact exists or is claimed; `ADR-0088` §1d is a retrospective
+   governance record and states so.
+3. **MEDIUM - shared composition-layer dependency. CONFIRMED, already remediated** (documentation) by
+   `ADR-0088` §3; **no further remediation warranted**. Verification independently established that the
+   dependency covers **seven** divisions (D2, D3, D7, D12, D24, D30, D40), not the five originally named,
+   and that `engine/astrology/varga_chart_builder.build_varga_chart()` is wholly division-agnostic - no
+   division-specific branch - so `VARGA_D45_V1`'s Gate I mutation coverage is generic evidence valid for
+   every caller rather than D45-specific evidence applied by analogy. Disclosure notes confirmed present and
+   accurate in all eight affected certifiers.
+4. **MEDIUM - Gate-I naming collision. CONFIRMED for its original scope (D24/D40 vs D45), already
+   remediated** by `ADR-0088` §4. Verification additionally established the letter "I" carries **four**
+   distinct meanings across **seven** certifiers (`I_static_reference_regression` in D16/D24/D4/D40;
+   `I_composition_verification` in D45; `I_protected_holdout` in `KP_SIGNIFICATOR_V1`; `I_negative_controls`
+   in `PARASHARI_YOGA_V1`). **No machine-readable ambiguity exists**: every serialized artifact key is
+   self-describing, never a bare letter, and no test or governance script references a gate letter at all.
+   Extending disambiguation to the two non-varga certifiers was reviewed and **deliberately not pursued**.
+5. **MEDIUM - D40 authorization-string traceability. CONFIRMED, already remediated** by `ADR-0088` §2, with
+   one **precision correction recorded here rather than by editing that entry**, per
+   `.claude/rules/governance.md`'s append-only rule. `ADR-0088` §2a examined the commit *message* only.
+   `git log --all -S "D40 Production Implementation - AUTHORIZED"` matches **two** commits: `d045b0f`
+   (`ADR-0088` itself) and `a79c70d`, where that label appears **contemporaneously** in
+   `scripts/certify_d40.py`'s own docstring, committed 2026-09-03 17:23:06 +0530 - roughly 21 hours before
+   `ADR-0088`'s retrospective transcription (`d045b0f`, 2026-09-04 14:41:16 +0530). The fuller
+   governance-boundary sentence `ADR-0088` §2b quotes remains retrospective-only (zero matches anywhere
+   before `d045b0f`). Neither form is third-party-witnessed; both are self-reported by the same actor that
+   performed the work, and this entry claims nothing further. Scope was independently confirmed correct:
+   `ADR-0087`'s own ratification states it "Does NOT authorize... production implementation," and the quoted
+   authorization covers production implementation only - excluding CI-oracle wiring (which `a79c70d` indeed
+   did not perform) and excluding merge (covered separately, see finding 2).
+6. **LOW - stale merged branches. CONFIRMED; accepted/deferred; NOT blocking.** All 20 candidate refs were
+   verified fully-merged ancestors of `main` carrying **zero** unique commits, so no deletion could remove
+   any commit object reachable from `main`. No repository rule governing merged-branch deletion exists -
+   confirmed absent, not inferred. Owner disposition, recorded as given: **retain** `reconcile-v1`,
+   `phase-g-q17-q21` and `phase-g-governance` (each named in permanent governance/evidence records);
+   **defer for separate investigation** `bundle/g6-completion-record`, `bundle-tier0`, `bundle-v8`,
+   `bundle-v9`, `bundle-v10` (non-standard/local bundle-related refs); **defer as optional hygiene** the
+   twelve ordinary merged branches (`cleanup`, `incoming`, `kp-chain-v1`, `parashari-drishti-v1`,
+   `sign-convention-v1`, `transit-v1`, `varga-batch-v1`, `varga-d12-v1`, `varga-d3-v1`, `vimshottari-v1`,
+   `d40-production-implementation`, `post-audit-remediation-186eec7`). No branch was deleted, renamed,
+   pushed or modified.
+
+**No HIGH or MEDIUM finding carries outstanding mandatory remediation.**
+
+### 3. What remains explicitly NOT authorized by this closure
+
+D16 and D4 **production implementation and CI wiring remain NOT AUTHORIZED** - both remain standalone,
+unregistered, un-CI-wired, re-verified directly at the closure SHA (`engine/astrology/varga_d16.py` and
+`varga_d4.py` absent; no D16/D4 entry in `engine/astrology/__init__.py`; no `certify_d16`/`certify_d4`
+reference in `.github/workflows/ci.yml`). D27 remains research-authorized only. `DP-024` remains unresolved.
+The optional adjacent observations surfaced during verification - finding 4's broader naming pattern,
+finding 3's template guidance for future vargas, finding 6's branch cleanup - are **deferred, non-blocking,
+and out of scope**, per the owner's explicit instruction not to treat them as blockers. This closure does
+not authorize engine development, and no such authorization may be inferred from it.
+
+- **Consequences:** the Queue B audit stream now has a repository record where it previously had none. No
+  certified rule, gate, methodology, artifact schema, CI configuration, production registration, or branch
+  is changed by this entry; no new policy or convention is introduced. `DP-032`'s own status header and its
+  `docs/decisions/README.md` index row are deliberately **left unedited** by this entry: the
+  `DP-015`-`DP-020` pairing convention exists (each such paper's status line names the specific ADR that
+  addressed it), but applying it here would risk implying D27 was decided when it was not - whether to
+  update them is left as a separate owner decision.
+- **Evidence:** closure state `596263a26f0c42bc5f11bd556d3243d6653f5a2a`, branch
+  `dp032-d16-d27-d4-methodology-readiness`, working tree clean, re-verified immediately before this entry
+  was written; `python -m pytest -q` -> 898 passed; `check_adr_numbering.py`, `check_identifier_families.py`,
+  `check_retired_identifiers.py`, `check_artifact_drift.py` (67 evidence files identical outside volatile
+  fields) all PASS at that SHA; the per-finding commands and results cited in sections 1-3 above, each run
+  read-only during the six verification passes; `ADR-0088` (the prior remediation this closure re-verified
+  rather than trusted); commit `5875307` (finding 1); `docs/decisions/DP-032-...md` v1.3.0 Parts F/G/H.
+
+---
+
 ## ADR template (copy, do not edit above the line)
 
 ## ADR-XXXX - <title>
