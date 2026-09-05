@@ -7895,14 +7895,16 @@ delimited block is. That remains a deliberate design choice, not an oversight.
 ## ADR-0095 - D20 (Vimsamsa) selected as a JATAKA capability: Reading E adopted, frozen methodology, minority triple recorded as an excluded variant (PROPOSED - drafting only, not ratified)
 
 - **Date:** 2026-09-06
-- **Status:** **PROPOSED. NOT RATIFIED.** The owner's "CEO DECISION - DP-035" instruction adopts Reading E
-  ("D20: ADOPT READING E. The majority/convergent D20 triple is selected as the project methodology,
-  based on the evidence documented in `DP-035`. Record the minority transposition as a named excluded
-  variant with its evidentiary status and rationale. Do not claim that primary-source uncertainty has
-  been eliminated.") and authorizes **"D20 methodology-selection / frozen-methodology ADR drafting
-  only"**. Drafting is what this entry does. Per the `ADR-0089`/`ADR-0090` precedent, the Status line
-  becomes ACCEPTED only on a separate, explicit ratifying instruction recorded in its own sub-entry;
-  this entry does not declare itself ratified.
+- **Status:** **ACCEPTED, on the owner's ratifying instruction recorded in the "Ratification of ADR-0095"
+  sub-entry immediately below this entry's own text.** Originally drafted `PROPOSED. NOT RATIFIED.` per
+  the owner's "CEO DECISION - DP-035" instruction, which adopted Reading E ("D20: ADOPT READING E. The
+  majority/convergent D20 triple is selected as the project methodology, based on the evidence
+  documented in `DP-035`. Record the minority transposition as a named excluded variant with its
+  evidentiary status and rationale. Do not claim that primary-source uncertainty has been eliminated.")
+  and authorized **"D20 methodology-selection / frozen-methodology ADR drafting only"**. Per this
+  repository's own "change only the status" discipline, this Status line is the only text in this entry
+  edited to record ratification - the Context, sections 1-6, Consequences and Evidence below are
+  unchanged.
 - **Context:** `DP-035` found D20's geometry settled and its contract fit unproblematic, with the
   content dispute reducing to a single question - which start triple governs. It gave D20
   `REQUIRES_OWNER_ADJUDICATION` on the ground that the evidentiary position matched the standard the
@@ -8004,6 +8006,38 @@ authorization, exactly as `ADR-0089`/`ADR-0090` required for D16/D4. Does not to
   equivalence check and the three consequence re-derivations recorded in section 1; `ADR-0089` (the
   payload-exclusion precedent); `ADR-0082`/`ADR-0087` (the secondary-source evidentiary standard and
   excluded-variant treatment); the owner's "CEO DECISION - DP-035" instruction, quoted above.
+
+#### Ratification of ADR-0095: D20 SELECTION AND FROZEN METHODOLOGY RATIFIED (2026-09-06)
+
+- **Status:** ACCEPTED. The owner instructed: "CEO RATIFICATION - ADR-0095. I ratify ADR-0095 exactly as
+  drafted. Make only the governance changes necessary to record this ratification: 1. Change ADR-0095
+  Status from PROPOSED to ACCEPTED. 2. Append the ratification sub-entry to `docs/DECISION_LOG.md`,
+  quoting this instruction as the CEO ratification. 3. Preserve the frozen D20 methodology exactly as
+  drafted. 4. Preserve the excluded Variant F record exactly as drafted. 5. Do not alter the source
+  assessment, uncertainty statements, provenance, or payload exclusion. 6. Do not modify any
+  implementation or certification files... This is RATIFICATION ONLY, not implementation authorization."
+  Per `docs/PROJECT_CONSTITUTION.md` s11, this instruction is the ratifying act.
+- **Decision:** `ADR-0095` above (its full Context, sections 1-6, Consequences and Evidence) is
+  **ratified exactly as drafted, with no wording changed** - confirmed by direct diff before committing.
+  This ratification accepts D20's selection of **Reading E** (movable Aries, fixed Sagittarius, dual
+  Leo) and its frozen methodology: `CyclicVargaRule`, `divisions = 20`, width exactly 1.5 degrees,
+  `start_sign = (0, 8, 4, 0, 8, 4, 0, 8, 4, 0, 8, 4)`, `direction = (1,) * 12`, school key
+  `parashara`, inherited promote-up boundary convention. **Variant F** (movable Aries, fixed Leo, dual
+  Sagittarius) remains a **named excluded variant**, recorded as attested and not refuted, exactly as
+  drafted.
+- **What ratification does NOT change.** Section 4 stands unaltered: this selection **is not proof of
+  the historical original text**, no verbatim Sanskrit was located, and primary-source uncertainty is
+  **not** eliminated. Every future citation of D20's methodology carries that qualification. Section 5
+  stands unaltered: deity payload is excluded per the `ADR-0089` precedent, so `DP-024` is neither
+  required nor resolved by this ratification and its payload question remains fully open.
+- **Consequences:** D20's methodology is now the ratified, governing record. **This ratification
+  authorizes nothing further.** Certification design, certification execution, production
+  implementation and CI wiring each remain their own separate, not-yet-given authorization, exactly as
+  `ADR-0095` section 6 already states and as `ADR-0089`/`ADR-0090` required for D16/D4. No file under
+  `engine/`, `scripts/`, `certification/`, or `.github/workflows/ci.yml` is touched by this
+  ratification itself; D60 is untouched and remains `NOT_READY` per `DP-035` Part B.
+- **Evidence:** the owner's ratifying instruction, quoted above; `ADR-0095` itself, commit `098dda8`;
+  `docs/decisions/DP-035-...md` v1.1.0 (the readiness paper and its D60 research addendum).
 
 ---
 
