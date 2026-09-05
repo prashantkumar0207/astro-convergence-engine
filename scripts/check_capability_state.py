@@ -27,8 +27,17 @@ So this gate compares documented claims against LIVE state, computed now:
     are unchanged since commit, never that they are current; CI regenerating them
     is what keeps them true. A non-frozen artifact with no locatable verdict is a
     hard failure, never a silent skip.
+  * `divisional_chart.IMPLEMENTED_VARGAS` - the dispatcher's own declaration of
+    the divisions it hard-wires to dedicated certified modules (D1/D9/D10). The
+    counterpart authority to CERTIFIED_PRODUCTION_VARGAS; before B-2 was closed
+    the documented dedicated list was validated against nothing at all.
   * `certification_support.CERTIFIER_SOURCES` / `VALIDATOR_SOURCES` - the source
     registries.
+
+Every division declared production-registered must additionally hold a PASS
+certification artifact (B-1). Without that a division could serve production
+traffic while its own certification recorded FAIL and this gate stayed silent -
+registration and certification are separate facts, and the gate now checks both.
 
 What it deliberately does NOT do
 --------------------------------
@@ -144,6 +153,19 @@ def live_registered_divisions() -> set[int]:
     return {division for division, _school in CERTIFIED_PRODUCTION_VARGAS}
 
 
+def live_dedicated_divisions() -> set[int]:
+    """Divisions served by their own certified modules, never via the registry.
+
+    `divisional_chart.IMPLEMENTED_VARGAS` is the dispatcher's own declaration of
+    which divisions it hard-wires, so it is the live authority for this list -
+    the counterpart of CERTIFIED_PRODUCTION_VARGAS for the registry.
+    """
+
+    from engine.astrology.divisional_chart import IMPLEMENTED_VARGAS
+
+    return set(IMPLEMENTED_VARGAS)
+
+
 def _verdict(payload: dict) -> str | None:
     """The artifact's own recorded verdict, wherever its schema puts it."""
 
@@ -223,6 +245,7 @@ def check(
     registered: set[int] | None = None,
     artifacts: dict[str, str] | None = None,
     counts: dict[str, int] | None = None,
+    dedicated_live: set[int] | None = None,
 ) -> list[str]:
     """Return every failure. Empty list means PASS.
 
@@ -263,6 +286,63 @@ def check(
             f"F1 D{division} is in CERTIFIED_PRODUCTION_VARGAS but missing from "
             f"production_registered_vargas"
         )
+
+    # B-1 / F12: a production-registered division must also hold a PASS
+    # certification artifact. Without this a division could serve production
+    # traffic while its own certification recorded FAIL, and the gate said
+    # nothing: `certified_capabilities` (F7) and `certified_not_registered_vargas`
+    # (F8) both required a PASS artifact, but this list never did.
+    for division in sorted(claimed_production):
+        artifact = f"VARGA_D{division}_V1"
+        verdict = artifacts.get(artifact)
+        if verdict != "PASS":
+            errors.append(
+                f"F12 D{division} is production-registered but {artifact} "
+                f"{'records ' + verdict if verdict else 'has no certification artifact'}, "
+                f"not PASS"
+            )
+
+    # B-2 / F13: the dedicated divisions have their own live authority -
+    # `divisional_chart.IMPLEMENTED_VARGAS`, declared in the dispatcher as
+    # "divisions served by certified, independently verified modules". Compared
+    # in both directions, exactly as F1/F2 compare the registry, so an invented
+    # division cannot be added and a real one cannot be dropped. Nothing
+    # validated this list at all before.
+    claimed_dedicated = set(block.get("dedicated_production_vargas", []))
+    dedicated = live_dedicated_divisions() if dedicated_live is None else dedicated_live
+    for division in sorted(dedicated - claimed_dedicated):
+        errors.append(
+            f"F13 D{division} is in divisional_chart.IMPLEMENTED_VARGAS but missing "
+            f"from dedicated_production_vargas"
+        )
+    for division in sorted(claimed_dedicated - dedicated):
+        errors.append(
+            f"F13 D{division} is claimed as a dedicated production division but is "
+            f"NOT in divisional_chart.IMPLEMENTED_VARGAS"
+        )
+    for division in sorted(claimed_dedicated & registered):
+        errors.append(
+            f"F13 D{division} is declared dedicated (never routed through the "
+            f"registry) but IS in CERTIFIED_PRODUCTION_VARGAS"
+        )
+
+    # F14: the four division categories are mutually exclusive by construction.
+    # A division declared in two of them is a contradiction regardless of which
+    # individual condition happens to notice it.
+    _categories = {
+        "production_registered_vargas": claimed_production,
+        "dedicated_production_vargas": set(block.get("dedicated_production_vargas", [])),
+        "certified_not_registered_vargas": claimed_unregistered,
+        "not_certified_vargas": claimed_not_certified,
+    }
+    _names = sorted(_categories)
+    for i, left in enumerate(_names):
+        for right in _names[i + 1:]:
+            for division in sorted(_categories[left] & _categories[right]):
+                errors.append(
+                    f"F14 D{division} is declared in both {left} and {right}; "
+                    f"the categories are mutually exclusive"
+                )
 
     # F2: claimed as registered, not actually registered.
     for division in sorted(claimed_production - registered):

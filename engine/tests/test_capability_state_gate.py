@@ -396,3 +396,124 @@ def test_refutable_and_unrefutable_vocabularies_are_disjoint():
     """A token must be one or the other, or F3's meaning becomes ambiguous."""
 
     assert not (set(gate.NON_CLAIM_ARTIFACTS) & gate.UNREFUTABLE_NON_CLAIMS)
+
+
+# ---------------------------------------------------------------------------
+# B-1: a production-registered division must hold a PASS artifact.
+# The audit reproduced a division serving production on a FAILING certification
+# while the gate returned PASS, because only certified_capabilities (F7) and
+# certified_not_registered_vargas (F8) ever required one.
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize("verdict", ["FAIL", "SKIPPED", ""])
+def test_control_registered_varga_without_a_pass_artifact_is_rejected(verdict):
+    text = _text()
+    block = _block(text)
+    artifacts, _ = gate.live_pass_artifacts()
+    mutated = dict(artifacts)
+    mutated["VARGA_D40_V1"] = verdict
+
+    errors = gate.check(_rewrite(text, block), artifacts=mutated)
+    assert any(e.startswith("F12") and "D40" in e for e in errors), (verdict, errors)
+
+
+def test_control_registered_varga_with_no_artifact_at_all_is_rejected():
+    text = _text()
+    block = _block(text)
+    artifacts, _ = gate.live_pass_artifacts()
+    mutated = {k: v for k, v in artifacts.items() if k != "VARGA_D24_V1"}
+
+    errors = gate.check(_rewrite(text, block), artifacts=mutated)
+    assert any(e.startswith("F12") and "D24" in e for e in errors), errors
+
+
+def test_every_registered_division_really_has_a_pass_artifact_today():
+    """The invariant F12 enforces, asserted against live state directly."""
+
+    artifacts, _ = gate.live_pass_artifacts()
+    for division in sorted(gate.live_registered_divisions()):
+        assert artifacts.get(f"VARGA_D{division}_V1") == "PASS", division
+
+
+# ---------------------------------------------------------------------------
+# B-2: dedicated_production_vargas was validated by nothing at all.
+# Its live authority is divisional_chart.IMPLEMENTED_VARGAS.
+# ---------------------------------------------------------------------------
+
+
+def test_dedicated_divisions_come_from_the_dispatcher_not_the_document():
+    from engine.astrology.divisional_chart import IMPLEMENTED_VARGAS
+
+    assert gate.live_dedicated_divisions() == set(IMPLEMENTED_VARGAS)
+
+
+def test_control_invented_dedicated_division_is_rejected():
+    text = _text()
+    block = _block(text)
+    block["dedicated_production_vargas"] = block["dedicated_production_vargas"] + [99]
+    errors = gate.check(_rewrite(text, block))
+    assert any(e.startswith("F13") and "D99" in e for e in errors), errors
+
+
+def test_control_dropping_a_dedicated_division_is_rejected():
+    text = _text()
+    block = _block(text)
+    block["dedicated_production_vargas"] = [
+        d for d in block["dedicated_production_vargas"] if d != 10
+    ]
+    errors = gate.check(_rewrite(text, block))
+    assert any(e.startswith("F13") and "D10" in e for e in errors), errors
+
+
+def test_control_emptied_dedicated_list_is_rejected():
+    text = _text()
+    block = _block(text)
+    block["dedicated_production_vargas"] = []
+    errors = gate.check(_rewrite(text, block))
+    assert sum(e.startswith("F13") for e in errors) == 3, errors
+
+
+def test_control_registry_served_division_claimed_dedicated_is_rejected():
+    text = _text()
+    block = _block(text)
+    block["dedicated_production_vargas"] = block["dedicated_production_vargas"] + [40]
+    errors = gate.check(_rewrite(text, block))
+    assert any(e.startswith("F13") and "D40" in e for e in errors), errors
+
+
+# ---------------------------------------------------------------------------
+# F14: the four division categories are mutually exclusive.
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "left, right",
+    [
+        ("production_registered_vargas", "not_certified_vargas"),
+        ("production_registered_vargas", "certified_not_registered_vargas"),
+        ("dedicated_production_vargas", "production_registered_vargas"),
+        ("certified_not_registered_vargas", "not_certified_vargas"),
+    ],
+)
+def test_control_overlapping_categories_are_rejected(left, right):
+    text = _text()
+    block = _block(text)
+    block[left] = block[left] + [block[right][0]]
+    errors = gate.check(_rewrite(text, block))
+    assert any(e.startswith("F14") for e in errors), (left, right, errors)
+
+
+def test_the_four_categories_are_disjoint_as_committed():
+    block = _block(_text())
+    keys = [
+        "production_registered_vargas",
+        "dedicated_production_vargas",
+        "certified_not_registered_vargas",
+        "not_certified_vargas",
+    ]
+    seen: set[int] = set()
+    for key in keys:
+        current = set(block[key])
+        assert not (seen & current), (key, seen & current)
+        seen |= current

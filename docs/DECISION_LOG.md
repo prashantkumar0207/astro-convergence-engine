@@ -7842,6 +7842,54 @@ to exit 0. `engine/tests/test_capability_state_gate.py` grows 21 -> 39 tests. Fu
 `python -m pytest -q` -> 937 passed. No certification artifact, certifier, validator,
 production registry, or CI file was changed; the gate remains **not** wired into CI.
 
+#### Second addendum to ADR-0094: bypasses B-1 and B-2 closed (2026-09-05)
+
+Append-only. `ADR-0094`'s original text and its first addendum are both unedited. Recorded
+per the owner's "(a)" election on the closure report: remediate before declaring closure.
+
+**How these were found.** The independent audit of the D-1..D-4 remediation (`3c17aa0`) ran the
+attack battery the owner commissioned and asked the question that battery exists to answer -
+*can the gate return PASS while a material capability-state contradiction exists?* It could,
+in two ways. Both **pre-date** the gate's first audit: they reproduce identically at
+`8a47add`, so they were original design gaps, not remediation regressions, and the earlier
+audit of that commit missed them.
+
+**B-1: a production-registered varga with a FAILING certification passed the gate.**
+Reproduced by setting `VARGA_D40_V1.result` to `FAIL` while D40 remained in
+`CERTIFIED_PRODUCTION_VARGAS` and in the documented `production_registered_vargas`: `check()`
+returned no errors and the CLI exited 0 reporting "documented capability state matches live
+state". Root cause: `certified_capabilities` (F7) and `certified_not_registered_vargas` (F8)
+each required a PASS artifact; `production_registered_vargas` never did. **Registration and
+certification are separate facts**, and the gate was checking only the first. Closed by
+**F12**: every declared production-registered division must hold a PASS `VARGA_D{n}_V1`
+artifact. Verified closed for a `FAIL` verdict, a missing artifact, and non-PASS verdicts
+generally.
+
+**B-2: `dedicated_production_vargas` was validated by nothing.** `[1, 9, 10, 99, 123]` passed.
+Closed by **F13**, using a live authority rather than a hand-maintained rule:
+`engine.astrology.divisional_chart.IMPLEMENTED_VARGAS`, the dispatcher's own declaration of
+the divisions it hard-wires to dedicated certified modules. It is compared in **both**
+directions, exactly as F1/F2 compare the registry, so neither an invented division nor a
+dropped one survives; a dedicated division appearing in `CERTIFIED_PRODUCTION_VARGAS` is also
+rejected, since the ratified contract is that these are never routed through the registry.
+
+**F14, added alongside:** the four division categories are mutually exclusive, so a division
+declared in two of them fails regardless of which specific condition would otherwise notice.
+
+**Evidence.** Closure demonstrated through the real CLI in a disposable worktree, removed
+afterward: D40 artifact `FAIL` -> exit 1 `F12`; D40 artifact deleted -> exit 1 `F12`; D24
+artifact `FAIL` -> exit 1 `F12`; dedicated list with invented 99/123 -> exit 1 `F13`; D10
+dropped -> exit 1 `F13`; dedicated list emptied -> exit 1 `F13` x3; registry-served D40
+declared dedicated -> exit 1 `F13`+`F14`; category overlaps -> exit 1 `F14`; pristine block ->
+exit 0. Every pre-existing control still fires (`F1` D40 removed, `F3` false "no yogas", `F6`
+Tier-0 omitted, `F10` counts deleted). `engine/tests/test_capability_state_gate.py` grows
+39 -> 54 tests. Full `python -m pytest -q` -> 952 passed. No certification artifact,
+certifier, validator, production registry, or CI file changed; the gate remains **not** wired
+into CI.
+
+**Residual limitation, unchanged and restated:** prose is still not machine-checked - only the
+delimited block is. That remains a deliberate design choice, not an oversight.
+
 ---
 
 ## ADR template (copy, do not edit above the line)
