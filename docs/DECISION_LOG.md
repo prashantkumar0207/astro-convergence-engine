@@ -7704,6 +7704,97 @@ certified value: this entry and its accompanying corrections are documentation o
 
 ---
 
+## ADR-0094 - Capability-state consistency gate implemented: documented claims mechanically checked against live sources, with committed negative controls (ACCEPTED)
+
+- **Date:** 2026-09-05
+- **Status:** ACCEPTED. The owner instructed: "CEO AUTHORIZATION - CAPABILITY-STATE CONSISTENCY GATE.
+  Proceed with implementation of the mechanical capability-state consistency gate described in the
+  completed reconciliation audit and `ADR-0093`. The gate must compare current repository capability
+  claims against live authoritative sources, not against a document's own committed historical state...
+  Restrict document parsing to explicitly delimited machine-readable capability blocks. Do not attempt
+  broad free-text interpretation... Include genuine negative controls exercising the actual enforcement
+  path... Preserve frozen historical evidence semantics for `ENGINE_CAPABILITY_INVENTORY.json`; it must
+  not become a live source of truth... Do not wire CI unless separately authorized." Per
+  `docs/PROJECT_CONSTITUTION.md` s11, this instruction is the ratifying act.
+- **Context:** `ADR-0093` corrected four affirmatively false capability claims but left the structural
+  cause untouched: nothing detected the divergence. `check_artifact_drift.py` compares each evidence file
+  to its own committed version, so a never-regenerated file passes forever - its PASS means "unchanged",
+  never "true". This is the same lesson as audit finding B-03 and `DP-032`'s own Finding 2.
+
+### 1. What was built
+
+`scripts/check_capability_state.py`. It parses **only** the delimited `CAPABILITY-BLOCK` in
+`docs/ENGINE_STATUS.md` section 6 (added by this entry) and compares it against live state computed at
+run time: `engine.astrology.CERTIFIED_PRODUCTION_VARGAS` for registry membership (`ADR-0010`'s ratified
+single source of truth), the runner-regenerated `certification/*.json` `result` fields for certification
+evidence, and `CERTIFIER_SOURCES`/`VALIDATOR_SOURCES` for the source registries. It reads no document's
+committed history as evidence.
+
+Failure conditions, each shown reachable by a committed control: **F1** a registered division missing
+from the block; **F2** a division claimed as registered that is not; **F3** a non-claim contradicted by
+a PASS artifact; **F4** a division listed as not certified that holds a PASS artifact; **F5** a stated
+source-registry count disagreeing with the live value; **F6** a PASS artifact claimed nowhere
+(completeness - a document must not pass by staying silent); **F7** a claimed capability with no PASS
+artifact; **F8** the certified-but-not-registered distinction misstated in either direction, which is
+what protects D16 and D4 from being silently described as production.
+
+### 2. Deliberate limitations, stated rather than left to be discovered
+
+1. **Prose is not checked.** Only the delimited block is. Free-text scanning would fire on legitimate
+   historical sentences ("D45 was the first production capability"), so it was rejected by design. The
+   cost is real: prose in sections 1-5 of `ENGINE_STATUS.md`, and all of `README.md` and
+   `VARGA_CERTIFICATION_ROADMAP.md`, remains a manual discipline. `ENGINE_STATUS.md`'s status header now
+   says so instead of implying whole-document enforcement.
+2. **The test count is deliberately not carried in the block.** `ADR-0093` recorded 898; this entry's own
+   21 controls raise it to 919, and the prose figure is updated accordingly. It is excluded from
+   mechanical checking because the only faithful check is a full suite run, which belongs in the test
+   gate, not a documentation gate. F5 therefore covers the two source-registry counts only, which are
+   exact and cheap.
+3. **A non-claim is refutable only where the gate knows which artifact would refute it**
+   (`NON_CLAIM_ARTIFACTS`). Tokens outside that map - "horary", "numerology" - pass unchecked.
+4. **Not wired into CI**, per the owner's explicit boundary. The gate runs locally and, through its 21
+   committed controls, on every `pytest` run; adding it to `.github/workflows/ci.yml` is a separate,
+   not-yet-given authorization.
+
+### 3. Negative controls: demonstrated failing, not merely asserted
+
+`engine/tests/test_capability_state_gate.py`, 21 tests, driving the real `check()` and the real script
+across a process boundary against mutated **copies**; the committed document is never modified. The three
+the owner named were additionally demonstrated live before this entry was written:
+
+| Control | Result |
+|---|---|
+| D40 removed from the block | **exit 1**, `F1 D40 is in CERTIFIED_PRODUCTION_VARGAS but missing...` (and `F6`) |
+| `"yogas"` added to `non_claims` while `PARASHARI_YOGA_V1` is PASS | **exit 1**, `F3 non-claim 'yogas' is contradicted by PARASHARI_YOGA_V1...` |
+| both restored | **exit 0**, PASS |
+
+A precondition test asserts `PARASHARI_YOGA_V1` really is PASS, because the second control proves nothing
+otherwise.
+
+### 4. Frozen evidence preserved
+
+`FROZEN_EVIDENCE` excludes `ENGINE_CAPABILITY_INVENTORY.json` (citing `ADR-0092`), plus
+`ORACLE_ENVIRONMENT.json`, `G6_REMOTE_CI_VALIDATION.json` and `CURRENT_ENGINE_LOCK.json`. Two committed
+tests enforce this: one asserts the inventory is absent from the live sources, and one stages a
+deliberately corrupted copy of it and requires the gate's answer to be **byte-identical** - so the frozen
+inventory cannot influence a verdict even if it is wrong.
+
+- **Consequences:** the class of drift `ADR-0093` corrected can now be caught for the block's contents.
+  No certification artifact, certifier, validator, production calculation, or registry membership was
+  touched: the new script is not registered in `CERTIFIER_SOURCES`/`VALIDATOR_SOURCES`, so
+  `SCAN_TARGETS` and every artifact's `modules_scanned` are unaffected, and the new tests live under
+  `engine/tests/`, which the anti-fitting scan excludes by construction. Q10/Q25 unresolved; D16/D4 not
+  implemented; D20/D27/D60 untouched; CI unchanged.
+- **Evidence:** `scripts/check_capability_state.py` and `engine/tests/test_capability_state_gate.py` as
+  committed; `python scripts/check_capability_state.py` -> PASS on the real document; the three live
+  control runs tabulated above, executed against copies in a scratch directory and deleted after use;
+  `python -m pytest -q` -> 919 passed; `check_adr_numbering.py`, `check_identifier_families.py`,
+  `check_retired_identifiers.py`, `check_artifact_drift.py` all PASS; `ADR-0093` (the reconciliation this
+  gate protects); `ADR-0092` (the frozen-evidence classification it honours); `ADR-0010`
+  (`CERTIFIED_PRODUCTION_VARGAS` as the ratified registry authority).
+
+---
+
 ## ADR template (copy, do not edit above the line)
 
 ## ADR-XXXX - <title>

@@ -3,8 +3,8 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | CURRENT - regenerate on every certified change. Reconciled against live repository evidence 2026-09-05 per `ADR-0093`; no mechanical gate yet enforces this currency, so it remains a manual discipline. |
-| Version | 2.0.0 |
+| Status | CURRENT - regenerate on every certified change. Reconciled against live repository evidence 2026-09-05 per `ADR-0093`. Section 6's machine-readable capability block is now mechanically enforced against live sources by `scripts/check_capability_state.py` (`ADR-0094`); **the prose in sections 1-5 is not machine-checked and remains a manual discipline.** |
+| Version | 2.1.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 | Last updated | 2026-09-05 (capability-state reconciliation, `ADR-0093`) |
 | Review cadence | TBD (see docs/OPEN_QUESTIONS.md Q1) |
@@ -17,7 +17,7 @@ Purpose: the single current-state document for this project. Supersedes nothing;
 
 ## 1. How to verify everything in one sitting
 
-Clone the repository, install the pinned dependencies (`pyswisseph==2.10.3.2`, `pytest==9.1.1`, `tzdata==2025.2`; PyJHora plus its dependencies only if you intend to run the oracle certifiers), then run the default gate, the independent holdout validators, the legacy gate, and the certification runners. The README lists every command. Current reproduced results (2026-09-05): **898 tests pass**; **21 registered validator sources** and **22 registered certifier sources** (`scripts/certification_support.py`'s `VALIDATOR_SOURCES` / `CERTIFIER_SOURCES`); the legacy gate passes 5 of 5. The oracle-tier and `swetest`-dependent runners cannot execute on a Windows host - a documented, permanent platform limitation, not a regression - so full-battery regeneration is confirmed in CI rather than locally. The stored certification JSON files are never accepted as proof; each runner rebuilds its artifact from scratch on every invocation.
+Clone the repository, install the pinned dependencies (`pyswisseph==2.10.3.2`, `pytest==9.1.1`, `tzdata==2025.2`; PyJHora plus its dependencies only if you intend to run the oracle certifiers), then run the default gate, the independent holdout validators, the legacy gate, and the certification runners. The README lists every command. Current reproduced results (2026-09-05): **919 tests pass**; **21 registered validator sources** and **22 registered certifier sources** (`scripts/certification_support.py`'s `VALIDATOR_SOURCES` / `CERTIFIER_SOURCES`); the legacy gate passes 5 of 5. The oracle-tier and `swetest`-dependent runners cannot execute on a Windows host - a documented, permanent platform limitation, not a regression - so full-battery regeneration is confirmed in CI rather than locally. The stored certification JSON files are never accepted as proof; each runner rebuilds its artifact from scratch on every invocation.
 
 ## 2. Certified layers
 
@@ -64,9 +64,64 @@ Sidereal speeds are Swiss `FLG_SIDEREAL` outputs, adequate for retrograde flags 
 ## 5. Working method that produced this state
 
 Each phase followed the same discipline and it is worth preserving. An ADR-style plan is written and approved before any code exists, naming the classical source, the decisions requiring owner sign-off, and the certification gates. Implementation is additive; certified files are not modified. Every rule table is written as frozen literals and verified cell by cell against a second independent transcription plus a re-derivation from the classical statement. Every phase adds an independent validator whose reference implementation is built by a different construction from the production code and imports nothing from it. External oracles are used for what they can authoritatively provide and never as astronomical ground truth; where an oracle's own astronomy differs, the divergence is measured, recorded, and worked around rather than absorbed into a widened tolerance. Certified behavior is proven unchanged across every phase by SHA-256 sweeps over dense and ULP-adversarial output sets. Tests that encoded superseded expectations are replaced with the reason documented inline, never quietly deleted. Nothing is called certified without a regenerable artifact.
+## 6. Machine-readable capability block
+
+`scripts/check_capability_state.py` parses **only** the delimited block below, and compares it against
+live authoritative sources: `engine.astrology.CERTIFIED_PRODUCTION_VARGAS` for registry membership,
+the runner-regenerated `certification/*.json` result fields for certification evidence, and
+`scripts/certification_support.py`'s `CERTIFIER_SOURCES`/`VALIDATOR_SOURCES` for the source registries.
+It never parses the prose above, and it never reads a document's own committed history as evidence.
+
+`certification/ENGINE_CAPABILITY_INVENTORY.json` is **excluded** from those live sources, together with
+the other dated evidence files, because `ADR-0092` classifies it as frozen dated historical evidence and
+not a current source of truth. That exclusion is asserted by a committed test, not merely intended.
+
+Edit this block whenever certified capability changes; the prose above must be kept consistent with it
+by hand, which the gate cannot check.
+
+<!-- CAPABILITY-BLOCK:BEGIN - machine-readable, parsed by scripts/check_capability_state.py. Do not edit the delimiters. -->
+```json
+{
+  "production_registered_vargas": [2, 3, 7, 12, 24, 30, 40, 45],
+  "dedicated_production_vargas": [1, 9, 10],
+  "certified_not_registered_vargas": [4, 16],
+  "not_certified_vargas": [20, 27, 60],
+  "certified_capabilities": [
+    "KP_CHAIN_V1",
+    "KP_SIGNIFICATOR_V1",
+    "PANCHANGA_V1",
+    "PARASHARI_DRISHTI_V1",
+    "PARASHARI_YOGA_V1",
+    "RISE_SET_V1",
+    "SIGN_CONVENTION_V1",
+    "TRANSIT_V1",
+    "TRIKALAM_V1",
+    "VIMSHOTTARI_V1"
+  ],
+  "non_claims": [
+    "planet_strength",
+    "interpretation",
+    "kp_four_step",
+    "kp_ruling_planets",
+    "horary",
+    "sputa_drishti",
+    "jaimini_rashi_drishti",
+    "western_aspects",
+    "bhrigu_nandi_nadi",
+    "numerology"
+  ],
+  "counts": {
+    "certifier_sources": 22,
+    "validator_sources": 21
+  }
+}
+```
+<!-- CAPABILITY-BLOCK:END -->
+
 ## Change history
 
 | Version | Date | Change |
 |---|---|---|
+| 2.1.0 | 2026-09-05 | Section 6 added: the delimited machine-readable capability block that `scripts/check_capability_state.py` parses, per `ADR-0094`. Additive; no claim in sections 1-5 changed except the reproduced test count, 898 -> 919, which the gate's own 21 committed negative controls raised. The block is the only machine-checked part of this document; the prose is not, and the status header now says so rather than implying whole-document enforcement. |
 | 2.0.0 | 2026-09-05 | **Capability-state reconciliation against live repository evidence (`ADR-0093`).** MAJOR because two claims in section 3 were affirmatively false, not merely stale: the blanket "no yogas" non-claim (superseded by `PARASHARI_YOGA_V1`, `ADR-0081`) and the "Nothing in the repository claims KP significators" non-claim (superseded by `KP_SIGNIFICATOR_V1`, `ADR-0078`/`ADR-0079`); both are corrected in place with the still-true remainder of each sentence preserved. Registry list corrected from five vargas to the eight actually registered (D24, D40, D45 added). D16 and D4 recorded for the first time as certified but deliberately NOT production-registered. `RISE_SET_V1`, `PANCHANGA_V1`, `TRIKALAM_V1` and the FOUNDATION exit added. Counts corrected: 372 tests -> 898; eleven validators -> 21 registered validator sources; eleven certification runners -> 22 registered certifier sources. Date and authoritative commit updated. Planetary strength non-claim verified still true in code and preserved unchanged. |
 | 1.0.0 | 2026-08-09 | Created as the single in-repository current-state document. |
