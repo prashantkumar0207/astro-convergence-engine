@@ -7892,6 +7892,121 @@ delimited block is. That remains a deliberate design choice, not an oversight.
 
 ---
 
+## ADR-0095 - D20 (Vimsamsa) selected as a JATAKA capability: Reading E adopted, frozen methodology, minority triple recorded as an excluded variant (PROPOSED - drafting only, not ratified)
+
+- **Date:** 2026-09-06
+- **Status:** **PROPOSED. NOT RATIFIED.** The owner's "CEO DECISION - DP-035" instruction adopts Reading E
+  ("D20: ADOPT READING E. The majority/convergent D20 triple is selected as the project methodology,
+  based on the evidence documented in `DP-035`. Record the minority transposition as a named excluded
+  variant with its evidentiary status and rationale. Do not claim that primary-source uncertainty has
+  been eliminated.") and authorizes **"D20 methodology-selection / frozen-methodology ADR drafting
+  only"**. Drafting is what this entry does. Per the `ADR-0089`/`ADR-0090` precedent, the Status line
+  becomes ACCEPTED only on a separate, explicit ratifying instruction recorded in its own sub-entry;
+  this entry does not declare itself ratified.
+- **Context:** `DP-035` found D20's geometry settled and its contract fit unproblematic, with the
+  content dispute reducing to a single question - which start triple governs. It gave D20
+  `REQUIRES_OWNER_ADJUDICATION` on the ground that the evidentiary position matched the standard the
+  owner already accepted for D24 (`ADR-0082`) and D40 (`ADR-0087`). The owner has now adjudicated.
+
+### 1. The selected reading
+
+**Reading E: the Vimsamsa count commences from Aries for movable signs, from Sagittarius for fixed
+signs, and from Leo for dual (common) signs.**
+
+**Source basis, strengthened since `DP-035` was written.** `DP-035` rested on convergent secondary
+expositions plus PyJHora's default. Subsequent primary-source research located the operative verse in
+translation - BPHS chapter 6, in the verse block covering the Vimsamsa (verses 17-21 in the
+Santhanam-lineage rendering):
+
+> "From Aries for a Movable Rasi, from Sagittarius for a Fixed Rasi and from Leo for a Common Rasi:
+> this is how the calculations of Vimshamsas (1/20th of a Rasi, or 1 deg 30 min each) are to commence."
+
+*Quotation note: the source renders Sanskrit terms with diacritics; they are transliterated to plain
+ASCII here because `scripts/check_adr_numbering.py` reads this register with the platform codepage and
+cannot decode characters outside it. Only the diacritics and the degree/minute symbols were changed;
+no word was altered.*
+
+This is a translated verse, not merely an exposition, and it states Reading E directly. **It is a
+translation, not the Sanskrit** - see section 4.
+
+**Independent verification of the derived table.** The three consequence statements circulating in the
+secondary expositions were each re-derived from the frozen table below rather than copied: movable
+first vimsamsa -> Aries and twentieth -> Scorpio; fixed first -> Sagittarius and twentieth -> Cancer;
+dual first -> Leo and twentieth -> Pisces. All three match. The table was also compared cell-by-cell
+against PyJHora's Traditional Parasara D20 across all 12 x 20 = 240 cells: **identical in every cell**.
+
+### 2. Frozen methodology
+
+Deterministic rule, to be implemented later and not implemented by this entry:
+
+- **Kind:** `CyclicVargaRule`, `divisions = 20`, width exactly 1.5° (binary-representable; no
+  D27-class ULP exposure).
+- **`start_sign` (indexed by source sign 0=Aries..11=Pisces):**
+  `(0, 8, 4, 0, 8, 4, 0, 8, 4, 0, 8, 4)`
+  - movable (Aries, Cancer, Libra, Capricorn) -> 0 (Aries)
+  - fixed (Taurus, Leo, Scorpio, Aquarius) -> 8 (Sagittarius)
+  - dual (Gemini, Virgo, Sagittarius, Pisces) -> 4 (Leo)
+- **`direction`:** `(1,) * 12` - forward for every source sign.
+- **School key:** `parashara`. **Boundary policy:** the inherited locked promote-up convention; no
+  D20-specific exception.
+- Target sign for division index `l` (0-based) of source sign `s`: `(start_sign[s] + l) % 12`.
+
+### 3. Excluded variant, recorded rather than dismissed
+
+**Variant F - "movable Aries, fixed Leo, dual Sagittarius"** (`start_sign = (0, 4, 8, 0, 4, 8, ...)`),
+the transposition of the fixed and dual starts.
+
+- **Evidentiary status:** genuinely attested in a rendition of the rule, not invented by this project
+  and not refuted. `DP-035` section 5.2 records that it surfaced against several sources stating
+  Reading E.
+- **Rationale for exclusion:** Reading E is stated by the translated verse itself and corroborated by
+  multiple independent expositions and by the reference implementation's default; Variant F is attested
+  without a located verse in its support.
+- **Explicitly recorded as inference, not as adjudication:** Variant F's triple is exactly the triple
+  this repository already uses for D16 (`ADR-0089`) and D45 (`ADR-0077`), so conflation with that far
+  more common pattern is a plausible mechanism by which the reading could arise. **This is a hypothesis
+  about how an error could occur, not evidence that Variant F is wrong**, and it is not the ground of
+  exclusion.
+- Variant F is a **named non-claim**: not computed, not offered, not selectable, exactly as
+  `ADR-0082`/`ADR-0087` treated their own excluded variants.
+
+### 4. What this selection does NOT claim
+
+**This selection is not proof of the historical original text.** No verbatim Sanskrit was located for
+D20; the evidence is a translated verse plus convergent secondary attestation plus an implementation
+default. Primary-source uncertainty is **not** eliminated, and this entry does not claim it is - per
+the owner's explicit instruction. Any future citation of D20's methodology must carry this
+qualification, in the same manner `ADR-0082`/`ADR-0087` carry theirs.
+
+### 5. Payload excluded, following the `ADR-0089` precedent
+
+D20's vimsamsa deities are **excluded** from the certified contract. `VargaClassification` carries the
+D-sign, division index and fraction only; no deity or lord payload is claimed, computed or offered.
+This follows `ADR-0089` (D16) exactly, and it means **this entry does not require and does not resolve
+`DP-024`** - `DP-024`'s payload question remains fully open for any future capability that does intend
+a payload.
+
+### 6. What this entry does not do
+
+Does not implement D20: no `engine/astrology/varga_d20.py`, no registration in
+`CERTIFIED_PRODUCTION_VARGAS`, no certifier, no validator, no certification artifact, no CI wiring.
+Does not authorize certification design or execution - each remains its own separate, not-yet-given
+authorization, exactly as `ADR-0089`/`ADR-0090` required for D16/D4. Does not touch D60, D27, D16, D4,
+`DP-024`, or any protected holdout. Does not push or merge.
+
+- **Consequences, if ratified:** D20's methodology would become the governing frozen record for a later,
+  separately authorized certification-design stage. `DP-024` stays open. Variant F stays excluded and
+  named. The primary-source qualification in section 4 travels with every future citation.
+- **Evidence:** `docs/decisions/DP-035-...md` (the readiness paper this entry acts on) and its
+  2026-09-06 addendum recording the located translated verse; the BPHS chapter 6 Vimsamsa verse quoted
+  in section 1; PyJHora `src/jhora/horoscope/chart/charts.py` `vimsamsa_chart()` and
+  `src/jhora/const.py` (`HOUSE_5 = 4`, `HOUSE_9 = 8`), read directly at source; the 240-cell
+  equivalence check and the three consequence re-derivations recorded in section 1; `ADR-0089` (the
+  payload-exclusion precedent); `ADR-0082`/`ADR-0087` (the secondary-source evidentiary standard and
+  excluded-variant treatment); the owner's "CEO DECISION - DP-035" instruction, quoted above.
+
+---
+
 ## ADR template (copy, do not edit above the line)
 
 ## ADR-XXXX - <title>

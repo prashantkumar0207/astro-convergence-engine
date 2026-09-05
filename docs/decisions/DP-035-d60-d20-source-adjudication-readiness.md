@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | OPEN - decision paper. Presents source findings and options. DECIDES NOTHING. Requires owner approval. Selects no methodology, freezes no rule, implements nothing, and does not resolve `DP-024`. |
-| Version | 1.0.0 |
+| Version | 1.1.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-09-05 |
+| Last updated | 2026-09-06 (Part B added: D60 primary-source research; verdict unchanged) |
 | Review cadence | TBD |
 
 # DP-035. Source-adjudication readiness for D60 (Shashtiamsa) and D20 (Vimsamsa)
@@ -259,8 +259,98 @@ research is likely to change that - only primary-text access would.
 
 **This paper selects nothing.** Whether to adjudicate D20, and on what basis, is the owner's decision.
 
+## Part B: D60 primary-source research (addendum, 2026-09-06)
+
+**Authorization:** the owner's "CEO DECISION - DP-035" instruction: *"D60: AUTHORIZE PRIMARY-SOURCE
+RESEARCH. Do not select, freeze, implement, certify, or register any D60 methodology yet... Treat these
+as separate questions and preserve all four currently-live interpretations until evidence actually
+eliminates one or more."* Research only. Sections 0-10 above are unedited.
+
+### B.1 What was searched, and what was and was not found
+
+Attempted, in order: the Santhanam-lineage BPHS full text on archive.org (returned the chapter's table
+of contents, not the verse block); `sanskritdocuments.org`'s BPHS series (the chapter-6 file is not at
+the URL pattern its chapter 34-45 file implies; 404); `vedicpupil.in`'s verse-by-verse BPHS 6.33 and
+6.41, which carry transliterated Sanskrit (**HTTP 403, not retrievable**); a full chapter-6 English
+rendering; and both Wikipedia articles on the division.
+
+**No verbatim Sanskrit was located.** Stated plainly, as instructed: this research did **not** reach
+primary text. The best evidence obtained is a **translated verse block** (BPHS chapter 6, verses
+33-41 in the Santhanam-lineage rendering), corroborated by two independent tertiary renderings that
+quote the same operative sentences. Everything in B.2 and B.3 is therefore translation-level evidence,
+one step below the primary source the owner authorized the search for.
+
+### B.2 Axis 1 - does the even-sign reversal extend beyond the names?
+
+**New evidence.** The chapter-6 rendering gives the reversal sentence as:
+
+> "In odd Rasis the names of Shashtiamsas are [the sixty names]... The reverse is the order for even
+> Rasis in so much, as these names are cased."
+
+Two independent tertiary renderings give the same construction: *"He has listed in a particular order
+the **names** of the sixty shashtiamsas falling in odd signs which **order**, he says, should be
+reversed for even signs."*
+
+**What this does and does not establish.** In all three renderings the grammatical object of the
+reversal is **the order of the names**, and the Santhanam-lineage rendering adds an explicit limiting
+qualifier - *"in so much, as these names are cased"*. The sign-determination sentence is separate and
+carries no directional language at all. **The weight of translated evidence therefore leans toward
+Reading A (names only).**
+
+**It does not eliminate Reading B.** No located source states that the sign does *not* reverse; one
+tertiary source states outright that the scope is unspecified; and the limiting qualifier is awkward
+enough in English that its force cannot be relied on without the Sanskrit. Per the owner's instruction,
+Reading B is **preserved**.
+
+### B.3 Axis 2 - is the origin absolute (from Aries) or relative (from the natal sign)?
+
+**New evidence.** The verse's own output sentence, in all three renderings, is:
+
+> "ignore the Rasi position of a Planet and take the degrees etc. it traversed in that Rasi. Multiply
+> that figure by 2 and divide the degrees by 12. Add 1 to the remainder, **which will indicate the
+> Rasi, in which the Shashtiamsa falls**."
+
+**What this does and does not establish.** Read literally, "add 1 to the remainder" yields a number in
+1..12 that *"will indicate the Rasi"* - an **absolute** sign, counted from Aries. The instruction to
+*"ignore the Rasi position"* governs the **input** (discard the whole-sign component before
+multiplying) and is consistent with that. **The verse text therefore leans toward Reading C (absolute,
+from Aries).**
+
+**This is in tension with practice, and the tension is the finding.** The worked examples in
+circulation count from the natal sign (Moon 20 deg 36 min in Sagittarius -> 41 mod 12 = 5, +1 = 6 ->
+"sixth from Sagittarius" -> Taurus), and PyJHora's **default** is `PARASARA_TRADITIONAL_FROM_SIGN`,
+which also counts from the natal sign. So the strongest textual reading and the strongest practice
+signal point in **opposite** directions on this axis. No located source reconciles them, and this paper
+does not. Reading D is **preserved**.
+
+### B.4 Net effect on the four interpretations
+
+| Axis | Leaning after this research | Eliminated? |
+|---|---|---|
+| 1. Reversal scope | toward **A** (names only) - reversal is attached to "the order of the names" in all three renderings, with an explicit limiting qualifier in one | **No.** Scope stated as unspecified by a tertiary source; qualifier not verifiable without Sanskrit |
+| 2. Count origin | toward **C** (absolute, from Aries) on the verse's own wording | **No.** Directly contradicted by the circulating worked examples and by the reference implementation's default |
+
+**No interpretation has been eliminated.** All four remain live, exactly as the owner required. The
+research moved the *weight* on both axes without settling either - and, notably, the two leanings point
+at a combination (**absolute origin, names-only reversal** = PyJHora method 2, `PARASARA_CYCLIC_FROM_
+ARIES`) that is **not** the default of the reference implementation. That divergence is itself a reason
+not to select now.
+
+### B.5 Readiness verdict, unchanged
+
+**D60 remains `NOT_READY`.** Both axes were narrowed, neither was resolved, and the one combination the
+verse text most nearly supports is contradicted by every implementation default and worked example
+located. Selecting under this evidence would be choosing between a literal reading and an established
+practice with no primary text to arbitrate - precisely what the authorizing instruction forbids.
+
+**What would change the verdict:** retrieval of the Sanskrit of BPHS 6.33-6.41 (the `vedicpupil.in`
+verse pages carry transliterated Sanskrit but are not retrievable by the tooling available here), or a
+critical edition / scholarly commentary that addresses the scope of *"reversed"* and the referent of
+*"will indicate the Rasi"*. Both are outside what this research could reach.
+
 ## Change history
 
 | Version | Date | Change |
 |---|---|---|
+| 1.1.0 | 2026-09-06 | Part B added (append-only; sections 0-10 unedited): D60 primary-source research under the owner's "CEO DECISION - DP-035" authorization. **No verbatim Sanskrit located** - stated plainly rather than glossed; best evidence is a translated verse block corroborated by two independent tertiary renderings. Axis 1 leans to names-only (reversal attached to "the order of the names" in all three renderings, with an explicit limiting qualifier); Axis 2 leans to absolute-from-Aries on the verse's own wording, in direct tension with every located worked example and with the reference implementation's default. **Neither axis eliminated; all four interpretations preserved** per instruction. Verdict unchanged: `NOT_READY`. |
 | 1.0.0 | 2026-09-05 | Created under the owner's "CEO AUTHORIZATION - DP-035 D60/D20 SOURCE-ADJUDICATION READINESS" instruction. Establishes the source basis for both disputes from PyJHora read directly at source, a tertiary BPHS paraphrase, and convergent secondary expositions; finds D60 carries **two** independent unresolved axes (origin, and whether the even-sign reversal extends beyond the deity names) whose four combinations are exactly the four variants PyJHora ships; finds D20's majority triple (Aries/Sagittarius/Leo) convergently attested with a minority transposition attested but not refuted. Verdicts: D60 `NOT_READY`; D20 `REQUIRES_OWNER_ADJUDICATION`. Decides nothing, selects nothing, freezes nothing, resolves no `DP-024` question. |
