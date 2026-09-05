@@ -20,8 +20,13 @@ So this gate compares documented claims against LIVE state, computed now:
   * `engine.astrology.CERTIFIED_PRODUCTION_VARGAS` - registry membership. ADR-0010
     ratified this constant as "the single source of truth for sanctioned registry
     state", so the gate takes it as authority rather than inventing one.
-  * the runner-regenerated `certification/*.json` `result` fields - certification
-    evidence.
+  * the **committed** `certification/*.json` artifact files - certification
+    evidence, read at `result` or `summary.result` depending on each schema.
+    Stated precisely (D-4): this gate does NOT regenerate them, so it inherits
+    whatever currency they have. `check_artifact_drift.py` proves only that they
+    are unchanged since commit, never that they are current; CI regenerating them
+    is what keeps them true. A non-frozen artifact with no locatable verdict is a
+    hard failure, never a silent skip.
   * `certification_support.CERTIFIER_SOURCES` / `VALIDATOR_SOURCES` - the source
     registries.
 
@@ -74,9 +79,18 @@ FROZEN_EVIDENCE = frozenset({
     "CURRENT_ENGINE_LOCK.json",
 })
 
+# D-1. Where a certification artifact records its verdict. `current_engine`
+# (Tier-0, ADR-0005) carries it at summary.result, not at top level, and the
+# original implementation therefore skipped the most foundational certification
+# in the repository in silence. It is NOT frozen evidence: `certify_current_
+# engine.py` is registered in CERTIFIER_SOURCES and is executed twice by
+# .github/workflows/ci.yml, so it is runner-regenerated live evidence and
+# belongs in the completeness universe. Any non-frozen artifact whose verdict
+# cannot be found at one of these paths is now a hard failure rather than a
+# silent skip - a silently ignored artifact is exactly how D-1 hid.
+_VERDICT_PATHS = (("result",), ("summary", "result"))
+
 # A non-claim token is refutable only if we know which artifact would refute it.
-# Tokens absent from this map (e.g. "horary", "numerology") are unrefutable by
-# this gate and pass; that limitation is real and is stated rather than hidden.
 NON_CLAIM_ARTIFACTS = {
     "yogas": "PARASHARI_YOGA_V1",
     "kp_significators": "KP_SIGNIFICATOR_V1",
@@ -90,6 +104,39 @@ NON_CLAIM_ARTIFACTS = {
     "planet_strength": "PLANET_STRENGTH_V1",  # no such artifact: the claim stands
 }
 
+# D-3. Non-claims that are legitimate but that no artifact can refute, because
+# the capability does not exist in any form. A token outside KNOWN_NON_CLAIMS -
+# unknown, misspelled, or newly invented - is now a failure. Previously a typo
+# ("kp_significator" for "kp_significators") silently disabled F3 for that line.
+UNREFUTABLE_NON_CLAIMS = frozenset({
+    "interpretation",
+    "kp_four_step",
+    "kp_ruling_planets",
+    "horary",
+    "sputa_drishti",
+    "jaimini_rashi_drishti",
+    "western_aspects",
+    "bhrigu_nandi_nadi",
+    "numerology",
+})
+
+KNOWN_NON_CLAIMS = frozenset(NON_CLAIM_ARTIFACTS) | UNREFUTABLE_NON_CLAIMS
+
+# D-2. A block that omits a key must fail, not silently skip the checks that key
+# feeds. `counts` and `non_claims` were both droppable, which made F5 and F3
+# switchable off by the very document under test - the "reported but never
+# enforced" failure this gate was built in response to (DP-032 Finding 2).
+REQUIRED_KEYS = (
+    "production_registered_vargas",
+    "dedicated_production_vargas",
+    "certified_not_registered_vargas",
+    "not_certified_vargas",
+    "certified_capabilities",
+    "non_claims",
+    "counts",
+)
+REQUIRED_COUNTS = ("certifier_sources", "validator_sources")
+
 
 def live_registered_divisions() -> set[int]:
     from engine.astrology import CERTIFIED_PRODUCTION_VARGAS
@@ -97,22 +144,53 @@ def live_registered_divisions() -> set[int]:
     return {division for division, _school in CERTIFIED_PRODUCTION_VARGAS}
 
 
-def live_pass_artifacts(certification_dir: Path | None = None) -> dict[str, str]:
-    """Capability stem -> result, for every artifact that is NOT frozen evidence."""
+def _verdict(payload: dict) -> str | None:
+    """The artifact's own recorded verdict, wherever its schema puts it."""
+
+    for path in _VERDICT_PATHS:
+        node = payload
+        for key in path:
+            if not isinstance(node, dict) or key not in node:
+                node = None
+                break
+            node = node[key]
+        if isinstance(node, str):
+            return node
+    return None
+
+
+def live_pass_artifacts(
+    certification_dir: Path | None = None,
+) -> tuple[dict[str, str], list[str]]:
+    """(capability stem -> verdict, unreadable-artifact errors).
+
+    Every artifact that is not declared frozen evidence must yield a verdict.
+    Returning the failures instead of skipping them is the D-1 fix: the Tier-0
+    `current_engine` artifact was silently absent from the completeness universe
+    for no reason other than an unrecognised schema.
+    """
 
     directory = certification_dir or (ROOT / "certification")
     results: dict[str, str] = {}
+    errors: list[str] = []
     for path in sorted(directory.glob("*.json")):
         if path.name in FROZEN_EVIDENCE:
             continue
         try:
             payload = json.loads(path.read_text())
-        except (OSError, json.JSONDecodeError):
+        except (OSError, json.JSONDecodeError) as exc:
+            errors.append(f"F9 {path.name} is not readable as certification evidence: {exc}")
             continue
-        result = payload.get("result")
-        if isinstance(result, str):
-            results[path.name.replace("_certification.json", "")] = result
-    return results
+        verdict = _verdict(payload)
+        if verdict is None:
+            errors.append(
+                f"F9 {path.name} records no verdict at any known path "
+                f"{_VERDICT_PATHS}; it is neither declared frozen evidence nor "
+                f"usable as live evidence, so it would be silently ignored"
+            )
+            continue
+        results[path.name.replace("_certification.json", "")] = verdict
+    return results, errors
 
 
 def live_source_counts() -> dict[str, int]:
@@ -157,8 +235,21 @@ def check(
         return errors
 
     registered = live_registered_divisions() if registered is None else registered
-    artifacts = live_pass_artifacts() if artifacts is None else artifacts
+    if artifacts is None:
+        artifacts, artifact_errors = live_pass_artifacts()
+        errors.extend(artifact_errors)
     counts = live_source_counts() if counts is None else counts
+
+    # D-2: a missing key must fail, never silently disable the checks it feeds.
+    for key in REQUIRED_KEYS:
+        if key not in block:
+            errors.append(
+                f"F10 CAPABILITY-BLOCK is missing required key {key!r}; omitting it "
+                f"would silently disable the checks it feeds"
+            )
+    for key in REQUIRED_COUNTS:
+        if key not in block.get("counts", {}):
+            errors.append(f"F10 CAPABILITY-BLOCK counts is missing required key {key!r}")
 
     passing = {name for name, result in artifacts.items() if result == "PASS"}
     claimed_production = set(block.get("production_registered_vargas", []))
@@ -181,7 +272,16 @@ def check(
         )
 
     # F3: a non-claim contradicted by a PASS artifact.
+    # D-3: and an unknown token is itself a failure, because an unrecognised
+    # spelling silently exempted that line from F3.
     for token in block.get("non_claims", []):
+        if token not in KNOWN_NON_CLAIMS:
+            errors.append(
+                f"F11 non-claim {token!r} is not in the known vocabulary; add it to "
+                f"NON_CLAIM_ARTIFACTS (refutable) or UNREFUTABLE_NON_CLAIMS "
+                f"(no artifact could refute it) so it cannot pass unchecked"
+            )
+            continue
         artifact = NON_CLAIM_ARTIFACTS.get(token)
         if artifact and artifact in passing:
             errors.append(

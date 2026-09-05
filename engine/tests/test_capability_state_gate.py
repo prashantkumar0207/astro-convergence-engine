@@ -114,7 +114,8 @@ def test_control_removing_d40_fails_through_the_process_boundary(tmp_path):
 def test_precondition_parashari_yoga_is_actually_passing():
     """The control below proves nothing unless this really is PASS."""
 
-    assert gate.live_pass_artifacts().get("PARASHARI_YOGA_V1") == "PASS"
+    artifacts, _ = gate.live_pass_artifacts()
+    assert artifacts.get("PARASHARI_YOGA_V1") == "PASS"
 
 
 def test_control_false_no_yogas_non_claim_is_rejected():
@@ -245,8 +246,9 @@ def test_control_deleted_block_is_rejected():
 
 
 def test_frozen_evidence_is_excluded_from_live_sources():
+    artifacts, _ = gate.live_pass_artifacts()
     assert "ENGINE_CAPABILITY_INVENTORY.json" in gate.FROZEN_EVIDENCE
-    assert "ENGINE_CAPABILITY_INVENTORY" not in gate.live_pass_artifacts()
+    assert "ENGINE_CAPABILITY_INVENTORY" not in artifacts
 
 
 def test_frozen_inventory_cannot_influence_the_verdict(tmp_path):
@@ -274,3 +276,123 @@ def test_every_frozen_file_is_really_dated_evidence(name):
         pytest.skip(f"{name} not present")
     payload = json.loads(path.read_text())
     assert "date" in payload, f"{name} carries no date; is it really frozen evidence?"
+
+
+# ---------------------------------------------------------------------------
+# D-1: the Tier-0 artifact must be inside the completeness universe, and no
+# non-frozen artifact may ever again be skipped for an unrecognised schema.
+# ---------------------------------------------------------------------------
+
+
+def test_tier0_current_engine_is_in_the_live_universe():
+    """It records its verdict at summary.result, not at top level. Missing that
+    is what silently excluded the repository's most foundational certification."""
+
+    artifacts, errors = gate.live_pass_artifacts()
+    assert errors == []
+    assert artifacts.get("current_engine") == "PASS"
+
+
+def test_tier0_is_not_classified_as_frozen_evidence():
+    """It is runner-regenerated: registered in CERTIFIER_SOURCES and run in CI."""
+
+    from scripts.certification_support import CERTIFIER_SOURCES
+
+    assert "current_engine_certification.json" not in gate.FROZEN_EVIDENCE
+    assert "scripts/certify_current_engine.py" in CERTIFIER_SOURCES
+
+
+def test_control_omitting_tier0_from_the_block_is_rejected():
+    text = _text()
+    block = _block(text)
+    block["certified_capabilities"] = [
+        c for c in block["certified_capabilities"] if c != "current_engine"
+    ]
+    errors = gate.check(_rewrite(text, block))
+    assert any(e.startswith("F6") and "current_engine" in e for e in errors), errors
+
+
+def test_control_artifact_with_no_locatable_verdict_is_rejected(tmp_path):
+    """A non-frozen artifact whose verdict cannot be found must fail loudly,
+    not be skipped. Silent skipping is precisely how D-1 stayed hidden."""
+
+    staged = tmp_path / "certification"
+    staged.mkdir()
+    for path in (ROOT / "certification").glob("*.json"):
+        (staged / path.name).write_bytes(path.read_bytes())
+    (staged / "MYSTERY_V1_certification.json").write_text(json.dumps({"schema": "x"}))
+
+    artifacts, errors = gate.live_pass_artifacts(staged)
+    assert "MYSTERY_V1" not in artifacts
+    assert any(e.startswith("F9") and "MYSTERY_V1" in e for e in errors), errors
+
+
+# ---------------------------------------------------------------------------
+# D-2: required keys. Omitting a key must fail, never silently disable a check.
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize("key", sorted(gate.REQUIRED_KEYS))
+def test_control_dropping_any_required_key_is_rejected(key):
+    text = _text()
+    block = _block(text)
+    del block[key]
+    errors = gate.check(_rewrite(text, block))
+    assert any(e.startswith("F10") and key in e for e in errors), (key, errors)
+
+
+@pytest.mark.parametrize("key", sorted(gate.REQUIRED_COUNTS))
+def test_control_dropping_any_required_count_is_rejected(key):
+    text = _text()
+    block = _block(text)
+    del block["counts"][key]
+    errors = gate.check(_rewrite(text, block))
+    assert any(e.startswith("F10") and key in e for e in errors), (key, errors)
+
+
+def test_control_emptied_counts_no_longer_passes():
+    """The exact D-2 bypass: counts = {} previously returned PASS."""
+
+    text = _text()
+    block = _block(text)
+    block["counts"] = {}
+    errors = gate.check(_rewrite(text, block))
+    assert errors, "an emptied counts block was NOT rejected"
+
+
+# ---------------------------------------------------------------------------
+# D-3: non-claim vocabulary. An unknown or misspelled token must fail.
+# ---------------------------------------------------------------------------
+
+
+def test_control_misspelled_non_claim_is_rejected():
+    """The exact D-3 bypass: 'kp_significator' (singular) silently exempted the
+    line from F3, because only 'kp_significators' is mapped."""
+
+    text = _text()
+    block = _block(text)
+    block["non_claims"] = block["non_claims"] + ["kp_significator"]
+    errors = gate.check(_rewrite(text, block))
+    assert any(e.startswith("F11") and "kp_significator" in e for e in errors), errors
+
+
+def test_control_invented_non_claim_token_is_rejected():
+    text = _text()
+    block = _block(text)
+    block["non_claims"] = block["non_claims"] + ["tier0", "astronomical_kernel"]
+    errors = gate.check(_rewrite(text, block))
+    assert sum(e.startswith("F11") for e in errors) == 2, errors
+
+
+def test_known_vocabulary_covers_every_token_actually_in_use():
+    """The committed block must not depend on tokens the gate cannot classify."""
+
+    block = _block(_text())
+    unknown = [t for t in block["non_claims"] if t not in gate.KNOWN_NON_CLAIMS]
+    assert unknown == [], unknown
+
+
+def test_refutable_and_unrefutable_vocabularies_are_disjoint():
+    """A token must be one or the other, or F3's meaning becomes ambiguous."""
+
+    assert not (set(gate.NON_CLAIM_ARTIFACTS) & gate.UNREFUTABLE_NON_CLAIMS)

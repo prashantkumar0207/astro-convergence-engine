@@ -7793,6 +7793,55 @@ inventory cannot influence a verdict even if it is wrong.
   gate protects); `ADR-0092` (the frozen-evidence classification it honours); `ADR-0010`
   (`CERTIFIED_PRODUCTION_VARGAS` as the ratified registry authority).
 
+#### Addendum to ADR-0094: independent audit defects D-1 to D-4 remediated (2026-09-05)
+
+Append-only. `ADR-0094`'s own text above is unedited; this addendum records what the
+independent CEO audit of commit `8a47add` found and what was changed in response, per the
+owner's "CEO AUTHORIZATION - REMEDIATE CAPABILITY-STATE GATE D-1 THROUGH D-4" instruction.
+
+**D-4, the correction this addendum owes the record.** `ADR-0094` section 1 describes the
+gate's certification input as "the runner-regenerated `certification/*.json` `result`
+fields". That overstates what the gate does. **Corrected statement:** the gate reads the
+**committed certification artifact files** and inherits whatever currency they have. It does
+not regenerate them; `check_artifact_drift.py` proves only that they are unchanged since
+commit, never that they are current, and CI regenerating them is what keeps them true. It
+also reads a verdict at `result` **or** `summary.result`, not at `result` alone. The same
+wording has been corrected in `scripts/check_capability_state.py`'s own module docstring.
+
+**D-1, Tier-0 was silently outside the completeness universe.** `certification/
+current_engine_certification.json` (`ADR-0005`, the only s12 Locked artifact) records its
+verdict at `summary.result`; the original implementation looked only at a top-level `result`
+and skipped it in silence, so `ADR-0094` section 1's claim to use "the `certification/*.json`
+result fields" did not hold for the most foundational certification in the repository.
+**Resolved by schema-aware handling, not by classifying it frozen** - the repository evidence
+is decisive against the frozen reading: `scripts/certify_current_engine.py` is registered in
+`CERTIFIER_SOURCES` and is executed twice by `.github/workflows/ci.yml`, so the artifact is
+genuinely runner-regenerated live evidence. `_VERDICT_PATHS` now covers both schemas, the
+capability block accounts for `current_engine`, and - the structural half of the fix - any
+non-frozen artifact whose verdict cannot be located is now a hard failure (`F9`) rather than
+a silent skip, which is the only reason D-1 stayed hidden.
+
+**D-2, required keys were droppable.** Deleting or emptying `counts` or `non_claims` left the
+gate returning PASS while F5 and F3 were unreachable - a gate condition the audited document
+could switch off by omission, which is the "reported but never enforced" failure this gate
+was built in response to (`DP-032` Part G, Finding 2). `REQUIRED_KEYS` and `REQUIRED_COUNTS`
+now make every key mandatory (`F10`).
+
+**D-3, the non-claim vocabulary was unbounded.** An unknown or misspelled token silently
+exempted its line from F3: `kp_significator` (singular) passed while only `kp_significators`
+is mapped. `KNOWN_NON_CLAIMS` - the union of the refutable map and an explicit
+`UNREFUTABLE_NON_CLAIMS` set - now rejects any token outside it (`F11`), and a committed test
+asserts the two vocabularies stay disjoint.
+
+**Evidence.** Each newly protected failure was demonstrated through the real CLI against
+disposable copies before this addendum was written: Tier-0 omitted -> exit 1 `F6`; `counts`
+deleted -> exit 1 `F10`; `counts` emptied -> exit 1 `F10`; `non_claims` deleted -> exit 1
+`F10`; `kp_significator` -> exit 1 `F11`; `tier0` -> exit 1 `F11`; and the two original
+controls still fire (D40 removed -> `F1`; `yogas` -> `F3`), with the pristine block restored
+to exit 0. `engine/tests/test_capability_state_gate.py` grows 21 -> 39 tests. Full
+`python -m pytest -q` -> 937 passed. No certification artifact, certifier, validator,
+production registry, or CI file was changed; the gate remains **not** wired into CI.
+
 ---
 
 ## ADR template (copy, do not edit above the line)
