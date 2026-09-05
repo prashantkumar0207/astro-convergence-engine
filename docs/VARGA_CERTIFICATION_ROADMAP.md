@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | PROPOSED - research and planning only. No varga is authorised for implementation by this document. Pending owner ratification (docs/OPEN_QUESTIONS.md Q1). Section 5's own recommended order is this document's own unratified opinion, not a normative sequencing decision, until this document's own status changes. |
-| Version | 1.0.1 |
+| Version | 1.1.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-25 (section 2's B-01/B-02 status corrected - see Change history) |
+| Last updated | 2026-09-05 (section 2 current state reconciled against live evidence, `ADR-0093`; section 5 status-annotated) |
 | Review cadence | TBD |
 
 # Varga Certification Roadmap
@@ -30,13 +30,26 @@ express, and in what order they are least risky to attempt. It authorises nothin
 
 ## 2. Current state
 
-Certified: D1 (dedicated), D9 and D10 (dedicated modules, never routed through the registry), and
-D2, D3, D7, D12, D30 through the registry under the `parashara` school key. The sanctioned set is
-the single constant `engine.astrology.CERTIFIED_PRODUCTION_VARGAS`. Every other division raises
+*Current state reconciled against live repository evidence 2026-09-05, per `ADR-0093`. The prior text
+of this section listed five registry vargas and named D4, D16, D24, D40 and D45 as "not certified and
+not implemented"; that had become false for all five and is corrected below.*
+
+Certified **and production-registered**: D1 (dedicated), D9 and D10 (dedicated modules, never routed
+through the registry), and **eight** divisions through the registry under the `parashara` school key -
+D2, D3, D7, D12, D24, D30, D40, D45. The sanctioned set is the single constant
+`engine.astrology.CERTIFIED_PRODUCTION_VARGAS`. Every division outside these eleven raises
 `UnsupportedVargaError` by design.
 
-Not certified and not implemented: D4, D16, D20, D24, D27, D40, D45, D60, and every non-Parashara
-variant of every certified division.
+Certified **but deliberately NOT production-registered**: **D16** (`ADR-0089`) and **D4** (`ADR-0090`).
+Both hold PASS certification artifacts produced against standalone rules defined inside their own
+certifier scripts; neither has a production module, neither is in `CERTIFIED_PRODUCTION_VARGAS`, and
+neither is wired into CI. Production implementation for both is a separate, not-yet-given
+authorization. Certification is not registration.
+
+Not certified and not implemented: **D20, D27, D60**, and every non-Parashara variant of every
+certified division. Section 4 records that D20's and D60's rule content is genuinely disputed and
+D27's width needs ULP-sensitive treatment; none of the three is ready for selection on this
+document's own evidence.
 
 Two framework defects recorded by the 2026-08-11 audit must be resolved before the next varga is
 added, because both bear directly on the safety of adding one. B-01: the registry never checks that
@@ -108,6 +121,12 @@ require the independent reference to carry the tolerance explicitly rather than 
 
 This is a recommendation for owner decision, not a schedule.
 
+*Status annotation added 2026-09-05 (`ADR-0093`), current state only - the recommendation itself below
+is unedited. Of the six entries, **D45, D24 and D40 are certified and production-registered**, and
+**D16 and D4 are certified but not registered**; the owner's actual sequencing did not follow this
+list's order, which is this document's own unratified opinion and was never binding. **D60, D20 and
+D27 remain outstanding**, each still gated on the adjudication its own row names.*
+
 1. **D60**, once the even-sign reversal question is decided. Identity start, simplest shape.
 2. **D16 and D45**, sharing the movable/fixed/dual start triple.
 3. **D24 and D40**, the parity family.
@@ -151,5 +170,6 @@ proposals requiring their own decisions.
 
 | Version | Date | Change |
 |---|---|---|
+| 1.1.0 | 2026-09-05 | **Capability-state reconciliation, not a ratification** (`ADR-0093`, per the owner's "CEO AUTHORIZATION - CAPABILITY-STATE RECONCILIATION" instruction). Section 2's current state was materially false: it listed five registry vargas when eight are registered, and named D4, D16, D24, D40 and D45 as "not certified and not implemented" when D24/D40/D45 are production-registered and D16/D4 hold PASS certification artifacts without registration. Corrected with the prior text's error stated inline rather than silently replaced, per this document's own 1.0.1 practice. Section 5 gained a status annotation recording which of its six entries are complete; the recommendation itself is unedited and remains this document's own unratified opinion. Sections 1, 3, 4, 6, 7 and 8 unchanged. `Status: PROPOSED` unchanged - this document still authorises nothing. D20/D27/D60 not worked on; `DP-024` not resolved. |
 | 1.0.1 | 2026-08-25 | **Correction, not a ratification.** Section 2's claim that B-01/B-02 "must be resolved before the next varga is added" was stale - both were remediated by `ADR-0049` (`Status: ACCEPTED`, 2026-08-17), confirmed live in current `engine/astrology/varga_registry.py`/`varga_rules.py` code this correction. A note is added inline (section 2) rather than rewriting the original paragraph, per this repository's practice of correcting rather than silently editing stale text. Status header clarified: section 5's recommended order remains this document's own unratified opinion, not normative, until the document's own status changes - it is not treated as ratified by this correction. Found and corrected per `docs/decisions/DP-023-jataka-first-capability-exact-selection.md` and the owner's explicit "audit the stale VARGA_CERTIFICATION_ROADMAP.md against the accepted ADRs and correct its status only through the appropriate append-only governance mechanism" instruction (2026-08-25). No other content changed; `Status: PROPOSED` unchanged - this document remains unratified and authorises nothing, exactly as before. |
 | 1.0.0 | 2026-08-11 | Created in the G1 work package from the 2026-08-11 architecture audit. |

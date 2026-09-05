@@ -7591,6 +7591,119 @@ adopted here; it remains available as a separate, wider decision if the owner ev
 
 ---
 
+## ADR-0093 - Capability-state reconciliation: the corrected statement of what this repository currently certifies, and the document corrections it authorizes (ACCEPTED)
+
+- **Date:** 2026-09-05
+- **Status:** ACCEPTED. The owner instructed: "CEO AUTHORIZATION - CAPABILITY-STATE RECONCILIATION.
+  `ADR-0092` is accepted and `DP-034` is addressed. Proceed with the next phase: reconcile the
+  repository's current capability statements against the already-established live evidence. Correct the
+  documented current state for: `docs/ENGINE_STATUS.md`; relevant current-state sections of `README.md`;
+  the current-state portions of `VARGA_CERTIFICATION_ROADMAP.md`; `OPEN_QUESTIONS.md` Q10/Q25 where the
+  existing premises are now factually stale. Record the governing capability-state decision in the
+  appropriate ADR/decision-log entry before or alongside the remediation... The corrected state must
+  accurately distinguish: production-registered vargas: D2, D3, D7, D12, D24, D30, D40, D45; certified
+  but not production-registered: D16 and D4; certified Parashari Yoga capability; certified KP
+  significator capability; planet strength remaining unimplemented; any other capability claims only
+  where directly supported by the live repository evidence." Per `docs/PROJECT_CONSTITUTION.md` s11, this
+  instruction is the ratifying act.
+- **Context:** the read-only capability-claim reconciliation audit of 2026-09-05 established that the
+  repository's reader-facing status documents made claims that were not merely stale but, in four cases,
+  **affirmatively false**: they denied capabilities that hold PASS certification artifacts. `ADR-0092`
+  then classified `certification/ENGINE_CAPABILITY_INVENTORY.json` as frozen dated historical evidence,
+  removing it from consideration as a live source. This entry establishes the corrected capability
+  statement from live evidence and authorizes the document corrections that follow from it.
+
+### 1. The corrected capability statement, from live sources only
+
+Every claim below was re-derived at commit `27ba54f` by executing or reading the source named, never by
+reading a document.
+
+**Production-registered vargas served through the generic registry - eight**, from
+`engine.astrology.CERTIFIED_PRODUCTION_VARGAS` (`ADR-0010`'s ratified single source of truth for
+sanctioned registry state): **D2** (`ADR-0011`), **D3** (`ADR-0009`), **D7** (`ADR-0011`), **D12**
+(`ADR-0010`), **D24** (`ADR-0083`), **D30** (`ADR-0011`), **D40** (`ADR-0087`), **D45** (`ADR-0077`),
+each under the `parashara` school key. D1, D9 and D10 remain served by their own dedicated production
+modules and are never routed through the registry.
+
+**Certified but NOT production-registered - two**: **D16** (`ADR-0089`,
+`certification/VARGA_D16_V1_certification.json`, PASS) and **D4** (`ADR-0090`,
+`certification/VARGA_D4_V1_certification.json`, PASS). Both were certified as standalone rules
+instantiated inside their own certifier scripts. Neither `engine/astrology/varga_d16.py` nor
+`engine/astrology/varga_d4.py` exists; neither appears in `CERTIFIED_PRODUCTION_VARGAS`; neither is
+wired into `.github/workflows/ci.yml`. **Production implementation for both remains explicitly
+unauthorized.** `divisional_chart(snapshot, 16)` and `divisional_chart(snapshot, 4)` continue to raise
+`UnsupportedVargaError`, correctly.
+
+**Other certified capabilities holding PASS artifacts:** `KP_CHAIN_V1` (`ADR-0006`),
+**`KP_SIGNIFICATOR_V1` (`ADR-0078`, certification-integrity repair `ADR-0079`)**,
+**`PARASHARI_YOGA_V1` (`ADR-0081`)**, `PARASHARI_DRISHTI_V1` (`ADR-0012`), `VIMSHOTTARI_V1`
+(`ADR-0007`), `TRANSIT_V1` (`ADR-0008`), `RISE_SET_V1` (`ADR-0054`), `PANCHANGA_V1` (`ADR-0055`),
+`TRIKALAM_V1` (`ADR-0060`), `SIGN_CONVENTION_V1` (`ADR-0012`), plus the Tier-0 `current_engine`
+certification (`ADR-0005`).
+
+**Still not implemented, verified in code:** planetary strength. `engine/astrology/planet_strength.py`
+raises `NotImplementedError` by design, and its own docstring records why a placeholder `0.0` was
+removed. **This non-claim remains true and is preserved unchanged.**
+
+**Counts, live:** 898 tests; 22 registered certifier sources; 21 registered validator sources.
+
+### 2. The four affirmatively false claims this entry corrects
+
+1. `docs/ENGINE_STATUS.md` - "no yogas, strengths, or interpretation of any kind." False as to **yogas**
+   since `PARASHARI_YOGA_V1`. True as to strengths and interpretation, which are preserved.
+2. `docs/ENGINE_STATUS.md` - "Nothing in the repository claims KP significators, four-step, ruling
+   planets, or horary." False as to **KP significators** since `KP_SIGNIFICATOR_V1`. True as to
+   four-step, ruling planets and horary, which are preserved.
+3. `README.md` - "yogas, and interpretation are non-claims." Same defect as 1.
+4. `docs/VARGA_CERTIFICATION_ROADMAP.md` section 2 - "Not certified and not implemented: D4, D16, D20,
+   D24, D27, D40, D45, D60." False as to **D24, D40, D45** (production-registered) and as to **D16, D4**
+   (certified, not registered). True only for D20, D27 and D60.
+
+Stale-but-not-false claims corrected alongside them: the five-varga registry lists in all three
+documents; `ENGINE_STATUS.md`'s "372 tests / eleven validators / eleven certification runners"; and
+`README.md`'s "The ratified roadmap is still OPEN (`Q8`)", which `ADR-0048` resolved on 2026-08-17.
+
+### 3. `OPEN_QUESTIONS.md` Q10 and Q25: premises corrected, status deliberately NOT changed
+
+Q10's premise ("no provider is chosen") and Q25's premise ("the only remote-CI evidence attests the
+two-job workflow... no run record exists for the three-job workflow") are both factually superseded:
+`.github/workflows/ci.yml` defines three jobs (`hermetic`, `oracle`, `governance`), the hermetic job
+running a two-version Python matrix, and green run records for that workflow are recorded throughout
+this register.
+
+**Both rows keep their OPEN status.** Correcting a factual premise is a documentation act; declaring a
+question RESOLVED is an owner act, and this entry does not perform it - `docs/OPEN_QUESTIONS.md`'s own
+rule is that ratification is per-entry. The premises are annotated in the register's established inline
+style, exactly as Q14's row already carries a dispositioning annotation. Whether Q10 and Q25 are now
+answerable is left to the owner.
+
+### 4. What this entry does not do
+
+Does not modify `certification/ENGINE_CAPABILITY_INVENTORY.json` (`ADR-0092` classifies it as frozen
+dated historical evidence, and it is untouched). Does not implement or design the capability-consistency
+gate. Does not modify `.github/workflows/ci.yml` or any certifier, validator, test, or certification
+artifact. Does not implement D16 or D4 production support. Does not touch D20, D27, D60, `DP-024`,
+`Q12`, or the deferred Queue B adjacent observations. Does not push, open a PR, or merge. Changes no
+certified value: this entry and its accompanying corrections are documentation only.
+
+- **Consequences:** the repository's reader-facing documents now state its certified capability
+  correctly, and the JATAKA exit criterion ("no capability is in use that a certification artifact does
+  not cover") becomes evaluable against them for the first time since 2026-08-09. The structural cause
+  remains unaddressed by design: **no mechanical gate detects divergence between documented claims and
+  live state**, so this class of drift can recur. The reconciliation audit's proposed gate is a separate,
+  not-yet-given authorization. `docs/ACE_EXECUTION_STATE.md` and `reports/AI_HANDOFF_CURRENT.md` remain
+  stale against their own refresh disciplines and are out of this entry's authorized scope.
+- **Evidence:** live re-derivation at `27ba54f` of `CERTIFIED_PRODUCTION_VARGAS` (eight pairs), the
+  twenty PASS `certification/*.json` artifacts and their `adr` fields, `CERTIFIER_SOURCES`/
+  `VALIDATOR_SOURCES` (22/21), the absence of `engine/astrology/varga_d16.py` and `varga_d4.py`, the
+  absence of any `certify_d16`/`certify_d4` reference in `.github/workflows/ci.yml`,
+  `engine/astrology/planet_strength.py`'s `NotImplementedError`, `.github/workflows/ci.yml`'s three job
+  definitions parsed directly, and `python -m pytest -q` -> 898 passed; the 2026-09-05 read-only
+  reconciliation audit that enumerated the discrepancies; `ADR-0092` (inventory classification);
+  `ADR-0048` (Q8 resolved); the owner's authorizing instruction, quoted above.
+
+---
+
 ## ADR template (copy, do not edit above the line)
 
 ## ADR-XXXX - <title>
