@@ -3,10 +3,10 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | OPEN - decision paper. Presents options and recommends one. DECIDES NOTHING. Requires owner approval. Does not reconcile any document, regenerate any artifact, implement or design a gate, wire CI, or resolve `Q12`. |
-| Version | 1.0.0 |
+| Status | **ADDRESSED by `ADR-0092`** (2026-09-05): the owner accepted Option 2 - `certification/ENGINE_CAPABILITY_INVENTORY.json` is frozen dated historical evidence, not a live current-state register, is not a current source of truth, and must not be used by any future capability-consistency gate as a live-state authority. Option 2's in-file label was expressly NOT authorized ("Do not modify `ENGINE_CAPABILITY_INVENTORY.json`"), so `ADR-0092` is currently the only record of the classification. `Q12`/`LOCK_MANIFEST.json` deliberately not resolved or altered; Option 4 not adopted. The paper below remains unedited as the options record. |
+| Version | 1.1.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-09-05 |
+| Last updated | 2026-09-05 (status only: Option 2 accepted, `ADR-0092`) |
 | Review cadence | TBD |
 
 # DP-034. Classification of `certification/ENGINE_CAPABILITY_INVENTORY.json`: live current-state register, or frozen dated historical evidence?
@@ -297,4 +297,5 @@ work, D20/D27/D60 work, or resolve `DP-024`. Does not push, open a PR, or merge.
 
 | Version | Date | Change |
 |---|---|---|
+| 1.1.0 | 2026-09-05 | **Status header only** - Option 2 accepted by the owner and recorded as `ADR-0092`. Sections 0-7 and the 1.0.0 change-history row below are unedited, confirmed by diff: the paper remains the options record exactly as drafted, per the `DP-015`-`DP-020` convention. |
 | 1.0.0 | 2026-09-05 | Created under the owner's "CEO AUTHORIZATION - BEGIN DP-034" instruction. Presents four options for classifying `certification/ENGINE_CAPABILITY_INVENTORY.json` (live register / frozen dated evidence / leave open / joint rule with `Q12`), the measured divergence (eleven wrong capability statuses against the file's own scale), its self-declared snapshot fields, its contradictory position inside `check_artifact_drift.py`'s scope with no regenerating runner, and the `Q12`/`LOCK_MANIFEST.json` precedent including `ADR-0027` D5 and finding C-04. Recommends Option 2 at MEDIUM-HIGH confidence, with the counter-argument stated. Decides nothing. |

@@ -7477,6 +7477,120 @@ not authorize engine development, and no such authorization may be inferred from
 
 ---
 
+## ADR-0092 - `certification/ENGINE_CAPABILITY_INVENTORY.json` classified as frozen dated historical evidence, not a live current-state register (`DP-034` Option 2) (ACCEPTED)
+
+- **Date:** 2026-09-05
+- **Status:** ACCEPTED. The owner instructed: "CEO DECISION - DP-034 OPTION 2 ACCEPTED. I accept
+  `DP-034`'s recommended Option 2. `certification/ENGINE_CAPABILITY_INVENTORY.json` is to be treated as
+  frozen, dated historical evidence, not a live current-state register. Record this decision in the
+  appropriate repository governance record/ADR, preserving the file's historical date, originating commit,
+  audit provenance, and its distinction from the live sanctioned capability sources. Explicitly state that
+  the inventory is not a current source of truth and must not be used by the future capability-consistency
+  gate as a live-state authority. Address the relationship to `Q12` precisely, but do not resolve or alter
+  `Q12` itself unless already authorized by the decision. Do not modify
+  `ENGINE_CAPABILITY_INVENTORY.json`." Per `docs/PROJECT_CONSTITUTION.md` s11, this instruction is the
+  ratifying act.
+- **Context:** `docs/decisions/DP-034-engine-capability-inventory-classification.md` (v1.0.0, commit
+  `c273727`) put one question to the owner: is this file a live current-state register that must be
+  regenerated and enforced, or frozen dated historical evidence that must be labelled and excluded from
+  current-state enforcement? The question arose from the read-only capability-claim reconciliation audit of
+  2026-09-05, which found the file diverged from actual state in at least eleven capability statuses while
+  sitting inside `scripts/check_artifact_drift.py`'s `certification/*.json` scope with no runner
+  regenerating it. `DP-034` recommended Option 2 at MEDIUM-HIGH confidence and presented three
+  alternatives, including one it explicitly did not recommend and one outside its own authorized scope.
+
+### 1. The classification, decided
+
+`certification/ENGINE_CAPABILITY_INVENTORY.json` **is frozen, dated historical evidence**: the
+machine-readable companion to `reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md`. It is **not** a live
+current-state register, is not to be regenerated on capability change, and is not stale - under this
+classification its contents are a correct record of what was true on its own stated date, not an
+out-of-date record of today.
+
+**Provenance preserved, and to be preserved by any future handling of this file:**
+
+| Property | Value, as recorded in the file itself |
+|---|---|
+| Historical date | `2026-08-11` |
+| Originating commit | `c5a2712ff4a3c5c3145730bfc1e4e5bc9f41c260` |
+| Audit provenance | `reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md` |
+| Compiling method | "Compiled by reading the repository, not by reading its documents... the audit of 2026-08-11 found the gate proves less than claimed" |
+| Its own internal status field | `PROPOSED - pending owner ratification (docs/OPEN_QUESTIONS.md Q1)` |
+
+**This entry classifies the artifact. It does not ratify the artifact's contents.** The file's own
+internal `status` field remains part of the frozen 2026-08-11 record and is not edited, not resolved, and
+not converted to ACCEPTED by this decision.
+
+### 2. Not a current source of truth; excluded from live-state enforcement
+
+The inventory **is not a current source of truth for any purpose** and **must not be used by any future
+capability-consistency gate as a live-state authority.** Any such gate must name it in its exclusion list,
+alongside the other non-current material, and must draw live state only from the sanctioned live sources:
+
+- **`engine.astrology.CERTIFIED_PRODUCTION_VARGAS`** - already ratified as "the single source of truth for
+  sanctioned registry state" (`ADR-0010`);
+- **the `certification/*.json` artifacts that a named runner regenerates from scratch on every
+  invocation**, read for their own result fields;
+- **`scripts/certification_support.py`'s `CERTIFIER_SOURCES` / `VALIDATOR_SOURCES`.**
+
+The distinction is exactly the one `.claude/rules/certification.md` already states: a stored artifact is
+history, not proof. The inventory is history by decision, not merely by age.
+
+### 3. Relationship to `Q12` / `LOCK_MANIFEST.json`, stated precisely
+
+**`Q12` is not resolved, not altered, and not touched by this entry, and `LOCK_MANIFEST.json` is not
+edited.** `Q12` remains OPEN exactly as `docs/OPEN_QUESTIONS.md` records it; `ADR-0027` D5 and audit
+finding C-04 stand unchanged, including the undischarged `ADR-0006` KP_CHAIN-entry consequence that
+finding C-04 records.
+
+**This decision sets no precedent binding `Q12`, and must not be cited as one.** `DP-034` section 3.1
+established six material differences between the two files, and they cut in opposite directions: the
+inventory carries its own date, originating commit, past-tense compiling method and audit reference -
+which is what a frozen snapshot looks like - but sits inside the artifact-drift gate's scope and describes
+the *current* engine. `LOCK_MANIFEST.json` carries no status, date or commit field at all, asserts a
+`source_of_truth` key, sits *outside* that gate, and describes the *legacy* kernel exclusively (finding
+F-17). A future decision on `Q12` must be made on `LOCK_MANIFEST.json`'s own evidence, not by analogy to
+this one. `DP-034` Option 4 (a single standing rule resolving both together) was presented and is **not**
+adopted here; it remains available as a separate, wider decision if the owner ever wants it.
+
+### 4. Residual risks, disclosed rather than glossed
+
+1. **`DP-034` Option 2 as drafted included adding an explicit self-label to the file. That step was
+   expressly NOT authorized** - the owner's instruction says "Do not modify
+   `ENGINE_CAPABILITY_INVENTORY.json`." The file therefore continues to carry no in-file statement of its
+   own frozen status, and the risk `DP-034` named remains live and unmitigated except by this entry: a
+   future reader may still consult a file titled "capability inventory", living in `certification/`, as if
+   it were current. **This entry is currently the only record of the classification.** Whether to add the
+   in-file label later is a separate, not-yet-given authorization.
+2. **The file remains inside `scripts/check_artifact_drift.py`'s glob scope**, unchanged by this decision.
+   Its PASS there continues to mean "byte-identical to its committed self outside volatile fields" and
+   never "true" or "current". No gate scope is altered by this entry.
+3. **The eleven divergent capability statuses the 2026-09-05 audit measured are not defects** under this
+   classification - they are the 2026-08-11 record. They must not be cited as evidence of current
+   capability in either direction.
+4. The reconciliation audit's remaining discrepancies (the `ENGINE_STATUS.md` and `README.md` false
+   non-claims, the `VARGA_CERTIFICATION_ROADMAP.md` section 2 "not certified and not implemented" list,
+   the `OPEN_QUESTIONS.md` stale rows) are **untouched and remain fully open**. This decision removes one
+   ambiguity; it corrects no document.
+
+- **Consequences:** the repository now has a decided answer for one of its two undetermined-classification
+  files, and any future capability-consistency gate has an unambiguous instruction to exclude this file
+  and an explicit, ratified list of the live sources it may use instead. No certified rule, gate,
+  methodology, artifact, CI configuration, production registration, or capability is changed. The
+  repository still has **no** live capability inventory, by decision - `DP-034` Option 1 was not chosen,
+  and if such an inventory is ever wanted it is to be built from the live sources named in section 2, not
+  by reviving this file.
+- **Evidence:** `docs/decisions/DP-034-engine-capability-inventory-classification.md` v1.0.0, commit
+  `c273727f060bbbfe952c74478e5d167a32b732c3` (the paper this entry decides, including its measured
+  eleven-status divergence, its self-declaration table, and its section 3.1 comparison against
+  `LOCK_MANIFEST.json`); the file's own `status`/`date`/`commit`/`method`/`audit_reference` fields, read
+  directly; `scripts/check_artifact_drift.py`'s `git ls-files certification/*.json reports/certification/*`
+  scope, read directly; `ADR-0010` (`CERTIFIED_PRODUCTION_VARGAS` as the ratified single source of truth);
+  `ADR-0027` D5 and finding C-04 (the `Q12` precedent this entry deliberately does not extend); the
+  owner's decision instruction, quoted above.
+
+---
+
 ## ADR template (copy, do not edit above the line)
 
 ## ADR-XXXX - <title>
