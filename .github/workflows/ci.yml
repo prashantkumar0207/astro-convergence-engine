@@ -287,13 +287,30 @@ jobs:
       - name: Verify ephemeris asset checksums
         run: sha256sum --check CHECKSUMS.sha256
 
-      - name: Oracle certification runners (all twelve)
+      - name: Oracle certification runners (all thirteen)
+        # certify_d20.py added here (ADR-0095 certification; CI-wiring
+        # authorization 2026-09-07). D20's gate C is CONDITIONAL: a genuine
+        # PyJHora vimsamsa_chart(chart_method=1) comparison at zero categorical
+        # tolerance when the library is importable, disclosure-only when it is
+        # not. It belongs in this job, not the hermetic one, because only here
+        # does the oracle actually exist - and running it in both jobs would
+        # have each regenerate the same artifact with a different oracle block.
+        #
+        # EXPECTED ON THE FIRST CI RUN: the committed artifact was produced
+        # locally WITHOUT PyJHora, so this job regenerates it with
+        # oracle_executed=true plus comparison counts, and the drift assertion
+        # below will flag VARGA_D20_V1_certification.json. That is the genuine
+        # oracle evidence arriving, not a defect; capturing it needs a
+        # separately authorized CI-sourced recovery commit, exactly as the
+        # modules_scanned recoveries were handled. D20 remains STANDALONE: it
+        # is not in CERTIFIED_PRODUCTION_VARGAS and has no production module.
         run: |
           set -e
           for c in scripts/certify_d2.py \
                    scripts/certify_d3.py \
                    scripts/certify_d7.py \
                    scripts/certify_d12.py \
+                   scripts/certify_d20.py \
                    scripts/certify_d24.py \
                    scripts/certify_d30.py \
                    scripts/certify_d45.py \
