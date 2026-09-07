@@ -2,7 +2,7 @@
  "schema": "varga_d45_v1_certification",
  "adr": "ADR-0077",
  "supersedes_provisional_id": "NOTHING_AUTHORISED",
- "date": "2026-09-03",
+ "date": "2026-09-07",
  "scope": "D45 Akshavedamsa (Parashara variant, Traditional Parasara method / PyJHora chart_method=1). Registered in production through the generic registry (engine.astrology.varga_d45, VARGA_D45_V1), discoverable via engine.astrology.divisional_chart.divisional_chart(snapshot, 45).",
  "rule": {
   "kind": "CyclicVargaRule",
@@ -142,7 +142,7 @@
    }
   },
   "anti_fitting": {
-   "modules_scanned": 196,
+   "modules_scanned": 202,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."

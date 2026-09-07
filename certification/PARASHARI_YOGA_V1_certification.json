@@ -1,7 +1,7 @@
 {
  "schema": "parashari_yoga_v1_certification",
  "adr": "ADR-0081",
- "date": "2026-09-04",
+ "date": "2026-09-07",
  "scope": "PARASHARI_YOGA_V1: the five Panch Mahapurusha yogas (Ruchaka/Bhadra/Hamsa/Malavya/Sasa) - BPHS base formation rule only (own-sign-or-exaltation-sign AND kendra-to-Lagna, whole-sign) for a natal D1 chart under the PARASHARI_LAHIRI profile. Rule under certification is the REAL PRODUCTION module engine/parashari/mahapurusha_yoga.py, authorized by the owner's 'CEO AUTHORIZATION - PARASHARI_YOGA_V1 PRODUCTION IMPLEMENTATION' instruction and recorded in docs/DECISION_LOG.md under ADR-0081.",
  "rule": {
   "kind": "engine/parashari/mahapurusha_yoga.py - registered production module",
@@ -209,7 +209,7 @@
   "production implementation is scoped exactly to ADR-0081 - no convergence, UI, API, bhanga, combustion, strength, additional yoga, additional varga, or dasha integration exists in engine/parashari/mahapurusha_yoga.py"
  ],
  "environment": {
-  "python": "3.12.10"
+  "python": "3.11.16"
  },
  "preconditions": {
   "data_assets": {
@@ -221,7 +221,7 @@
    }
   },
   "anti_fitting": {
-   "modules_scanned": 196,
+   "modules_scanned": 202,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."
