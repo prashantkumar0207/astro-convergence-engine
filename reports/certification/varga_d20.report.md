@@ -18,7 +18,7 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 
 - **A_table_integrity**: cells=12, mismatches=0, content_sha256=efd08cea451084fedbe444c5473d6d50dfc589055b585f172e8a6e537668dac0
 - **B_dense_sweep**: points=51429, mismatches=0
-- **C_oracle**: oracle_executed=False, blocking=False, classification=disclosed_gap_not_correctness_evidence
+- **C_oracle**: oracle_executed=True, execution_tier=CI hash-pinned oracle environment (requirements-oracle.lock), blocking=False, package=PyJHora, version=4.8.7, function=vimsamsa_chart(chart_method=1, Traditional Parasara), comparisons=5400, mismatches=0, classification=genuine_external_oracle_agreement
 - **D_isolation**: certifier_never_imports_varga_registry_or_varga_d20=True, engine_astrology_varga_d20_absent=True, d20_absent_from_certified_production_vargas=True, registered_vargas_unchanged=8, content_sha256_matches_pinned=True
 - **E_independent_validator**: result=PASS, classification=corroborating_correctness_evidence
 - **F_boundary_cases**: exact_boundary_cases=228, ulp_probe_cases=1140, normalisation_cases=5, mismatches=0, verified_against=validate_d20_holdout.reference_d20() (imported directly), boundary_policy=inherited locked promote-up convention; no D20-specific exception
