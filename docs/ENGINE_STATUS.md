@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | CURRENT - regenerate on every certified change. Reconciled against live repository evidence 2026-09-05 per `ADR-0093`. Section 6's machine-readable capability block is now mechanically enforced against live sources by `scripts/check_capability_state.py` (`ADR-0094`); **the prose in sections 1-5 is not machine-checked and remains a manual discipline.** |
-| Version | 2.3.0 |
+| Version | 2.4.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-09-07 (D20 certified standalone under `ADR-0095`; capability block and prose updated) |
+| Last updated | 2026-09-07 (D20 PRODUCTION-REGISTERED under `ADR-0095`; registry now nine divisions) |
 | Review cadence | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 
 # Consolidated engine status
@@ -17,7 +17,7 @@ Purpose: the single current-state document for this project. Supersedes nothing;
 
 ## 1. How to verify everything in one sitting
 
-Clone the repository, install the pinned dependencies (`pyswisseph==2.10.3.2`, `pytest==9.1.1`, `tzdata==2025.2`; PyJHora plus its dependencies only if you intend to run the oracle certifiers), then run the default gate, the independent holdout validators, the legacy gate, and the certification runners. The README lists every command. Current reproduced results (2026-09-05): **952 tests pass**; **21 registered validator sources** and **22 registered certifier sources** (`scripts/certification_support.py`'s `VALIDATOR_SOURCES` / `CERTIFIER_SOURCES`); the legacy gate passes 5 of 5. The oracle-tier and `swetest`-dependent runners cannot execute on a Windows host - a documented, permanent platform limitation, not a regression - so full-battery regeneration is confirmed in CI rather than locally. The stored certification JSON files are never accepted as proof; each runner rebuilds its artifact from scratch on every invocation.
+Clone the repository, install the pinned dependencies (`pyswisseph==2.10.3.2`, `pytest==9.1.1`, `tzdata==2025.2`; PyJHora plus its dependencies only if you intend to run the oracle certifiers), then run the default gate, the independent holdout validators, the legacy gate, and the certification runners. The README lists every command. Current reproduced results (2026-09-05): **967 tests pass**; **21 registered validator sources** and **22 registered certifier sources** (`scripts/certification_support.py`'s `VALIDATOR_SOURCES` / `CERTIFIER_SOURCES`); the legacy gate passes 5 of 5. The oracle-tier and `swetest`-dependent runners cannot execute on a Windows host - a documented, permanent platform limitation, not a regression - so full-battery regeneration is confirmed in CI rather than locally. The stored certification JSON files are never accepted as proof; each runner rebuilds its artifact from scratch on every invocation.
 
 ## 2. Certified layers
 
@@ -25,9 +25,9 @@ The astronomical kernel is locked and Tier-0 certified. It runs strict Swiss Eph
 
 Two calculation profiles are ratified by recorded human sign-off and are the only path to an ayanamsa: `parashari_lahiri` (Lahiri) and `kp_krishnamurti` (Krishnamurti). They are mechanically proven to drive the computation, differing by the expected 5.811 arcminutes. Cross-system reuse of a snapshot computed under the other profile is forbidden, and the KP, dasha, and Parashari layers each enforce that in code by rejecting foreign-profile snapshots.
 
-Divisional charts: D1 Rashi with the documented whole-sign house rule, plus certified D9 Navamsa and D10 Dashamsa served by their own hard-wired production modules, never through the generic registry. **Eight further vargas are certified AND production-registered** through the Generic Varga registry under the `parashara` school key: D2 Hora (`ADR-0011`), D3 Drekkana (`ADR-0009`), D7 Saptamsa (`ADR-0011`), D12 Dwadasamsa (`ADR-0010`), D24 Siddhamsa (`ADR-0083`), D30 Trimsamsa (`ADR-0011`), D40 Khavedamsa (`ADR-0087`), and D45 Akshavedamsa (`ADR-0077`). Each carries its own ADR, dual-transcribed frozen rule table, dense sweep, ULP boundary battery, external oracle agreement or a disclosed corroboration gap, independent validator, and certification artifact. The sanctioned registry contents live in the single constant `engine.astrology.CERTIFIED_PRODUCTION_VARGAS`; every unregistered division still raises `UnsupportedVargaError` by design.
+Divisional charts: D1 Rashi with the documented whole-sign house rule, plus certified D9 Navamsa and D10 Dashamsa served by their own hard-wired production modules, never through the generic registry. **Nine further vargas are certified AND production-registered** through the Generic Varga registry under the `parashara` school key: D2 Hora (`ADR-0011`), D3 Drekkana (`ADR-0009`), D7 Saptamsa (`ADR-0011`), D12 Dwadasamsa (`ADR-0010`), D20 Vimsamsa (`ADR-0095`), D24 Siddhamsa (`ADR-0083`), D30 Trimsamsa (`ADR-0011`), D40 Khavedamsa (`ADR-0087`), and D45 Akshavedamsa (`ADR-0077`). Each carries its own ADR, dual-transcribed frozen rule table, dense sweep, ULP boundary battery, external oracle agreement or a disclosed corroboration gap, independent validator, and certification artifact. The sanctioned registry contents live in the single constant `engine.astrology.CERTIFIED_PRODUCTION_VARGAS`; every unregistered division still raises `UnsupportedVargaError` by design.
 
-**Certified but NOT production-registered: D16 Shodasamsa (`ADR-0089`), D4 Chaturthamsa (`ADR-0090`) and D20 Vimsamsa (`ADR-0095`).** All three hold PASS certification artifacts (`certification/VARGA_D16_V1_certification.json`, `certification/VARGA_D4_V1_certification.json`, `certification/VARGA_D20_V1_certification.json`), produced against standalone rules instantiated inside their own certifier scripts. None has a production module, none appears in `CERTIFIED_PRODUCTION_VARGAS`, and none is wired into CI. `divisional_chart(snapshot, 16)`, `divisional_chart(snapshot, 4)` and `divisional_chart(snapshot, 20)` therefore raise `UnsupportedVargaError`, correctly. **Production implementation for each is a separate, not-yet-given authorization.** Certification is not registration, and this repository does not treat it as such.
+**Certified but NOT production-registered: D16 Shodasamsa (`ADR-0089`) and D4 Chaturthamsa (`ADR-0090`).** Both hold PASS certification artifacts (`certification/VARGA_D16_V1_certification.json`, `certification/VARGA_D4_V1_certification.json`), produced against standalone rules instantiated inside their own certifier scripts. Neither has a production module, neither appears in `CERTIFIED_PRODUCTION_VARGAS`, and neither is wired into CI. `divisional_chart(snapshot, 16)` and `divisional_chart(snapshot, 4)` therefore raise `UnsupportedVargaError`, correctly. **Production implementation for both is a separate, not-yet-given authorization.** D20 followed exactly this path and has since been production-registered under `ADR-0095`. Certification is not registration, and this repository does not treat it as such.
 
 The KP layer (`engine/kp/`) provides exact-rational lordship chains (sign lord, star lord, sub lord, sub-sub lord) and KP fact charts under the KP profile, proven equivalent to the certified legacy kernel with zero categorical mismatches across a 51,429-point sweep, 19,679 boundary points, an eleven-case chart holdout, and the 200-field transcribed fixture set.
 
@@ -82,9 +82,9 @@ by hand, which the gate cannot check.
 <!-- CAPABILITY-BLOCK:BEGIN - machine-readable, parsed by scripts/check_capability_state.py. Do not edit the delimiters. -->
 ```json
 {
-  "production_registered_vargas": [2, 3, 7, 12, 24, 30, 40, 45],
+  "production_registered_vargas": [2, 3, 7, 12, 20, 24, 30, 40, 45],
   "dedicated_production_vargas": [1, 9, 10],
-  "certified_not_registered_vargas": [4, 16, 20],
+  "certified_not_registered_vargas": [4, 16],
   "not_certified_vargas": [27, 60],
   "certified_capabilities": [
     "current_engine",
@@ -123,6 +123,7 @@ by hand, which the gate cannot check.
 
 | Version | Date | Change |
 |---|---|---|
+| 2.4.0 | 2026-09-07 | **D20 Vimsamsa production implementation (`ADR-0095`).** `engine/astrology/varga_d20.py` created and registered; `CERTIFIED_PRODUCTION_VARGAS` grows 8 -> 9 divisions. The certifier was revised to certify the REGISTERED rule (gate D isolation -> non-invasiveness) and re-run: nine gates PASS, content hash `efd08cea...dac0` unchanged. Capability block: D20 moved from `certified_not_registered_vargas` to `production_registered_vargas`. Prose updated to match. D16 and D4 remain certified-but-unregistered. |
 | 2.3.0 | 2026-09-07 | D20 Vimsamsa certified as a STANDALONE, unregistered rule under `ADR-0095` (`certification/VARGA_D20_V1_certification.json`, nine gates PASS). Capability block: D20 moved from `not_certified_vargas` to `certified_not_registered_vargas`; counts 22/21 -> 23/22 for the newly registered certifier and validator sources. Prose updated to match. D20 remains absent from `CERTIFIED_PRODUCTION_VARGAS`; production implementation and CI wiring remain unauthorized. |
 | 2.2.1 | 2026-09-05 | Reproduced test count 937 -> 952, raised by the 15 controls committed with the B-1/B-2 gate remediation (second addendum to `ADR-0094`). No capability claim changed; the block itself is unchanged. |
 | 2.2.0 | 2026-09-05 | Capability block gains `current_engine`, the Tier-0 astronomical-kernel certification (`ADR-0005`). The independent CEO audit of the gate found it silently excluded from the completeness universe (defect D-1) because it records its verdict at `summary.result` rather than at top level; the gate now reads both paths and the block accounts for it. Reproduced test count 919 -> 937, raised by the 18 new controls committed with the D-1/D-2/D-3 remediation. No other claim changed. |

@@ -6,20 +6,20 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 - Decision entry: ADR-0095
 - Supersedes provisional identifier: NOTHING_AUTHORISED
 - Date: 2026-09-07
-- Scope: D20 Vimsamsa, Parashara/BPHS Reading E. Rule under certification is a STANDALONE, UNREGISTERED CyclicVargaRule instance embedded in this certifier - not engine/astrology/varga_d20.py, which does not exist. No production module, registration or CI wiring is authorized or created by this execution.
+- Scope: D20 Vimsamsa, Parashara/BPHS Reading E. Rule under certification is the PRODUCTION, REGISTERED rule in engine/astrology/varga_d20.py, imported directly - not a standalone reproduction of it. This artifact therefore evidences that the actual production code produces the certified rule. The earlier standalone certification remains as historical evidence in git history; it is not overwritten in meaning, only superseded in stage.
 - Result: **PASS**
 
 ## Preconditions
 
 - Data assets verified against CHECKSUMS.sha256: 3
-- Anti-fitting scan: 202 production modules, 0 findings
+- Anti-fitting scan: 203 production modules, 0 findings
 
 ## Gates
 
 - **A_table_integrity**: cells=12, mismatches=0, content_sha256=efd08cea451084fedbe444c5473d6d50dfc589055b585f172e8a6e537668dac0
 - **B_dense_sweep**: points=51429, mismatches=0
-- **C_oracle**: oracle_executed=True, execution_tier=CI hash-pinned oracle environment (requirements-oracle.lock), blocking=False, package=PyJHora, version=4.8.7, function=vimsamsa_chart(chart_method=1, Traditional Parasara), comparisons=5400, mismatches=0, classification=genuine_external_oracle_agreement
-- **D_isolation**: certifier_never_imports_varga_registry_or_varga_d20=True, engine_astrology_varga_d20_absent=True, d20_absent_from_certified_production_vargas=True, registered_vargas_unchanged=8, content_sha256_matches_pinned=True
+- **C_oracle**: oracle_executed=False, blocking=False, classification=disclosed_gap_not_correctness_evidence
+- **D_non_invasiveness**: d20_registered=True, registered_object_is_the_certified_module_constant=True, registered_vargas_total=9, content_sha256_matches_pinned=True
 - **E_independent_validator**: result=PASS, classification=corroborating_correctness_evidence
 - **F_boundary_cases**: exact_boundary_cases=228, ulp_probe_cases=1140, normalisation_cases=5, mismatches=0, verified_against=validate_d20_holdout.reference_d20() (imported directly), boundary_policy=inherited locked promote-up convention; no D20-specific exception
 - **G_protected_holdout**: points=26278, mismatches=0, verified_against=validate_d20_holdout.reference_d20() (imported directly)
@@ -29,7 +29,7 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 ## Explicit non-claims
 
 - oracle execution is conditional: genuine PyJHora comparison when the library is importable (CI's hash-pinned oracle job), disclosure-only otherwise. The gates block records which actually happened - a local disclosure run is never presented as oracle verification
-- no production implementation, no engine/astrology/varga_d20.py, no entry in CERTIFIED_PRODUCTION_VARGAS - divisional_chart(snapshot, 20) still raises UnsupportedVargaError, correctly
+- D20 is now production-registered under ADR-0095; this artifact certifies the REGISTERED rule. Production certification rests on THIS evidence, never on the earlier standalone artifact merely having passed
 - any per-division deity/label payload (VargaClassification carries only D-sign, division index and fraction; the vimsamsa deities are out of scope under the ADR-0089 precedent, so DP-024 is neither required nor resolved)
 - the three non-default PyJHora chart_method variants (Parivritti Even Reverse, Parivritti Cyclic, Somanatha Parivritti Alternate) - excluded
 - ADR-0095's Variant F - excluded as methodology but NOT refuted as a reading

@@ -431,7 +431,7 @@ def test_dispatcher_rejects_unimplemented_vargas_with_and_without_school():
     # D45 removed: certified and registered (ADR-0077, VARGA_D45_V1).
     # D24 removed: certified and registered (ADR-0082/0083, VARGA_D24_V1).
     # D40 removed: certified and registered (ADR-0087, VARGA_D40_V1).
-    for division in (4, 16, 20, 27, 60):
+    for division in (4, 16, 27, 60):  # D20 removed: certified AND registered (ADR-0095)
         with pytest.raises(UnsupportedVargaError):
             divisional_chart(snapshot, division)
 

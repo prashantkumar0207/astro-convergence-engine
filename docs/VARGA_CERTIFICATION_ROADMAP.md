@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | PROPOSED - research and planning only. No varga is authorised for implementation by this document. Pending owner ratification (docs/OPEN_QUESTIONS.md Q1). Section 5's own recommended order is this document's own unratified opinion, not a normative sequencing decision, until this document's own status changes. |
-| Version | 1.2.0 |
+| Version | 1.3.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-09-07 (section 2: D20 moved to certified-but-not-registered following `ADR-0095`) |
+| Last updated | 2026-09-07 (section 2: D20 production-registered; registry now nine divisions) |
 | Review cadence | TBD |
 
 # Varga Certification Roadmap
@@ -35,16 +35,17 @@ of this section listed five registry vargas and named D4, D16, D24, D40 and D45 
 not implemented"; that had become false for all five and is corrected below.*
 
 Certified **and production-registered**: D1 (dedicated), D9 and D10 (dedicated modules, never routed
-through the registry), and **eight** divisions through the registry under the `parashara` school key -
-D2, D3, D7, D12, D24, D30, D40, D45. The sanctioned set is the single constant
-`engine.astrology.CERTIFIED_PRODUCTION_VARGAS`. Every division outside these eleven raises
+through the registry), and **nine** divisions through the registry under the `parashara` school key -
+D2, D3, D7, D12, D20, D24, D30, D40, D45. The sanctioned set is the single constant
+`engine.astrology.CERTIFIED_PRODUCTION_VARGAS`. Every division outside these twelve raises
 `UnsupportedVargaError` by design.
 
-Certified **but deliberately NOT production-registered**: **D16** (`ADR-0089`), **D4** (`ADR-0090`) and **D20** (`ADR-0095`, certified 2026-09-07).
-All three hold PASS certification artifacts produced against standalone rules defined inside their own
-certifier scripts; none has a production module, none is in `CERTIFIED_PRODUCTION_VARGAS`, and none is
-wired into CI. Production implementation for each is a separate, not-yet-given authorization.
-Certification is not registration.
+Certified **but deliberately NOT production-registered**: **D16** (`ADR-0089`) and **D4** (`ADR-0090`).
+Both hold PASS certification artifacts produced against standalone rules defined inside their own
+certifier scripts; neither has a production module, neither is in `CERTIFIED_PRODUCTION_VARGAS`, and
+neither is wired into CI. Production implementation for each is a separate, not-yet-given
+authorization. Certification is not registration. **D20 followed exactly this path and completed it**:
+certified standalone (`ADR-0095`), CI-oracle verified, then production-registered 2026-09-07.
 
 Not certified and not implemented: **D27 and D60**, and every non-Parashara variant of every
 certified division. Section 4's dispute record stands for both: `DP-035` found D60 carries two
@@ -171,6 +172,7 @@ proposals requiring their own decisions.
 
 | Version | Date | Change |
 |---|---|---|
+| 1.3.0 | 2026-09-07 | Section 2 updated for D20's production implementation (`ADR-0095`): D20 moved from certified-but-not-registered into the production registry, which now serves nine divisions. D16 and D4 remain certified-but-unregistered; D27 and D60 remain not certified, with `DP-035`'s `NOT_READY` verdict for D60 unchanged. Sections 1, 3-8 unchanged; `Status: PROPOSED` unchanged. |
 | 1.2.0 | 2026-09-07 | Section 2 current state updated following `ADR-0095` and D20's standalone certification: D20 moved out of "not certified and not implemented" into the certified-but-not-registered set alongside D16/D4. D60 and D27 remain not certified, with `DP-035`'s `NOT_READY` verdict for D60 recorded. Sections 1, 3-8 unchanged; `Status: PROPOSED` unchanged - this document still authorises nothing. |
 | 1.1.0 | 2026-09-05 | **Capability-state reconciliation, not a ratification** (`ADR-0093`, per the owner's "CEO AUTHORIZATION - CAPABILITY-STATE RECONCILIATION" instruction). Section 2's current state was materially false: it listed five registry vargas when eight are registered, and named D4, D16, D24, D40 and D45 as "not certified and not implemented" when D24/D40/D45 are production-registered and D16/D4 hold PASS certification artifacts without registration. Corrected with the prior text's error stated inline rather than silently replaced, per this document's own 1.0.1 practice. Section 5 gained a status annotation recording which of its six entries are complete; the recommendation itself is unedited and remains this document's own unratified opinion. Sections 1, 3, 4, 6, 7 and 8 unchanged. `Status: PROPOSED` unchanged - this document still authorises nothing. D20/D27/D60 not worked on; `DP-024` not resolved. |
 | 1.0.1 | 2026-08-25 | **Correction, not a ratification.** Section 2's claim that B-01/B-02 "must be resolved before the next varga is added" was stale - both were remediated by `ADR-0049` (`Status: ACCEPTED`, 2026-08-17), confirmed live in current `engine/astrology/varga_registry.py`/`varga_rules.py` code this correction. A note is added inline (section 2) rather than rewriting the original paragraph, per this repository's practice of correcting rather than silently editing stale text. Status header clarified: section 5's recommended order remains this document's own unratified opinion, not normative, until the document's own status changes - it is not treated as ratified by this correction. Found and corrected per `docs/decisions/DP-023-jataka-first-capability-exact-selection.md` and the owner's explicit "audit the stale VARGA_CERTIFICATION_ROADMAP.md against the accepted ADRs and correct its status only through the appropriate append-only governance mechanism" instruction (2026-08-25). No other content changed; `Status: PROPOSED` unchanged - this document remains unratified and authorises nothing, exactly as before. |

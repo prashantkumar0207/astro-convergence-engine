@@ -8086,6 +8086,85 @@ authorization, exactly as `ADR-0089`/`ADR-0090` required for D16/D4. Does not to
 - **Evidence:** the owner's ratifying instruction, quoted above; `ADR-0095` itself, commit `098dda8`;
   `docs/decisions/DP-035-...md` v1.1.0 (the readiness paper and its D60 research addendum).
 
+#### Addendum to ADR-0095: D20 production implementation executed (2026-09-07)
+
+Append-only. `ADR-0095`'s own text, its frozen methodology, its Variant F record, its section 4
+uncertainty statement and its ratification sub-entry are all unedited. This addendum records the
+separate authorization `ADR-0095` section 6 said would be required, and its execution.
+
+- **Status:** ACCEPTED. The owner instructed: "CEO AUTHORIZATION - D20 PRODUCTION IMPLEMENTATION...
+  Proceed to the D20 production implementation stage... The production implementation must be
+  demonstrably equivalent to the ratified ADR-0095 rule... Do not claim production certification merely
+  because the existing standalone artifact passed. The production implementation must undergo the
+  appropriate registered-rule certification/re-certification so the evidence demonstrates that the
+  actual production code produces the certified rule. Preserve the existing standalone and CI
+  certification artifacts as historical evidence." Per `docs/PROJECT_CONSTITUTION.md` s11, this
+  instruction is the ratifying act. The prior stage's own evidence - CI run `34115135184`, all four jobs
+  green, genuine PyJHora 4.8.7 oracle agreement over 5,400 comparisons with 0 mismatches - is what the
+  owner accepted before authorizing this stage.
+
+**1. What was built.** `engine/astrology/varga_d20.py`, mirroring `varga_d40.py`'s structure exactly:
+the frozen `D20_VIMSAMSA = CyclicVargaRule(divisions=20, start_sign=(0,8,4,0,8,4,0,8,4,0,8,4),
+direction=(1,)*12)`, `D20_SCHOOL = "parashara"`, an idempotent `ensure_registered()` and a module-level
+call to it. Registered in `engine/astrology/__init__.py` and added to `CERTIFIED_PRODUCTION_VARGAS`,
+which grows **8 -> 9 pairs**, `(20, "parashara")` slotting between D12 and D24 in the order
+`registered_vargas()` returns.
+
+**2. Equivalence to the ratified rule, verified rather than asserted.** The production module's content
+hash is `efd08cea451084fedbe444c5473d6d50dfc589055b585f172e8a6e537668dac0` - **identical** to the value
+`ADR-0095` froze and `scripts/certify_d20.py` has enforced since the standalone stage. `start_sign` and
+`direction` were read back from the live registry and compared against the ratified tuple directly.
+Divisions 20, width exactly 1.5 degrees, `parashara`, inherited promote-up convention: all unchanged.
+
+**3. Re-certification against the REGISTERED rule, not the standalone reference.**
+`scripts/certify_d20.py` was revised, mirroring `certify_d24.py`/`certify_d40.py`'s own
+production-stage revision: it now imports the real `D20_VIMSAMSA` from `engine/astrology/varga_d20.py`
+instead of embedding a copy, and **gate D flips from isolation to non-invasiveness** - it now proves
+D20 IS registered, that the registered object IS the certified module constant, that the content-hash
+pin still holds (enforced with `fail()`), that all eight pre-existing production vargas are
+byte-for-byte unaffected, and that D1/D9/D10 remain served by their dedicated modules. Nine gates PASS.
+**Production certification rests on this evidence, not on the standalone artifact having passed.**
+
+**4. Variant F did not silently become an alternative production interpretation.** `ADR-0095` section 3
+is preserved verbatim: Variant F remains **attested and NOT refuted**, excluded as methodology only.
+Three independent guards now exist - the certifier's gate H plants it as a negative control; the new
+`engine/tests/test_varga_d20.py::test_production_rule_is_not_the_excluded_variant_f` proves the
+registered rule is distinguishable from it in both table and live output; and the B-02 content pin
+rejects it. None of these refutes the reading.
+
+**5. Deity payload and source uncertainty unchanged.** Payload stays excluded (`ADR-0089` precedent),
+so `DP-024` is still neither required nor resolved. The artifact still carries `source_uncertainty` as
+a structured field recording that this selection is **not proof of the historical original text** and
+that no verbatim Sanskrit was located.
+
+**6. Historical evidence preserved, not overwritten.** The standalone certification (`4b00f84`), the
+CI-wired conditional-oracle state (`dca21d2`), the genuine CI oracle evidence (`b72f3aa`), the ADR-0084
+allowlist amendment (`949e905`) and the `modules_scanned` recovery (`c9d2221`) all remain in history as
+the record of each prior stage. The artifact at `certification/VARGA_D20_V1_certification.json` is
+regenerated in place - the same path every varga uses across its stages - and now describes the
+production stage; the earlier stages' content is recoverable from those commits.
+
+**7. Consequential changes, each required by the registration.** D20 removed from six "other vargas
+still refused" test lists and from `ALLOWED_PRE_PRODUCTION` in both copies in
+`.github/workflows/ci.yml` (it now has a declared registry entry, so the pre-production exemption no
+longer applies to it - D24, D40, D4 and D16 remain listed). `SIGN_CONVENTION_V1` re-certified and its
+new `D20_parashara` sweep hash `4b8ed22e94e90af7eee09a6542066de9cfbe67b205c8ba44bfc89485c41d6749`
+pinned in `engine/tests/test_sign_convention_certification.py` - the documented non-obvious ordering
+trap. **All eight pre-existing sweep hashes came back byte-identical**, which is itself the
+non-invasiveness evidence.
+
+- **Consequences:** D20 is a production analytical input, served by
+  `divisional_chart(snapshot, 20)`, backed by its own registered-rule certification. `ADR-0095`'s
+  methodology, exclusions and uncertainty statement continue to govern every citation of it. D16 and D4
+  remain certified-but-unregistered; their own production implementations remain separate,
+  not-yet-given authorizations.
+- **Evidence:** `engine/astrology/varga_d20.py`; `CERTIFIED_PRODUCTION_VARGAS` (nine pairs);
+  `certification/VARGA_D20_V1_certification.json` regenerated against the registered rule, nine gates
+  PASS; `engine/tests/test_varga_d20.py` (15 tests); the live content-hash comparison against
+  `ADR-0095`'s pin; the re-run `SIGN_CONVENTION_V1` certification and its unchanged pre-existing
+  hashes; CI run `34115135184` (the accepted prior-stage evidence); the owner's authorizing
+  instruction, quoted above.
+
 ---
 
 ## ADR template (copy, do not edit above the line)

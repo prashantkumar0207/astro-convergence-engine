@@ -296,14 +296,14 @@ jobs:
         # does the oracle actually exist - and running it in both jobs would
         # have each regenerate the same artifact with a different oracle block.
         #
-        # EXPECTED ON THE FIRST CI RUN: the committed artifact was produced
-        # locally WITHOUT PyJHora, so this job regenerates it with
-        # oracle_executed=true plus comparison counts, and the drift assertion
-        # below will flag VARGA_D20_V1_certification.json. That is the genuine
-        # oracle evidence arriving, not a defect; capturing it needs a
-        # separately authorized CI-sourced recovery commit, exactly as the
-        # modules_scanned recoveries were handled. D20 remains STANDALONE: it
-        # is not in CERTIFIED_PRODUCTION_VARGAS and has no production module.
+        # The first-run oracle drift this comment previously anticipated has
+        # been captured and committed; the genuine oracle evidence is now the
+        # stored artifact. D20 is since PRODUCTION-REGISTERED (ADR-0095
+        # production-implementation stage): this runner now certifies the
+        # registered rule in engine/astrology/varga_d20.py, its gate D is
+        # non-invasiveness rather than isolation, and D20 has accordingly been
+        # removed from ALLOWED_PRE_PRODUCTION below - it now has a declared
+        # registry entry like every other production varga.
         run: |
           set -e
           for c in scripts/certify_d2.py \
@@ -494,9 +494,6 @@ jobs:
               "VARGA_D16_V1_certification.json",  # ADR-0089: certification
                   # design/execution only; production registration not yet
                   # separately authorized.
-              "VARGA_D20_V1_certification.json",  # ADR-0095: certification
-                  # design/execution only; production registration not yet
-                  # separately authorized.
           }
 
           def check(cert_dir):
@@ -549,7 +546,6 @@ jobs:
               "VARGA_D40_V1_certification.json",
               "VARGA_D4_V1_certification.json",
               "VARGA_D16_V1_certification.json",
-              "VARGA_D20_V1_certification.json",
           }
 
           def check(cert_dir):

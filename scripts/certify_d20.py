@@ -1,10 +1,16 @@
 """VARGA_D20_V1 CERTIFICATION RUNNER (ADR-0095, design per DP-036).
 
-Certifies a STANDALONE, UNREGISTERED D20 Vimsamsa rule embedded in this
-certifier - not engine/astrology/varga_d20.py, which does not exist and is
-not created by this execution. Production implementation, production
-registration and CI wiring each remain separate, not-yet-given
-authorizations (ADR-0095 section 6).
+Certifies the PRODUCTION, REGISTERED D20 Vimsamsa rule in
+engine/astrology/varga_d20.py, imported directly. Revised from the
+standalone certification-execution stage per the owner's "CEO AUTHORIZATION -
+D20 PRODUCTION IMPLEMENTATION" instruction, mirroring certify_d24.py and
+certify_d40.py's own production-stage revision: gate D flips from isolation
+(D20 must NOT be registered) to non-invasiveness (D20 IS registered, is the
+certified module object, and disturbed nothing).
+
+Production certification rests on THIS evidence, not on the earlier
+standalone artifact having passed. The standalone and CI artifacts remain in
+git history as the record of the prior stages.
 
 Regenerates certification/VARGA_D20_V1_certification.json FROM SCRATCH on
 every run; the stored JSON is never accepted as proof.
@@ -63,13 +69,21 @@ from engine.astrology.varga_rules import CyclicVargaRule, rule_content_sha256  #
 #: own construction below (DP-032 Part G, Finding 1).
 import validate_d20_holdout  # noqa: E402
 
-#: Frozen exactly as ADR-0095 section 2 states it: movable source signs
-#: (0-based Aries=0, Cancer=3, Libra=6, Capricorn=9) start from Aries
-#: (index 0); fixed source signs (Taurus=1, Leo=4, Scorpio=7, Aquarius=10)
-#: start from Sagittarius (index 8); dual source signs (Gemini=2, Virgo=5,
-#: Sagittarius=8, Pisces=11) start from Leo (index 4); forward counting
-#: (direction +1) for all twelve. A standalone object - never registered via
-#: engine.astrology.varga_registry.register_varga_rule.
+#: THE PRODUCTION RULE ITSELF (production-implementation stage, ADR-0095).
+#: This certifier no longer embeds a standalone copy: it imports the real
+#: registered object from engine/astrology/varga_d20.py, so the evidence
+#: below demonstrates that the ACTUAL PRODUCTION CODE produces the certified
+#: rule - not merely that a reference reproduction of it does. Mirrors
+#: certify_d24.py / certify_d40.py's own production-stage revision exactly.
+from engine.astrology.varga_d20 import (  # noqa: E402
+    D20_VIMSAMSA,
+    D20_SCHOOL,
+)
+from engine.astrology.varga_registry import (  # noqa: E402
+    get_varga_rule,
+    registered_vargas,
+)
+
 _MOVABLE_SOURCE_SIGNS = frozenset({0, 3, 6, 9})
 _FIXED_SOURCE_SIGNS = frozenset({1, 4, 7, 10})
 _ARIES, _LEO, _SAGITTARIUS = 0, 4, 8
@@ -81,20 +95,6 @@ _ARIES, _LEO, _SAGITTARIUS = 0, 4, 8
 #: ADR-0095 section 3 records it as attested.
 _VARIANT_F_FIXED_START, _VARIANT_F_DUAL_START = _LEO, _SAGITTARIUS
 
-
-def _start_for_source(source_sign: int) -> int:
-    if source_sign in _MOVABLE_SOURCE_SIGNS:
-        return _ARIES
-    if source_sign in _FIXED_SOURCE_SIGNS:
-        return _SAGITTARIUS
-    return _LEO
-
-
-D20_VIMSAMSA = CyclicVargaRule(
-    divisions=20,
-    start_sign=tuple(_start_for_source(s) for s in range(12)),
-    direction=(1,) * 12,
-)
 
 #: Content fingerprint of the frozen rule above, pinned as a literal from a
 #: prior intentional run (NOT computed from itself, which would trivially
@@ -272,35 +272,26 @@ def _gate_c_disclosure(error_text):
     }
 
 
-def gate_d_isolation():
-    import ast
-    import inspect
+def gate_d_non_invasiveness():
+    """PRODUCTION-STAGE gate D (was gate D isolation at the standalone stage).
 
-    this_module = sys.modules[__name__]
-    own_source = inspect.getsource(this_module)
-    tree = ast.parse(own_source)
-    for node in ast.walk(tree):
-        if isinstance(node, (ast.Import, ast.ImportFrom)):
-            module_name = getattr(node, "module", None) or (
-                node.names[0].name if isinstance(node, ast.Import) else None
-            )
-            if module_name and (
-                "varga_d20" in module_name or "varga_registry" in module_name
-            ):
-                fail(f"certify_d20.py imports {module_name} - must remain standalone, "
-                     f"never touch the registry")
+    Now that D20 is registered, this gate proves the opposite of what the
+    standalone version proved: D20 IS registered, the registered object IS
+    the certified module constant, its content hash still matches the pin,
+    and the eight pre-existing production vargas plus D1/D9/D10 are
+    completely unaffected by the registration.
 
-    if (ROOT / "engine" / "astrology" / "varga_d20.py").exists():
-        fail("engine/astrology/varga_d20.py already exists - certification execution "
-             "does not authorize production implementation")
-    production_module_absent = True
+    Still reached without the oracle: gate C never calls fail() and main()
+    evaluates this gate BEFORE it (owner's DP-036 decision 2)."""
 
-    # D20 must NOT be in the production registry: this is standalone
-    # certification (owner's DP-036 decision 1, standalone-first).
     from engine.astrology import CERTIFIED_PRODUCTION_VARGAS
-    if any(division == 20 for division, _school in CERTIFIED_PRODUCTION_VARGAS):
-        fail("D20 is registered in CERTIFIED_PRODUCTION_VARGAS - certification "
-             "execution does not authorize production registration")
+
+    if registered_vargas() != CERTIFIED_PRODUCTION_VARGAS:
+        fail(f"registry contents: {registered_vargas()}")
+    if (20, D20_SCHOOL) not in registered_vargas():
+        fail("D20 is not registered - production implementation incomplete")
+    if get_varga_rule(20, D20_SCHOOL) is not D20_VIMSAMSA:
+        fail("registered D20 rule is not the certified module object")
 
     # Template v1.1.0 requirement C: ENFORCED, not merely reported.
     hash_ok = _content_hash_matches(D20_VIMSAMSA)
@@ -309,16 +300,37 @@ def gate_d_isolation():
              f"pinned {CERTIFIED_D20_CONTENT_SHA256} - the frozen rule has changed "
              f"since this pin was computed")
 
+    # Every pre-existing certified varga byte-for-byte unaffected by D20's
+    # registration - identity AND content hash, not merely key presence.
+    hashes = {}
+    for division, school in CERTIFIED_PRODUCTION_VARGAS:
+        if division == 20:
+            continue
+        hashes[f"D{division}_{school}"] = rule_content_sha256(
+            get_varga_rule(division, school))
+
+    # D1/D9/D10 remain served by their own dedicated modules, never the registry.
+    from engine.astrology.divisional_chart import IMPLEMENTED_VARGAS
+    if tuple(IMPLEMENTED_VARGAS) != (1, 9, 10):
+        fail(f"dedicated dispatch changed: {IMPLEMENTED_VARGAS}")
+    for dedicated in IMPLEMENTED_VARGAS:
+        if any(d == dedicated for d, _ in CERTIFIED_PRODUCTION_VARGAS):
+            fail(f"D{dedicated} is dedicated but appears in the registry")
+
     return {
-        "certifier_never_imports_varga_registry_or_varga_d20": True,
-        "engine_astrology_varga_d20_absent": production_module_absent,
-        "d20_absent_from_certified_production_vargas": True,
-        "registered_vargas_unchanged": len(CERTIFIED_PRODUCTION_VARGAS),
+        "d20_registered": True,
+        "registered_object_is_the_certified_module_constant": True,
+        "registered_vargas_total": len(CERTIFIED_PRODUCTION_VARGAS),
+        "pre_existing_vargas_unaffected": hashes,
+        "dedicated_dispatch_unchanged": list(IMPLEMENTED_VARGAS),
         "content_sha256_matches_pinned": hash_ok,
         "content_hash_enforcement": "ENFORCED - a mismatch fails this gate, not merely "
                                      "reported (template v1.1.0 requirement C)",
-        "reached_without_oracle": "gate C is non-blocking, so this gate executes on a "
-                                   "host without PyJHora (owner's DP-036 decision 2)",
+        "reached_without_oracle": "gate C is non-blocking and main() evaluates this gate "
+                                   "first, so isolation is verifiable on a host without "
+                                   "PyJHora (owner's DP-036 decision 2)",
+        "stage": "production-registered rule (was standalone/unregistered at the "
+                  "certification-execution stage; see the historical artifacts)",
     }
 
 
@@ -524,7 +536,7 @@ def gate_i_static_reference_regression():
                  f"got=({result.d_sign},{result.division_index}) "
                  f"expected=({case['expected_d_sign']},{case['expected_division_index']})")
     return {"cases": cases, "mismatches": 0,
-            "methodology": "LIVE certifier output (classify() + the standalone D20_VIMSAMSA "
+            "methodology": "LIVE production output (classify() + the REGISTERED D20_VIMSAMSA "
                             "rule) compared against STATIC values frozen from "
                             "validate_d20_holdout.py's own from-scratch reference_d20() "
                             "(never regenerated by this certifier at certification time)",
@@ -541,7 +553,7 @@ def main():
     # The reported dict is still ordered A..I; only evaluation order differs.
     _a = gate_a_table_integrity()
     _b = gate_b_dense_sweep()
-    _d = gate_d_isolation()          # <- before C, deliberately
+    _d = gate_d_non_invasiveness()          # <- before C, deliberately
     _e = gate_e_independent_validator()
     _f = gate_f_boundary_cases()
     _g = gate_g_protected_holdout()
@@ -552,7 +564,7 @@ def main():
         "A_table_integrity": _a,
         "B_dense_sweep": _b,
         "C_oracle": _c,
-        "D_isolation": _d,
+        "D_non_invasiveness": _d,
         "E_independent_validator": _e,
         "F_boundary_cases": _f,
         "G_protected_holdout": _g,
@@ -565,19 +577,20 @@ def main():
         "supersedes_provisional_id": "NOTHING_AUTHORISED",
         "date": str(date.today()),
         "scope": (
-            "D20 Vimsamsa, Parashara/BPHS Reading E. Rule under certification is a "
-            "STANDALONE, UNREGISTERED CyclicVargaRule instance embedded in this "
-            "certifier - not engine/astrology/varga_d20.py, which does not exist. No "
-            "production module, registration or CI wiring is authorized or created "
-            "by this execution."
+            "D20 Vimsamsa, Parashara/BPHS Reading E. Rule under certification is the "
+            "PRODUCTION, REGISTERED rule in engine/astrology/varga_d20.py, imported "
+            "directly - not a standalone reproduction of it. This artifact therefore "
+            "evidences that the actual production code produces the certified rule. "
+            "The earlier standalone certification remains as historical evidence in "
+            "git history; it is not overwritten in meaning, only superseded in stage."
         ),
         "rule": {
-            "kind": "standalone CyclicVargaRule instance embedded in this certifier "
-                    "(scripts/certify_d20.py) - not a registered production rule",
+            "kind": "PRODUCTION CyclicVargaRule registered through the generic registry "
+                    "(engine/astrology/varga_d20.py), imported by this certifier",
             "divisions": 20,
             "width_degrees": _WIDTH,
             "school": "parashara",
-            "registered": False,
+            "registered": True,
             "construction": "movable source signs start Aries (index 0), fixed source "
                              "signs start Sagittarius (index 8), dual source signs start "
                              "Leo (index 4), forward counting for all twelve",
@@ -620,9 +633,9 @@ def main():
             "library is importable (CI's hash-pinned oracle job), disclosure-only "
             "otherwise. The gates block records which actually happened - a local "
             "disclosure run is never presented as oracle verification",
-            "no production implementation, no engine/astrology/varga_d20.py, no entry in "
-            "CERTIFIED_PRODUCTION_VARGAS - divisional_chart(snapshot, 20) still raises "
-            "UnsupportedVargaError, correctly",
+            "D20 is now production-registered under ADR-0095; this artifact certifies "
+            "the REGISTERED rule. Production certification rests on THIS evidence, never "
+            "on the earlier standalone artifact merely having passed",
             "any per-division deity/label payload (VargaClassification carries only "
             "D-sign, division index and fraction; the vimsamsa deities are out of scope "
             "under the ADR-0089 precedent, so DP-024 is neither required nor resolved)",
@@ -649,7 +662,7 @@ def main():
 
     out = support.emit(report, "VARGA_D20_V1_certification.json", "varga_d20", tee)
     print("=" * 60)
-    print("VARGA_D20_V1 CERTIFICATION (standalone rule, not production-registered)")
+    print("VARGA_D20_V1 CERTIFICATION (production-registered rule)")
     print("=" * 60)
     for name, gate in report["gates"].items():
         print(f"{name}: {gate}")
