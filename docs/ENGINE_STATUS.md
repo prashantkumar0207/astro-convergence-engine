@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | CURRENT - regenerate on every certified change. Reconciled against live repository evidence 2026-09-05 per `ADR-0093`. Section 6's machine-readable capability block is now mechanically enforced against live sources by `scripts/check_capability_state.py` (`ADR-0094`); **the prose in sections 1-5 is not machine-checked and remains a manual discipline.** |
-| Version | 2.2.1 |
+| Version | 2.3.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-09-05 (gate remediation B-1/B-2; second `ADR-0094` addendum) |
+| Last updated | 2026-09-07 (D20 certified standalone under `ADR-0095`; capability block and prose updated) |
 | Review cadence | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 
 # Consolidated engine status
@@ -27,7 +27,7 @@ Two calculation profiles are ratified by recorded human sign-off and are the onl
 
 Divisional charts: D1 Rashi with the documented whole-sign house rule, plus certified D9 Navamsa and D10 Dashamsa served by their own hard-wired production modules, never through the generic registry. **Eight further vargas are certified AND production-registered** through the Generic Varga registry under the `parashara` school key: D2 Hora (`ADR-0011`), D3 Drekkana (`ADR-0009`), D7 Saptamsa (`ADR-0011`), D12 Dwadasamsa (`ADR-0010`), D24 Siddhamsa (`ADR-0083`), D30 Trimsamsa (`ADR-0011`), D40 Khavedamsa (`ADR-0087`), and D45 Akshavedamsa (`ADR-0077`). Each carries its own ADR, dual-transcribed frozen rule table, dense sweep, ULP boundary battery, external oracle agreement or a disclosed corroboration gap, independent validator, and certification artifact. The sanctioned registry contents live in the single constant `engine.astrology.CERTIFIED_PRODUCTION_VARGAS`; every unregistered division still raises `UnsupportedVargaError` by design.
 
-**Certified but NOT production-registered: D16 Shodasamsa (`ADR-0089`) and D4 Chaturthamsa (`ADR-0090`).** Both hold PASS certification artifacts (`certification/VARGA_D16_V1_certification.json`, `certification/VARGA_D4_V1_certification.json`), produced against standalone rules instantiated inside their own certifier scripts. Neither has a production module, neither appears in `CERTIFIED_PRODUCTION_VARGAS`, and neither is wired into CI. `divisional_chart(snapshot, 16)` and `divisional_chart(snapshot, 4)` therefore raise `UnsupportedVargaError`, correctly. **Production implementation for both is a separate, not-yet-given authorization.** Certification is not registration, and this repository does not treat it as such.
+**Certified but NOT production-registered: D16 Shodasamsa (`ADR-0089`), D4 Chaturthamsa (`ADR-0090`) and D20 Vimsamsa (`ADR-0095`).** All three hold PASS certification artifacts (`certification/VARGA_D16_V1_certification.json`, `certification/VARGA_D4_V1_certification.json`, `certification/VARGA_D20_V1_certification.json`), produced against standalone rules instantiated inside their own certifier scripts. None has a production module, none appears in `CERTIFIED_PRODUCTION_VARGAS`, and none is wired into CI. `divisional_chart(snapshot, 16)`, `divisional_chart(snapshot, 4)` and `divisional_chart(snapshot, 20)` therefore raise `UnsupportedVargaError`, correctly. **Production implementation for each is a separate, not-yet-given authorization.** Certification is not registration, and this repository does not treat it as such.
 
 The KP layer (`engine/kp/`) provides exact-rational lordship chains (sign lord, star lord, sub lord, sub-sub lord) and KP fact charts under the KP profile, proven equivalent to the certified legacy kernel with zero categorical mismatches across a 51,429-point sweep, 19,679 boundary points, an eleven-case chart holdout, and the 200-field transcribed fixture set.
 
@@ -84,8 +84,8 @@ by hand, which the gate cannot check.
 {
   "production_registered_vargas": [2, 3, 7, 12, 24, 30, 40, 45],
   "dedicated_production_vargas": [1, 9, 10],
-  "certified_not_registered_vargas": [4, 16],
-  "not_certified_vargas": [20, 27, 60],
+  "certified_not_registered_vargas": [4, 16, 20],
+  "not_certified_vargas": [27, 60],
   "certified_capabilities": [
     "current_engine",
     "KP_CHAIN_V1",
@@ -112,8 +112,8 @@ by hand, which the gate cannot check.
     "numerology"
   ],
   "counts": {
-    "certifier_sources": 22,
-    "validator_sources": 21
+    "certifier_sources": 23,
+    "validator_sources": 22
   }
 }
 ```
@@ -123,6 +123,7 @@ by hand, which the gate cannot check.
 
 | Version | Date | Change |
 |---|---|---|
+| 2.3.0 | 2026-09-07 | D20 Vimsamsa certified as a STANDALONE, unregistered rule under `ADR-0095` (`certification/VARGA_D20_V1_certification.json`, nine gates PASS). Capability block: D20 moved from `not_certified_vargas` to `certified_not_registered_vargas`; counts 22/21 -> 23/22 for the newly registered certifier and validator sources. Prose updated to match. D20 remains absent from `CERTIFIED_PRODUCTION_VARGAS`; production implementation and CI wiring remain unauthorized. |
 | 2.2.1 | 2026-09-05 | Reproduced test count 937 -> 952, raised by the 15 controls committed with the B-1/B-2 gate remediation (second addendum to `ADR-0094`). No capability claim changed; the block itself is unchanged. |
 | 2.2.0 | 2026-09-05 | Capability block gains `current_engine`, the Tier-0 astronomical-kernel certification (`ADR-0005`). The independent CEO audit of the gate found it silently excluded from the completeness universe (defect D-1) because it records its verdict at `summary.result` rather than at top level; the gate now reads both paths and the block accounts for it. Reproduced test count 919 -> 937, raised by the 18 new controls committed with the D-1/D-2/D-3 remediation. No other claim changed. |
 | 2.1.0 | 2026-09-05 | Section 6 added: the delimited machine-readable capability block that `scripts/check_capability_state.py` parses, per `ADR-0094`. Additive; no claim in sections 1-5 changed except the reproduced test count, 898 -> 919, which the gate's own 21 committed negative controls raised. The block is the only machine-checked part of this document; the prose is not, and the status header now says so rather than implying whole-document enforcement. |

@@ -55,7 +55,7 @@ _FORBIDDEN_IMPORTS = re.compile(
 CERTIFIER_SOURCES = (
     "scripts/certify_current_engine.py", "scripts/certify_d12.py",
     "scripts/certify_d16.py",
-    "scripts/certify_d2.py", "scripts/certify_d24.py", "scripts/certify_d3.py",
+    "scripts/certify_d2.py", "scripts/certify_d20.py", "scripts/certify_d24.py", "scripts/certify_d3.py",
     "scripts/certify_d30.py", "scripts/certify_d4.py", "scripts/certify_d40.py",
     "scripts/certify_d45.py", "scripts/certify_d7.py", "scripts/certify_kp_chain.py",
     "scripts/certify_kp_significator.py",
@@ -68,7 +68,7 @@ CERTIFIER_SOURCES = (
 VALIDATOR_SOURCES = (
     "validate_d10_holdout.py", "validate_d12_holdout.py",
     "validate_d16_holdout.py", "validate_d24_holdout.py",
-    "validate_d2_holdout.py", "validate_d3_holdout.py",
+    "validate_d20_holdout.py", "validate_d2_holdout.py", "validate_d3_holdout.py",
     "validate_d30_holdout.py", "validate_d4_holdout.py", "validate_d40_holdout.py",
     "validate_d45_holdout.py", "validate_d7_holdout.py",
     "validate_d9_holdout.py", "validate_kp_holdout.py",
