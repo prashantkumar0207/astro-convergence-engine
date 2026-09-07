@@ -488,6 +488,15 @@ jobs:
               "VARGA_D40_V1_certification.json",  # ADR-0087: certification
                   # design/execution only; production registration not yet
                   # separately authorized.
+              "VARGA_D4_V1_certification.json",   # ADR-0090: certification
+                  # design/execution only; production registration not yet
+                  # separately authorized.
+              "VARGA_D16_V1_certification.json",  # ADR-0089: certification
+                  # design/execution only; production registration not yet
+                  # separately authorized.
+              "VARGA_D20_V1_certification.json",  # ADR-0095: certification
+                  # design/execution only; production registration not yet
+                  # separately authorized.
           }
 
           def check(cert_dir):
@@ -538,6 +547,9 @@ jobs:
           ALLOWED_PRE_PRODUCTION = {
               "VARGA_D24_V1_certification.json",
               "VARGA_D40_V1_certification.json",
+              "VARGA_D4_V1_certification.json",
+              "VARGA_D16_V1_certification.json",
+              "VARGA_D20_V1_certification.json",
           }
 
           def check(cert_dir):

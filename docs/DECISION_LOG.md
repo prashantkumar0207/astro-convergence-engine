@@ -6491,6 +6491,53 @@ freezes without it, exactly as `ADR-0082` section 1 already established.
   `d1fce68604f3a3d2eee5a341ff73e062c12278ef` (as corrected for wording accuracy in commit
   `b8f5121c815401dc9f8bbcc20ebb7c6cb02971b9`); CI run `33623911203` (governance job: success).
 
+#### Addendum to ADR-0084: `ALLOWED_PRE_PRODUCTION` extended to D4, D16 and D20 (2026-09-07)
+
+Append-only. `ADR-0084`'s own text, its Decision, and its ratification sub-entry are all unedited; this
+addendum records a later extension of the mechanism that entry established.
+
+- **Status:** ACCEPTED. The owner instructed: "CEO AUTHORIZATION - ADR-0084 ALLOWLIST AMENDMENT... Amend
+  the ADR-0084 `ALLOWED_PRE_PRODUCTION` governance mechanism so that the legitimately
+  certified-but-not-production-registered Varga capabilities are explicitly represented: VARGA_D4,
+  VARGA_D16, VARGA_D20. This must be recorded through the appropriate ADR/decision-log governance
+  mechanism, with clear provenance and without changing the meaning of `CERTIFIED_PRODUCTION_VARGAS`. The
+  amendment must explicitly preserve the distinction: CERTIFIED != PRODUCTION REGISTERED. D4, D16 and D20
+  must remain absent from the production registry." Per `docs/PROJECT_CONSTITUTION.md` s11, this
+  instruction is the ratifying act.
+- **How this was found - a pre-existing gap, not a D20 defect.** CI run `34110757689` (PR #15, the first
+  run this branch has ever had) failed its governance job with: `FAIL: artifact(s) with no declared
+  registry entry and not in the explicit pre-production allow-list: ['VARGA_D16_V1_certification.json',
+  'VARGA_D20_V1_certification.json', 'VARGA_D4_V1_certification.json']`. **D16 and D4 were already
+  failing before D20 existed** - their certification-execution commits (`ADR-0089`, `ADR-0090`) were never
+  pushed through CI, exactly the blind spot `ADR-0084`'s own precedent paragraph documented for D45. D20
+  merely made the third instance visible.
+- **Decision:** three entries are added to `ALLOWED_PRE_PRODUCTION`, each named individually and
+  commented with its own governing ADR, exactly as `ADR-0084` Decision 1 requires:
+  `VARGA_D4_V1_certification.json` (`ADR-0090`), `VARGA_D16_V1_certification.json` (`ADR-0089`),
+  `VARGA_D20_V1_certification.json` (`ADR-0095`). Both copies of the set - the real check and its own
+  negative control - are updated identically, mirroring the D40 addition (commit `33ddd17`).
+- **CERTIFIED is not PRODUCTION REGISTERED, and this amendment does not blur that.** It changes nothing
+  about `engine.astrology.CERTIFIED_PRODUCTION_VARGAS`, which remains the single source of truth for
+  sanctioned registry state (`ADR-0010`) and still contains exactly eight pairs, none of them D4, D16 or
+  D20. The allow-list is a statement about *certification artifacts that legitimately exist ahead of
+  registration*, never about registration itself. `divisional_chart(snapshot, 4|16|20)` continues to
+  raise `UnsupportedVargaError`.
+- **The gate is narrowed, never weakened.** Both directions `ADR-0084` established remain enforced: every
+  registered varga must still have a PASS artifact citing a compliant decision entry, and any artifact
+  *not* named in the allow-list still fails. Verified by extracting the workflow's own `check()` and
+  running it locally: the real check now reports `PASS: 8 certified vargas, each with a PASS artifact
+  citing a compliant decision entry; 3 explicit pre-production artifact(s) accounted for`, and the
+  negative control, given a planted `VARGA_D99_V1_certification.json`, **still rejects it**.
+- **What this addendum does not do:** it does not implement `engine/astrology/varga_d20.py` or any
+  production varga code, does not modify the production registry or varga dispatch, does not touch any
+  certifier, validator or certification artifact, does not weaken CI or bypass Gate C, does not resolve
+  `DP-024`, and does not touch D60 or D27.
+- **Evidence:** CI run `34110757689` governance-job failure text, quoted above; `ADR-0084` Decision 1 (the
+  per-named-artifact exemption mechanism this extends); commit `33ddd17` (the D40 precedent for extending
+  it); `ADR-0089`/`ADR-0090`/`ADR-0095` (the three governing certification decisions); local extraction
+  and execution of the workflow's own `check()` against `certification/`, with its negative control, as
+  described above; the owner's authorizing instruction, quoted above.
+
 ---
 
 ## ADR-0085 - `VARGA_D45_V1` certification-integrity finding: the `divisional_chart(snapshot, 45)`/`build_varga_chart()` composition layer has no D45-specific exact-value verification (PROPOSED - drafting only authorized, not ratified)
