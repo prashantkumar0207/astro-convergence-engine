@@ -1,0 +1,213 @@
+{
+ "schema": "varga_d20_v1_certification",
+ "adr": "ADR-0095",
+ "supersedes_provisional_id": "NOTHING_AUTHORISED",
+ "date": "2026-09-08",
+ "scope": "D20 Vimsamsa, Parashara/BPHS Reading E. Rule under certification is the PRODUCTION, REGISTERED rule in engine/astrology/varga_d20.py, imported directly - not a standalone reproduction of it. This artifact therefore evidences that the actual production code produces the certified rule. The earlier standalone certification remains as historical evidence in git history; it is not overwritten in meaning, only superseded in stage.",
+ "rule": {
+  "kind": "PRODUCTION CyclicVargaRule registered through the generic registry (engine/astrology/varga_d20.py), imported by this certifier",
+  "divisions": 20,
+  "width_degrees": 1.5,
+  "school": "parashara",
+  "registered": true,
+  "construction": "movable source signs start Aries (index 0), fixed source signs start Sagittarius (index 8), dual source signs start Leo (index 4), forward counting for all twelve",
+  "start_sign": [
+   0,
+   8,
+   4,
+   0,
+   8,
+   4,
+   0,
+   8,
+   4,
+   0,
+   8,
+   4
+  ],
+  "direction": [
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "content_sha256": "efd08cea451084fedbe444c5473d6d50dfc589055b585f172e8a6e537668dac0",
+  "boundary_policy": "inherited locked promote-up convention; no D20-specific exception. All 19 internal boundaries are exact binary fractions, so no tolerance-carrying reference is needed."
+ },
+ "source_uncertainty": {
+  "selection_is_proof_of_historical_original_text": false,
+  "verbatim_sanskrit_located": false,
+  "primary_source_uncertainty_eliminated": false,
+  "evidence_basis": "a translated verse (BPHS chapter 6 Vimsamsa block: 'From Aries for a Movable Rasi, from Sagittarius for a Fixed Rasi and from Leo for a Common Rasi'), convergent independent secondary attestation, and PyJHora's Traditional Parasara default - see DP-035.",
+  "excluded_variant": {
+   "name": "Variant F",
+   "construction": "movable Aries, fixed Leo, dual Sagittarius (fixed/dual transposition)",
+   "status": "ATTESTED and NOT REFUTED - excluded as the selected methodology, not disproved as a reading (ADR-0095 section 3)",
+   "treatment_here": "planted as a gate H negative control only (owner's DP-036 decision 3); no certification gate asserts its falsity"
+  },
+  "governing_statement": "ADR-0095 section 4: any future citation of D20's methodology must carry this qualification."
+ },
+ "oracle": {
+  "oracle_executed": true,
+  "execution_tier": "CI hash-pinned oracle environment (requirements-oracle.lock)",
+  "blocking": false,
+  "blocking_rationale": "owner's DP-036 decision 2: gate C must NOT block gate D. main() evaluates gate D first, and this gate never calls fail(); a genuine mismatch is failed on at the end of main(), after every gate has produced its evidence.",
+  "package": "PyJHora",
+  "version": "4.8.7",
+  "function": "vimsamsa_chart(chart_method=1, Traditional Parasara)",
+  "tolerance": "zero categorical tolerance - pure longitude arithmetic, no astronomy, so no tolerance derivation applies",
+  "comparisons": 5400,
+  "mismatches": 0,
+  "classification": "genuine_external_oracle_agreement"
+ },
+ "gates": {
+  "A_table_integrity": {
+   "cells": 12,
+   "mismatches": 0,
+   "content_sha256": "efd08cea451084fedbe444c5473d6d50dfc589055b585f172e8a6e537668dac0",
+   "verified_against": "validate_d20_holdout.py's own independently-typed REFERENCE_TABLE (imported directly) - not a helper shared with this rule's own construction",
+   "disclosure": "movable source signs (0-based 0,3,6,9) start Aries (index 0); fixed source signs (1,4,7,10) start Sagittarius (index 8); dual source signs (2,5,8,11) start Leo (index 4); forward counting for all twelve - Parashara/BPHS Reading E (ADR-0095 section 1, DP-035)"
+  },
+  "B_dense_sweep": {
+   "points": 51429,
+   "mismatches": 0,
+   "verified_against": "validate_d20_holdout.reference_d20() (imported directly, a genuinely separate implementation)"
+  },
+  "C_oracle": {
+   "oracle_executed": true,
+   "execution_tier": "CI hash-pinned oracle environment (requirements-oracle.lock)",
+   "blocking": false,
+   "blocking_rationale": "owner's DP-036 decision 2: gate C must NOT block gate D. main() evaluates gate D first, and this gate never calls fail(); a genuine mismatch is failed on at the end of main(), after every gate has produced its evidence.",
+   "package": "PyJHora",
+   "version": "4.8.7",
+   "function": "vimsamsa_chart(chart_method=1, Traditional Parasara)",
+   "tolerance": "zero categorical tolerance - pure longitude arithmetic, no astronomy, so no tolerance derivation applies",
+   "comparisons": 5400,
+   "mismatches": 0,
+   "classification": "genuine_external_oracle_agreement"
+  },
+  "D_non_invasiveness": {
+   "d20_registered": true,
+   "registered_object_is_the_certified_module_constant": true,
+   "registered_vargas_total": 9,
+   "pre_existing_vargas_unaffected": {
+    "D2_parashara": "b78745de5d815b6635cca62d9d872c6dd7acd0a8cdbc5e5ecf53a0bc78ee1859",
+    "D3_parashara": "11c561c05413ebc9d8b791c0c22e42e6a91efe2cbdaceaa1f6eeac66d9e957f4",
+    "D7_parashara": "42c0f474138d98a37e1a9963866a2d0f86621fa67c73069e897fef48024aeead",
+    "D12_parashara": "224ece371b1fd024a49d545556e2f9b842343c44c17b9af666b7052b5e6cd195",
+    "D24_parashara": "2ea83b5ad2dd53218f074d1b5e410bd3ec1806ad1ce5d4e053453715da4287f9",
+    "D30_parashara": "deacd958cf19b7641c4f8cb086ad27d8a5efaeb6e38b594dc0cd4113a25794d3",
+    "D40_parashara": "056e3e8af182568e9e2eaa5a1f54d86c40f7d97a53ece610f1e3105eb7a41006",
+    "D45_parashara": "c8515e44be6e21e3e8c3298121b8c0e4687c0176d9da7e94f7d0aba53a8bf817"
+   },
+   "dedicated_dispatch_unchanged": [
+    1,
+    9,
+    10
+   ],
+   "content_sha256_matches_pinned": true,
+   "content_hash_enforcement": "ENFORCED - a mismatch fails this gate, not merely reported (template v1.1.0 requirement C)",
+   "reached_without_oracle": "gate C is non-blocking and main() evaluates this gate first, so isolation is verifiable on a host without PyJHora (owner's DP-036 decision 2)",
+   "stage": "production-registered rule (was standalone/unregistered at the certification-execution stage; see the historical artifacts)"
+  },
+  "E_independent_validator": {
+   "result": "PASS",
+   "classification": "corroborating_correctness_evidence",
+   "note": "separate-process, from-scratch reimplementation; does not import engine.astrology.varga_classifier, engine.astrology.varga_rules, or this certifier's own D20_VIMSAMSA object"
+  },
+  "F_boundary_cases": {
+   "exact_boundary_cases": 228,
+   "ulp_probe_cases": 1140,
+   "normalisation_cases": 5,
+   "mismatches": 0,
+   "verified_against": "validate_d20_holdout.reference_d20() (imported directly)",
+   "representability": "all 19 internal boundaries k*1.5 are EXACT binary fractions (verified: Fraction(k*1.5) == Fraction(3k,2) for k=1..19), so unlike D7/D9/D27 there is no representability error and any disagreement here would be a convention or table defect, not float drift (DP-036 section 2.2)",
+   "boundary_policy": "inherited locked promote-up convention; no D20-specific exception"
+  },
+  "G_protected_holdout": {
+   "points": 26278,
+   "mismatches": 0,
+   "verified_against": "validate_d20_holdout.reference_d20() (imported directly)",
+   "methodology": "prime-step deterministic sampling, independent of gate B/F points, never used to tune the frozen rule"
+  },
+  "H_negative_controls": {
+   "controls": [
+    {
+     "control": "start_sign[0] mutated Aries->wrong value",
+     "detected": true
+    },
+    {
+     "control": "direction[1] mutated +1->-1",
+     "detected": true
+    },
+    {
+     "control": "content hash changes on mutation",
+     "detected": true
+    },
+    {
+     "control": "gate D's own _content_hash_matches() helper rejects the mutated rule and accepts the original",
+     "detected": true
+    },
+    {
+     "control": "ADR-0095's EXCLUDED Variant F (movable Aries, fixed Leo, dual Sagittarius) planted as a mutation - disagrees with the independent reference_d20()",
+     "detected": true,
+     "classification": "negative_control_only",
+     "not_a_refutation": "Variant F remains ATTESTED and NOT REFUTED as a reading (ADR-0095 section 3). This control proves the certified rule is distinguishable from it, nothing more."
+    },
+    {
+     "control": "Variant F rejected by the real content-hash enforcement helper",
+     "detected": true
+    }
+   ],
+   "all_detected": true,
+   "original_object_unmutated": true
+  },
+  "I_static_reference_regression": {
+   "cases": 10,
+   "mismatches": 0,
+   "methodology": "LIVE production output (classify() + the REGISTERED D20_VIMSAMSA rule) compared against STATIC values frozen from validate_d20_holdout.py's own from-scratch reference_d20() (never regenerated by this certifier at certification time)",
+   "classification": "correctness_evidence"
+  }
+ },
+ "explicit_non_claims": [
+  "oracle execution is conditional: genuine PyJHora comparison when the library is importable (CI's hash-pinned oracle job), disclosure-only otherwise. The gates block records which actually happened - a local disclosure run is never presented as oracle verification",
+  "D20 is now production-registered under ADR-0095; this artifact certifies the REGISTERED rule. Production certification rests on THIS evidence, never on the earlier standalone artifact merely having passed",
+  "any per-division deity/label payload (VargaClassification carries only D-sign, division index and fraction; the vimsamsa deities are out of scope under the ADR-0089 precedent, so DP-024 is neither required nor resolved)",
+  "the three non-default PyJHora chart_method variants (Parivritti Even Reverse, Parivritti Cyclic, Somanatha Parivritti Alternate) - excluded",
+  "ADR-0095's Variant F - excluded as methodology but NOT refuted as a reading",
+  "any non-parashara school variant",
+  "any other varga; each requires its own ADR and certification",
+  "translation-only caveat: the BPHS citation is a translated verse plus convergent secondary attestation, not a located verbatim Sanskrit verse (ADR-0095 section 4, DP-035)"
+ ],
+ "environment": {
+  "python": "3.11.16"
+ },
+ "preconditions": {
+  "data_assets": {
+   "assets_verified": 3,
+   "sha256": {
+    "seas_18.se1": "a2cd8fc33807c78ca9a700c91c2e042258b12fc4796519e00781440b5ad8b2e2",
+    "semo_18.se1": "1ca07bd67c24374d77226180c20a4f9996cba013697894810518e7eb582ca4f7",
+    "sepl_18.se1": "ca1393ceab3a44fbc895887cf789c68819ae6a1cbc9b22225872dbe4ccd99a66"
+   }
+  },
+  "anti_fitting": {
+   "modules_scanned": 203,
+   "findings": [],
+   "justified_exceptions": [
+    "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."
+   ]
+  }
+ },
+ "result": "PASS",
+ "_artifact_name": "VARGA_D20_V1_certification.json",
+ "_slug": "varga_d20"
+}

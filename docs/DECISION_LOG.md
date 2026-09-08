@@ -6491,6 +6491,53 @@ freezes without it, exactly as `ADR-0082` section 1 already established.
   `d1fce68604f3a3d2eee5a341ff73e062c12278ef` (as corrected for wording accuracy in commit
   `b8f5121c815401dc9f8bbcc20ebb7c6cb02971b9`); CI run `33623911203` (governance job: success).
 
+#### Addendum to ADR-0084: `ALLOWED_PRE_PRODUCTION` extended to D4, D16 and D20 (2026-09-07)
+
+Append-only. `ADR-0084`'s own text, its Decision, and its ratification sub-entry are all unedited; this
+addendum records a later extension of the mechanism that entry established.
+
+- **Status:** ACCEPTED. The owner instructed: "CEO AUTHORIZATION - ADR-0084 ALLOWLIST AMENDMENT... Amend
+  the ADR-0084 `ALLOWED_PRE_PRODUCTION` governance mechanism so that the legitimately
+  certified-but-not-production-registered Varga capabilities are explicitly represented: VARGA_D4,
+  VARGA_D16, VARGA_D20. This must be recorded through the appropriate ADR/decision-log governance
+  mechanism, with clear provenance and without changing the meaning of `CERTIFIED_PRODUCTION_VARGAS`. The
+  amendment must explicitly preserve the distinction: CERTIFIED != PRODUCTION REGISTERED. D4, D16 and D20
+  must remain absent from the production registry." Per `docs/PROJECT_CONSTITUTION.md` s11, this
+  instruction is the ratifying act.
+- **How this was found - a pre-existing gap, not a D20 defect.** CI run `34110757689` (PR #15, the first
+  run this branch has ever had) failed its governance job with: `FAIL: artifact(s) with no declared
+  registry entry and not in the explicit pre-production allow-list: ['VARGA_D16_V1_certification.json',
+  'VARGA_D20_V1_certification.json', 'VARGA_D4_V1_certification.json']`. **D16 and D4 were already
+  failing before D20 existed** - their certification-execution commits (`ADR-0089`, `ADR-0090`) were never
+  pushed through CI, exactly the blind spot `ADR-0084`'s own precedent paragraph documented for D45. D20
+  merely made the third instance visible.
+- **Decision:** three entries are added to `ALLOWED_PRE_PRODUCTION`, each named individually and
+  commented with its own governing ADR, exactly as `ADR-0084` Decision 1 requires:
+  `VARGA_D4_V1_certification.json` (`ADR-0090`), `VARGA_D16_V1_certification.json` (`ADR-0089`),
+  `VARGA_D20_V1_certification.json` (`ADR-0095`). Both copies of the set - the real check and its own
+  negative control - are updated identically, mirroring the D40 addition (commit `33ddd17`).
+- **CERTIFIED is not PRODUCTION REGISTERED, and this amendment does not blur that.** It changes nothing
+  about `engine.astrology.CERTIFIED_PRODUCTION_VARGAS`, which remains the single source of truth for
+  sanctioned registry state (`ADR-0010`) and still contains exactly eight pairs, none of them D4, D16 or
+  D20. The allow-list is a statement about *certification artifacts that legitimately exist ahead of
+  registration*, never about registration itself. `divisional_chart(snapshot, 4|16|20)` continues to
+  raise `UnsupportedVargaError`.
+- **The gate is narrowed, never weakened.** Both directions `ADR-0084` established remain enforced: every
+  registered varga must still have a PASS artifact citing a compliant decision entry, and any artifact
+  *not* named in the allow-list still fails. Verified by extracting the workflow's own `check()` and
+  running it locally: the real check now reports `PASS: 8 certified vargas, each with a PASS artifact
+  citing a compliant decision entry; 3 explicit pre-production artifact(s) accounted for`, and the
+  negative control, given a planted `VARGA_D99_V1_certification.json`, **still rejects it**.
+- **What this addendum does not do:** it does not implement `engine/astrology/varga_d20.py` or any
+  production varga code, does not modify the production registry or varga dispatch, does not touch any
+  certifier, validator or certification artifact, does not weaken CI or bypass Gate C, does not resolve
+  `DP-024`, and does not touch D60 or D27.
+- **Evidence:** CI run `34110757689` governance-job failure text, quoted above; `ADR-0084` Decision 1 (the
+  per-named-artifact exemption mechanism this extends); commit `33ddd17` (the D40 precedent for extending
+  it); `ADR-0089`/`ADR-0090`/`ADR-0095` (the three governing certification decisions); local extraction
+  and execution of the workflow's own `check()` against `certification/`, with its negative control, as
+  described above; the owner's authorizing instruction, quoted above.
+
 ---
 
 ## ADR-0085 - `VARGA_D45_V1` certification-integrity finding: the `divisional_chart(snapshot, 45)`/`build_varga_chart()` composition layer has no D45-specific exact-value verification (PROPOSED - drafting only authorized, not ratified)
@@ -7079,6 +7126,1044 @@ rename would touch artifact schemas, tests, and protected historical evidence fo
   --format='%H %ci'` for `a79c70d`, `186eec7`, `7e7ecf40`; `git log -1 --format=%B c8c4473` (quoted
   convention example); `grep -rn build_varga_chart engine/astrology/*.py` (single call site); the owner's
   two quoted instructions above, reproduced from the Claude Code session that received them.
+
+## ADR-0089 - D16 (Shodasamsa) selected as a JATAKA capability: sequencing decision and frozen methodology (PROPOSED - prepared for CEO ratification, not yet declared)
+
+- **Date:** 2026-09-04
+- **Status:** **ACCEPTED, on the owner's ratifying instruction recorded in the "Ratification of ADR-0089"
+  entry immediately below this entry's own text.** Originally drafted `PROPOSED` per the owner's own
+  "OWNER RATIFICATION - PROCEED WITH ALL THREE, WITH THE FOLLOWING BOUNDARIES" instruction (2026-09-04),
+  item 5 ("You are authorized now to prepare the required governance records for D16 and D4... clearly
+  mark anything requiring my ratification"). Per this repository's own "change only the status" discipline
+  (already applied throughout `ADR-0074`/`ADR-0082`/`ADR-0087`), this Status line is the only text in this
+  entry edited to record ratification - the Context, sections 1-5, Consequences, and Evidence below are
+  unchanged.
+- **Context:** `docs/decisions/DP-032-d16-d27-d4-methodology-readiness.md` (`Status: OPEN`, decides
+  nothing) Part B found D16's own D-sign geometry fits `engine.astrology.varga_rules.CyclicVargaRule`
+  exactly as coded today - independently confirmed live this task
+  (`CyclicVargaRule(divisions=16, start_sign=(0,4,8,0,4,8,...), direction=(1,)*12)` constructs without
+  error) - and recommended `READY_FOR_SELECTION` conditional on the owner accepting the same deity-
+  exclusion precedent already recorded for D24 (`ADR-0082` section 4), D40 (`ADR-0087` section 4), and
+  D45 (`ADR-0077` section 10). The owner's ratification instruction accepts exactly that condition for
+  D16 (item 1: "Exclude deity/payload output from the certified production contract, following the
+  established D24/D40/D45 precedent. Do not introduce a new payload architecture for D16.").
+
+### 1. Selection rationale - explicit, not a methodology finding
+
+D16 is selected as a JATAKA capability by the owner's own sequencing choice, per the ratification
+instruction's item 1 ("Proceed with D16"), following `DP-032`'s own readiness finding. This entry does
+not reopen or reinterpret `DP-031`'s own still-open items 3-6 (`docs/decisions/DP-031-...md` section I) -
+those govern JATAKA candidate-set questions broader than this specific capability and remain separately
+open, unaffected by this selection.
+
+### 2. JATAKA-scope interpretive work, required by `ADR-0075`
+
+Minimal, identical reasoning to `ADR-0082` section 2 and `ADR-0087` section 2: D16 is literally named in
+`Q8_CLOSURE_MATRIX.md` section 5's own illustrative implementation-scope list ("remaining production
+vargas in the roadmap's risk order"; `docs/VARGA_CERTIFICATION_ROADMAP.md` section 4 names D16 among the
+eight remaining divisions), so `ADR-0075`'s ILLUSTRATIVE-not-exhaustive interpretation requires no
+additional interpretive work here.
+
+### 3. Frozen methodology - source, rule, school
+
+**Classical source:** Parashara/BPHS, the same source family as every certified `parashara`-school varga
+in this repository. **Disclosed gap, matching D40's own precedent, not glossed over:** no verbatim
+Sanskrit verse/Sarga-and-Shloka citation was independently verified this task - only consistent secondary
+paraphrase (two independent transcriptions of R. Santhanam's published English translation, chapter 6,
+verse ~16, plus multiple further independent secondary astrology-reference sites, all converging on the
+identical construction - `DP-032` Part B section B.B).
+
+**Frozen computational rule (`CyclicVargaRule` shape):** sixteen equal divisions of 30/16 = 1.875 degrees
+per sign. For a movable source sign (Aries, Cancer, Libra, Capricorn), division 0 maps to Aries (index
+0); for a fixed source sign (Taurus, Leo, Scorpio, Aquarius), division 0 maps to Leo (index 4); for a
+dual source sign (Gemini, Virgo, Sagittarius, Pisces), division 0 maps to Sagittarius (index 8). Forward
+counting only (direction +1) for all twelve source signs - no reversal variant is claimed. **School:**
+`parashara`, matching the existing registry key. No content-hash pin is established by this entry - that
+is the certification-execution stage's own act, mirroring `ADR-0082`/`ADR-0083` and `ADR-0087`'s own
+precedent exactly; this entry freezes the rule's own construction, not a computed artifact.
+
+**Independent corroboration, not the source of authority:** PyJHora's own `shodasamsa_chart()` function
+(alias `kalamsa_chart()`), read directly from its published source (`naturalstupid/PyJHora`, GitHub,
+`src/jhora/horoscope/chart/charts.py` lines 980-1016 - not executed locally, this host's own PyJHora
+environment remaining degraded, an already-disclosed, unchanged limitation), offers a default/Traditional-
+Parasara method matching this frozen construction exactly (movable/fixed/dual -> Aries(0)/Leo(4)/
+Sagittarius(8), `HOUSE_5=4`/`HOUSE_9=8` independently confirmed against `src/jhora/const.py`), alongside
+three named non-default variants (`PARIVRITTI_EVEN_REVERSE`, `PARIVRITTI_CYCLIC`,
+`SOMANATHA_PARIVRITTI_ALTERNATE`) excluded as explicit non-claims, mirroring D24's own two and D45's own
+three excluded PyJHora methods.
+
+**Boundary/interval behaviour - measured, not assumed:** the 30/16 = 15/8-degree cell width is exactly
+representable in IEEE-754 double precision (denominator is a power of two, confirmed via exact `Fraction`
+arithmetic this task and independently in `DP-032` section B.F), with zero floor-classification boundary
+mismatches across a full absolute-longitude sweep of all 12 signs x 16 divisions (192 boundaries) -
+matching D24's and D40's own clean results, unlike D45's own three genuine boundary mismatches. No
+division-specific boundary exception is introduced; D16 inherits the engine's own existing,
+already-certified 1e-10 promote-up tolerance convention without modification.
+
+### 4. Explicit non-claims
+
+**No interpretive/deity-based reading of D16 results is claimed**, per the owner's own explicit item-1
+instruction. BPHS names a Brahma/Vishnu/Shiva/Surya deity cycle over the sixteen parts, reversed for even
+signs (`DP-032` section B.B) - excluded from the certified D-sign contract for the identical reason
+`ADR-0082` section 4, `ADR-0087` section 4, and `ADR-0077` section 10 already established for D24/D40/
+D45 (`VargaClassification` carries only D-sign, division index, and fraction for every certified varga).
+This does not create an unavoidable `DP-024` dependency: per the owner's own item-1 instruction ("Do not
+introduce a new payload architecture for D16"), `DP-024`'s Option B (payload/label-table architecture)
+is not resolved and not required by this entry - `DP-032` section B.H independently confirms D16's own
+geometry needs no `DP-024` resolution of any kind, Option A or B, once deity output is excluded. `DP-024`
+remains `DEFERRED`, untouched. No non-`parashara` school variant. No other varga. Secondary-source-only
+caveat carried forward from `DP-032` section B.B, stated above.
+
+### 5. What this entry does not do
+
+**Does not create `engine/astrology/varga_d16.py`, `scripts/certify_d16.py`, or
+`validate_d16_holdout.py`.** Does not modify `varga_registry.py`, `.github/workflows/ci.yml`, or any
+existing certification artifact. Does not perform certification design or execution - a separate,
+subsequent, not-yet-authorized act, mirroring exactly how `ADR-0082` reserved that step for `ADR-0083`
+and how `ADR-0087` reserved it for its own later, separately-authorized certification-execution
+instruction. Does not authorize production implementation or CI oracle wiring. Does not resolve
+`DP-024`, which remains `DEFERRED`. Does not reopen `DP-031`'s own still-open items 3-6, or any prior
+capability's own selection/certification. Does not push or merge.
+
+- **Consequences, if ratified:** this entry would freeze D16's own methodology and authorize
+  certification-design/execution as the next, separately-tracked act - mirroring exactly the
+  `ADR-0082` -> `ADR-0083` -> production-implementation -> CI-oracle-wiring precedent already completed
+  for D24, and the equivalent `ADR-0087` precedent completed for D40. No certified calculation,
+  certification artifact, or production code is touched by this entry itself.
+- **Evidence:** `docs/decisions/DP-032-d16-d27-d4-methodology-readiness.md` Part B (the readiness
+  investigation this entry follows; `Status: OPEN`, decides nothing); `ADR-0082`/`ADR-0087` (the D24/D40
+  selection/methodology precedent this entry mirrors); `docs/VARGA_CERTIFICATION_ROADMAP.md` (construction
+  citation source); direct reading of `Q8_CLOSURE_MATRIX.md` section 5 (D16 named); live re-verification
+  this task that `CyclicVargaRule(divisions=16, start_sign=(0,4,8,0,4,8,0,4,8,0,4,8), direction=(1,)*12)`
+  constructs without error; the owner's "OWNER RATIFICATION - PROCEED WITH ALL THREE" instruction, quoted
+  in substance above.
+
+#### Ratification of ADR-0089: D16 SELECTION AND METHODOLOGY RATIFIED (2026-09-04)
+
+- **Status:** ACCEPTED. The owner instructed: "CEO RATIFICATION - ADR-0089 AND ADR-0090... I RATIFY
+  ADR-0089 (D16 selection + frozen methodology) exactly as drafted... D16: Selection authorized. Frozen
+  methodology authorized exactly as ADR-0089. Deity/payload output remains excluded from the certified
+  contract as specified. Proceed to the next authorized stage: certification-design work. Do not jump
+  directly to production implementation or CI wiring." Per `docs/PROJECT_CONSTITUTION.md` s11, this
+  instruction is the ratifying act.
+- **Decision:** `ADR-0089` above (its full Context, sections 1-5, Consequences, and Evidence) is
+  **ratified exactly as drafted, with no wording changed** - confirmed by direct diff before committing.
+  This ratification accepts D16's selection (a sequencing decision under `Q8_CLOSURE_MATRIX.md` section
+  5's own text) and its frozen methodology (section 3: `CyclicVargaRule`, movable/fixed/dual ->
+  Aries(0)/Leo(4)/Sagittarius(8), forward, `parashara` school; deity output excluded per section 4) as
+  the governing record. **Authorizes certification-design work as the next stage** (the owner's own
+  explicit instruction, quoted above). **Does NOT authorize** production implementation or CI wiring -
+  each remains its own, separate, not-yet-given authorization, exactly as `ADR-0089` section 5 already
+  states and as `ADR-0082`/`ADR-0083` -> production -> CI-wiring's own precedent required for D24.
+- **Consequences:** D16's methodology is now the ratified, governing record for certification-design
+  work. No file under `engine/`, `scripts/`, `certification/`, or `.github/workflows/ci.yml` is touched
+  by this ratification itself.
+- **Evidence:** the owner's ratifying instruction, quoted above; `ADR-0089` itself, commit `332fb9a`.
+
+## ADR-0090 - D4 (Chaturthamsa) selected as a JATAKA capability: sequencing decision and frozen methodology (`SegmentVargaRule`, `DP-024` Option A2) (PROPOSED - prepared for CEO ratification, not yet declared)
+
+- **Date:** 2026-09-04
+- **Status:** **ACCEPTED, on the owner's ratifying instruction recorded in the "Ratification of ADR-0090"
+  entry immediately below this entry's own text.** Originally drafted `PROPOSED` per the owner's own
+  "OWNER RATIFICATION - PROCEED WITH ALL THREE, WITH THE FOLLOWING BOUNDARIES" instruction (2026-09-04),
+  item 5 ("prepare the required governance records for D16 and D4"). Per this repository's own "change
+  only the status" discipline, this Status line is the only text in this entry edited to record
+  ratification - the Context, sections 1-5, Consequences, and Evidence below are unchanged.
+- **Context:** `docs/decisions/DP-032-...md` Part A found D4's own construction requires a 3-sign step
+  per division, which `engine.astrology.varga_rules.CyclicVargaRule` cannot express as coded -
+  independently reconfirmed live this task (`CyclicVargaRule(divisions=4, start_sign=(0,)*12,
+  direction=(3,)*12)` raises `InvalidVargaRuleError: direction entries must be +1 or -1, got 3`) -
+  and identified two resolution paths, `DP-024` section 4 Option A1 (add a `step` field to
+  `CyclicVargaRule`, a shared-contract change) and Option A2 (`SegmentVargaRule`, isolated to D4, no
+  framework change, mirroring D3's own precedent exactly). The owner's ratification instruction selects
+  **Option A2 for D4 specifically** - this entry does **not** resolve `DP-024`'s own Option A question in
+  general; a future kendra/trikona-stepped varga remains free to select A1 on its own, separate merits.
+
+### 1. Selection rationale - explicit, not a methodology finding
+
+D4 is selected as a JATAKA capability by the owner's own sequencing choice (item 2: "Proceed with D4"),
+following `DP-032`'s own readiness finding. As with `ADR-0089`, this does not reopen `DP-031` section I's
+own still-open items.
+
+### 2. JATAKA-scope interpretive work, required by `ADR-0075`
+
+Identical reasoning to `ADR-0089` section 2: D4 is literally named in `Q8_CLOSURE_MATRIX.md` section 5's
+own illustrative implementation-scope list (`docs/VARGA_CERTIFICATION_ROADMAP.md` section 4 names D4
+among the eight remaining divisions), so `ADR-0075`'s ILLUSTRATIVE-not-exhaustive interpretation requires
+no additional interpretive work here.
+
+### 3. Frozen methodology - source, rule, school
+
+**Classical source:** Parashara/BPHS. **Disclosed gap, matching D16's own precedent:** no verbatim
+Sanskrit verse/Sarga-and-Shloka citation was independently verified this task - only consistent secondary
+paraphrase (two independent transcriptions of R. Santhanam's published English translation, chapter 6,
+verse ~9: "the Lords of the 4 Kendras from a Rasi are the rulers of respective Chaturthamsa of a Rasi,
+commencing from Aries" - `DP-032` Part A section A.B).
+
+**Frozen computational rule (`SegmentVargaRule` shape, per the owner's explicit Option A2 selection):**
+four equal segments of 30/4 = 7.5 degrees per sign. For each 0-based source sign `s`, division `l`
+(0-3) maps to target sign `(s + 3*l) mod 12` - the source sign itself, then its 4th, 7th, and 10th houses
+counted from it (the four kendras from the source sign). Written out explicitly, not left at prose level
+(per `DP-032` section A.C's own independent derivation, cross-checked against PyJHora's `f2=3` construction
+in `_chaturthamsa_parasara()`):
+
+| Source sign | Division 0 | Division 1 | Division 2 | Division 3 |
+|---|---|---|---|---|
+| Aries (0) | Aries | Cancer | Libra | Capricorn |
+| Taurus (1) | Taurus | Leo | Scorpio | Aquarius |
+| Gemini (2) | Gemini | Virgo | Sagittarius | Pisces |
+| Cancer (3) | Cancer | Libra | Capricorn | Aries |
+| Leo (4) | Leo | Scorpio | Aquarius | Taurus |
+| Virgo (5) | Virgo | Sagittarius | Pisces | Gemini |
+| Libra (6) | Libra | Capricorn | Aries | Cancer |
+| Scorpio (7) | Scorpio | Aquarius | Taurus | Leo |
+| Sagittarius (8) | Sagittarius | Pisces | Gemini | Virgo |
+| Capricorn (9) | Capricorn | Aries | Cancer | Libra |
+| Aquarius (10) | Aquarius | Taurus | Leo | Scorpio |
+| Pisces (11) | Pisces | Gemini | Virgo | Sagittarius |
+
+Uniform across all twelve source signs - no odd/even, no movable/fixed/dual, no triplicity distinction
+(independently confirmed this task: every source sign's four targets are exactly the other three members
+of its own modality group plus itself, in kendra order). **School:** `parashara`. No content-hash pin is
+established by this entry, mirroring `ADR-0089`/`ADR-0082`/`ADR-0087`'s own precedent exactly.
+
+**Architectural isolation, per the owner's explicit instruction:** this construction uses
+`engine.astrology.varga_rules.SegmentVargaRule` exactly as D2 and D3 already do - 12 per-source-sign
+tuples of `(width_degrees, target_sign)` pairs, `division=4` self-declared per the dataclass's own B-01
+protection. **`CyclicVargaRule`, `varga_classifier.py`'s `_classify_cyclic()`, and every currently-
+registered `CyclicVargaRule`-based varga (D2 [note: D2 is itself `SegmentVargaRule`, not affected either
+way], D7, D12, D24, D30, D40, D45) are untouched by this construction** - `DP-024`'s Option A1 (the
+`step` field) is not implemented, not required, and remains available for a future capability to select
+independently.
+
+**Independent corroboration, not the source of authority:** PyJHora's own `chaturthamsa_chart()` function,
+`chart_method=1` (Traditional Parasara), read directly from its published source (`src/jhora/horoscope/
+chart/charts.py` lines 631-665, `_chaturthamsa_parasara()`, `f2=3`) - not executed locally, this host's
+own PyJHora environment remaining degraded - matches this frozen construction exactly, alongside three
+named non-default variants (`PARIVRITTI_CYCLIC`, `PARIVRITTI_EVEN_REVERSE`,
+`SOMANATHA_PARIVRITTI_ALTERNATE`) excluded as explicit non-claims.
+
+**Boundary/interval behaviour - measured, not assumed:** the 30/4 = 15/2-degree cell width is exactly
+representable in IEEE-754 double precision, zero floor-classification boundary mismatches across a full
+absolute-longitude sweep of all 12 signs x 4 divisions (48 boundaries) - confirmed via exact `Fraction`
+arithmetic and independently in `DP-032` section A.F. No division-specific boundary exception is
+introduced; D4 inherits the engine's own existing 1e-10 promote-up tolerance convention unmodified.
+
+### 4. Explicit non-claims
+
+**No interpretive/deity-based reading of D4 results is claimed**, per the owner's own explicit item-2
+instruction ("Exclude D4 deity/payload output from the certified production contract, following the
+established precedent"). `DP-032` section A.B/A.H discloses, for the first time in this repository, that
+D4 carries its own named per-division deity payload (the four Kumaras: Sanaka, Sanandana, Sanatkumara,
+Sanatana, one per kendra part) - a genuine finding `docs/VARGA_CERTIFICATION_ROADMAP.md` section 3's own
+payload-gap enumeration (D16/D20/D27/D60) omitted. This entry excludes that payload from the certified
+D-sign contract, identically to `ADR-0089` section 4's treatment of D16 and to `ADR-0082`/`ADR-0087`/
+`ADR-0077`'s own established precedent for D24/D40/D45. `DP-024`'s Option B (payload architecture) is
+therefore not required by this entry either, matching `ADR-0089`. No non-`parashara` school variant. No
+other varga. Secondary-source-only caveat carried forward from `DP-032` section A.B, stated above.
+
+### 5. What this entry does not do
+
+**Does not create `engine/astrology/varga_d4.py`, `scripts/certify_d4.py`, or
+`validate_d4_holdout.py`.** Does not modify `varga_registry.py`, `varga_rules.py`, `varga_classifier.py`,
+`.github/workflows/ci.yml`, or any existing certification artifact - the isolation the owner's item-2
+instruction requires is a design commitment recorded here, to be verified again by direct diff at the
+production-implementation stage, exactly as every prior capability's own production commit verified its
+own non-invasiveness claim before, not merely after, writing code. Does not perform certification design
+or execution. Does not authorize production implementation or CI oracle wiring. Does not resolve
+`DP-024`'s own Option A question in general - only records that D4 specifically uses Option A2. Does not
+reopen `DP-031` section I. Does not push or merge.
+
+- **Consequences, if ratified:** this entry would freeze D4's own methodology (as a `SegmentVargaRule`,
+  isolated construction) and authorize certification-design/execution as the next, separately-tracked
+  act, mirroring the `ADR-0082`/`ADR-0087` precedent. `DP-024`'s general Option A1/A2 question remains
+  open for any future capability that needs it; this entry answers it only for D4.
+- **Evidence:** `docs/decisions/DP-032-...md` Part A (the readiness investigation this entry follows);
+  `docs/decisions/DP-024-varga-framework-step-payload-architecture.md` section 4 (the A1/A2 options this
+  entry chooses between, for D4 only); `ADR-0082`/`ADR-0087` (the selection/methodology precedent this
+  entry mirrors); `engine/astrology/varga_d3.py` (the `SegmentVargaRule`-for-a-multi-sign-jump precedent
+  this entry follows exactly); live re-verification this task that `CyclicVargaRule(divisions=4,
+  start_sign=(0,)*12, direction=(3,)*12)` raises `InvalidVargaRuleError`; the owner's "OWNER RATIFICATION
+  - PROCEED WITH ALL THREE" instruction, quoted in substance above.
+
+#### Ratification of ADR-0090: D4 SELECTION AND METHODOLOGY RATIFIED (2026-09-04)
+
+- **Status:** ACCEPTED. The owner instructed: "CEO RATIFICATION - ADR-0089 AND ADR-0090... I RATIFY
+  ADR-0090 (D4 selection + frozen methodology using SegmentVargaRule / DP-024 Option A2) exactly as
+  drafted... D4: Selection authorized. Frozen methodology authorized exactly as ADR-0090.
+  SegmentVargaRule / Option A2 is the selected architecture. Deity/payload output remains excluded as
+  specified. Proceed to the next authorized stage: certification-design work. Do not jump directly to
+  production implementation or CI wiring." Per `docs/PROJECT_CONSTITUTION.md` s11, this instruction is
+  the ratifying act.
+- **Decision:** `ADR-0090` above (its full Context, sections 1-5, Consequences, and Evidence) is
+  **ratified exactly as drafted, with no wording changed** - confirmed by direct diff before committing.
+  This ratification accepts D4's selection, its frozen `SegmentVargaRule` methodology (section 3: the
+  full 12x4 kendra-step-3 table, isolated from `CyclicVargaRule`/the classifier/every currently-registered
+  varga), and `DP-024` Option A2 chosen for D4 specifically (not a general framework resolution) as the
+  governing record. **Authorizes certification-design work as the next stage.** **Does NOT authorize**
+  production implementation or CI wiring, and does NOT resolve `DP-024`'s own Option A question for any
+  future capability beyond D4 - each remains its own, separate, not-yet-given authorization, exactly as
+  `ADR-0090` section 5 already states.
+- **Consequences:** D4's methodology is now the ratified, governing record for certification-design work.
+  No file under `engine/`, `scripts/`, `certification/`, or `.github/workflows/ci.yml` is touched by this
+  ratification itself.
+- **Evidence:** the owner's ratifying instruction, quoted above; `ADR-0090` itself, commit `332fb9a`.
+
+---
+
+## ADR-0091 - `DP-032` and Queue B (independent Claude Web repository audit) formally closed: six findings independently verified and dispositioned, no outstanding mandatory remediation (ACCEPTED)
+
+- **Date:** 2026-09-05
+- **Status:** ACCEPTED. The owner issued a direct "CEO FINAL CLOSURE AUTHORIZATION - DP-032 + QUEUE B"
+  instruction: "The Final Closure Audit has been reviewed and accepted... CEO decision: CLOSE DP-032 AND
+  QUEUE B," with the state it approves stated explicitly ("HEAD: 596263a26f0c42bc5f11bd556d3243d6653f5a2a...
+  No outstanding HIGH or MEDIUM remediation... Finding 6 LOW: explicitly accepted/deferred and
+  non-blocking... D16/D4 production implementation and CI wiring remain NOT AUTHORIZED"). Per
+  `docs/PROJECT_CONSTITUTION.md` s11, this instruction is the ratifying act. This entry exists because
+  `.claude/rules/governance.md` requires an explicit owner instruction to be recorded as a decision entry
+  when none exists yet, and because - verified directly before writing it - the token "Queue B" appeared
+  **nowhere** in the tracked tree: the entire audit stream, its six independent verifications and all six
+  owner dispositions existed only as conversation, which `docs/PROJECT_CONSTITUTION.md` s7 classifies as
+  "input material, not truth."
+- **Context:** an independent Claude Web audit of `main@186eec7` raised six findings (two HIGH, three
+  MEDIUM, one LOW). Four were remediated at the time under `ADR-0088` and commit `5875307`. The owner then
+  directed a fresh, read-only, finding-by-finding independent re-verification against current repository
+  state, explicitly instructing that no Claude Web finding be assumed correct. That verification ran across
+  Findings 1-6 in order, each stopping for owner review. This entry records the result and the closure. It
+  reopens no certified rule, no ratified methodology, and no gate.
+
+### 1. `DP-032` closure
+
+`DP-032`'s authorized work stream is **closed** at `596263a26f0c42bc5f11bd556d3243d6653f5a2a`. Its D16 and
+D4 questions were addressed by `ADR-0089` and `ADR-0090` (both ACCEPTED); Part G recorded the D16/D4
+certification-code self-audit remediation; Part H recorded the D24/D40 audit closure and the owner's
+no-remediation decision. **`DP-032` is NOT marked "ADDRESSED" in the `DP-015`-`DP-020` sense**, because its
+D27 question was deliberately not decided: Part F authorizes future primary-source research only, expressly
+"not a methodology freeze, not a selection." `DP-024` likewise remains unresolved in general - `ADR-0090`
+answered its Option A2 question for D4 alone.
+
+### 2. Queue B findings 1-6: verified dispositions
+
+1. **HIGH - Parashari Yoga CI wiring. CONFIRMED, already remediated.** `scripts/certify_parashari_yoga.py`
+   is wired into the hermetic job's "Non-oracle certification runners" step and its network-guard mirror
+   (`.github/workflows/ci.yml`), by commit `5875307` (PR #14, merge `69aa4bf`), confirmed an ancestor of the
+   closure SHA. Hermeticity re-verified independently: no PyJHora/`swisseph` import exists in the certifier,
+   only disclosure text.
+2. **HIGH - PR #13 CEO-approval traceability. CONFIRMED, already remediated** by `ADR-0088` §1. Re-queried
+   fresh 2026-09-05, independently of that entry's own prior evidence: `gh pr view 13` (zero reviews, zero
+   comments, empty `reviewDecision`), `gh api .../pulls/13/reviews` -> `[]`, `gh api .../issues/13/timeline`
+   (no review or approval event of any kind), `gh api .../branches/main/protection` -> `404 Branch not
+   protected`. No GitHub-native approval artifact exists or is claimed; `ADR-0088` §1d is a retrospective
+   governance record and states so.
+3. **MEDIUM - shared composition-layer dependency. CONFIRMED, already remediated** (documentation) by
+   `ADR-0088` §3; **no further remediation warranted**. Verification independently established that the
+   dependency covers **seven** divisions (D2, D3, D7, D12, D24, D30, D40), not the five originally named,
+   and that `engine/astrology/varga_chart_builder.build_varga_chart()` is wholly division-agnostic - no
+   division-specific branch - so `VARGA_D45_V1`'s Gate I mutation coverage is generic evidence valid for
+   every caller rather than D45-specific evidence applied by analogy. Disclosure notes confirmed present and
+   accurate in all eight affected certifiers.
+4. **MEDIUM - Gate-I naming collision. CONFIRMED for its original scope (D24/D40 vs D45), already
+   remediated** by `ADR-0088` §4. Verification additionally established the letter "I" carries **four**
+   distinct meanings across **seven** certifiers (`I_static_reference_regression` in D16/D24/D4/D40;
+   `I_composition_verification` in D45; `I_protected_holdout` in `KP_SIGNIFICATOR_V1`; `I_negative_controls`
+   in `PARASHARI_YOGA_V1`). **No machine-readable ambiguity exists**: every serialized artifact key is
+   self-describing, never a bare letter, and no test or governance script references a gate letter at all.
+   Extending disambiguation to the two non-varga certifiers was reviewed and **deliberately not pursued**.
+5. **MEDIUM - D40 authorization-string traceability. CONFIRMED, already remediated** by `ADR-0088` §2, with
+   one **precision correction recorded here rather than by editing that entry**, per
+   `.claude/rules/governance.md`'s append-only rule. `ADR-0088` §2a examined the commit *message* only.
+   `git log --all -S "D40 Production Implementation - AUTHORIZED"` matches **two** commits: `d045b0f`
+   (`ADR-0088` itself) and `a79c70d`, where that label appears **contemporaneously** in
+   `scripts/certify_d40.py`'s own docstring, committed 2026-09-03 17:23:06 +0530 - roughly 21 hours before
+   `ADR-0088`'s retrospective transcription (`d045b0f`, 2026-09-04 14:41:16 +0530). The fuller
+   governance-boundary sentence `ADR-0088` §2b quotes remains retrospective-only (zero matches anywhere
+   before `d045b0f`). Neither form is third-party-witnessed; both are self-reported by the same actor that
+   performed the work, and this entry claims nothing further. Scope was independently confirmed correct:
+   `ADR-0087`'s own ratification states it "Does NOT authorize... production implementation," and the quoted
+   authorization covers production implementation only - excluding CI-oracle wiring (which `a79c70d` indeed
+   did not perform) and excluding merge (covered separately, see finding 2).
+6. **LOW - stale merged branches. CONFIRMED; accepted/deferred; NOT blocking.** All 20 candidate refs were
+   verified fully-merged ancestors of `main` carrying **zero** unique commits, so no deletion could remove
+   any commit object reachable from `main`. No repository rule governing merged-branch deletion exists -
+   confirmed absent, not inferred. Owner disposition, recorded as given: **retain** `reconcile-v1`,
+   `phase-g-q17-q21` and `phase-g-governance` (each named in permanent governance/evidence records);
+   **defer for separate investigation** `bundle/g6-completion-record`, `bundle-tier0`, `bundle-v8`,
+   `bundle-v9`, `bundle-v10` (non-standard/local bundle-related refs); **defer as optional hygiene** the
+   twelve ordinary merged branches (`cleanup`, `incoming`, `kp-chain-v1`, `parashari-drishti-v1`,
+   `sign-convention-v1`, `transit-v1`, `varga-batch-v1`, `varga-d12-v1`, `varga-d3-v1`, `vimshottari-v1`,
+   `d40-production-implementation`, `post-audit-remediation-186eec7`). No branch was deleted, renamed,
+   pushed or modified.
+
+**No HIGH or MEDIUM finding carries outstanding mandatory remediation.**
+
+### 3. What remains explicitly NOT authorized by this closure
+
+D16 and D4 **production implementation and CI wiring remain NOT AUTHORIZED** - both remain standalone,
+unregistered, un-CI-wired, re-verified directly at the closure SHA (`engine/astrology/varga_d16.py` and
+`varga_d4.py` absent; no D16/D4 entry in `engine/astrology/__init__.py`; no `certify_d16`/`certify_d4`
+reference in `.github/workflows/ci.yml`). D27 remains research-authorized only. `DP-024` remains unresolved.
+The optional adjacent observations surfaced during verification - finding 4's broader naming pattern,
+finding 3's template guidance for future vargas, finding 6's branch cleanup - are **deferred, non-blocking,
+and out of scope**, per the owner's explicit instruction not to treat them as blockers. This closure does
+not authorize engine development, and no such authorization may be inferred from it.
+
+- **Consequences:** the Queue B audit stream now has a repository record where it previously had none. No
+  certified rule, gate, methodology, artifact schema, CI configuration, production registration, or branch
+  is changed by this entry; no new policy or convention is introduced. `DP-032`'s own status header and its
+  `docs/decisions/README.md` index row are deliberately **left unedited** by this entry: the
+  `DP-015`-`DP-020` pairing convention exists (each such paper's status line names the specific ADR that
+  addressed it), but applying it here would risk implying D27 was decided when it was not - whether to
+  update them is left as a separate owner decision.
+- **Evidence:** closure state `596263a26f0c42bc5f11bd556d3243d6653f5a2a`, branch
+  `dp032-d16-d27-d4-methodology-readiness`, working tree clean, re-verified immediately before this entry
+  was written; `python -m pytest -q` -> 898 passed; `check_adr_numbering.py`, `check_identifier_families.py`,
+  `check_retired_identifiers.py`, `check_artifact_drift.py` (67 evidence files identical outside volatile
+  fields) all PASS at that SHA; the per-finding commands and results cited in sections 1-3 above, each run
+  read-only during the six verification passes; `ADR-0088` (the prior remediation this closure re-verified
+  rather than trusted); commit `5875307` (finding 1); `docs/decisions/DP-032-...md` v1.3.0 Parts F/G/H.
+
+---
+
+## ADR-0092 - `certification/ENGINE_CAPABILITY_INVENTORY.json` classified as frozen dated historical evidence, not a live current-state register (`DP-034` Option 2) (ACCEPTED)
+
+- **Date:** 2026-09-05
+- **Status:** ACCEPTED. The owner instructed: "CEO DECISION - DP-034 OPTION 2 ACCEPTED. I accept
+  `DP-034`'s recommended Option 2. `certification/ENGINE_CAPABILITY_INVENTORY.json` is to be treated as
+  frozen, dated historical evidence, not a live current-state register. Record this decision in the
+  appropriate repository governance record/ADR, preserving the file's historical date, originating commit,
+  audit provenance, and its distinction from the live sanctioned capability sources. Explicitly state that
+  the inventory is not a current source of truth and must not be used by the future capability-consistency
+  gate as a live-state authority. Address the relationship to `Q12` precisely, but do not resolve or alter
+  `Q12` itself unless already authorized by the decision. Do not modify
+  `ENGINE_CAPABILITY_INVENTORY.json`." Per `docs/PROJECT_CONSTITUTION.md` s11, this instruction is the
+  ratifying act.
+- **Context:** `docs/decisions/DP-034-engine-capability-inventory-classification.md` (v1.0.0, commit
+  `c273727`) put one question to the owner: is this file a live current-state register that must be
+  regenerated and enforced, or frozen dated historical evidence that must be labelled and excluded from
+  current-state enforcement? The question arose from the read-only capability-claim reconciliation audit of
+  2026-09-05, which found the file diverged from actual state in at least eleven capability statuses while
+  sitting inside `scripts/check_artifact_drift.py`'s `certification/*.json` scope with no runner
+  regenerating it. `DP-034` recommended Option 2 at MEDIUM-HIGH confidence and presented three
+  alternatives, including one it explicitly did not recommend and one outside its own authorized scope.
+
+### 1. The classification, decided
+
+`certification/ENGINE_CAPABILITY_INVENTORY.json` **is frozen, dated historical evidence**: the
+machine-readable companion to `reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md`. It is **not** a live
+current-state register, is not to be regenerated on capability change, and is not stale - under this
+classification its contents are a correct record of what was true on its own stated date, not an
+out-of-date record of today.
+
+**Provenance preserved, and to be preserved by any future handling of this file:**
+
+| Property | Value, as recorded in the file itself |
+|---|---|
+| Historical date | `2026-08-11` |
+| Originating commit | `c5a2712ff4a3c5c3145730bfc1e4e5bc9f41c260` |
+| Audit provenance | `reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md` |
+| Compiling method | "Compiled by reading the repository, not by reading its documents... the audit of 2026-08-11 found the gate proves less than claimed" |
+| Its own internal status field | `PROPOSED - pending owner ratification (docs/OPEN_QUESTIONS.md Q1)` |
+
+**This entry classifies the artifact. It does not ratify the artifact's contents.** The file's own
+internal `status` field remains part of the frozen 2026-08-11 record and is not edited, not resolved, and
+not converted to ACCEPTED by this decision.
+
+### 2. Not a current source of truth; excluded from live-state enforcement
+
+The inventory **is not a current source of truth for any purpose** and **must not be used by any future
+capability-consistency gate as a live-state authority.** Any such gate must name it in its exclusion list,
+alongside the other non-current material, and must draw live state only from the sanctioned live sources:
+
+- **`engine.astrology.CERTIFIED_PRODUCTION_VARGAS`** - already ratified as "the single source of truth for
+  sanctioned registry state" (`ADR-0010`);
+- **the `certification/*.json` artifacts that a named runner regenerates from scratch on every
+  invocation**, read for their own result fields;
+- **`scripts/certification_support.py`'s `CERTIFIER_SOURCES` / `VALIDATOR_SOURCES`.**
+
+The distinction is exactly the one `.claude/rules/certification.md` already states: a stored artifact is
+history, not proof. The inventory is history by decision, not merely by age.
+
+### 3. Relationship to `Q12` / `LOCK_MANIFEST.json`, stated precisely
+
+**`Q12` is not resolved, not altered, and not touched by this entry, and `LOCK_MANIFEST.json` is not
+edited.** `Q12` remains OPEN exactly as `docs/OPEN_QUESTIONS.md` records it; `ADR-0027` D5 and audit
+finding C-04 stand unchanged, including the undischarged `ADR-0006` KP_CHAIN-entry consequence that
+finding C-04 records.
+
+**This decision sets no precedent binding `Q12`, and must not be cited as one.** `DP-034` section 3.1
+established six material differences between the two files, and they cut in opposite directions: the
+inventory carries its own date, originating commit, past-tense compiling method and audit reference -
+which is what a frozen snapshot looks like - but sits inside the artifact-drift gate's scope and describes
+the *current* engine. `LOCK_MANIFEST.json` carries no status, date or commit field at all, asserts a
+`source_of_truth` key, sits *outside* that gate, and describes the *legacy* kernel exclusively (finding
+F-17). A future decision on `Q12` must be made on `LOCK_MANIFEST.json`'s own evidence, not by analogy to
+this one. `DP-034` Option 4 (a single standing rule resolving both together) was presented and is **not**
+adopted here; it remains available as a separate, wider decision if the owner ever wants it.
+
+### 4. Residual risks, disclosed rather than glossed
+
+1. **`DP-034` Option 2 as drafted included adding an explicit self-label to the file. That step was
+   expressly NOT authorized** - the owner's instruction says "Do not modify
+   `ENGINE_CAPABILITY_INVENTORY.json`." The file therefore continues to carry no in-file statement of its
+   own frozen status, and the risk `DP-034` named remains live and unmitigated except by this entry: a
+   future reader may still consult a file titled "capability inventory", living in `certification/`, as if
+   it were current. **This entry is currently the only record of the classification.** Whether to add the
+   in-file label later is a separate, not-yet-given authorization.
+2. **The file remains inside `scripts/check_artifact_drift.py`'s glob scope**, unchanged by this decision.
+   Its PASS there continues to mean "byte-identical to its committed self outside volatile fields" and
+   never "true" or "current". No gate scope is altered by this entry.
+3. **The eleven divergent capability statuses the 2026-09-05 audit measured are not defects** under this
+   classification - they are the 2026-08-11 record. They must not be cited as evidence of current
+   capability in either direction.
+4. The reconciliation audit's remaining discrepancies (the `ENGINE_STATUS.md` and `README.md` false
+   non-claims, the `VARGA_CERTIFICATION_ROADMAP.md` section 2 "not certified and not implemented" list,
+   the `OPEN_QUESTIONS.md` stale rows) are **untouched and remain fully open**. This decision removes one
+   ambiguity; it corrects no document.
+
+- **Consequences:** the repository now has a decided answer for one of its two undetermined-classification
+  files, and any future capability-consistency gate has an unambiguous instruction to exclude this file
+  and an explicit, ratified list of the live sources it may use instead. No certified rule, gate,
+  methodology, artifact, CI configuration, production registration, or capability is changed. The
+  repository still has **no** live capability inventory, by decision - `DP-034` Option 1 was not chosen,
+  and if such an inventory is ever wanted it is to be built from the live sources named in section 2, not
+  by reviving this file.
+- **Evidence:** `docs/decisions/DP-034-engine-capability-inventory-classification.md` v1.0.0, commit
+  `c273727f060bbbfe952c74478e5d167a32b732c3` (the paper this entry decides, including its measured
+  eleven-status divergence, its self-declaration table, and its section 3.1 comparison against
+  `LOCK_MANIFEST.json`); the file's own `status`/`date`/`commit`/`method`/`audit_reference` fields, read
+  directly; `scripts/check_artifact_drift.py`'s `git ls-files certification/*.json reports/certification/*`
+  scope, read directly; `ADR-0010` (`CERTIFIED_PRODUCTION_VARGAS` as the ratified single source of truth);
+  `ADR-0027` D5 and finding C-04 (the `Q12` precedent this entry deliberately does not extend); the
+  owner's decision instruction, quoted above.
+
+---
+
+## ADR-0093 - Capability-state reconciliation: the corrected statement of what this repository currently certifies, and the document corrections it authorizes (ACCEPTED)
+
+- **Date:** 2026-09-05
+- **Status:** ACCEPTED. The owner instructed: "CEO AUTHORIZATION - CAPABILITY-STATE RECONCILIATION.
+  `ADR-0092` is accepted and `DP-034` is addressed. Proceed with the next phase: reconcile the
+  repository's current capability statements against the already-established live evidence. Correct the
+  documented current state for: `docs/ENGINE_STATUS.md`; relevant current-state sections of `README.md`;
+  the current-state portions of `VARGA_CERTIFICATION_ROADMAP.md`; `OPEN_QUESTIONS.md` Q10/Q25 where the
+  existing premises are now factually stale. Record the governing capability-state decision in the
+  appropriate ADR/decision-log entry before or alongside the remediation... The corrected state must
+  accurately distinguish: production-registered vargas: D2, D3, D7, D12, D24, D30, D40, D45; certified
+  but not production-registered: D16 and D4; certified Parashari Yoga capability; certified KP
+  significator capability; planet strength remaining unimplemented; any other capability claims only
+  where directly supported by the live repository evidence." Per `docs/PROJECT_CONSTITUTION.md` s11, this
+  instruction is the ratifying act.
+- **Context:** the read-only capability-claim reconciliation audit of 2026-09-05 established that the
+  repository's reader-facing status documents made claims that were not merely stale but, in four cases,
+  **affirmatively false**: they denied capabilities that hold PASS certification artifacts. `ADR-0092`
+  then classified `certification/ENGINE_CAPABILITY_INVENTORY.json` as frozen dated historical evidence,
+  removing it from consideration as a live source. This entry establishes the corrected capability
+  statement from live evidence and authorizes the document corrections that follow from it.
+
+### 1. The corrected capability statement, from live sources only
+
+Every claim below was re-derived at commit `27ba54f` by executing or reading the source named, never by
+reading a document.
+
+**Production-registered vargas served through the generic registry - eight**, from
+`engine.astrology.CERTIFIED_PRODUCTION_VARGAS` (`ADR-0010`'s ratified single source of truth for
+sanctioned registry state): **D2** (`ADR-0011`), **D3** (`ADR-0009`), **D7** (`ADR-0011`), **D12**
+(`ADR-0010`), **D24** (`ADR-0083`), **D30** (`ADR-0011`), **D40** (`ADR-0087`), **D45** (`ADR-0077`),
+each under the `parashara` school key. D1, D9 and D10 remain served by their own dedicated production
+modules and are never routed through the registry.
+
+**Certified but NOT production-registered - two**: **D16** (`ADR-0089`,
+`certification/VARGA_D16_V1_certification.json`, PASS) and **D4** (`ADR-0090`,
+`certification/VARGA_D4_V1_certification.json`, PASS). Both were certified as standalone rules
+instantiated inside their own certifier scripts. Neither `engine/astrology/varga_d16.py` nor
+`engine/astrology/varga_d4.py` exists; neither appears in `CERTIFIED_PRODUCTION_VARGAS`; neither is
+wired into `.github/workflows/ci.yml`. **Production implementation for both remains explicitly
+unauthorized.** `divisional_chart(snapshot, 16)` and `divisional_chart(snapshot, 4)` continue to raise
+`UnsupportedVargaError`, correctly.
+
+**Other certified capabilities holding PASS artifacts:** `KP_CHAIN_V1` (`ADR-0006`),
+**`KP_SIGNIFICATOR_V1` (`ADR-0078`, certification-integrity repair `ADR-0079`)**,
+**`PARASHARI_YOGA_V1` (`ADR-0081`)**, `PARASHARI_DRISHTI_V1` (`ADR-0012`), `VIMSHOTTARI_V1`
+(`ADR-0007`), `TRANSIT_V1` (`ADR-0008`), `RISE_SET_V1` (`ADR-0054`), `PANCHANGA_V1` (`ADR-0055`),
+`TRIKALAM_V1` (`ADR-0060`), `SIGN_CONVENTION_V1` (`ADR-0012`), plus the Tier-0 `current_engine`
+certification (`ADR-0005`).
+
+**Still not implemented, verified in code:** planetary strength. `engine/astrology/planet_strength.py`
+raises `NotImplementedError` by design, and its own docstring records why a placeholder `0.0` was
+removed. **This non-claim remains true and is preserved unchanged.**
+
+**Counts, live:** 898 tests; 22 registered certifier sources; 21 registered validator sources.
+
+### 2. The four affirmatively false claims this entry corrects
+
+1. `docs/ENGINE_STATUS.md` - "no yogas, strengths, or interpretation of any kind." False as to **yogas**
+   since `PARASHARI_YOGA_V1`. True as to strengths and interpretation, which are preserved.
+2. `docs/ENGINE_STATUS.md` - "Nothing in the repository claims KP significators, four-step, ruling
+   planets, or horary." False as to **KP significators** since `KP_SIGNIFICATOR_V1`. True as to
+   four-step, ruling planets and horary, which are preserved.
+3. `README.md` - "yogas, and interpretation are non-claims." Same defect as 1.
+4. `docs/VARGA_CERTIFICATION_ROADMAP.md` section 2 - "Not certified and not implemented: D4, D16, D20,
+   D24, D27, D40, D45, D60." False as to **D24, D40, D45** (production-registered) and as to **D16, D4**
+   (certified, not registered). True only for D20, D27 and D60.
+
+Stale-but-not-false claims corrected alongside them: the five-varga registry lists in all three
+documents; `ENGINE_STATUS.md`'s "372 tests / eleven validators / eleven certification runners"; and
+`README.md`'s "The ratified roadmap is still OPEN (`Q8`)", which `ADR-0048` resolved on 2026-08-17.
+
+### 3. `OPEN_QUESTIONS.md` Q10 and Q25: premises corrected, status deliberately NOT changed
+
+Q10's premise ("no provider is chosen") and Q25's premise ("the only remote-CI evidence attests the
+two-job workflow... no run record exists for the three-job workflow") are both factually superseded:
+`.github/workflows/ci.yml` defines three jobs (`hermetic`, `oracle`, `governance`), the hermetic job
+running a two-version Python matrix, and green run records for that workflow are recorded throughout
+this register.
+
+**Both rows keep their OPEN status.** Correcting a factual premise is a documentation act; declaring a
+question RESOLVED is an owner act, and this entry does not perform it - `docs/OPEN_QUESTIONS.md`'s own
+rule is that ratification is per-entry. The premises are annotated in the register's established inline
+style, exactly as Q14's row already carries a dispositioning annotation. Whether Q10 and Q25 are now
+answerable is left to the owner.
+
+### 4. What this entry does not do
+
+Does not modify `certification/ENGINE_CAPABILITY_INVENTORY.json` (`ADR-0092` classifies it as frozen
+dated historical evidence, and it is untouched). Does not implement or design the capability-consistency
+gate. Does not modify `.github/workflows/ci.yml` or any certifier, validator, test, or certification
+artifact. Does not implement D16 or D4 production support. Does not touch D20, D27, D60, `DP-024`,
+`Q12`, or the deferred Queue B adjacent observations. Does not push, open a PR, or merge. Changes no
+certified value: this entry and its accompanying corrections are documentation only.
+
+- **Consequences:** the repository's reader-facing documents now state its certified capability
+  correctly, and the JATAKA exit criterion ("no capability is in use that a certification artifact does
+  not cover") becomes evaluable against them for the first time since 2026-08-09. The structural cause
+  remains unaddressed by design: **no mechanical gate detects divergence between documented claims and
+  live state**, so this class of drift can recur. The reconciliation audit's proposed gate is a separate,
+  not-yet-given authorization. `docs/ACE_EXECUTION_STATE.md` and `reports/AI_HANDOFF_CURRENT.md` remain
+  stale against their own refresh disciplines and are out of this entry's authorized scope.
+- **Evidence:** live re-derivation at `27ba54f` of `CERTIFIED_PRODUCTION_VARGAS` (eight pairs), the
+  twenty PASS `certification/*.json` artifacts and their `adr` fields, `CERTIFIER_SOURCES`/
+  `VALIDATOR_SOURCES` (22/21), the absence of `engine/astrology/varga_d16.py` and `varga_d4.py`, the
+  absence of any `certify_d16`/`certify_d4` reference in `.github/workflows/ci.yml`,
+  `engine/astrology/planet_strength.py`'s `NotImplementedError`, `.github/workflows/ci.yml`'s three job
+  definitions parsed directly, and `python -m pytest -q` -> 898 passed; the 2026-09-05 read-only
+  reconciliation audit that enumerated the discrepancies; `ADR-0092` (inventory classification);
+  `ADR-0048` (Q8 resolved); the owner's authorizing instruction, quoted above.
+
+---
+
+## ADR-0094 - Capability-state consistency gate implemented: documented claims mechanically checked against live sources, with committed negative controls (ACCEPTED)
+
+- **Date:** 2026-09-05
+- **Status:** ACCEPTED. The owner instructed: "CEO AUTHORIZATION - CAPABILITY-STATE CONSISTENCY GATE.
+  Proceed with implementation of the mechanical capability-state consistency gate described in the
+  completed reconciliation audit and `ADR-0093`. The gate must compare current repository capability
+  claims against live authoritative sources, not against a document's own committed historical state...
+  Restrict document parsing to explicitly delimited machine-readable capability blocks. Do not attempt
+  broad free-text interpretation... Include genuine negative controls exercising the actual enforcement
+  path... Preserve frozen historical evidence semantics for `ENGINE_CAPABILITY_INVENTORY.json`; it must
+  not become a live source of truth... Do not wire CI unless separately authorized." Per
+  `docs/PROJECT_CONSTITUTION.md` s11, this instruction is the ratifying act.
+- **Context:** `ADR-0093` corrected four affirmatively false capability claims but left the structural
+  cause untouched: nothing detected the divergence. `check_artifact_drift.py` compares each evidence file
+  to its own committed version, so a never-regenerated file passes forever - its PASS means "unchanged",
+  never "true". This is the same lesson as audit finding B-03 and `DP-032`'s own Finding 2.
+
+### 1. What was built
+
+`scripts/check_capability_state.py`. It parses **only** the delimited `CAPABILITY-BLOCK` in
+`docs/ENGINE_STATUS.md` section 6 (added by this entry) and compares it against live state computed at
+run time: `engine.astrology.CERTIFIED_PRODUCTION_VARGAS` for registry membership (`ADR-0010`'s ratified
+single source of truth), the runner-regenerated `certification/*.json` `result` fields for certification
+evidence, and `CERTIFIER_SOURCES`/`VALIDATOR_SOURCES` for the source registries. It reads no document's
+committed history as evidence.
+
+Failure conditions, each shown reachable by a committed control: **F1** a registered division missing
+from the block; **F2** a division claimed as registered that is not; **F3** a non-claim contradicted by
+a PASS artifact; **F4** a division listed as not certified that holds a PASS artifact; **F5** a stated
+source-registry count disagreeing with the live value; **F6** a PASS artifact claimed nowhere
+(completeness - a document must not pass by staying silent); **F7** a claimed capability with no PASS
+artifact; **F8** the certified-but-not-registered distinction misstated in either direction, which is
+what protects D16 and D4 from being silently described as production.
+
+### 2. Deliberate limitations, stated rather than left to be discovered
+
+1. **Prose is not checked.** Only the delimited block is. Free-text scanning would fire on legitimate
+   historical sentences ("D45 was the first production capability"), so it was rejected by design. The
+   cost is real: prose in sections 1-5 of `ENGINE_STATUS.md`, and all of `README.md` and
+   `VARGA_CERTIFICATION_ROADMAP.md`, remains a manual discipline. `ENGINE_STATUS.md`'s status header now
+   says so instead of implying whole-document enforcement.
+2. **The test count is deliberately not carried in the block.** `ADR-0093` recorded 898; this entry's own
+   21 controls raise it to 919, and the prose figure is updated accordingly. It is excluded from
+   mechanical checking because the only faithful check is a full suite run, which belongs in the test
+   gate, not a documentation gate. F5 therefore covers the two source-registry counts only, which are
+   exact and cheap.
+3. **A non-claim is refutable only where the gate knows which artifact would refute it**
+   (`NON_CLAIM_ARTIFACTS`). Tokens outside that map - "horary", "numerology" - pass unchecked.
+4. **Not wired into CI**, per the owner's explicit boundary. The gate runs locally and, through its 21
+   committed controls, on every `pytest` run; adding it to `.github/workflows/ci.yml` is a separate,
+   not-yet-given authorization.
+
+### 3. Negative controls: demonstrated failing, not merely asserted
+
+`engine/tests/test_capability_state_gate.py`, 21 tests, driving the real `check()` and the real script
+across a process boundary against mutated **copies**; the committed document is never modified. The three
+the owner named were additionally demonstrated live before this entry was written:
+
+| Control | Result |
+|---|---|
+| D40 removed from the block | **exit 1**, `F1 D40 is in CERTIFIED_PRODUCTION_VARGAS but missing...` (and `F6`) |
+| `"yogas"` added to `non_claims` while `PARASHARI_YOGA_V1` is PASS | **exit 1**, `F3 non-claim 'yogas' is contradicted by PARASHARI_YOGA_V1...` |
+| both restored | **exit 0**, PASS |
+
+A precondition test asserts `PARASHARI_YOGA_V1` really is PASS, because the second control proves nothing
+otherwise.
+
+### 4. Frozen evidence preserved
+
+`FROZEN_EVIDENCE` excludes `ENGINE_CAPABILITY_INVENTORY.json` (citing `ADR-0092`), plus
+`ORACLE_ENVIRONMENT.json`, `G6_REMOTE_CI_VALIDATION.json` and `CURRENT_ENGINE_LOCK.json`. Two committed
+tests enforce this: one asserts the inventory is absent from the live sources, and one stages a
+deliberately corrupted copy of it and requires the gate's answer to be **byte-identical** - so the frozen
+inventory cannot influence a verdict even if it is wrong.
+
+- **Consequences:** the class of drift `ADR-0093` corrected can now be caught for the block's contents.
+  No certification artifact, certifier, validator, production calculation, or registry membership was
+  touched: the new script is not registered in `CERTIFIER_SOURCES`/`VALIDATOR_SOURCES`, so
+  `SCAN_TARGETS` and every artifact's `modules_scanned` are unaffected, and the new tests live under
+  `engine/tests/`, which the anti-fitting scan excludes by construction. Q10/Q25 unresolved; D16/D4 not
+  implemented; D20/D27/D60 untouched; CI unchanged.
+- **Evidence:** `scripts/check_capability_state.py` and `engine/tests/test_capability_state_gate.py` as
+  committed; `python scripts/check_capability_state.py` -> PASS on the real document; the three live
+  control runs tabulated above, executed against copies in a scratch directory and deleted after use;
+  `python -m pytest -q` -> 919 passed; `check_adr_numbering.py`, `check_identifier_families.py`,
+  `check_retired_identifiers.py`, `check_artifact_drift.py` all PASS; `ADR-0093` (the reconciliation this
+  gate protects); `ADR-0092` (the frozen-evidence classification it honours); `ADR-0010`
+  (`CERTIFIED_PRODUCTION_VARGAS` as the ratified registry authority).
+
+#### Addendum to ADR-0094: independent audit defects D-1 to D-4 remediated (2026-09-05)
+
+Append-only. `ADR-0094`'s own text above is unedited; this addendum records what the
+independent CEO audit of commit `8a47add` found and what was changed in response, per the
+owner's "CEO AUTHORIZATION - REMEDIATE CAPABILITY-STATE GATE D-1 THROUGH D-4" instruction.
+
+**D-4, the correction this addendum owes the record.** `ADR-0094` section 1 describes the
+gate's certification input as "the runner-regenerated `certification/*.json` `result`
+fields". That overstates what the gate does. **Corrected statement:** the gate reads the
+**committed certification artifact files** and inherits whatever currency they have. It does
+not regenerate them; `check_artifact_drift.py` proves only that they are unchanged since
+commit, never that they are current, and CI regenerating them is what keeps them true. It
+also reads a verdict at `result` **or** `summary.result`, not at `result` alone. The same
+wording has been corrected in `scripts/check_capability_state.py`'s own module docstring.
+
+**D-1, Tier-0 was silently outside the completeness universe.** `certification/
+current_engine_certification.json` (`ADR-0005`, the only s12 Locked artifact) records its
+verdict at `summary.result`; the original implementation looked only at a top-level `result`
+and skipped it in silence, so `ADR-0094` section 1's claim to use "the `certification/*.json`
+result fields" did not hold for the most foundational certification in the repository.
+**Resolved by schema-aware handling, not by classifying it frozen** - the repository evidence
+is decisive against the frozen reading: `scripts/certify_current_engine.py` is registered in
+`CERTIFIER_SOURCES` and is executed twice by `.github/workflows/ci.yml`, so the artifact is
+genuinely runner-regenerated live evidence. `_VERDICT_PATHS` now covers both schemas, the
+capability block accounts for `current_engine`, and - the structural half of the fix - any
+non-frozen artifact whose verdict cannot be located is now a hard failure (`F9`) rather than
+a silent skip, which is the only reason D-1 stayed hidden.
+
+**D-2, required keys were droppable.** Deleting or emptying `counts` or `non_claims` left the
+gate returning PASS while F5 and F3 were unreachable - a gate condition the audited document
+could switch off by omission, which is the "reported but never enforced" failure this gate
+was built in response to (`DP-032` Part G, Finding 2). `REQUIRED_KEYS` and `REQUIRED_COUNTS`
+now make every key mandatory (`F10`).
+
+**D-3, the non-claim vocabulary was unbounded.** An unknown or misspelled token silently
+exempted its line from F3: `kp_significator` (singular) passed while only `kp_significators`
+is mapped. `KNOWN_NON_CLAIMS` - the union of the refutable map and an explicit
+`UNREFUTABLE_NON_CLAIMS` set - now rejects any token outside it (`F11`), and a committed test
+asserts the two vocabularies stay disjoint.
+
+**Evidence.** Each newly protected failure was demonstrated through the real CLI against
+disposable copies before this addendum was written: Tier-0 omitted -> exit 1 `F6`; `counts`
+deleted -> exit 1 `F10`; `counts` emptied -> exit 1 `F10`; `non_claims` deleted -> exit 1
+`F10`; `kp_significator` -> exit 1 `F11`; `tier0` -> exit 1 `F11`; and the two original
+controls still fire (D40 removed -> `F1`; `yogas` -> `F3`), with the pristine block restored
+to exit 0. `engine/tests/test_capability_state_gate.py` grows 21 -> 39 tests. Full
+`python -m pytest -q` -> 937 passed. No certification artifact, certifier, validator,
+production registry, or CI file was changed; the gate remains **not** wired into CI.
+
+#### Second addendum to ADR-0094: bypasses B-1 and B-2 closed (2026-09-05)
+
+Append-only. `ADR-0094`'s original text and its first addendum are both unedited. Recorded
+per the owner's "(a)" election on the closure report: remediate before declaring closure.
+
+**How these were found.** The independent audit of the D-1..D-4 remediation (`3c17aa0`) ran the
+attack battery the owner commissioned and asked the question that battery exists to answer -
+*can the gate return PASS while a material capability-state contradiction exists?* It could,
+in two ways. Both **pre-date** the gate's first audit: they reproduce identically at
+`8a47add`, so they were original design gaps, not remediation regressions, and the earlier
+audit of that commit missed them.
+
+**B-1: a production-registered varga with a FAILING certification passed the gate.**
+Reproduced by setting `VARGA_D40_V1.result` to `FAIL` while D40 remained in
+`CERTIFIED_PRODUCTION_VARGAS` and in the documented `production_registered_vargas`: `check()`
+returned no errors and the CLI exited 0 reporting "documented capability state matches live
+state". Root cause: `certified_capabilities` (F7) and `certified_not_registered_vargas` (F8)
+each required a PASS artifact; `production_registered_vargas` never did. **Registration and
+certification are separate facts**, and the gate was checking only the first. Closed by
+**F12**: every declared production-registered division must hold a PASS `VARGA_D{n}_V1`
+artifact. Verified closed for a `FAIL` verdict, a missing artifact, and non-PASS verdicts
+generally.
+
+**B-2: `dedicated_production_vargas` was validated by nothing.** `[1, 9, 10, 99, 123]` passed.
+Closed by **F13**, using a live authority rather than a hand-maintained rule:
+`engine.astrology.divisional_chart.IMPLEMENTED_VARGAS`, the dispatcher's own declaration of
+the divisions it hard-wires to dedicated certified modules. It is compared in **both**
+directions, exactly as F1/F2 compare the registry, so neither an invented division nor a
+dropped one survives; a dedicated division appearing in `CERTIFIED_PRODUCTION_VARGAS` is also
+rejected, since the ratified contract is that these are never routed through the registry.
+
+**F14, added alongside:** the four division categories are mutually exclusive, so a division
+declared in two of them fails regardless of which specific condition would otherwise notice.
+
+**Evidence.** Closure demonstrated through the real CLI in a disposable worktree, removed
+afterward: D40 artifact `FAIL` -> exit 1 `F12`; D40 artifact deleted -> exit 1 `F12`; D24
+artifact `FAIL` -> exit 1 `F12`; dedicated list with invented 99/123 -> exit 1 `F13`; D10
+dropped -> exit 1 `F13`; dedicated list emptied -> exit 1 `F13` x3; registry-served D40
+declared dedicated -> exit 1 `F13`+`F14`; category overlaps -> exit 1 `F14`; pristine block ->
+exit 0. Every pre-existing control still fires (`F1` D40 removed, `F3` false "no yogas", `F6`
+Tier-0 omitted, `F10` counts deleted). `engine/tests/test_capability_state_gate.py` grows
+39 -> 54 tests. Full `python -m pytest -q` -> 952 passed. No certification artifact,
+certifier, validator, production registry, or CI file changed; the gate remains **not** wired
+into CI.
+
+**Residual limitation, unchanged and restated:** prose is still not machine-checked - only the
+delimited block is. That remains a deliberate design choice, not an oversight.
+
+---
+
+## ADR-0095 - D20 (Vimsamsa) selected as a JATAKA capability: Reading E adopted, frozen methodology, minority triple recorded as an excluded variant (PROPOSED - drafting only, not ratified)
+
+- **Date:** 2026-09-06
+- **Status:** **ACCEPTED, on the owner's ratifying instruction recorded in the "Ratification of ADR-0095"
+  sub-entry immediately below this entry's own text.** Originally drafted `PROPOSED. NOT RATIFIED.` per
+  the owner's "CEO DECISION - DP-035" instruction, which adopted Reading E ("D20: ADOPT READING E. The
+  majority/convergent D20 triple is selected as the project methodology, based on the evidence
+  documented in `DP-035`. Record the minority transposition as a named excluded variant with its
+  evidentiary status and rationale. Do not claim that primary-source uncertainty has been eliminated.")
+  and authorized **"D20 methodology-selection / frozen-methodology ADR drafting only"**. Per this
+  repository's own "change only the status" discipline, this Status line is the only text in this entry
+  edited to record ratification - the Context, sections 1-6, Consequences and Evidence below are
+  unchanged.
+- **Context:** `DP-035` found D20's geometry settled and its contract fit unproblematic, with the
+  content dispute reducing to a single question - which start triple governs. It gave D20
+  `REQUIRES_OWNER_ADJUDICATION` on the ground that the evidentiary position matched the standard the
+  owner already accepted for D24 (`ADR-0082`) and D40 (`ADR-0087`). The owner has now adjudicated.
+
+### 1. The selected reading
+
+**Reading E: the Vimsamsa count commences from Aries for movable signs, from Sagittarius for fixed
+signs, and from Leo for dual (common) signs.**
+
+**Source basis, strengthened since `DP-035` was written.** `DP-035` rested on convergent secondary
+expositions plus PyJHora's default. Subsequent primary-source research located the operative verse in
+translation - BPHS chapter 6, in the verse block covering the Vimsamsa (verses 17-21 in the
+Santhanam-lineage rendering):
+
+> "From Aries for a Movable Rasi, from Sagittarius for a Fixed Rasi and from Leo for a Common Rasi:
+> this is how the calculations of Vimshamsas (1/20th of a Rasi, or 1 deg 30 min each) are to commence."
+
+*Quotation note: the source renders Sanskrit terms with diacritics; they are transliterated to plain
+ASCII here because `scripts/check_adr_numbering.py` reads this register with the platform codepage and
+cannot decode characters outside it. Only the diacritics and the degree/minute symbols were changed;
+no word was altered.*
+
+This is a translated verse, not merely an exposition, and it states Reading E directly. **It is a
+translation, not the Sanskrit** - see section 4.
+
+**Independent verification of the derived table.** The three consequence statements circulating in the
+secondary expositions were each re-derived from the frozen table below rather than copied: movable
+first vimsamsa -> Aries and twentieth -> Scorpio; fixed first -> Sagittarius and twentieth -> Cancer;
+dual first -> Leo and twentieth -> Pisces. All three match. The table was also compared cell-by-cell
+against PyJHora's Traditional Parasara D20 across all 12 x 20 = 240 cells: **identical in every cell**.
+
+### 2. Frozen methodology
+
+Deterministic rule, to be implemented later and not implemented by this entry:
+
+- **Kind:** `CyclicVargaRule`, `divisions = 20`, width exactly 1.5° (binary-representable; no
+  D27-class ULP exposure).
+- **`start_sign` (indexed by source sign 0=Aries..11=Pisces):**
+  `(0, 8, 4, 0, 8, 4, 0, 8, 4, 0, 8, 4)`
+  - movable (Aries, Cancer, Libra, Capricorn) -> 0 (Aries)
+  - fixed (Taurus, Leo, Scorpio, Aquarius) -> 8 (Sagittarius)
+  - dual (Gemini, Virgo, Sagittarius, Pisces) -> 4 (Leo)
+- **`direction`:** `(1,) * 12` - forward for every source sign.
+- **School key:** `parashara`. **Boundary policy:** the inherited locked promote-up convention; no
+  D20-specific exception.
+- Target sign for division index `l` (0-based) of source sign `s`: `(start_sign[s] + l) % 12`.
+
+### 3. Excluded variant, recorded rather than dismissed
+
+**Variant F - "movable Aries, fixed Leo, dual Sagittarius"** (`start_sign = (0, 4, 8, 0, 4, 8, ...)`),
+the transposition of the fixed and dual starts.
+
+- **Evidentiary status:** genuinely attested in a rendition of the rule, not invented by this project
+  and not refuted. `DP-035` section 5.2 records that it surfaced against several sources stating
+  Reading E.
+- **Rationale for exclusion:** Reading E is stated by the translated verse itself and corroborated by
+  multiple independent expositions and by the reference implementation's default; Variant F is attested
+  without a located verse in its support.
+- **Explicitly recorded as inference, not as adjudication:** Variant F's triple is exactly the triple
+  this repository already uses for D16 (`ADR-0089`) and D45 (`ADR-0077`), so conflation with that far
+  more common pattern is a plausible mechanism by which the reading could arise. **This is a hypothesis
+  about how an error could occur, not evidence that Variant F is wrong**, and it is not the ground of
+  exclusion.
+- Variant F is a **named non-claim**: not computed, not offered, not selectable, exactly as
+  `ADR-0082`/`ADR-0087` treated their own excluded variants.
+
+### 4. What this selection does NOT claim
+
+**This selection is not proof of the historical original text.** No verbatim Sanskrit was located for
+D20; the evidence is a translated verse plus convergent secondary attestation plus an implementation
+default. Primary-source uncertainty is **not** eliminated, and this entry does not claim it is - per
+the owner's explicit instruction. Any future citation of D20's methodology must carry this
+qualification, in the same manner `ADR-0082`/`ADR-0087` carry theirs.
+
+### 5. Payload excluded, following the `ADR-0089` precedent
+
+D20's vimsamsa deities are **excluded** from the certified contract. `VargaClassification` carries the
+D-sign, division index and fraction only; no deity or lord payload is claimed, computed or offered.
+This follows `ADR-0089` (D16) exactly, and it means **this entry does not require and does not resolve
+`DP-024`** - `DP-024`'s payload question remains fully open for any future capability that does intend
+a payload.
+
+### 6. What this entry does not do
+
+Does not implement D20: no `engine/astrology/varga_d20.py`, no registration in
+`CERTIFIED_PRODUCTION_VARGAS`, no certifier, no validator, no certification artifact, no CI wiring.
+Does not authorize certification design or execution - each remains its own separate, not-yet-given
+authorization, exactly as `ADR-0089`/`ADR-0090` required for D16/D4. Does not touch D60, D27, D16, D4,
+`DP-024`, or any protected holdout. Does not push or merge.
+
+- **Consequences, if ratified:** D20's methodology would become the governing frozen record for a later,
+  separately authorized certification-design stage. `DP-024` stays open. Variant F stays excluded and
+  named. The primary-source qualification in section 4 travels with every future citation.
+- **Evidence:** `docs/decisions/DP-035-...md` (the readiness paper this entry acts on) and its
+  2026-09-06 addendum recording the located translated verse; the BPHS chapter 6 Vimsamsa verse quoted
+  in section 1; PyJHora `src/jhora/horoscope/chart/charts.py` `vimsamsa_chart()` and
+  `src/jhora/const.py` (`HOUSE_5 = 4`, `HOUSE_9 = 8`), read directly at source; the 240-cell
+  equivalence check and the three consequence re-derivations recorded in section 1; `ADR-0089` (the
+  payload-exclusion precedent); `ADR-0082`/`ADR-0087` (the secondary-source evidentiary standard and
+  excluded-variant treatment); the owner's "CEO DECISION - DP-035" instruction, quoted above.
+
+#### Ratification of ADR-0095: D20 SELECTION AND FROZEN METHODOLOGY RATIFIED (2026-09-06)
+
+- **Status:** ACCEPTED. The owner instructed: "CEO RATIFICATION - ADR-0095. I ratify ADR-0095 exactly as
+  drafted. Make only the governance changes necessary to record this ratification: 1. Change ADR-0095
+  Status from PROPOSED to ACCEPTED. 2. Append the ratification sub-entry to `docs/DECISION_LOG.md`,
+  quoting this instruction as the CEO ratification. 3. Preserve the frozen D20 methodology exactly as
+  drafted. 4. Preserve the excluded Variant F record exactly as drafted. 5. Do not alter the source
+  assessment, uncertainty statements, provenance, or payload exclusion. 6. Do not modify any
+  implementation or certification files... This is RATIFICATION ONLY, not implementation authorization."
+  Per `docs/PROJECT_CONSTITUTION.md` s11, this instruction is the ratifying act.
+- **Decision:** `ADR-0095` above (its full Context, sections 1-6, Consequences and Evidence) is
+  **ratified exactly as drafted, with no wording changed** - confirmed by direct diff before committing.
+  This ratification accepts D20's selection of **Reading E** (movable Aries, fixed Sagittarius, dual
+  Leo) and its frozen methodology: `CyclicVargaRule`, `divisions = 20`, width exactly 1.5 degrees,
+  `start_sign = (0, 8, 4, 0, 8, 4, 0, 8, 4, 0, 8, 4)`, `direction = (1,) * 12`, school key
+  `parashara`, inherited promote-up boundary convention. **Variant F** (movable Aries, fixed Leo, dual
+  Sagittarius) remains a **named excluded variant**, recorded as attested and not refuted, exactly as
+  drafted.
+- **What ratification does NOT change.** Section 4 stands unaltered: this selection **is not proof of
+  the historical original text**, no verbatim Sanskrit was located, and primary-source uncertainty is
+  **not** eliminated. Every future citation of D20's methodology carries that qualification. Section 5
+  stands unaltered: deity payload is excluded per the `ADR-0089` precedent, so `DP-024` is neither
+  required nor resolved by this ratification and its payload question remains fully open.
+- **Consequences:** D20's methodology is now the ratified, governing record. **This ratification
+  authorizes nothing further.** Certification design, certification execution, production
+  implementation and CI wiring each remain their own separate, not-yet-given authorization, exactly as
+  `ADR-0095` section 6 already states and as `ADR-0089`/`ADR-0090` required for D16/D4. No file under
+  `engine/`, `scripts/`, `certification/`, or `.github/workflows/ci.yml` is touched by this
+  ratification itself; D60 is untouched and remains `NOT_READY` per `DP-035` Part B.
+- **Evidence:** the owner's ratifying instruction, quoted above; `ADR-0095` itself, commit `098dda8`;
+  `docs/decisions/DP-035-...md` v1.1.0 (the readiness paper and its D60 research addendum).
+
+#### Addendum to ADR-0095: D20 production implementation executed (2026-09-07)
+
+Append-only. `ADR-0095`'s own text, its frozen methodology, its Variant F record, its section 4
+uncertainty statement and its ratification sub-entry are all unedited. This addendum records the
+separate authorization `ADR-0095` section 6 said would be required, and its execution.
+
+- **Status:** ACCEPTED. The owner instructed: "CEO AUTHORIZATION - D20 PRODUCTION IMPLEMENTATION...
+  Proceed to the D20 production implementation stage... The production implementation must be
+  demonstrably equivalent to the ratified ADR-0095 rule... Do not claim production certification merely
+  because the existing standalone artifact passed. The production implementation must undergo the
+  appropriate registered-rule certification/re-certification so the evidence demonstrates that the
+  actual production code produces the certified rule. Preserve the existing standalone and CI
+  certification artifacts as historical evidence." Per `docs/PROJECT_CONSTITUTION.md` s11, this
+  instruction is the ratifying act. The prior stage's own evidence - CI run `34115135184`, all four jobs
+  green, genuine PyJHora 4.8.7 oracle agreement over 5,400 comparisons with 0 mismatches - is what the
+  owner accepted before authorizing this stage.
+
+**1. What was built.** `engine/astrology/varga_d20.py`, mirroring `varga_d40.py`'s structure exactly:
+the frozen `D20_VIMSAMSA = CyclicVargaRule(divisions=20, start_sign=(0,8,4,0,8,4,0,8,4,0,8,4),
+direction=(1,)*12)`, `D20_SCHOOL = "parashara"`, an idempotent `ensure_registered()` and a module-level
+call to it. Registered in `engine/astrology/__init__.py` and added to `CERTIFIED_PRODUCTION_VARGAS`,
+which grows **8 -> 9 pairs**, `(20, "parashara")` slotting between D12 and D24 in the order
+`registered_vargas()` returns.
+
+**2. Equivalence to the ratified rule, verified rather than asserted.** The production module's content
+hash is `efd08cea451084fedbe444c5473d6d50dfc589055b585f172e8a6e537668dac0` - **identical** to the value
+`ADR-0095` froze and `scripts/certify_d20.py` has enforced since the standalone stage. `start_sign` and
+`direction` were read back from the live registry and compared against the ratified tuple directly.
+Divisions 20, width exactly 1.5 degrees, `parashara`, inherited promote-up convention: all unchanged.
+
+**3. Re-certification against the REGISTERED rule, not the standalone reference.**
+`scripts/certify_d20.py` was revised, mirroring `certify_d24.py`/`certify_d40.py`'s own
+production-stage revision: it now imports the real `D20_VIMSAMSA` from `engine/astrology/varga_d20.py`
+instead of embedding a copy, and **gate D flips from isolation to non-invasiveness** - it now proves
+D20 IS registered, that the registered object IS the certified module constant, that the content-hash
+pin still holds (enforced with `fail()`), that all eight pre-existing production vargas are
+byte-for-byte unaffected, and that D1/D9/D10 remain served by their dedicated modules. Nine gates PASS.
+**Production certification rests on this evidence, not on the standalone artifact having passed.**
+
+**4. Variant F did not silently become an alternative production interpretation.** `ADR-0095` section 3
+is preserved verbatim: Variant F remains **attested and NOT refuted**, excluded as methodology only.
+Three independent guards now exist - the certifier's gate H plants it as a negative control; the new
+`engine/tests/test_varga_d20.py::test_production_rule_is_not_the_excluded_variant_f` proves the
+registered rule is distinguishable from it in both table and live output; and the B-02 content pin
+rejects it. None of these refutes the reading.
+
+**5. Deity payload and source uncertainty unchanged.** Payload stays excluded (`ADR-0089` precedent),
+so `DP-024` is still neither required nor resolved. The artifact still carries `source_uncertainty` as
+a structured field recording that this selection is **not proof of the historical original text** and
+that no verbatim Sanskrit was located.
+
+**6. Historical evidence preserved, not overwritten.** The standalone certification (`4b00f84`), the
+CI-wired conditional-oracle state (`dca21d2`), the genuine CI oracle evidence (`b72f3aa`), the ADR-0084
+allowlist amendment (`949e905`) and the `modules_scanned` recovery (`c9d2221`) all remain in history as
+the record of each prior stage. The artifact at `certification/VARGA_D20_V1_certification.json` is
+regenerated in place - the same path every varga uses across its stages - and now describes the
+production stage; the earlier stages' content is recoverable from those commits.
+
+**7. Consequential changes, each required by the registration.** D20 removed from six "other vargas
+still refused" test lists and from `ALLOWED_PRE_PRODUCTION` in both copies in
+`.github/workflows/ci.yml` (it now has a declared registry entry, so the pre-production exemption no
+longer applies to it - D24, D40, D4 and D16 remain listed). `SIGN_CONVENTION_V1` re-certified and its
+new `D20_parashara` sweep hash `4b8ed22e94e90af7eee09a6542066de9cfbe67b205c8ba44bfc89485c41d6749`
+pinned in `engine/tests/test_sign_convention_certification.py` - the documented non-obvious ordering
+trap. **All eight pre-existing sweep hashes came back byte-identical**, which is itself the
+non-invasiveness evidence.
+
+- **Consequences:** D20 is a production analytical input, served by
+  `divisional_chart(snapshot, 20)`, backed by its own registered-rule certification. `ADR-0095`'s
+  methodology, exclusions and uncertainty statement continue to govern every citation of it. D16 and D4
+  remain certified-but-unregistered; their own production implementations remain separate,
+  not-yet-given authorizations.
+- **Evidence:** `engine/astrology/varga_d20.py`; `CERTIFIED_PRODUCTION_VARGAS` (nine pairs);
+  `certification/VARGA_D20_V1_certification.json` regenerated against the registered rule, nine gates
+  PASS; `engine/tests/test_varga_d20.py` (15 tests); the live content-hash comparison against
+  `ADR-0095`'s pin; the re-run `SIGN_CONVENTION_V1` certification and its unchanged pre-existing
+  hashes; CI run `34115135184` (the accepted prior-stage evidence); the owner's authorizing
+  instruction, quoted above.
 
 ---
 

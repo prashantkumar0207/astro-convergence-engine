@@ -287,13 +287,30 @@ jobs:
       - name: Verify ephemeris asset checksums
         run: sha256sum --check CHECKSUMS.sha256
 
-      - name: Oracle certification runners (all twelve)
+      - name: Oracle certification runners (all thirteen)
+        # certify_d20.py added here (ADR-0095 certification; CI-wiring
+        # authorization 2026-09-07). D20's gate C is CONDITIONAL: a genuine
+        # PyJHora vimsamsa_chart(chart_method=1) comparison at zero categorical
+        # tolerance when the library is importable, disclosure-only when it is
+        # not. It belongs in this job, not the hermetic one, because only here
+        # does the oracle actually exist - and running it in both jobs would
+        # have each regenerate the same artifact with a different oracle block.
+        #
+        # The first-run oracle drift this comment previously anticipated has
+        # been captured and committed; the genuine oracle evidence is now the
+        # stored artifact. D20 is since PRODUCTION-REGISTERED (ADR-0095
+        # production-implementation stage): this runner now certifies the
+        # registered rule in engine/astrology/varga_d20.py, its gate D is
+        # non-invasiveness rather than isolation, and D20 has accordingly been
+        # removed from ALLOWED_PRE_PRODUCTION below - it now has a declared
+        # registry entry like every other production varga.
         run: |
           set -e
           for c in scripts/certify_d2.py \
                    scripts/certify_d3.py \
                    scripts/certify_d7.py \
                    scripts/certify_d12.py \
+                   scripts/certify_d20.py \
                    scripts/certify_d24.py \
                    scripts/certify_d30.py \
                    scripts/certify_d45.py \
@@ -471,6 +488,12 @@ jobs:
               "VARGA_D40_V1_certification.json",  # ADR-0087: certification
                   # design/execution only; production registration not yet
                   # separately authorized.
+              "VARGA_D4_V1_certification.json",   # ADR-0090: certification
+                  # design/execution only; production registration not yet
+                  # separately authorized.
+              "VARGA_D16_V1_certification.json",  # ADR-0089: certification
+                  # design/execution only; production registration not yet
+                  # separately authorized.
           }
 
           def check(cert_dir):
@@ -521,6 +544,8 @@ jobs:
           ALLOWED_PRE_PRODUCTION = {
               "VARGA_D24_V1_certification.json",
               "VARGA_D40_V1_certification.json",
+              "VARGA_D4_V1_certification.json",
+              "VARGA_D16_V1_certification.json",
           }
 
           def check(cert_dir):

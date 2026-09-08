@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | OPEN - decision paper. Presents options. DECIDES NOTHING. Requires owner approval. |
-| Version | 1.0.0 |
+| Version | 1.0.1 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-25 |
+| Last updated | 2026-09-04 (cross-reference to DP-032's D16/D27/D4 methodology-readiness findings added; sections 1-7 unedited) |
 | Review cadence | TBD |
 
 # DP-024. Varga framework architecture: the `step`-field and payload/label-table questions
@@ -113,4 +113,5 @@ section 3.
 
 | Version | Date | Change |
 |---|---|---|
+| 1.0.1 | 2026-09-04 | Cross-reference added, no substantive text above edited (confirmed by diff): `docs/decisions/DP-032-d16-d27-d4-methodology-readiness.md` performs the combined per-division methodology-readiness investigation this paper's own §7 anticipated ("whichever question the owner wishes to resolve now") for D16, D27 and D4 specifically. `DP-032` finds, by direct code inspection: D16's and D27's own D-sign geometry need no Option A (`step`-field) resolution at all - both already fit `CyclicVargaRule`'s existing 12-entry `start_sign` table, the same shape D24/D40/D45 use; only D4 genuinely needs Option A1 or A2 resolved (its 3-sign-per-division construction is not expressible under the enforced `direction in {+1,-1}` constraint, confirmed against live `engine/astrology/varga_classifier.py` code, not merely against this paper's own prose). `DP-032` also discloses a previously-unflagged D4 deity payload (the four Kumaras) that this paper's own §1 payload-gap enumeration (D16/D20/D27/D60) did not name. This entry does not resolve either question this paper leaves open - `DP-032` is itself a decision-readiness paper, not a decision. |
 | 1.0.0 | 2026-08-25 | Created. Confirms the `docs/VARGA_CERTIFICATION_ROADMAP.md` section 3 `step`-field and payload/label-table questions are genuinely open (no ADR resolves either; confirmed directly against `docs/DECISION_LOG.md` and live `engine/astrology/varga_rules.py` code), and confirms neither blocks D45 specifically. Presents options for both without deciding; recommends deferring both until the relevant division is actually proposed, at medium confidence. Decides nothing; no code touched; no capability implementation authorized. |
