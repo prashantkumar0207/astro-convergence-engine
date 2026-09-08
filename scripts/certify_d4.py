@@ -42,11 +42,13 @@ pinned AND ENFORCED, a mismatch fails certification); B dense mathematical
 sweep vs validate_d4_holdout.py's own reference_d4(), imported directly -
 a genuinely separate implementation (different file, independently typed
 kendra-naming lookup, zero shared code with this certifier's own rule
-construction); C corroboration disclosure (PyJHora's own published source
-was read directly during DP-032 section A.B - see ADR-0090 section 3 - but
-cannot be executed in this local environment; genuine oracle execution
-remains deferred to this project's own CI hash-pinned oracle environment -
-this certification-execution task does NOT wire certify_d4.py into CI);
+construction); C CONDITIONAL-GENUINE ORACLE (CI-wiring authorization
+2026-09-08): a real PyJHora chaturthamsa_chart(chart_method=1) comparison
+at zero categorical tolerance whenever PyJHora is importable - which it is
+in this project's own CI hash-pinned oracle job, into which certify_d4.py
+is now wired - and disclosure-only on a host where it is not, such as this
+Windows one. The gate never blocks gate D and never fails on the disclosure
+branch, but a GENUINE mismatch fails certification at the end of main();
 D isolation, EXTENDED, AND content-hash enforcement (confirms this
 certifier touches no existing engine/ file, the standalone rule is never
 registered, imports SegmentVargaRule only - never CyclicVargaRule - that
@@ -84,14 +86,17 @@ G through validate_d4_holdout.py's own independently-typed reference - the
 same file gate E and gate I already trust - closing the gap directly
 rather than adding a parallel check.
 
-No third-party computational oracle is used this execution. PyJHora is not
-invoked: this project's own local PyJHora environment remains degraded
-(numpy import failure, an already-disclosed, unchanged limitation). ADR-0090
-section 3 records that PyJHora's own published source (`naturalstupid/
+Whether a third-party computational oracle is used depends on the
+environment, and the artifact records which happened rather than asserting
+one. On this Windows host PyJHora remains unimportable (numpy import
+failure, an already-disclosed, unchanged limitation) and gate C emits its
+disclosure branch; in CI's hash-pinned oracle environment PyJHora is
+present and gate C performs 5,400 genuine comparisons. ADR-0090 section 3
+separately records that PyJHora's own published source (`naturalstupid/
 PyJHora`, GitHub) was read directly during DP-032 section A.B and its
 default/Traditional-Parasara `chaturthamsa_chart()` method (`f2=3`) matches
-this frozen construction exactly - read-only corroboration, not executed
-oracle agreement.
+this frozen construction exactly - that remains read-only corroboration,
+and is never presented as executed oracle agreement.
 
 Exit code 0 = PASS, 3 = FAIL.
 """
@@ -226,13 +231,104 @@ def gate_b_dense_sweep():
                                  "a genuinely separate implementation)"}
 
 
-def gate_c_corroboration_disclosure():
+#: Set by gate_c_oracle() when a GENUINE PyJHora comparison actually runs.
+#: main() fails on a nonzero value at the END, after every other gate has
+#: produced its evidence - see the ordering note in main().
+_ORACLE_MISMATCHES = 0
+PYJHORA_VERSION = None
+
+
+def gate_c_oracle():
+    """Genuine external-oracle gate when PyJHora is importable; disclosure-only
+    when it is not (CI-wiring authorization 2026-09-08).
+
+    Replaces the previous unconditional gate_c_corroboration_disclosure(),
+    which hard-coded "PyJHora unavailable in this local environment". That text
+    was true of this Windows host and false of CI's hash-pinned oracle job,
+    where PyJHora demonstrably IS available - so wiring this certifier into
+    that job without this change would have made the artifact assert a
+    falsehood. Nothing is weakened: before this change no oracle comparison
+    ran at all, in any environment.
+
+    NON-BLOCKING, following D20's ratified construction (owner's DP-036
+    decision 2): this function never calls fail() for a mismatch, and main()
+    evaluates gate D_isolation BEFORE it, so that gate stays reachable on a
+    host without PyJHora - the exact defect DP-032's D24/D40 audit found in
+    certify_d24's ordering. A genuine mismatch still fails certification, at
+    the end of main().
+
+    Oracle: PyJHora's chaturthamsa_chart, Traditional Parasara (chart_method=1), at ZERO
+    categorical tolerance - D4 is pure longitude arithmetic with no
+    astronomical component, so no tolerance derivation applies."""
+
+    global _ORACLE_MISMATCHES, PYJHORA_VERSION
+
+    try:
+        import jhora  # noqa: F401
+        import importlib.metadata
+        PYJHORA_VERSION = importlib.metadata.version("PyJHora")
+    except Exception as error:
+        return _gate_c_disclosure(str(error))
+
+    # PyJHora IS importable here. From this point a missing entry point or a
+    # changed calling interface is a REAL failure, never a silent fall-back to
+    # the disclosure branch: a mistyped function name must not be able to
+    # masquerade as "the oracle was unavailable" and leave a plausible-looking
+    # artifact behind. This is deliberately stricter than the blanket
+    # try/except that certify_d20.py's own gate C uses.
+    try:
+        from jhora.horoscope.chart.charts import chaturthamsa_chart
+    except Exception as error:
+        fail(f"PyJHora {PYJHORA_VERSION} is installed but chaturthamsa_chart could not be "
+             f"imported ({error}) - that is an oracle-interface defect, not an "
+             f"unavailable oracle, and must not be disclosed away")
+
+    mismatches = 0
+    comparisons = 0
+    per_sign = 450
+    for source in range(12):
+        for i in range(per_sign):
+            within = (i + 0.5) * (30.0 / per_sign)  # midpoints, no boundary dust
+            oracle = chaturthamsa_chart([["L", (source, within)]], chart_method=1)
+            oracle_sign = oracle[0][1][0]
+            ours = classify(source * 30.0 + within, D4_CHATURTHAMSA)
+            if ours.d_sign != oracle_sign:
+                mismatches += 1
+            comparisons += 1
+    _ORACLE_MISMATCHES = mismatches
+    return {
+        "oracle_executed": True,
+        "execution_tier": "CI hash-pinned oracle environment (requirements-oracle.lock)",
+        "blocking": False,
+        "blocking_rationale": "gate D_isolation is evaluated first and this gate never "
+                               "calls fail() for a mismatch; a genuine disagreement is "
+                               "failed on at the end of main(), after every gate has "
+                               "produced its evidence (D20/DP-036 decision 2 pattern).",
+        "package": "PyJHora",
+        "version": PYJHORA_VERSION,
+        "function": "chaturthamsa_chart(chart_method=1, Traditional Parasara)",
+        "tolerance": "zero categorical tolerance - pure longitude arithmetic, no "
+                      "astronomy, so no tolerance derivation applies",
+        "comparisons": comparisons,
+        "mismatches": mismatches,
+        "classification": "genuine_external_oracle_agreement" if not mismatches
+                           else "genuine_external_oracle_MISMATCH",
+    }
+
+
+def _gate_c_disclosure(error_text):
+    """Disclosure-only result, used when PyJHora cannot be imported at all.
+    Never presented as oracle verification (NEW_VARGA_IMPLEMENTATION_TEMPLATE
+    v1.1.0 requirement F)."""
+
     return {
         "oracle_executed": False,
-        "reason": "PyJHora unavailable in this local environment (numpy import failure, "
-                  "an already-disclosed, pre-existing limitation) - genuine oracle "
-                  "execution deferred to this project's own CI hash-pinned oracle "
-                  "environment, per every oracle-tier certifier's own established pattern.",
+        "blocking": False,
+        "reason": f"PyJHora unavailable in this environment ({error_text}) - the "
+                  f"documented, pre-existing Windows/Linux gate-parity limitation "
+                  f"(.claude/rules/certification.md). Genuine oracle execution is "
+                  f"deferred to this project's own CI hash-pinned oracle environment, "
+                  f"into which this certifier is now wired.",
         "read_only_corroboration": "PyJHora's own published source "
                   "(naturalstupid/PyJHora, GitHub, chaturthamsa_chart(), "
                   "_chaturthamsa_parasara(), f2=3) was read directly during DP-032 "
@@ -241,6 +337,9 @@ def gate_c_corroboration_disclosure():
                   "signs) matches this frozen construction exactly. This is read-only "
                   "source inspection, not executed oracle agreement.",
         "classification": "disclosed_gap_not_correctness_evidence",
+        "if_executed_tolerance": "zero categorical tolerance - D4 is pure longitude "
+                                  "arithmetic with no astronomical component, so no "
+                                  "tolerance derivation applies",
     }
 
 
@@ -505,6 +604,23 @@ def gate_i_static_reference_regression():
 def main():
     tee = support.start_transcript()
     preconditions = support.preflight()
+    # CI-WIRING 2026-09-08, following D20's ratified construction (owner's
+    # DP-036 decision 2): gate D_isolation is evaluated BEFORE gate C, so the
+    # oracle can never prevent it from running - the exact defect DP-032's
+    # D24/D40 audit found in certify_d24's ordering. The reported dict below is
+    # still ordered A..I; only evaluation order differs. gate_c_oracle() is
+    # called ONCE and its single result reused for both the "oracle" and
+    # "gates" keys (it previously ran twice, which a genuine 5,400-comparison
+    # oracle run must not do).
+    _a = gate_a_table_integrity()
+    _b = gate_b_dense_sweep()
+    _d = gate_d_isolation()          # <- before C, deliberately
+    _e = gate_e_independent_validator()
+    _f = gate_f_boundary_cases()
+    _g = gate_g_protected_holdout()
+    _h = gate_h_negative_controls()
+    _i = gate_i_static_reference_regression()
+    _c = gate_c_oracle()          # <- last; never fails on a mismatch itself
     report = {
         "schema": "varga_d4_v1_certification",
         "adr": "ADR-0090",
@@ -528,23 +644,24 @@ def main():
                              "all twelve source signs",
             "content_sha256": rule_content_sha256(D4_CHATURTHAMSA),
         },
-        "oracle": gate_c_corroboration_disclosure(),
+        "oracle": _c,
         "gates": {
-            "A_table_integrity": gate_a_table_integrity(),
-            "B_dense_sweep": gate_b_dense_sweep(),
-            "C_corroboration_disclosure": gate_c_corroboration_disclosure(),
-            "D_isolation": gate_d_isolation(),
-            "E_independent_validator": gate_e_independent_validator(),
-            "F_boundary_cases": gate_f_boundary_cases(),
-            "G_protected_holdout": gate_g_protected_holdout(),
-            "H_negative_controls": gate_h_negative_controls(),
-            "I_static_reference_regression": gate_i_static_reference_regression(),
+            "A_table_integrity": _a,
+            "B_dense_sweep": _b,
+            "C_oracle": _c,
+            "D_isolation": _d,
+            "E_independent_validator": _e,
+            "F_boundary_cases": _f,
+            "G_protected_holdout": _g,
+            "H_negative_controls": _h,
+            "I_static_reference_regression": _i,
         },
         "explicit_non_claims": [
-            "no oracle execution this run - PyJHora unavailable locally, deferred to CI; "
-            "certify_d4.py is NOT wired into .github/workflows/ci.yml's oracle-tier "
-            "loop by this certification-execution task - that remains a separate, "
-            "not-yet-authorized act",
+            "oracle execution is conditional: a GENUINE PyJHora comparison when the "
+            "library is importable (CI's hash-pinned oracle job, into which "
+            "certify_d4.py is now wired), disclosure-only otherwise. The gates block "
+            "records which of the two actually happened - a disclosure run is never "
+            "presented as oracle verification",
             "any per-division deity/label payload (VargaClassification carries only "
             "D-sign, division index, and fraction; deity output is out of scope, "
             "mirroring D16/D24/D40/D45's own identical treatment - ADR-0090 section 4; "
@@ -567,6 +684,14 @@ def main():
         "preconditions": preconditions,
         "result": "PASS",
     }
+    if _ORACLE_MISMATCHES:
+        # Reached only when PyJHora actually ran. Every other gate has already
+        # produced its evidence, so the non-blocking construction is honoured
+        # and a real oracle disagreement still fails certification outright.
+        report["result"] = "FAIL"
+        support.emit(report, "VARGA_D4_V1_certification.json", "varga_d4", tee)
+        fail(f"genuine oracle mismatches: {_ORACLE_MISMATCHES}")
+
     out = support.emit(report, "VARGA_D4_V1_certification.json", "varga_d4", tee)
     print("=" * 60)
     print("VARGA_D4_V1 CERTIFICATION (standalone rule, not production-registered)")

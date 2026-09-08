@@ -8167,6 +8167,115 @@ non-invasiveness evidence.
 
 ---
 
+## ADR-0096 - certify_d16, certify_d4 and certify_d40 wired into the CI oracle job; their gate C converted from unconditional disclosure to conditional-genuine oracle
+
+- **Date:** 2026-09-08
+- **Status:** **ACCEPTED**, on the owner's authorizing instruction, quoted here in full because it was
+  issued as a one-line authorization with no body: **"CEO AUTHORIZATION - WIRE certify_d16/d4/d40 INTO
+  CI"**. Per `docs/PROJECT_CONSTITUTION.md` s11 that instruction is the authorizing act for wiring
+  these three certifiers into CI. **Stated plainly for the owner's review: the instruction named the
+  act, not its construction.** Decisions 2 through 6 below are the executor's implementation judgment,
+  each following an already-ratified precedent rather than inventing one, and each is called out as
+  such so the owner can reject any of them without disturbing the rest.
+- **Context:** `scripts/certify_d16.py`, `scripts/certify_d4.py` and `scripts/certify_d40.py` ran in
+  **no** CI job at all. Their artifacts had only ever been regenerated on the Windows development host,
+  where PyJHora cannot be imported, so their gate C was an unconditional disclosure that hard-coded the
+  sentence "PyJHora unavailable in this local environment" and the claim that the certifier "is NOT
+  wired into `.github/workflows/ci.yml`'s oracle-tier loop". **D16, D4 and D40 had therefore never once
+  been compared against a genuine external oracle**, and because nothing regenerated their artifacts,
+  their stored evidence had gone stale without any gate noticing: `modules_scanned` stood at 200, 200
+  and 196 against a live tree of 203, and `VARGA_D40_V1`'s recorded registry still described an
+  eight-varga engine, predating D20's registration under `ADR-0095`. D24 and D45, by contrast, have run
+  in that job with a genuine `chart_method=1` comparison since their own production stages, and D20
+  since `ADR-0095`.
+
+### 1. All three wired into the oracle job, not the hermetic job (the authorized act)
+
+The oracle-tier loop grows from thirteen runners to sixteen: `certify_d4.py`, `certify_d16.py` and
+`certify_d40.py` are inserted in ascending division order. They belong in that job and not the
+no-oracle job for the reason `ci.yml` already records for D20: only the hash-pinned oracle environment
+has PyJHora, and running the same certifier in both jobs would have each regenerate one artifact with a
+different oracle block.
+
+### 2. Gate C converted to conditional-genuine (executor's judgment; D20/`DP-036` precedent)
+
+Wiring alone would have made the artifact assert a falsehood the moment it ran in CI, because the old
+gate C text stated unconditionally that PyJHora was unavailable and that the certifier was not wired
+in. Each gate C now attempts the import: **genuine comparison when PyJHora is importable** - real
+`shodasamsa_chart` / `chaturthamsa_chart` / `khavedamsa_chart` at `chart_method=1` (Traditional
+Parasara), 5,400 comparisons at midpoints, **zero categorical tolerance** - and disclosure-only when it
+is not. This is `certify_d20.py`'s ratified construction, adopted unchanged in shape. **Nothing is
+weakened: before this change no oracle comparison ran in any environment.**
+
+### 3. Gate C is non-blocking and gate D is evaluated first (executor's judgment; owner's `DP-036` decision 2)
+
+`main()` in each of the three now evaluates A, B, **D**, E, F, G, H, I and only then C. Gate C never
+calls `fail()` for a mismatch; a genuine disagreement sets `result: FAIL`, emits the full artifact with
+every gate's evidence intact, and then fails the run. This is the owner's own `DP-036` decision 2,
+which exists because `DP-032`'s D24/D40 audit found that a blocking gate C prevents the isolation gate
+from ever executing on a host without PyJHora. The reported `gates` dict is still ordered A..I; only
+evaluation order differs. The gate key is renamed `C_corroboration_disclosure` -> `C_oracle`, matching
+every other oracle-tier certifier.
+
+### 4. Stricter than `certify_d20.py` on one point (executor's judgment)
+
+`certify_d20.py`'s gate C wraps both the version lookup and the chart-function import in one
+`try/except`, so a mistyped or renamed entry point would fall through to the disclosure branch and
+leave a plausible-looking artifact behind claiming the oracle was merely unavailable. The three gates
+added here split that: once `jhora` imports and `importlib.metadata.version("PyJHora")` resolves, a
+missing chart function is a **hard failure** describing itself as an oracle-interface defect, never a
+silent disclosure. `certify_d20.py` itself is **not** modified by this entry - its own gate C has
+demonstrably executed genuinely in CI, and changing it is not part of this authorization.
+
+### 5. Gate C is now called once per run, not twice (executor's judgment)
+
+All three certifiers previously called `gate_c_corroboration_disclosure()` twice, once for the report's
+`oracle` key and once for its `gates` block. That was harmless for a constant dict and is not harmless
+for a 5,400-comparison oracle run. The single result is now computed once and reused for both keys.
+
+### 6. Text that the wiring made false has been corrected, not left standing (executor's judgment)
+
+Each certifier's module docstring and its first `explicit_non_claims` entry asserted that no oracle is
+used and that the certifier is not wired into CI. Both statements become false in CI, so both were
+rewritten to state the conditional behaviour and to say that the artifact records which branch actually
+ran. `docs/DECISION_LOG.md`'s own historical entries are untouched: they remain accurate as history.
+
+### 7. What this entry does NOT do
+
+**CERTIFIED is not PRODUCTION REGISTERED, and this changes nothing about that distinction.** D16 and D4
+remain certified-but-unregistered: they stay in `ALLOWED_PRE_PRODUCTION` in both copies in `ci.yml`,
+gain no registry entry, and no `engine/astrology/varga_d16.py` or `varga_d4.py` is created. Running a
+certifier in CI grants no production status whatsoever. No rule table, content hash, tolerance,
+holdout, or gate threshold was altered in any of the three. No gate was weakened, skipped or routed
+around. `certify_d20.py`, `certify_d24.py` and `certify_d45.py` are unmodified.
+
+- **Consequences:** The first CI run on this branch will execute these three gate C blocks genuinely
+  for the first time, and there are exactly two possible outcomes. If the oracle **agrees**, the
+  regenerated artifacts will differ from the committed ones in their gate C block, the drift gate will
+  fail as designed, and capturing that genuine evidence requires its own separately authorized
+  CI-sourced recovery commit - the same sequence D20 followed at `b72f3aa`. If the oracle
+  **disagrees**, certification fails and the run goes red; that is the correct outcome and the
+  disagreement will be reported exactly as measured. **No implementation, methodology, tolerance or
+  gate will be tuned to obtain agreement.** A genuine mismatch would mean the certified construction
+  for that varga and PyJHora's Traditional Parasara method are not the same rule, which is a finding
+  for the owner to adjudicate, not a defect to smooth over.
+- **Evidence:** All three certifiers re-run locally on this Windows host, **nine gates PASS each**,
+  taking the disclosure branch as expected and lifting `modules_scanned` to 203 (`VARGA_D40_V1` also
+  picking up D20's registry entry and content hash, which its stale artifact had never recorded).
+  **Gate C proven capable of failing**, in a disposable `git worktree` against a stub PyJHora package
+  and a matching `dist-info`, nine controls in total: with a stub that **agrees**, all three report
+  `oracle_executed: true`, 5,400 comparisons, 0 mismatches, PASS; with a stub that **disagrees**, all
+  three report 5,400 mismatches, `classification: genuine_external_oracle_MISMATCH`, `result: FAIL` and
+  exit 3 - and the emitted FAIL artifact still carries all nine gates' evidence, which is the direct
+  proof that gate D ran before gate C; with a stub whose chart function is **missing**, all three exit
+  3 naming it an oracle-interface defect rather than falling back to disclosure. The worktree was
+  removed. `python -m pytest -q`: 967 passed. `check_adr_numbering.py`, `check_retired_identifiers.py`,
+  `check_identifier_families.py` and `check_capability_state.py`: PASS. **No CI run yet** - pushing
+  this branch is a separate act and is not covered by this authorization; the CI run identity will be
+  recorded in a sub-entry below once one exists.
+
+---
+
 ## ADR template (copy, do not edit above the line)
 
 ## ADR-XXXX - <title>

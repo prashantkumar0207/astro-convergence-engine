@@ -2,7 +2,7 @@
  "schema": "varga_d16_v1_certification",
  "adr": "ADR-0089",
  "supersedes_provisional_id": "NOTHING_AUTHORISED",
- "date": "2026-09-04",
+ "date": "2026-09-08",
  "scope": "D16 Shodasamsa, Parashara/BPHS variant, Traditional Parasara construction. Rule under certification is a STANDALONE, UNREGISTERED CyclicVargaRule instance embedded in this certifier - not engine/astrology/varga_d16.py, no production module is authorized or created this execution.",
  "rule": {
   "kind": "standalone CyclicVargaRule instance embedded in this certifier (scripts/certify_d16.py) - not a registered production rule",
@@ -13,9 +13,11 @@
  },
  "oracle": {
   "oracle_executed": false,
-  "reason": "PyJHora unavailable in this local environment (numpy import failure, an already-disclosed, pre-existing limitation) - genuine oracle execution deferred to this project's own CI hash-pinned oracle environment, per every oracle-tier certifier's own established pattern.",
+  "blocking": false,
+  "reason": "PyJHora unavailable in this environment (No module named 'jhora') - the documented, pre-existing Windows/Linux gate-parity limitation (.claude/rules/certification.md). Genuine oracle execution is deferred to this project's own CI hash-pinned oracle environment, into which this certifier is now wired.",
   "read_only_corroboration": "PyJHora's own published source (naturalstupid/PyJHora, GitHub, shodasamsa_chart()) was read directly during DP-032 section B.B (ADR-0089 section 3): its default/Traditional-Parasara method (movable=Aries(0), fixed=Leo(4), dual=Sagittarius(8), forward) matches this frozen construction exactly. This is read-only source inspection, not executed oracle agreement.",
-  "classification": "disclosed_gap_not_correctness_evidence"
+  "classification": "disclosed_gap_not_correctness_evidence",
+  "if_executed_tolerance": "zero categorical tolerance - D16 is pure longitude arithmetic with no astronomical component, so no tolerance derivation applies"
  },
  "gates": {
   "A_table_integrity": {
@@ -30,11 +32,13 @@
    "mismatches": 0,
    "verified_against": "validate_d16_holdout.reference_d16() (imported directly, a genuinely separate implementation)"
   },
-  "C_corroboration_disclosure": {
+  "C_oracle": {
    "oracle_executed": false,
-   "reason": "PyJHora unavailable in this local environment (numpy import failure, an already-disclosed, pre-existing limitation) - genuine oracle execution deferred to this project's own CI hash-pinned oracle environment, per every oracle-tier certifier's own established pattern.",
+   "blocking": false,
+   "reason": "PyJHora unavailable in this environment (No module named 'jhora') - the documented, pre-existing Windows/Linux gate-parity limitation (.claude/rules/certification.md). Genuine oracle execution is deferred to this project's own CI hash-pinned oracle environment, into which this certifier is now wired.",
    "read_only_corroboration": "PyJHora's own published source (naturalstupid/PyJHora, GitHub, shodasamsa_chart()) was read directly during DP-032 section B.B (ADR-0089 section 3): its default/Traditional-Parasara method (movable=Aries(0), fixed=Leo(4), dual=Sagittarius(8), forward) matches this frozen construction exactly. This is read-only source inspection, not executed oracle agreement.",
-   "classification": "disclosed_gap_not_correctness_evidence"
+   "classification": "disclosed_gap_not_correctness_evidence",
+   "if_executed_tolerance": "zero categorical tolerance - D16 is pure longitude arithmetic with no astronomical component, so no tolerance derivation applies"
   },
   "D_isolation": {
    "certifier_never_imports_varga_registry_or_varga_d16": true,
@@ -93,7 +97,7 @@
   }
  },
  "explicit_non_claims": [
-  "no oracle execution this run - PyJHora unavailable locally, deferred to CI; certify_d16.py is NOT wired into .github/workflows/ci.yml's oracle-tier loop by this certification-execution task - that remains a separate, not-yet-authorized act",
+  "oracle execution is conditional: a GENUINE PyJHora comparison when the library is importable (CI's hash-pinned oracle job, into which certify_d16.py is now wired), disclosure-only otherwise. The gates block records which of the two actually happened - a disclosure run is never presented as oracle verification",
   "any per-division deity/label payload (VargaClassification carries only D-sign, division index, and fraction; deity output is out of scope, mirroring D24/D40/D45's own identical treatment - ADR-0089 section 4)",
   "the three non-default PyJHora chart_method variants (Parivritti Even Reverse, Parivritti Cyclic, Somanatha Parivritti Alternate) - excluded, mirroring D24's own two and D45's own three excluded PyJHora methods",
   "any non-parashara school variant",
@@ -114,7 +118,7 @@
    }
   },
   "anti_fitting": {
-   "modules_scanned": 200,
+   "modules_scanned": 203,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."
