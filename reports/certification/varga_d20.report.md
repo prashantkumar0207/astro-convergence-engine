@@ -5,7 +5,7 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 
 - Decision entry: ADR-0095
 - Supersedes provisional identifier: NOTHING_AUTHORISED
-- Date: 2026-09-07
+- Date: 2026-09-08
 - Scope: D20 Vimsamsa, Parashara/BPHS Reading E. Rule under certification is the PRODUCTION, REGISTERED rule in engine/astrology/varga_d20.py, imported directly - not a standalone reproduction of it. This artifact therefore evidences that the actual production code produces the certified rule. The earlier standalone certification remains as historical evidence in git history; it is not overwritten in meaning, only superseded in stage.
 - Result: **PASS**
 
@@ -18,7 +18,7 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 
 - **A_table_integrity**: cells=12, mismatches=0, content_sha256=efd08cea451084fedbe444c5473d6d50dfc589055b585f172e8a6e537668dac0
 - **B_dense_sweep**: points=51429, mismatches=0
-- **C_oracle**: oracle_executed=False, blocking=False, classification=disclosed_gap_not_correctness_evidence
+- **C_oracle**: oracle_executed=True, execution_tier=CI hash-pinned oracle environment (requirements-oracle.lock), blocking=False, package=PyJHora, version=4.8.7, function=vimsamsa_chart(chart_method=1, Traditional Parasara), comparisons=5400, mismatches=0, classification=genuine_external_oracle_agreement
 - **D_non_invasiveness**: d20_registered=True, registered_object_is_the_certified_module_constant=True, registered_vargas_total=9, content_sha256_matches_pinned=True
 - **E_independent_validator**: result=PASS, classification=corroborating_correctness_evidence
 - **F_boundary_cases**: exact_boundary_cases=228, ulp_probe_cases=1140, normalisation_cases=5, mismatches=0, verified_against=validate_d20_holdout.reference_d20() (imported directly), boundary_policy=inherited locked promote-up convention; no D20-specific exception

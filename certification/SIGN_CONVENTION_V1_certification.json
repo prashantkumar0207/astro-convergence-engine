@@ -1,7 +1,7 @@
 {
  "schema": "sign_convention_v1_certification",
  "adr": "ADR-0012",
- "date": "2026-09-07",
+ "date": "2026-09-08",
  "scope": "explicit, machine-checked sign-index conventions across every layer; no certified value renumbered",
  "decisions": {
   "SC-A": "inert Sign value type as the shared convention carrier",
@@ -302,7 +302,7 @@
   "nakshatra and division-index conventions are out of scope for V1"
  ],
  "environment": {
-  "python": "3.12.10"
+  "python": "3.11.16"
  },
  "preconditions": {
   "data_assets": {
