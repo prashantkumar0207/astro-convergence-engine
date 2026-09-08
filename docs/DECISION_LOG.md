@@ -8274,6 +8274,87 @@ around. `certify_d20.py`, `certify_d24.py` and `certify_d45.py` are unmodified.
   this branch is a separate act and is not covered by this authorization; the CI run identity will be
   recorded in a sub-entry below once one exists.
 
+#### Addendum to ADR-0096: genuine CI oracle evidence obtained and captured for D16, D4 and D40 (2026-09-08)
+
+Append-only. `ADR-0096`'s Evidence section above closed by recording that no CI run existed yet and
+that the run identity would be recorded here once one did. It now does, and the substance of that
+entry is unchanged by this addendum.
+
+**Authorizations.** Two, in sequence, both quoted because both were issued as one-line headers:
+**"CEO AUTHORIZATION - PUSH wire-d16-d4-d40-ci-oracle FOR FIRST CI ORACLE RUN"**, then **"CEO
+AUTHORIZATION - OPEN PR FOR wire-d16-d4-d40-ci-oracle"** with the head SHA
+`ee57e842ca4f405773461bcd11b75d8026249a8c` named explicitly, the instruction "only to open the PR and
+trigger the existing CI", a prohibition on modifying the branch, altering rules/tolerances/holdouts,
+changing certification verdicts, registering D16/D4/D40 in production, or merging, and three
+pre-committed interpretations of the possible results. Finally **"CEO AUTHORIZATION - CAPTURE CI
+ORACLE EVIDENCE FOR D16/D4/D40"** authorized this capture. The push alone produced no run:
+`ci.yml`'s `push` trigger covers only `main` and `phase-g-governance`, so a pull request is what fires
+CI on a feature branch - confirmed empirically, `gh run list --branch wire-d16-d4-d40-ci-oracle`
+returning `[]` after the push, and by every one of the D20 branch's six runs having been
+`pull_request`-triggered.
+
+**1. The result: OUTCOME 1, the oracle agrees.** PR **#16**, head `ee57e842ca4f405773461bcd11b75d8026249a8c`,
+CI run **`34221386095`**. Governance gate and both no-oracle gates (Python 3.11 and 3.12, `967 passed`
+each) green; the oracle gate failed at **exactly one step**, `Assert regenerated artifacts drifted only
+in the volatile fields` - the predicted, designed drift failure, not a certification failure. All
+**sixteen** oracle-tier runners reported `RESULT: PASS`.
+
+| Varga | PyJHora function | chart_method | Comparisons | Mismatches | Classification |
+|---|---|---|---|---|---|
+| D16 | `shodasamsa_chart` | 1 (Traditional Parasara) | 5,400 | **0** | `genuine_external_oracle_agreement` |
+| D4 | `chaturthamsa_chart` | 1 (Traditional Parasara) | 5,400 | **0** | `genuine_external_oracle_agreement` |
+| D40 | `khavedamsa_chart` | 1 (Traditional Parasara) | 5,400 | **0** | `genuine_external_oracle_agreement` |
+
+PyJHora **4.8.7**, zero categorical tolerance, in the hash-pinned oracle environment whose identity
+`scripts/check_oracle_environment.py` asserted in the same job. **This is the first genuine external
+oracle agreement any of the three has ever had.** No interface defect arose: every named entry point
+resolved, so the authorization's outcome-3 branch never triggered.
+
+**2. What was captured, and how.** The nine evidence files for these three vargas were taken
+byte-for-byte from run `34221386095`'s own `oracle-certification-evidence` upload - three
+`certification/VARGA_D{16,4,40}_V1_certification.json` and six `reports/certification/varga_d{16,4,40}.
+{report.md,console.txt}` - named in an **explicit nine-file list**, never by copying the bundle
+wholesale. The bundle contains every artifact the job regenerated, and copying it in bulk is exactly
+what produced the D20 recovery's own copy-order defect. Nothing was hand-edited; no certifier was
+re-run locally afterwards, which would have overwritten the genuine evidence with this Windows host's
+disclosure branch.
+
+**3. The captured delta, verified field by field rather than assumed.** Against the committed
+artifacts, the only JSON paths that changed in each of the three are `gates.C_oracle.*` and its mirror
+`oracle.*` - `oracle_executed` False -> True, `classification`
+`disclosed_gap_not_correctness_evidence` -> `genuine_external_oracle_agreement`, the addition of
+`package`/`version`/`function`/`tolerance`/`comparisons`/`mismatches`/`execution_tier`/
+`blocking_rationale`, and the removal of `reason`/`read_only_corroboration`/`if_executed_tolerance` -
+plus `environment.python` (3.12.10 -> 3.11.16), which is a declared `VOLATILE` field. **Every other
+value is byte-identical**: all of gates A, B, D, E, F, G, H, I, every content hash, `modules_scanned`
+203, the registry contents, the `registered` flags, and `result: PASS`. In the rendered evidence the
+real delta is the `C_oracle` line plus two lines PyJHora itself prints to stdout on import
+(`horoscope /home/runner/work added to system path ...`), which are themselves evidence that the
+library was genuinely imported.
+
+**4. Line endings, disclosed so the diff is not misread.** The committed evidence carried CRLF, having
+been generated on this Windows host; the CI files are LF. The rendered files therefore appear in
+`git diff` as whole-file rewrites. They are not: `git diff --ignore-cr-at-eol` reduces the change to
+two lines per `report.md` and four per `console.txt`, exactly as itemised above. The CI bytes are
+committed verbatim rather than converted, because converting them would be editing evidence.
+`scripts/check_artifact_drift.py` parses JSON and splits rendered files into lines, so line endings
+are invisible to it either way - which is why this pre-existing CRLF/LF mix has never triggered it.
+
+**5. What this addendum does NOT change.** No rule table, content hash, tolerance, holdout, gate
+threshold or certification verdict was altered, in this step or the two before it. **D16 and D4 remain
+certified-but-NOT-production-registered** - CI's own governance gate independently confirmed it in the
+same run, printing `PASS: 9 certified vargas, each with a PASS artifact citing a compliant decision
+entry; 2 explicit pre-production artifact(s) accounted for`, and both certifiers' banners still read
+`(standalone rule, not production-registered)`. `certify_d20.py`, `certify_d24.py` and
+`certify_d45.py` are untouched, and `VARGA_D20_V1` showed **zero** non-volatile drift in that run.
+Nothing has been merged; PR #16 remains open.
+
+- **Evidence:** PR #16 (`https://github.com/prashantkumar0207/astro-convergence-engine/pull/16`), head
+  `ee57e842ca4f405773461bcd11b75d8026249a8c`; CI run `34221386095`, four jobs, one failing step, the
+  full log and the `oracle-certification-evidence` upload; the three regenerated certification
+  artifacts and six rendered evidence files committed by this addendum's own commit; the field-level
+  comparison described in item 3.
+
 ---
 
 ## ADR template (copy, do not edit above the line)

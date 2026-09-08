@@ -18,7 +18,7 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 
 - **A_table_integrity**: cells=12, mismatches=0, content_sha256=056e3e8af182568e9e2eaa5a1f54d86c40f7d97a53ece610f1e3105eb7a41006
 - **B_dense_sweep**: points=51429, mismatches=0
-- **C_oracle**: oracle_executed=False, blocking=False, classification=disclosed_gap_not_correctness_evidence
+- **C_oracle**: oracle_executed=True, execution_tier=CI hash-pinned oracle environment (requirements-oracle.lock), blocking=False, package=PyJHora, version=4.8.7, function=khavedamsa_chart(chart_method=1, Traditional Parasara), comparisons=5400, mismatches=0, classification=genuine_external_oracle_agreement
 - **D_non_invasiveness**: d40_registered=True, registered_rule_identity=is D40_KHAVEDAMSA (engine.astrology.varga_d40), rule_content_sha256=056e3e8af182568e9e2eaa5a1f54d86c40f7d97a53ece610f1e3105eb7a41006
 - **E_independent_validator**: result=PASS, classification=corroborating_correctness_evidence
 - **F_boundary_cases**: cases=492, mismatches=0

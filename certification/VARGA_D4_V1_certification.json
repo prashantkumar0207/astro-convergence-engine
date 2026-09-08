@@ -12,12 +12,17 @@
   "content_sha256": "9c5e1a460458fc8348ad8b02c2eecaba65ee77cc4eefa35735c8a548e691a031"
  },
  "oracle": {
-  "oracle_executed": false,
+  "oracle_executed": true,
+  "execution_tier": "CI hash-pinned oracle environment (requirements-oracle.lock)",
   "blocking": false,
-  "reason": "PyJHora unavailable in this environment (No module named 'jhora') - the documented, pre-existing Windows/Linux gate-parity limitation (.claude/rules/certification.md). Genuine oracle execution is deferred to this project's own CI hash-pinned oracle environment, into which this certifier is now wired.",
-  "read_only_corroboration": "PyJHora's own published source (naturalstupid/PyJHora, GitHub, chaturthamsa_chart(), _chaturthamsa_parasara(), f2=3) was read directly during DP-032 section A.B (ADR-0090 section 3): its default/Traditional-Parasara method (kendra step of 3 signs per division, uniform for all source signs) matches this frozen construction exactly. This is read-only source inspection, not executed oracle agreement.",
-  "classification": "disclosed_gap_not_correctness_evidence",
-  "if_executed_tolerance": "zero categorical tolerance - D4 is pure longitude arithmetic with no astronomical component, so no tolerance derivation applies"
+  "blocking_rationale": "gate D_isolation is evaluated first and this gate never calls fail() for a mismatch; a genuine disagreement is failed on at the end of main(), after every gate has produced its evidence (D20/DP-036 decision 2 pattern).",
+  "package": "PyJHora",
+  "version": "4.8.7",
+  "function": "chaturthamsa_chart(chart_method=1, Traditional Parasara)",
+  "tolerance": "zero categorical tolerance - pure longitude arithmetic, no astronomy, so no tolerance derivation applies",
+  "comparisons": 5400,
+  "mismatches": 0,
+  "classification": "genuine_external_oracle_agreement"
  },
  "gates": {
   "A_table_integrity": {
@@ -33,12 +38,17 @@
    "verified_against": "validate_d4_holdout.reference_d4() (imported directly, a genuinely separate implementation)"
   },
   "C_oracle": {
-   "oracle_executed": false,
+   "oracle_executed": true,
+   "execution_tier": "CI hash-pinned oracle environment (requirements-oracle.lock)",
    "blocking": false,
-   "reason": "PyJHora unavailable in this environment (No module named 'jhora') - the documented, pre-existing Windows/Linux gate-parity limitation (.claude/rules/certification.md). Genuine oracle execution is deferred to this project's own CI hash-pinned oracle environment, into which this certifier is now wired.",
-   "read_only_corroboration": "PyJHora's own published source (naturalstupid/PyJHora, GitHub, chaturthamsa_chart(), _chaturthamsa_parasara(), f2=3) was read directly during DP-032 section A.B (ADR-0090 section 3): its default/Traditional-Parasara method (kendra step of 3 signs per division, uniform for all source signs) matches this frozen construction exactly. This is read-only source inspection, not executed oracle agreement.",
-   "classification": "disclosed_gap_not_correctness_evidence",
-   "if_executed_tolerance": "zero categorical tolerance - D4 is pure longitude arithmetic with no astronomical component, so no tolerance derivation applies"
+   "blocking_rationale": "gate D_isolation is evaluated first and this gate never calls fail() for a mismatch; a genuine disagreement is failed on at the end of main(), after every gate has produced its evidence (D20/DP-036 decision 2 pattern).",
+   "package": "PyJHora",
+   "version": "4.8.7",
+   "function": "chaturthamsa_chart(chart_method=1, Traditional Parasara)",
+   "tolerance": "zero categorical tolerance - pure longitude arithmetic, no astronomy, so no tolerance derivation applies",
+   "comparisons": 5400,
+   "mismatches": 0,
+   "classification": "genuine_external_oracle_agreement"
   },
   "D_isolation": {
    "certifier_never_imports_varga_registry_or_varga_d4": true,
@@ -114,7 +124,7 @@
   "paraphrase-only caveat: the BPHS citation is corroborated by consistent modern paraphrase across independent sources, not a located verbatim Sanskrit verse/Sarga-and-Shloka citation (ADR-0090 section 3, DP-032 section A.B)"
  ],
  "environment": {
-  "python": "3.12.10"
+  "python": "3.11.16"
  },
  "preconditions": {
   "data_assets": {

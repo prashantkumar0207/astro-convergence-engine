@@ -18,7 +18,7 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 
 - **A_table_integrity**: cells=48, mismatches=0, content_sha256=9c5e1a460458fc8348ad8b02c2eecaba65ee77cc4eefa35735c8a548e691a031
 - **B_dense_sweep**: points=51429, mismatches=0
-- **C_oracle**: oracle_executed=False, blocking=False, classification=disclosed_gap_not_correctness_evidence
+- **C_oracle**: oracle_executed=True, execution_tier=CI hash-pinned oracle environment (requirements-oracle.lock), blocking=False, package=PyJHora, version=4.8.7, function=chaturthamsa_chart(chart_method=1, Traditional Parasara), comparisons=5400, mismatches=0, classification=genuine_external_oracle_agreement
 - **D_isolation**: certifier_never_imports_varga_registry_or_varga_d4=True, certifier_never_imports_cyclicvargarule=True, engine_astrology_varga_d4_absent=True, content_sha256_matches_pinned=True, varga_rules_py_sha256=47ea22a89eb206f0d7da62bf4a1534f5737cd3944bb1b5e57012c6a350030bb7, varga_rules_py_unchanged_from_baseline=True
 - **E_independent_validator**: result=PASS, classification=corroborating_correctness_evidence
 - **F_boundary_cases**: cases=60, mismatches=0, verified_against=validate_d4_holdout.reference_d4() (imported directly)
