@@ -20,7 +20,7 @@
 #              six invocations, not to all fifteen. The job was previously
 #              named "hermetic (no oracle, no network)", which claimed more
 #              than it delivers. Child processes are not sandboxed.
-#   oracle   : the eight PyJHora certification runners, installed hash-pinned
+#   oracle   : the sixteen PyJHora certification runners, installed hash-pinned
 #              from requirements-oracle.lock ALONE, asserting and uploading the
 #              environment identity used for certification.
 #              NOTE: `pip install --upgrade pip` is NOT hash-pinned, so the
@@ -287,7 +287,7 @@ jobs:
       - name: Verify ephemeris asset checksums
         run: sha256sum --check CHECKSUMS.sha256
 
-      - name: Oracle certification runners (all thirteen)
+      - name: Oracle certification runners (all sixteen)
         # certify_d20.py added here (ADR-0095 certification; CI-wiring
         # authorization 2026-09-07). D20's gate C is CONDITIONAL: a genuine
         # PyJHora vimsamsa_chart(chart_method=1) comparison at zero categorical
@@ -304,15 +304,33 @@ jobs:
         # non-invasiveness rather than isolation, and D20 has accordingly been
         # removed from ALLOWED_PRE_PRODUCTION below - it now has a declared
         # registry entry like every other production varga.
+        #
+        # certify_d16.py, certify_d4.py and certify_d40.py added here
+        # (CI-wiring authorization 2026-09-08). All three previously ran in NO
+        # CI job at all: their artifacts were regenerated only on the Windows
+        # host, where PyJHora cannot be imported, so their gate C was an
+        # unconditional disclosure and D16/D4/D40 had never once been compared
+        # against a genuine external oracle. Each now carries D20's ratified
+        # conditional-genuine gate C (real shodasamsa_chart / chaturthamsa_chart
+        # / khavedamsa_chart comparison at chart_method=1 and zero categorical
+        # tolerance here, disclosure-only off-CI), evaluated AFTER gate D and
+        # failing certification at the end of main() on a genuine mismatch.
+        #
+        # D16 and D4 remain CERTIFIED-BUT-NOT-PRODUCTION-REGISTERED: running
+        # them here grants them no registry entry, and they stay in
+        # ALLOWED_PRE_PRODUCTION below. CERTIFIED != PRODUCTION REGISTERED.
         run: |
           set -e
           for c in scripts/certify_d2.py \
                    scripts/certify_d3.py \
+                   scripts/certify_d4.py \
                    scripts/certify_d7.py \
                    scripts/certify_d12.py \
+                   scripts/certify_d16.py \
                    scripts/certify_d20.py \
                    scripts/certify_d24.py \
                    scripts/certify_d30.py \
+                   scripts/certify_d40.py \
                    scripts/certify_d45.py \
                    scripts/certify_vimshottari.py \
                    scripts/certify_transits.py \

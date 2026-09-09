@@ -5,20 +5,20 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 
 - Decision entry: ADR-0089
 - Supersedes provisional identifier: NOTHING_AUTHORISED
-- Date: 2026-09-04
+- Date: 2026-09-08
 - Scope: D16 Shodasamsa, Parashara/BPHS variant, Traditional Parasara construction. Rule under certification is a STANDALONE, UNREGISTERED CyclicVargaRule instance embedded in this certifier - not engine/astrology/varga_d16.py, no production module is authorized or created this execution.
 - Result: **PASS**
 
 ## Preconditions
 
 - Data assets verified against CHECKSUMS.sha256: 3
-- Anti-fitting scan: 200 production modules, 0 findings
+- Anti-fitting scan: 203 production modules, 0 findings
 
 ## Gates
 
 - **A_table_integrity**: cells=12, mismatches=0, content_sha256=e86961e430114ba472c7def37e71a23a0761bd06531ef13b44a7716106072e48
 - **B_dense_sweep**: points=51429, mismatches=0
-- **C_corroboration_disclosure**: oracle_executed=False, classification=disclosed_gap_not_correctness_evidence
+- **C_oracle**: oracle_executed=True, execution_tier=CI hash-pinned oracle environment (requirements-oracle.lock), blocking=False, package=PyJHora, version=4.8.7, function=shodasamsa_chart(chart_method=1, Traditional Parasara), comparisons=5400, mismatches=0, classification=genuine_external_oracle_agreement
 - **D_isolation**: certifier_never_imports_varga_registry_or_varga_d16=True, engine_astrology_varga_d16_absent=True, content_sha256_matches_pinned=True
 - **E_independent_validator**: result=PASS, classification=corroborating_correctness_evidence
 - **F_boundary_cases**: cases=204, mismatches=0, verified_against=validate_d16_holdout.reference_d16() (imported directly)
@@ -28,7 +28,7 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 
 ## Explicit non-claims
 
-- no oracle execution this run - PyJHora unavailable locally, deferred to CI; certify_d16.py is NOT wired into .github/workflows/ci.yml's oracle-tier loop by this certification-execution task - that remains a separate, not-yet-authorized act
+- oracle execution is conditional: a GENUINE PyJHora comparison when the library is importable (CI's hash-pinned oracle job, into which certify_d16.py is now wired), disclosure-only otherwise. The gates block records which of the two actually happened - a disclosure run is never presented as oracle verification
 - any per-division deity/label payload (VargaClassification carries only D-sign, division index, and fraction; deity output is out of scope, mirroring D24/D40/D45's own identical treatment - ADR-0089 section 4)
 - the three non-default PyJHora chart_method variants (Parivritti Even Reverse, Parivritti Cyclic, Somanatha Parivritti Alternate) - excluded, mirroring D24's own two and D45's own three excluded PyJHora methods
 - any non-parashara school variant
