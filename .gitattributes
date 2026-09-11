@@ -1,0 +1,7 @@
+# Q24 / B-2: the checksum manifest is a trust record. Its committed blob is LF
+# and its blob identity is pinned as a constant in scripts/certification_support.py;
+# a CRLF checkout would change the file bytes without changing a digest it records.
+CHECKSUMS.sha256 -text
+
+# The reference binary is the D-001 numerical authority. Never line-ending mangled.
+swetest binary
