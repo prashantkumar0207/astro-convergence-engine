@@ -55,7 +55,11 @@ def test_anti_fitting_scan_is_clean():
 def test_anti_fitting_scan_covers_every_declared_certification_source():
     """M-03: additions or removals from the certification surface are explicit."""
 
-    assert len(support.CERTIFIER_SOURCES) == 23
+    # M-4: 23 -> 22. `scripts/certify_tier0.py` retired - it imported the
+    # `astro_kernel` package that no longer exists, resolved ROOT to scripts/,
+    # ran in no CI job, and was already recorded broken in three places with
+    # its disposition assigned to Phase G item G7 and never executed.
+    assert len(support.CERTIFIER_SOURCES) == 22
     assert len(support.VALIDATOR_SOURCES) == 22
     assert support.FIXTURE_SOURCES == ("brihat_fixtures.py",)
     discovered_certifiers = {
