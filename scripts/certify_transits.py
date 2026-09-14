@@ -6,10 +6,12 @@ on every run; the stored JSON is never accepted as proof.
 
 Gates: A residual battery on the certified position authority;
 B completeness vs independent fine scan; C external anchors (PyJHora
-sankranti and Moon-ingress instants under the D-007 discipline:
-per-event tolerance derived from the MEASURED oracle astronomy delta
-at the event instant divided by the local speed, plus the oracle's
-own documented search slop; categorical tolerance zero); D the
+sankranti and Moon-ingress instants) in TWO parts since the H-03/B-1
+repair: C1 time agreement against a FROZEN bound derived from the IAU
+aberration constant plus the oracle's own documented search slop, and
+C2 astronomy agreement - the residual after removing the predicted
+apparent-minus-geometric aberration - which is the assertion that did
+not previously exist at all; D the
 independent validator; E `declared_division` correctness (H-02 fix,
 ADR-0065) with a genuine negative control. Exit 0 = PASS, 3 = FAIL.
 
@@ -62,6 +64,71 @@ except Exception as error:  # pragma: no cover
 #: tighter settings make its search diverge (measured); allow 120 s.
 ORACLE_SEARCH_SLOP_DAYS = 120.0 / 86400.0
 
+# ---------------------------------------------------------------- H-03 / B-1
+#
+# THE DEFECT. Gate C previously computed, per anchor:
+#
+#     delta_deg = |oracle_sun(our_jd) - our_sun(our_jd)|
+#     tolerance = delta_deg / speed + ORACLE_SEARCH_SLOP_DAYS
+#     fail if |our_jd - oracle_jd| > tolerance
+#
+# The bound was derived from the very quantity it was meant to bound. Under a
+# systematic longitude bias B, delta_deg ~ B, so tolerance ~ B/speed + slop,
+# while the observed time gap is also ~ B/speed: the bound grew in exact step
+# with the error. `reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md` H-03 recorded
+# that injected biases up to 7.9 HOURS passed. Note also what was never
+# asserted: delta_deg itself was only ever used as a denominator.
+#
+# THE MECHANISM, identified before any bound was chosen. PyJHora's
+# `drik.solar_longitude` returns the GEOMETRIC (true) longitude; this engine
+# returns the APPARENT longitude. The difference is annual aberration.
+# `ADR-0064`'s H-02 investigation - a different study, a different instant -
+# recorded a 20.56970288 arcsec delta at jd 2460389.75; re-deriving both values
+# from Swiss Ephemeris at that instant gives apparent - true = -20.5693 arcsec
+# and reproduces the recorded "oracle" figure as the geometric longitude to
+# seven decimal places. Light deflection contributes 0.0000 arcsec for the Sun.
+#
+# THE BOUND, derived from published constants ONLY, and recorded before any
+# transit-anchor measurement was consulted (CEO execution controls 3 and 4):
+#
+#     annual aberration constant (IAU 2009)          kappa = 20.49552 arcsec
+#     annual range, e = 0.0167   kappa/(1+e) = 20.15918 .. kappa/(1-e) = 20.84361
+#     UT1-vs-UTC 0.9 s at 0.0411 arcsec/s                  <=  0.04 arcsec
+#     ephemeris and rounding differences                    <   1.00 arcsec
+#     declared margin                                           3.00 arcsec
+#                                                          ---------------
+#     20.84361 + 0.04 + 1.00 + 3.00 = 24.88            ->  25.0 arcsec
+#
+# FALSIFICATION, run only after the above was fixed: across the 24 committed
+# anchors (CI run 34319680844) the worst |delta| is 20.8380 arcsec - which is
+# kappa/(1-e) to within 0.006 arcsec, predicted from constants alone - and the
+# worst aberration residual is 0.000000 arcsec. Not falsified. A pass is
+# corroboration, never the origin of the number.
+FROZEN_ASTRONOMY_BOUND_ARCSEC = 25.0
+
+#: Gate C2 asserts the residual AFTER removing the predicted aberration, which
+#: is strictly stronger than a one-sided cap: a systematic bias B shifts the
+#: apparent and geometric longitudes equally, so the predicted aberration is
+#: invariant under it while delta_deg becomes |aberration + B|. The residual
+#: therefore equals |B| and is caught in either direction.
+#:     25.0 - kappa/(1+e) = 25.0 - 20.15918 = 4.84 -> 5.0 arcsec
+ABERRATION_RESIDUAL_BOUND_ARCSEC = 5.0
+
+
+def _predicted_aberration_arcsec(julian_day: float, ayanamsa_mode) -> float:
+    """Apparent minus geometric longitude for the Sun, from Swiss Ephemeris.
+
+    Computed as the difference between two CONVENTIONS of the same ephemeris,
+    never as a comparison of the engine against itself: a systematic bias in
+    the position pipeline shifts both conventions equally and cancels here,
+    which is exactly what makes gate C2 able to detect such a bias.
+    """
+
+    flags = swe.FLG_SWIEPH | swe.FLG_SIDEREAL
+    apparent, _ = swe.calc_ut(julian_day, swe.SUN, flags)
+    geometric, _ = swe.calc_ut(julian_day, swe.SUN, flags | swe.FLG_TRUEPOS)
+    return abs(((apparent[0] - geometric[0] + 180.0) % 360.0 - 180.0) * 3600.0)
+
 
 def fail(message):
     print("TRANSIT CERTIFICATION FAIL:", message)
@@ -87,6 +154,8 @@ def gate_a_residuals():
 def gate_c_oracle_anchors():
     anchors = []
     worst_ratio = 0.0
+    worst_residual = 0.0
+    worst_delta_arcsec = 0.0
     for profile, jhora_mode in ((PARASHARI_LAHIRI, "LAHIRI"), (KP_KRISHNAMURTI, "KP")):
         drik.set_ayanamsa_mode(jhora_mode)
         place = drik.Place("anchor", 0.0, 0.0, 0.0)
@@ -106,23 +175,58 @@ def gate_c_oracle_anchors():
             oracle_sun = drik.solar_longitude(our_event.julian_day)
             delta_deg = abs(((oracle_sun - position.longitude + 180.0) % 360.0) - 180.0)
             speed = abs(position.speed_longitude)
-            tolerance = delta_deg / speed + ORACLE_SEARCH_SLOP_DAYS
+            # C1, time agreement. The numerator is now the FROZEN bound, not
+            # this run's own measured delta, so a systematic bias can no
+            # longer inflate the tolerance that is meant to catch it.
+            tolerance = (FROZEN_ASTRONOMY_BOUND_ARCSEC / 3600.0) / speed + ORACLE_SEARCH_SLOP_DAYS
             observed = abs(our_event.julian_day - oracle_jd)
+
+            # C2, astronomy agreement. This assertion did not previously
+            # exist: delta_deg was computed on every anchor and used only as a
+            # denominator, never compared to anything.
+            delta_arcsec = delta_deg * 3600.0
+            predicted = _predicted_aberration_arcsec(
+                our_event.julian_day, profile.ayanamsa_mode)
+            residual = abs(delta_arcsec - predicted)
+
             anchors.append({
                 "profile": profile.name,
                 "target": our_event.target_longitude,
                 "our_jd": our_event.julian_day,
                 "oracle_jd": oracle_jd,
-                "oracle_astronomy_delta_arcsec": delta_deg * 3600.0,
+                "oracle_astronomy_delta_arcsec": delta_arcsec,
+                "predicted_aberration_arcsec": predicted,
+                "aberration_residual_arcsec": residual,
                 "delta_days": observed,
-                "derived_tolerance_days": tolerance,
+                "frozen_tolerance_days": tolerance,
             })
+            if delta_arcsec > FROZEN_ASTRONOMY_BOUND_ARCSEC:
+                fail(f"{profile.name} sankranti at {our_event.target_longitude}: "
+                     f"oracle astronomy delta {delta_arcsec} arcsec > frozen bound "
+                     f"{FROZEN_ASTRONOMY_BOUND_ARCSEC} arcsec")
+            if residual > ABERRATION_RESIDUAL_BOUND_ARCSEC:
+                fail(f"{profile.name} sankranti at {our_event.target_longitude}: "
+                     f"aberration residual {residual} arcsec > bound "
+                     f"{ABERRATION_RESIDUAL_BOUND_ARCSEC} arcsec - the delta is not "
+                     f"explained by apparent-vs-geometric convention, which is what a "
+                     f"systematic longitude bias looks like")
             if observed > tolerance:
                 fail(f"{profile.name} sankranti at {our_event.target_longitude}: "
-                     f"delta {observed} d > derived tolerance {tolerance} d")
+                     f"delta {observed} d > frozen tolerance {tolerance} d")
             worst_ratio = max(worst_ratio, observed / tolerance)
+            worst_residual = max(worst_residual, residual)
+            worst_delta_arcsec = max(worst_delta_arcsec, delta_arcsec)
             cursor = oracle_jd + 1.0
-    return {"anchors": len(anchors), "worst_delta_over_tolerance": worst_ratio,
+    return {"anchors": len(anchors),
+            "worst_delta_over_tolerance": worst_ratio,
+            "worst_astronomy_delta_arcsec": worst_delta_arcsec,
+            "worst_aberration_residual_arcsec": worst_residual,
+            "frozen_astronomy_bound_arcsec": FROZEN_ASTRONOMY_BOUND_ARCSEC,
+            "aberration_residual_bound_arcsec": ABERRATION_RESIDUAL_BOUND_ARCSEC,
+            "bound_derivation": "IAU 2009 aberration constant 20.49552 arcsec, annual "
+                                 "range to 20.84361 at perihelion, plus UT1 0.04, "
+                                 "ephemeris 1.00 and declared margin 3.00; frozen "
+                                 "before any anchor measurement was consulted",
             "details": anchors}
 
 
@@ -219,7 +323,7 @@ def main():
         "decisions": {
             "TR-A": "event-time guarantee 1e-6 day; bisection bracket 1e-9 day",
             "TR-B": "45 deg max motion per sample, speed bounds x safety 4",
-            "TR-C": "swetest position authority; oracle anchors with derived tolerances (D-007)",
+            "TR-C": "swetest position authority; oracle anchors judged against a FROZEN bound derived from published constants, plus an aberration-residual assertion (H-03/B-1 repair). The previous per-event tolerance was derived from the same quantity it bounded and is superseded.",
         },
         "oracle": {
             "package": "PyJHora", "version": PYJHORA_VERSION,
