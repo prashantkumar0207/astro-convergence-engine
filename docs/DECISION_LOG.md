@@ -8357,6 +8357,201 @@ Nothing has been merged; PR #16 remains open.
 
 ---
 
+## ADR-0097 - M1 certification-integrity remediation: H-03 transit oracle circularity, Q24 numerical-authority verification, Q22 evidence-agreement circularity, and the retirement of a dead certifier
+
+- **Date:** 2026-09-14
+- **Status:** **ACCEPTED**, on the owner's explicit authorizing instruction "CEO AUTHORIZATION -
+  IMPLEMENT M1 CERTIFICATION-INTEGRITY REMEDIATION", which named the in-scope items, sixteen mandatory
+  execution controls and an explicit out-of-scope list, followed by "CEO AUTHORIZATION - PROCEED WITH M1
+  REGENERATION + CI" after an independent CEO audit returned PASS on the three completed workstreams.
+  Per `docs/PROJECT_CONSTITUTION.md` s11 those instructions are the authorizing acts. **No merge is
+  authorized by either instruction**; this entry records the work, not its acceptance into `main`.
+- **Context:** The forward-readiness assessment classified three defects as an integrity cluster sitting
+  *underneath* every certification artifact already produced, and the owner's revised-design directive
+  required each to be characterised before implementation. Two of them were gates that provably could
+  not fail for the defect they existed to catch, which `.claude/rules/certification.md` names as the
+  condition under which a PASS means nothing.
+
+### 1. H-03 / B-1: the transit oracle gate could not detect a systematic astronomical bias
+
+`scripts/certify_transits.py` gate C computed `tolerance = delta_deg / speed + slop`, where `delta_deg`
+is the oracle-versus-engine disagreement the tolerance exists to bound. Under a systematic longitude
+bias B the bound grew in exact step with the error, and `delta_deg` itself was never asserted against
+anything - it existed only as a denominator. `reports/G1_ARCHITECTURE_AUDIT_2026-08-11.md` H-03 recorded
+that injected biases up to **7.9 hours** passed. The finding had been open since 2026-08-11.
+
+**Mechanism, identified before any bound was chosen.** PyJHora's `drik.solar_longitude` returns the
+**geometric** longitude; this engine returns the **apparent** longitude. The difference is annual
+aberration. `ADR-0064`'s H-02 investigation - a different study, at a different instant - recorded a
+20.56970288 arcsec delta at jd 2460389.75; re-deriving both values from Swiss Ephemeris reproduces its
+recorded "oracle" figure as the geometric longitude to seven decimal places, with
+`apparent - true = -20.5693` arcsec and light deflection contributing 0.0000 arcsec.
+
+**Bound, derived from published constants only and recorded before any measurement was consulted**
+(execution controls 3 and 4): IAU 2009 aberration constant kappa = 20.49552 arcsec; annual range
+kappa/(1+e) = 20.15918 to kappa/(1-e) = 20.84361 at e = 0.0167; UT1-versus-UTC 0.9 s at 0.0411
+arcsec/s <= 0.04; ephemeris and rounding < 1.00; declared margin 3.00. Sum 24.88 ->
+**FROZEN_ASTRONOMY_BOUND = 25.0 arcsec**, and **ABERRATION_RESIDUAL_BOUND = 5.0 arcsec** from
+25.0 - 20.15918.
+
+**Falsification, run only afterwards.** Across the 24 committed anchors the worst |delta| is 20.8380
+arcsec - kappa/(1-e) to within 0.006 arcsec, predicted from constants alone - and the worst aberration
+residual is 0.000000 arcsec. Not falsified. A pass is corroboration, never the origin of the number.
+
+**The repair.** Gate C splits. C1 keeps time agreement but its numerator is the frozen bound, not the
+run's own delta. **C2 is new**: it asserts the residual after removing the predicted aberration, where
+the prediction is the difference between two *conventions* of the same ephemeris and is therefore
+invariant under a bias that shifts both equally - so the residual equals |B| and is caught in either
+direction. No assertion was removed or loosened; two were added.
+
+**Negative control (control 5)**, real anchors, real Swiss values, bias injected adversarially:
+
+| injected bias | old gate | new gate C2 |
+|---|---|---|
+| none | 0 fails, ratio 0.8087 | 0 fails, residual 0.0000 arcsec |
+| 30 arcsec | **0 fails** | **24 fails**, residual 30.0000 arcsec |
+| 5 arcmin | **0 fails** | **24 fails**, residual 300.0000 arcsec |
+| 1 degree | **0 fails** | **24 fails**, residual 3600.0000 arcsec |
+| 7.9 hours | **0 fails** (0.9960) | **24 fails**, residual 1167.6200 arcsec |
+
+The residual equals the injected bias exactly, confirming invariance by measurement. Recorded honestly:
+the old gate is **not** uniformly blind - a bias that cancels the aberration shrinks `delta_deg` and does
+trip it. H-03 concerns the adversarial direction, which is what is injected here.
+
+**Genuine CI result (control 6 was written for this).** `TRANSIT_V1` **PASSED** the repaired gate under
+real PyJHora in run `34864270491`: 24 anchors, worst astronomy delta **20.837971391210885** arcsec
+against the 25.0 bound, worst aberration residual **1.0231815394945443e-10** arcsec against the 5.0
+bound, worst delta/tolerance 0.6924164191092362 (was 0.8086670524725567). The residual is ~1e-10 arcsec:
+the apparent-versus-geometric model is exact in the real oracle comparison, not merely in the local
+control. **No bound was tuned.**
+
+### 2. Q24 / B-2: the numerical authority's integrity was recorded and read by nothing
+
+`ORACLE_ENVIRONMENT.json` had recorded the `swetest` binary's SHA-256 and the checksum manifest's own
+SHA-256 since `ADR-0018`. Nothing read either. What the gate checked was a version string, which any
+binary can print. `verify_trust_records()` now enforces four checks inside `preflight()`, so every
+certifier fails closed: the binary's bytes hash to the recorded digest; the manifest's bytes hash to the
+digest recorded for it; the manifest's **git blob identity equals a pinned constant**
+(`0885f0446ba4306c7afa78eef06a0be2e7b6c5a7` at `a62a2c8`), never recomputed from the current file, so
+the check cannot degrade into a self-comparison (control 7); and the manifest's per-file digests and
+`ORACLE_ENVIRONMENT.json`'s duplicate list agree in both directions, which is what makes a single-file
+edit fail.
+
+**A platform defect was found and fixed before it could bite.** The committed manifest blob is LF (234
+bytes); a Windows checkout materialises CRLF (237 bytes), changing the file's SHA-256 without changing a
+single digest it records. A naive hash-the-file check would have failed on Windows and passed on Linux.
+`manifest_bytes()` normalises line endings for this text manifest only. **Proven cross-platform**: the
+Linux runner computed manifest digest `74de363e...01ad1` and blob id `0885f044...c5a7`, byte-identical
+to the Windows values.
+
+**Residual, demonstrated rather than described (control 8).** Every trust record lives in this
+repository, so a coordinated single-commit edit of all of them cannot be cryptographically prevented by
+any in-repository anchor. Only upstream provenance would anchor it, and that is out of scope by the
+owner's own exclusion. `TRUST_ANCHOR_RESIDUAL` states this and
+`test_trust_record_integrity.py::test_coordinated_edit_of_every_trust_record_is_NOT_caught` **asserts
+that such an edit passes**, so the limitation cannot quietly disappear: if it is ever genuinely closed,
+that test fails and must be rewritten deliberately.
+
+Controls, 8 of 8: tampered binary rejected; manifest edited alone rejected; environment record edited
+alone rejected; blob identity proven pinned not recomputed; CRLF and LF manifests verify identically;
+coordinated edit passes and is asserted to; originals proven untouched.
+
+### 3. Q22 / H-7a: the evidence-agreement gate was circular
+
+`test_certification_evidence_agreement.py` asserts `_render(artifact) == stored_report` - `f(x)` equals
+stored `f(x)`. It catches a hand-edited report or a regenerated artifact, but no defect **inside**
+`_render`, because both sides come from the same function. Measured at `a62a2c8`, `_render` carries
+**44.9%** of artifact leaf values overall - 17.0% for Tier-0, 11.5% for `TRANSIT_V1`.
+
+Stated precisely rather than overclaimed: the circularity is **bounded**. Six parametrised controls
+already proved `_render` sensitive to six Tier-0 fields, and a contract test already asserted 13 field
+names and 3 numbers directly. Both are Tier-0-only; every other artifact rested on the circular
+comparison alone.
+
+`engine/tests/test_load_bearing_field_coverage.py` reads report text and artifact JSON directly and
+asserts every declared load-bearing value is stated and **attributed** to its field. `_render` is never
+called, never imported, and **was not modified** (control 11); an AST walk over the test's own source
+enforces that, so prose may discuss the renderer but no code may reach it (control 9).
+
+**Two of my own design defects were caught by the controls, not by review**, and are recorded because
+that is what the controls are for: naive substring containment made a value of `0` trivially "present"
+anywhere in a report, so coverage now requires the field's name (or a declared human-label alias) and
+the value on the same rendered line; and the first two renderer mutations changed zero rendered bytes
+and therefore proved nothing, so the control now asserts the mutation perturbs output before running
+either gate.
+
+**Negative controls (control 10)**, `_render` mutated in a disposable worktree with reports regenerated
+by the defective renderer, as `emit()` would have done:
+
+| mutation | reports changed | old gate | new gate |
+|---|---|---|---|
+| `drop_mismatches` | 19/22 | **PASSED** | **FAILED** |
+| `freeze_comparisons` | 10/22 | **PASSED** | **FAILED** |
+| `truncate_floats` | 1/22 | FAILED | FAILED |
+
+The third is reported, not hidden: Tier-0 floats are covered by the old gate's contract test, its one
+genuinely non-circular sliver.
+
+**Finding, frozen and NOT fixed (controls 5 and 11).** 39 load-bearing values are genuinely absent from
+their own human-readable report. The dominant cause is that **`_render` never emits the top-level
+`oracle` block at all**, so no certification report states which external oracle or which version
+produced its comparison - `varga_d2.report.md` claims `comparisons=3600, mismatches=0` against nothing
+named. A second cause is that the gate-rendering comprehension silently drops any value longer than 80
+characters, which is why the D16/D20/D40/D4 tolerance statements vanish. Also absent:
+`PARASHARI_YOGA_V1`'s two rule content hashes and Tier-0's per-profile maxima. Fixing these means
+changing `_render`, which is H-7b and out of scope. They are frozen in `DECLARED_RENDER_GAPS`, asserted
+in **both** directions, so a new gap fails the gate and a closed gap must be declared deliberately.
+
+### 4. M-4: `scripts/certify_tier0.py` retired
+
+Evidence, not assertion: it imports `astro_kernel`, a package that no longer exists; its `ROOT` resolves
+to `scripts/`; it cannot execute; it is referenced by no CI job, imported by nothing and collected by no
+test (all three verified by search, control 14); it was last touched 2026-08-03, predating the `engine/`
+migration; it was **already recorded broken in three places**, with its disposition assigned to Phase G
+item G7 and never executed; and its function is covered twice over by `certify_current_engine.py` and
+root `test_tier0_certification.py`. Provenance is preserved in git history and in this entry.
+
+Machine-checked counts updated and verified: `CERTIFIER_SOURCES` 23 -> 22; the preconditions test pin
+23 -> 22 (it also asserts discovery matches the registry, which is why the file is deleted rather than
+merely delisted); `ENGINE_STATUS.md`'s capability block `certifier_sources` 23 -> 22; and anti-fitting
+`modules_scanned` **203 -> 202**, because `SCAN_TARGETS` includes `CERTIFIER_SOURCES`.
+
+### 5. H10/H11 was STOPPED, and must not be closed by renaming
+
+The per-surface determination **disproved the premise of the original diagnosis**. Measured Moon
+longitudes differ from `ADR-0072`'s pinned values by **20.8156 and 20.8190 degrees** - not constant, and
+not the ayanamsa (24.209 Lahiri, 24.112 KP). That offset is about 37.8 hours of Moon motion, which means
+the 11 surfaces do **not** share identical case data: they share an identifier and a date, with
+surface-specific times, and `certify_rise_set.py` carries no time at all. Any rename or invariance proof
+built on the shared-case premise would have been unsound. Per execution control 15 the workstream
+stopped. The owner has directed that it become its own decision paper establishing case ID -> actual
+surface-specific inputs -> time basis -> calculation -> boundary distance -> classification. **This is a
+case-data lineage investigation, not a boundary-label cleanup.**
+
+### 6. What this entry does NOT do
+
+No rule table, content hash, tolerance, holdout or gate threshold was altered to obtain a pass. No gate
+was weakened, skipped or routed around. `_render` is unmodified. Tier-0's Locked scope is not reopened.
+Out of scope and untouched: H-7b, Q23, `DP-024`, D16/D4 registration, D27/D60, new varga work, domain
+implementation, upstream provenance anchoring, branch protection, and general documentation
+reconciliation. **No merge to `main` is authorized by this entry.**
+
+- **Consequences:** Two gates that could not fail for their own defect now can, each with a committed
+  control proving it. The D-001 numerical authority is verified at runtime for the first time. Every
+  certification artifact now carries a `trust_records` block, and `modules_scanned` moves to 202. The
+  evidence-coverage gap is measured, frozen and visible instead of unknown. Three items remain open by
+  decision: H-7b, the H10/H11 lineage investigation, and the Q24 coordinated-edit residual.
+- **Evidence:** PR #17; commits `12d3b5c` (B-2), `a7e8b10` (H-7a), `43acbe6` (B-1), `1a1ed53` (recovery
+  1), `3e1d199` (M-4), `c30e29a` (recovery 2). CI run `34864270491` - 36 certifier RESULT lines PASS,
+  0 CERTIFICATION FAIL, `TRANSIT_V1` PASS under the repaired gate, failing only the three drift
+  assertions that recovery 1 resolved. CI run `34865630385` - same shape, drift confined to
+  `preconditions.anti_fitting.*`, resolved by recovery 2. 983 tests pass locally (967 + 16 new
+  controls); `check_adr_numbering`, `check_retired_identifiers`, `check_identifier_families` and
+  `check_capability_state` all PASS. The bound-derivation record, written before any measurement was
+  consulted, is quoted in full in item 1.
+
+---
+
 ## ADR template (copy, do not edit above the line)
 
 ## ADR-XXXX - <title>
