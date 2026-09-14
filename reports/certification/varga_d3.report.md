@@ -5,7 +5,7 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 
 - Decision entry: ADR-0009
 - Supersedes provisional identifier: ADR-VARGA-D3-001
-- Date: 2026-09-08
+- Date: 2026-09-14
 - Scope: D3 Drekkana (Parashara variant) as the generic registry's first production entry
 - Result: **PASS**
 

@@ -5,7 +5,7 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 
 - Decision entry: ADR-0083
 - Supersedes provisional identifier: NOTHING_AUTHORISED
-- Date: 2026-09-08
+- Date: 2026-09-14
 - Scope: D24 Siddhamsa (Chaturvimshamsha), Parashara/BPHS variant, Traditional Parasara construction. Registered in production through the generic registry (engine.astrology.varga_d24, VARGA_D24_V1), discoverable via engine.astrology.divisional_chart.divisional_chart(snapshot, 24).
 - Result: **PASS**
 

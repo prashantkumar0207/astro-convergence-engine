@@ -1,12 +1,12 @@
 {
  "schema": "transit_v1_certification",
  "adr": "ADR-0008",
- "date": "2026-09-08",
+ "date": "2026-09-14",
  "scope": "longitude-crossing primitive; sign/nakshatra ingresses (with declared_division, H-02 fix Option 1, ADR-0065); returns; natal conjunctions; natal-relative view",
  "decisions": {
   "TR-A": "event-time guarantee 1e-6 day; bisection bracket 1e-9 day",
   "TR-B": "45 deg max motion per sample, speed bounds x safety 4",
-  "TR-C": "swetest position authority; oracle anchors with derived tolerances (D-007)"
+  "TR-C": "swetest position authority; oracle anchors judged against a FROZEN bound derived from published constants, plus an aberration-residual assertion (H-03/B-1 repair). The previous per-event tolerance was derived from the same quantity it bounded and is superseded."
  },
  "oracle": {
   "package": "PyJHora",
@@ -21,7 +21,12 @@
   },
   "C_oracle_anchors": {
    "anchors": 24,
-   "worst_delta_over_tolerance": 0.8086670524725567,
+   "worst_delta_over_tolerance": 0.6924164191092362,
+   "worst_astronomy_delta_arcsec": 20.837971391210885,
+   "worst_aberration_residual_arcsec": 1.0231815394945443e-10,
+   "frozen_astronomy_bound_arcsec": 25.0,
+   "aberration_residual_bound_arcsec": 5.0,
+   "bound_derivation": "IAU 2009 aberration constant 20.49552 arcsec, annual range to 20.84361 at perihelion, plus UT1 0.04, ephemeris 1.00 and declared margin 3.00; frozen before any anchor measurement was consulted",
    "details": [
     {
      "profile": "parashari_lahiri",
@@ -29,8 +34,10 @@
      "our_jd": 2460324.3845377583,
      "oracle_jd": 2460324.3788568443,
      "oracle_astronomy_delta_arcsec": 20.83772186240367,
+     "predicted_aberration_arcsec": 20.83772186240367,
+     "aberration_residual_arcsec": 0.0,
      "delta_days": 0.005680914036929607,
-     "derived_tolerance_days": 0.007069804348365013
+     "frozen_tolerance_days": 0.008204551725004722
     },
     {
      "profile": "parashari_lahiri",
@@ -38,8 +45,10 @@
      "our_jd": 2460353.9262951906,
      "oracle_jd": 2460353.92059315,
      "oracle_astronomy_delta_arcsec": 20.760367149227932,
+     "predicted_aberration_arcsec": 20.760367149227932,
+     "aberration_residual_arcsec": 0.0,
      "delta_days": 0.005702040623873472,
-     "derived_tolerance_days": 0.007090930886207827
+     "frozen_tolerance_days": 0.008255388354351129
     },
     {
      "profile": "parashari_lahiri",
@@ -47,8 +56,10 @@
      "our_jd": 2460383.79605254,
      "oracle_jd": 2460383.7903099908,
      "oracle_astronomy_delta_arcsec": 20.613309228519938,
+     "predicted_aberration_arcsec": 20.613309228519938,
+     "aberration_residual_arcsec": 0.0,
      "delta_days": 0.005742549430578947,
-     "derived_tolerance_days": 0.007131439772270464
+     "frozen_tolerance_days": 0.008353504346454963
     },
     {
      "profile": "parashari_lahiri",
@@ -56,8 +67,10 @@
      "our_jd": 2460414.14888691,
      "oracle_jd": 2460414.1430955194,
      "oracle_astronomy_delta_arcsec": 20.435439882976425,
+     "predicted_aberration_arcsec": 20.435439882976425,
+     "aberration_residual_arcsec": 0.0,
      "delta_days": 0.005791390780359507,
-     "derived_tolerance_days": 0.007181025549439165
+     "frozen_tolerance_days": 0.008474785612569605
     },
     {
      "profile": "parashari_lahiri",
@@ -65,8 +78,10 @@
      "our_jd": 2460445.016469076,
      "oracle_jd": 2460445.0106314523,
      "oracle_astronomy_delta_arcsec": 20.27389029690312,
+     "predicted_aberration_arcsec": 20.27389029690312,
+     "aberration_residual_arcsec": 0.0,
      "delta_days": 0.005837623495608568,
-     "derived_tolerance_days": 0.007226513516395297
+     "frozen_tolerance_days": 0.008587340372566539
     },
     {
      "profile": "parashari_lahiri",
@@ -74,8 +89,10 @@
      "our_jd": 2460476.289832272,
      "oracle_jd": 2460476.283965901,
      "oracle_astronomy_delta_arcsec": 20.171492210988617,
+     "predicted_aberration_arcsec": 20.171492210988617,
+     "aberration_residual_arcsec": 0.0,
      "delta_days": 0.0058663710951805115,
-     "derived_tolerance_days": 0.007255261363586639
+     "frozen_tolerance_days": 0.008659511723006715
     },
     {
      "profile": "parashari_lahiri",
@@ -83,8 +100,10 @@
      "our_jd": 2460507.7423508107,
      "oracle_jd": 2460507.736480711,
      "oracle_astronomy_delta_arcsec": 20.15531264028141,
+     "predicted_aberration_arcsec": 20.15531264028141,
+     "aberration_residual_arcsec": 0.0,
      "delta_days": 0.0058700996451079845,
-     "derived_tolerance_days": 0.007258990011054914
+     "frozen_tolerance_days": 0.008669973071173329
     },
     {
      "profile": "parashari_lahiri",
@@ -92,8 +111,10 @@
      "our_jd": 2460539.0933323684,
      "oracle_jd": 2460539.087484674,
      "oracle_astronomy_delta_arcsec": 20.22951699816531,
+     "predicted_aberration_arcsec": 20.22951699816531,
+     "aberration_residual_arcsec": 0.0,
      "delta_days": 0.005847694352269173,
-     "derived_tolerance_days": 0.007236584941425451
+     "frozen_tolerance_days": 0.008615576571381395
     },
     {
      "profile": "parashari_lahiri",
@@ -101,8 +122,10 @@
      "our_jd": 2460570.0923387236,
      "oracle_jd": 2460570.0865331083,
      "oracle_astronomy_delta_arcsec": 20.37432968296571,
+     "predicted_aberration_arcsec": 20.37432968296571,
+     "aberration_residual_arcsec": 0.0,
      "delta_days": 0.005805615335702896,
-     "derived_tolerance_days": 0.007194504196429018
+     "frozen_tolerance_days": 0.008512577616172527
     },
     {
      "profile": "parashari_lahiri",
@@ -110,8 +133,10 @@
      "our_jd": 2460600.592106728,
      "oracle_jd": 2460600.58635105,
      "oracle_astronomy_delta_arcsec": 20.55070192554922,
+     "predicted_aberration_arcsec": 20.550701925651538,
+     "aberration_residual_arcsec": 1.0231815394945443e-10,
      "delta_days": 0.005755677819252014,
-     "derived_tolerance_days": 0.0071445672966408535
+     "frozen_tolerance_days": 0.008390691587165997
     },
     {
      "profile": "parashari_lahiri",
@@ -119,8 +144,10 @@
      "our_jd": 2460630.584741887,
      "oracle_jd": 2460630.579030536,
      "oracle_astronomy_delta_arcsec": 20.710496855042493,
+     "predicted_aberration_arcsec": 20.710496855042493,
+     "aberration_residual_arcsec": 0.0,
      "delta_days": 0.005711351055651903,
-     "derived_tolerance_days": 0.0071002394975090396
+     "frozen_tolerance_days": 0.008283159278193404
     },
     {
      "profile": "parashari_lahiri",
@@ -128,8 +155,10 @@
      "our_jd": 2460660.19526526,
      "oracle_jd": 2460660.189581187,
      "oracle_astronomy_delta_arcsec": 20.81018154076446,
+     "predicted_aberration_arcsec": 20.81018154076446,
+     "aberration_residual_arcsec": 0.0,
      "delta_days": 0.005684073083102703,
-     "derived_tolerance_days": 0.007072961581672518
+     "frozen_tolerance_days": 0.008217364509883909
     },
     {
      "profile": "kp_krishnamurti",
@@ -137,8 +166,10 @@
      "our_jd": 2460324.289482392,
      "oracle_jd": 2460324.2838015044,
      "oracle_astronomy_delta_arcsec": 20.837971391210885,
+     "predicted_aberration_arcsec": 20.837971391210885,
+     "aberration_residual_arcsec": 0.0,
      "delta_days": 0.005680887494236231,
-     "derived_tolerance_days": 0.007069777480437617
+     "frozen_tolerance_days": 0.00820443787503544
     },
     {
      "profile": "kp_krishnamurti",
@@ -146,8 +177,10 @@
      "our_jd": 2460353.8305320833,
      "oracle_jd": 2460353.8248301437,
      "oracle_astronomy_delta_arcsec": 20.760891228746914,
+     "predicted_aberration_arcsec": 20.760891228746914,
+     "aberration_residual_arcsec": 0.0,
      "delta_days": 0.0057019395753741264,
-     "derived_tolerance_days": 0.007090829910561322
+     "frozen_tolerance_days": 0.008255093425639634
     },
     {
      "profile": "kp_krishnamurti",
@@ -155,8 +188,10 @@
      "our_jd": 2460383.6989218923,
      "oracle_jd": 2460383.693179493,
      "oracle_astronomy_delta_arcsec": 20.61400972049796,
+     "predicted_aberration_arcsec": 20.61400972049796,
+     "aberration_residual_arcsec": 0.0,
      "delta_days": 0.005742399487644434,
-     "derived_tolerance_days": 0.007131290695794427
+     "frozen_tolerance_days": 0.008353086884288425
     },
     {
      "profile": "kp_krishnamurti",
@@ -164,8 +199,10 @@
      "our_jd": 2460414.0500649908,
      "oracle_jd": 2460414.0442751385,
      "oracle_astronomy_delta_arcsec": 20.43617132773079,
+     "predicted_aberration_arcsec": 20.43617132773079,
+     "aberration_residual_arcsec": 0.0,
      "delta_days": 0.005789852235466242,
-     "derived_tolerance_days": 0.007180867898982039
+     "frozen_tolerance_days": 0.008474339139339843
     },
     {
      "profile": "kp_krishnamurti",
@@ -173,8 +210,10 @@
      "our_jd": 2460444.9160768283,
      "oracle_jd": 2460444.9102393277,
      "oracle_astronomy_delta_arcsec": 20.274496447348156,
+     "predicted_aberration_arcsec": 20.274496447348156,
+     "aberration_residual_arcsec": 0.0,
      "delta_days": 0.005837500561028719,
-     "derived_tolerance_days": 0.007226390986980481
+     "frozen_tolerance_days": 0.00858697407099352
     },
     {
      "profile": "kp_krishnamurti",
@@ -182,8 +221,10 @@
      "our_jd": 2460476.188432265,
      "oracle_jd": 2460476.1825659466,
      "oracle_astronomy_delta_arcsec": 20.171850810334035,
+     "predicted_aberration_arcsec": 20.171850810334035,
+     "aberration_residual_arcsec": 0.0,
      "delta_days": 0.005866318475455046,
-     "derived_tolerance_days": 0.007255209511706285
+     "frozen_tolerance_days": 0.008659318208904582
     },
     {
      "profile": "kp_krishnamurti",
@@ -191,8 +232,10 @@
      "our_jd": 2460507.6408033827,
      "oracle_jd": 2460507.6349332486,
      "oracle_astronomy_delta_arcsec": 20.15536514300038,
+     "predicted_aberration_arcsec": 20.15536514300038,
+     "aberration_residual_arcsec": 0.0,
      "delta_days": 0.005870134104043245,
-     "derived_tolerance_days": 0.007259024695138618
+     "frozen_tolerance_days": 0.008669997125581301
     },
     {
      "profile": "kp_krishnamurti",
@@ -200,8 +243,10 @@
      "our_jd": 2460538.9925421798,
      "oracle_jd": 2460538.9866943737,
      "oracle_astronomy_delta_arcsec": 20.22927224331852,
+     "predicted_aberration_arcsec": 20.22927224331852,
+     "aberration_residual_arcsec": 0.0,
      "delta_days": 0.0058478061109781265,
-     "derived_tolerance_days": 0.007236696622305338
+     "frozen_tolerance_days": 0.008615802026295387
     },
     {
      "profile": "kp_krishnamurti",
@@ -209,8 +254,10 @@
      "our_jd": 2460569.9929841007,
      "oracle_jd": 2460569.9871783294,
      "oracle_astronomy_delta_arcsec": 20.37386135179986,
+     "predicted_aberration_arcsec": 20.37386135179986,
+     "aberration_residual_arcsec": 0.0,
      "delta_days": 0.005805771332234144,
-     "derived_tolerance_days": 0.0071946613186356775
+     "frozen_tolerance_days": 0.008512934166189621
     },
     {
      "profile": "kp_krishnamurti",
@@ -218,8 +265,10 @@
      "our_jd": 2460600.494451833,
      "oracle_jd": 2460600.488695995,
      "oracle_astronomy_delta_arcsec": 20.550155005753368,
+     "predicted_aberration_arcsec": 20.550155005753368,
+     "aberration_residual_arcsec": 0.0,
      "delta_days": 0.005755838006734848,
-     "derived_tolerance_days": 0.00714472702605308
+     "frozen_tolerance_days": 0.00839107224900557
     },
     {
      "profile": "kp_krishnamurti",
@@ -227,8 +276,10 @@
      "our_jd": 2460630.48858731,
      "oracle_jd": 2460630.482875839,
      "oracle_astronomy_delta_arcsec": 20.710051016067155,
+     "predicted_aberration_arcsec": 20.710051016067155,
+     "aberration_residual_arcsec": 0.0,
      "delta_days": 0.0057114711962640285,
-     "derived_tolerance_days": 0.00710036030195269
+     "frozen_tolerance_days": 0.008283453523993794
     },
     {
      "profile": "kp_krishnamurti",
@@ -236,8 +287,10 @@
      "our_jd": 2460660.1000294606,
      "oracle_jd": 2460660.094345336,
      "oracle_astronomy_delta_arcsec": 20.809979566877246,
+     "predicted_aberration_arcsec": 20.809979566877246,
+     "aberration_residual_arcsec": 0.0,
      "delta_days": 0.005684124771505594,
-     "derived_tolerance_days": 0.007073013353694664
+     "frozen_tolerance_days": 0.008217492980664478
     }
    ]
   },
@@ -266,6 +319,16 @@
     "semo_18.se1": "1ca07bd67c24374d77226180c20a4f9996cba013697894810518e7eb582ca4f7",
     "sepl_18.se1": "ca1393ceab3a44fbc895887cf789c68819ae6a1cbc9b22225872dbe4ccd99a66"
    }
+  },
+  "trust_records": {
+   "reference_binary": "swetest",
+   "reference_binary_sha256_verified": "f53943bb6ede1575974270e0a01aff9affdabe58315c1cf69ed4d4738346dac5",
+   "reference_binary_bytes": 712872,
+   "manifest_sha256_verified": "74de363ec1d335ecce26e891634ca9358a4ac198c56c226f22c3d6b4c3401ad1",
+   "manifest_blob_id_verified": "0885f0446ba4306c7afa78eef06a0be2e7b6c5a7",
+   "manifest_anchor_commit": "a62a2c8f9e021575deeac7dee61f53aaae1bc265",
+   "cross_record_assets_agreed": 3,
+   "residual_limitation": "coordinated edits to every repository-held trust record cannot be cryptographically prevented by an in-repository trust anchor; only upstream provenance would anchor this, and it is out of M1 scope"
   },
   "anti_fitting": {
    "modules_scanned": 203,

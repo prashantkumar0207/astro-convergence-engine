@@ -1,7 +1,7 @@
 {
  "schema": "current_engine_certification_v1",
  "adr": "ADR-0005",
- "date": "2026-09-08",
+ "date": "2026-09-14",
  "scope": "Current modular engine, Tier-0 astronomical kernel: sidereal planetary longitudes, Ascendant and 12 Placidus cusps, under both ratified calculation profiles, against the bundled independent swetest 2.10.03 binary over the frozen 11-case holdout.",
  "engine": "engine/ (modular), version from engine/version.py",
  "reference": "Astrodienst swetest v2.10.03 (independent C binary, bundled, version-verified at runtime)",
@@ -15,6 +15,16 @@
     "sepl_18.se1": "ca1393ceab3a44fbc895887cf789c68819ae6a1cbc9b22225872dbe4ccd99a66"
    }
   },
+  "trust_records": {
+   "reference_binary": "swetest",
+   "reference_binary_sha256_verified": "f53943bb6ede1575974270e0a01aff9affdabe58315c1cf69ed4d4738346dac5",
+   "reference_binary_bytes": 712872,
+   "manifest_sha256_verified": "74de363ec1d335ecce26e891634ca9358a4ac198c56c226f22c3d6b4c3401ad1",
+   "manifest_blob_id_verified": "0885f0446ba4306c7afa78eef06a0be2e7b6c5a7",
+   "manifest_anchor_commit": "a62a2c8f9e021575deeac7dee61f53aaae1bc265",
+   "cross_record_assets_agreed": 3,
+   "residual_limitation": "coordinated edits to every repository-held trust record cannot be cryptographically prevented by an in-repository trust anchor; only upstream provenance would anchor this, and it is out of M1 scope"
+  },
   "anti_fitting": {
    "modules_scanned": 203,
    "findings": [],
@@ -24,10 +34,10 @@
   }
  },
  "run": {
-  "source_revision": "e76eb9c215efd3e8a789599f955c292232e21fb7",
+  "source_revision": "e6b0df3e3a199dfe5bb0e3ee51338fe3979956b7",
   "working_tree_dirty": true,
   "engine_version": "0.3.0",
-  "executed_utc": "2026-09-08T07:09:49Z",
+  "executed_utc": "2026-09-14T15:48:48Z",
   "python": "3.11.16",
   "holdout_cases": "H1_london_1823, H2_newyork_1900, H3_sydney_1946, H4_delhi_1979, H5_reykjavik_1992, H6_quito_2010, H7_tokyo_2033, H8_mumbai_2077, H9_paris_2350, H10_boundary_moon_a, H11_boundary_moon_b",
   "reference_binary": "swetest 2.10.03 (bundled, version-verified at runtime)"

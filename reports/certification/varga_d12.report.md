@@ -5,7 +5,7 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 
 - Decision entry: ADR-0010
 - Supersedes provisional identifier: ADR-VARGA-D12-001
-- Date: 2026-09-08
+- Date: 2026-09-14
 - Scope: D12 Dwadasamsa (Parashara variant); first production use of the CyclicVargaRule path
 - Result: **PASS**
 

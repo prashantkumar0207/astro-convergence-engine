@@ -5,7 +5,7 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 
 - Decision entry: ADR-0011
 - Supersedes provisional identifier: ADR-VARGA-D30-001
-- Date: 2026-09-08
+- Date: 2026-09-14
 - Scope: D30 Trimsamsa (Parashara variant): unequal tara-graha segments
 - Result: **PASS**
 
