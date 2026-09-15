@@ -112,7 +112,7 @@ by hand, which the gate cannot check.
     "numerology"
   ],
   "counts": {
-    "certifier_sources": 23,
+    "certifier_sources": 22,
     "validator_sources": 22
   }
 }

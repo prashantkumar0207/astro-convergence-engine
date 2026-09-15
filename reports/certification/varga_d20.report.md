@@ -5,14 +5,14 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 
 - Decision entry: ADR-0095
 - Supersedes provisional identifier: NOTHING_AUTHORISED
-- Date: 2026-09-08
+- Date: 2026-09-14
 - Scope: D20 Vimsamsa, Parashara/BPHS Reading E. Rule under certification is the PRODUCTION, REGISTERED rule in engine/astrology/varga_d20.py, imported directly - not a standalone reproduction of it. This artifact therefore evidences that the actual production code produces the certified rule. The earlier standalone certification remains as historical evidence in git history; it is not overwritten in meaning, only superseded in stage.
 - Result: **PASS**
 
 ## Preconditions
 
 - Data assets verified against CHECKSUMS.sha256: 3
-- Anti-fitting scan: 203 production modules, 0 findings
+- Anti-fitting scan: 202 production modules, 0 findings
 
 ## Gates
 

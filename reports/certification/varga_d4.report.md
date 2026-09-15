@@ -5,14 +5,14 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 
 - Decision entry: ADR-0090
 - Supersedes provisional identifier: NOTHING_AUTHORISED
-- Date: 2026-09-08
+- Date: 2026-09-14
 - Scope: D4 Chaturthamsa, Parashara/BPHS variant, Traditional Parasara construction. Rule under certification is a STANDALONE, UNREGISTERED SegmentVargaRule instance embedded in this certifier - not engine/astrology/varga_d4.py, no production module is authorized or created this execution. DP-024 Option A2 (SegmentVargaRule) selected for D4 specifically, per the owner's explicit instruction - CyclicVargaRule is untouched.
 - Result: **PASS**
 
 ## Preconditions
 
 - Data assets verified against CHECKSUMS.sha256: 3
-- Anti-fitting scan: 203 production modules, 0 findings
+- Anti-fitting scan: 202 production modules, 0 findings
 
 ## Gates
 

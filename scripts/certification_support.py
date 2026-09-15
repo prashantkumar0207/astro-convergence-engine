@@ -33,6 +33,39 @@ ROOT = Path(__file__).resolve().parents[1]
 #: Files whose integrity must hold before any certification claim.
 CHECKSUM_MANIFEST = ROOT / "CHECKSUMS.sha256"
 
+#: Q24 / B-2. The numerical authority's own integrity, VERIFIED at runtime
+#: rather than merely recorded. Before this, `ORACLE_ENVIRONMENT.json`'s
+#: `reference_binary_sha256` and `manifest_sha256` were read by nothing: what
+#: the gate actually checked was a version string, which any binary can print.
+ORACLE_ENVIRONMENT = ROOT / "certification" / "ORACLE_ENVIRONMENT.json"
+REFERENCE_BINARY = ROOT / "swetest"
+
+#: Git blob identity of `CHECKSUMS.sha256`, pinned to the commit that ratified
+#: it. The current file must hash to THIS constant; the constant is never
+#: recomputed from the current file, so the check cannot degrade into a
+#: self-comparison (CEO execution control 7). A pinned constant also survives
+#: the shallow clones CI checkouts produce, where the historical git object
+#: itself may be absent.
+MANIFEST_ANCHOR_COMMIT = "a62a2c8f9e021575deeac7dee61f53aaae1bc265"
+MANIFEST_ANCHOR_BLOB = "0885f0446ba4306c7afa78eef06a0be2e7b6c5a7"
+
+#: RESIDUAL LIMITATION, recorded rather than papered over. All three trust
+#: records for the manifest - its SHA-256 in `ORACLE_ENVIRONMENT.json`, the
+#: blob constant above, and the per-file digest duplication between the
+#: manifest and `ORACLE_ENVIRONMENT.json` - live inside this repository. They
+#: make a SINGLE-file edit fail. A coordinated edit of all of them, in one
+#: commit, cannot be cryptographically prevented by any in-repository anchor.
+#: The only genuine anchor is upstream provenance (`BUILD_INFO.txt` records the
+#: binary as built from aloistr/swisseph v2.10.03), which requires network
+#: access and is deliberately out of M1's scope. The committed control
+#: `test_trust_record_integrity.py` demonstrates this limitation rather than
+#: merely describing it.
+TRUST_ANCHOR_RESIDUAL = (
+    "coordinated edits to every repository-held trust record cannot be "
+    "cryptographically prevented by an in-repository trust anchor; only "
+    "upstream provenance would anchor this, and it is out of M1 scope"
+)
+
 #: Identifier fragments that would indicate per-case fudging.
 _SUSPICIOUS_NAMES = (
     "fudge", "calibrat", "magic_", "hack_", "tweak",
@@ -62,7 +95,7 @@ CERTIFIER_SOURCES = (
     "scripts/certify_panchanga.py", "scripts/certify_parashari_drishti.py",
     "scripts/certify_parashari_yoga.py",
     "scripts/certify_rise_set.py", "scripts/certify_sign_convention.py",
-    "scripts/certify_tier0.py", "scripts/certify_transits.py",
+    "scripts/certify_transits.py",
     "scripts/certify_trikalam.py", "scripts/certify_vimshottari.py",
 )
 VALIDATOR_SOURCES = (
@@ -84,6 +117,117 @@ SCAN_TARGETS = ("engine", *CERTIFIER_SOURCES, *VALIDATOR_SOURCES, *FIXTURE_SOURC
 
 class CertificationFailure(RuntimeError):
     """Raised when a certification precondition or scan fails."""
+
+
+def manifest_bytes() -> bytes:
+    """`CHECKSUMS.sha256` with line endings normalised to LF.
+
+    The committed blob is LF (234 bytes). A Windows checkout materialises CRLF
+    (237 bytes), which changes the file's SHA-256 without changing a single
+    digest it records - so a naive hash-the-file check would fail on Windows
+    and pass on Linux. Normalisation is applied ONLY to this text manifest; the
+    ephemeris assets and the reference binary are hashed as raw bytes and are
+    never normalised.
+    """
+
+    return CHECKSUM_MANIFEST.read_bytes().replace(b"\r\n", b"\n")
+
+
+def _git_blob_id(data: bytes) -> str:
+    """Git's own blob object id for `data`, computed locally."""
+
+    header = b"blob " + str(len(data)).encode() + b"\0"
+    return hashlib.sha1(header + data).hexdigest()
+
+
+def _parse_manifest(data: bytes) -> dict:
+    entries = {}
+    for line in data.decode("utf-8").split("\n"):
+        line = line.strip()
+        if not line:
+            continue
+        parts = line.split()
+        entries[parts[-1]] = parts[0]
+    return entries
+
+
+def verify_trust_records() -> dict:
+    """Q24 / B-2: verify the numerical authority itself, not a version string.
+
+    Four checks, each of which fails certification:
+
+    1. the reference binary's bytes hash to the digest `ORACLE_ENVIRONMENT.json`
+       records - a check that did not previously exist at all;
+    2. the manifest's own bytes hash to the digest that file records;
+    3. the manifest's git blob identity equals the pinned constant;
+    4. the manifest's per-file digests and `ORACLE_ENVIRONMENT.json`'s duplicate
+       list agree, in BOTH directions, so editing either one alone fails.
+
+    Check 4 is what makes single-file tampering detectable. See
+    TRUST_ANCHOR_RESIDUAL for what none of this achieves.
+    """
+
+    if not ORACLE_ENVIRONMENT.exists():
+        raise CertificationFailure(
+            "ORACLE_ENVIRONMENT.json absent; trust records unverifiable")
+    env = json.loads(ORACLE_ENVIRONMENT.read_text(encoding="utf-8"))
+
+    # 1. The reference binary - the D-001 numerical authority.
+    if not REFERENCE_BINARY.exists():
+        raise CertificationFailure("reference binary `swetest` absent; cannot certify")
+    recorded_binary = env["swiss_ephemeris"]["reference_binary_sha256"]
+    binary_bytes = REFERENCE_BINARY.read_bytes()
+    actual_binary = hashlib.sha256(binary_bytes).hexdigest()
+    if actual_binary != recorded_binary:
+        raise CertificationFailure(
+            f"reference binary sha256 mismatch: ORACLE_ENVIRONMENT.json records "
+            f"{recorded_binary}, the file on disk is {actual_binary}. The D-001 "
+            f"numerical authority is not the pinned build."
+        )
+
+    # 2. The manifest's own digest.
+    data = manifest_bytes()
+    recorded_manifest = env["ephemeris_assets"]["manifest_sha256"]
+    actual_manifest = hashlib.sha256(data).hexdigest()
+    if actual_manifest != recorded_manifest:
+        raise CertificationFailure(
+            f"CHECKSUMS.sha256 sha256 mismatch: ORACLE_ENVIRONMENT.json records "
+            f"{recorded_manifest}, the normalised file is {actual_manifest}"
+        )
+
+    # 3. Git blob identity against the pinned constant.
+    actual_blob = _git_blob_id(data)
+    if actual_blob != MANIFEST_ANCHOR_BLOB:
+        raise CertificationFailure(
+            f"CHECKSUMS.sha256 blob identity {actual_blob} does not match the "
+            f"constant pinned at {MANIFEST_ANCHOR_COMMIT} ({MANIFEST_ANCHOR_BLOB})"
+        )
+
+    # 4. Cross-record agreement, both directions.
+    manifest_entries = _parse_manifest(data)
+    env_entries = env["ephemeris_assets"]["files"]
+    if set(manifest_entries) != set(env_entries):
+        raise CertificationFailure(
+            f"trust records disagree on WHICH assets are covered: manifest "
+            f"{sorted(manifest_entries)}, ORACLE_ENVIRONMENT.json {sorted(env_entries)}"
+        )
+    for name, digest in manifest_entries.items():
+        if env_entries[name] != digest:
+            raise CertificationFailure(
+                f"trust records disagree on {name}: manifest {digest}, "
+                f"ORACLE_ENVIRONMENT.json {env_entries[name]}"
+            )
+
+    return {
+        "reference_binary": REFERENCE_BINARY.name,
+        "reference_binary_sha256_verified": actual_binary,
+        "reference_binary_bytes": len(binary_bytes),
+        "manifest_sha256_verified": actual_manifest,
+        "manifest_blob_id_verified": actual_blob,
+        "manifest_anchor_commit": MANIFEST_ANCHOR_COMMIT,
+        "cross_record_assets_agreed": len(manifest_entries),
+        "residual_limitation": TRUST_ANCHOR_RESIDUAL,
+    }
 
 
 def verify_data_assets() -> dict:
@@ -317,7 +461,11 @@ def start_transcript() -> _Tee:
 def preflight() -> dict:
     """Run both mandatory preconditions and return them for the report."""
 
-    return {"data_assets": verify_data_assets(), "anti_fitting": scan_for_fitting()}
+    return {
+        "data_assets": verify_data_assets(),
+        "trust_records": verify_trust_records(),
+        "anti_fitting": scan_for_fitting(),
+    }
 
 
 def emit(report: dict, artifact_name: str, slug: str, tee=None) -> Path:

@@ -30,8 +30,23 @@ def test_artifact_exists_and_claims_pass():
     assert gates["C_oracle_anchors"]["anchors"] == 24
     assert gates["C_oracle_anchors"]["worst_delta_over_tolerance"] <= 1.0
     assert gates["D_independent_validator"] == {"result": "PASS"}
-    for anchor in gates["C_oracle_anchors"]["details"]:
-        assert anchor["delta_days"] <= anchor["derived_tolerance_days"]
+
+    # H-03 / B-1. `derived_tolerance_days` is gone: it was computed from the
+    # very delta it bounded, so it grew in step with any systematic bias. The
+    # pin follows the repaired schema and gains the two assertions the old
+    # artifact could not carry, rather than merely being renamed.
+    anchors = gates["C_oracle_anchors"]
+    frozen = anchors["frozen_astronomy_bound_arcsec"]
+    residual_bound = anchors["aberration_residual_bound_arcsec"]
+    assert frozen == 25.0, "the frozen bound must not drift from its derivation"
+    assert residual_bound == 5.0
+    assert anchors["worst_astronomy_delta_arcsec"] <= frozen
+    assert anchors["worst_aberration_residual_arcsec"] <= residual_bound
+
+    for anchor in anchors["details"]:
+        assert anchor["delta_days"] <= anchor["frozen_tolerance_days"]
+        assert anchor["oracle_astronomy_delta_arcsec"] <= frozen
+        assert anchor["aberration_residual_arcsec"] <= residual_bound
 
 
 def test_headline_behavior_reproduces_on_sample():
