@@ -8552,6 +8552,110 @@ reconciliation. **No merge to `main` is authorized by this entry.**
 
 ---
 
+## ADR-0098 - Owner disposition of DP-037: H10/H11 is a provenance/characterization issue, not an engineering defect; ADR-0072's "eight other certifiers/validators" characterization narrowed, append-only
+
+- **Date:** 2026-09-15
+- **Status:** **ACCEPTED**, on the owner's explicit instruction "CEO AUTHORIZATION - COMPLETE OPTION B
+  WITH ADR-0098", which selected `DP-037` section 6's **Option B** (documentation and provenance
+  correction only) and enumerated the eight items this entry must record. Per
+  `docs/PROJECT_CONSTITUTION.md` s7 and s11 that instruction is the deciding act, and this entry is
+  what makes it authoritative. `DP-037` presented the options and decided nothing, as a decision paper
+  must.
+- **Context:** `ADR-0072` recorded that the holdout cases `H10_boundary_moon_a` /
+  `H11_boundary_moon_b` were "reused as a `boundary_sensitive` holdout case in eight other
+  certifiers/validators", and deliberately declined to determine whether those surfaces were similarly
+  mislabelled, since each has its own boundary quantity. `DP-037` reconstructed every surface from its
+  actual repository inputs, with file and line provenance, against `main` at `7521a4e8`.
+
+### 1. Disposition
+
+**H10/H11 is resolved as a documentation and provenance characterization issue, not an engineering
+defect** - subject to, and bounded by, the exact evidence in `DP-037`.
+
+No calculation is wrong. No check is unsound. No certification verdict is affected. No artifact
+overstates its evidence. The residual is that two identifiers assert, by name, a property their data
+does not have; `ADR-0072` already corrected that where the label was load-bearing, in the Vimshottari
+oracle gate.
+
+### 2. Correction of `ADR-0072`'s characterization, append-only
+
+`ADR-0072` is **not edited**. Its measured finding - that the two cases sit 6.4586 and 5.0197 degrees
+from the nearest nakshatra boundary - is reproduced exactly by `DP-037` and stands, as does its rename
+of those cases within the Vimshottari oracle gate. What is narrowed is one characterization:
+
+- **True, and unchanged:** the H10/H11 identifiers occur, and the cases are reused, in additional
+  holdout arrays.
+- **Not established by the repository:** that those additional surfaces reused them **as
+  `boundary_sensitive` cases**. Exactly one surface sets that flag. The remainder carry the cases as
+  ordinary holdout entries, and five of the six certification artifacts examined do not emit the
+  identifiers at all, so they publish no claim - boundary or otherwise - attached to these names.
+
+**No calculation inconsistency is asserted or found**, in `ADR-0072` or anywhere else. This corrects a
+characterization, nothing more.
+
+### 3. What `boundary_sensitive` actually is
+
+Only `scripts/certify_current_engine.py` uses it (L74, L75; consumed at L345). It functions as a
+**classification/check selector, not a Moon-proximity assertion**: it selects an additional check in
+which the engine's own Moon nakshatra and pada classification is compared against an exact reference
+computed on **swetest's** Moon, the independent D-001 authority, and disagreement fails certification.
+`engine/tests/test_current_engine_certification.py` L68 asserts exactly four such checks - two cases
+across two profiles - and all four record agreement in the committed artifact.
+
+That check is sound for any Moon longitude, because it verifies that two implementations classify the
+same position identically. **It is not defective, and is not made defective by the cases being far
+from a cell edge.**
+
+### 4. The 37.8-hour discrepancy was a harness error, and is superseded
+
+An earlier status report claimed the affected surfaces did not share identical case data, inferring it
+from a ~20.82 degree Moon discrepancy characterized as about 37.8 hours of Moon motion. **That result
+is withdrawn in full and is not repository evidence.** It was caused by two compounding faults in the
+measuring script: `timezone="Asia/Kolkata"` where every time-bearing surface uses `"UTC"`, and
+`snapshot.planets.planets` (tropical) where the reference implementation reads
+`snapshot.sidereal_planets`. Correcting both reproduces `ADR-0072`'s pinned value exactly. It must not
+be cited as evidence of repository inconsistency. The time-bearing surfaces do share identical inputs.
+
+### 5. `ADR-0072` remains unchanged
+
+Verified mechanically, not asserted: `docs/DECISION_LOG.md`'s blob is byte-identical on `main` and on
+the branch carrying `DP-037` (`d2ff2a9382ec3f16fab5290c8e1aa9e31f276dfe`) up to this entry's own
+append. This entry adds text below `ADR-0097`; it edits nothing above it.
+
+### 6. Nothing was changed by DP-037
+
+No production calculation, certification logic, holdout datum, certification artifact, certification
+status or test was changed as part of `DP-037`. Its pull request changed exactly two documentation
+files: the paper itself and its index registration.
+
+### 7. Explicitly outside this entry
+
+Any future change to `boundary_sensitive` naming, any renaming of the H10/H11 identifiers, any
+introduction of genuinely near-boundary cases, and any certification-test redesign are **outside
+ADR-0098 and require their own separate authorization**, with their own negative controls and their
+own regeneration. `DP-037` section 5 records one genuinely open item of this kind - that
+`certify_current_engine` is the single surface whose check would gain diagnostic power from a
+near-boundary Moon case and currently has none. **This entry does not authorize addressing it, and
+does not treat its absence as a defect in anything currently certified.** `DP-037` section 6's Option C
+is neither selected nor implicitly authorized.
+
+- **Consequences:** H10/H11 is closed as a characterization issue on the evidence in `DP-037`, and a
+  reader of `ADR-0072` now has a decision-register entry narrowing its "eight other
+  certifiers/validators" wording. `ADR-0072` itself is untouched and continues to govern the
+  Vimshottari-gate correction it made. The `boundary_sensitive` flag, the two holdout cases, every
+  certifier, every validator and every artifact remain exactly as implemented. The near-boundary
+  test-design question remains open and unauthorized.
+- **Evidence:** `docs/decisions/DP-037-h10-h11-boundary-case-lineage.md`, with per-surface file and
+  line provenance; PR #18; `DP-037` registered before drafting in `d47ad63` per `ADR-0040`; the paper
+  committed in `f9bf3c2`. Reconstruction base `main` at
+  `7521a4e8976981f8fef0f5f87c05d499aef3d063`. Margin arithmetic supporting "no surface's check is
+  boundary-stressed": `KP_CHAIN_V1` gate B records `max_longitude_delta_arcsec: 0.0` across 275 chain
+  comparisons against a 0.001 arcsec failure threshold, so the Moon's 0.9031 and 0.2420 degree
+  sub-lord margins are 3.25e6 and 8.71e5 times that tolerance; Tier-0's nakshatra margins of 6.4587
+  and 5.0197 degrees are ~1.3e8 times its own engine-versus-swetest agreement.
+
+---
+
 ## ADR template (copy, do not edit above the line)
 
 ## ADR-XXXX - <title>
