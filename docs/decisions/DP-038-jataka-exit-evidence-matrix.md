@@ -12,8 +12,11 @@ Document status header - keep current on every edit.
 # DP-038. JATAKA phase-exit evidence matrix and M2 record reconciliation
 
 Written under the owner's "CEO AUTHORIZATION — PROCEED WITH M2" and "CEO DECISION —
-M2 SCOPE CONFIRMED" instructions. `DP-038` was registered before substantive
-drafting, per `ADR-0040`. Reconstructed against `main` at
+M2 SCOPE CONFIRMED" instructions. `DP-038`'s identifier was allocated in `docs/decisions/README.md` before this paper's substantive
+content was written, per `ADR-0040`. **That ordering is not independently proven by the commit
+graph:** the index row and this paper were committed together in `5be71a2`, so the repository
+evidences only that both exist, not the sequence in which they were produced. `DP-037`, by
+contrast, was allocated in `d47ad63` and drafted in `f9bf3c2`, where the graph does prove it. Reconstructed against `main` at
 `b92cd5ff422cebecb395b5846614c96a7c23a5e0`.
 
 **Nothing in this paper resolves any ambiguity by inference.** For every open item
@@ -284,8 +287,13 @@ Five factually false statements, and nothing else:
 
 One further correction was made and is disclosed as a deviation: the
 `OPEN_QUESTIONS.md` status header read *"Twenty-five questions"*, which the
-authorized creation of `Q26`/`Q27` made false. It now reads twenty-seven. No other
-header field was altered.
+authorized creation of `Q26`/`Q27` made false. It now reads twenty-seven.
+
+*Superseded, appended 2026-09-18:* the sentence "No other header field was altered" was true
+of commit `5be71a2`, which this section described. It was superseded by `ab26e084`, a separately
+authorized metadata correction that updated the `Version` and `Last updated` fields of both
+`docs/ENGINE_STATUS.md` and `docs/OPEN_QUESTIONS.md`. The original sentence is preserved above
+rather than rewritten, so the record shows what was claimed and when it ceased to be true.
 
 ---
 
@@ -300,4 +308,4 @@ test, and ratifies no ADR.
 
 | Version | Date | Change |
 |---|---|---|
-| 1.0.0 | 2026-09-18 | Created under the owner's "CEO AUTHORIZATION — PROCEED WITH M2" and "CEO DECISION — M2 SCOPE CONFIRMED" instructions. Registered before drafting per `ADR-0040`. Carries the JATAKA-exit evidence matrix, the seven commissioned investigation findings each with evidence, competing interpretations, exit consequence and the decision still required, and unresolved questions N1-N7. Records the M2 record corrections. Declares no phase exit. |
+| 1.0.0 | 2026-09-18 | Created under the owner's "CEO AUTHORIZATION — PROCEED WITH M2" and "CEO DECISION — M2 SCOPE CONFIRMED" instructions. Identifier allocated before the paper's substantive content was written, per `ADR-0040`; index row and paper committed together in `5be71a2`, so the commit graph does not independently prove that ordering. Carries the JATAKA-exit evidence matrix, the seven commissioned investigation findings each with evidence, competing interpretations, exit consequence and the decision still required, and unresolved questions N1-N7. Records the M2 record corrections. Declares no phase exit. |
