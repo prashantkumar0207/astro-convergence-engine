@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | CURRENT - regenerate on every certified change. Reconciled against live repository evidence 2026-09-05 per `ADR-0093`. Section 6's machine-readable capability block is now mechanically enforced against live sources by `scripts/check_capability_state.py` (`ADR-0094`); **the prose in sections 1-5 is not machine-checked and remains a manual discipline.** |
-| Version | 2.4.0 |
+| Version | 3.0.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-09-07 (D20 PRODUCTION-REGISTERED under `ADR-0095`; registry now nine divisions) |
+| Last updated | 2026-09-18 (**M2 record reconciliation.** MAJOR per `docs/DOCUMENTATION_STANDARD.md` s25's rule that MAJOR = meaning change, and following this document's own 2.0.0 precedent for affirmatively false claims: section 2's statement that D16/D4 are not wired into CI was false since `ADR-0096`; section 3's "eleven served / eight registered" contradicted section 2 and the section 6 block; section 1's validator-source count was 21, not 22. No capability claim and no certified value changed.) |
 | Review cadence | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 
 # Consolidated engine status

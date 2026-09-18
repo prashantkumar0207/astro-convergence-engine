@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | ACTIVE REGISTER. Twenty-seven questions. **Owner ratifications of 2026-08-13: Q13 resolved; Q1 and Q8 ratified in part (ADR-0033); ADR-0005 ratified, making Tier-0 FORMALLY LOCKED (ADR-0034); ADR-0009/0010/0011 ratified, making the registry vargas owner-ratified CERTIFIED but NOT Locked (ADR-0035); ADR-0012 ratified, closing the varga sign-convention asymmetry (ADR-0036).** **Owner ratification of 2026-08-17: Q8 fully RESOLVED (ADR-0048).** **Owner ratification of 2026-08-17 (later batch): Q1 fully RESOLVED (ADR-0051 D4, accepting DP-001 Option B) - docs/engine/release-owner roles interim-designated to the Project Owner pending explicit delegation; no longer "ratified in part".** **Eleven fully open** (Q2, Q3, Q4, Q5, Q7, Q10, Q12, Q22, Q23, Q24, Q25), **six with candidate resolutions awaiting a ratification decision** (Q6, Q9, Q11, Q14, Q15, Q16), **three resolved (Q13, Q8, Q1)**. Ratification is per-entry; the rest are not ratified merely because Q1 and Q8 are. |
-| Version | 2.4.0 |
+| Version | 3.0.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-09-05 (Q10 and Q25 factual premises annotated as superseded, per `ADR-0093`; **no question's status changed** - both remain OPEN, and the counts in the Status cell above are unchanged because no resolution occurred) |
+| Last updated | 2026-09-18 (**M2, Option-C split.** MAJOR per `docs/DOCUMENTATION_STANDARD.md` s25's rule that MAJOR = meaning change: `Q22` and `Q24` move from OPEN to **RESOLVED IN PART** on `ADR-0097`'s M1 remediation, their superseded factual premises are annotated, and their unremediated remainders are split to the new `Q26` (lossless `_render`, the H-7b remainder) and `Q27` (the coordinated multi-record trust-anchor residual). Register count corrected twenty-five -> twenty-seven. No other question's status changed.) |
 | Review cadence | TBD |
 
 # Open Questions Register
