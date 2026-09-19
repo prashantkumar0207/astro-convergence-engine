@@ -8656,6 +8656,181 @@ is neither selected nor implicitly authorized.
 
 ---
 
+## ADR-0099 - Operational definitions of "declared a production analytical input" and "in use" for `Q8_CLOSURE_MATRIX.md` s5's JATAKA exit criterion; SCOPE OVERCLAIM named as a separate certification-integrity obligation (PROPOSED - drafted for CEO review, not ratified)
+
+- **Date:** 2026-09-19
+- **Status:** **PROPOSED. NOT RATIFIED.** Drafted under the owner's instruction selecting options 1-A,
+  2-A, 3-A, 4-A and 5-B from the `N4` decision proposal, with the explicit sequencing "Draft ADR-0099
+  and show the complete proposed diff. Stop for CEO review and approval. Do not implement C2-C5 until
+  ADR-0099 is approved." The owner's selections are recorded verbatim in section 1 below; this entry
+  becomes authoritative only on a ratifying instruction recorded in a sub-entry beneath it, following
+  the `ADR-0068` / `ADR-0074` / `ADR-0095` drafted-then-ratified precedent. **Nothing in this entry is
+  in force while it reads PROPOSED, and it authorizes no implementation.**
+- **Context:** `docs/Q8_CLOSURE_MATRIX.md` L73 (ACCEPTED, `ADR-0048`) makes JATAKA phase exit turn on
+  two terms:
+
+  > | Exit criteria | Every capability declared a production analytical input is individually certified. No capability is in use that a certification artifact does not cover. |
+
+  Neither term is defined anywhere. The phrase "production analytical input" occurs **eleven times**
+  across the governing documents - `Q8_CLOSURE_MATRIX.md` L73, `VARGA_CERTIFICATION_ROADMAP.md` L25,
+  `DECISION_LOG.md` L8156, and eight times inside `DP-021`/`DP-022`/`DP-025`/`DP-038` - with **no
+  definition**; "in use" has no governance definition at all. The JATAKA exit-readiness audit recorded
+  this as `N4` and found the criterion **not deterministically applicable**, which is why it returned
+  HOLD rather than PASS or FAIL. `DP-038` section 3.4 sets out the competing readings and deliberately
+  selects none.
+
+  `Q8_CLOSURE_MATRIX.md` is owner-ratified and **must not be amended or silently reinterpreted**. This
+  entry therefore **interprets** it in a separate record. Q8's own text is unchanged, and nothing below
+  edits it.
+
+### 1. The owner's selections, recorded verbatim
+
+> "1. DECLARED: 1-A / 2. IN USE: 2-A / 3. SCOPE OVERCLAIM: 3-A / 4. Pure delegator: 4-A /
+> 5. Authorization: 5-B - ADR-0099 and C2-C5 as one programme"
+
+Sections 2 to 5 render those five selections as normative text. They add no content the owner did not
+select, and they resolve nothing the owner left open.
+
+### 2. DECLARED (option 1-A, conjunctive)
+
+A capability is **declared a production analytical input** if and only if **both** hold:
+
+- **D1, authority.** A ratified `ADR` states that the capability is served in production as an
+  analytical input.
+- **D2, mechanical record.** It appears in a **declaring list** of the machine-readable capability
+  block in `docs/ENGINE_STATUS.md` section 6 - namely `production_registered_vargas`,
+  `dedicated_production_vargas`, or `certified_capabilities`.
+
+Neither limb alone suffices. `D1` alone is not mechanically testable, which is the defect `N4` exists
+to close; `D2` alone would let a documentation edit manufacture a production declaration, inverting the
+authority hierarchy `ADR-0042` ratified (OWNER -> PROJECT CONSTITUTION -> ENGINEERING CONSTITUTION ->
+...).
+
+**Non-declaring lists**, explicitly: `certified_not_registered_vargas`, `not_certified_vargas`,
+`non_claims`.
+
+**Explicitly NOT declarations**, each named so it cannot be argued later: existing in `engine/`; being
+importable; being named in a certification artifact's `scope` string; being mentioned in a `DP`; being
+exercised by a test.
+
+**Consequence at `e0e47d3`.** Declared: the nine registry vargas `[2, 3, 7, 12, 20, 24, 30, 40, 45]`,
+the three dedicated vargas D1/D9/D10, and the eleven `certified_capabilities`. Not declared: **D4 and
+D16** (certified, deliberately unregistered), **D27 and D60** (not certified), and the ten declared
+non-claims. All four divisions are verified refused by the live dispatcher with
+`UnsupportedVargaError`.
+
+### 3. IN USE (option 2-A, reachability from outside the verification surface)
+
+A capability is **in use** if and only if it is **reachable from outside the verification surface**.
+
+- **The verification surface** is `engine/tests/**`, `scripts/certify_*.py`, `validate_*.py`,
+  `conftest.py`, and `brihat_fixtures.py`.
+- **Reachable from outside** means at least one of:
+  - **U1.** A call path exists from a module outside that surface; or
+  - **U2.** It is exported through a declared public surface - a name in an `__all__`, in
+    `engine/api/`, or in `engine/main.py`.
+
+**Being named in a certification artifact's `scope` string does NOT, by itself, make a capability in
+use.** That case is governed by section 4 instead.
+
+**Consequence at `e0e47d3`, measured rather than asserted.** `returns()`
+(`engine/transits/events.py` L65), `natal_conjunctions()` (L79) and `transit_view()`
+(`engine/transits/view.py` L47) each have **zero** production callers, **zero** certifier or validator
+exercise, and no export - `engine/transits/__init__.py` is docstring-only, `engine/api/` is empty, and
+`engine/main.py` contains zero transit references. Under this definition **none of the three is in
+use**, and clause 2 of the exit criterion is therefore satisfied with respect to them. By contrast
+`sign_ingresses()` has six production callers and eight certifier/validator references, and
+`nakshatra_ingresses()` has three and five; both are in use and both are exercised.
+
+`planet_strength()` (`engine/astrology/planet_strength.py` L10) raises `NotImplementedError` by design
+and is a declared non-claim; it is not in use under this definition and is not affected by it.
+
+### 4. SCOPE OVERCLAIM (option 3-A), a separate obligation that does NOT gate phase exit
+
+A capability named in a certification artifact's `scope` but exercised by **no gate** in that artifact
+is a **SCOPE OVERCLAIM**. Every such capability must either:
+
+- **(a)** be exercised by at least one gate in that artifact; or
+- **(b)** appear in a declared `scope_not_gated` array in that artifact, with a per-item reason.
+
+**This is a certification-integrity requirement under `docs/VALIDATION_STANDARD.md`. It is NOT part of
+`Q8_CLOSURE_MATRIX.md` s5's exit criterion and does NOT gate JATAKA phase exit.** It is tracked and
+closed on its own authorization.
+
+**Three instances exist at `e0e47d3`**, all in `TRANSIT_V1`, whose `scope` reads "longitude-crossing
+primitive; sign/nakshatra ingresses (with declared_division, H-02 fix Option 1, `ADR-0065`); returns;
+natal conjunctions; natal-relative view" while its four gates - `A_residual_battery`,
+`C_oracle_anchors`, `D_independent_validator`, `E_declared_division` - mention none of "return",
+"conjunction", "natal-relative" or "view": **`returns()`, `natal_conjunctions()` and
+`transit_view()`**.
+
+`Q8_CLOSURE_MATRIX.md` s9 separately records, for VARSHAPHAL's own prerequisites, "Solar return
+certified, since `returns()` exists but is in no certification artifact." That statement is consistent
+with this section and is neither contradicted nor discharged by it.
+
+### 5. Pure delegators (option 4-A)
+
+A delegator inherits its delegate's certification **only where its behavioural neutrality is proven by
+a committed test**. Documented inspection of the delegate is **not** sufficient.
+
+**No such test exists at `e0e47d3`** for any of the three callables in section 4. `returns()` is
+`return find_crossings(body, natal_longitude, jd_start, jd_end, profile, kind="return")`, and `kind`
+demonstrably does not branch the search - `engine/transits/crossing.py` uses it only at L178, passing
+it into the emitted event, and at L196 for `kind="tangent"`. That is an inspection finding, and under
+this section an inspection finding does not confer inherited certification.
+
+### 6. What this entry does NOT do
+
+It does not amend `Q8_CLOSURE_MATRIX.md`, whose text is unchanged. It does not declare JATAKA exit
+readiness and does not perform JATAKA phase exit, which remains on hold. It does **not** resolve,
+narrow or reinterpret `N1`, `N2`, `N5`, `N6` or `N7`. It changes no production code, test, CI job,
+registry, certification artifact or holdout datum. It ratifies no other `ADR`. While it reads
+`PROPOSED` it is not in force at all.
+
+### 7. Implementation programme C2-C5 (option 5-B), authorized separately and not by this entry
+
+The owner selected 5-B, ADR and gates as one programme, with the explicit sequencing that **C2-C5 are
+not implemented until this entry is approved**. Recorded here so the programme's shape is on the record
+before any code is written:
+
+- **C2.** Add a `declared_production_analytical_inputs` key to the `ENGINE_STATUS.md` section 6 block -
+  the union of the three declaring lists - and extend `scripts/check_capability_state.py` with a
+  failure condition asserting that union equals live state and that every member holds a PASS artifact.
+  Generalises the existing F12 condition, which already does the varga half.
+- **C3.** Add a scope-coverage gate asserting that every capability named in an artifact's `scope` is
+  either exercised by a gate or listed in `scope_not_gated` with a reason. Modelled on
+  `SIGN_CONVENTION_V1`'s existing `declaration_registry` / `function_registry` completeness pattern,
+  which this repository has already ratified and operated.
+- **C4.** Add a reachability check implementing section 3, so that "in use" is decided by an executed
+  check rather than by reading code.
+- **C5.** Behavioural-neutrality tests for any delegator claiming inherited certification under
+  section 5.
+
+**Each of C2, C3 and C4 changes what a gate can reject, so each requires its own committed negative
+control proving it rejects a real violation, and each will regenerate certification artifacts.** None
+is authorized by this entry.
+
+- **Consequences, if ratified:** `N4` closes, and the JATAKA exit criterion becomes capable of
+  deterministic evaluation once C2-C4 exist. `N3` is reclassified from a possible clause-2 violation
+  into three SCOPE OVERCLAIMS on the certification-integrity track, which do not gate phase exit.
+  Clause 1's membership becomes mechanically checkable. **JATAKA exit remains blocked**: `N1` (three
+  ratified certification-integrity qualifications - `ADR-0083`, `ADR-0085`, `ADR-0086`), `N2`
+  (`ADR-0086` s2's explicitly unaudited negative-control residual across roughly fourteen further
+  capabilities) and `N5` (no JATAKA completion report exists, and s14's requirement is undecided) all
+  stand, and no JATAKA exit `ADR` exists.
+- **Evidence:** `docs/Q8_CLOSURE_MATRIX.md` L73 (criterion), L74 (CEO approval: entry, per capability,
+  exit), L167 (s14 completion-report invariant), L65 (JATAKA section heading); the eleven undefined
+  occurrences of "production analytical input"; measured reachability for all six transit-layer
+  callables; `TRANSIT_V1`'s `scope` compared against its four gate blocks; live dispatcher refusal of
+  D4, D16, D27 and D60; `SIGN_CONVENTION_V1`'s `declaration_registry` and `function_registry` and their
+  completeness gate; twenty-two artifacts already carrying `explicit_non_claims` as a declared-exclusion
+  precedent; `ADR-0042`'s ratified authority hierarchy; `docs/PROJECT_CONSTITUTION.md` L12 and L46;
+  `DP-038` sections 3.1 to 3.7 and `N1`-`N7`. Repository state at drafting: branch
+  `m2-record-reconciliation`, HEAD `e0e47d3bcb600cb3c7c51555aa6d0ea410b65878`, `main` unchanged at
+  `b92cd5ff422cebecb395b5846614c96a7c23a5e0`.
+
+---
+
 ## ADR template (copy, do not edit above the line)
 
 ## ADR-XXXX - <title>
