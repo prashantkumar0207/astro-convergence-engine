@@ -275,6 +275,12 @@ and controlled.
 
 ## 5. What M2 corrected in the record
 
+*Scope note, appended 2026-09-19 (audit finding F-6).* This section was written in commit
+`5be71a2` and describes that commit. Its original opening sentence is preserved verbatim below
+because it was true of `5be71a2`; it is **not** true of the cumulative M2 branch, which now
+carries four commits. Nothing in the table below is altered. The complete sequence, including the
+later audit corrections, is set out in 5.1.
+
 Five factually false statements, and nothing else:
 
 | # | File | Correction |
@@ -294,6 +300,31 @@ of commit `5be71a2`, which this section described. It was superseded by `ab26e08
 authorized metadata correction that updated the `Version` and `Last updated` fields of both
 `docs/ENGINE_STATUS.md` and `docs/OPEN_QUESTIONS.md`. The original sentence is preserved above
 rather than rewritten, so the record shows what was claimed and when it ceased to be true.
+
+### 5.1 The complete M2 record-repair sequence (appended 2026-09-19)
+
+Recorded because the heading above says "M2", and M2 is four commits rather than the one this
+section was written in. No earlier text is rewritten; this is additive.
+
+| Commit | Contents |
+|---|---|
+| `5be71a2` | The five record corrections M1-M5 in the table above; the authorized Q22/Q24 Option-C split creating `Q26` and `Q27`; the disclosed register-count correction (twenty-five -> twenty-seven); `DP-038`'s registration and this paper |
+| `ab26e084` | Separately authorized metadata correction: the `Version` and `Last updated` fields of `docs/ENGINE_STATUS.md` and `docs/OPEN_QUESTIONS.md`. This is what superseded the "No other header field was altered" sentence above |
+| `84f846c` | Truth repair on five inaccurate claims: the question-status enumeration reconciled to 11/2/6/8 = 27 with an append-only correction note; the superseded-sentence annotation above; "six investigation findings" -> "seven"; two `DOCUMENTATION_STANDARD.md` references corrected from a line number to s2 item 4; this paper's three registration claims rewritten to state what the commit graph actually proves |
+| `9addc25` | Two corrections raised by the independent audit of `84f846c`: **F-2**, removing an unsupported claim that `OPEN_QUESTIONS.md` follows "this document's own 2.0.0 precedent" - it has no change-history table and no such precedent; and **F-1**, enumerating all seven findings in the `DP-038` index row, which had said "seven" while listing six countable clauses |
+
+**Eight record repairs in total** across the four commits: M1-M5, the register-count correction,
+F-1 and F-2.
+
+Audit findings **F-3** (`ENGINE_STATUS.md` version 3.0.0 with no matching change-history row),
+**F-4** (this paper's `1.0.0` change-history row edited in place) and **F-5** (a cosmetic missing
+space before a table-cell delimiter) are **open and deliberately not fixed**, by the owner's
+instruction.
+
+Neither this section nor any correction in it changes what this paper claims. **`DP-038` still does
+not declare, perform or recommend JATAKA phase exit**, and **`N1`-`N7` remain unresolved** - no
+correction in the sequence above resolves, narrows or answers any of them, and findings 3.1-3.7 are
+unchanged throughout.
 
 ---
 
