@@ -8662,7 +8662,7 @@ is neither selected nor implicitly authorized.
 - **Status:** **PROPOSED. NOT RATIFIED.** Drafted under the owner's instruction selecting options 1-A,
   2-A, 3-A, 4-A and 5-B from the `N4` decision proposal, with the explicit sequencing "Draft ADR-0099
   and show the complete proposed diff. Stop for CEO review and approval. Do not implement C2-C5 until
-  ADR-0099 is approved." The owner's selections are recorded verbatim in section 1 below; this entry
+  ADR-0099 is approved." The owner's selections are set out as recorded in section 1 below; this entry
   becomes authoritative only on a ratifying instruction recorded in a sub-entry beneath it, following
   the `ADR-0068` / `ADR-0074` / `ADR-0095` drafted-then-ratified precedent. **Nothing in this entry is
   in force while it reads PROPOSED, and it authorizes no implementation.**
@@ -8683,7 +8683,7 @@ is neither selected nor implicitly authorized.
   entry therefore **interprets** it in a separate record. Q8's own text is unchanged, and nothing below
   edits it.
 
-### 1. The owner's selections, recorded verbatim
+### 1. The owner's selections, as recorded
 
 > "1. DECLARED: 1-A / 2. IN USE: 2-A / 3. SCOPE OVERCLAIM: 3-A / 4. Pure delegator: 4-A /
 > 5. Authorization: 5-B - ADR-0099 and C2-C5 as one programme"
@@ -8739,8 +8739,25 @@ use.** That case is governed by section 4 instead.
 exercise, and no export - `engine/transits/__init__.py` is docstring-only, `engine/api/` is empty, and
 `engine/main.py` contains zero transit references. Under this definition **none of the three is in
 use**, and clause 2 of the exit criterion is therefore satisfied with respect to them. By contrast
-`sign_ingresses()` has six production callers and eight certifier/validator references, and
-`nakshatra_ingresses()` has three and five; both are in use and both are exercised.
+`sign_ingresses()` and `nakshatra_ingresses()` are each called from exactly **one** module outside
+the verification surface - `scripts/reproduce_h02_ingress_seam.py` L170 and L171, a reproduction
+harness rather than a production module - and that single call site is what satisfies `U1` for them.
+Each is separately exercised by certifiers and validators: `sign_ingresses()` at **seven** call sites
+(`scripts/certify_transits.py` L141, L164, L255, L295, L306; `validate_h02_reproduction.py` L66;
+`validate_transits_holdout.py` L98) and `nakshatra_ingresses()` at **four**
+(`scripts/certify_transits.py` L142, L256; `validate_h02_reproduction.py` L67;
+`validate_transits_holdout.py` L105). Both are in use and both are exercised. **Neither has a caller
+in a production module**, so their being in use rests on the reproduction harness alone.
+
+**Counting rule and command for this section.** A *call site* is one line of a tracked `.py` file
+matching `\b<name>\s*\(`, excluding the line that defines the callable. A file is inside the
+verification surface if its path is under `engine/tests/` or matches `scripts/certify_*.py`, or if
+its basename matches `validate_*.py`, `conftest.py` or `brihat_fixtures.py`; every other tracked
+`.py` file is outside it. Reproduced by
+`git grep -nE '\b<name>[[:space:]]*\(' <rev> -- '*.py' | grep -v 'def <name>('`, which yields
+fifteen call sites for `sign_ingresses()` - one outside the surface, seven certifier/validator,
+seven test - and seven for `nakshatra_ingresses()` - one, four, two. The enumeration is byte-identical
+at `e0e47d3` and at this entry's own commit, no `.py` file having changed between them.
 
 `planet_strength()` (`engine/astrology/planet_strength.py` L10) raises `NotImplementedError` by design
 and is a declared non-claim; it is not in use under this definition and is not affected by it.
