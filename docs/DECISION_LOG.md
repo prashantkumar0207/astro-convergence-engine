@@ -8770,9 +8770,12 @@ is a **SCOPE OVERCLAIM**. Every such capability must either:
 - **(a)** be exercised by at least one gate in that artifact; or
 - **(b)** appear in a declared `scope_not_gated` array in that artifact, with a per-item reason.
 
-**This is a certification-integrity requirement under `docs/VALIDATION_STANDARD.md`. It is NOT part of
-`Q8_CLOSURE_MATRIX.md` s5's exit criterion and does NOT gate JATAKA phase exit.** It is tracked and
-closed on its own authorization.
+**This certification-integrity obligation is established directly by this entry. Its authority is
+this `ADR` itself and no other document. It is NOT part of `Q8_CLOSURE_MATRIX.md` s5's exit
+criterion and does NOT gate JATAKA phase exit.** It is tracked and closed on its own authorization.
+`docs/VALIDATION_STANDARD.md` is named here only as the standard whose subject matter this
+obligation belongs to, and not as its source of authority: that document is `Status: DRAFT` with
+`Owner: TBD` (`Q1`), and it does not contain this rule.
 
 **Three instances exist at `e0e47d3`**, all in `TRANSIT_V1`, whose `scope` reads "longitude-crossing
 primitive; sign/nakshatra ingresses (with declared_division, H-02 fix Option 1, `ADR-0065`); returns;
