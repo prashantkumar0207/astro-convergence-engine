@@ -8848,6 +8848,152 @@ is authorized by this entry.
 
 ---
 
+## ADR-0100 - `ADR-0099` s4's authority clause corrected additively; the SCOPE OVERCLAIM obligation is established by `ADR-0099` itself; append-only provenance of `bceae8f` and `667867e` disclosed (PROPOSED - drafted for CEO review, not ratified)
+
+- **Date:** 2026-09-21
+- **Status:** **PROPOSED. NOT RATIFIED.** Drafted on the owner's "CEO DIRECTION - ADR-0099
+  PROVENANCE" instruction selecting Option 1: "preserve `ADR-0099` unchanged and create an
+  append-only `ADR-0100` that records the s4 authority correction." This entry becomes authoritative
+  only on a ratifying instruction recorded in a sub-entry beneath it, following the `ADR-0068` /
+  `ADR-0074` / `ADR-0095` drafted-then-ratified precedent. **Nothing in this entry is in force while
+  it reads PROPOSED. It ratifies nothing, including `ADR-0099`, and it authorizes no implementation.**
+- **Context:** `ADR-0099` s4 (`docs/DECISION_LOG.md` L8773) reads:
+
+  > **This is a certification-integrity requirement under `docs/VALIDATION_STANDARD.md`.**
+
+  Verified on `main` at `5d990af6`, `docs/VALIDATION_STANDARD.md` is `Status: DRAFT`,
+  `Version 0.2.0`, `Owner: TBD (see docs/OPEN_QUESTIONS.md Q1)`, last updated 2026-08-11, review
+  cadence TBD. It contains **zero** occurrences of "scope" and **zero** of "overclaim" - it does not
+  carry the rule it was said to govern. Its sections 4 and 5 are labelled normative on the authority
+  of `ADR-0021`, which is itself **PROPOSED** and unratified. A repository-wide search of
+  `docs/DECISION_LOG.md` found that sentence to be the **only** place any entry places an obligation
+  "under" that standard; no ACCEPTED entry does so, while `ADR-0065`, `ADR-0083`, `ADR-0085` and
+  `ADR-0086` are each ACCEPTED and each holds its certification obligation directly.
+
+  `ADR-0042` decision 1 places **DECISION LOG / ADR above STANDARDS**, so the obligation was validly
+  created by `ADR-0099` either way. The defect is **placement and discoverability**, not the
+  authority chain: a reader consulting the validation standard for the certification-integrity rules
+  would not find this one.
+
+  **Append-only provenance, disclosed rather than discovered.** A correction was first attempted by
+  editing `ADR-0099` s4 in place - branch `adr-0099-scope-overclaim-reanchor`, commit `667867e5`,
+  PR #20. The owner rejected that PR on an independent audit finding that the edit breached
+  `.claude/rules/governance.md` L23-24: *"Never edit an existing, already-recorded decision entry to
+  change its substance."* PR #20 was not merged. This entry records the correction **additively**
+  instead, and `ADR-0099`'s text is not touched.
+
+  The rule's trigger term "already-recorded" is not defined in `.claude/rules/governance.md`, and no
+  governing document defines it. **The register's history supports interpreting it as "committed
+  anywhere", though that history does not conclusively settle an undefined term:** of every commit
+  that modified an ADR entry already present in its parent, `3b9e749` (-0/+48), `9307c62` (-0/+49),
+  `949e905` (-0/+47) and `cf628d0` (-0/+81) were **purely additive**, and `3de942c` (-8/+42) deleted
+  **only** the Status block, under the owner's explicit ratification instruction. `cf628d0` amended
+  `ADR-0096` on the same unmerged branch that introduced it and was still purely additive. **The
+  surveyed practice does not establish a merge-boundary rule; it supports treating an entry as
+  recorded once it exists in a commit rather than only once it reaches `main`. This entry does not
+  settle or define the term.**
+
+  Under that reading, **commit `bceae8f`, merged to `main` in PR #19, is in the same class as the
+  rejected `667867e`.** `ADR-0099` was first recorded at `3fb8fd9`; `bceae8f` then deleted four lines
+  of its body - the s1 heading, one Status-block sentence, and the two s3 figure lines - and added
+  twenty-one. Those two commits are the only instances in this register's history of substantive body
+  text being deleted from a recorded entry.
+
+  Both edits were made on explicit owner instruction: `bceae8f` under *"Authorized: make one narrowly
+  scoped corrective commit on PR #19. Fix only: 1. B-1... 2. B-2..."*, and `667867e` under *"I select
+  Option B... Before ratification, revise ADR-0099 s4 only as follows."* `ADR-0042` decision 1 places
+  **OWNER** above every document, and `CLAUDE.md` subordinates `.claude/rules/` to
+  `docs/DECISION_LOG.md`. **On that stated authority hierarchy, an owner instruction is reasonably
+  interpreted as capable of overriding the append-only rule - but that is an interpretation drawn
+  from the hierarchy, not an expressly documented exception. No governing document states such an
+  exception, and this entry does not create one.** **The instruction was given; it was never
+  recorded.** That undocumented gap - not the content of either edit - is the provenance defect this
+  entry closes.
+
+### 1. `ADR-0099` s4's authority, corrected additively
+
+`ADR-0099` s4 is to be read subject to this section. `ADR-0099`'s own text is **unchanged**, and
+nothing here edits it.
+
+1. The SCOPE OVERCLAIM obligation is **established by `ADR-0099` itself**. Its authority is that
+   entry and no other document.
+2. `docs/VALIDATION_STANDARD.md` is a **subject-matter reference only** in s4, not the source of that
+   obligation's authority. Its `DRAFT` status and unresolved ownership (`Q1`) are recorded here so no
+   reader infers otherwise.
+3. **The 3-A substance is unchanged and is restated here only for completeness, not amended:** a
+   capability named in a certification artifact's `scope` but exercised by **no gate** in that
+   artifact is a SCOPE OVERCLAIM, and must either **(a)** be exercised by at least one gate in that
+   artifact, or **(b)** appear in a declared `scope_not_gated` array in that artifact, with a
+   per-item reason.
+4. **`ADR-0099` s4 remains outside `Q8_CLOSURE_MATRIX.md` s5's exit criterion and does NOT gate
+   JATAKA phase exit.** It is tracked and closed on its own authorization.
+   `docs/Q8_CLOSURE_MATRIX.md` is not amended, reinterpreted or touched by this entry.
+5. s4's three identified instances in `TRANSIT_V1` - `returns()`, `natal_conjunctions()` and
+   `transit_view()` - and its `Q8_CLOSURE_MATRIX.md` s9 consistency note stand exactly as drafted.
+
+### 2. `ADR-0099` is preserved unchanged
+
+`ADR-0099` stands as a dated record with its original s4 wording intact, per the `ADR-0042` decision 7
+precedent - *"`ADR-0023` remains a dated proposed record. Its exception is authoritative because the
+governing documents now explicitly state it, not because `ADR-0023` silently overrode them."* Its
+Status remains **PROPOSED. NOT RATIFIED.** Its sections 1, 2, 3, 5, 6 and 7 are untouched by this
+entry, as are its Context, Consequences and Evidence blocks.
+
+### 3. Disposition of `bceae8f`
+
+1. **`bceae8f` is not reverted.** Its content is correct and was independently re-verified: it
+   replaced two unreproducible figures with measured call-site counts - fifteen for
+   `sign_ingresses()` (one outside the verification surface, seven certifier/validator, seven test)
+   and seven for `nakshatra_ingresses()` (one, four, two) - stated the counting rule and the
+   reproducing command, and withdrew an inaccurate "recorded verbatim" claim. Reverting it would
+   restore two known-false statements to the register.
+2. **The text `bceae8f` removed is preserved here**, so the evidence trail exists inside the register
+   and not only in git history. It deleted: *"The owner's selections are recorded verbatim in section
+   1 below"*; the heading *"### 1. The owner's selections, recorded verbatim"*; and
+   *"`sign_ingresses()` has six production callers and eight certifier/validator references, and
+   `nakshatra_ingresses()` has three and five; both are in use and both are exercised."*
+3. **The owner instruction is recorded retrospectively, not manufactured.** The owner's instruction
+   quoted in the Context above was given before that commit was made. This entry does **not** assert
+   the edit complied with `.claude/rules/governance.md` L23 - it did not. It records that the
+   instruction was given, and that on the authority hierarchy stated in `ADR-0042` decision 1 that
+   instruction is reasonably interpreted as having permitted the edit. **No governing document
+   documents that exception expressly.** However the permission is characterised, it went unwritten
+   until now.
+4. **No standing permission is created.** This entry does not establish that PROPOSED entries may be
+   edited in place, and does not narrow, amend or reinterpret `.claude/rules/governance.md`. Any such
+   permission would require its own decision, written into the governing document through its own
+   change-control process, per `ADR-0042` decision 2.
+
+### 4. What this entry does NOT do
+
+It does not ratify `ADR-0099`, which remains **PROPOSED. NOT RATIFIED.** It does not ratify itself.
+It does not amend `docs/Q8_CLOSURE_MATRIX.md` or `docs/VALIDATION_STANDARD.md`, neither of which is
+touched. It does not modify `DP-038`, `docs/decisions/README.md`, `docs/ENGINE_STATUS.md` or
+`docs/OPEN_QUESTIONS.md`. It does not resolve, narrow or reinterpret `N1`, `N2`, `N3`, `N4`, `N5`,
+`N6` or `N7`. It does not declare or perform JATAKA phase exit, which remains **on hold**. It changes
+no production code, test, CI job, registry, certification artifact or holdout datum. **It authorizes
+no part of the C2-C5 programme**, which remains unimplemented and unauthorized under `ADR-0099` s7's
+own terms.
+
+- **Consequences, if ratified:** `ADR-0099` s4's authority defect is closed additively, with
+  `ADR-0099` and this entry read together, and `ADR-0099` becomes ratifiable on its own merits. The
+  append-only provenance of `bceae8f` and `667867e` is on the record with its owner instruction and
+  its superseded text. **Nothing else moves:** `N3` and `N4` remain open while `ADR-0099` is
+  unratified, since both turn on `ADR-0099`'s substance and not on s4's authority clause; `Q22`,
+  `Q24`, `Q26` and `Q27` are untouched and unaffected - `ADR-0099` contains zero references to them;
+  `N1`, `N2`, `N5`, `N6` and `N7` stand; and **JATAKA exit remains blocked**, with no JATAKA
+  completion report and no JATAKA exit `ADR` in existence.
+- **Evidence:** `.claude/rules/governance.md` L23-24 and L11-14; `ADR-0042` decisions 1, 2 and 7;
+  `ADR-0021` status (PROPOSED); `docs/VALIDATION_STANDARD.md` L4-10, and its zero occurrences of
+  "scope" and "overclaim"; the seventeen ratification sub-entries in this register and the `ADR-0095`
+  ratification instruction at `docs/DECISION_LOG.md` L8059-8066; the additive-modification survey
+  `3b9e749` (-0/+48), `9307c62` (-0/+49), `949e905` (-0/+47), `cf628d0` (-0/+81) and the
+  Status-block-only `3de942c` (-8/+42); commits `3fb8fd9`, `bceae8f`, `5d990af6`, `667867e5`; PR #19
+  (merged) and PR #20 (rejected, unmerged). Repository state at drafting: `main`
+  `5d990af60daa8e92e1c693d8c399920e646440a8`, tracked working tree clean.
+
+---
+
 ## ADR template (copy, do not edit above the line)
 
 ## ADR-XXXX - <title>
