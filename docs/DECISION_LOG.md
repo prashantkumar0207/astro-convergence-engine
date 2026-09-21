@@ -8659,13 +8659,16 @@ is neither selected nor implicitly authorized.
 ## ADR-0099 - Operational definitions of "declared a production analytical input" and "in use" for `Q8_CLOSURE_MATRIX.md` s5's JATAKA exit criterion; SCOPE OVERCLAIM named as a separate certification-integrity obligation (PROPOSED - drafted for CEO review, not ratified)
 
 - **Date:** 2026-09-19
-- **Status:** **PROPOSED. NOT RATIFIED.** Drafted under the owner's instruction selecting options 1-A,
-  2-A, 3-A, 4-A and 5-B from the `N4` decision proposal, with the explicit sequencing "Draft ADR-0099
-  and show the complete proposed diff. Stop for CEO review and approval. Do not implement C2-C5 until
-  ADR-0099 is approved." The owner's selections are set out as recorded in section 1 below; this entry
-  becomes authoritative only on a ratifying instruction recorded in a sub-entry beneath it, following
-  the `ADR-0068` / `ADR-0074` / `ADR-0095` drafted-then-ratified precedent. **Nothing in this entry is
-  in force while it reads PROPOSED, and it authorizes no implementation.**
+- **Status:** **ACCEPTED, on the owner's ratifying instruction recorded in the "Ratification of
+  ADR-0099" sub-entry immediately below this entry's own text.** Originally drafted
+  `PROPOSED. NOT RATIFIED.` under the owner's instruction selecting options 1-A, 2-A, 3-A, 4-A and 5-B
+  from the `N4` decision proposal, with the explicit sequencing "Draft ADR-0099 and show the complete
+  proposed diff. Stop for CEO review and approval. Do not implement C2-C5 until ADR-0099 is approved."
+  The owner's selections are set out as recorded in section 1 below. Per this repository's own "change
+  only the status" discipline, this Status line is the only text in this entry that the ratification
+  altered; sections 1 to 7, the Context, the Consequences and the Evidence are byte-for-byte as
+  drafted. **Ratification records the decisions in sections 2 to 5 and the programme shape in section
+  7. It authorizes no implementation: C2-C5 remain unauthorized by section 7's own terms.**
 - **Context:** `docs/Q8_CLOSURE_MATRIX.md` L73 (ACCEPTED, `ADR-0048`) makes JATAKA phase exit turn on
   two terms:
 
@@ -8846,17 +8849,53 @@ is authorized by this entry.
   `m2-record-reconciliation`, HEAD `e0e47d3bcb600cb3c7c51555aa6d0ea410b65878`, `main` unchanged at
   `b92cd5ff422cebecb395b5846614c96a7c23a5e0`.
 
+#### Ratification of ADR-0099: OPERATIONAL DEFINITIONS OF "DECLARED" AND "IN USE" RATIFIED (2026-09-21)
+
+- **Status:** ACCEPTED. The owner instructed, in a single decision ratifying this entry and `ADR-0100`
+  together: "Proceed with the ratification-only PR exactly as specified in s6 of your assessment." The instruction directed that only the
+  governance changes necessary to record the ratification be made - both Status lines changed, both
+  sub-entries appended, each quoting the instruction - with both entry bodies preserved "exactly as
+  drafted, with no wording changed", confirmed by direct diff and by hash before committing. Per
+  `docs/PROJECT_CONSTITUTION.md` s11, that instruction is the ratifying act.
+- **Decision:** `ADR-0099` above - its full Context, sections 1 to 7, Consequences and Evidence - is
+  **ratified exactly as drafted, with no wording changed**. Its four operational decisions are now in
+  force: **DECLARED** (option 1-A, section 2), **IN USE** (option 2-A, section 3), **SCOPE OVERCLAIM**
+  (option 3-A, section 4) and **pure delegators** (option 4-A, section 5). Section 7's programme shape
+  (option 5-B) is on the record.
+- **Forward-reference qualification.** Section 4's sentence "This is a certification-integrity
+  requirement under `docs/VALIDATION_STANDARD.md`" is **qualified by `ADR-0100` section 1**, ratified in
+  this same instruction: the SCOPE OVERCLAIM obligation is established by `ADR-0099` itself, its
+  authority is this entry and no other document, and `docs/VALIDATION_STANDARD.md` is a subject-matter
+  reference only. This qualification is recorded here because the append-only rule
+  (`.claude/rules/governance.md` L23-24) forbids `ADR-0099` from referencing a later entry, and this
+  sub-entry is the nearest point in reading order to section 4's own text. **Read section 4 subject to
+  `ADR-0100` section 1.**
+- **Consequences:** `N4` closes. `N3` is reclassified from a possible clause-2 violation into three
+  SCOPE OVERCLAIMS on the certification-integrity track. **This ratification authorizes no
+  implementation**: C2, C3, C4 and C5 remain unauthorized per section 7's own terms, and each would
+  require its own decision, its own committed negative control and its own artifact regeneration.
+  **JATAKA phase exit is neither declared nor performed and remains on hold**: `N1`, `N2`, `N5`, `N6`
+  and `N7` are unresolved and untouched, no JATAKA completion report exists, and no JATAKA exit `ADR`
+  exists. `docs/Q8_CLOSURE_MATRIX.md` is not amended, reinterpreted or touched. No production code,
+  test, CI job, registry, certification artifact or holdout datum changes. `DP-038` and
+  `docs/decisions/README.md` are not annotated by this commit; that remains separately authorized work.
+- **Evidence:** the owner's ratifying instruction, quoted above; `ADR-0099`'s own text, unchanged and
+  hash-verified; the `ADR-0068` / `ADR-0074` / `ADR-0095` drafted-then-ratified precedent and the
+  `d3581ea` precedent for ratifying two entries in one instruction; `ADR-0100` sections 1 to 3.
+
 ---
 
 ## ADR-0100 - `ADR-0099` s4's authority clause corrected additively; the SCOPE OVERCLAIM obligation is established by `ADR-0099` itself; append-only provenance of `bceae8f` and `667867e` disclosed (PROPOSED - drafted for CEO review, not ratified)
 
 - **Date:** 2026-09-21
-- **Status:** **PROPOSED. NOT RATIFIED.** Drafted on the owner's "CEO DIRECTION - ADR-0099
-  PROVENANCE" instruction selecting Option 1: "preserve `ADR-0099` unchanged and create an
-  append-only `ADR-0100` that records the s4 authority correction." This entry becomes authoritative
-  only on a ratifying instruction recorded in a sub-entry beneath it, following the `ADR-0068` /
-  `ADR-0074` / `ADR-0095` drafted-then-ratified precedent. **Nothing in this entry is in force while
-  it reads PROPOSED. It ratifies nothing, including `ADR-0099`, and it authorizes no implementation.**
+- **Status:** **ACCEPTED, on the owner's ratifying instruction recorded in the "Ratification of
+  ADR-0100" sub-entry immediately below this entry's own text.** Originally drafted
+  `PROPOSED. NOT RATIFIED.` on the owner's "CEO DIRECTION - ADR-0099 PROVENANCE" instruction selecting
+  Option 1: "preserve `ADR-0099` unchanged and create an append-only `ADR-0100` that records the s4
+  authority correction." Per this repository's own "change only the status" discipline, this Status
+  line is the only text in this entry that the ratification altered; sections 1 to 4, the Context, the
+  Consequences and the Evidence are byte-for-byte as drafted. **Ratification puts sections 1 to 3 in
+  force and authorizes no implementation: C2-C5 remain unauthorized.**
 - **Context:** `ADR-0099` s4 (`docs/DECISION_LOG.md` L8773) reads:
 
   > **This is a certification-integrity requirement under `docs/VALIDATION_STANDARD.md`.**
@@ -8991,6 +9030,34 @@ own terms.
   Status-block-only `3de942c` (-8/+42); commits `3fb8fd9`, `bceae8f`, `5d990af6`, `667867e5`; PR #19
   (merged) and PR #20 (rejected, unmerged). Repository state at drafting: `main`
   `5d990af60daa8e92e1c693d8c399920e646440a8`, tracked working tree clean.
+
+#### Ratification of ADR-0100: SCOPE OVERCLAIM AUTHORITY AND PROVENANCE DISCLOSURE RATIFIED (2026-09-21)
+
+- **Status:** ACCEPTED. The owner instructed, in the same single decision that ratified `ADR-0099`:
+  "Proceed with the ratification-only PR exactly as specified in s6 of your assessment." Per `docs/PROJECT_CONSTITUTION.md` s11, that
+  instruction is the ratifying act.
+- **Decision:** `ADR-0100` above - its full Context, sections 1 to 4, Consequences and Evidence - is
+  **ratified exactly as drafted, with no wording changed**. Section 1's authority correction, section
+  2's preservation of `ADR-0099` unchanged, and section 3's disposition of `bceae8f` are now in force.
+- **Acceptance of two disclosed wording deviations.** The builder disclosed, before ratification, two
+  non-substantive departures from the draft the owner approved: the phrase "drafted-then-ratified" in
+  this entry's own Status block, where the approved draft read "precedent"; and "owner instruction" in
+  place of "authorization" in its Consequences. The owner **accepts both as disclosed historical
+  deviations**. Neither alters an authority, an obligation, a status or a factual claim, and the second
+  is strictly more conservative than the approved wording, since "authorization" would have asserted as
+  settled fact what the entry frames as interpretation. **This acceptance sets no precedent for
+  substantive deviation from approved text**, and does not narrow, amend or reinterpret
+  `.claude/rules/governance.md`. It is recorded here rather than left unwritten, because an unwritten
+  acceptance would reproduce the exact defect section 3 of this entry exists to close.
+- **Consequences:** `ADR-0099` section 4's authority defect is closed additively; the two entries are
+  read together. The append-only provenance of `bceae8f` and `667867e` stands on the record with its
+  owner instruction, its interpretive basis and its superseded text. **No standing permission to edit
+  recorded `ADR` entries is created.** The term "already-recorded" remains undefined and is not defined
+  here. **This ratification authorizes no implementation**: C2-C5 remain unauthorized, and **JATAKA
+  phase exit remains on hold**, neither declared nor performed.
+- **Evidence:** the owner's ratifying instruction, quoted above; `ADR-0100`'s own text, unchanged and
+  hash-verified; the builder's pre-ratification disclosure of the two deviations in the independent
+  review of PR #21; merge commit `69ae1c2166f9a0f3e2cc0228dced20b2316b7b2d`.
 
 ---
 
