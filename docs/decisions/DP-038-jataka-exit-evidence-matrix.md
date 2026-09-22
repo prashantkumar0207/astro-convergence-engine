@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | OPEN - decision paper. Presents an evidence matrix and unresolved questions. **DECIDES NOTHING.** Requires owner approval. **This paper does NOT declare, perform, or recommend JATAKA phase exit**, which remains on hold pending a separate owner decision. |
-| Version | 1.0.0 |
+| Version | 1.1.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-09-18 |
+| Last updated | 2026-09-22 |
 | Review cadence | TBD |
 
 # DP-038. JATAKA phase-exit evidence matrix and M2 record reconciliation
@@ -56,10 +56,20 @@ artifacts*, and is qualified by sections 3.2 and 3.3 below.
 
 | Item | Finding | Status |
 |---|---|---|
-| `returns()` | see 3.1 | **AMBIGUOUS** |
+| `returns()` | see 3.1; not in use under `ADR-0099` s3; SCOPE OVERCLAIM under s4 | not a clause-2 item |
+| `natal_conjunctions()` | `engine/transits/events.py` L79; zero call sites outside the verification surface; named in `TRANSIT_V1` scope, exercised by no gate | not a clause-2 item; SCOPE OVERCLAIM |
+| `transit_view()` | `engine/transits/view.py` L47; zero call sites outside the verification surface; named in `TRANSIT_V1` scope, exercised by no gate | not a clause-2 item; SCOPE OVERCLAIM |
 | D16 / D4 | certified, unregistered, dispatcher raises `UnsupportedVargaError` - not in use | not a clause-2 item |
 | `planet_strength()` | raises `NotImplementedError` by design - not in use | not a clause-2 item |
 | `engine/api/`, `engine/main.py` | empty package; 60-line demo that "performs no astrology itself" | not analytical inputs |
+
+*Annotated 2026-09-22, after `ADR-0099` and `ADR-0100` were ratified in `cd1c1655`.* The `returns()` row
+previously read "see 3.1 | **AMBIGUOUS**"; it is corrected above rather than left standing, and the
+two rows beneath it are new. All three are **SCOPE OVERCLAIMS** on the certification-integrity track,
+which `ADR-0099` s4 places outside `Q8_CLOSURE_MATRIX.md` s5's exit criterion and which **does not
+gate JATAKA phase exit**. All three are **open and separately tracked**: neither disposition path has
+been taken - `TRANSIT_V1` is not gated for them and carries no `scope_not_gated` array - and their
+disposition under `ADR-0099` s4 (a) or (b) is undecided and separately authorized.
 
 ### s14 completion report
 
@@ -102,6 +112,20 @@ owner finding that a zero-caller wrapper is not "in use".
 
 **Decision required.** Which reading governs; and if (b), whether to gate
 `returns()` or to record it as not-in-use. Either path is its own authorization.
+
+***Superseded, appended 2026-09-22:*** the "Decision required" above is answered, and not by
+selecting (a) or (b). Under `ADR-0099` s3 (ACCEPTED, ratified in `cd1c1655`) `returns()` is **not in
+use** - two call sites, both inside the verification surface (`engine/tests/test_transit_events.py`
+L66, L129) - so clause 2 is satisfied with respect to it and reading (b)'s exit consequence does not
+arise. Under `ADR-0099` s5 it does **not** inherit `find_crossings`' certification: no committed
+behavioural-neutrality test exists, and the inspection finding that `kind` does not branch the search
+is expressly insufficient. Under `ADR-0099` s4 it is one of three SCOPE OVERCLAIMS, with
+`natal_conjunctions()` (`engine/transits/events.py` L79) and `transit_view()`
+(`engine/transits/view.py` L47), which this section did not name because it predates that
+classification. **`N3` is resolved by reclassification, not by answering it**, and the coverage gap
+remains open on the certification-integrity track. The evidence and competing interpretations above
+are preserved unchanged, so the record shows what was claimed and when it ceased to be current. This
+paper's scope is evidence; it decides nothing.
 
 ### 3.2 The ADR-0083 / ADR-0085 / ADR-0086 certification-integrity qualifications
 
@@ -188,6 +212,19 @@ undefined term.
 authority - most plausibly a new ADR, since `Q8_CLOSURE_MATRIX.md` is itself
 ratified and should not be silently reinterpreted.
 
+***Superseded, appended 2026-09-22:*** both terms are now defined, so this section's heading and its
+"defined nowhere" evidence are no longer current. `ADR-0099` s2 (ACCEPTED, ratified in
+`cd1c1655`) defines **declared a production analytical input** conjunctively: `D1`, a ratified `ADR`
+states the capability is served in production as an analytical input, **and** `D2`, it appears in one
+of three declaring lists in the `docs/ENGINE_STATUS.md` section 6 block. `ADR-0099` s3 defines **in
+use** as reachability from outside the verification surface, by `U1` a call path or `U2` an export.
+Their normative authority is `ADR-0099` itself, interpreting `Q8_CLOSURE_MATRIX.md` without amending
+it - the instrument this section predicted. **`N4` is resolved.** Full determinism still awaits the
+`C2`-`C4` gates, which are **unauthorized**. One measurement note: the count "three times" above was
+taken across governing documents only, while `ADR-0099` counted eleven by including the `DP` papers;
+both are correct on their own scoping, and neither is withdrawn. The heading and evidence are
+preserved above rather than rewritten.
+
 ### 3.5 Does s14 require a JATAKA completion report?
 
 **Evidence.** s14: *"Every phase's completion report states what it could not
@@ -260,11 +297,17 @@ evidence whose governing decision the owner has never accepted.
 |---|---|
 | N1 | Is a capability carrying a ratified certification-integrity qualification (`ADR-0083`/`0085`/`0086`) "individually certified" for exit purposes? |
 | N2 | Does `ADR-0086` s2's unaudited negative-control residual across ~14 capabilities bear on clause 1, and must it be audited before exit? |
-| N3 | Which reading of `returns()` governs (3.1)? |
-| N4 | What are the operational definitions of "declared" and "in use", and under whose authority (3.4)? |
+| N3 | ~~Which reading of `returns()` governs (3.1)?~~ **RESOLVED BY RECLASSIFICATION 2026-09-22** (`ADR-0099` s3-s4, ratified in `cd1c1655`): `returns()` is not in use, so it cannot violate clause 2; the coverage gap is a SCOPE OVERCLAIM on the certification-integrity track and does not gate exit. |
+| N4 | ~~What are the operational definitions of "declared" and "in use", and under whose authority (3.4)?~~ **RESOLVED 2026-09-22** (`ADR-0099` s2-s3, ratified in `cd1c1655`): definitions adopted and their authority named. Full determinism awaits `C2`-`C4`, which are unauthorized. |
 | N5 | Does s14 require a distinct JATAKA completion report (3.5)? |
 | N6 | Is `ADR-0004` a blocking dependency (3.6)? |
 | N7 | Does `ADR-0018` block exit, or is it governance debt (3.7)? |
+
+*Annotated 2026-09-22.* **`N1`, `N2`, `N5`, `N6` and `N7` remain open and untouched.** Their original
+wording above is unchanged. No JATAKA completion report exists and no JATAKA exit `ADR` exists, so
+**JATAKA phase exit remains on HOLD** - it is neither declared nor performed by `ADR-0099`,
+`ADR-0100` or this annotation. The `C2`-`C5` programme recorded in `ADR-0099` s7 remains
+**unauthorized** by that section's own terms.
 
 `Q26` and `Q27`, created by the M2 Option-C split, are tracked in
 `docs/OPEN_QUESTIONS.md` and are **not** JATAKA-exit blockers: both concern
@@ -339,4 +382,5 @@ test, and ratifies no ADR.
 
 | Version | Date | Change |
 |---|---|---|
+| 1.1.0 | 2026-09-22 | Post-ratification reconciliation, on the owner's "CEO AUTHORIZATION - STEP 1: DOCUMENTATION RECONCILIATION" instruction. `ADR-0099` and `ADR-0100` were ratified in merge commit `cd1c16553eb61eeffa04f46d191be62749f5ad70`, which decided `N4` and reclassified `N3`. Sections 2, 3.1, 3.4 and 4 are annotated so this paper no longer contradicts the register. Every superseded claim is preserved in place and annotated beneath it; nothing is erased. `N1`, `N2`, `N5`, `N6` and `N7` remain open; JATAKA exit remains HOLD; `C2`-`C5` remain unauthorized; the three `TRANSIT_V1` SCOPE OVERCLAIMS are recorded as open and separately tracked. No decision is made by this paper. |
 | 1.0.0 | 2026-09-18 | Created under the owner's "CEO AUTHORIZATION — PROCEED WITH M2" and "CEO DECISION — M2 SCOPE CONFIRMED" instructions. Identifier allocated before the paper's substantive content was written, per `ADR-0040`; index row and paper committed together in `5be71a2`, so the commit graph does not independently prove that ordering. Carries the JATAKA-exit evidence matrix, the seven commissioned investigation findings each with evidence, competing interpretations, exit consequence and the decision still required, and unresolved questions N1-N7. Records the M2 record corrections. Declares no phase exit. |
