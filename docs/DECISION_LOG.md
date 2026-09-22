@@ -9061,6 +9061,170 @@ own terms.
 
 ---
 
+## ADR-0101 - Executable semantics for `ADR-0099` s4 SCOPE OVERCLAIM: declared capability enumeration, per-gate `exercises` declarations, and a universal requirement with a declared remediation backlog (PROPOSED - drafted for CEO review, not ratified)
+
+- **Date:** 2026-09-22
+- **Status:** **PROPOSED. NOT RATIFIED.** Drafted on the owner's "CEO ADJUDICATION - DP-039 CHOICES 1,
+  2 AND 3" instruction, which selected **1-A**, **2-A** and **3-C** from `DP-039`. This entry becomes
+  authoritative only on a ratifying instruction recorded in a sub-entry beneath it, following the
+  `ADR-0068` / `ADR-0074` / `ADR-0095` / `ADR-0099` drafted-then-ratified precedent. **Nothing in this
+  entry is in force while it reads PROPOSED, and it authorizes no implementation.**
+- **Context:** `ADR-0099` s4 (ACCEPTED, `docs/DECISION_LOG.md` L8768-L8790) makes a capability named
+  in a certification artifact's `scope` but exercised by no gate a **SCOPE OVERCLAIM**, to be closed
+  by gating it or declaring it in a `scope_not_gated` array with a per-item reason. `ADR-0100` s1
+  (ACCEPTED) established that this obligation's authority is `ADR-0099` itself. **Neither entry is
+  edited by this one**, and neither defines the terms the obligation turns on.
+
+  `DP-039` measured the corpus and found both limbs unevaluable: `scope` is free prose in all 22
+  scope-bearing artifacts, carrying no identifiers and no delimiter contract, and **no gate block in
+  any of the 26 artifacts records which code objects it exercised** - 167 distinct gate-block keys, no
+  universal coverage key, and the four per-gate identifier keys that do exist are mutually
+  inconsistent, with `production_module` appearing once as a dotted path and once as a file path.
+  `C3`, the gate `ADR-0099` s7 describes, therefore could not be specified. `DP-039` presented three
+  semantic choices with options and consequences and **selected none**, since none was derivable from
+  repository evidence.
+
+  The owner has now adjudicated all three. This entry records those selections and nothing else.
+  `DP-039` is preserved unchanged as the evidence paper; its unresolved-choice analysis is historical
+  and is **not** rewritten to suggest the choices were ever settled there.
+
+### 1. Normative authority
+
+This entry's authority is **this `ADR` itself**, on the owner's adjudication instruction, interpreting
+and giving executable effect to `ADR-0099` s4 without amending it. `ADR-0099` s4's text is unchanged
+and remains the obligation; this entry supplies the semantics by which that obligation can be
+evaluated. Per `ADR-0042` decision 1, DECISION LOG / ADR sits above STANDARDS, so no other document is
+required to carry these definitions. `docs/VALIDATION_STANDARD.md` remains, as `ADR-0100` s1 records,
+a subject-matter reference only and is not the source of authority here. `docs/Q8_CLOSURE_MATRIX.md`
+is not amended, reinterpreted or touched.
+
+### 2. DECLARED CAPABILITY ENUMERATION (Decision 1, option 1-A)
+
+A certification artifact **must explicitly enumerate the production capabilities to which its
+certification scope applies, using stable machine-readable capability identifiers.**
+
+- The artifact's free-form `scope` prose is **explanatory evidence, not the authoritative
+  machine-readable capability identity.**
+- **Capability identity must not be inferred from arbitrary word matching in `scope`**, nor from any
+  other parse of that prose.
+- Options **1-B** (parse the `scope` string) and **1-C** (code-anchored to public callables,
+  disregarding `scope`) are **not selected and are not in force.**
+
+**Precedent to reuse rather than duplicate.** `SIGN_CONVENTION_V1` already carries
+`declaration_registry` (20 entries) and `function_registry` (6 entries), each a machine-readable
+mapping keyed by stable dotted identifiers such as `engine.astrology.signs.zodiac_sign`. `ADR-0099` s7
+names this pattern for `C3`. The enumeration required here is of that kind.
+
+### 3. PER-GATE `exercises` DECLARATIONS (Decision 2, option 2-A)
+
+**Each certification gate must explicitly declare, in an `exercises` array, the stable capability
+identifiers it exercises or covers.**
+
+`C3` must therefore be evaluated **from explicit machine-readable gate-to-capability declarations**,
+and **not** from any of:
+
+- prose matching;
+- inferred coverage;
+- runtime instrumentation;
+- observed execution alone.
+
+Options **2-B** (a single artifact-level coverage map) and **2-C** (observed coverage) are **not
+selected and are not in force.**
+
+**Consequence, stated plainly:** the evidence a gate emits about its own coverage is authored by the
+certifier that ran it. That is a declaration, not an observation. Nothing in this entry claims
+otherwise, and the residual - that a declaration can be wrong in a way observation would have caught -
+is recorded here rather than left implicit.
+
+### 4. UNIVERSAL REQUIREMENT WITH A DECLARED REMEDIATION BACKLOG (Decision 3, option 3-C)
+
+The requirements in sections 2 and 3 apply **universally to the certification corpus.**
+
+- Existing artifacts that do not yet satisfy the structure **must not be silently grandfathered.**
+  **Permanent grandfathering is not permitted.**
+- They must instead be placed in an **explicit, machine-readable or otherwise governed remediation
+  backlog**, each entry carrying: **artifact identity; the deficiency; the required remediation;
+  status; and applicable disposition or owner information.**
+- **An unsafe all-at-once migration must not be required merely to satisfy the new rule.** The backlog
+  exists so that the gap is explicit and countable rather than silent, and so that remediation can be
+  sequenced safely.
+
+Option **3-A** (immediate universal enforcement) and option **3-B** (forward-only, with
+grandfathering) are **not selected and are not in force.**
+
+**Measured starting position at `f8f13607`**, recorded so the backlog's initial size is on the record
+before any code is written: **26** certification artifacts, of which **22** carry a non-empty `scope`,
+**0** carry `scope_not_gated`, **0** carry a capability enumeration, and **0** carry any per-gate
+`exercises` array. The corpus uses **26 distinct `schema` values**, one per artifact, so there is no
+shared schema to extend.
+
+### 5. Executable interpretation
+
+Together, sections 2 to 4 make `ADR-0099` s4's trigger evaluable, and therefore make `C3` specifiable:
+
+1. The set of capabilities in an artifact's scope is **read from that artifact's enumeration**, never
+   parsed from `scope` prose.
+2. A capability is **exercised** if and only if it appears in the `exercises` array of at least one
+   gate in that artifact.
+3. A capability in the enumeration that appears in no gate's `exercises` array, and is not listed in
+   `scope_not_gated` with a per-item reason, is a **SCOPE OVERCLAIM** under `ADR-0099` s4.
+4. An artifact lacking the enumeration, or lacking `exercises` on its gates, is **not compliant and is
+   not grandfathered**; it belongs in the section 4 backlog until remediated.
+
+### 6. What remains unresolved
+
+These are **specification matters deferred to whatever authorization implements `C2`-`C5`**, not
+further semantic choices of the kind `DP-039` identified. They are named so that no later work can
+treat them as already settled:
+
+- The **key names and JSON shapes** for the capability enumeration and for the backlog. Only
+  `exercises` is fixed, by the owner's adjudication; the enumeration key and the backlog's location
+  and structure are not.
+- The **identifier grammar** - whether the dotted form of `function_registry` is adopted verbatim, and
+  how a claim spanning several callables, such as `TRANSIT_V1`'s "natal-relative view", is expressed.
+- The **remediation sequence** across the 22 scope-bearing artifacts, and who owns each entry.
+- Whether the backlog lives in a committed file, in each artifact, or in a register, and what gate if
+  any enforces its completeness.
+- **`N1`, `N2`, `N5`, `N6` and `N7` are untouched by this entry and remain open.** It resolves none of
+  them and manufactures no resolution. `N3` and `N4` were already closed by `ADR-0099`; nothing here
+  reopens or re-decides them.
+- The disposition of the three `TRANSIT_V1` SCOPE OVERCLAIMS - `returns()`, `natal_conjunctions()` and
+  `transit_view()` - which **remain open and separately tracked**, as `DP-038` s2 records. Sections 2
+  to 5 would make them identifiable by rule rather than by reading; they do not dispose of them, and
+  this entry does not.
+
+### 7. What this entry does NOT do
+
+**It authorizes no implementation.** `C2`, `C3`, `C4` and `C5` remain **unauthorized** under
+`ADR-0099` s7's own terms, and each still requires its own decision, its own committed negative
+control proving it rejects a real violation, and its own artifact regeneration. It changes **no
+certification artifact, no gate schema, no registry, no production code, no test, no CI job and no
+holdout datum**, and it regenerates nothing. It does not edit `ADR-0099` or `ADR-0100`, and creates no
+permission to edit any recorded decision entry. It does not rewrite `DP-039`, whose unresolved-choice
+analysis stands as the historical record of what was open before this adjudication. It does not amend
+`docs/Q8_CLOSURE_MATRIX.md`, `docs/VALIDATION_STANDARD.md`, `docs/ENGINE_STATUS.md` or
+`docs/OPEN_QUESTIONS.md`. **It does not declare, perform or recommend JATAKA phase exit, which remains
+on HOLD.**
+
+- **Consequences, if ratified:** `ADR-0099` s4 becomes evaluable and `C3` becomes specifiable, for the
+  first time. The corpus acquires a stated compliance target and a stated, non-silent way to be
+  non-compliant while remediation is sequenced. **Nothing becomes authorized:** `C2`-`C5` still need
+  their own authorization, the 22 scope-bearing artifacts are unchanged and uncompliant on the day of
+  ratification, and the backlog required by section 4 does not yet exist. **JATAKA exit remains
+  blocked** on `N1`, `N2` and `N5`, with no JATAKA completion report and no JATAKA exit `ADR` in
+  existence.
+- **Evidence:** the owner's "CEO ADJUDICATION - DP-039 CHOICES 1, 2 AND 3" instruction, selecting 1-A,
+  2-A and 3-C; `DP-039` sections 2 to 5, which measured the corpus and presented the choices;
+  `ADR-0099` s4 (`docs/DECISION_LOG.md` L8768-L8790) and s7 (L8810-L8831); `ADR-0100` s1; `ADR-0042`
+  decision 1; `SIGN_CONVENTION_V1`'s `declaration_registry` and `function_registry`;
+  `explicit_non_claims` across 22 artifacts as the declared-exclusion precedent; the measured corpus
+  counts in section 4. Repository state at drafting: branch `adr-0101-scope-semantics`, parent
+  `fd027929853061c43d4ad9dc40fb75b8618e9adc` (PR #24, which carries `DP-039`), `main` unchanged at
+  `f8f1360716885955130fb78bba6cfe3f3302a8b9`. **`DP-039` is not yet on `main`; it is pending in
+  PR #24, and this entry cites it from that branch.**
+
+---
+
 ## ADR template (copy, do not edit above the line)
 
 ## ADR-XXXX - <title>
