@@ -9064,11 +9064,15 @@ own terms.
 ## ADR-0101 - Executable semantics for `ADR-0099` s4 SCOPE OVERCLAIM: declared capability enumeration, per-gate `exercises` declarations, and a universal requirement with a declared remediation backlog (PROPOSED - drafted for CEO review, not ratified)
 
 - **Date:** 2026-09-22
-- **Status:** **PROPOSED. NOT RATIFIED.** Drafted on the owner's "CEO ADJUDICATION - DP-039 CHOICES 1,
-  2 AND 3" instruction, which selected **1-A**, **2-A** and **3-C** from `DP-039`. This entry becomes
-  authoritative only on a ratifying instruction recorded in a sub-entry beneath it, following the
-  `ADR-0068` / `ADR-0074` / `ADR-0095` / `ADR-0099` drafted-then-ratified precedent. **Nothing in this
-  entry is in force while it reads PROPOSED, and it authorizes no implementation.**
+- **Status:** **ACCEPTED, on the owner's ratifying instruction recorded in the "Ratification of
+  ADR-0101" sub-entry immediately below this entry's own text.** Originally drafted
+  `PROPOSED. NOT RATIFIED.` on the owner's "CEO ADJUDICATION - DP-039 CHOICES 1, 2 AND 3" instruction,
+  which selected **1-A**, **2-A** and **3-C** from `DP-039`, following the `ADR-0068` / `ADR-0074` /
+  `ADR-0095` / `ADR-0099` drafted-then-ratified precedent. Per this repository's own "change only the
+  status" discipline, this Status line is the only text in this entry that the ratification altered;
+  sections 1 to 7, the Context, the Consequences and the Evidence are byte-for-byte as drafted.
+  **Ratification puts sections 1 to 5 in force and authorizes no implementation: C2-C5 remain
+  unauthorized by section 7's own terms.**
 - **Context:** `ADR-0099` s4 (ACCEPTED, `docs/DECISION_LOG.md` L8768-L8790) makes a capability named
   in a certification artifact's `scope` but exercised by no gate a **SCOPE OVERCLAIM**, to be closed
   by gating it or declaring it in a `scope_not_gated` array with a per-item reason. `ADR-0100` s1
@@ -9222,6 +9226,57 @@ on HOLD.**
   `fd027929853061c43d4ad9dc40fb75b8618e9adc` (PR #24, which carries `DP-039`), `main` unchanged at
   `f8f1360716885955130fb78bba6cfe3f3302a8b9`. **`DP-039` is not yet on `main`; it is pending in
   PR #24, and this entry cites it from that branch.**
+
+#### Ratification of ADR-0101: EXECUTABLE SEMANTICS FOR `ADR-0099` s4 RATIFIED (2026-09-22)
+
+- **Status:** ACCEPTED. The owner instructed: "CEO RATIFICATION - ADR-0101... The CEO has
+  independently audited the merged state at `1dd83ab103985c123cfb170717eab4e8a1368575`. CEO audit
+  verdict: PASS. The CEO now authorizes RATIFICATION OF ADR-0101 ONLY... Ratify ADR-0101 exactly as it
+  currently exists on main... The ratification must NOT alter the substantive wording of ADR-0101...
+  The sole purpose of this change is to record the CEO's ratification of ADR-0101." Per
+  `docs/PROJECT_CONSTITUTION.md` s11, that instruction is the ratifying act.
+- **Decision:** `ADR-0101` above - its full Context, sections 1 to 7, Consequences and Evidence - is
+  **ratified exactly as drafted, with no wording changed**, confirmed by direct diff and by hash
+  before committing. **`ADR-0101` is now ACCEPTED.** Its three selections are accepted:
+  - **Choice 1, option 1-A - capability identity.** Certification artifacts explicitly enumerate
+    production capabilities using **stable machine-readable capability identifiers**. An artifact's
+    free-form `scope` prose is explanatory evidence, **not** the authoritative machine-readable
+    capability identity, and identity is **not** inferred from arbitrary word matching in `scope`.
+  - **Choice 2, option 2-A - gate exercise evidence.** Each certification gate explicitly declares an
+    **`exercises` array** containing the stable capability identifiers it exercises or covers. `C3` is
+    to be evaluated from those explicit machine-readable gate-to-capability declarations, and not from
+    prose matching, inferred coverage, runtime instrumentation, or observed execution alone.
+  - **Choice 3, option 3-C - retrospective scope.** The requirements apply **universally** to the
+    certification corpus. Non-compliant existing artifacts are **not silently grandfathered** and
+    permanent grandfathering is not permitted; they are placed in a **declared remediation backlog**
+    carrying artifact identity, deficiency, required remediation, status and disposition/owner
+    information. An unsafe all-at-once migration is not required merely to satisfy the rule.
+- **This ratification authorizes no implementation.** **`C2`, `C3`, `C4` and `C5` remain
+  unauthorized** under `ADR-0099` s7's own terms, each still requiring its own decision, its own
+  committed negative control proving it rejects a real violation, and its own artifact regeneration.
+  Nothing was built by this ratification: **the capability enumeration was not created, no `exercises`
+  array was created, and the remediation backlog was not created.** No certification artifact, gate
+  schema, registry, production code, test, CI job or holdout datum was changed, and the 26-artifact
+  corpus was not regenerated. Measured at ratification and unchanged from `1dd83ab1`: 26 artifacts, 22
+  with a non-empty `scope`, **0** with `scope_not_gated`, **0** with a capability enumeration, **0**
+  with any per-gate `exercises` array.
+- **What remains open, unchanged by this ratification.** The three `TRANSIT_V1` SCOPE OVERCLAIMS -
+  `returns()`, `natal_conjunctions()` and `transit_view()` - **remain unresolved and separately
+  tracked**; they are not disposed of here. **`N1`, `N2`, `N5`, `N6` and `N7` remain open**, and no
+  resolution is manufactured for any of them. `ADR-0101` s6's deferred specification matters - the key
+  names and JSON shapes other than `exercises`, the identifier grammar, the remediation sequence and
+  ownership, and where the backlog lives - are unresolved and are not settled here. **JATAKA phase
+  exit is neither declared nor performed and remains on HOLD**: no JATAKA completion report exists and
+  no JATAKA exit `ADR` exists.
+- **Not edited by this ratification:** the body of `ADR-0101`; `ADR-0099`; `ADR-0100`; `DP-039`, whose
+  unresolved-choice analysis stands as the historical record of what was open before the adjudication;
+  `docs/Q8_CLOSURE_MATRIX.md`; `docs/VALIDATION_STANDARD.md`; `docs/ENGINE_STATUS.md`;
+  `docs/OPEN_QUESTIONS.md`. No permission to edit any recorded decision entry is created.
+- **Evidence:** the owner's ratifying instruction, quoted above; the owner's independent audit of the
+  merged state at `1dd83ab103985c123cfb170717eab4e8a1368575`, verdict PASS; `ADR-0101`'s own text,
+  unchanged and hash-verified; `DP-039` sections 2 to 5, the evidence paper behind the three choices;
+  `ADR-0099` s4 and s7; `ADR-0100` s1; the `ADR-0095` / `ADR-0099` / `ADR-0100` ratification
+  sub-entry precedent.
 
 ---
 
