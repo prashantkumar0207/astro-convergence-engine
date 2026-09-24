@@ -4,7 +4,7 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | OPEN - decision paper. Design research for `ADR-0101` s6's unresolved specification questions. **DECIDES NOTHING.** Requires owner adjudication on the items listed in section 10. |
-| Version | 1.0.0 |
+| Version | 1.1.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 | Last updated | 2026-09-23 |
 | Review cadence | TBD |
@@ -19,8 +19,8 @@ committed together. All evidence was measured against `main` at
 `8ebf71bb3b78aea0655eb1ca7171d1c660b3113d`.
 
 **The design is not invented here.** Every candidate below is traced to an existing repository
-precedent, and section 9 separates what follows from existing authority from what genuinely requires
-the owner. **This paper decides nothing and selects no option.**
+precedent, and sections 10 and 11 separate what follows from existing authority from what genuinely
+requires the owner. **This paper decides nothing and selects no option.**
 
 ---
 
@@ -34,7 +34,7 @@ the owner. **This paper decides nothing and selects no option.**
 | `ADR-0101` s3 | ACCEPTED | Each gate **must** declare an **`exercises`** array of the identifiers it covers; `C3` evaluated from explicit declarations only |
 | `ADR-0101` s4 | ACCEPTED | Universal application; **no silent or permanent grandfathering**; a declared remediation backlog carrying **artifact identity, deficiency, required remediation, status, disposition/owner**; **no unsafe all-at-once migration** |
 | `ADR-0101` s6 | ACCEPTED | Lists precisely the questions this paper researches as **unresolved** |
-| `ADR-0092` | ACCEPTED | `ENGINE_CAPABILITY_INVENTORY.json` is **frozen dated historical evidence**, explicitly **"must not be used by the future capability-consistency gate as a live-state authority"**, and **"Do not modify"** it |
+| `ADR-0092` | ACCEPTED | **`ENGINE_CAPABILITY_INVENTORY.json` only**: frozen dated historical evidence, **"must not be used by the future capability-consistency gate as a live-state authority"**, and **"Do not modify"** it. It exempts **one file** from **one enforcement surface**; it says nothing about `ADR-0101` |
 | `ADR-0042` decision 1 | ACCEPTED | Authority hierarchy: DECISION LOG / ADR sits above STANDARDS |
 | `.claude/rules/certification.md` | project rule | Stored artifacts are **never hand-edited**; regenerate to verify; **"a gate that cannot fail is not evidence"** - any new or repaired gate needs a committed negative control |
 | `docs/NAMING_STANDARD.md` s2 | DRAFT | ID-family table: `ADR-\d{4}`, `DP-\d{3}`, `EV-CAR-\d{3}`, `TC-CAR-\d{3}`, etc. **Has no family for code capabilities** |
@@ -44,7 +44,7 @@ location below is open.
 
 ---
 
-## 2. Repository evidence: the corpus is not what "26 artifacts" suggests
+## 2. Repository evidence: the corpus, and three universes that must not be conflated
 
 Measured at `8ebf71bb`:
 
@@ -61,11 +61,69 @@ Measured at `8ebf71bb`:
 | Distinct `schema` values | **26** - one per artifact; there is no shared schema to extend |
 | Distinct top-level keys across the corpus | **67** |
 
-**The "26 artifacts" framing used in `ADR-0101` s4 and `DP-039` is therefore imprecise in a way that
-matters.** Four artifacts are frozen evidence that `ADR-0092` forbids enforcing against as live state
-and forbids modifying; those same four are exactly the ones carrying no `scope`. **The live universe
-for any `ADR-0101` s2/s3 requirement is the 22 runner-regenerated artifacts**, and that follows from
-existing ratified authority rather than from a new choice.
+### 2.1 Three universes, distinguished
+
+An earlier draft of this paper (v1.0.0) concluded that the `ADR-0101` obligation universe is 22 rather
+than 26, and presented that as derived from ratified authority. **The CEO audit of PR #28 found that
+conclusion insufficiently established, and it is withdrawn here.** It conflated three distinct things:
+
+| Universe | What it is | Authority | Size |
+|---|---|---|---|
+| **U1. Measured corpus** | Files matching `certification/*.json` | Direct measurement | **26** |
+| **U2. `check_capability_state.py` live-source universe** | U1 minus the four names in that script's `FROZEN_EVIDENCE` constant | The script itself, at one call site | **22** |
+| **U3. `ADR-0101` obligation universe** | The artifacts to which s2 and s3's requirements apply | `ADR-0101` s4, ratified | **not established** |
+
+**What `ADR-0101` s4 actually says**, at `docs/DECISION_LOG.md` L9145 and L9159-L9163:
+
+> The requirements in sections 2 and 3 apply **universally to the certification corpus.**
+
+> **Measured starting position at `f8f13607`** ... **26** certification artifacts, of which **22** carry
+> a non-empty `scope` ...
+
+The ratified text says *universally to the certification corpus* and records that corpus as **26**. It
+does not carve out an exemption, and it does not equate the corpus with the scope-bearing subset.
+
+**What `ADR-0092` actually exempts.** It names **one file**, `ENGINE_CAPABILITY_INVENTORY.json`, and
+exempts it from being used **"by the future capability-consistency gate as a live-state authority"**,
+while separately forbidding its modification. That is an exemption from **one enforcement surface**.
+`ADR-0101` s2/s3/s4 is a different surface, and `ADR-0092` does not address it.
+
+**What the other three frozen files rest on.** `scripts/check_capability_state.py` L81-L83 states it in
+its own words:
+
+> Dated evidence, never a live source. **`ADR-0092` decides this for the capability inventory
+> specifically; the other three share its shape** (a date, a source commit or environment, and no runner
+> that regenerates them).
+
+Measured: `ORACLE_ENVIRONMENT.json` and `G6_REMOTE_CI_VALIDATION.json` are named in **zero** `ADR`
+entries that call them frozen or historical; `CURRENT_ENGINE_LOCK.json`'s single near-match is about
+frozen `CalculationProfile` definitions, not about the artifact's status. **Three of the four are frozen
+by a builder's shape-based inference recorded in a code comment, not by any ratified decision.**
+
+**How narrowly `FROZEN_EVIDENCE` is actually used.** The constant appears at exactly **one** call site,
+`check_capability_state.py` L199, where it `continue`s past those four names while building the verdict
+map for that gate's own completeness universe. It is a parameter of one script's reading, not a
+repository-wide exemption.
+
+### 2.2 The consequence, stated as a question rather than an answer
+
+**Whether U3 equals U1 (26), U2 (22), or something else is not established by any ratified text**, and
+this paper does not decide it. It is carried to section 10 as **Q-E**. Three readings are live:
+
+- **U3 = 26.** The plain reading of "universally to the certification corpus" together with s4's own
+  measurement. Consequence: the four frozen artifacts are in scope for s2/s3, yet three have no runner
+  to write an enumeration and `ADR-0092` forbids modifying the fourth - so they could only ever enter
+  compliance **through the backlog**, which is arguably exactly what s4's no-silent-grandfathering rule
+  intends.
+- **U3 = 22.** The reading v1.0.0 asserted. It is *coherent* - only 22 carry `scope`, and a SCOPE
+  OVERCLAIM cannot arise without one - but it requires either an interpretation of `ADR-0101` or an
+  extension of `ADR-0092` to three files it never named.
+- **U3 = 22 for s2/s3, 26 for s4.** The obligations apply where they can be satisfied; the backlog
+  records the remainder. This is the only reading under which nothing is silently exempt **and** nothing
+  is required of an artifact that cannot produce it.
+
+**The measured facts in the table above are not in question. Only the mapping from those facts to
+`ADR-0101`'s universe is unresolved.**
 
 ---
 
@@ -197,7 +255,7 @@ paths, not capability names. It is the opposite granularity choice from preceden
 
 `explicit_non_claims` (22 artifacts) is a **prose list**, e.g. *"Four Step Theory (Gondhalekar) - out
 of scope (ADR-0027 Decision 3)"*. It supplies the **form** of a declared exclusion with a reason -
-the shape `scope_not_gated` would take - but is not machine-checkable against code.
+**one shape `scope_not_gated` could take** - but is not machine-checkable against code.
 
 ---
 
@@ -242,8 +300,10 @@ This is the question precedent C makes concrete.
 | **4-B. Per-artifact key** `remediation_backlog`, written by each certifier | Mirrors `technical_debt` exactly; regenerated, so it cannot drift | No single corpus-wide view without an aggregator; cannot hold entries for the 4 frozen artifacts, which have no runner |
 | **4-C. A governed Markdown register** with a fenced JSON block, like `CAPABILITY-BLOCK` | Reuses precedent D's machinery, including its gate pattern | Hand-maintained like 4-A; puts certification state in a docs file |
 
-**Schema, largely derivable.** `ADR-0101` s4's five fields map onto `technical_debt`'s eight with two
-genuine gaps - explicit `status` and `owner`:
+**Schema: the five fields are required by s4; the surrounding shape is a candidate.** `ADR-0101` s4's
+five fields map onto `technical_debt`'s eight with two genuine gaps - explicit `status` and `owner`.
+The field list below adds `observed` and `evidence_class` from that precedent; **those two are
+suggestions, not requirements**:
 
 ```
 id / artifact / capability / deficiency / required_remediation / status / disposition / owner / observed / evidence_class
@@ -264,12 +324,21 @@ dependency, not a design preference.**
 
 ### 8.5 Question 6 - does backlog completeness itself need a gate?
 
-**Largely derivable.** `.claude/rules/certification.md` states *"a gate that cannot fail is not
-evidence"*, and `ADR-0101` s4 forbids silent grandfathering. A backlog that nothing checks would be
-exactly the silent state s4 exists to prevent. The **existence** of a completeness gate follows from
-ratified authority.
+**Unresolved. An earlier draft (v1.0.0) called the existence of such a gate derivable; the CEO audit of
+PR #28 found that too strong, and it is withdrawn.**
 
-What is **not** derivable is its **form**:
+What **is** supported by ratified text: `ADR-0101` s4 requires a **declared remediation backlog** with
+five named fields, and forbids silent and permanent grandfathering. **The backlog's existence and its
+schema are therefore requirements.**
+
+What is **not** supported: `ADR-0101` contains no sentence requiring that **backlog completeness be
+mechanically gated**. `.claude/rules/certification.md`'s *"a gate that cannot fail is not evidence"* is a
+rule about **gates** - it constrains gates that exist, and says nothing about which obligations must be
+gated. Deriving a mandatory completeness gate from it would be manufacturing a requirement from a
+general principle, and this paper does not do so.
+
+**Whether backlog completeness is enforced by a gate at all is therefore an open design question**,
+carried to section 10 as **Q-F**. If the owner decides it should be, the candidate forms are:
 
 | Option | Design | Notes |
 |---|---|---|
@@ -277,35 +346,43 @@ What is **not** derivable is its **form**:
 | **6-B. A new `check_remediation_backlog.py`** | Separable, independently negative-controllable | A fifth governance gate to wire and maintain |
 | **6-C. Fold it into `C3`** | Fewest moving parts | Couples backlog completeness to scope coverage; a `C3` failure would then have two unrelated causes |
 
-**Negative-control implication, common to all three:** each changes what a gate can reject, so each
-requires its own committed negative control proving it rejects a real violation -
+**Negative-control implication, if any gate is built:** each of the three changes what a gate can
+reject, so each would require its own committed negative control proving it rejects a real violation -
 `ADR-0101` s7 and `.claude/rules/certification.md`. CI already has four such controls (`ci.yml` L140,
-L397, L421, L550) to model on.
+L397, L421, L550) to model on. **This applies to a gate that is built; it is not an argument that one
+must be.**
 
 ### 8.6 Question 7 - representing the existing corpus without grandfathering
 
-**Largely derivable from `ADR-0092` and the measured split in section 2.** The 4 FROZEN_EVIDENCE
-artifacts have no runner, carry no `scope`, and are expressly excluded from live-state enforcement and
-from modification. **The obligation universe is the 22 runner-regenerated, scope-bearing artifacts.**
-Stating that is a reading of existing authority, not a new grandfathering decision - and it should be
-recorded explicitly so that "26" is not repeated as the universe.
+**Not derivable.** This question cannot be answered before **Q-E** (section 2.2) settles which universe
+`ADR-0101` s4 governs. v1.0.0 answered it by asserting U3 = 22; that assertion is withdrawn.
 
-The genuinely open part is **how the 22 enter compliance**:
+What survives unchanged is the measured position: **26** files, **4** named in `FROZEN_EVIDENCE`, **22**
+scope-bearing and runner-regenerated, **0** carrying an enumeration, `exercises` or `scope_not_gated`.
+
+The migration options below are written for "the artifacts in the obligation universe", whichever Q-E
+determines that to be. **Under U3 = 26 they additionally require a way for the four frozen artifacts to
+be represented** - and since three have no runner and the fourth may not be modified per `ADR-0092`,
+**the backlog is the only mechanism available to them**, which is a point in favour of the U3 = 26 or
+mixed readings rather than against them.
+
+The open part is **how the obligation universe enters compliance**:
 
 | Option | Design | Migration implication |
 |---|---|---|
-| **7-A. Backlog-first** - land the backlog with all 22 enumerated as non-compliant, then remediate | Satisfies s4's "no silent grandfathering" from day one; nothing is hidden | The backlog is 22 entries long on day one and shrinks |
+| **7-A. Backlog-first** - land the backlog with every artifact in the universe enumerated as non-compliant, then remediate | Satisfies s4's "no silent grandfathering" from day one; nothing is hidden | The backlog is 22 entries long on day one and shrinks |
 | **7-B. Gate-first with the backlog as the escape hatch** | `C3` lands and every artifact either complies or is in the backlog | Requires backlog and gate to land together, a larger single step |
 | **7-C. Per-artifact, one regeneration at a time** | Smallest steps, each independently reviewable | Longest period in which the obligation is in force and partially unenforced |
 
-**All three regenerate artifacts.** On this Windows host the oracle-tier certifiers cannot run, so any
+**All three regenerate artifacts** for the runner-regenerated members of the universe. On this Windows host the oracle-tier certifiers cannot run, so any
 regeneration touching them must be **CI-sourced**, captured with an explicit per-tier file list - the
 pattern `ADR-0096`'s recovery commit established after the D20 copy-order defect.
 
 ### 8.7 Question 8 - where the three `TRANSIT_V1` overclaims sit
 
-**Structurally derivable; substantively blocked on `DP-040`.** Under any option above, the three become
-backlog entries under artifact `transit` (its existing `_slug`), each with its own deficiency and its
+**Structurally derivable; substantively blocked on `DP-040`.** `TRANSIT_V1` is scope-bearing and
+runner-regenerated, so it sits inside the obligation universe under **every** reading of **Q-E**. Under
+any backlog location in 8.4 the three become entries under artifact `transit` (its existing `_slug`), each with its own deficiency and its
 own `required_remediation`. `DP-040` established that the required remediation **differs per callable
 within that one artifact**, which is direct evidence for keying the backlog at **capability**
 granularity rather than artifact granularity, and against option 3-A's grouping if
@@ -347,7 +424,7 @@ naturally sit alongside the existing four.
 
 ## 10. What genuinely requires CEO adjudication
 
-**Four items. None is derivable from repository authority.**
+**Six items. None is derivable from repository authority.**
 
 - **Q-A. Identifier granularity and grammar** (questions 2 and 3 together). Code-anchored dotted import
   paths, capability slugs, artifact-scoped slugs, or a registered ID family - and whether a capability
@@ -356,34 +433,61 @@ naturally sit alongside the existing four.
   `ENGINE_CAPABILITY_INVENTORY` is capability-anchored), and `ADR-0092` blocks the latter from being
   authority.
 - **Q-B. Backlog location** (question 4): a committed register, a per-artifact certifier-written key,
-  or a governed Markdown block. The trade is **corpus-wide visibility versus immunity from drift**, and
-  the 4 frozen artifacts cannot be represented under 4-B at all.
+  or a governed Markdown block. The trade is **corpus-wide visibility versus immunity from drift**. If
+  **Q-E** puts the four frozen artifacts inside the obligation universe, note that **4-B cannot
+  represent them at all** - three have no runner to write the key and `ADR-0092` forbids modifying the
+  fourth.
 - **Q-C. `owner` semantics** (question 5). **Hard-blocked on `Q1`**, which is OPEN. Either `Q1` is
   resolved first, or the owner directs that `owner` be recorded with a placeholder vocabulary and
   states which - it should not be invented.
 - **Q-D. Migration sequence** (question 7): backlog-first, gate-first, or per-artifact. This decides
-  how long the ratified obligation stays in force while partially unenforced.
+  how long the ratified obligation stays in force while partially unenforced. **Depends on Q-E**,
+  since it cannot be sequenced over an unknown universe.
+- **Q-E. The `ADR-0101` obligation universe** (section 2.2), raised by the CEO audit of PR #28 and
+  **not present in v1.0.0**, which asserted an answer instead. Does `ADR-0101` s4's "universally to
+  the certification corpus" mean **26**, **22**, or **26 for s4 with 22 for s2/s3**? `ADR-0101` s4
+  says *universally* and measures the corpus at **26**; `ADR-0092` exempts **one** file from **one**
+  enforcement surface that is not `ADR-0101`'s; and three of the four frozen files rest on a code
+  comment rather than any ratified decision. **Resolving this may require an interpretation of
+  `ADR-0101`, an extension of `ADR-0092`, or a new entry** - which is an owner decision, not a
+  builder reading. **Q-D, question 7 and the practical shape of Q-B all wait on it.**
+- **Q-F. Whether backlog completeness is mechanically gated** (section 8.5), also raised by the CEO
+  audit and **not present in v1.0.0**, which called the gate's existence derivable. `ADR-0101` s4
+  requires the backlog to exist and names its fields; **no ratified text requires that its
+  completeness be gated.** If the owner wants one, forms 6-A, 6-B and 6-C are set out above; if not,
+  the backlog is a declared record maintained without mechanical enforcement, which is what s4
+  literally requires.
 
 Secondary, and only if the owner wants it settled now rather than at implementation: the **status
-vocabulary** (8.4) and the **gate form** (8.5), both of which have defensible precedent either way.
+vocabulary** (8.4), and - **if** Q-F is answered yes - the **gate form** (8.5). Both have defensible
+precedent either way.
 
 ## 11. What does NOT require CEO adjudication
 
 These follow from ratified authority or existing mechanical precedent and can be settled by
 implementation precedent when the work is authorized:
 
-1. **"Artifact identity" needs no new convention** - `_slug` exists on all 22, machine-generated at
-   `certification_support.py` L477-L478.
-2. **The obligation universe is 22, not 26** - `ADR-0092` plus the measured FROZEN_EVIDENCE set. The
-   four frozen artifacts carry no `scope`, have no runner, and may not be modified.
+1. **"Artifact identity" needs no new convention for the 22 that carry one** - `_slug` is
+   machine-generated at `certification_support.py` L477-L478. The four `FROZEN_EVIDENCE` files carry
+   no `_slug`, so if **Q-E** places them in the universe their identity field needs one decision, most
+   obviously the filename.
+2. **The measured corpus facts are settled and are not in question** - **26** files, **4** named in
+   `FROZEN_EVIDENCE`, **22** scope-bearing and runner-regenerated, **0** carrying an enumeration,
+   `exercises` or `scope_not_gated`. *(v1.0.0 listed here a claim that the obligation universe is 22
+   rather than 26. **That claim is withdrawn** and is now **Q-E** in section 10. The measurement
+   stands; the mapping from it to `ADR-0101`'s universe does not.)*
 3. **The enumeration lives in the artifact, not in `ENGINE_STATUS.md`** - `ADR-0101` s2 says artifacts
    enumerate.
 4. **The enumeration is certifier-written, never hand-edited** - `.claude/rules/certification.md`.
 5. **`exercises` is the fixed key name for the per-gate declaration** - `ADR-0101` s3.
-6. **Backlog completeness requires a gate** - `.claude/rules/certification.md` plus `ADR-0101` s4's
-   no-silent-grandfathering rule. Only its *form* is open.
-7. **Every new or extended gate requires its own committed negative control** - `ADR-0101` s7 and
-   `.claude/rules/certification.md`; four CI precedents exist.
+6. **The backlog must exist and must carry `ADR-0101` s4's five named fields** - stated in s4's own
+   text. *(v1.0.0 listed here a claim that backlog completeness requires a gate, derived from "a gate
+   that cannot fail is not evidence". **That claim is withdrawn**: that rule constrains gates that
+   exist and does not make any obligation gateable-by-necessity. Whether completeness is enforced by
+   a gate is now **Q-F** in section 10.)*
+7. **Every new or extended gate that is built requires its own committed negative control** -
+   `ADR-0101` s7 and `.claude/rules/certification.md`; four CI precedents exist. This constrains gates
+   that are built; it does not require that any be built.
 8. **Artifact regeneration touching oracle-tier certifiers must be CI-sourced** with an explicit
    per-tier file list - the `ADR-0096` recovery pattern, on the documented Windows parity gap.
 9. **The three `TRANSIT_V1` overclaims can be recorded as `OPEN` backlog entries without prejudging
@@ -401,9 +505,12 @@ same omission should not be repeated.
 
 ## 12. What this paper does not do
 
-It decides nothing and selects no option. It does not modify `engine/`, `certification/`, `scripts/`,
-`.github/`, `docs/ENGINE_STATUS.md`, `docs/Q8_CLOSURE_MATRIX.md`, `docs/OPEN_QUESTIONS.md`, any
-existing `ADR` body, `DP-039` or `DP-040`. It does not implement `C2`, `C3`, `C4` or `C5`. It does not
+It decides nothing and selects no option. **It does not resolve `Q-E` or `Q-F`**, the two questions
+the CEO audit of PR #28 restored to unresolved; it neither interprets `ADR-0101` s4's universe nor
+extends `ADR-0092` beyond the single file it names. It does not modify `engine/`, `certification/`,
+`scripts/`, `.github/`, `docs/ENGINE_STATUS.md`, `docs/Q8_CLOSURE_MATRIX.md`,
+`docs/OPEN_QUESTIONS.md`, `docs/DECISION_LOG.md`, `docs/VALIDATION_STANDARD.md`, any existing `ADR`
+body, `DP-039` or `DP-040`. It does not implement `C2`, `C3`, `C4` or `C5`. It does not
 create any capability enumeration, `exercises` array, `scope_not_gated` array or remediation backlog.
 It does not dispose of the three `TRANSIT_V1` SCOPE OVERCLAIMS, which remain open. It does not resolve
 `N1`, `N2`, `N5`, `N6` or `N7`, nor `Q1` or `Q12`. It does not declare, perform or recommend JATAKA
@@ -415,4 +522,5 @@ phase exit, which **remains on HOLD**.
 
 | Version | Date | Change |
 |---|---|---|
+| 1.1.0 | 2026-09-24 | **Corrections required by the CEO audit of PR #28, which returned HOLD.** **Material:** v1.0.0 stated that the `ADR-0101` obligation universe is 22 artifacts rather than 26 and presented that as derived from ratified authority. **That conclusion is withdrawn.** It conflated three universes, now distinguished in a new section 2.1: the measured corpus (26), `check_capability_state.py`'s live-source universe (22, set by that script's own `FROZEN_EVIDENCE` constant at one call site, L199), and `ADR-0101`'s obligation universe, which **no ratified text establishes**. `ADR-0101` s4 L9145 says the requirements apply *"universally to the certification corpus"* and L9159-L9163 measures that corpus at 26; `ADR-0092` exempts **one** file from **one** enforcement surface - use as a live-state authority by the capability-consistency gate - which is not `ADR-0101`'s surface; and `ORACLE_ENVIRONMENT.json`, `G6_REMOTE_CI_VALIDATION.json` and `CURRENT_ENGINE_LOCK.json` are frozen on a builder's shape-based inference recorded in a code comment at `check_capability_state.py` L81-L83, backed by **no** `ADR`. The question is restored as unresolved **Q-E**, with three live readings and a note that resolving it may require an interpretation of `ADR-0101`, an extension of `ADR-0092`, or a new entry - an owner decision. Section 8.6 no longer answers question 7 and now waits on Q-E. **Secondary:** v1.0.0 listed "backlog completeness requires a gate" as not requiring adjudication, deriving it from *"a gate that cannot fail is not evidence"*. **That is withdrawn too**: `ADR-0101` s4 requires the backlog to exist and names its fields but contains no sentence requiring mechanical enforcement of its completeness, and that rule constrains gates that exist rather than making an obligation gateable-by-necessity. Backlog existence and schema remain derived; enforcement becomes unresolved **Q-F**, with candidate forms 6-A/6-B/6-C retained. Also corrected, per audit item E: the introduction pointed at "section 9" for the derived-versus-adjudicated split, which lives in sections 10 and 11; section 1's `ADR-0092` row now states the exemption's exact scope; section 10's count goes four to six; section 11 items 1, 2, 6 and 7 are re-scoped, with the two withdrawals marked in place rather than deleted. The measured corpus facts are unchanged throughout. Still decides nothing, selects no option, authorizes no `C2`-`C5` work, creates no enumeration, `exercises` array, `scope_not_gated` or backlog, disposes of none of the three `TRANSIT_V1` scope overclaims, and declares no phase exit. |
 | 1.0.0 | 2026-09-23 | Created under the owner's "CONTINUE AUTONOMOUSLY" instruction after `DP-040` merged at `8ebf71bb`. Researches `ADR-0101` s6's eight unresolved specification questions against existing repository precedent rather than inventing a design. Records five precedents: `_slug`/`_artifact_name` as mechanically-generated artifact identity on 22 artifacts; `technical_debt` in `G6_REMOTE_CI_VALIDATION.json` as an existing machine-readable backlog with an eight-field schema and an `evidence_classes` vocabulary; `ENGINE_CAPABILITY_INVENTORY.json`'s 91-entry hierarchical capability vocabulary, which `ADR-0092` forbids using as live authority and whose `transits.returns_and_natal_conjunctions` entry would collapse two callables `DP-040` showed need different dispositions; the `CAPABILITY-BLOCK` plus `check_capability_state.py` F1-F14 gate as the live sanctioned source; and `declaration_registry`/`function_registry`/`explicit_non_claims`. Establishes from `ADR-0092` and the measured `FROZEN_EVIDENCE` set that the obligation universe is **22 artifacts, not 26**. Presents candidate designs for each question with advantages, disadvantages, migration, negative-control and CI implications, and **selects none**. Separates four items genuinely requiring CEO adjudication - identifier granularity and grammar, backlog location, `owner` semantics (hard-blocked on `Q1`), migration sequence - from ten that follow from existing authority. Reports that the `TD-CI-\d{3}` family is in use but unregistered in `NAMING_STANDARD.md` s2. Decides nothing; authorizes no implementation; declares no phase exit. |
