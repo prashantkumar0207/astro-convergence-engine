@@ -9283,13 +9283,16 @@ on HOLD.**
 ## ADR-0102 - `Q-E` resolved: `ADR-0101`'s cardinality contradiction interpreted as two distinct normative universes - a 26-file certification corpus for s4 remediation, a 22-artifact scope-bearing subset for s2/s3 artifact content - with a terminal disposition required for every s4 entry (PROPOSED - drafted for CEO review, not ratified)
 
 - **Date:** 2026-09-29
-- **Status:** **PROPOSED. NOT RATIFIED.** Drafted on the owner's "CEO ADJUDICATION - Q-E IS NOW
-  RESOLVED" instruction, which selected **E-3, the mixed universe**, from `DP-042` and directed that a
-  new append-only entry record the interpretation because `ADR-0101` may not be edited. This entry
-  becomes authoritative only on a ratifying instruction recorded in a sub-entry beneath it, following
-  the `ADR-0068` / `ADR-0074` / `ADR-0095` / `ADR-0099` / `ADR-0100` / `ADR-0101` drafted-then-ratified
-  precedent. **Nothing in this entry is in force while it reads PROPOSED, and it authorizes no
-  implementation.**
+- **Status:** **ACCEPTED, on the owner's ratifying instruction recorded in the "Ratification of
+  ADR-0102" sub-entry immediately below this entry's own text.** Originally drafted
+  `PROPOSED. NOT RATIFIED.` on the owner's "CEO ADJUDICATION - Q-E IS NOW RESOLVED" instruction, which
+  selected **E-3, the mixed universe**, from `DP-042` and directed that a new append-only entry record
+  the interpretation because `ADR-0101` may not be edited, following the `ADR-0068` / `ADR-0074` /
+  `ADR-0095` / `ADR-0099` / `ADR-0100` / `ADR-0101` drafted-then-ratified precedent. Per this
+  repository's own "change only the status" discipline, this Status line is the only text in this entry
+  that the ratification altered; sections 1 to 7, the Context, the Consequences and the Evidence are
+  byte-for-byte as drafted. **Ratification closes `Q-E` and authorizes no implementation: `C2`-`C5`
+  remain unauthorized, and all work downstream of `Q-E` remains separately gated.**
 - **Context:** `ADR-0101` (ACCEPTED) s2 and s3 impose obligations on certification artifacts: each must
   enumerate its production capabilities with stable machine-readable identifiers, and each of its gates
   must declare an `exercises` array. s4 applies those obligations "universally to the certification
@@ -9434,6 +9437,73 @@ JATAKA phase exit, which remains on HOLD.**
   `.claude/rules/governance.md` L23. Corpus measured at `5509d40b`: 26 files, 22 scope-bearing with a
   CI-run certifier, 4 `FROZEN_EVIDENCE` with none. Repository state at drafting: branch
   `adr-0102-qe-obligation-universe`, parent `5509d40be5dc916225a9144753df9faf5fba7087`.
+
+#### Ratification of ADR-0102: Q-E CLOSED - THE TWO NORMATIVE UNIVERSES AND THE TERMINAL-DISPOSITION REQUIREMENT RATIFIED (2026-10-06)
+
+- **Status:** ACCEPTED. The owner instructed: "CEO AUDIT RESULT: PASS... **ADR-0102 RATIFICATION is
+  separately authorized by the CEO: ADR-0102 is to become ACCEPTED/RATIFIED. Preserve its six-section
+  normative content exactly. Do NOT reinterpret, weaken, expand, or rewrite Q-E. Do NOT modify
+  ADR-0101. Do NOT modify ADR-0092 or ADR-0094. Do NOT create backlog entries, scope_not_gated,
+  exercises, C2-C5, or any implementation. Do NOT select any DP-040 option.**... Do not treat ADR-0102
+  ratification as authorization for any implementation downstream of Q-E. Q-E is resolved only at the
+  governance level. All downstream work remains separately gated." Per
+  `docs/PROJECT_CONSTITUTION.md` s11, that instruction is the ratifying act.
+- **Decision:** `ADR-0102` above - its full Context, sections 1 to 7, Consequences and Evidence - is
+  **ratified exactly as drafted, with no wording changed**, confirmed by direct diff and by hash before
+  committing. **`ADR-0102` is now ACCEPTED, and `Q-E` is CLOSED.** Its six normative sections are in
+  force as drafted:
+  - **s1.** The **26-file certification corpus**; all 26 are and remain members, and that is the
+    universe of `ADR-0101` s4's remediation obligation.
+  - **s2.** `ADR-0101` s2 and s3's artifact-content requirements apply to the **22 scope-bearing
+    artifacts**, enumerated by filename in that section.
+  - **s3.** The **four `FROZEN_EVIDENCE` artifacts** - `CURRENT_ENGINE_LOCK.json`,
+    `ENGINE_CAPABILITY_INVENTORY.json`, `G6_REMOTE_CI_VALIDATION.json`, `ORACLE_ENVIRONMENT.json` -
+    **remain members of the 26-file corpus** and sit inside s4's remediation universe; `ADR-0101` s2
+    and s3 do not apply to them.
+  - **s4.** **22 and 26 are not competing measurements of one set.** They are different normative
+    universes serving different provisions: `ADR-0101` s2/s3 govern what an artifact must **contain**,
+    `ADR-0101` s4 governs remediation membership, and `scripts/check_capability_state.py`'s
+    `FROZEN_EVIDENCE` governs what that gate may **read as live authority** - the first two normative
+    universes, the third an enforcement surface.
+  - **s5.** **`ADR-0094`'s authority is preserved exactly and is neither broadened nor reinterpreted.**
+    It establishes the frozen/live-source enforcement boundary for
+    `scripts/check_capability_state.py`; it does **not** redefine `ADR-0101`'s certification corpus and
+    does **not** amend `ADR-0101`. `ADR-0092`'s classification of
+    `ENGINE_CAPABILITY_INVENTORY.json`, including its prohibition on modifying that file, is likewise
+    unchanged and unextended.
+  - **s6.** **Every one of the 26 corpus members must have an explicit terminal disposition** in the s4
+    remediation record. The four frozen artifacts **must not** be treated as holding an indefinite or
+    permanent grandfathered exemption merely because they fall outside the 22. Their disposition may
+    record that `ADR-0101` s2/s3 do not apply and may reference `ADR-0094`'s boundary, but **must be
+    terminal and auditable**, and **no indefinite status may be introduced** - not "grandfathered", not
+    "deferred", not "deferred forever", nor any equivalent under another name.
+- **The cardinality contradiction is interpreted, not erased.** `ADR-0101` states two cardinalities for
+  its own scope in ratified text - L9145 and L9162 implying 26, L9189 and L9216 implying 22.
+  `.claude/rules/governance.md` L23 forbids editing a recorded entry, so `ADR-0101`'s text stands
+  unaltered and `ADR-0102` carries the interpretation in a separate record. **`ADR-0101` is not edited
+  by this ratification**, nor are `ADR-0092` and `ADR-0094`.
+- **This ratification authorizes no implementation.** `Q-E` is resolved **at the governance level
+  only**, and all work downstream of it **remains separately gated**. `C2`, `C3`, `C4` and `C5` remain
+  **unauthorized** under `ADR-0099` s7's own terms. Nothing was built: **no remediation backlog entry,
+  no capability enumeration, no `exercises` array and no `scope_not_gated` array was created**, and no
+  gate was written. Measured at ratification and unchanged from `52e9f583`: 26 certification artifacts,
+  22 scope-bearing with a CI-run certifier, 4 `FROZEN_EVIDENCE` with none, **0** capability
+  enumerations, **0** `exercises` arrays, **0** `scope_not_gated` arrays, and no backlog file. No
+  certification artifact, gate schema, registry, production code, test, CI job or holdout datum was
+  changed.
+- **What remains open, unchanged by this ratification.** **No `DP-040` option is selected**, and the
+  three `TRANSIT_V1` SCOPE OVERCLAIMS - `returns()`, `natal_conjunctions()`, `transit_view()` - remain
+  open and undisposed. `DP-041`'s **`Q-A`**, **`Q-B`**, **`Q-C`**, **`Q-D`** and **`Q-F`** remain open;
+  only `Q-E` is closed. `N1`, `N2`, `N5`, `N6`, `N7`, `Q1` and `Q12` remain open. **JATAKA phase exit
+  is neither declared nor performed and remains on HOLD**: no JATAKA completion report exists and no
+  JATAKA exit `ADR` exists.
+- **Evidence:** the owner's ratifying instruction, quoted above; the owner's "CEO ADJUDICATION - Q-E IS
+  NOW RESOLVED" instruction selecting Reading E-3; `docs/decisions/DP-042-qe-adr-0101-obligation-universe.md` v1.0.0, the evidence and decision basis, merged in PR #30 at
+  `5509d40be5dc916225a9144753df9faf5fba7087`; `ADR-0102` itself, merged in PR #31 at
+  `52e9f583e24b0463083da90921e667e6b3c115bc`, unchanged and hash-verified; `ADR-0101` s2, s3, s4, s6
+  and its Consequences; `ADR-0092` s1-s2; `ADR-0094` s4; `.claude/rules/governance.md` L23; the
+  six-commit single-file ratification precedent (`61b01b1`, `b4c4cf6`, `3de942c`, `d3581ea`,
+  `adb1e57`, `50c9d4c`), each of which touched `docs/DECISION_LOG.md` and nothing else.
 
 ---
 
