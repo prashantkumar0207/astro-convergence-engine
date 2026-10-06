@@ -9280,6 +9280,163 @@ on HOLD.**
 
 ---
 
+## ADR-0102 - `Q-E` resolved: `ADR-0101`'s cardinality contradiction interpreted as two distinct normative universes - a 26-file certification corpus for s4 remediation, a 22-artifact scope-bearing subset for s2/s3 artifact content - with a terminal disposition required for every s4 entry (PROPOSED - drafted for CEO review, not ratified)
+
+- **Date:** 2026-09-29
+- **Status:** **PROPOSED. NOT RATIFIED.** Drafted on the owner's "CEO ADJUDICATION - Q-E IS NOW
+  RESOLVED" instruction, which selected **E-3, the mixed universe**, from `DP-042` and directed that a
+  new append-only entry record the interpretation because `ADR-0101` may not be edited. This entry
+  becomes authoritative only on a ratifying instruction recorded in a sub-entry beneath it, following
+  the `ADR-0068` / `ADR-0074` / `ADR-0095` / `ADR-0099` / `ADR-0100` / `ADR-0101` drafted-then-ratified
+  precedent. **Nothing in this entry is in force while it reads PROPOSED, and it authorizes no
+  implementation.**
+- **Context:** `ADR-0101` (ACCEPTED) s2 and s3 impose obligations on certification artifacts: each must
+  enumerate its production capabilities with stable machine-readable identifiers, and each of its gates
+  must declare an `exercises` array. s4 applies those obligations "universally to the certification
+  corpus" and requires a declared remediation backlog for artifacts that do not yet satisfy them.
+
+  **`ADR-0101` states two different cardinalities for its own scope, in ratified text, and this entry
+  does not pretend otherwise.** `DP-042` (v1.0.0, OPEN) established the contradiction from source:
+
+  | Location | Ratified text | Implies |
+  |---|---|---|
+  | L9145 | "The requirements in sections 2 and 3 apply **universally to the certification corpus.**" | 26 |
+  | L9162 | "The **corpus** uses **26 distinct `schema` values**, one per artifact" | 26 |
+  | L9189 | "The **remediation sequence** across the **22 scope-bearing artifacts**, and who owns each entry." | 22 |
+  | L9216 | "the **22 scope-bearing artifacts** are unchanged and uncompliant on the day of ratification" | 22 |
+
+  All four sentences are inside the same ACCEPTED entry. `.claude/rules/governance.md` L23 forbids
+  editing a recorded decision entry to change its substance, so the contradiction cannot be removed at
+  source; it can only be interpreted in a separate record. That is what this entry does.
+
+  `DP-042` also measured the structural fact that makes the interpretation coherent rather than
+  arbitrary: of the 26 files in `certification/*.json`, **all 22 non-frozen artifacts are written by a
+  certifier registered in `CERTIFIER_SOURCES` and executed by `.github/workflows/ci.yml`, and all 4
+  `FROZEN_EVIDENCE` artifacts are written by none.** Those same four are exactly the four carrying no
+  `scope`, and exactly the four named in `ADR-0094` s4. The three sets coincide.
+
+  The owner adjudicated `Q-E` by selecting `DP-042`'s Reading **E-3**. This entry records that
+  selection and its stated consequences, and nothing else.
+
+### 1. The 26-file certification corpus
+
+The **certification corpus** is the 26 files in `certification/*.json`, measured at
+`5509d40be5dc916225a9144753df9faf5fba7087`. **All 26 are and remain members of the corpus.** This is
+the universe of `ADR-0101` s4's remediation obligation.
+
+### 2. The 22-artifact scope-bearing subset
+
+`ADR-0101` **s2 and s3's artifact-content requirements apply to the 22 scope-bearing artifacts**:
+
+```
+current_engine_certification.json        KP_CHAIN_V1_certification.json
+KP_SIGNIFICATOR_V1_certification.json    PANCHANGA_V1_certification.json
+PARASHARI_DRISHTI_V1_certification.json  PARASHARI_YOGA_V1_certification.json
+RISE_SET_V1_certification.json           SIGN_CONVENTION_V1_certification.json
+TRANSIT_V1_certification.json            TRIKALAM_V1_certification.json
+VARGA_D2_V1_certification.json           VARGA_D3_V1_certification.json
+VARGA_D4_V1_certification.json           VARGA_D7_V1_certification.json
+VARGA_D12_V1_certification.json          VARGA_D16_V1_certification.json
+VARGA_D20_V1_certification.json          VARGA_D24_V1_certification.json
+VARGA_D30_V1_certification.json          VARGA_D40_V1_certification.json
+VARGA_D45_V1_certification.json          VIMSHOTTARI_V1_certification.json
+```
+
+### 3. The four `FROZEN_EVIDENCE` artifacts
+
+```
+CURRENT_ENGINE_LOCK.json                 ENGINE_CAPABILITY_INVENTORY.json
+G6_REMOTE_CI_VALIDATION.json             ORACLE_ENVIRONMENT.json
+```
+
+**They remain members of the 26-file certification corpus** and are therefore inside s4's remediation
+universe. `ADR-0101` s2 and s3's artifact-content requirements **do not apply to them**.
+
+### 4. Three provisions, three surfaces, distinguished
+
+**22 and 26 are not competing measurements of one set. They are different normative universes serving
+different provisions.**
+
+| Provision | Universe | What it governs |
+|---|---|---|
+| `ADR-0101` **s2/s3** | the **22** scope-bearing artifacts | What an artifact must **contain**: a capability enumeration, and an `exercises` array on each gate |
+| `ADR-0101` **s4** | the **26**-file certification corpus | Remediation and backlog membership: every corpus member must have an explicit terminal disposition |
+| `scripts/check_capability_state.py` | the **22**, by its own `FROZEN_EVIDENCE` constant | Which artifacts that gate may **read as live authority** - an enforcement surface, not a normative universe |
+
+The distinction that dissolves the apparent conflict: `ADR-0092` and `ADR-0094` s4 govern **reading**
+an artifact as authority. `ADR-0101` s2/s3 govern what an artifact must **contain**. The two are
+different directions, and neither implies the other.
+
+### 5. `ADR-0094`'s authority, preserved and not broadened
+
+`ADR-0094` s4 (ACCEPTED, L7821-L7827) names all four `FROZEN_EVIDENCE` artifacts and establishes the
+frozen/live-source enforcement boundary for `scripts/check_capability_state.py`, protected by four
+committed controls in `engine/tests/test_capability_state_gate.py`.
+
+**That authority is preserved exactly as it stands. This entry does not broaden it, narrow it, or
+reinterpret it.** In particular, `ADR-0094` s4 **does not redefine `ADR-0101`'s certification corpus
+and does not amend `ADR-0101`**; it is cited here as evidence of which artifacts are frozen, not as the
+source of the s2/s3 boundary. The s2/s3 boundary is established by this entry, on the owner's
+adjudication.
+
+`ADR-0092`'s classification of `ENGINE_CAPABILITY_INVENTORY.json`, including its prohibition on
+modifying that file, is likewise unchanged and unextended.
+
+### 6. Terminal disposition required for every s4 remediation entry
+
+**Every one of the 26 corpus members must have an explicit terminal disposition in the s4 remediation
+record.**
+
+- **The four frozen artifacts must NOT be treated as holding an indefinite or permanent grandfathered
+  exemption** merely because they fall outside the 22. `ADR-0101` s4 L9147-L9148 forbids silent
+  grandfathering and forbids permanent grandfathering, and this entry does not create an exception to
+  either.
+- Their terminal disposition **may** record that `ADR-0101` s2/s3's scope-bearing requirements do not
+  apply to them, and **may** reference `ADR-0094`'s frozen/live-source boundary as supporting evidence.
+- The disposition itself **must be terminal and auditable**.
+- **No indefinite status may be introduced** - not "grandfathered", not "deferred", not "deferred
+  forever", and not any equivalent formulation under another name.
+
+### 7. What this entry does NOT do
+
+**It authorizes no implementation.** `C2`, `C3`, `C4` and `C5` remain **unauthorized** under `ADR-0099`
+s7's own terms. It does not create the capability enumeration, any `exercises` array, any
+`scope_not_gated` array, the remediation backlog, or any gate. It selects **no** `DP-040` disposition,
+and the three `TRANSIT_V1` SCOPE OVERCLAIMS - `returns()`, `natal_conjunctions()`, `transit_view()` -
+remain open and undisposed.
+
+It does not edit `ADR-0092`, `ADR-0094`, `ADR-0099`, `ADR-0100` or `ADR-0101`, and creates no
+permission to edit any recorded decision entry. It does not amend `docs/Q8_CLOSURE_MATRIX.md`,
+`docs/VALIDATION_STANDARD.md`, `docs/ENGINE_STATUS.md` or `docs/OPEN_QUESTIONS.md`. It changes no
+production code, test, CI job, registry, certification artifact or holdout datum, and regenerates
+nothing.
+
+It resolves **`Q-E` only**. `DP-041`'s `Q-A`, `Q-B`, `Q-C`, `Q-D` and `Q-F` are untouched and remain
+open, as do `N1`, `N2`, `N5`, `N6`, `N7`, `Q1` and `Q12`. **It does not declare, perform or recommend
+JATAKA phase exit, which remains on HOLD.**
+
+- **Consequences, if ratified:** `Q-E` is **CLOSED**. `ADR-0101`'s internal cardinality contradiction
+  has a recorded interpretation, reached without editing the entry. `C3`'s iteration set becomes
+  determinate - the 22 - once `Q-A` fixes its identifier grammar, which this entry does not. `DP-041`
+  question 7 and `Q-D` become answerable, and `Q-B`'s practical shape is settled to the extent that
+  option 4-B, a per-artifact certifier-written key, **cannot** serve the four frozen artifacts, which
+  have no runner and, for one of them, a standing prohibition on modification. **Nothing becomes
+  authorized:** `C2`-`C5` still need their own decisions, their own committed negative controls and
+  their own artifact regeneration, and on the day of ratification the corpus still carries **0**
+  capability enumerations, **0** `exercises` arrays, **0** `scope_not_gated` arrays and no backlog.
+- **Evidence:** the owner's "CEO ADJUDICATION - Q-E IS NOW RESOLVED" instruction, selecting `DP-042`
+  Reading E-3; `docs/decisions/DP-042-qe-adr-0101-obligation-universe.md` v1.0.0, the evidence and
+  decision basis, merged to `main` in PR #30 at `5509d40be5dc916225a9144753df9faf5fba7087`;
+  `ADR-0101` s2 (L9107-L9108), s3 (L9124-L9125), s4 (L9145, L9147-L9148, L9159-L9163), s6 (L9189) and
+  its Consequences (L9216); `ADR-0092` s1-s2 (L7551-L7584) and its modification prohibition;
+  `ADR-0094` s4 (L7821-L7827); `scripts/check_capability_state.py` L81-L89 and its single use at L199;
+  `engine/tests/test_capability_state_gate.py` L248, L254, L270-L278, L296;
+  `.claude/rules/governance.md` L23. Corpus measured at `5509d40b`: 26 files, 22 scope-bearing with a
+  CI-run certifier, 4 `FROZEN_EVIDENCE` with none. Repository state at drafting: branch
+  `adr-0102-qe-obligation-universe`, parent `5509d40be5dc916225a9144753df9faf5fba7087`.
+
+---
+
 ## ADR template (copy, do not edit above the line)
 
 ## ADR-XXXX - <title>
