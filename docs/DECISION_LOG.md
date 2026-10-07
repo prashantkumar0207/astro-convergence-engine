@@ -9507,6 +9507,403 @@ JATAKA phase exit, which remains on HOLD.**
 
 ---
 
+## ADR-0103 - `Q-A` resolved: capability identifiers are two-segment dotted capability slugs (2-B) with a two-level capability/member structure and member-level dispositions (3-C); member identity is the fully-qualified dotted import path (PROPOSED - drafted for CEO review, not ratified)
+
+- **Date:** 2026-10-06
+- **Status:** **PROPOSED. NOT RATIFIED.** Drafted on the owner's "CEO authorization - Q-A ADR only"
+  instruction, which approved **Q-A(i) grammar 2-B, the dotted capability slug** and **Q-A(ii)
+  granularity 3-C, the two-level capability with member callables and member-level dispositions**, and
+  directed that the normative semantics be defined precisely rather than merely recorded. This entry
+  becomes authoritative only on a ratifying instruction recorded in a sub-entry beneath it, following
+  the `ADR-0095` / `ADR-0099` / `ADR-0100` / `ADR-0101` / `ADR-0102` drafted-then-ratified precedent.
+  **Nothing in this entry is in force while it reads PROPOSED, and it authorizes no implementation.**
+- **Context:** `ADR-0101` s2 (ACCEPTED) requires a certification artifact to enumerate its production
+  capabilities "using stable machine-readable capability identifiers", and `ADR-0101` s6 (L9187-L9188)
+  records as **unresolved** "the **identifier grammar** - whether the dotted form of `function_registry`
+  is adopted verbatim, and how a claim spanning several callables, such as `TRANSIT_V1`'s
+  'natal-relative view', is expressed." `ADR-0102` (ACCEPTED) fixed the obligation universe and left
+  `Q-A` open by name. `DP-041` s8.2 and s8.3 recorded four grammar options and three granularity
+  options; `DP-042` confirmed `Q-A` is independent of `Q-E`. The owner has now selected **2-B** and
+  **3-C**.
+
+  **Three measurements from the `Q-A` evidence phase bear directly on the semantics below**, and are
+  recorded here because the specification answers them:
+
+  1. **Base-name collisions exist in production code.** Of **155** public top-level callables across
+     the 157 non-test `engine/**/*.py` modules - counting rule: a module-level `def` or `async def`
+     whose name does not begin with `_` - three base names are defined in more than one module:
+     `ensure_registered` (**nine** varga modules), `rule_content_sha256` (**three**), and
+     `aspected_signs` (**two**: `engine/kp/significators.py` and `engine/parashari/drishti.py`, two
+     different schools). A bare or short name cannot identify a callable.
+  2. **A module may belong to several artifacts.** Counting direct `engine.<module>` imports in the 22
+     `scripts/certify_*.py` certifiers: `engine/models/birth_data.py` is imported by **16** of them,
+     `engine/astronomy/profile.py` and `engine/calculations/calculations.py` by **13** each, and
+     `engine/astrology/varga_rules.py` by **11**. Identity cannot be scoped by artifact.
+  3. **All 22 existing `_slug` values already conform** to `docs/NAMING_STANDARD.md` s3's registered
+     per-segment slug regex, 22 of 22, longest `parashari_drishti` at 17 characters. The charset below
+     is reused from that precedent, not invented.
+
+  **The two selected options are complementary, and that is why the collisions do not defeat 2-B.**
+  2-B alone would collide - `ensure_registered` appears nine times inside one Python package. 3-C
+  resolves it: `ensure_registered` is not a capability, it is a **member** of nine distinct
+  capabilities, and members are identified by their fully-qualified dotted import path, which is
+  collision-free by construction.
+
+### 1. Exact lexical grammar
+
+A **capability identifier** (hereafter **capability slug**) is a string matching:
+
+```
+^<segment>\.<segment>$
+```
+
+where `<segment>` is, exactly and normatively:
+
+```
+[a-z0-9][a-z0-9_]{0,28}[a-z0-9]
+```
+
+- **Exactly two segments**, separated by a single `.`.
+- Lowercase ASCII only; permitted characters per segment are `a-z`, `0-9` and `_`.
+- Each segment is **2 to 30 characters**, with **no leading or trailing underscore**.
+- No whitespace, no uppercase, no hyphen, no dot inside a segment.
+
+**The 2-to-30 bound, and a discrepancy inside `NAMING_STANDARD.md` s3 that this entry resolves for
+capability slugs without touching the standard.** s3's prose states "2-30 chars", but the regex s3
+prints beside it - `[a-z0-9](?:[a-z0-9_]{0,28}[a-z0-9])?` - makes the trailing group optional and so
+**also matches a single character**. The prose and the regex therefore disagree with each other at
+length 1. **`ADR-0103` adopts s3's prose bound, 2 to 30**, and states above the regex that actually
+enforces it, in which the final character class is mandatory rather than optional. That is the **one
+narrowing** this entry makes to the precedent pattern; the character set, the 28-character interior and
+the no-leading-or-trailing-underscore rule are s3's unchanged. **Nothing existing is excluded by the
+narrowing:** across the 22 `_slug` values the shortest is 7 characters (`kp_chain`, `trikalam`,
+`varga_d2`, `varga_d3`, `varga_d4`, `varga_d7`) and the longest is 17 (`parashari_drishti`), so no
+single-character segment exists anywhere in the corpus. **`docs/NAMING_STANDARD.md` is not modified,
+amended or ratified by this entry**, and the discrepancy is recorded here as an observation about that
+`DRAFT` document for its own owner, not resolved on its behalf.
+
+**Divergence from `NAMING_STANDARD.md` s3 in arity, stated rather than hidden:** s3 defines the
+*question* slug as **exactly three** segments (`domain.topic.aspect`). A capability slug is **two**.
+The character set and the length bound are s3's; the arity is not. s3's three-segment rule is scoped to
+question slugs and is not extended or amended here.
+
+### 2. Segment semantics
+
+- **Segment 1 - domain.** The capability area. A domain segment groups capabilities that belong
+  together as subject matter, independently of Python package layout.
+- **Segment 2 - capability.** The capability within that domain.
+
+**Both segments are singular.** Each segment is an English descriptive noun or underscore-joined noun
+phrase in the **singular**, with no plural form, no abbreviation, no synonym and no marketing term,
+following s3's "singular nouns" rule. A segment may instead be an established production designator
+that is not a noun at all, such as `d20`; the singular rule binds nouns, and a designator carries
+whatever form production already fixed for it.
+
+**This rule is the corpus's actual practice, not an aspiration:** of the 22 existing `_slug` values,
+**none** is plural - `transit`, not `transits`; `rise_set`, `sign_convention`, `vimshottari`,
+`varga_d20`. Zero of 22 end in `s`.
+
+**The singular rule binds capability slugs only, and does not reach member paths.** A member is
+identified by its dotted import path (section 6), which must match the code exactly and therefore
+carries whatever grammatical number the code uses - `returns`, `aspected_signs`. Those are plural, they
+are correct as member paths, and they are **not** capability slug segments.
+
+Illustrative forms, given to fix meaning and **not** to enumerate any artifact's capabilities, which
+this entry does not do:
+
+```
+transit.return                    transit.natal_conjunction
+transit.natal_relative_view       varga_d20.classification
+```
+
+These examples are singular in both segments, consistent with the rule stated above. An **earlier draft
+of this entry carried the plural forms `transits.returns` and `transits.natal_conjunction`, which
+contradicted its own singular rule**; the examples were wrong, the rule was right, and the examples
+were corrected to match it. A later CEO audit found that **section 5 had kept the same obsolete plural
+form after this section was corrected**, and it too was corrected. The two plural strings in the
+previous sentence are **quoted as superseded drafting, not offered as examples**, and are the only
+non-conforming capability slugs anywhere in this entry; every capability slug presented as an example
+is singular in both segments.
+
+**What this entry does not fix:** the **domain vocabulary itself is not closed by this entry.** Domain
+segments are populated by declaration in the artifacts, subject to the uniqueness rule in section 3.
+`certification/ENGINE_CAPABILITY_INVENTORY.json` contains a 14-domain dotted vocabulary of the same
+*shape*, but `ADR-0092` classifies that file as frozen dated historical evidence and forbids its use as
+a live-state authority, so it is cited here as shape precedent only and **is not** the source of any
+domain name. Whether the domain vocabulary should instead be a **pre-registered closed list** is
+recorded as a residual in section 13.
+
+### 3. Uniqueness scope
+
+- A capability slug is **unique repository-wide**, including against **retired** slugs.
+- A capability slug is enumerated by **exactly one** artifact, its **owning artifact**. Two artifacts
+  may not enumerate the same slug.
+- Uniqueness is on the **full two-segment string**. Segment 2 may repeat across different domains;
+  segment 1 may repeat across different capabilities.
+
+Repository-wide rather than artifact-scoped uniqueness follows from Context measurement 2: a module may
+be imported by up to sixteen of the 22 certifiers, so an artifact-scoped namespace would give one object
+several identities. Option **2-C was not selected**, and this rule is why it would not have worked.
+
+### 4. Immutability and retirement
+
+- A capability slug is **immutable once published** in a committed artifact. It is not renamed to track
+  a code refactor, a module move or a documentation change. This is the property 2-B was selected for.
+- A slug is **never reused**, following `docs/NAMING_STANDARD.md` s2's rule "zero-padded, monotone,
+  **immutable, never reused** - all families, no exceptions", and s3's "unique registry-wide **including
+  RETIRED**".
+- **Retirement** is recorded, not deleted: a retired capability's slug remains reserved permanently.
+  The repository already holds the shape of this - `ADR-0004` retired ten identifiers and
+  `scripts/check_retired_identifiers.py` carries them in a `RETIRED` tuple that is searched on every
+  run - but **this entry does not add a capability retirement register and does not modify that
+  script.** The mechanism for recording a retired capability slug is a specification matter for whatever
+  authorization implements the conformance check (section 11).
+
+### 5. Versioning treatment
+
+**A capability slug carries no version token.** `transit.return`, never `transit.return_v1`.
+
+Both segments are singular here, per section 2, and the domain segment `transit` is exactly the
+existing `_slug` value quoted in the next paragraph. This follows the measured behaviour of the
+existing `_slug` convention: `TRANSIT_V1_certification.json`
+carries `_artifact_name: "TRANSIT_V1_certification.json"` and `_slug: "transit"` - the artifact name
+keeps the `_V1` token, the slug drops it. 21 of 26 artifacts carry a `_V1` token and **none** carries
+`_V2` or higher.
+
+**Artifact version remains the artifact's own property**, expressed in its filename and `schema` field.
+A capability's identity does not change when its owning artifact moves from `_V1` to a later version;
+the same slug persists across artifact versions. **Whether a methodology change severe enough to break
+behavioural continuity requires a new slug rather than a retained one is left open** and recorded in
+section 13.
+
+### 6. Capability-to-callable mapping, and member identity (callables only)
+
+Under 3-C a capability is a **two-level structure**: the capability, identified by its slug, and one or
+more **members**.
+
+**The member grammar is closed.** A member identifier is **exactly** a fully-qualified dotted Python
+import path that resolves to a **callable** - a module path followed by the callable's own name:
+
+```
+^<python_identifier>(\.<python_identifier>)+$     resolving to a callable object
+```
+
+- **A member is identified by its fully-qualified dotted Python import path**, for example
+  `engine.transits.view.transit_view` or `engine.parashari.drishti.aspected_signs`.
+- **Non-callable shapes are EXCLUDED from the 3-C member grammar.** A `Class.attribute` form such as
+  `Chart.sign_map`, and a `module.path.callable.field` form such as
+  `engine.astrology.varga_classifier.classify.d_sign`, are **not** valid member identifiers under this
+  entry. A capability member addresses a callable, and nothing else.
+- **This exclusion is deliberate and is not a gap.** `SIGN_CONVENTION_V1`'s registries do use those
+  shapes - of their 26 keys, measured by dot count, **20 are `Class.attribute`**, 4 are
+  `module.path.callable` and 2 are `module.path.callable.field` - but those registries record
+  sign-convention conformance per declaration site, which is a different purpose from capability
+  membership (section 12). Their shapes are **not** inherited here.
+- **Extending the member grammar to admit a non-callable shape requires a new decision entry.** Until
+  such an entry exists, a non-callable member identifier is invalid, and a conformance check written
+  under section 11 must reject it. Section 13 records the possible future extension as a residual;
+  that residual is a question about whether to **widen** the grammar later, **not** an ambiguity about
+  what the grammar admits now.
+- Member identity is therefore **code-anchored**, while capability identity is **refactor-stable**.
+  That asymmetry is deliberate: it is what makes 2-B safe in the presence of the Context measurement 1
+  collisions.
+- Member identity is **collision-free by construction**: the three colliding base names are all
+  distinguished by their full paths, and `engine.parashari.drishti.aspected_signs` is already a key in
+  `SIGN_CONVENTION_V1`'s `function_registry`, where the dotted path is exactly what disambiguates it
+  from the `engine/kp/significators.py` callable of the same name.
+- A member path is expected to resolve by import in the tree at the artifact's own commit. **A member
+  path changes when the code moves; its capability slug does not.** Updating a member path is a
+  mechanical correction, not a capability rename.
+- The same callable **may** be a member of more than one capability. Nothing here forbids it, and
+  Context measurement 2 makes it likely for shared framework code such as
+  `engine/models/birth_data.py`, imported by 16 of the 22 certifiers.
+
+### 7. Member-level disposition and provenance
+
+Each member carries its **own** disposition, independently of its sibling members and of its
+capability. This is the substance of 3-C and the reason it was selected: `DP-040` established that
+`returns()`, `natal_conjunctions()` and `transit_view()` require **different** dispositions, which a
+single capability-level disposition could not express.
+
+- A member's disposition is a property **of that member**, not inherited from the capability.
+- Two members of one capability may hold different dispositions, and that is a valid state, not a
+  defect.
+- A capability has **no** disposition of its own. Any summary view over a capability is derived from
+  its members and is not itself normative.
+- **Provenance:** a disposition records what established it - the deciding `ADR` or authorization, and
+  the evidence relied on - so that a reader can audit it without leaving the artifact.
+
+**What this entry does not fix:** the **disposition vocabulary** and the **field names**. `ADR-0101` s6
+lists the status vocabulary and the enumeration key names as unresolved, and `Q-F` concerns enforcement.
+This entry fixes **where** a disposition attaches - the member - and **not** what values it may take.
+Recorded as a residual in section 13.
+
+### 8. Composite capabilities
+
+A **composite capability** is a capability with two or more members. It is a normal case, not an
+exception, and it is how a `scope` claim spanning several callables is expressed - the question
+`ADR-0101` s6 posed with `TRANSIT_V1`'s "natal-relative view" and "sign/nakshatra ingresses".
+
+- A composite capability has **one** slug and **two or more** member paths.
+- A **simple capability** has exactly one member. It is not a distinct kind; the structure is uniform.
+- Composite membership does **not** imply shared disposition, per section 7.
+- There is **no** nesting: a capability's members are callables, never other capabilities. A two-level
+  structure is exactly two levels. **Option 3-A was not selected** (one identifier with a flat
+  `callables` list and, implicitly, one disposition), and **3-B was not selected** (one identifier per
+  callable, composites inexpressible).
+
+### 9. Collision prevention
+
+| Risk | How the selected design prevents it |
+|---|---|
+| Two callables sharing a base name | Member identity is the **full dotted path**. Verified against the three measured collisions |
+| A helper appearing in many modules | `ensure_registered` in nine varga modules becomes nine **members** of nine distinct capabilities. It is not a capability and receives no slug |
+| One code object acquiring several identities | Capability slugs are **repository-wide unique** and each is owned by exactly one artifact (section 3), so artifact scope never enters identity |
+| A slug silently changing meaning | Slugs are **immutable and never reused**, including against retired slugs (section 4) |
+| Version drift in identity | Slugs carry **no version token** (section 5) |
+
+### 10. Relationship to existing identifier families and to `NAMING_STANDARD.md`
+
+**A capability slug is not an ID family in `docs/NAMING_STANDARD.md` s2's sense.** s2's families are
+fixed-width zero-padded numeric patterns - `ADR-\d{4}`, `DP-\d{3}`, `EV-CAR-\d{3}` - issued by a named
+registry. A capability slug is a descriptive address, not an issued number. **Option 2-D, the
+registered ID family, was not selected**, and therefore **s2's family-creation procedure at L49-L52 -
+a governing-document section defining pattern, width, scope and issuer, a decision-log entry, and a
+uniqueness check added to the conformance sweep - is not triggered by this entry.** That determination
+is an interpretation of s2's scope and is recorded as such.
+
+The governing precedent is **s3, "Slugs (identity addresses)"**, whose character set, 2-to-30 length
+bound, no-leading-or-trailing-underscore rule, "singular nouns" rule and "unique registry-wide
+including RETIRED" rule this entry adopts. It is **not** reused verbatim: section 1 records the one
+narrowing, which makes the final character class mandatory so that the pattern enforces s3's own stated
+2-character minimum.
+
+`docs/NAMING_STANDARD.md` is `Status: DRAFT` with `Owner: TBD (see docs/OPEN_QUESTIONS.md Q1)`. **This
+entry does not amend it, does not ratify it, and does not depend on it for authority.** Per `ADR-0042`
+decision 1 the authority hierarchy places DECISION LOG / ADR above STANDARDS, so the grammar above is
+established by this entry; s3 is cited as precedent for the charset and the uniqueness rule, not as
+their source. Whether `NAMING_STANDARD.md` s3 should later be extended to describe capability slugs is
+a documentation matter for its own owner and is **not** decided here.
+
+### 11. Conformance and validation requirements
+
+If and when a conformance check is authorized, it must assert at least:
+
+1. Every capability slug matches the section 1 grammar.
+2. Every capability slug is unique repository-wide, including against retired slugs.
+3. No slug is enumerated by more than one artifact.
+4. Every member path is a syntactically valid dotted path and resolves in the tree at that commit.
+5. Every member path resolves to a **callable**. A member whose target is a class attribute, a
+   dataclass field, a constant or any other non-callable is **rejected**, per section 6.
+6. Every capability has at least one member.
+7. Every member carries a disposition.
+
+**This entry builds nothing.** It creates no capability enumeration, no `exercises` array, no
+`scope_not_gated` array, no remediation backlog and no gate, and it modifies no script. Implementing
+any of the above is part of the `C2`-`C5` programme, which remains **unauthorized** under `ADR-0099`
+s7's own terms; each gate that changes what can be rejected will require its own committed negative
+control and its own artifact regeneration.
+
+Note for whoever implements check 4: `scripts/check_retired_identifiers.py` currently enforces the
+`ADR-` family only - its `FAMILY_RE` is `ADR-(?!\d{4}(?!\d))[A-Za-z0-9_-]+` - and
+`scripts/check_identifier_families.py` enforces `DP-\d{3}` registration. **Neither sweeps capability
+slugs**, and this entry does not change either script.
+
+### 12. Treatment of existing historical and frozen identifiers
+
+- **`SIGN_CONVENTION_V1`'s `declaration_registry` (20 keys) and `function_registry` (6 keys) are
+  unchanged.** They serve a different purpose - recording sign-convention conformance per declaration
+  site - and keep their own key shapes. They are **not** capability enumerations and are **not**
+  retrofitted to this grammar.
+- **`certification/ENGINE_CAPABILITY_INVENTORY.json`'s 91 dotted entries are not capability slugs.**
+  They are frozen dated historical evidence under `ADR-0092`, which forbids both their use as a
+  live-state authority and modification of that file. They are cited in section 2 as shape precedent
+  only.
+- **`TD-CI-\d{3}`** remains as it is. It is in live use in four tracked files, is absent from
+  `NAMING_STANDARD.md` s2's table and is not covered by the conformance sweep. **That is a pre-existing
+  governance gap, reported in `DP-041` and `DP-042`, and this entry neither fixes nor extends it.**
+- **The four `FROZEN_EVIDENCE` artifacts require no capability slugs.** `ADR-0102` s3 places them
+  outside `ADR-0101` s2/s3's artifact-content requirements while keeping them inside s4's remediation
+  universe.
+
+### 13. What remains unresolved
+
+Named so that no later work can treat them as settled by this entry:
+
+- **The domain vocabulary** (section 2): declared-as-used with uniqueness enforced, or a pre-registered
+  closed list. This entry fixes the grammar of segment 1, not its permitted values.
+- **Whether the member grammar should later be WIDENED to admit a non-callable shape** - the
+  `Class.attribute` and `module.path.callable.field` forms that `ADR-0101` s2's own cited precedent
+  uses in 22 of its 26 keys. **This is not an open question about what the grammar admits today:**
+  section 6 **excludes** those shapes, and a conformance check must reject them. The residual is only
+  whether a future decision entry should widen the grammar, and until one does, the exclusion stands.
+- **The disposition vocabulary and the field names** for capability, members and dispositions
+  (section 7). `ADR-0101` s6 already lists the enumeration key names and the status vocabulary as
+  unresolved; `Q-F` concerns enforcement. **Not decided here.**
+- **Whether a methodology change that breaks behavioural continuity requires a new slug** rather than a
+  retained one (section 5).
+- **The mechanism for recording retired capability slugs** (section 4).
+- **`Q-B`, `Q-C`, `Q-D` and `Q-F` are untouched and remain open**, as do `N1`, `N2`, `N5`, `N6`, `N7`,
+  `Q1` and `Q12`.
+
+### 14. Migration and retrofit implications
+
+- **No existing identifier is retrofitted.** `declaration_registry`, `function_registry`, `_slug`,
+  `_artifact_name`, `TD-CI-\d{3}` and the frozen inventory all stay exactly as they are.
+- **No certification artifact changes under this entry.** The 22 scope-bearing artifacts identified by
+  `ADR-0102` s2 will each need a capability enumeration, but authoring those enumerations **is** `C2`/
+  `C3` work and is **not** authorized here.
+- **No regeneration is triggered.** Measured at `33dd7b94b0c22437d7f10162de5ebae2552580c7` and unchanged
+  by this entry: 26 certification artifacts, 22 scope-bearing with a CI-run certifier, 4
+  `FROZEN_EVIDENCE` with none, **0** `ADR-0101` s2-conforming capability enumerations, **0**
+  `exercises` arrays, **0** `scope_not_gated` arrays, and no remediation backlog. Counting rule for the
+  enumerations: no artifact in the corpus carries a capability enumeration in `ADR-0101` s2's sense.
+  The only `capabilities` key anywhere in `certification/*.json` is the frozen
+  `ENGINE_CAPABILITY_INVENTORY.json`'s, which section 12 excludes from this grammar and which
+  `ADR-0092` bars from use as a live authority.
+- **Sequencing consequence, recorded not acted on:** the four `DP-040` options that depend on
+  `scope_not_gated` - 1-B, 1-C, 2-B and 3-B in that paper's numbering - were blocked on `Q-A`'s grammar.
+  This entry supplies the grammar; it **selects no `DP-040` option** and disposes of none of the three
+  `TRANSIT_V1` SCOPE OVERCLAIMS.
+
+### 15. What this entry does NOT do
+
+**It authorizes no implementation.** `C2`, `C3`, `C4` and `C5` remain **unauthorized**. It creates no
+capability enumeration, `exercises` array, `scope_not_gated` array, remediation backlog or gate, and
+modifies no script, certification artifact, registry, production module, test or CI job. It does not
+edit `ADR-0092`, `ADR-0094`, `ADR-0099`, `ADR-0100`, `ADR-0101` or `ADR-0102`, and creates no permission
+to edit any recorded decision entry. **`ADR-0101` is preserved unchanged.** It does not amend
+`docs/NAMING_STANDARD.md`, `docs/Q8_CLOSURE_MATRIX.md`, `docs/VALIDATION_STANDARD.md`,
+`docs/ENGINE_STATUS.md` or `docs/OPEN_QUESTIONS.md`. It selects no `DP-040` option and modifies
+neither `DP-040` nor any other decision paper. It resolves **`Q-A` only**. It does not declare, perform
+or recommend JATAKA phase exit, which **remains on HOLD**.
+
+- **Consequences, if ratified:** `Q-A` is **CLOSED**, and `ADR-0101` s6's identifier-grammar item is
+  answered - capability identity is a two-segment dotted slug, member identity is a dotted import path,
+  and dispositions attach at the member level. `C3` becomes specifiable once `Q-B` fixes the
+  enumeration key and location, and the four `DP-040` options that need `scope_not_gated` become
+  implementable once that key exists. **Nothing becomes authorized:** `C2`-`C5` still require their own
+  decisions, negative controls and regeneration; the corpus still carries 0 conforming enumerations
+  and 0 `exercises` arrays on the day of ratification; and section 13's six residuals remain open.
+- **Evidence:** the owner's "CEO authorization - Q-A ADR only" instruction selecting 2-B and 3-C;
+  `ADR-0101` s2 (L9107-L9108, L9117-L9119), s3 (L9124-L9125) and s6 (L9187-L9188); `ADR-0102` s2, s3
+  and s7; `ADR-0092` s1-s2; `ADR-0042` decision 1; `DP-041` s8.2, s8.3 and s10; `DP-042`;
+  `docs/NAMING_STANDARD.md` s2 L45 and L49-L52 and s3 L58-L67; `SIGN_CONVENTION_V1_certification.json`
+  `declaration_registry` (20 keys) and `function_registry` (6 keys), measured at 20 `Class.attribute`,
+  4 `module.path.callable`, 2 `module.path.callable.field`; `scripts/check_retired_identifiers.py`
+  `FAMILY_RE` and `RETIRED`; `scripts/check_identifier_families.py`; the measured collision set
+  `ensure_registered` (9 modules), `rule_content_sha256` (3), `aspected_signs` (2) out of **155**
+  public top-level callables in 157 non-test `engine/**/*.py` modules; the measured module-to-certifier
+  import fan-out across the 22 `scripts/certify_*.py` certifiers (`birth_data` 16, `profile` 13,
+  `calculations` 13, `varga_rules` 11); and the measured conformance of all 22 `_slug` values to s3's
+  per-segment regex, 22 of 22, shortest 7 and longest 17 characters (`parashari_drishti`), which also
+  satisfy section 1's narrowed per-segment pattern; `docs/NAMING_STANDARD.md` s3's internal prose/regex
+  discrepancy at length 1, resolved for capability slugs in section 1 without modifying that document. Repository state at drafting: branch
+  `adr-0103-capability-identifier-grammar`, parent
+  `33dd7b94b0c22437d7f10162de5ebae2552580c7`.
+
+---
+
 ## ADR template (copy, do not edit above the line)
 
 ## ADR-XXXX - <title>
