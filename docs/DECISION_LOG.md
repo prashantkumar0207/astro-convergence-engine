@@ -9619,7 +9619,11 @@ transit.natal_relative_view       varga_d20.classification
 These examples are singular in both segments, consistent with the rule stated above. An **earlier draft
 of this entry carried the plural forms `transits.returns` and `transits.natal_conjunction`, which
 contradicted its own singular rule**; the examples were wrong, the rule was right, and the examples
-were corrected to match it.
+were corrected to match it. A later CEO audit found that **section 5 had kept the same obsolete plural
+form after this section was corrected**, and it too was corrected. The two plural strings in the
+previous sentence are **quoted as superseded drafting, not offered as examples**, and are the only
+non-conforming capability slugs anywhere in this entry; every capability slug presented as an example
+is singular in both segments.
 
 **What this entry does not fix:** the **domain vocabulary itself is not closed by this entry.** Domain
 segments are populated by declaration in the artifacts, subject to the uniqueness rule in section 3.
@@ -9657,9 +9661,11 @@ several identities. Option **2-C was not selected**, and this rule is why it wou
 
 ### 5. Versioning treatment
 
-**A capability slug carries no version token.** `transits.returns`, never `transits.returns_v1`.
+**A capability slug carries no version token.** `transit.return`, never `transit.return_v1`.
 
-This follows the measured behaviour of the existing `_slug` convention: `TRANSIT_V1_certification.json`
+Both segments are singular here, per section 2, and the domain segment `transit` is exactly the
+existing `_slug` value quoted in the next paragraph. This follows the measured behaviour of the
+existing `_slug` convention: `TRANSIT_V1_certification.json`
 carries `_artifact_name: "TRANSIT_V1_certification.json"` and `_slug: "transit"` - the artifact name
 keeps the `_V1` token, the slug drops it. 21 of 26 artifacts carry a `_V1` token and **none** carries
 `_V2` or higher.
