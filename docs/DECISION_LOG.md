@@ -9557,21 +9557,35 @@ A **capability identifier** (hereafter **capability slug**) is a string matching
 ^<segment>\.<segment>$
 ```
 
-where `<segment>` is `docs/NAMING_STANDARD.md` s3's registered per-segment slug regex, reused verbatim:
+where `<segment>` is, exactly and normatively:
 
 ```
-[a-z0-9](?:[a-z0-9_]{0,28}[a-z0-9])?
+[a-z0-9][a-z0-9_]{0,28}[a-z0-9]
 ```
 
 - **Exactly two segments**, separated by a single `.`.
 - Lowercase ASCII only; permitted characters per segment are `a-z`, `0-9` and `_`.
-- Each segment is 1 to 30 characters, with **no leading or trailing underscore**.
+- Each segment is **2 to 30 characters**, with **no leading or trailing underscore**.
 - No whitespace, no uppercase, no hyphen, no dot inside a segment.
 
-**Divergence from `NAMING_STANDARD.md` s3, stated rather than hidden:** s3 defines the *question* slug
-as **exactly three** segments (`domain.topic.aspect`). A capability slug is **two**. The charset and
-per-segment regex are identical; the arity is not. s3's three-segment rule is scoped to question slugs
-and is not extended or amended here.
+**The 2-to-30 bound, and a discrepancy inside `NAMING_STANDARD.md` s3 that this entry resolves for
+capability slugs without touching the standard.** s3's prose states "2-30 chars", but the regex s3
+prints beside it - `[a-z0-9](?:[a-z0-9_]{0,28}[a-z0-9])?` - makes the trailing group optional and so
+**also matches a single character**. The prose and the regex therefore disagree with each other at
+length 1. **`ADR-0103` adopts s3's prose bound, 2 to 30**, and states above the regex that actually
+enforces it, in which the final character class is mandatory rather than optional. That is the **one
+narrowing** this entry makes to the precedent pattern; the character set, the 28-character interior and
+the no-leading-or-trailing-underscore rule are s3's unchanged. **Nothing existing is excluded by the
+narrowing:** across the 22 `_slug` values the shortest is 7 characters (`kp_chain`, `trikalam`,
+`varga_d2`, `varga_d3`, `varga_d4`, `varga_d7`) and the longest is 17 (`parashari_drishti`), so no
+single-character segment exists anywhere in the corpus. **`docs/NAMING_STANDARD.md` is not modified,
+amended or ratified by this entry**, and the discrepancy is recorded here as an observation about that
+`DRAFT` document for its own owner, not resolved on its behalf.
+
+**Divergence from `NAMING_STANDARD.md` s3 in arity, stated rather than hidden:** s3 defines the
+*question* slug as **exactly three** segments (`domain.topic.aspect`). A capability slug is **two**.
+The character set and the length bound are s3's; the arity is not. s3's three-segment rule is scoped to
+question slugs and is not extended or amended here.
 
 ### 2. Segment semantics
 
@@ -9579,16 +9593,33 @@ and is not extended or amended here.
   together as subject matter, independently of Python package layout.
 - **Segment 2 - capability.** The capability within that domain.
 
-Both segments are **singular, English, descriptive**, with no abbreviations, synonyms or marketing
-terms, per s3's existing rule for slug segments.
+**Both segments are singular.** Each segment is an English descriptive noun or underscore-joined noun
+phrase in the **singular**, with no plural form, no abbreviation, no synonym and no marketing term,
+following s3's "singular nouns" rule. A segment may instead be an established production designator
+that is not a noun at all, such as `d20`; the singular rule binds nouns, and a designator carries
+whatever form production already fixed for it.
+
+**This rule is the corpus's actual practice, not an aspiration:** of the 22 existing `_slug` values,
+**none** is plural - `transit`, not `transits`; `rise_set`, `sign_convention`, `vimshottari`,
+`varga_d20`. Zero of 22 end in `s`.
+
+**The singular rule binds capability slugs only, and does not reach member paths.** A member is
+identified by its dotted import path (section 6), which must match the code exactly and therefore
+carries whatever grammatical number the code uses - `returns`, `aspected_signs`. Those are plural, they
+are correct as member paths, and they are **not** capability slug segments.
 
 Illustrative forms, given to fix meaning and **not** to enumerate any artifact's capabilities, which
 this entry does not do:
 
 ```
-transits.returns                  transits.natal_conjunction
-transits.natal_relative_view      divisional_chart.d20
+transit.return                    transit.natal_conjunction
+transit.natal_relative_view       varga_d20.classification
 ```
+
+These examples are singular in both segments, consistent with the rule stated above. An **earlier draft
+of this entry carried the plural forms `transits.returns` and `transits.natal_conjunction`, which
+contradicted its own singular rule**; the examples were wrong, the rule was right, and the examples
+were corrected to match it.
 
 **What this entry does not fix:** the **domain vocabulary itself is not closed by this entry.** Domain
 segments are populated by declaration in the artifacts, subject to the uniqueness rule in section 3.
@@ -9639,13 +9670,34 @@ the same slug persists across artifact versions. **Whether a methodology change 
 behavioural continuity requires a new slug rather than a retained one is left open** and recorded in
 section 13.
 
-### 6. Capability-to-callable mapping, and member identity
+### 6. Capability-to-callable mapping, and member identity (callables only)
 
 Under 3-C a capability is a **two-level structure**: the capability, identified by its slug, and one or
 more **members**.
 
+**The member grammar is closed.** A member identifier is **exactly** a fully-qualified dotted Python
+import path that resolves to a **callable** - a module path followed by the callable's own name:
+
+```
+^<python_identifier>(\.<python_identifier>)+$     resolving to a callable object
+```
+
 - **A member is identified by its fully-qualified dotted Python import path**, for example
   `engine.transits.view.transit_view` or `engine.parashari.drishti.aspected_signs`.
+- **Non-callable shapes are EXCLUDED from the 3-C member grammar.** A `Class.attribute` form such as
+  `Chart.sign_map`, and a `module.path.callable.field` form such as
+  `engine.astrology.varga_classifier.classify.d_sign`, are **not** valid member identifiers under this
+  entry. A capability member addresses a callable, and nothing else.
+- **This exclusion is deliberate and is not a gap.** `SIGN_CONVENTION_V1`'s registries do use those
+  shapes - of their 26 keys, measured by dot count, **20 are `Class.attribute`**, 4 are
+  `module.path.callable` and 2 are `module.path.callable.field` - but those registries record
+  sign-convention conformance per declaration site, which is a different purpose from capability
+  membership (section 12). Their shapes are **not** inherited here.
+- **Extending the member grammar to admit a non-callable shape requires a new decision entry.** Until
+  such an entry exists, a non-callable member identifier is invalid, and a conformance check written
+  under section 11 must reject it. Section 13 records the possible future extension as a residual;
+  that residual is a question about whether to **widen** the grammar later, **not** an ambiguity about
+  what the grammar admits now.
 - Member identity is therefore **code-anchored**, while capability identity is **refactor-stable**.
   That asymmetry is deliberate: it is what makes 2-B safe in the presence of the Context measurement 1
   collisions.
@@ -9659,12 +9711,6 @@ more **members**.
 - The same callable **may** be a member of more than one capability. Nothing here forbids it, and
   Context measurement 2 makes it likely for shared framework code such as
   `engine/models/birth_data.py`, imported by 16 of the 22 certifiers.
-
-**What this entry does not fix:** whether a member may address something other than a callable. The
-precedent `ADR-0101` s2 cites is not uniform - of the 26 keys in `SIGN_CONVENTION_V1`'s two registries,
-**20 are `Class.attribute`**, 4 are `module.path.callable`, and 2 are `module.path.callable.field`.
-This entry specifies the **callable** form for members and records the other two shapes as a residual
-in section 13, rather than silently admitting or excluding them.
 
 ### 7. Member-level disposition and provenance
 
@@ -9720,8 +9766,11 @@ a governing-document section defining pattern, width, scope and issuer, a decisi
 uniqueness check added to the conformance sweep - is not triggered by this entry.** That determination
 is an interpretation of s2's scope and is recorded as such.
 
-The governing precedent is **s3, "Slugs (identity addresses)"**, whose per-segment regex this entry
-reuses verbatim and whose "unique registry-wide including RETIRED" rule it adopts.
+The governing precedent is **s3, "Slugs (identity addresses)"**, whose character set, 2-to-30 length
+bound, no-leading-or-trailing-underscore rule, "singular nouns" rule and "unique registry-wide
+including RETIRED" rule this entry adopts. It is **not** reused verbatim: section 1 records the one
+narrowing, which makes the final character class mandatory so that the pattern enforces s3's own stated
+2-character minimum.
 
 `docs/NAMING_STANDARD.md` is `Status: DRAFT` with `Owner: TBD (see docs/OPEN_QUESTIONS.md Q1)`. **This
 entry does not amend it, does not ratify it, and does not depend on it for authority.** Per `ADR-0042`
@@ -9738,8 +9787,10 @@ If and when a conformance check is authorized, it must assert at least:
 2. Every capability slug is unique repository-wide, including against retired slugs.
 3. No slug is enumerated by more than one artifact.
 4. Every member path is a syntactically valid dotted path and resolves in the tree at that commit.
-5. Every capability has at least one member.
-6. Every member carries a disposition.
+5. Every member path resolves to a **callable**. A member whose target is a class attribute, a
+   dataclass field, a constant or any other non-callable is **rejected**, per section 6.
+6. Every capability has at least one member.
+7. Every member carries a disposition.
 
 **This entry builds nothing.** It creates no capability enumeration, no `exercises` array, no
 `scope_not_gated` array, no remediation backlog and no gate, and it modifies no script. Implementing
@@ -9775,9 +9826,11 @@ Named so that no later work can treat them as settled by this entry:
 
 - **The domain vocabulary** (section 2): declared-as-used with uniqueness enforced, or a pre-registered
   closed list. This entry fixes the grammar of segment 1, not its permitted values.
-- **Whether a member may address a non-callable** (section 6) - the `Class.attribute` and
-  `module.path.callable.field` shapes that `ADR-0101` s2's own cited precedent already uses in 22 of
-  its 26 keys.
+- **Whether the member grammar should later be WIDENED to admit a non-callable shape** - the
+  `Class.attribute` and `module.path.callable.field` forms that `ADR-0101` s2's own cited precedent
+  uses in 22 of its 26 keys. **This is not an open question about what the grammar admits today:**
+  section 6 **excludes** those shapes, and a conformance check must reject them. The residual is only
+  whether a future decision entry should widen the grammar, and until one does, the exclusion stands.
 - **The disposition vocabulary and the field names** for capability, members and dispositions
   (section 7). `ADR-0101` s6 already lists the enumeration key names and the status vocabulary as
   unresolved; `Q-F` concerns enforcement. **Not decided here.**
@@ -9837,7 +9890,9 @@ or recommend JATAKA phase exit, which **remains on HOLD**.
   public top-level callables in 157 non-test `engine/**/*.py` modules; the measured module-to-certifier
   import fan-out across the 22 `scripts/certify_*.py` certifiers (`birth_data` 16, `profile` 13,
   `calculations` 13, `varga_rules` 11); and the measured conformance of all 22 `_slug` values to s3's
-  per-segment regex, 22 of 22, longest `parashari_drishti` at 17 characters. Repository state at drafting: branch
+  per-segment regex, 22 of 22, shortest 7 and longest 17 characters (`parashari_drishti`), which also
+  satisfy section 1's narrowed per-segment pattern; `docs/NAMING_STANDARD.md` s3's internal prose/regex
+  discrepancy at length 1, resolved for capability slugs in section 1 without modifying that document. Repository state at drafting: branch
   `adr-0103-capability-identifier-grammar`, parent
   `33dd7b94b0c22437d7f10162de5ebae2552580c7`.
 
