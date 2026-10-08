@@ -9636,16 +9636,20 @@ authority, and does not assert that it has any.** Option B rests on a narrower a
 evidence, whatever the volatility question's eventual disposition. **It is an evidence-cleanliness
 decision taken at source, and it leaves the gate strict** (section 8). If the volatility question were
 resolved either way tomorrow, Option B's basis would be unchanged; section 2's items are recorded as
-context and existing practice, not as premises of this decision.
+context and existing practice, not as premises of this decision. **Section 5 records the measured
+reason this holds: the interpreter version remains recorded in each affected artifact's own
+`environment.python` field, so Option B removes a duplicate and not the information.**
 
 Two alternatives were evaluated in the forensic report and are **rejected** by this entry:
 
 - **Widening the gate to normalize interpreter paths inside transcript text (Option A)** is rejected.
   It is the closer literal match to `ADR-0043`, but it is the only remedy that instructs the gate to
   stop comparing content, and it would also mask a genuine environment change - a different interpreter
-  installation, a changed `site-packages` layout, an injected path. `.claude/rules/certification.md`'s
-  own principle that "a gate that cannot fail is not evidence" argues against widening an exemption
-  when the noise can be removed at source instead.
+  installation, a changed `site-packages` layout, an injected path. **The rejection rests on that
+  evidentiary consequence alone:** a standing normalization rule would remove the gate's ability to
+  detect a real change in the recorded environment, whereas removing non-evidentiary content at source
+  leaves every remaining line strictly compared. **No rule, guidance document or other external
+  instrument is relied on for this rejection.**
 - **Pinning the interpreter patch version in CI (Option C)** is rejected; see section 8.
 
 ### 5. The banner is third-party import-side-effect output, not certification evidence
@@ -9672,6 +9676,17 @@ it constitutes evidence.
 commit `cf628d0`, "CI-sourced recovery: capture the genuine PyJHora oracle evidence for D16, D4 and
 D40", so the committed evidence embeds whichever hosted-runner image happened to serve that recovery.
 
+**Removing the banner removes no interpreter-version information. This is measured, not assumed.** All
+six affected artifacts already record the interpreter version in their own `environment.python` field -
+`'3.11.16'` in each of `VARGA_D16_V1`, `VARGA_D20_V1`, `VARGA_D24_V1`, `VARGA_D4_V1`, `VARGA_D40_V1`
+and `VARGA_D45_V1`, measured 6 of 6. The banner is therefore a **duplicated** copy of a value each
+artifact already carries in a dedicated field, and it is the only copy that is non-deterministic across
+hosted-runner images. **Option B deletes the duplicate from captured stdout and leaves the dedicated
+record untouched**, so no interpreter-version information is lost - and that remains true **even if
+`environment.python`'s own volatility status were later resolved against treating it as run metadata**,
+since the field itself is neither removed nor altered by Option B. This is an additional, independent
+reason the decision does not turn on the unresolved question in section 2.
+
 ### 6. Required: the six certifiers must keep the banner out of the captured transcript
 
 `scripts/certify_d16.py`, `scripts/certify_d20.py`, `scripts/certify_d24.py`, `scripts/certify_d4.py`,
@@ -9679,10 +9694,18 @@ D40", so the committed evidence embeds whichever hosted-runner image happened to
 output does not enter the `_Tee`-captured transcript.
 
 - The change must affect **only** where or how the import's stdout is emitted. It must not alter any
-  calculation, comparison, tolerance, gate, case, oracle invocation or verdict, and it must not make
-  Gate C conditional, weaker or skippable. **A skip is a failure, not a pass.**
-- The conditional-genuine Gate C behaviour those certifiers already carry - a real PyJHora comparison
-  whenever PyJHora is importable - must be preserved exactly.
+  calculation, comparison, tolerance, gate, case, oracle invocation or verdict.
+- **Gate C's strength must not change, and its existing conditionality must be preserved. These are two
+  distinct requirements, and they are stated separately because an earlier draft of this entry
+  collapsed them into a single sentence that read as self-contradictory:**
+  - **Strength must not be reduced.** The implementation must not make Gate C weaker, **more**
+    conditional, bypassable or skippable than it already is, and must not introduce any new condition
+    under which the oracle comparison is not performed. **A skip is a failure, not a pass.**
+  - **Existing conditionality must be preserved exactly as it stands.** Gate C is **already**
+    conditional on PyJHora's availability - a real PyJHora comparison **whenever PyJHora is
+    importable** - and that existing conditional-genuine behaviour must be preserved **unchanged,
+    neither removed nor broadened**. Preserving that existing condition is **not** a weakening, and
+    removing it is **not** a strengthening; neither is authorized here.
 - **This entry specifies the requirement and authorizes no code change.** Implementation is a separate
   authorization, and the choice of technique is part of it.
 
