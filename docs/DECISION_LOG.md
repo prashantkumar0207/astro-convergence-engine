@@ -9561,20 +9561,36 @@ nothing fixed. Obtaining a pass that way is forbidden outright by this repositor
 routing around a gate, and **this entry does not authorize a re-run for that purpose**. The condition
 is latent on `main`, not specific to PR #33.
 
-### 2. Interpreter patch version is ALREADY classified as volatile
+### 2. How interpreter patch version is treated today, and the absence of ratified authority for it
 
-This entry creates no new volatility classification. **One normative statement classifies interpreter
-patch version as run metadata; two further items are cited only as evidence of how the framework
-already behaves.** That distinction is kept explicit because `ADR-0042` decision 1's authority
-hierarchy places CODE at the bottom: **committed code, a gate's own docstring and a recorded artifact
-value are evidence of implemented behaviour, never a source of normative authority.**
+**No currently ratified decision entry has been identified that establishes interpreter patch-version
+volatility as normative authority.** `ADR-0043` - the entry that would - remains `PROPOSED` and
+unratified (section 9). **This entry does not supply that authority, does not infer it, and does not
+need it; see section 4.**
 
-**The normative statement:**
+`ADR-0042` decision 1 (ACCEPTED) fixes the authority hierarchy as **OWNER -> PROJECT CONSTITUTION ->
+ENGINEERING CONSTITUTION -> DECISION LOG / ADR -> STANDARDS -> SPECIFICATIONS -> CODE ->
+CONVERSATION**. Two consequences are stated explicitly, so that nothing below is mistaken for
+authority:
 
-1. **`.claude/rules/certification.md` L22-25** states that only run metadata - "date, timestamp, source
-   revision, working-tree-dirty flag, **interpreter version**" - may be treated as non-substantive.
+- **`.claude/rules/certification.md` is not a level in that hierarchy.** It is tooling guidance whose
+  creation `ADR-0044` decision 2 (ACCEPTED) authorized, and `CLAUDE.md` states that where it conflicts
+  with `docs/PROJECT_CONSTITUTION.md`, `docs/DECISION_LOG.md` or `docs/OPEN_QUESTIONS.md`, those
+  govern. **That a tooling file's creation was ratified does NOT establish each rule inside it as
+  normative authority, and this entry draws no such inference.** It is cited only as evidence of the
+  repository's existing operational rule and practice. **This entry does not broaden the hierarchy to
+  admit it.**
+- **Committed code sits at the hierarchy's CODE level and is not a source of normative authority.** A
+  gate's own docstring, a volatile list and a recorded artifact value are **evidence of implemented
+  behaviour** only.
 
-**Evidence of existing behaviour, cited as evidence and not as authority:**
+The three items below are recorded as **evidence of existing practice and implemented behaviour. None
+is cited as authority, and section 4's decision depends on none of them:**
+
+1. **`.claude/rules/certification.md` L22-25** states, as the repository's existing operational rule,
+   that only run metadata - "date, timestamp, source revision, working-tree-dirty flag, **interpreter
+   version**" - may be treated as non-substantive. **Evidence of existing practice; not an authority
+   level.**
 
 2. **`ADR-0043`** added `run.python` and `environment.python` to `scripts/check_artifact_drift.py`'s
    `VOLATILE` tuple and `- python:` to its `VOLATILE_LINE_PREFIXES`, on the stated reasoning that "the
@@ -9587,13 +9603,14 @@ value are evidence of implemented behaviour, never a source of normative authori
    (`".".join(...split(".")[:2])`). `certification/ORACLE_ENVIRONMENT.json` records
    `runtime.python = '3.11.15'`, which no current runner provides, and
    `docs/CI_AND_ORACLE_REPRODUCIBILITY_SPEC.md` s3 states the ABI constraint as "CPython 3.11 linux
-   x86_64". **This is why that step passed on a 3.11.17 runner.** Of these, only the specification is a
-   normative instrument; **the script's minor-only comparison and the artifact's recorded value are
-   evidence of existing implemented behaviour, and this entry does not treat either as establishing
-   anything.** They corroborate that the patch component already sits outside recorded oracle
-   environment identity; they do not by themselves make it so.
+   x86_64". **This is why that step passed on a 3.11.17 runner.** Of these, only the specification sits
+   at a level of `ADR-0042` decision 1's hierarchy at all, and even it is cited here descriptively;
+   **the script's minor-only comparison and the artifact's recorded value are evidence of existing
+   implemented behaviour, and this entry does not treat either as establishing anything.** They record
+   that the patch component already sits outside recorded oracle environment identity as a matter of
+   implemented practice; they do not by themselves make it normative.
 
-### 3. The transcript channel was not handling that metadata consistently
+### 3. An observed inconsistency in the gate's own implemented handling of that metadata
 
 `scripts/check_artifact_drift.py`'s `_normalise_text` (L158-163) drops a line **only if the line
 `startswith` one of the five `VOLATILE_LINE_PREFIXES`**. There is no substring or token normalization
@@ -9603,14 +9620,23 @@ The consequence is a channel inconsistency, not a difference of substance: the *
 interpreter patch version - is exempt when it arrives as the JSON field `run.python` or
 `environment.python`, and exempt when it arrives as a rendered `- python:` line, but **scored as
 substantive drift when it arrives inside a third-party library's stdout banner mid-line**. The gate
-behaved exactly as written. It was **under-specified for one delivery channel of a field already
-classified non-substantive**, which is the same defect class `ADR-0043` addressed in the other two
-channels.
+behaved exactly as written. **This is an observation about implemented behaviour, not a finding that
+any ratified rule was breached**: the gate is simply under-specified for one delivery channel of a
+quantity its own implementation exempts in the other two. It is the same defect class `ADR-0043`
+addressed in those other two channels.
 
 ### 4. Decision: Option B is selected
 
 **The banner is removed from the captured evidence at source. The gate's volatile-text exemptions are
 NOT widened.**
+
+**This decision does not depend on interpreter patch-version volatility having ratified normative
+authority, and does not assert that it has any.** Option B rests on a narrower and independent ground:
+**the banner is not certification evidence** (section 5), so it does not belong in the certification
+evidence, whatever the volatility question's eventual disposition. **It is an evidence-cleanliness
+decision taken at source, and it leaves the gate strict** (section 8). If the volatility question were
+resolved either way tomorrow, Option B's basis would be unchanged; section 2's items are recorded as
+context and existing practice, not as premises of this decision.
 
 Two alternatives were evaluated in the forensic report and are **rejected** by this entry:
 
@@ -9712,15 +9738,18 @@ code." A search of this register returns **zero** `Ratification of ADR-0043` sub
 
 - **This entry neither ratifies nor supersedes `ADR-0043`, and does not treat it as ratified or derive
   authority from it.** It is cited in section 2 as the record of a prior reasoning and of a live code
-  change, not as ratified authority. **The only normative statement this entry relies on for the
-  volatility classification is `.claude/rules/certification.md` L22-25.**
+  change, not as ratified authority. **This entry identifies no normative authority for interpreter
+  patch-version volatility and relies on none.** `.claude/rules/certification.md`,
   `scripts/check_oracle_environment.py`'s behaviour, `certification/ORACLE_ENVIRONMENT.json`'s recorded
   value and `scripts/check_artifact_drift.py`'s docstring and volatile lists are cited **as evidence of
-  existing behaviour only**; this entry derives no authority from any of them, and committed
-  implementation is not authority for anything under `ADR-0042` decision 1's hierarchy.
-- **Disclosed plainly: no ratified decision entry establishes interpreter-version volatility**, because
-  `ADR-0043`, the entry that would, is unratified. **This entry does not cure that gap, does not
-  substitute committed code for the missing ratification, and does not pretend the gap is absent.**
+  existing practice and implemented behaviour only**; this entry derives no authority from any of them.
+  `.claude/rules/certification.md` is not a level in `ADR-0042` decision 1's hierarchy, and committed
+  implementation sits at that hierarchy's CODE level, which is not a source of normative authority.
+- **Disclosed plainly: no currently ratified decision entry has been identified that establishes
+  interpreter patch-version volatility as normative authority**, because `ADR-0043`, the entry that
+  would, is unratified. **This entry does not cure that gap, does not substitute committed code or
+  tooling guidance for the missing ratification, and does not pretend the gap is absent. Section 4's
+  decision does not require the gap to be closed.**
 - **Disclosed for the owner's attention:** the `VOLATILE` and `VOLATILE_LINE_PREFIXES` entries that
   `ADR-0043` introduced are **live in committed code** while the entry recording them remains
   unratified. Option B neither depends on nor worsens that position, because it widens nothing. Whether
