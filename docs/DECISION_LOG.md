@@ -9679,13 +9679,16 @@ D40", so the committed evidence embeds whichever hosted-runner image happened to
 **Removing the banner removes no interpreter-version information. This is measured, not assumed.** All
 six affected artifacts already record the interpreter version in their own `environment.python` field -
 `'3.11.16'` in each of `VARGA_D16_V1`, `VARGA_D20_V1`, `VARGA_D24_V1`, `VARGA_D4_V1`, `VARGA_D40_V1`
-and `VARGA_D45_V1`, measured 6 of 6. The banner is therefore a **duplicated** copy of a value each
-artifact already carries in a dedicated field, and it is the only copy that is non-deterministic across
-hosted-runner images. **Option B deletes the duplicate from captured stdout and leaves the dedicated
-record untouched**, so no interpreter-version information is lost - and that remains true **even if
-`environment.python`'s own volatility status were later resolved against treating it as run metadata**,
-since the field itself is neither removed nor altered by Option B. This is an additional, independent
-reason the decision does not turn on the unresolved question in section 2.
+and `VARGA_D45_V1`, measured 6 of 6. The banner is therefore a **duplicated** copy of
+interpreter-version information that each artifact already carries in a dedicated field. **Both copies
+track the runner**, and no claim is made here that the banner is the only non-deterministic one:
+section 1 records `environment.python` itself changing `'3.11.16'` -> `'3.11.17'` between the two runs.
+What the evidence establishes is narrower and sufficient - **Option B deletes the duplicated banner
+from captured stdout and leaves the dedicated `environment.python` field untouched, so Option B removes
+no interpreter-version information.** That remains true **even if `environment.python`'s own volatility
+status were later resolved against treating it as run metadata**, since Option B neither removes nor
+alters the field. This is an additional, independent reason the decision does not turn on the
+unresolved question in section 2.
 
 ### 6. Required: the six certifiers must keep the banner out of the captured transcript
 
