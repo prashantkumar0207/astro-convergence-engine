@@ -9507,6 +9507,345 @@ JATAKA phase exit, which remains on HOLD.**
 
 ---
 
+## ADR-0104 - Oracle transcript drift: Option B selected - the PyJHora `sys.path` import-side-effect banner is to be kept out of the six affected captured transcripts at source, the artifact-drift gate's volatile lists are NOT to be widened, and no Python patch pinning is adopted (PROPOSED - drafted for CEO review, not ratified; remediation not yet implemented)
+
+- **Date:** 2026-10-07
+- **Status:** **PROPOSED. NOT RATIFIED.** Drafted on the owner's "CEO-authorized next step - draft
+  governance decision for Oracle Drift remediation" instruction, which selected **Option B** from the
+  read-only forensic report on CI run `37590275014` and directed that the decision be drafted before any
+  implementation. This entry becomes authoritative only on a ratifying instruction recorded in a
+  sub-entry beneath it, following the `ADR-0095` / `ADR-0099` / `ADR-0100` / `ADR-0101` / `ADR-0102`
+  drafted-then-ratified precedent. **Nothing in this entry is in force while it reads PROPOSED, and it
+  authorizes no implementation: no certifier, no gate, no artifact and no CI configuration is changed by
+  this entry.**
+- **Context:** CI run `37590275014`, the `oracle gate (PyJHora, hash-pinned)` job on PR #33 at commit
+  `5f0e81f629b1af9397068781f6924ec6b9c152eb`, failed at its final step, "Assert regenerated artifacts
+  drifted only in the volatile fields". That step delegates to `scripts/check_artifact_drift.py`, which
+  reported drift outside the volatile fields in six console transcripts.
+
+  The drift is an interpreter patch-version change, `3.11.16` -> `3.11.17`, in the hosted-runner
+  interpreter path that PyJHora prints to stdout when it is imported. It is not a calculated value.
+
+### 1. The observed drift, measured
+
+Both runs' uploaded `oracle-certification-evidence` bundles were downloaded and compared
+file-by-file and line-by-line. The passing run is `37589340660` at `49e3810`; the failing run is
+`37590275014` at `5f0e81f`. The two commits differ by **9 added and 3 deleted lines in
+`docs/DECISION_LOG.md` and nothing else**, and the branch touches no file under `certification/` or
+`reports/`.
+
+- **22 of 70 files differ: 16 `certification/*.json` and 6 `reports/certification/*.console.txt`.**
+  **No `.report.md` differs.**
+- **The six transcripts are** `varga_d16`, `varga_d20`, `varga_d24`, `varga_d4`, `varga_d40`,
+  `varga_d45`. These are **6 of the 22** tracked transcripts, and are **exactly** the only six
+  containing any absolute interpreter path.
+- **Each affected transcript is 16 lines long and differs on exactly 2 of them**, both PyJHora
+  `sys.path` banner lines. Each carries 8 occurrences of the interpreter patch token.
+- **Replacing only the token `3.11.16` / `3.11.17` makes all six transcripts byte-identical between
+  the two runs, 6 of 6.** The transcript differences are therefore exclusively interpreter-path
+  metadata.
+- **In the 16 differing JSON artifacts the only differing leaf path is `environment.python`**
+  (`'3.11.16'` -> `'3.11.17'`). An independent leaf-path enumeration across all 26 artifacts found no
+  other differing path anywhere, and **all 26 are byte-equal after removing only `environment.python`**.
+  118 `result` / `verdict` / `status` / `gates` / `scope` / `schema` / `adr` fields were compared across
+  the corpus and **0 differ**.
+
+**No comparison count, numerical maximum, tolerance, case identifier, precondition digest or PASS/FAIL
+verdict changed. The entire difference between a passing and a failing oracle run was interpreter
+version metadata.**
+
+**The failure is runner-dependent, and that is why no re-run may be used to clear it.** The runner pool
+is heterogeneous: `49e3810` ran on 3.11.16 at 07:45:49Z and passed; `5f0e81f` ran on 3.11.17 at
+07:54:36Z and failed, nine minutes later. A re-run could land on a 3.11.16 runner and go green with
+nothing fixed. Obtaining a pass that way is forbidden outright by this repository's rule against
+routing around a gate, and **this entry does not authorize a re-run for that purpose**. The condition
+is latent on `main`, not specific to PR #33.
+
+### 2. How interpreter patch version is treated today, and the absence of ratified authority for it
+
+**No currently ratified decision entry has been identified that establishes interpreter patch-version
+volatility as normative authority.** `ADR-0043` - the entry that would - remains `PROPOSED` and
+unratified (section 9). **This entry does not supply that authority, does not infer it, and does not
+need it; see section 4.**
+
+`ADR-0042` decision 1 (ACCEPTED) fixes the authority hierarchy as **OWNER -> PROJECT CONSTITUTION ->
+ENGINEERING CONSTITUTION -> DECISION LOG / ADR -> STANDARDS -> SPECIFICATIONS -> CODE ->
+CONVERSATION**. Two consequences are stated explicitly, so that nothing below is mistaken for
+authority:
+
+- **`.claude/rules/certification.md` is not a level in that hierarchy.** It is tooling guidance whose
+  creation `ADR-0044` decision 2 (ACCEPTED) authorized, and `CLAUDE.md` states that where it conflicts
+  with `docs/PROJECT_CONSTITUTION.md`, `docs/DECISION_LOG.md` or `docs/OPEN_QUESTIONS.md`, those
+  govern. **That a tooling file's creation was ratified does NOT establish each rule inside it as
+  normative authority, and this entry draws no such inference.** It is cited only as evidence of the
+  repository's existing operational rule and practice. **This entry does not broaden the hierarchy to
+  admit it.**
+- **Committed code sits at the hierarchy's CODE level and is not a source of normative authority.** A
+  gate's own docstring, a volatile list and a recorded artifact value are **evidence of implemented
+  behaviour** only.
+
+The three items below are recorded as **evidence of existing practice and implemented behaviour. None
+is cited as authority, and section 4's decision depends on none of them:**
+
+1. **`.claude/rules/certification.md` L22-25** states, as the repository's existing operational rule,
+   that only run metadata - "date, timestamp, source revision, working-tree-dirty flag, **interpreter
+   version**" - may be treated as non-substantive. **Evidence of existing practice; not an authority
+   level.**
+
+2. **`ADR-0043`** added `run.python` and `environment.python` to `scripts/check_artifact_drift.py`'s
+   `VOLATILE` tuple and `- python:` to its `VOLATILE_LINE_PREFIXES`, on the stated reasoning that "the
+   interpreter patch version a run executed under is run metadata, not a certified numerical claim".
+   The gate's own docstring describes `run.python` as "the CPython **patch version** the run executed
+   under" - **that docstring is evidence of what the committed gate does, not authority for what it
+   ought to do.** **`ADR-0043` is `PROPOSED` and unratified; its status is addressed in section 9, and
+   it is NOT relied on here as ratified authority.**
+3. **`scripts/check_oracle_environment.py` L30-31 compares the interpreter at MINOR granularity only**
+   (`".".join(...split(".")[:2])`). `certification/ORACLE_ENVIRONMENT.json` records
+   `runtime.python = '3.11.15'`, which no current runner provides, and
+   `docs/CI_AND_ORACLE_REPRODUCIBILITY_SPEC.md` s3 states the ABI constraint as "CPython 3.11 linux
+   x86_64". **This is why that step passed on a 3.11.17 runner.** Of these, only the specification sits
+   at a level of `ADR-0042` decision 1's hierarchy at all, and even it is cited here descriptively;
+   **the script's minor-only comparison and the artifact's recorded value are evidence of existing
+   implemented behaviour, and this entry does not treat either as establishing anything.** They record
+   that the patch component already sits outside recorded oracle environment identity as a matter of
+   implemented practice; they do not by themselves make it normative.
+
+### 3. An observed inconsistency in the gate's own implemented handling of that metadata
+
+`scripts/check_artifact_drift.py`'s `_normalise_text` (L158-163) drops a line **only if the line
+`startswith` one of the five `VOLATILE_LINE_PREFIXES`**. There is no substring or token normalization
+anywhere in the gate.
+
+The consequence is a channel inconsistency, not a difference of substance: the **same** quantity -
+interpreter patch version - is exempt when it arrives as the JSON field `run.python` or
+`environment.python`, and exempt when it arrives as a rendered `- python:` line, but **scored as
+substantive drift when it arrives inside a third-party library's stdout banner mid-line**. The gate
+behaved exactly as written. **This is an observation about implemented behaviour, not a finding that
+any ratified rule was breached**: the gate is simply under-specified for one delivery channel of a
+quantity its own implementation exempts in the other two. It is the same defect class `ADR-0043`
+addressed in those other two channels.
+
+### 4. Decision: Option B is selected
+
+**The banner is removed from the captured evidence at source. The gate's volatile-text exemptions are
+NOT widened.**
+
+**This decision does not depend on interpreter patch-version volatility having ratified normative
+authority, and does not assert that it has any.** Option B rests on a narrower and independent ground:
+**the banner is not certification evidence** (section 5), so it does not belong in the certification
+evidence, whatever the volatility question's eventual disposition. **It is an evidence-cleanliness
+decision taken at source, and it leaves the gate strict** (section 8). If the volatility question were
+resolved either way tomorrow, Option B's basis would be unchanged; section 2's items are recorded as
+context and existing practice, not as premises of this decision. **Section 5 records the measured
+reason this holds: the interpreter version remains recorded in each affected artifact's own
+`environment.python` field, so Option B removes a duplicate and not the information.**
+
+Two alternatives were evaluated in the forensic report and are **rejected** by this entry:
+
+- **Widening the gate to normalize interpreter paths inside transcript text (Option A)** is rejected.
+  It is the closer literal match to `ADR-0043`, but it is the only remedy that instructs the gate to
+  stop comparing content, and it would also mask a genuine environment change - a different interpreter
+  installation, a changed `site-packages` layout, an injected path. **The rejection rests on that
+  evidentiary consequence alone:** a standing normalization rule would remove the gate's ability to
+  detect a real change in the recorded environment, whereas removing non-evidentiary content at source
+  leaves every remaining line strictly compared. **No rule, guidance document or other external
+  instrument is relied on for this rejection.**
+- **Pinning the interpreter patch version in CI (Option C)** is rejected; see section 8.
+
+### 5. The banner is third-party import-side-effect output, not certification evidence
+
+PyJHora prints its `sys.path` to stdout **when it is imported**. The mechanism is fully located:
+
+- `scripts/certification_support.py` defines `_Tee` (L438), begins capture in `start_transcript()`
+  (L453), and writes the buffered text to `reports/certification/{slug}.console.txt` (L494).
+- The six affected certifiers import PyJHora **lazily, inside their Gate C block, after capture has
+  begun** - for example `scripts/certify_d16.py` L245, `import jhora  # noqa: F401`. The banner is
+  therefore emitted inside the `_Tee` buffer and lands in the committed transcript.
+- The unaffected oracle certifiers import `jhora` at **module top level, before capture begins** - for
+  example `scripts/certify_d2.py` L57 and `scripts/certify_vimshottari.py` L42-L45 - so their banner
+  reaches the job log only. **This is why exactly 6 of 22 transcripts are affected and the other 16 are
+  not.**
+
+**The banner is a side effect of importing a third-party package. It records nothing this project
+certifies: no input, no calculation, no comparison, no tolerance, no verdict.** Its content is a
+function of the runner's filesystem layout, not of the engine's behaviour. It entered the evidence as
+an accident of import placement relative to the start of transcript capture, not by any decision that
+it constitutes evidence.
+
+**The committed baseline confirms the accidental character.** The six transcripts were last captured by
+commit `cf628d0`, "CI-sourced recovery: capture the genuine PyJHora oracle evidence for D16, D4 and
+D40", so the committed evidence embeds whichever hosted-runner image happened to serve that recovery.
+
+**Removing the banner removes no interpreter-version information. This is measured, not assumed.** All
+six affected artifacts already record the interpreter version in their own `environment.python` field -
+`'3.11.16'` in each of `VARGA_D16_V1`, `VARGA_D20_V1`, `VARGA_D24_V1`, `VARGA_D4_V1`, `VARGA_D40_V1`
+and `VARGA_D45_V1`, measured 6 of 6. The banner is therefore a **duplicated** copy of
+interpreter-version information that each artifact already carries in a dedicated field. **Both copies
+track the runner**, and no claim is made here that the banner is the only non-deterministic one:
+section 1 records `environment.python` itself changing `'3.11.16'` -> `'3.11.17'` between the two runs.
+What the evidence establishes is narrower and sufficient - **Option B deletes the duplicated banner
+from captured stdout and leaves the dedicated `environment.python` field untouched, so Option B removes
+no interpreter-version information.** That remains true **even if `environment.python`'s own volatility
+status were later resolved against treating it as run metadata**, since Option B neither removes nor
+alters the field. This is an additional, independent reason the decision does not turn on the
+unresolved question in section 2.
+
+### 6. Required: the six certifiers must keep the banner out of the captured transcript
+
+`scripts/certify_d16.py`, `scripts/certify_d20.py`, `scripts/certify_d24.py`, `scripts/certify_d4.py`,
+`scripts/certify_d40.py` and `scripts/certify_d45.py` must be changed so that PyJHora's import-time
+output does not enter the `_Tee`-captured transcript.
+
+- The change must affect **only** where or how the import's stdout is emitted. It must not alter any
+  calculation, comparison, tolerance, gate, case, oracle invocation or verdict.
+- **Gate C's strength must not change, and its existing conditionality must be preserved. These are two
+  distinct requirements, and they are stated separately because an earlier draft of this entry
+  collapsed them into a single sentence that read as self-contradictory:**
+  - **Strength must not be reduced.** The implementation must not make Gate C weaker, **more**
+    conditional, bypassable or skippable than it already is, and must not introduce any new condition
+    under which the oracle comparison is not performed. **A skip is a failure, not a pass.**
+  - **Existing conditionality must be preserved exactly as it stands.** Gate C is **already**
+    conditional on PyJHora's availability - a real PyJHora comparison **whenever PyJHora is
+    importable** - and that existing conditional-genuine behaviour must be preserved **unchanged,
+    neither removed nor broadened**. Preserving that existing condition is **not** a weakening, and
+    removing it is **not** a strengthening; neither is authorized here.
+- **This entry specifies the requirement and authorizes no code change.** Implementation is a separate
+  authorization, and the choice of technique is part of it.
+
+### 7. Required: regeneration through the controlled certification process, never hand-editing
+
+The six transcripts must be regenerated by **running the certifiers in the hash-pinned oracle CI
+environment** and taking the resulting evidence.
+
+- **Hand-editing a certification transcript is prohibited by this entry.** A stored artifact is
+  regenerated evidence from a specific run; editing it by hand makes it a description of a run that
+  never happened.
+- **The register currently contains two divergent precedents for an environment artifact in a
+  transcript, and this entry resolves the divergence prospectively rather than pretending it is
+  absent.** At `docs/DECISION_LOG.md` L3989-L3991 a Windows backslash path in `vimshottari.console.txt`
+  "was corrected to match the committed convention before commit ... not a substantive change, a known
+  local-regeneration artifact". At L2704 the same class of difference was instead "a genuine
+  cross-platform provenance difference, declined (not committed, not hand-edited)". **For the case this
+  entry governs, the hand-correction disposition is NOT available**, and the declining disposition is
+  not sufficient either, because CI regenerates these transcripts on every run and compares them
+  against committed evidence, so there is no commit-time human step at which either disposition could
+  apply. Neither precedent is overruled for its own facts; both concerned a local regeneration.
+- The regenerated transcripts must be committed as evidence from a real, identified CI run, with that
+  run cited.
+
+### 8. Required: the artifact-drift gate stays strict, and no patch pinning is adopted
+
+- **`scripts/check_artifact_drift.py` is NOT modified by this remediation.** Neither `VOLATILE` nor
+  `VOLATILE_LINE_PREFIXES` is widened, narrowed or reordered. **Not widening those lists is part of
+  this decision, not an omission from it.**
+- The closed-list guard tests that pin both lists exactly -
+  `engine/tests/test_artifact_drift_gate.py`'s `test_the_volatile_list_is_exactly_what_is_documented`
+  (L94) and `test_the_volatile_line_prefixes_are_exactly_what_is_documented` (L236) - **remain in force
+  unchanged**, as do that file's numerical negative controls. Because no gate logic changes, the gate's
+  existing evidence that it can still fail is undiminished, and Option B requires no new negative
+  control for the gate itself.
+- After remediation the gate must still compare **every remaining line** of all 22 transcripts strictly.
+  Option B removes non-evidentiary content from the evidence; it does not teach the gate to ignore
+  content.
+- **No Python patch pinning is adopted.** `.github/workflows/ci.yml` L265's `python-version: "3.11"`
+  minor pin is left exactly as it is. Patch pinning is rejected because it would pin a component that
+  `docs/CI_AND_ORACLE_REPRODUCIBILITY_SPEC.md` s3 states the ABI constraint without - the specification
+  being the normative part, and `check_oracle_environment.py` L30-31's minor-only comparison being
+  merely observed evidence consistent with it; because `certification/ORACLE_ENVIRONMENT.json` records `3.11.15`, so pinning to any
+  currently available patch would contradict the recorded identity while pinning to the recorded value
+  may not be obtainable at all; and because it would defer the channel inconsistency rather than
+  resolve it, leaving it to resurface on the next image rollout.
+
+### 9. `ADR-0043`'s status, stated and not assumed
+
+**`ADR-0043` is `Status: PROPOSED` and has never been ratified.** Its own status line records why: "The
+builder cannot self-ratify (`PROJECT_CONSTITUTION.md` s11); recorded so the fix is not undocumented
+code." A search of this register returns **zero** `Ratification of ADR-0043` sub-entries.
+
+- **This entry neither ratifies nor supersedes `ADR-0043`, and does not treat it as ratified or derive
+  authority from it.** It is cited in section 2 as the record of a prior reasoning and of a live code
+  change, not as ratified authority. **This entry identifies no normative authority for interpreter
+  patch-version volatility and relies on none.** `.claude/rules/certification.md`,
+  `scripts/check_oracle_environment.py`'s behaviour, `certification/ORACLE_ENVIRONMENT.json`'s recorded
+  value and `scripts/check_artifact_drift.py`'s docstring and volatile lists are cited **as evidence of
+  existing practice and implemented behaviour only**; this entry derives no authority from any of them.
+  `.claude/rules/certification.md` is not a level in `ADR-0042` decision 1's hierarchy, and committed
+  implementation sits at that hierarchy's CODE level, which is not a source of normative authority.
+- **Disclosed plainly: no currently ratified decision entry has been identified that establishes
+  interpreter patch-version volatility as normative authority**, because `ADR-0043`, the entry that
+  would, is unratified. **This entry does not cure that gap, does not substitute committed code or
+  tooling guidance for the missing ratification, and does not pretend the gap is absent. Section 4's
+  decision does not require the gap to be closed.**
+- **Disclosed for the owner's attention:** the `VOLATILE` and `VOLATILE_LINE_PREFIXES` entries that
+  `ADR-0043` introduced are **live in committed code** while the entry recording them remains
+  unratified. Option B neither depends on nor worsens that position, because it widens nothing. Whether
+  `ADR-0043` should now be ratified, superseded or left as it stands is **an owner decision that this
+  entry does not make and does not pre-empt.**
+
+### 10. Residual observation, recorded and NOT authorized for repair here
+
+**`scripts/check_artifact_drift.py`'s `check_text` returns on the first differing line** (L185-L187).
+In this incident it reported **one** differing line per transcript where there were in fact **two**, so
+the gate's failure output understated the scope of the difference. This did not change the verdict and
+did not affect any calculated value.
+
+- **This entry does not authorize changing `check_text`.** It is recorded so that no future reader
+  treats the gate's failure output as a complete diff, and so that the observation is not lost.
+- Whether to repair it is a separate question requiring its own authorization, its own negative control
+  and its own entry.
+
+### 11. What this entry does NOT do
+
+**It authorizes no implementation.** No certifier, no gate, no script, no certification artifact, no
+transcript, no registry, no production module, no test and no CI configuration is changed by this
+entry. In particular it does **not** modify the six certifiers, does **not** modify
+`scripts/check_artifact_drift.py`, does **not** regenerate any artifact, does **not** re-run CI and does
+**not** adopt patch pinning.
+
+It neither ratifies nor supersedes `ADR-0043`. It does not edit `ADR-0092`, `ADR-0094`, `ADR-0099`, `ADR-0100`,
+`ADR-0101`, `ADR-0102` or `ADR-0103`, and creates no permission to edit any recorded decision entry. It
+does not amend `docs/CI_AND_ORACLE_REPRODUCIBILITY_SPEC.md`, `docs/VALIDATION_STANDARD.md`,
+`docs/NAMING_STANDARD.md`, `docs/ENGINE_STATUS.md`, `docs/Q8_CLOSURE_MATRIX.md` or
+`docs/OPEN_QUESTIONS.md`.
+
+**PR #33 and `ADR-0103` are a separate matter and remain on HOLD.** `ADR-0103` resolves `DP-041`'s
+`Q-A` (capability identifier grammar) and has no relationship to oracle transcript drift beyond having
+been the commit under test when this failure surfaced. **This entry does not clear PR #33, does not
+authorize merging it, and does not alter its `PROPOSED. NOT RATIFIED.` status.** `C2`-`C5` remain
+unauthorized; no `DP-040` option is selected; `Q-B`, `Q-C`, `Q-D` and `Q-F` remain open, as do `N1`,
+`N2`, `N5`, `N6`, `N7`, `Q1` and `Q12`. **JATAKA phase exit is neither declared nor performed and
+remains on HOLD.**
+
+- **Consequences, if ratified:** the six affected certifiers become eligible for a narrowly scoped
+  implementation authorization under section 6, followed by a controlled regeneration under section 7.
+  The oracle gate's current runner-dependent failure mode is removed **at source**, so the evidence
+  becomes stable across hosted-runner image rollouts, and the drift gate retains full strictness over
+  every remaining transcript line. **Nothing becomes authorized by ratification alone:** the certifier
+  change, the regeneration and the commit of regenerated evidence each require their own authorization,
+  and until they occur the oracle gate will continue to fail on any runner providing an interpreter
+  patch version other than `3.11.16`. `ADR-0043` remains unratified unless separately ratified, and
+  section 10's `check_text` residual remains open.
+- **Evidence:** CI run `37590275014` (oracle job FAILURE at `5f0e81f`) and run `37589340660` (oracle
+  job success at `49e3810`), their uploaded `oracle-certification-evidence` bundles compared
+  file-by-file and line-by-line, 70 files each; the measured results in section 1, including 22 of 70
+  files differing, 2 of 16 lines per transcript, 6 of 6 transcripts byte-identical after normalizing
+  only the interpreter patch token, `environment.python` as the sole differing JSON leaf path across all
+  26 artifacts, 26 of 26 artifacts byte-equal after removing only that field, and 118 result-bearing
+  fields compared with 0 differing; `.claude/rules/certification.md` L22-25;
+  `scripts/check_artifact_drift.py` L68-L76 (`VOLATILE`), L79-L85 (`VOLATILE_LINE_PREFIXES`),
+  L158-L163 (`_normalise_text`) and L185-L187 (`check_text`); `engine/tests/test_artifact_drift_gate.py`
+  L94 and L236; `scripts/check_oracle_environment.py` L30-L31;
+  `certification/ORACLE_ENVIRONMENT.json` `runtime.python`;
+  `docs/CI_AND_ORACLE_REPRODUCIBILITY_SPEC.md` s2 and s3; `.github/workflows/ci.yml` L254-L265 and
+  L345-L353; `scripts/certification_support.py` L438, L453 and L494; `scripts/certify_d16.py` L245;
+  `scripts/certify_d2.py` L57; `scripts/certify_vimshottari.py` L42-L45; commit `cf628d0` (the
+  CI-sourced recovery that captured the committed transcripts); `ADR-0043` and its absent ratification;
+  `docs/DECISION_LOG.md` L2704 and L3989-L3991 (the two divergent transcript-artifact precedents);
+  `grep -l` confirmation that the same six transcripts are the only ones of 22 carrying any absolute
+  interpreter path.
+
+---
+
 ## ADR template (copy, do not edit above the line)
 
 ## ADR-XXXX - <title>
