@@ -9510,14 +9510,18 @@ JATAKA phase exit, which remains on HOLD.**
 ## ADR-0104 - Oracle transcript drift: Option B selected - the PyJHora `sys.path` import-side-effect banner is to be kept out of the six affected captured transcripts at source, the artifact-drift gate's volatile lists are NOT to be widened, and no Python patch pinning is adopted (PROPOSED - drafted for CEO review, not ratified; remediation not yet implemented)
 
 - **Date:** 2026-10-07
-- **Status:** **PROPOSED. NOT RATIFIED.** Drafted on the owner's "CEO-authorized next step - draft
-  governance decision for Oracle Drift remediation" instruction, which selected **Option B** from the
-  read-only forensic report on CI run `37590275014` and directed that the decision be drafted before any
-  implementation. This entry becomes authoritative only on a ratifying instruction recorded in a
-  sub-entry beneath it, following the `ADR-0095` / `ADR-0099` / `ADR-0100` / `ADR-0101` / `ADR-0102`
-  drafted-then-ratified precedent. **Nothing in this entry is in force while it reads PROPOSED, and it
-  authorizes no implementation: no certifier, no gate, no artifact and no CI configuration is changed by
-  this entry.**
+- **Status:** **ACCEPTED, on the owner's explicit ratifying instruction recorded in the "Ratification
+  of ADR-0104" sub-entry immediately below this entry's own text.** Originally drafted
+  `PROPOSED. NOT RATIFIED.` on the owner's "CEO-authorized next step - draft governance decision for
+  Oracle Drift remediation" instruction, which selected **Option B** from the read-only forensic report
+  on CI run `37590275014` and directed that the decision be drafted before any implementation,
+  following the `ADR-0095` / `ADR-0099` / `ADR-0100` / `ADR-0101` / `ADR-0102` drafted-then-ratified
+  precedent. Per this repository's own "change only the status" discipline, this Status line is the
+  only text in this entry that the ratification altered; the Context, sections 1 to 11, the
+  Consequences and the Evidence are byte-for-byte as drafted and audited.
+  **Ratification makes this entry's decision and its requirements authoritative, and authorizes no
+  implementation:** the six certifier changes, the controlled regeneration, any change to the
+  artifact-drift gate and the ratification of `ADR-0043` each remain separately unauthorized.
 - **Context:** CI run `37590275014`, the `oracle gate (PyJHora, hash-pinned)` job on PR #33 at commit
   `5f0e81f629b1af9397068781f6924ec6b9c152eb`, failed at its final step, "Assert regenerated artifacts
   drifted only in the volatile fields". That step delegates to `scripts/check_artifact_drift.py`, which
@@ -9843,6 +9847,95 @@ remains on HOLD.**
   `docs/DECISION_LOG.md` L2704 and L3989-L3991 (the two divergent transcript-artifact precedents);
   `grep -l` confirmation that the same six transcripts are the only ones of 22 carrying any absolute
   interpreter path.
+
+#### Ratification of ADR-0104: OPTION B ACCEPTED AS THE GOVERNING DECISION; IMPLEMENTATION STILL SEPARATELY UNAUTHORIZED (2026-10-15)
+
+- **Status:** ACCEPTED. The owner instructed: "**OWNER DECISION - ADR-0104 RATIFICATION.** I explicitly
+  ratify ADR-0104 at commit `88d0f6f73d5edccf8e73fe25add548364997a542`, subject to its committed text.
+  Record the ratification through the repository's established governance process, preserving the
+  existing ADR history and exact commit provenance. This ratification does **not** authorize
+  implementation, artifact regeneration, changes to the drift gate, ratification of ADR-0043, or
+  merging PR #34... Wait for separate implementation authorization. Do not modify main or merge any PR
+  without the required CEO approval." Per `docs/PROJECT_CONSTITUTION.md` s11, that instruction is the
+  ratifying act.
+- **Commit provenance, recorded exactly as the owner's instruction requires.** The ratified text is
+  `ADR-0104` as committed at **`88d0f6f73d5edccf8e73fe25add548364997a542`**, the head of branch
+  `adr-0104-oracle-transcript-drift-option-b` and of PR #34 at the time of the owner's decision. That
+  commit was reached by four commits on that branch, each preserved and none amended:
+  `032c58bc42199d567e4c93f0314399a2423ac96c` (the entry, drafted from `main` at
+  `33dd7b94b0c22437d7f10162de5ebae2552580c7`), `7b4701e678c706992e8bfe8dac49a7b1969963ab` (authority
+  wording: committed code and tooling guidance recast as evidence, not normative authority),
+  `a18c754916d35ca562e32607d2ec9d49d370d817` (the section 6 Gate C disambiguation, the
+  `environment.python` evidence, and removal of the residual reliance on a guidance file in the Option A
+  rejection) and `88d0f6f73d5edccf8e73fe25add548364997a542` (correction of a false claim in section 5
+  that the banner was the only non-deterministic copy of the interpreter version).
+- **Decision:** `ADR-0104` above - its full Context, sections 1 to 11, Consequences and Evidence - is
+  **ratified exactly as committed, with no wording changed**. Its requirements are now the governing
+  record for the oracle transcript drift:
+  - **Option B is the selected remedy.** The PyJHora `sys.path` import-side-effect banner is to be kept
+    out of the six affected captured transcripts **at source**. The banner is not certification
+    evidence: it records no input, calculation, comparison, tolerance or verdict.
+  - **Option A is rejected** - the artifact-drift gate is not to be widened to normalize interpreter
+    paths inside transcript text - and **Option C is rejected**: no Python patch pinning is adopted.
+  - **The gate stays strict.** Neither `VOLATILE` nor `VOLATILE_LINE_PREFIXES` is widened, narrowed or
+    reordered; the closed-list guard tests pinning both remain in force; every remaining transcript
+    line stays strictly compared. **Not widening those lists is part of this decision, not an omission
+    from it.**
+  - **Regeneration must be controlled CI evidence.** The six transcripts are to be regenerated by
+    running the certifiers in the hash-pinned oracle CI environment, and **hand-editing a certification
+    transcript is prohibited**.
+  - **Gate C's strength must not be reduced** - no weaker, no more conditional, not bypassable, not
+    skippable - while its **existing PyJHora-availability conditionality is preserved unchanged**.
+    A skip is a failure, not a pass.
+- **The authority position is ratified as stated, and no authority is manufactured by ratifying it.**
+  `ADR-0104` identifies **no** normative authority for interpreter patch-version volatility and relies
+  on none; `.claude/rules/certification.md` is **not** a level in `ADR-0042` decision 1's hierarchy, and
+  committed code, gate docstrings, volatile lists and recorded artifact values are evidence of
+  implemented behaviour only. **Option B is severed from that unresolved question** and rests on the
+  independent ground that the banner is not certification evidence, reinforced by the measured fact that
+  all six affected artifacts already record the interpreter version in their own `environment.python`
+  field. **Ratification does not close the disclosed gap: no ratified decision entry establishes
+  interpreter patch-version volatility as normative authority, because `ADR-0043` remains `PROPOSED`.**
+- **`ADR-0043` is neither ratified nor superseded by this ratification**, exactly as the owner's
+  instruction requires and as `ADR-0104` section 9 already states. It remains `PROPOSED` with zero
+  ratification sub-entries, while the `VOLATILE` and `VOLATILE_LINE_PREFIXES` entries it introduced
+  remain live in committed code. Whether to ratify, supersede or leave it stands as an **open owner
+  decision**, untouched here.
+- **This ratification authorizes no implementation.** Nothing was built or regenerated: **no certifier
+  was modified, no transcript regenerated, no certification artifact changed, no gate altered, no test
+  changed and no CI configuration touched.** Measured at ratification and unchanged from `88d0f6f`:
+  26 certification artifacts, 22 scope-bearing, 4 `FROZEN_EVIDENCE`, 22 console transcripts of which
+  **6 still carry the PyJHora banner** and still embed `Python/3.11.16`. **The remediation `ADR-0104`
+  requires has not been performed**, and the oracle gate will continue to fail on any runner providing
+  an interpreter patch version other than `3.11.16`.
+- **A green CI run is not remediation, and was not treated as one.** CI run `37744421556` on `88d0f6f`
+  completed **success** on all four jobs, including the oracle gate - because that job's runner provided
+  **Python 3.11.16**, matching the committed transcripts. The same gate **FAILED** on `5f0e81f` and on
+  `7b4701e`, both on **Python 3.11.17**, with no certifier, transcript or gate differing between those
+  three documentation-only commits. The verdict therefore tracks the hosted-runner image, not the
+  repository. **No CI run was re-triggered to obtain a green oracle result**, and this ratification
+  records the green run as runner-dependent evidence rather than as proof that the drift is resolved.
+- **What remains open, unchanged by this ratification.** Implementation of Option B requires a
+  **separate** owner authorization naming the six certifiers, the technique, and the CI run whose
+  regenerated transcripts are to be committed. **PR #34 is not merged and `main` is not modified.**
+  `ADR-0104` section 10's `check_text()` first-difference short-circuit remains a recorded residual and
+  is **not** authorized for repair. **PR #33 / `ADR-0103` remains on HOLD** and is unaffected. `C2`-`C5`
+  remain **unauthorized**; **no `DP-040` option is selected** and the three `TRANSIT_V1` SCOPE
+  OVERCLAIMS remain undisposed; `DP-041`'s `Q-B`, `Q-C`, `Q-D` and `Q-F` remain open, as do `N1`, `N2`,
+  `N5`, `N6`, `N7`, `Q1` and `Q12`. **JATAKA phase exit is neither declared nor performed and remains
+  on HOLD.**
+- **Evidence:** the owner's ratifying instruction, quoted above; `ADR-0104` itself at
+  `88d0f6f73d5edccf8e73fe25add548364997a542`, unchanged and verified byte-identical below its Status
+  line; the four-commit provenance chain recorded above, none amended; the independent CEO audit of
+  `88d0f6f` returning PASS with no remaining blocking defect; CI run `37744421556` (all four jobs
+  success, oracle job on `hostedtoolcache/Python/3.11.16`) contrasted with the oracle-gate failures on
+  `5f0e81f` and `7b4701e` (both `Python/3.11.17`); CI run `37590275014`, the originating failure, and
+  run `37589340660`, the contrasting success, whose uploaded `oracle-certification-evidence` bundles
+  were compared file-by-file; `ADR-0042` decision 1 (the authority hierarchy, cited and unmodified);
+  `ADR-0043` and its absent ratification; `ADR-0044` decision 2 (the creation of the `.claude/rules`
+  tooling); the seven-commit single-file ratification precedent (`61b01b1`, `b4c4cf6`, `3de942c`,
+  `d3581ea`, `adb1e57`, `50c9d4c`, `5ffe0bd`), each of which touched `docs/DECISION_LOG.md` and nothing
+  else; `docs/PROJECT_CONSTITUTION.md` s11.
 
 ---
 
