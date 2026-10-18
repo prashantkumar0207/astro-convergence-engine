@@ -86,6 +86,8 @@ never presented as executed oracle agreement.
 Exit code 0 = PASS, 3 = FAIL.
 """
 
+import contextlib
+import io
 import sys
 from datetime import date
 from pathlib import Path
@@ -242,7 +244,17 @@ def gate_c_oracle():
     global _ORACLE_MISMATCHES, PYJHORA_VERSION
 
     try:
-        import jhora  # noqa: F401
+        # ADR-0104 Option B: PyJHora prints its sys.path to stdout on import, and
+        # this import runs after support.start_transcript() has replaced stdout
+        # with the _Tee that feeds varga_d16.console.txt. Redirect ONLY the import's
+        # stdout to a throwaway buffer so the banner cannot enter the captured
+        # transcript. The banner is third-party import-side-effect output and is
+        # not certification evidence; the interpreter version remains recorded in
+        # the artifact's own environment.python field. Nothing about gate C's
+        # strength or its existing PyJHora-availability conditionality changes:
+        # a StringIO is always writable, so this wrapper cannot raise.
+        with contextlib.redirect_stdout(io.StringIO()):
+            import jhora  # noqa: F401
         import importlib.metadata
         PYJHORA_VERSION = importlib.metadata.version("PyJHora")
     except Exception as error:
@@ -255,7 +267,10 @@ def gate_c_oracle():
     # artifact behind. This is deliberately stricter than the blanket
     # try/except that certify_d20.py's own gate C uses.
     try:
-        from jhora.horoscope.chart.charts import shodasamsa_chart
+        # ADR-0104 Option B, same reason as the import above: keep PyJHora's
+        # import-time banner out of the captured transcript.
+        with contextlib.redirect_stdout(io.StringIO()):
+            from jhora.horoscope.chart.charts import shodasamsa_chart
     except Exception as error:
         fail(f"PyJHora {PYJHORA_VERSION} is installed but shodasamsa_chart could not be "
              f"imported ({error}) - that is an oracle-interface defect, not an "
