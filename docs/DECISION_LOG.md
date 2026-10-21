@@ -9939,8 +9939,10 @@ remains on HOLD.**
 
 #### Implementation execution of ADR-0104: OPTION B IMPLEMENTED IN THE SIX CERTIFIERS AND THE SIX TRANSCRIPTS RECONCILED FROM ORACLE CI EVIDENCE (2026-10-18)
 
-- **Status:** **PROPOSED - execution record prepared for CEO review; not yet accepted.** This
-  sub-entry has not been accepted by the owner and is not yet an accepted repository record. The work
+- **Status:** **ACCEPTED, on the owner's explicit acceptance instruction of 2026-10-21.** Originally
+  drafted "PROPOSED - execution record prepared for CEO review; not yet accepted." Per this
+  repository's "change only the status" discipline, this Status line is the only text in this
+  sub-entry that the acceptance altered. The work
   it describes was separately authorized: the owner authorized implementation after `ADR-0104`'s
   ratification, instructing: "The owner has explicitly authorized implementation of Option
   B under ratified ADR-0104... Implement only ADR-0104 Option B: prevent the PyJHora import-side-effect
