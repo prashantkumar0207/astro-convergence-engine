@@ -38,6 +38,8 @@ mechanism that happens to share the same letter positionally - not a claim
 of equivalent coverage.
 """
 
+import contextlib
+import io
 import subprocess
 import sys
 from dataclasses import replace
@@ -150,7 +152,17 @@ def gate_c_oracle():
     global PYJHORA_VERSION
 
     try:
-        from jhora.horoscope.chart.charts import akshavedamsa_chart
+        # ADR-0104 Option B: PyJHora prints its sys.path to stdout on import, and
+        # this import runs after support.start_transcript() has replaced stdout
+        # with the _Tee that feeds varga_d45.console.txt. Redirect ONLY the import's
+        # stdout to a throwaway buffer so the banner cannot enter the captured
+        # transcript. The banner is third-party import-side-effect output and is
+        # not certification evidence; the interpreter version remains recorded in
+        # the artifact's own environment.python field. Nothing about gate C's
+        # strength or its existing PyJHora-availability conditionality changes:
+        # a StringIO is always writable, so this wrapper cannot raise.
+        with contextlib.redirect_stdout(io.StringIO()):
+            from jhora.horoscope.chart.charts import akshavedamsa_chart
         import importlib.metadata
         PYJHORA_VERSION = importlib.metadata.version("PyJHora")
     except Exception as error:  # pragma: no cover
