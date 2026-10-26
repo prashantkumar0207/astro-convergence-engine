@@ -9593,13 +9593,71 @@ question slugs and is not extended or amended here.
   together as subject matter, independently of Python package layout.
 - **Segment 2 - capability.** The capability within that domain.
 
-**Both segments are singular.** Each segment is an English descriptive noun or underscore-joined noun
-phrase in the **singular**, with no plural form, no abbreviation, no synonym and no marketing term,
-following s3's "singular nouns" rule. A segment may instead be an established production designator
-that is not a noun at all, such as `d20`; the singular rule binds nouns, and a designator carries
-whatever form production already fixed for it.
+**Naming constraints come in two kinds, and only the first is machine-enforced.**
 
-**This rule is the corpus's actual practice, not an aspiration:** of the 22 existing `_slug` values,
+**Machine-enforced (normative; checked by the section 11 conformance check once one is
+authorized):** the section 1 grammar - exactly two segments, the character set, 2 to 30 characters,
+no leading or trailing underscore - and the section 3 uniqueness rules. Nothing else in this section
+is machine-enforced, and no conformance check may enforce the conventions below unless a decision
+entry authorizes it: a plural or abbreviation heuristic would misjudge ordinary words such as
+`status`, `analysis` or `series`.
+
+**Human-reviewed conventions (normative; checked by review, not by a gate):**
+
+- **C1 - Singular.** A segment that names a countable thing uses its singular form (`transit`, not
+  `transits`). Mass nouns, terms of art and production designators such as `d20` keep their
+  established form.
+- **C2 - Established term.** Where the repository already has a term for a concept - evidenced by a
+  production module path, a registered artifact `_slug` or a ratified specification - a segment uses
+  that term, including transliterated terms of art such as `vimshottari`, `varga` or `parashari` and
+  established abbreviations such as `kp`. A new abbreviation, or a translation of an established term,
+  is not introduced. **Where no established term exists**, descriptive English is the **default
+  convention for proposing a new name**: the segment is proposed as a plain descriptive English noun or
+  noun phrase. **An artifact `_slug` counts only as evidence that a term is established.** It is not
+  a capability identifier and gains no normative authority from this section. Two uses are kept apart.
+  **Reusing an artifact identifier because it exists is not authorized:** the existence of a `_slug`
+  does not by itself make that string, or any string taken from it, a capability slug or segment.
+  **Using an established term is authorized:** a term that a `_slug` evidences may be used as a
+  segment where its use is justified as a term under C2 - it names the concept the capability
+  addresses, as the evidence uses it - and it is proposed and reviewed like any other segment. Neither
+  use changes or retrofits an existing `_slug` (sections 12 and 14). Where the evidence sources name
+  one concept differently, the adjudication order below decides.
+- **C3 - One name per concept.** A segment does not introduce a second name for a concept that already
+  has an established term. This is what "no synonym" means here.
+- **C4 - Descriptive, not promotional.** A segment says what the capability is, not how good it is:
+  words such as `fast`, `advanced` or `smart` are not used. This is what "no marketing term" means
+  here; the examples are illustrative, not a list.
+
+`NAMING_STANDARD.md` s3's "English" and "no abbreviations" clauses are deliberately **not** adopted,
+consistent with section 10, which adopts only s3's "singular nouns" rule. Read literally, those two
+clauses would be breached by 18 of the 22 existing `_slug` values, whose established terms are
+transliterated Sanskrit or the abbreviation `kp`; C2 replaces them with a test anchored to repository
+evidence. **The English default in C2 is not s3's "English" clause re-adopted.** It applies only where
+no established term exists, it is a convention for proposing a name rather than a prohibition, and it
+never displaces an established term: an established transliterated term or abbreviation is used under
+C2 whether or not it is English. **C2 is an admissibility test for a word, not a vocabulary:** it does
+not close or pre-register any domain list and does not decide the section 13 domain-vocabulary
+residual.
+
+**Adjudication.** A published slug is immutable and can only be retired, never renamed (section 4), so
+C1 to C4 are applied **before a slug is first committed in an artifact**. The builder proposes each new
+slug with a one-line rationale, citing the evidence for any C2 term; the independent CEO audit checks
+it against C1 to C4 as part of auditing the change that introduces it; and the owner's acceptance of
+that change is binding, per `ADR-0056`. **Where established terms conflict**, the term in an
+applicable ratified specification governs. Failing one, an accepted capability slug governs as
+precedent **only where it is genuinely applicable and unambiguous**. The term instead requires
+**explicit adjudication through this review before the slug is first committed** where accepted
+precedents conflict with one another, where no precedent is clearly applicable, or where an applicable
+ratified specification cannot be reconciled with an accepted capability slug; in that last case the
+specification still governs the choice of term, and the adjudication records the conflict, because
+the accepted slug is immutable. The builder does not choose between conflicting terms or precedents.
+The same applicability test decides any other ambiguous case, and the rationale is recorded where the
+slug is introduced. Where the conventions themselves conflict, C2 and C3 prevail over C1. An
+adjudication that would need a rule not derivable from C1 to C4 and existing precedent requires a
+decision entry, not an ad hoc ruling. A finding under C1 to C4 is a review finding that blocks
+acceptance; it is never reported as a gate failure.
+
+**C1 is the corpus's actual practice, not an aspiration:** of the 22 existing `_slug` values,
 **none** is plural - `transit`, not `transits`; `rise_set`, `sign_convention`, `vimshottari`,
 `varga_d20`. Zero of 22 end in `s`.
 
