@@ -6,7 +6,7 @@
 | Work package | WP-RD-B (certification mutation harness rebuild) |
 | Design baseline | `WP-N1-RD-01-R1_Corrected_Design_Packet.md`, SHA-256 `b3ed57865c1986cd7d24f85d4513aee31389f58ffc7c9ccf066ed4c622efac82` (12-section design; revisions RD-C1 to RD-C6; governance clarification G-1) |
 | Binding amendments | CEO amendments A (restoration-state precedence) and B (D45 classifier-sign control), accepted after R1; they override contradictory R1 wording |
-| Execution order | CEO directive WP-RD-B-IMP-01, issued on the owner's explicit WP-RD-B implementation authorization |
+| Execution order | CEO directive WP-RD-B-IMP-01, issued on the owner's explicit WP-RD-B implementation authorization; corrected by CEO directive WP-RD-B-F1 (owner-approved; §4a) |
 | Governance status | Not a decision entry. Not ratified. Formal governance recording and any merge remain subject to owner approval. |
 
 This file records the contract the code in this directory implements. It does not decide anything
@@ -77,12 +77,83 @@ the worktree for that run.
 - the outcome is not VOID;
 - the restoration status is RESTORED-VERIFIED or NOT-APPLICABLE;
 - every mandatory code attestation passed in every phase;
-- evidence is complete: the journal ends with its FINAL record, and `result.json` was written once and
-  re-read with a matching SHA-256.
+- evidence is complete under the **WP-RD-B-F1 two-phase finalization** protocol (§4a): a verified
+  pending candidate, then a durable and verified FINAL record binding the candidate's SHA-256, then
+  atomic no-replace publication of `result.json`, then confirmation through the consumer contract.
 
 Otherwise `INVALID`. **Batch rule (conservative simplification of R1 T4b):** the batch continues only
 after a VALID experiment; any INVALID experiment halts the batch. The design's "continue only if the
 error is local to the pre-check" option is not implemented. Every pre-check error halts.
+
+## 4a. Durable evidence finalization (WP-RD-B-F1, CEO directive WP-RD-B-F1)
+
+**Invariant.** An authoritative persisted result never reports VALID unless all mandatory evidence
+for that verdict has already been finalized and verified.
+
+**Defect corrected (commit `4318b31`).** `_finalize()` wrote, fsynced and verified `result.json`
+(L729–L733) **before** appending the mandatory FINAL journal record (L734). If that append failed, the
+function returned INVALID/HALT, but the persisted `result.json` still said VALID/CONTINUE.
+
+**Protocol (`harness.Runner._finalize`):**
+
+| Stage | Action | On failure |
+|---|---|---|
+| A — prepare | Serialize the candidate. Exclusively create `result.pending.json`, fsync it, fsync the directory, re-read and verify its SHA-256. | INVALID / HALT; no FINAL is written |
+| B — finalize | Append `S9 FINAL` (`run_id`, `candidate_sha256`, `result_sha256`; meaning: *mandatory evidence finalized, publication pending*), fsync it, and verify the record is the durable journal tail. | INVALID / HALT; `S9 FINALIZATION-FAILED` is appended after it |
+| C — publish | `os.link(pending, result.json)`: an atomic, same-directory, **no-replace** publication. Then fsync the directory and check `samefile`. | INVALID / HALT; our own just-published `result.json` is **retracted** (its bytes remain in the pending file) |
+| D — confirm | `validate_run_evidence()` must report COMPLETE, with the persisted result equal to the candidate. Only then is the candidate returned. | as C |
+
+**The durable commit point** is the creation of the name `result.json`. That happens only after the FINAL
+record (Stage B) is durable and verified. A FINAL record without `result.json` is **not** a complete
+experiment.
+
+**Failure handling.** Every failure goes to `_finalization_failed()`:
+- the returned result is INVALID / HALT, with `evidence_complete: false` and
+  `finalization.state = FAILED` (`UNCERTAIN` if a published result could neither be retracted nor
+  marked);
+- `FINALIZATION_FAILED.json` is created exclusively, with the failure result;
+- `S9 FINALIZATION-FAILED` is appended to the journal;
+- quarantine applies when a mutation was applied;
+- the observed outcome and the restoration status are **never rewritten**.
+
+A pre-existing `result.json` is never overwritten. Publishing the failure marker is not a prerequisite
+for halting; the returned HALT stands on its own.
+
+**Consumer contract (`harness.validate_run_evidence(run_dir)`, machine-checkable):**
+
+| State | Condition |
+|---|---|
+| COMPLETE | All of: `result.json` exists and parses; it declares protocol `wp-rd-b-f1-two-phase-v1` and `evidence_complete: true`; validity and batch action are consistent (VALID/CONTINUE or INVALID/HALT); the journal is fully parseable and gap-free from seq 1; its **last** record is `S9 FINAL`, binding `sha256(result.json)` and the run id; no failure marker exists; any pending candidate is byte-identical. |
+| PENDING | No `result.json`, but a pending candidate exists. **Never authoritative.** |
+| FAILED | `FINALIZATION_FAILED.json` is present. |
+| INCOMPLETE | Anything else. |
+
+Only COMPLETE is authoritative. The invariant checker of every state-machine test enforces this
+contract, and F1-T9 enforces it on 13 constructed evidence variants.
+
+**Crash-interval analysis** (what an observer can find, and why it is never a false VALID):
+
+| # | Interval | Possible on-disk state | Consumer verdict |
+|---|---|---|---|
+| 1 | before the pending file is created | journal ends with the S9 intent record | INCOMPLETE |
+| 2 | during pending write / fsync | partial or complete pending file only | PENDING |
+| 3 | after pending verified, before FINAL | pending file only | PENDING |
+| 4 | during FINAL append / fsync | journal has a partial final line, or a FINAL line that may not be durable; no `result.json` | INCOMPLETE / PENDING |
+| 5 | after FINAL, before publication | FINAL is the journal tail; no `result.json` | PENDING (F1-T7a) |
+| 6 | during `os.link` | atomic: either no `result.json`, or a `result.json` that is the bound, fsynced inode | PENDING, or COMPLETE with valid binding |
+| 7 | after link, before directory fsync / confirmation | `result.json` may or may not survive a crash. If it survives it is the bound candidate, and its FINAL was already durable (journal data and directory entry fsynced). | COMPLETE (genuinely complete) or PENDING; never a false VALID |
+
+**Residual limitations (not eliminated by this narrow change):**
+- Directory fsync is implemented only on POSIX. Elsewhere `_fsync_dir()` raises, so finalization fails
+  closed (INVALID). It never claims durability.
+- Durability ultimately depends on the filesystem honouring `fsync`. A filesystem without hard links
+  makes publication fail closed.
+- If, after a successful publication, a later step fails **and** both the retraction and the failure
+  marker fail, `finalization.state = UNCERTAIN`: the returned result is INVALID / HALT, but a COMPLETE
+  `result.json` may remain. In that case the evidence genuinely is complete (FINAL durable, binding
+  valid), so it is not a *false* VALID. It is reported as UNCERTAIN, not as success.
+- A `SIGKILL` of the harness process ends at whichever interval it hits. The table above shows that
+  none of them produces a false VALID.
 
 ## 5. Bytecode isolation (R1 §7.3, with the CEO implementation clarification)
 

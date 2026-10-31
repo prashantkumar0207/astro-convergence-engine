@@ -200,10 +200,11 @@ From read-only source inspection at `6538930`:
   CPython 3.12 were not run.
 - **Directory-granular ignored reporting** (§4.1). It is mitigated, not eliminated.
 - **PID reuse** within one attested command is not handled.
-- **The result file can disagree with the journal on one rare path.** `result.json` states its
-  validity as conditional on a journal FINAL record carrying its SHA-256. If appending FINAL fails
-  after `result.json` is written, the returned result is INVALID but the file on disk is not rewritten
-  (files are never overwritten).
+- ~~**The result file can disagree with the journal on one rare path.**~~ **Corrected by
+  WP-RD-B-F1 (§10).** In `4318b31`, if appending FINAL failed after `result.json` had been written, the
+  persisted file still said VALID. That ordering is replaced by two-phase finalization, under which no
+  `result.json` exists before a durable, verified FINAL record. This was the CEO audit's blocking
+  finding RD-B-F1.
 - **A duplicate `run_id`** raises from `run_batch` before anything executes. It fails closed, but
   produces no result record.
 - **`SIGKILL` of the harness process** leaves a write-ahead journal without FINAL and may leave the
@@ -212,3 +213,71 @@ From read-only source inspection at `6538930`:
   `PYTHONDONTWRITEBYTECODE=1`.
 - **The fixture certifier imitates only the shape of ACE Gate I/J.** Behaviour on ACE certifiers is
   unverified.
+
+## 10. WP-RD-B-F1 correction: durable finalization before VALID publication
+
+Sections 2–9 describe the original WP-RD-B run at `4318b31`. This section records the owner-approved
+correction under CEO directive WP-RD-B-F1. The protocol is specified in `DESIGN_CONTRACT.md` §4a.
+
+**Root cause (at `4318b31`, `harness.py`).** In `_finalize()`, `result.json` was written, fsynced and
+verified (L729–L733) before the mandatory `S9 FINAL` journal append (L734). The failure branch
+(L738–L748) changed only the returned dict, so a FINAL failure left a persisted VALID/CONTINUE
+`result.json`.
+
+**Correction.** Two-phase finalization:
+1. a pending candidate;
+2. a durable, verified FINAL record binding the candidate's SHA-256;
+3. atomic, no-replace `os.link` publication of `result.json`;
+4. confirmation by the consumer contract `validate_run_evidence()`.
+
+Supporting changes:
+- fail-closed `_finalization_failed()`: INVALID / HALT, a retraction of our own publication, the
+  `FINALIZATION_FAILED.json` marker, and a journal note;
+- the journal directory is fsynced at creation;
+- the SIGTERM handler now also covers finalization.
+
+The invariant checker of every state-machine test now also enforces the consumer contract.
+
+**Regression demonstration.** F1-T1 was run against the original `4318b31` `harness.py`, exported from
+the committed tree (blob `b0172c024648f3ff04697ceb69e3b1201e66a049`), with the new test files overlaid:
+- **rc 1, FAILED**: "an authoritative result.json existed before the FINAL record was attempted"
+  (log `ed9c423d…ba9d`, JUnit `ae0ef43f…c827`);
+- the same test against the corrected code: **rc 0, PASSED** (log `7a2d0742…74d8`).
+
+**Final run** (frozen source; same host, interpreter and command form as §2):
+
+| Suite | Tests | Passed | Failed | Skipped | Exit | Log SHA-256 |
+|---|---|---|---|---|---|---|
+| test_gitstatus | 25 | 25 | 0 | 0 | 0 | `7565ae8d76c82ac32695384ae1e68ab93d82465a0f2098ce679cf07dd888dd2b` |
+| test_gitstatus_mutants | 16 | 16 | 0 | 0 | 0 | `9c0e417773b69ca0f59804d8c0d7017fb92e6f8f8e90cd8e392fd8c560764206` |
+| test_rename_matrix | 11 | 11 | 0 | 0 | 0 | `6336602ee46a0e370fb42d1923cd10bccd58babd8e944b71999df90d1ab44f14` |
+| test_bytecode | 10 | 10 | 0 | 0 | 0 | `02f6fadab98fd0c335438ad17e38333d783d7803b48541c6f1b381399e0ff63c` |
+| test_hook_equivalence | 24 | 24 | 0 | 0 | 0 | `977c69d9fa872858f8954d41e02a30aee0e1cf8ae243ee6d3b702c3340f22b32` |
+| test_state_machine | 43 | 43 | 0 | 0 | 0 | `3e64fb7c1a6f4d34729c46a0ea6cd14e362b16aa9226ddf2cb1df879e769d18a` |
+| test_finalization (new) | 18 | 18 | 0 | 0 | 0 | `2234659a9b25c1175a16f2401d1d36bdc2b9cabe74ffef386cb4db9e49f524f1` |
+| **Total** | **147** | **147** | 0 | **0** | — | `exit_codes.txt` `4e6dfee7…0c81` |
+
+**F1 negative controls** (exact-once source mutations of `harness.py`). Every pristine detector
+passed, and every mutant was killed by an AssertionError (`fm_kill_evidence.jsonl` `acffb79c…2ae2`):
+
+| Mutant | Defect | Detector | Killing assertion |
+|---|---|---|---|
+| FM-1 | original premature ordering (publish before FINAL) | F1-T1 | result.json existed before FINAL was attempted |
+| FM-2 | FINAL durability verification removed | F1-T2b | failure stage is not `final-verify` |
+| FM-3 | pending-candidate integrity check bypassed | F1-T4 | the corrupt candidate was bound by FINAL; it failed later, at `confirm` |
+| FM-4 | consumer ignores the FINAL binding | F1-T9 | variant `final-binds-other-bytes` accepted |
+| FM-5 | publication overwrites an existing `result.json` | F1-T8 | the pre-existing file was not preserved |
+| FM-6 | a published result is not retracted after a later failure | F1-T7b | the persisted result.json claims VALID |
+
+All 13 parser mutants and 10 restoration mutants remain killed (the suites above).
+
+**Integrated demonstration** (corrected code, rc 0). The same seven scenario results as §5. The
+consumer contract reports **COMPLETE** for every scenario's evidence, including the INVALID
+experiments, whose INVALID verdicts are themselves fully finalized. Evidence:
+- `WPRDB_F1_DEMO_EVIDENCE.tar.gz`, SHA-256 `74d85840e7b657c838eed3762d487a6d5a50ff9b99832c46f5512d52751b8d71`;
+- consumer check `e25dd6b3…d837`;
+- summary `714abeb2…eadb`.
+
+**Unresolved and not remediated here** (they need separate authorization): the ADR-0099 name-matching
+ambiguity, ACE child-process counts, cross-version/Windows testing, PID reuse, a duplicate `run_id`
+raising, and the residual windows listed in `DESIGN_CONTRACT.md` §4a.

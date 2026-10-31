@@ -64,6 +64,22 @@ pytest temporary directory.
 | `test_bytecode.py` | Bytecode isolation D1–D9, plus hook/harness structural-identity agreement |
 | `test_hook_equivalence.py` | Hook equivalence E1–E14, the probe, and hook inertness |
 | `test_state_machine.py` | State machine C1–C13 (amended C5, C7a–C7d, C8b), the 16-case truth table, precedence, validity, harness mutant-kill matrix HM-1 to HM-10, and the guards |
+| `test_finalization.py` | WP-RD-B-F1 durable finalization: F1-T1 to F1-T10, plus finalization mutant-kill matrix FM-1 to FM-6 |
+
+## Reading results: the consumer contract (WP-RD-B-F1)
+
+A run's `result.json` is authoritative **only** if `harness.validate_run_evidence(run_dir)` returns
+`state == "COMPLETE"`:
+- the journal ends with the `S9 FINAL` record that binds `sha256(result.json)` and the run id;
+- no `FINALIZATION_FAILED.json` marker exists;
+- the result declares the two-phase protocol and `evidence_complete: true`.
+
+The other states are never a success:
+- `result.pending.json` alone is a non-authoritative candidate (`PENDING`);
+- a failure marker gives `FAILED`;
+- anything else is `INCOMPLETE`.
+
+Do not read `result.json` without this check. See `DESIGN_CONTRACT.md` §4a.
 
 Integrated demonstration (writes evidence outside the repository; the output must be under the
 system temporary directory):

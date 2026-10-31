@@ -182,11 +182,36 @@ class HarnessConfig:
 
 # ------------------------------------------------------------------ evidence
 
+#: WP-RD-B-F1 two-phase result publication. The authoritative result file is created only
+#: after the FINAL journal record binding its exact bytes is durable and verified.
+RESULT_NAME = "result.json"                 # authoritative, only when validate_run_evidence() says COMPLETE
+PENDING_NAME = "result.pending.json"        # candidate; never authoritative on its own
+FAILED_NAME = "FINALIZATION_FAILED.json"    # failed or incomplete finalization marker
+FINALIZATION_PROTOCOL = "wp-rd-b-f1-two-phase-v1"
+
+
+class FinalizationError(Exception):
+    """Mandatory evidence could not be finalized; a VALID result must not be published."""
+
+
 def _fsync_write(path: Path, data: bytes) -> None:
     with open(path, "xb") as handle:
         handle.write(data)
         handle.flush()
         os.fsync(handle.fileno())
+
+
+def _fsync_dir(path: Path) -> None:
+    """Make directory entries durable. POSIX only: elsewhere this raises, so finalization
+    fails closed instead of claiming a durability it cannot establish."""
+
+    if os.name != "posix":
+        raise OSError("directory fsync is not supported on this platform")
+    fd = os.open(path, os.O_RDONLY | getattr(os, "O_DIRECTORY", 0))
+    try:
+        os.fsync(fd)
+    finally:
+        os.close(fd)
 
 
 class Journal:
@@ -195,17 +220,83 @@ class Journal:
     def __init__(self, path: Path):
         self.path = path
         self.seq = 0
+        self.last_line = ""
         _fsync_write(path, b"")
+        _fsync_dir(path.parent)
 
-    def append(self, state: str, action: str, **data) -> dict:
+    def append(self, state: str, action: str, _sync_fn=None, **data) -> dict:
         self.seq += 1
         record = {"seq": self.seq, "state": state, "action": action, **data}
         line = json.dumps(record, sort_keys=True, default=str) + "\n"
         with open(self.path, "a", encoding="utf-8") as handle:
             handle.write(line)
             handle.flush()
-            os.fsync(handle.fileno())
+            (_sync_fn or os.fsync)(handle.fileno())
+        self.last_line = line
         return record
+
+
+def validate_run_evidence(run_dir) -> dict:
+    """Consumer contract (WP-RD-B-F1). A run's result is authoritative ONLY if this returns
+    state COMPLETE. States:
+
+      COMPLETE    result.json exists, parses, declares the two-phase protocol and
+                  evidence_complete, is internally consistent, and the journal is a gap-free,
+                  fully parseable sequence whose LAST record is the S9 FINAL record binding
+                  sha256(result.json) and the run id; no failure marker; any pending
+                  candidate is byte-identical.
+      PENDING     no result.json but a pending candidate exists: never authoritative.
+      FAILED      FINALIZATION_FAILED.json is present.
+      INCOMPLETE  anything else (missing, corrupt, mismatching or non-final evidence).
+    """
+
+    run_dir = Path(run_dir)
+    result_path, pending_path = run_dir / RESULT_NAME, run_dir / PENDING_NAME
+    failed_path, journal_path = run_dir / FAILED_NAME, run_dir / "journal.jsonl"
+    reasons: list = []
+    if failed_path.exists():
+        reasons.append("finalization failure marker present")
+    records: list = []
+    try:
+        raw = journal_path.read_bytes()
+        if raw and not raw.endswith(b"\n"):
+            reasons.append("journal ends with an incomplete record")
+        records = [json.loads(line) for line in raw.split(b"\n") if line]
+    except (OSError, ValueError) as exc:
+        reasons.append(f"journal unreadable: {exc}")
+    if [record.get("seq") for record in records] != list(range(1, len(records) + 1)):
+        reasons.append("journal sequence is not gap-free from 1")
+    if not result_path.exists():
+        reasons.append("no authoritative result.json")
+        state = "FAILED" if failed_path.exists() else "PENDING" if pending_path.exists() else "INCOMPLETE"
+        return {"state": state, "complete": False, "reasons": reasons, "result": None}
+    data = result_path.read_bytes()
+    digest = pyenv.sha256_bytes(data)
+    result = None
+    try:
+        result = json.loads(data)
+    except ValueError as exc:
+        reasons.append(f"result.json is not valid JSON: {exc}")
+    final = records[-1] if records else None
+    if final is None or final.get("state") != "S9" or final.get("action") != "FINAL":
+        reasons.append("journal does not end with the S9 FINAL record")
+    elif final.get("candidate_sha256") != digest:
+        reasons.append("FINAL record does not bind this result.json")
+    elif not isinstance(result, dict) or final.get("run_id") != result.get("run_id"):
+        reasons.append("FINAL record run id does not match result.json")
+    if pending_path.exists() and pyenv.sha256_file(pending_path) != digest:
+        reasons.append("pending candidate differs from result.json")
+    if isinstance(result, dict):
+        if result.get("finalization", {}).get("protocol") != FINALIZATION_PROTOCOL:
+            reasons.append("result.json does not declare the two-phase finalization protocol")
+        if result.get("evidence_complete") is not True:
+            reasons.append("result.json does not declare evidence_complete")
+        validity, action = result.get("experiment_validity"), result.get("batch_action")
+        if (validity, action) not in ((VALID, CONTINUE), (INVALID, HALT)):
+            reasons.append(f"inconsistent validity/batch action: {validity}/{action}")
+    complete = not reasons
+    state = "COMPLETE" if complete else ("FAILED" if failed_path.exists() else "INCOMPLETE")
+    return {"state": state, "complete": complete, "reasons": reasons, "result": result if complete else None}
 
 
 @dataclass
@@ -231,6 +322,7 @@ class RunContext:
     observations: dict = field(default_factory=dict)
     mutated_mtime_ns: int | None = None
     command_seq: int = 0
+    published: bool = False
 
 
 # ------------------------------------------------------------------ runner
@@ -337,12 +429,15 @@ class Runner:
 
         previous = signal.signal(signal.SIGTERM, on_sigterm)
         try:
-            self._experiment_body(ctx)
-        except BaseException as exc:  # noqa: BLE001 - every exit path is journalled and fail-closed
-            self._on_exception(ctx, exc)
+            try:
+                self._experiment_body(ctx)
+            except BaseException as exc:  # noqa: BLE001 - every exit path is journalled and fail-closed
+                self._on_exception(ctx, exc)
+            # WP-RD-B-F1: finalization also runs with the SIGTERM handler installed, so an
+            # interruption there is caught by _finalize's fail-closed path.
+            return self._finalize(ctx)
         finally:
             signal.signal(signal.SIGTERM, previous)
-        return self._finalize(ctx)
 
     def _experiment_body(self, ctx: RunContext) -> None:
         if not self._s0_init(ctx):
@@ -712,8 +807,9 @@ class Runner:
             "failures": ctx.failures,
             "quarantined": quarantined,
             "evidence_dir": str(ctx.run_dir),
-            "validity_condition": "VALID only if journal.jsonl ends with a FINAL record carrying this "
-                                  "file's sha256",
+            "validity_condition": "authoritative only when validate_run_evidence() reports COMPLETE: "
+                                  "journal.jsonl must end with the S9 FINAL record whose candidate_sha256 "
+                                  "equals this file's sha256, and FINALIZATION_FAILED.json must be absent",
         }
         provisional = derive_validity(ctx.outcome, ctx.restoration, ctx.attestation_ok, True)
         result["experiment_validity"] = provisional
@@ -722,32 +818,111 @@ class Runner:
                                                                                     NOT_APPLICABLE)
         result["cleanup_status"] = ("ELIGIBLE-RETAINED-BY-POLICY" if result["cleanup_eligible"]
                                     else "INELIGIBLE-RETAINED")
-        evidence_ok = True
+        result["evidence_complete"] = True
+        result["finalization"] = {"protocol": FINALIZATION_PROTOCOL, "authoritative_name": RESULT_NAME,
+                                  "binding": "journal.jsonl last record S9/FINAL candidate_sha256"}
+        # WP-RD-B-F1 two-phase publication. Stage A: pending candidate. Stage B: durable,
+        # verified FINAL record binding the candidate. Stage C: atomic no-replace
+        # publication. Stage D: consumer-contract confirmation. A VALID result.json can
+        # only exist after Stage B has succeeded.
+        stage = "prepare"
         try:
-            ctx.journal.append("S9", "intent: write result.json", provisional_validity=provisional)
+            ctx.journal.append("S9", "intent: finalize evidence (two-phase)", provisional_validity=provisional)
             self._fault("before_finalize", ctx=ctx)
             data = json.dumps(result, indent=2, sort_keys=True, default=str).encode("utf-8")
-            _fsync_write(ctx.run_dir / "result.json", data)
-            reread = pyenv.sha256_file(ctx.run_dir / "result.json")
-            if reread != pyenv.sha256_bytes(data):
-                raise OSError("result.json re-read hash mismatch")
-            ctx.journal.append("S9", "FINAL", result_sha256=reread)
-        except BaseException as exc:  # noqa: BLE001
-            evidence_ok = False
-            ctx.failures.append(f"S9 evidence finalisation failed: {exc!r}")
-        if not evidence_ok:
-            result["failures"] = ctx.failures
-            result["evidence_complete"] = False
-            result["experiment_validity"] = derive_validity(ctx.outcome, ctx.restoration,
-                                                            ctx.attestation_ok, False)
-            result["batch_action"] = HALT
-            result["cleanup_eligible"] = False
-            result["cleanup_status"] = "INELIGIBLE-RETAINED"
-            if ctx.mutation_intended and not quarantined:
-                result["quarantined"] = self._quarantine(ctx)
-        else:
-            result["evidence_complete"] = True
-        return result
+            candidate = json.loads(data)
+            candidate_sha = pyenv.sha256_bytes(data)
+            stage = "pending-write"
+            pending = ctx.run_dir / PENDING_NAME
+            replacement = self._fault("pending_write", ctx=ctx, data=data)
+            _fsync_write(pending, data if replacement is None else replacement)
+            _fsync_dir(ctx.run_dir)
+            self._fault("after_pending", ctx=ctx, path=pending)
+            stage = "pending-verify"
+            if pyenv.sha256_file(pending) != candidate_sha:
+                raise FinalizationError("pending candidate does not match the intended result bytes")
+            stage = "final-journal"
+            self._append_final(ctx, candidate_sha)
+            stage = "final-verify"
+            self._verify_journal_tail(ctx)
+            self._fault("after_final", ctx=ctx)
+            stage = "publish"
+            self._publish(ctx, pending)
+            stage = "confirm"
+            status = validate_run_evidence(ctx.run_dir)
+            if not status["complete"] or status["result"] != candidate:
+                raise FinalizationError(f"published result failed the consumer contract: {status['reasons']}")
+        except BaseException as exc:  # noqa: BLE001 - every failure is fail-closed below
+            return self._finalization_failed(ctx, result, stage, exc, quarantined)
+        return candidate
+
+    def _append_final(self, ctx: RunContext, candidate_sha: str) -> dict:
+        def sync(fd):
+            self._fault("final_fsync", ctx=ctx, fd=fd)
+            os.fsync(fd)
+
+        return ctx.journal.append(
+            "S9", "FINAL", _sync_fn=sync, run_id=ctx.spec.run_id, candidate_sha256=candidate_sha,
+            result_sha256=candidate_sha,
+            meaning="mandatory evidence finalized; result.json is published only AFTER this record "
+                    "is durable, as a hard link to the bound pending candidate")
+
+    def _verify_journal_tail(self, ctx: RunContext) -> None:
+        expected = ctx.journal.last_line.encode("utf-8")
+        if not expected or not ctx.journal.path.read_bytes().endswith(expected):
+            raise FinalizationError("the FINAL record is not durably present at the end of the journal")
+
+    def _publish(self, ctx: RunContext, pending: Path) -> None:
+        result_path = ctx.run_dir / RESULT_NAME
+        self._fault("publish", ctx=ctx)
+        os.link(pending, result_path)  # atomic, same directory; refuses an existing result.json
+        ctx.published = True
+        self._fault("after_publish", ctx=ctx)
+        _fsync_dir(ctx.run_dir)
+        if not os.path.samefile(pending, result_path):
+            raise FinalizationError("result.json is not the bound pending candidate")
+
+    def _finalization_failed(self, ctx: RunContext, result: dict, stage: str, exc: BaseException,
+                             quarantined: bool) -> dict:
+        """Fail closed: INVALID / HALT. Never leave a newly published VALID result.json behind."""
+
+        ctx.failures.append(f"S9 evidence finalisation failed at {stage}: {exc!r}")
+        failure = dict(result)
+        failure["failures"] = ctx.failures
+        failure["evidence_complete"] = False
+        failure["experiment_validity"] = derive_validity(ctx.outcome, ctx.restoration, ctx.attestation_ok, False)
+        failure["batch_action"] = HALT
+        failure["cleanup_eligible"] = False
+        failure["cleanup_status"] = "INELIGIBLE-RETAINED"
+        if ctx.mutation_intended and not quarantined:
+            failure["quarantined"] = self._quarantine(ctx)
+        detail = {"protocol": FINALIZATION_PROTOCOL, "state": "FAILED", "stage": stage, "error": repr(exc),
+                  "published_before_failure": ctx.published}
+        if ctx.published:
+            # Retract our own just-published result (its bytes stay in the pending candidate).
+            try:
+                os.unlink(ctx.run_dir / RESULT_NAME)
+                _fsync_dir(ctx.run_dir)
+                detail["retracted_published_result"] = True
+            except BaseException as inner:  # noqa: BLE001
+                detail["retracted_published_result"] = False
+                detail["retraction_error"] = repr(inner)
+        failure["finalization"] = detail
+        try:
+            _fsync_write(ctx.run_dir / FAILED_NAME,
+                         json.dumps(failure, indent=2, sort_keys=True, default=str).encode("utf-8"))
+            detail["failure_marker_written"] = True
+        except BaseException as inner:  # noqa: BLE001
+            detail["failure_marker_written"] = False
+            detail["failure_marker_error"] = repr(inner)
+        try:
+            ctx.journal.append("S9", "FINALIZATION-FAILED", stage=stage, error=repr(exc))
+        except BaseException:  # noqa: BLE001
+            pass
+        if (ctx.published and not detail.get("retracted_published_result")
+                and not detail["failure_marker_written"]):
+            detail["state"] = "UNCERTAIN"
+        return failure
 
     def _quarantine(self, ctx: RunContext) -> bool:
         quarantine = self._require_under_root(Path(self.config.quarantine_dir), "quarantine_dir")
