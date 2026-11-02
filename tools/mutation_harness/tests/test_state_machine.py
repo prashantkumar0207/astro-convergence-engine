@@ -103,18 +103,19 @@ def check_invariants(result, lab):
     if result["mutation_applied"] and result["restoration_status"] != harness.RESTORED_VERIFIED:
         assert result["quarantined"] is True
         assert (lab.quarantine / f"{result['run_id']}.json").exists()
-    # WP-RD-B-F1 consumer contract: the persisted result is authoritative only when
+    # WP-RD-B-F1/F2 consumer contract: the persisted result is authoritative only when
     # validate_run_evidence() reports COMPLETE, and then it must equal the returned result.
+    # WP-RD-B-F2: this helper only sees runs whose finalization was not itself sabotaged, so
+    # their evidence must be COMPLETE. Otherwise a consumer that wrongly rejected a genuine
+    # INVALID run would go unnoticed, because that run is INVALID either way.
+    assert result.get("evidence_complete") is True, result.get("finalization")
     status = harness.validate_run_evidence(result["evidence_dir"])
-    if result.get("evidence_complete"):
-        assert status["complete"] and status["state"] == "COMPLETE", status["reasons"]
-        assert status["result"] == result
-        on_disk = json.loads(Path(result["evidence_dir"], "result.json").read_text())
-        for key in ("outcome", "restoration_status", "experiment_validity", "batch_action"):
-            assert on_disk[key] == result[key]
-        assert records[-1]["result_sha256"] == pyenv.sha256_file(Path(result["evidence_dir"], "result.json"))
-    else:
-        assert not status["complete"]
+    assert status["complete"] and status["state"] == "COMPLETE", status["reasons"]
+    assert status["result"] == result
+    on_disk = json.loads(Path(result["evidence_dir"], "result.json").read_text())
+    for key in ("outcome", "restoration_status", "experiment_validity", "batch_action"):
+        assert on_disk[key] == result[key]
+    assert records[-1]["result_sha256"] == pyenv.sha256_file(Path(result["evidence_dir"], "result.json"))
 
 
 def triple(result):

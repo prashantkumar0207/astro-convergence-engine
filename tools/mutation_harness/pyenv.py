@@ -308,7 +308,8 @@ class AttestationPlan:
     required_load: dict = field(default_factory=dict)     # (module, qualname) -> main|child|any|none
     children: ChildExpectation = ChildExpectation()
     hook_sha256: str = ""
-    cache_dir: str = ""
+    cache_dir: str = ""                       # the prefix the processes must have reported
+    cache_listing_path: str = ""              # where to inspect it, if the evidence has moved
 
 
 @dataclass
@@ -443,8 +444,9 @@ def evaluate_attestation(out_dir, main_pid: int, returncode: int, plan: Attestat
         elif role == "any" and not who:
             failures.append(f"target {target} not loaded by any process")
 
-    if plan.cache_dir and tree_listing(plan.cache_dir):
-        failures.append(f"pycache prefix not empty after the run: {tree_listing(plan.cache_dir)[:5]}")
+    listing_path = plan.cache_listing_path or plan.cache_dir
+    if listing_path and tree_listing(listing_path):
+        failures.append(f"pycache prefix not empty after the run: {tree_listing(listing_path)[:5]}")
 
     direct = [pid for pid in children if pid in ends and pid in starts]
     processes = {str(pid): {"ppid": starts.get(pid, {}).get("ppid"), "has_start": pid in starts,

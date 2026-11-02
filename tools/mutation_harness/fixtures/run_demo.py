@@ -46,7 +46,10 @@ def summarise(result):
     journal_path = Path(result["evidence_dir"], "journal.jsonl")
     records = [json.loads(line) for line in journal_path.read_text().splitlines()]
     s8 = [r for r in records if r["state"] == "S8" and r["action"].startswith("result ")]
+    consumer = harness.validate_run_evidence(result["evidence_dir"])
     return {
+        "consumer": {key: consumer[key] for key in ("state", "path", "experiment_verified", "properties", "reasons",
+                                                    "limitations")},
         "outcome": result["outcome"],
         "restoration_status": result["restoration_status"],
         "experiment_validity": result["experiment_validity"],

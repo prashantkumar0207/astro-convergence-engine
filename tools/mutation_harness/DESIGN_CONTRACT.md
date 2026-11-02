@@ -119,11 +119,13 @@ experiment.
 A pre-existing `result.json` is never overwritten. Publishing the failure marker is not a prerequisite
 for halting; the returned HALT stands on its own.
 
-**Consumer contract (`harness.validate_run_evidence(run_dir)`, machine-checkable):**
+**Consumer contract (`harness.validate_run_evidence(run_dir)`, machine-checkable).** Finding RD-B-F2
+showed that the COMPLETE row below was necessary but not sufficient. §4b adds to it, and the pending
+candidate is now mandatory rather than "any".
 
 | State | Condition |
 |---|---|
-| COMPLETE | All of: `result.json` exists and parses; it declares protocol `wp-rd-b-f1-two-phase-v1` and `evidence_complete: true`; validity and batch action are consistent (VALID/CONTINUE or INVALID/HALT); the journal is fully parseable and gap-free from seq 1; its **last** record is `S9 FINAL`, binding `sha256(result.json)` and the run id; no failure marker exists; any pending candidate is byte-identical. |
+| COMPLETE | All of: `result.json` exists and parses; it declares protocol `wp-rd-b-f1-two-phase-v1` and `evidence_complete: true`; validity and batch action are consistent (VALID/CONTINUE or INVALID/HALT); the journal is fully parseable and gap-free from seq 1; its **last** record is `S9 FINAL`, binding `sha256(result.json)` and the run id; no failure marker exists; any pending candidate is byte-identical; **and every requirement of §4b holds**. |
 | PENDING | No `result.json`, but a pending candidate exists. **Never authoritative.** |
 | FAILED | `FINALIZATION_FAILED.json` is present. |
 | INCOMPLETE | Anything else. |
@@ -154,6 +156,94 @@ contract, and F1-T9 enforces it on 13 constructed evidence variants.
   valid), so it is not a *false* VALID. It is reported as UNCERTAIN, not as success.
 - A `SIGKILL` of the harness process ends at whichever interval it hits. The table above shows that
   none of them produces a false VALID.
+
+## 4b. Evidence completeness and verdict consistency (WP-RD-B-F2, CEO directive WP-RD-B-F2)
+
+**Defect (RD-B-F2).** At `519cb6f`, `validate_run_evidence()` established only publication integrity.
+A journal holding one matching `S9 FINAL` record was accepted, and so was a result claiming
+`RESTORATION-FAILED` with `VALID / CONTINUE`. A malformed journal record could raise an exception.
+
+**Three separate properties.** The consumer returns COMPLETE only when all three hold. Each is reported
+in `status["properties"]`.
+
+| Property | Established by | Meaning |
+|---|---|---|
+| `publication_integrity` | `_check_publication_integrity` | The completed F1 protocol, for exactly these result bytes: FINAL binds the result hash and run id; the pending candidate exists and is byte-identical; the result's `evidence_binding.journal_prefix_sha256` matches every journal byte before FINAL. |
+| `evidence_completeness` | `_load_journal`, `_walk_execution_path`, `_validate_preregistration`, `_verify_supporting_evidence` | The journal is exactly one permitted path, and all evidence that path requires exists and matches its recorded hash. |
+| `verdict_consistency` | `_check_result_schema`, `_check_verdict_consistency` | Outcome, restoration, S8 checks, attestation, validity, batch action, cleanup, quarantine, target hashes and observations agree with values **re-derived** from raw evidence by the production decision functions (`classify_outcome`, `decide_restoration`, `derive_validity`). |
+
+**COMPLETE does not mean success.** A documented INVALID run is complete history. Read
+`status["experiment_verified"]` to learn whether the run is a verified experiment. It is true only on
+`MUTATION_EXPERIMENT` or `EQUIVALENT_PRECHECK` with a `VALID` verdict. `status["path"]` says how the run
+ended. The states remain COMPLETE, PENDING, FAILED and INCOMPLETE; `status["result"]` is `None` unless
+COMPLETE. Malformed evidence yields a non-COMPLETE state with a reason, never an exception; a defect in
+the consumer itself is caught and reported as INCOMPLETE.
+
+**Assurance achieved, and not achieved.** This is fail-closed structural completeness, cross-artifact
+consistency and correctly derived verdicts. All hashes are self-contained, so they say **nothing about
+authenticity**: a party able to rewrite every artifact and recompute every hash can produce evidence
+that this consumer accepts. A correctly hashed artifact does not prove the underlying experiment
+happened. External provenance, signed attestations and independent execution remain separate concerns
+and are not provided here.
+
+**Evidence schema `wp-rd-b-f2-evidence-v1`** (producer additions, all compatible with §4a's order):
+
+| Where | Field | Binds |
+|---|---|---|
+| `result.json` | `evidence_schema` | The schema this consumer understands. Evidence without it reads INCOMPLETE. |
+| `result.json` | `evidence_binding.journal_prefix_sha256` | Every journal byte before FINAL. |
+| `result.json` | `evidence_binding.pre_json_sha256` | The `pre.json` bytes, `null` on a path that never preregistered. |
+| S0 `initialised` | `expected_digests`, `hook_sha256` | The registered code identity, compared with `pre.json` and used to re-evaluate attestation. |
+| S2 `baseline evaluated`, S8 `b_status`, S8 `f_final_status` | `status_file`, `status_sha256`, `verdict` or `status_error` | Raw `git status` bytes kept at `io/status-<name>.bin`, re-classified by the consumer. |
+| S2, S5, S6, S8 hash records | `sha256` (and `hash_state`) | The observed target hash; the state must follow from the hash. |
+| Each command `result` record | `attestation_files` | `{name: sha256}` of the command's raw attestation records. |
+
+Producer behaviour also changed in one way: any failed attestation now clears `attestation_ok`, so the
+reported value agrees with what the consumer re-derives.
+
+**Accepted execution paths** (`_walk_execution_path`). Every path then ends with `S9 intent: finalize
+evidence (two-phase)` and `S9 FINAL`. Anything else fails closed.
+
+| Path | Mandatory records, in order | Preregistration | Permitted to skip | Required consequences | `experiment_verified` |
+|---|---|---|---|---|---|
+| `REFUSED_BEFORE_PREREGISTRATION` | S0 `begin`; S0 `refused`, `hygiene failed` or `probe refused` | `pre.json` forbidden | S1–S8 | VOID, NOT-APPLICABLE, INVALID, HALT | false |
+| `ABORTED_BEFORE_MUTATION` | S0 `begin`; any permitted prefix up to S4; `EXCEPTION` with `mutation_intended: false` | Required once S1 is journalled | Everything after the abort; no `EMERGENCY` | VOID, NOT-APPLICABLE, INVALID, HALT | false |
+| `BASELINE_VOID` | S0 `begin`, `initialised`; S1; S2 start and result for end-to-end, baseline gates and validator; S2 `baseline evaluated` with `clean: false` | Required | S3–S8 | VOID, NOT-APPLICABLE, INVALID, HALT; the `clean` decision must follow from raw S2 evidence | false |
+| `PRECHECK_VOID` | The clean baseline; S3 start and result; S3 `pre-check failed` | Required | S4–S8 | VOID, NOT-APPLICABLE, INVALID, HALT; the pre-check evidence must be unusable | false |
+| `EQUIVALENT_PRECHECK` | The clean baseline; S3 start and result; S3 `pre-check evaluated` with `admitted: false` | Required | S4–S8 | EQUIVALENT, NOT-APPLICABLE, VALID, CONTINUE; the decision must follow from the pre-check's raw stdout | true when VALID |
+| `MUTATION_EXPERIMENT` | The clean baseline; admission (S3 command plus `admitted: true`, or `no pre-check registered; admitted`); S4; S5 intent and `mutation written` (verified mutated); S6 start and result for designated, validator, end-to-end and excluded; S6 `outcome recorded`; S7 intent and `restore written`; S8 in its fixed order; S8 `restoration decided` | Required | Only S8 steps after a state-machine early stop, which then count as not run | Outcome, restoration and validity re-derived; VALID only if RESTORED-VERIFIED, attested, not VOID | true when VALID |
+| `RESTORE_REFUSED_BACKUP_CORRUPT` | As above through S6 `outcome recorded`; S7 `backup corrupt; restore refused` | Required | S7 restore, S8 | INDETERMINATE, INVALID, HALT; the retained backup must not match the baseline | false |
+| `INTERRUPTED_AFTER_MUTATION_INTENT` | A permitted prefix through at least S5 intent; `EXCEPTION` with `mutation_intended: true`; `EMERGENCY`, unless the result reports the emergency restore as failed | Required | Everything after the interruption | INDETERMINATE, INVALID, HALT; reported final hash agrees with the `EMERGENCY` record | false |
+
+Evidence verified for every command that has a result record: stdout and stderr hashes; the argv
+against the registered spec; the attestation directory against `attestation_files`; attestation
+re-evaluated from raw records with `pyenv.evaluate_attestation`; each raw record's phase stamp; the main
+process's `orig_argv`; and an empty cache directory. For any run with a backup, the retained baseline
+bytes must reproduce the registered hash, and applying the registered edits must reproduce the
+registered mutated hash and, under the same Python minor version, the registered digests.
+
+**Validity rules** (all enforced by re-derivation, not by comparing labels with each other): VOID,
+INDETERMINATE, RESTORATION-FAILED, failed attestation, failed or unperformed mandatory S8 checks, and an
+interrupted or incomplete run can never be VALID. VALID requires RESTORED-VERIFIED or a NOT-APPLICABLE
+that the path permits, plus CONTINUE; INVALID requires HALT. Precedence stays INDETERMINATE >
+RESTORATION-FAILED > RESTORED-VERIFIED.
+
+**Residual limitations:**
+- **Abort-point truncation.** Removing the single record just before `EXCEPTION` leaves a journal with
+  the shape of a genuine earlier abort, because a signal can arrive between any two records. A
+  self-contained consumer cannot reject it. It stays on the abort path, INVALID and HALT, and never
+  reads as verified (pinned by `test_abort_point_record_cannot_upgrade_the_run`). Likewise an abort can
+  be fabricated wholesale; that falls under the authenticity limitation above.
+- **Process return codes** are known only from the journal; no independent record exists.
+- **`preflight/` probe files** are unbound diagnostics. Each command's raw start record re-establishes
+  the interpreter flags and prefix.
+- **Free text** (`failures` contents, `evidence_dir`) is not verified. Quarantine and emergency-restore
+  excuses match on a failure-text substring, and only make a run stay INVALID.
+- **`EQUIVALENT_PRECHECK` keeps no baseline bytes**, so its registered hashes and digests are not
+  re-derived.
+- **Digests** are re-derived only under the evidence's Python minor version; otherwise
+  `status["limitations"]` says so.
+- **Evidence written before this schema** reads INCOMPLETE. It is deliberately not rewritten or upgraded.
 
 ## 5. Bytecode isolation (R1 §7.3, with the CEO implementation clarification)
 
@@ -221,7 +311,9 @@ Parser tests T1–T18; the rename matrix RN-1 to RN-6b; parser mutants MP-1 to M
 MP-4b, MP-7b), applied as exact-once source mutations of `gitstatus.py`; bytecode tests D1–D9;
 equivalence tests E1–E14; state-machine tests C1–C13 (C5 → T10; C7a, C7b, C7c-1 to C7c-4, C7d, C8b);
 the 16-case restoration-validity truth table; and the integrated fixture demonstration. The withdrawn
-`.strip()` parser control is not reinstated.
+`.strip()` parser control is not reinstated. WP-RD-B-F1 adds F1-T1 to F1-T10 and FM-1 to FM-6. WP-RD-B-F2
+adds F2-01 to F2-24, hash-consistent tampering, the record and file sweeps, and VM-1 to VM-18, with
+every demonstration evidence directory validated by the corrected consumer.
 
 ## 9. Amendment B (recorded for design consistency only)
 

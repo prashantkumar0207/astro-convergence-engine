@@ -65,21 +65,33 @@ pytest temporary directory.
 | `test_hook_equivalence.py` | Hook equivalence E1–E14, the probe, and hook inertness |
 | `test_state_machine.py` | State machine C1–C13 (amended C5, C7a–C7d, C8b), the 16-case truth table, precedence, validity, harness mutant-kill matrix HM-1 to HM-10, and the guards |
 | `test_finalization.py` | WP-RD-B-F1 durable finalization: F1-T1 to F1-T10, plus finalization mutant-kill matrix FM-1 to FM-6 |
+| `test_evidence_contract.py` | WP-RD-B-F2 evidence consumer: F2-01 to F2-24, hash-consistent tampering, record and file sweeps, plus consumer mutant-kill matrix VM-1 to VM-18 |
 
-## Reading results: the consumer contract (WP-RD-B-F1)
+## Reading results: the consumer contract (WP-RD-B-F1, hardened by WP-RD-B-F2)
 
 A run's `result.json` is authoritative **only** if `harness.validate_run_evidence(run_dir)` returns
-`state == "COMPLETE"`:
-- the journal ends with the `S9 FINAL` record that binds `sha256(result.json)` and the run id;
-- no `FINALIZATION_FAILED.json` marker exists;
-- the result declares the two-phase protocol and `evidence_complete: true`.
+`state == "COMPLETE"`. That requires all three of:
+- **publication integrity:** the journal ends with the `S9 FINAL` record that binds `sha256(result.json)`
+  and the run id, the pending candidate is byte-identical, the journal prefix matches the result's
+  binding, and no `FINALIZATION_FAILED.json` marker exists;
+- **evidence completeness:** the journal is exactly one permitted execution path, and everything that
+  path requires exists and matches its recorded hash;
+- **verdict consistency:** every reported verdict agrees with one re-derived from the raw evidence.
+
+**COMPLETE does not mean the experiment succeeded.** A documented INVALID run is complete history. To
+act on a run as a verified experiment, also require `status["experiment_verified"]`. `status["path"]`
+says how the run ended.
+
+**COMPLETE does not prove authenticity.** All hashes are self-contained. Anyone able to rewrite every
+artifact and recompute every hash can produce evidence this consumer accepts, so a correctly hashed
+artifact does not prove the experiment happened.
 
 The other states are never a success:
 - `result.pending.json` alone is a non-authoritative candidate (`PENDING`);
 - a failure marker gives `FAILED`;
-- anything else is `INCOMPLETE`.
+- anything else is `INCOMPLETE`, including evidence from before schema `wp-rd-b-f2-evidence-v1`.
 
-Do not read `result.json` without this check. See `DESIGN_CONTRACT.md` §4a.
+Do not read `result.json` without this check. See `DESIGN_CONTRACT.md` §4a and §4b.
 
 Integrated demonstration (writes evidence outside the repository; the output must be under the
 system temporary directory):

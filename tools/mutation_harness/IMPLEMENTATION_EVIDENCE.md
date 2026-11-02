@@ -281,3 +281,67 @@ experiments, whose INVALID verdicts are themselves fully finalized. Evidence:
 **Unresolved and not remediated here** (they need separate authorization): the ADR-0099 name-matching
 ambiguity, ACE child-process counts, cross-version/Windows testing, PID reuse, a duplicate `run_id`
 raising, and the residual windows listed in `DESIGN_CONTRACT.md` §4a.
+
+## 11. WP-RD-B-F2 correction: evidence completeness and verdict consistency
+
+Sections 2–10 describe earlier runs. This section records the owner-approved correction under CEO
+directive WP-RD-B-F2. The contract is `DESIGN_CONTRACT.md` §4b. The evidence hashes below identify
+files in the F2 audit package. They are not stored in the repository.
+
+**Root cause (at `519cb6f`).** `validate_run_evidence()` checked publication only: FINAL's binding,
+protocol labels and a label-to-label VALID/CONTINUE agreement. It never walked the journal, read
+`pre.json`, opened supporting evidence or re-derived a verdict. A journal holding one bound FINAL was
+COMPLETE, and malformed records could raise. The producer also lacked bindings that a consumer needed.
+
+**Correction.** A consumer that independently establishes publication integrity, evidence completeness
+and verdict consistency, plus the minimum producer bindings (schema `wp-rd-b-f2-evidence-v1`). The F1
+publication order is unchanged.
+
+**Failing-first record.** Before the correction, 94 tests ran against unmodified `519cb6f`: 80 failed,
+14 passed, rc 1. Some of those failures (for example F2-01, F2-19, F2-24) are only because the old
+consumer returns no `path` field, not because it rejected genuine runs. The 14 passes are checks the F1
+consumer already performed. The test file then grew, so that record is of an earlier version of it.
+
+**Test execution (corrected source), WSL2 Ubuntu 24.04, CPython 3.11.17, pytest 9.1.1, git 2.43.0:**
+
+| Suite | Tests | Passed | Failed | Skipped | rc |
+|---|---|---|---|---|---|
+| test_gitstatus | 25 | 25 | 0 | 0 | 0 |
+| test_gitstatus_mutants | 16 | 16 | 0 | 0 | 0 |
+| test_rename_matrix | 11 | 11 | 0 | 0 | 0 |
+| test_bytecode | 10 | 10 | 0 | 0 | 0 |
+| test_hook_equivalence | 24 | 24 | 0 | 0 | 0 |
+| test_state_machine | 43 | 43 | 0 | 0 | 0 |
+| test_finalization | 18 | 18 | 0 | 0 | 0 |
+| test_evidence_contract (new) | 134 | 134 | 0 | 0 | 0 |
+| **Total** | **281** | **281** | 0 | **0** | `exit_codes.txt` `24d0a95f…4c09` |
+
+**F2 negative controls** (`VM-1` to `VM-18`, exact-once source mutations of `harness.py`, compiled in
+memory). Every pristine detector passed and every mutant was killed by an AssertionError
+(`VM_kill_evidence.jsonl` `409e48fa…0c80`). The directive's five required controls are VM-1
+(preregistration requirement), VM-2 (state-path validation), VM-3 (restoration verdict), VM-4
+(attestation verdict) and VM-5/VM-6 (supporting evidence). All FM, MP and HM mutants remain killed.
+
+**A sweep narrowed, and why.** `test_every_journal_record_is_mandatory` removes each journal record in
+turn. On the two abort paths it failed for the single record just before `EXCEPTION`: the result is
+indistinguishable from a genuine earlier abort, because a signal can arrive between any two records.
+The sweep skips only that record, and `test_abort_point_record_cannot_upgrade_the_run` pins that the
+run stays on its abort path, INVALID and HALT, and never verified. A check for leftover evidence files
+was considered and rejected: it is defeated by also deleting the files, and it could wrongly fail
+genuine interrupted runs. This is a limitation, not a proof of correctness.
+
+**Integrated demonstration** (corrected code, rc 0). The same seven scenario results as §5. The
+corrected consumer validated all 10 evidence directories: 10 COMPLETE, 0 reasons, 0 limitations.
+`experiment_verified` is true for the 7 VALID runs and false for the 3 INVALID ones. Evidence:
+- `WPRDB_F2_DEMO_EVIDENCE.tar.gz`, SHA-256 `0bccd3866bdbb9e075155f714629ae56f46e5b1c68f15ee857d6739099881ed3`;
+- consumer check `c1e6393c…6ced`;
+- summary `bea25c8f…50e9`.
+
+**What this does not establish.** Self-contained hashes do not prove authenticity or that an experiment
+happened; see `DESIGN_CONTRACT.md` §4b for this and the other residual limitations. Evidence from
+before this schema now reads INCOMPLETE and was not rewritten: all 10 evidence directories of
+`WPRDB_F1_DEMO_EVIDENCE.tar.gz`, run through the corrected consumer, read INCOMPLETE.
+
+**Unresolved and not remediated here** (they need separate authorization): the ADR-0099 name-matching
+ambiguity, ACE child-process counts, cross-version/Windows testing, PID reuse, a duplicate `run_id`
+raising, and the residual windows listed in `DESIGN_CONTRACT.md` §4a.
