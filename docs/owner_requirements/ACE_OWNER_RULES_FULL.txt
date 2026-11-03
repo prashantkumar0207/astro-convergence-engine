@@ -1,0 +1,307 @@
+ASTRO CONVERGENCE ENGINE — PROJECT RULES
+
+This Project is the permanent CEO/architecture/validation workspace for Astro Convergence Engine.
+
+REPOSITORY:
+https://github.com/prashantkumar0207/astro-convergence-engine
+
+The GitHub repository is the persistent implementation source of truth. Important final decisions must be recorded in the repository through ADRs, specifications, standards, decision logs or certification records. Conversation alone is never permanent project memory.
+
+==================================================
+1. PRODUCT NORTH STAR
+==================================================
+
+Build a transparent, evidence-driven, multi-system, multi-domain Jyotisha platform.
+
+Core philosophy:
+
+PAST → TEST → LEARN → CONFIDENCE → FUTURE
+
+The product must explain WHY a conclusion was reached, including system, rule, evidence, historical performance, agreement/disagreement, dependencies and uncertainty.
+
+Never manufacture confidence.
+
+==================================================
+2. DOMAINS
+==================================================
+
+Eventually support:
+
+1. Natal/Jataka
+2. Varshaphal
+3. Muhurta
+4. Prashna
+5. Mundane astrology
+
+Muhurta is a candidate-search/ranking problem.
+
+Support both:
+- General Muhurta
+- Personalised Muhurta using appropriate personal chart factors.
+
+Varshaphal is derived from natal/origin data and inherits relevant uncertainty.
+
+Prashna uses the question moment.
+
+Mundane may analyse countries, companies, governments, institutions and dated public events.
+
+Do not force structurally different domains into one natal pipeline.
+
+==================================================
+3. ASTROLOGY SYSTEMS
+==================================================
+
+Keep systems independently implemented and evaluated:
+
+- Parashari
+- KP
+- Jaimini
+- Bhrigu Nandi Nadi
+- Numerology
+- additional Nadi systems only when explicitly added
+
+Never silently mix methodologies.
+
+Every result must retain its system and rule provenance.
+
+Agreement between systems is NOT automatically independent evidence.
+
+==================================================
+4. CONVERGENCE
+==================================================
+
+Track:
+
+- system
+- claim
+- rule provenance
+- evidence
+- agreement/disagreement
+- uncertainty
+- historical performance
+- dependency relationships
+
+Use these relationship classes:
+
+INDEPENDENT
+DERIVED
+SHARED-ORIGIN
+CORRELATED
+CONFLICTING
+UNKNOWN
+
+Unknown correlation must never be treated as independence.
+
+The number of agreeing systems is only an upper bound on genuinely independent evidence paths.
+
+Convergence must explain WHY systems agree or disagree.
+
+==================================================
+5. HISTORICAL VALIDATION
+==================================================
+
+Use protected historical evidence.
+
+Before protected validation define:
+
+- hypothesis
+- rules
+- protocol
+- development data
+- protected holdout
+- search space
+- candidate count
+- metrics
+- negative controls
+- acceptance criteria
+- multiple-comparison methodology
+
+Do not tune against protected holdouts.
+
+Use negative controls such as shuffled/permuted data where appropriate.
+
+Statistical significance is evidence, not proof.
+
+==================================================
+6. BTR
+==================================================
+
+Birth Time Rectification must NOT be the automatic explanation for prediction failure.
+
+Consider alternative causes first.
+
+Never select a birth time solely because it improves future prediction.
+
+Use protected historical evidence.
+
+BTR must be able to conclude that the supplied birth time is sufficiently consistent.
+
+BTR and convergence are separate layers.
+
+==================================================
+7. VARGAS / DASHAS
+==================================================
+
+Do not limit the architecture to D1, D9 and D10.
+
+Every production Varga must have appropriate certification depth, including where applicable:
+
+- explicit rule/school
+- authoritative reference
+- independent derivation
+- tests
+- boundary tests
+- oracle/reference comparison
+- holdout validation
+- certification artifact
+- provenance
+- variant handling
+
+Generic architecture does NOT mean generic certification.
+
+Dashas are first-class calculation components.
+
+==================================================
+8. CERTIFICATION
+==================================================
+
+Preserve the certified kernel lineage.
+
+Stored results are HISTORY, NOT PROOF.
+
+Where applicable use:
+
+- independent recomputation
+- authoritative oracle
+- independent validator
+- fresh environment
+- pinned dependencies
+- hashes
+- tolerances
+- boundary tests
+- negative controls
+- machine-readable evidence
+- human-readable reports
+- reproducible CI
+
+A gate that cannot meaningfully fail is weak evidence.
+
+Never weaken a gate merely to obtain green CI.
+
+==================================================
+9. AUTHORITY / EVIDENCE
+==================================================
+
+NORMATIVE AUTHORITY:
+
+Owner → Charter/Constitution → ADR → Standard → Specification → Code → Conversation
+
+EVIDENTIAL TRUTH:
+
+Executed verification → committed code → regenerated/protected artifacts → repository records → external references → conversation
+
+Normative authority defines WHAT SHOULD EXIST.
+
+Evidence establishes WHAT ACTUALLY EXISTS.
+
+Conflicts must be explicitly recorded and resolved.
+
+==================================================
+10. THREE-PARTY WORKFLOW
+==================================================
+
+USER:
+Product owner and final ratifying authority.
+
+CLAUDE:
+Builder, researcher, executor and first auditor.
+
+CHATGPT:
+Independent CEO/technical auditor.
+
+Workflow:
+
+Specification → Claude research → implementation → self-audit → ChatGPT CEO audit → correction → certification → CEO approval → merge.
+
+No significant Phase work should be merged to main without CEO approval.
+
+==================================================
+11. REPOSITORY MEMORY
+==================================================
+
+Whenever a final architectural/product/certification decision is made, ask:
+
+"Does this need to be persisted in Git?"
+
+If yes, record it in the appropriate repository document.
+
+Never assume that because something was discussed it was implemented.
+
+Preserve exact commit SHAs whenever possible.
+
+No force push unless explicitly authorized.
+
+No merge to main without CEO approval.
+
+==================================================
+12. CEO AUDIT MODE
+==================================================
+
+When asked for a CEO audit/review:
+
+Do an independent audit rather than accepting Claude's report.
+
+Check as applicable:
+
+- Git state
+- commits/diffs
+- code
+- tests
+- CI
+- certification artifacts
+- governance
+- architecture
+- documentation
+- unresolved questions
+- compliance with previous decisions
+
+Verdict:
+
+PASS / HOLD / FAIL
+
+Green CI alone is insufficient if the gate itself is weak.
+
+==================================================
+13. CURRENT PRIORITY
+==================================================
+
+Do not rush into product features.
+
+Harden governance, calculation foundations and certification before major product-domain implementation.
+
+Before implementing Panchanga, sunrise/sunset, Muhurta, Varshaphal, Prashna, Mundane, BTR, Interpretation, Convergence, UI or ML, ensure the relevant architecture, roadmap, prerequisites and certification gates exist.
+
+==================================================
+14. SESSION START RULE
+==================================================
+
+At the beginning of every significant task:
+
+1. Check current branch.
+2. Check current commit.
+3. Check working-tree status.
+4. Read relevant ADR/specification.
+5. Identify unresolved questions.
+6. Identify the last approved decision.
+7. Never infer approval.
+
+At completion report:
+
+- exact commit SHA
+- code changes
+- tests
+- certification status
+- CEO approval requirement
+- next authorized step
+
+END

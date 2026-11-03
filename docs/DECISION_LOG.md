@@ -10103,6 +10103,139 @@ reports/certification/varga_d45.console.txt  188fc7473dbfce027098262ac30b3010ab8
 
 ---
 
+## ADR-0105 - WP-RD-B-F2: bounded CEO PASS and the owner's narrow abort-truncation clarification recorded; original owner rules preserved as a reference; conflicts with accepted governance flagged for owner decision
+
+- **Date:** 2026-11-02
+- **Status:** **PROPOSED. NOT RATIFIED.** Drafted on the instruction in the CEO audit outcome for
+  WP-RD-B-F2 and the follow-up CEO review, both supplied through the owner's session. This status
+  applies to this entry's own text. Section 3 quotes an owner approval as that message reports it; this
+  entry does not widen that approval, and it ratifies nothing else.
+- **Context:** CEO directive WP-RD-B-F2 required `validate_run_evidence()` in the fixture-only mutation
+  harness to establish publication integrity, evidence completeness and verdict consistency. The
+  builder's self-audit disclosed one case self-contained evidence cannot reject: removing the record
+  just before `EXCEPTION` leaves the shape of a genuine earlier abort. The CEO audit returned a bounded
+  PASS and the owner approved a narrow clarification covering that case. The WP-RD-B line of work had no
+  record in this repository's governance documents. The owner also directed that the complete original
+  14-section owner rules be preserved and compared with accepted governance.
+
+### 1. Verified facts (builder, by direct execution, 2026-11-02)
+
+| Fact | Result |
+|---|---|
+| F2 commit and parent | `36faa510cefa041eb3cb306e240716da91973ec4`, parent `519cb6f1ea118be6f785556e6f104c04694d16f9`, branch `wp-rd-b-mutation-harness`, based on `main` at `6538930c2832b49de54c31edad4614e265a86695`; no remote-tracking ref |
+| F2 file scope | `git diff --name-only 6538930 36faa51` lists only `tools/mutation_harness/` |
+| Owner rules source | `C:\Users\Nidhi\Downloads\ACE_CEO_REVIEW\ACE_OWNER_RULES_FULL.txt`, 7,922 bytes, 306 LF line endings, no CR, SHA-256 `0f155db5b4cc2375b4094fb27ec7f2ee698496f6c08e58a25f883d77a467418f`, equal to the value the CEO review supplied |
+| Abort-point tests, by reading the source | `test_abort_point_record_cannot_upgrade_the_run` has two parametrized fixture cases. Each asserts the abort path, `INVALID`, `HALT` and `experiment_verified` false. Neither directly asserts cleanup ineligibility; `_check_verdict_consistency` in `harness.py` rejects a result whose cleanup fields disagree with the re-derived validity, so such a run cannot read COMPLETE otherwise. That is source reading, not a test result |
+
+Builder-produced evidence from the F2 work, not independent: 281 fixture tests passed, 0 failed, 0
+skipped, from a commit export (WSL2 Ubuntu 24.04, CPython 3.11.17, pytest 9.1.1); 18 new negative
+controls and 29 retained ones killed; the integrated demonstration read 10 evidence directories COMPLETE.
+Audit ZIP `WP-RD-B-F2-CEO-AUDIT.zip`, SHA-256
+`38e6c145d560524a35b634de8d74de6015103b54e3479a64ba18e4545ea5e473`, held outside this repository.
+
+### 2. CEO-reported evidence (not re-executed by the builder for this entry)
+
+The CEO audit outcome states that the independent audit:
+- checked commit `36faa51` and parent `519cb6f`;
+- verified the ZIP's 93 manifest entries and the 20 packaged source files against a commit export;
+- independently ran the Linux fixture suite: 281 passed;
+- reviewed the integrated demonstration as builder-produced evidence, not independently reproduced.
+
+Its verdict, quoted: **"PASS, bounded to the fixture harness."** It also states: "Self-contained hashes
+do not prove execution authenticity. Shared decision functions and the `experiment_verified` name remain
+limitations."
+
+### 3. The owner's clarification, as reported by the CEO audit outcome
+
+Quoted exactly: "where removing a record before `EXCEPTION` leaves evidence indistinguishable from a
+genuine earlier abort, the consumer may accept that earlier-abort interpretation only as **INVALID, HALT,
+cleanup-ineligible and unverified**. The two committed tests demonstrate the disclosed fixture cases; do
+not claim they prove every interruption case."
+
+### 4. What this entry does not establish
+
+- No certification, and no qualification under `ADR-0083`, `ADR-0085`, `ADR-0086` or `ADR-0099`.
+- No approval to merge, push or open a PR, and no approval of the harness for production mutation.
+- No proof that any recorded experiment happened: hashes here are self-contained.
+- No closure of WP-N1 and no JATAKA exit. The CEO reports both as on HOLD; `ADR-0104` separately records
+  JATAKA exit as on HOLD.
+- No resolution of the `ADR-0099` name-matching ambiguity, ACE child-process counts or cross-version
+  testing. No authorization of WP-N2 or WP-RD-A.
+
+### 5. Owner rules preserved as a reference
+
+`docs/owner_requirements/ACE_OWNER_RULES_FULL.txt` is a byte-for-byte copy of the source in section 1.
+It has no status header, because adding one would alter its bytes; this section carries its provenance.
+Its record is the committed blob, whose SHA-256 of contents must equal the value in section 1. A checkout
+with `core.autocrlf=true` could change working-tree bytes, not the blob. This entry preserves the text as
+an owner-requirements reference. It does not adopt the text as a Constitution, ADR, Standard or
+Specification, and it amends no accepted decision. The file's own normative standing is `OR-7` below.
+
+### 6. Comparison with governance
+
+Conflicts and items for owner decision, registered together as `Q28` in `docs/OPEN_QUESTIONS.md`. None is
+resolved here. Until the owner decides, the accepted entry named in each row continues to govern.
+
+| ID | Owner rules | Governance | Difference | Decision needed |
+|---|---|---|---|---|
+| `OR-1` **Conflict** | s9: Owner -> Charter/Constitution -> ADR -> Standard -> Specification -> Code -> Conversation | `ADR-0042` (`ACCEPTED`): OWNER -> PROJECT CONSTITUTION -> ENGINEERING CONSTITUTION -> DECISION LOG / ADR -> STANDARDS -> SPECIFICATIONS -> CODE -> CONVERSATION. `specs/PROJECT_CHARTER.md` (`ACCEPTED`, `ADR-0051`) is subordinate to the Project Constitution | The rules rank the Charter with the Constitution and omit the Engineering Constitution | Is s9 shorthand for `ADR-0042`, or an intended change? |
+| `OR-2` **Conflict** | s3: Parashari, KP, Jaimini, Bhrigu Nandi Nadi, Numerology; further Nadi systems only when explicitly added | `specs/PROJECT_CHARTER.md` (`ACCEPTED`): Parashari, DOB-based Pythagorean Numerology, R. G. Rao-style BNN, Umang Taneja-style Nakshatra Nadi, KP with Four-Step refinement, and CIL when reproducibly specified; others need their own specification and isolation rules | Jaimini is only in the rules. Nakshatra Nadi and CIL are only in the Charter. The Charter's school qualifiers are absent from the rules | Which list governs, and with which school qualifiers? |
+| `OR-3` **Conflict** | s10, s11: no significant Phase work, and no merge, to `main` without CEO approval; s10 names ChatGPT as CEO/technical auditor | `ADR-0056` (`ACCEPTED`) and `docs/PROJECT_CONSTITUTION.md` s11 (`DRAFT`): the user is final ratifying authority and no AI ratifies on the user's behalf. `.claude/rules/git-safety.md`: explicit owner authorization for `main`. Entries such as `ADR-0074` record the owner's own instructions labelled "CEO". `Q2` (review model) is `OPEN` | The rules do not say whether CEO approval alone suffices, and "CEO" names different parties across records | Who must approve a merge? The builder will require explicit owner authorization until this is decided |
+| `OR-4` Not a conflict with accepted text | s4: six relationship classes, including UNKNOWN | `ADR-0020` D4 and `docs/H4_EVIDENCE_MODEL_SPEC.md` s10 (both `PROPOSED`): five classes, with the correlated class left explicitly absent, never defaulted to independent | UNKNOWN is not a named class in the proposed text. The substance agrees | Adopt UNKNOWN when that text is next ratified? |
+| `OR-5` Open question | s1: PAST -> TEST -> LEARN -> CONFIDENCE -> FUTURE | `Q5` (mission) is `OPEN`; `docs/PROJECT_CONSTITUTION.md` s1 and s2 are TBD; the Charter uses PAST BEFORE FUTURE | The rules could inform `Q5`. This entry does not close it | Does s1 answer `Q5`? |
+| `OR-6` Possibly stale | s13: harden before implementing Panchanga, sunrise/sunset and later domains | `RISE_SET_V1` (`ADR-0054`) and `PANCHANGA_V1` (`ADR-0055`) are already certified, and `ADR-0074` records JATAKA entered | The two can agree if those gates existed first; the rules' date is not stated | Is s13 still the current priority as written? |
+| `OR-7` Standing | The file itself; s9 places Owner first | `docs/DOCUMENTATION_STANDARD.md` s2 (`DRAFT`) expects a status header on governing documents | The file is preserved unheadered, as a reference | Does it carry normative force, and through which instrument? |
+
+Compared with no conflict found: s8 and s12 with `.claude/rules/certification.md`; s11's force-push rule
+with `.claude/rules/git-safety.md`; s14 with `CLAUDE.md`'s state audit; s10's role for Claude with
+`ADR-0056`, where "first auditor" does not mean certifying its own work. s2, s5, s6 and s7 align with
+`docs/PLATFORM_DOMAIN_ARCHITECTURE.md` and `docs/H7_BTR_SPEC.md`, both `PROPOSED`, and with
+`docs/VALIDATION_STANDARD.md` (`DRAFT`), so that agreement is with unratified text and settles nothing.
+This comparison was by targeted reading of the named documents, not an exhaustive review of the register.
+
+- **Decision:** Pending owner ratification of this text, record sections 1 to 6 as stated: the bounded
+  PASS, the clarification as reported, the preserved reference, and `OR-1` to `OR-7` as open.
+- **Consequences:** The WP-RD-B line and its limits become recoverable from the repository, on this
+  unmerged branch only. `ADR-0042`, the Charter, `ADR-0056` and every other accepted entry are unchanged.
+  Follow-up, each needing its own authorization: a direct test of cleanup ineligibility on the abort-point
+  path; a `.gitattributes` rule for the preserved file; and the owner's decisions under `Q28`.
+- **Evidence:** the commits and hashes in section 1; the F2 report and audit ZIP outside this repository;
+  the CEO audit outcome and CEO review, quoted above as reported, which exist in session input and not as
+  repository files; and `git show HEAD:docs/owner_requirements/ACE_OWNER_RULES_FULL.txt` hashed against
+  section 1.
+
+---
+
+## ADR-0106 - Owner closure of `Q28`: OR-1 to OR-7 decided
+
+- **Date:** 2026-11-03
+- **Status:** **ACCEPTED, on the owner's explicit instruction "ACE OWNER AUTHORIZATION — Q28 CLOSURE".**
+  Acceptance covers the seven decisions quoted below. `ADR-0105` stays `PROPOSED`, and its full text is
+  not ratified by this entry.
+- **Context:** `ADR-0105` s6 flagged `OR-1` to `OR-7` between the preserved owner rules
+  (`docs/owner_requirements/ACE_OWNER_RULES_FULL.txt`) and governance, registered as `Q28`. The owner has
+  now decided all seven.
+- **Decision:** quoted exactly from the owner's instruction:
+  - OR-1: Owner hierarchy shorthand defers to accepted ADR-0042, including Engineering Constitution.
+  - OR-2: Preserve Charter systems and qualifiers; Jaimini remains planned, requiring its own approved
+    specification.
+  - OR-3: Main merges require both ChatGPT CEO technical approval and explicit owner authorization.
+  - OR-4: UNKNOWN is required in future convergence design; no automatic ratification or implementation.
+  - OR-5: Owner rules inform Q5 but do not close formal mission ratification.
+  - OR-6: Section 13 governs future prerequisites; do not reopen certified Panchanga or rise/set.
+  - OR-7: Preserve original owner rules unchanged; integrate their authority through established
+    governance.
+- **Consequences:** `Q28` is `RESOLVED`. `Q5` and `Q2` stay `OPEN`. `ADR-0105`, `ADR-0042`, the Charter
+  and the preserved owner rules are unchanged. No production code, certification artifact or acceptance
+  criterion is altered, and no merge is approved by this entry. `.claude/rules/git-safety.md` still names
+  only owner authorization for `main`; OR-3 now also requires ChatGPT CEO technical approval, and that
+  file is left unedited here because this commit was authorized as minimal.
+- **Evidence:** the owner's instruction, which exists as session input and not as a repository file;
+  branch `wp-rd-b-mutation-harness` at `8eaf772b10510b05c2bdcef17ebdf403a65c4588` as the recorded starting
+  point; and the checks reported in `reports/AI_HANDOFF_CURRENT.md` for this task.
+
+---
+
 ## ADR template (copy, do not edit above the line)
 
 ## ADR-XXXX - <title>

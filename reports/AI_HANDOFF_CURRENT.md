@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.17.0 |
+| Version | 9.19.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-28 (**Post-merge state refresh only.** `phase-g-governance` merged to `main` as `68daa9c58ee2a1c0fadedaf5cc9b13cdb9dab32f` (PR #7, verified genuine two-parent merge of `fef1130` + `95d4d74`), main's own post-merge CI (`33061298693`) confirmed green across all four jobs directly from the transcript (KP_SIGNIFICATOR_V1's repaired certification and the full 872-test count both read from the log, not re-run). `ADR-0079` and `ADR-0080` are both `ACCEPTED`; `DP-030` section 5 Option 1 is CLOSED. This entry only refreshes this file and `docs/ACE_EXECUTION_STATE.md` to reflect that verified state - no engine code, certification artifact, or other document touched. No new capability authorized; `DP-027` section K remains the sole open CEO decision.) |
+| Last updated | 2026-11-03 (**`Q28` closure only.** See the first task entry below.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,49 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-03 - Q28 closure: owner's seven decisions recorded (ADR-0106)
+- Branch / commit SHA: `wp-rd-b-mutation-harness`, this task's own commit on top of
+  `8eaf772b10510b05c2bdcef17ebdf403a65c4588`. `main` unchanged at
+  `6538930c2832b49de54c31edad4614e265a86695`.
+- Task: the owner's "ACE OWNER AUTHORIZATION — Q28 CLOSURE": one minimal governance commit resolving
+  `Q28`, a normal push, and a review PR to trigger CI. No merge.
+- Files changed: `docs/DECISION_LOG.md`, `docs/OPEN_QUESTIONS.md`, `docs/ACE_EXECUTION_STATE.md`,
+  `reports/AI_HANDOFF_CURRENT.md` (this file).
+- Key findings: `ADR-0105` is byte-unchanged and stays `PROPOSED`. `.claude/rules/git-safety.md` does not
+  yet state OR-3's dual requirement; it was left unedited because the commit was authorized as minimal.
+- Verification: six governance gates `rc=0`; default `pytest` 983 passed, 0 skipped (Windows host, Python 3.12.10).
+  CI results are on the review PR.
+- Next genuine decision point: ChatGPT technical review of the PR, then the owner's merge decision (OR-3).
+
+### 2026-11-02 - Bounded repository-memory update: WP-RD-B-F2 CEO verdict, owner clarification, owner rules preserved
+- Branch / commit SHA: `wp-rd-b-mutation-harness` (local, unpushed), this task's own commit on top of
+  `36faa510cefa041eb3cb306e240716da91973ec4`. `main` unchanged at
+  `6538930c2832b49de54c31edad4614e265a86695`.
+- Task: the CEO audit outcome and CEO review, supplied through the owner's session: record the owner's
+  narrow clarification and the bounded verdict, preserve the owner rules byte for byte, compare them with
+  accepted governance, flag conflicts, and make one local commit. No push, PR, merge or cleanup.
+- Relevant ADR/specification: `ADR-0105` (`PROPOSED`, this task), `ADR-0042`, `ADR-0051`, `ADR-0056`,
+  `ADR-0062`, `ADR-0104` and `specs/PROJECT_CHARTER.md`, read and not edited.
+- Files changed: `docs/owner_requirements/ACE_OWNER_RULES_FULL.txt` (new), `docs/DECISION_LOG.md`,
+  `docs/OPEN_QUESTIONS.md`, `docs/ACE_EXECUTION_STATE.md`, `reports/AI_HANDOFF_CURRENT.md` (this file).
+- Verified by the builder: branch, HEAD and clean status before editing; the owner rules SHA-256 against
+  the CEO-supplied value; ADR numbering. See `ADR-0105` s1.
+- CEO-reported, not re-executed here: the independent 281-test Linux run, the manifest and source-file
+  verification, and the owner's approval of the clarification. See `ADR-0105` s2 and s3. The integrated
+  demonstration remains builder-produced evidence.
+- Key findings: three conflicts with accepted governance (`OR-1` authority hierarchy, `OR-2` system list,
+  `OR-3` merge approval and the meaning of "CEO") and four items for owner decision, registered as `Q28`
+  and not resolved. The abort-point tests do not directly assert cleanup ineligibility; the consumer
+  enforces it by source reading.
+- Not established: certification, merge approval, production readiness, execution authenticity, WP-N1
+  closure or JATAKA exit.
+- Verification: on the final text, `check_adr_numbering`, `check_retired_identifiers`, `check_identifier_families`,
+  `check_artifact_drift`, `check_capability_state` and `check_mutation_detection` all `rc=0`; default
+  `pytest` 983 passed, 0 skipped (Windows host, Python 3.12.10). Fixture harness suites were not rerun:
+  no code changed. CI and `swetest`-dependent certifiers were not run; the branch is local only.
+- Next genuine decision point: the owner's `Q28` decisions and ratification or correction of `ADR-0105`.
+  WP-N2 and WP-RD-A remain unauthorized.
 
 ### 2026-08-28 - Post-merge state refresh: docs/ACE_EXECUTION_STATE.md and this file updated to reflect verified merge/CI/governance reality
 - Branch / commit SHA: `phase-g-governance` (local), this task's own commit on top of
@@ -5264,6 +5307,8 @@ act.
 
 | Version | Date | Change |
 |---|---|---|
+| 9.19.0 | 2026-11-03 | `Q28` closed by the owner: `ADR-0106` (`ACCEPTED`). No engine or certification change. |
+| 9.18.0 | 2026-11-02 | Bounded repository-memory update: `ADR-0105` (`PROPOSED`), WP-RD-B-F2 bounded CEO PASS, owner rules preserved, `Q28` flagged. No engine or certification change. |
 | 8.1.0 | 2026-08-24 | **CI-run-ID discrepancy resolved (no fabrication); `main`-vs-`phase-g-governance` merge-readiness audit performed (READY, not performed).** Independent audit flagged this session's chat citation of CI run `32756205364` vs committed records citing only `32752248185`. Resolved by direct `gh run view` query: both runs genuine and `success` - `32752248185` -> `f0eb220` (16:41 UTC), `32756205364` -> `931b6d0` (17:22 UTC, later, current HEAD). Root cause: `ACE_EXECUTION_STATE.md`'s snapshot fields were never updated after the `931b6d0` push; `32756205364` had only been reported in chat, never committed. Corrected via the file's own designed overwrite mechanism, `ADR-0074` left unedited (its own citation was accurate when drafted). Merge-readiness audit: confirmed `main`'s merge-commit second parent is an ancestor of current `phase-g-governance` (no lost content, normal continued-branch topology); `main` has no independent work beyond its own two historical merges; `git merge-tree` reports a clean, conflict-free merge; all 13 ahead-of-main commits individually ratified; zero JATAKA production code found; no PR currently open. Result: READY. **No merge performed, no PR created, no self-authorization taken.** No code touched. Governance gates clean (74 ADR entries). H-03, the eight cross-certifier findings, and all closed Dasha/FOUNDATION items untouched. No JATAKA implementation begun. |
 | 8.0.0 | 2026-08-24 | **`ADR-0074` RATIFIED — JATAKA ENTRY CRITERIA FORMALLY SATISFIED, JATAKA ENTERED.** Owner: "CEO RATIFICATION — ADR-0074. I ratify ADR-0074 exactly as written in commit 2f26eee. I formally declare the JATAKA entry criteria satisfied under Q8_CLOSURE_MATRIX.md s5," individually confirming all ten items enumerated (FOUNDATION prerequisite satisfied; all six Dasha-roadmap steps satisfied and individually ratified; H-03 not a JATAKA-entry prerequisite; the eight `ADR-0072` cross-certifier findings non-blocking; the "six steps, not the roadmap document" interpretation ratified; the stale header confirmed non-blocking; phase entry only; every JATAKA capability still needs its own authorization; implementation not begun). Recorded via the established "Ratification of ADR-<number>" mechanism, mirroring `ADR-0068`'s own FOUNDATION-exit ratification exactly - Status line only edited, a new follow-up sub-entry added. `CURRENT_PHASE` updated to JATAKA ENTERED. No code touched; 844/844 pytest unchanged; governance gates clean (74 ADR entries). No JATAKA capability implementation begun; no closed Dasha or FOUNDATION item reopened; the eight cross-certifier findings untouched; the stale register-header summary left unfixed. Nothing pushed. |
 | 7.9.0 | 2026-08-24 | Pushed `f0eb220` (Dasha roadmap step 6, `ADR-0073`) to `origin/phase-g-governance` on explicit push authorization - fast-forward `d18e7ff..f0eb220`. CI run `32752248185`: all four jobs green, read directly from the log (governance gate clean; both no-oracle legs 844 passed, confirming the 7 new boundary-proximity tests executed; oracle gate 0 lord mismatches, 20412 rows, drift PASS). **Full six-step Dasha roadmap fully CI-confirmed, zero certified-value impact.** Owner then authorized a formal JATAKA-entry readiness audit. Drafted `ADR-0074` (`Status: PROPOSED`, not self-ratified, mirroring `ADR-0068`'s own precedent): independently reverified all six Dasha-roadmap ADRs' own `Status` fields directly - all `ACCEPTED`. `Q8_CLOSURE_MATRIX.md` s5's entry-criteria text found satisfied on its own plain terms. Searched for H-03: confirmed genuinely absent from JATAKA's entry criteria and the Dasha roadmap - a separate, still-open `TRANSIT_V1` finding, not invented as a requirement. Reconciled the eight `ADR-0072` cross-certifier findings: confirmed non-blocking, remain untouched. Confirmed no accidental JATAKA implementation (`planet_strength.py` is pre-Phase-G legacy code). Flagged, not fixed, a stale `DECISION_LOG.md` register-header summary. Presented the Dasha-roadmap-document's own unratified status as an explicit textual point. Determination: entry criteria satisfied; a separate CEO entry decision is the only remaining authorization. No code touched; 844/844 pytest unchanged; governance gates clean (74 ADR entries). No JATAKA implementation begun; no closed Dasha or FOUNDATION item reopened; the eight cross-certifier findings untouched. |
