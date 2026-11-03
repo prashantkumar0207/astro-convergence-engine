@@ -20,9 +20,19 @@ own governing investigation, recorded in ADR-0085) to pass all 872 tests in
 this repository's existing suite silently - this is the standing regression
 guard against that specific defect class.
 
+WP-N1 N1-G1 correction: verify_composition() takes its expected sign, division
+number and fraction from reference_d45_position() below, which uses nothing
+from engine.*. Production classify() is consulted only to attribute a mismatch
+to its layer; it never decides pass or fail. The fraction convention rests on
+engine/astrology/varga_classifier.py's documented behaviour, compared exactly;
+no ratified text states it. The snapshot is production input, declared as such:
+astronomical correctness is certified elsewhere.
+
 Run:  python validate_d45_holdout.py
 """
 
+import dataclasses
+import importlib
 import sys
 from pathlib import Path
 
@@ -30,7 +40,11 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import engine.astrology  # noqa: F401  (registers production vargas, including D45)
 from engine.astrology.varga_classifier import classify  # framework (SUBJECT)
-from engine.astrology.varga_registry import get_varga_rule
+from engine.astrology.varga_registry import (
+    get_varga_rule,
+    register_varga_rule,
+    unregister_varga_rule,
+)
 
 SIGNS = ("Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
          "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces")
@@ -70,8 +84,18 @@ for _source_name in SIGNS:
 _BOUNDARY_TOLERANCE = 1e-10
 
 
-def reference_d45(longitude: float):
+_REFERENCE_WIDTH = 30.0 / 45.0
+_REFERENCE_COUNT = 45
+
+
+def _reference_normalize(longitude: float) -> float:
+    """Reduce to [0, 360). Float modulo returns exactly 360.0 for tiny negatives."""
     longitude = longitude % 360.0
+    return 0.0 if longitude >= 360.0 else longitude
+
+
+def reference_d45(longitude: float):
+    longitude = _reference_normalize(longitude)
     source = int(longitude // 30.0)
     degree = longitude - source * 30.0
     width = 30.0 / 45.0
@@ -79,6 +103,26 @@ def reference_d45(longitude: float):
     if division > 44:
         division = 44
     return SIGNS.index(REFERENCE_TABLE[SIGNS[source]][division]), division
+
+
+def reference_d45_position(longitude: float):
+    """Independent (sign, division_index, fraction), both indices 0-based.
+
+    Uses nothing from engine.*: engine/tests/test_d45_reference_independence.py
+    enforces that by parsing this file. The sign split takes no tolerance. A
+    degree within the tolerance below a division's edge promotes to the next
+    division, where it sits at fraction 0.0. The top division is clamped.
+    """
+    longitude = _reference_normalize(longitude)
+    source = int(longitude // 30.0)
+    degree = longitude - source * 30.0
+    index = int((degree + _BOUNDARY_TOLERANCE) / _REFERENCE_WIDTH)
+    if index >= _REFERENCE_COUNT:
+        index = _REFERENCE_COUNT - 1
+    fraction = (degree - index * _REFERENCE_WIDTH) / _REFERENCE_WIDTH
+    if fraction < 0.0:
+        fraction = 0.0
+    return SIGNS.index(REFERENCE_TABLE[SIGNS[source]][index]), index, fraction
 
 
 #: Real, fixed holdout birth data for the composition/plumbing check
@@ -109,71 +153,100 @@ def _composition_snapshot(case):
     return calculate(bd, profile=PARASHARI_LAHIRI).snapshot
 
 
+def _attribute(field, chart_value, reference_value, source_longitude):
+    """Diagnostic only: name the layer a field mismatch belongs to.
+
+    A chart value that equals what classify() now returns, while the reference
+    disagrees, propagated from the classification layer. Anything else arose
+    in composition. The pass/fail decision never reads this.
+    """
+    try:
+        from engine.astrology import varga_classifier, varga_registry
+
+        rule = varga_registry.get_varga_rule(45, "parashara")
+        produced = varga_classifier.classify(source_longitude, rule)
+        classifier_value = {"sign": produced.d_sign,
+                            "division_number": produced.division_number,
+                            "fraction": produced.fraction}[field]
+    except Exception as exc:  # noqa: BLE001 - a diagnostic must not mask the mismatch
+        return f"undetermined ({exc!r})"
+    if chart_value == classifier_value and classifier_value != reference_value:
+        return "classification"
+    return "composition"
+
+
+def check_chart(case_id, snapshot, chart):
+    """Compare one chart with its snapshot and the independent reference.
+
+    Returns mismatch descriptions, each ending in its attribution. The
+    expected values come from reference_d45_position() alone.
+    """
+    mismatches = []
+
+    def composition(message):
+        mismatches.append(f"{case_id}/{message} [attribution: composition]")
+
+    if chart.varga != 45 or chart.school != "parashara":
+        composition(f"chart: varga={chart.varga} school={chart.school}")
+    if chart.provenance is not snapshot.provenance:
+        composition("chart: provenance is not the snapshot's own provenance")
+    if type(chart.ascendant).__name__ != "VargaPosition":
+        composition(f"ascendant: type={type(chart.ascendant).__name__}")
+
+    expected_names = set(snapshot.sidereal_planets)
+    actual_names = set(chart.planets)
+    for name in sorted(actual_names - expected_names):
+        composition(f"{name}: not a snapshot body")
+    for name in sorted(expected_names - actual_names):
+        composition(f"{name}: missing from the chart")
+
+    bodies = [("ascendant", snapshot.houses.ascendant, chart.ascendant)]
+    for name, planet in snapshot.sidereal_planets.items():
+        if name in chart.planets:
+            bodies.append((name, planet.longitude, chart.planets[name]))
+
+    for label, source_longitude, position in bodies:
+        if label != "ascendant":
+            if type(position).__name__ != "VargaPlanet":
+                composition(f"{label}: type={type(position).__name__}")
+            if position.name != label:
+                composition(f"{label}: name={position.name!r}")
+        if position.source_longitude != source_longitude:
+            composition(f"{label}: source_longitude={position.source_longitude!r} "
+                        f"expected={source_longitude!r}")
+        sign, index, fraction = reference_d45_position(source_longitude)
+        # division_number is 1-based, per engine/models/varga_planet.py's documented model.
+        for field, reference_value in (("sign", sign), ("division_number", index + 1),
+                                       ("fraction", fraction)):
+            chart_value = getattr(position, field)
+            if chart_value != reference_value:
+                layer = _attribute(field, chart_value, reference_value, source_longitude)
+                mismatches.append(f"{case_id}/{label}: {field}={chart_value!r} "
+                                  f"expected={reference_value!r} [attribution: {layer}]")
+    return mismatches
+
+
 def verify_composition(cases=COMPOSITION_HOLDOUT):
     """
     Exercise the REAL production composition entry point -
     engine.astrology.divisional_chart.divisional_chart(snapshot, 45), which
     calls engine.astrology.varga_chart_builder.build_varga_chart() - and
-    check every field of every resulting VargaPosition/VargaPlanet, not just
-    a derived boolean or the chart-level varga/school/provenance metadata
-    every existing check (certify_d45.py, engine/tests/test_varga_d45.py,
-    the original production-implementation commit's own manual check)
-    stops at.
+    check every field of every resulting VargaPosition/VargaPlanet against
+    this file's own reference, plus each planet's identity and the chart's
+    set of bodies.
 
-    This is deliberately NOT a re-test of classify()'s own correctness
-    (already covered exhaustively above and by certify_d45.py's gates A/B/
-    F/G): the "expected" value for each body is obtained by calling the SAME
-    already-verified classify() a second time, directly, on that body's OWN
-    real longitude - a legitimate wiring cross-check, not a self-comparison,
-    exactly mirroring the established gate_b2/gate_g pattern already used by
-    this project's PARASHARI_YOGA_V1 certifier (docs/DECISION_LOG.md,
-    ADR-0081) to catch plumbing bugs that classify()'s own correctness tests
-    cannot see. A genuine corruption of build_varga_chart() (a field swap,
-    or - the more severe case demonstrated in ADR-0085's own governing
-    investigation - assigning one body's classification to a different
-    body) changes classify()'s SECOND, independent call's result relative to
-    what the (corrupted) chart actually stored, and is therefore caught
-    here, deterministically.
+    A corruption inside classify() or the registered rule reaches the chart
+    but not the reference, so it is caught here as well as a wiring error.
 
     Returns a list of mismatch descriptions; empty means every field of
     every body in every case matched exactly.
     """
     from engine.astrology.divisional_chart import divisional_chart
 
-    rule = get_varga_rule(45, "parashara")
     mismatches = []
-
     for case in cases:
         snapshot = _composition_snapshot(case)
-        chart = divisional_chart(snapshot, 45)
-
-        if chart.varga != 45 or chart.school != "parashara":
-            mismatches.append(f"{case['id']}: chart.varga={chart.varga} chart.school={chart.school}")
-        if chart.provenance is not snapshot.provenance:
-            mismatches.append(f"{case['id']}: chart.provenance is not the snapshot's own provenance")
-
-        bodies = [("ascendant", snapshot.houses.ascendant, chart.ascendant)]
-        for name, planet in snapshot.sidereal_planets.items():
-            bodies.append((name, planet.longitude, chart.planets[name]))
-
-        for label, source_longitude, position in bodies:
-            expected = classify(source_longitude, rule)
-            if position.source_longitude != source_longitude:
-                mismatches.append(
-                    f"{case['id']}/{label}: source_longitude={position.source_longitude!r} "
-                    f"expected={source_longitude!r}")
-            if position.sign != expected.d_sign:
-                mismatches.append(
-                    f"{case['id']}/{label}: sign={position.sign} expected={expected.d_sign}")
-            if position.division_number != expected.division_number:
-                mismatches.append(
-                    f"{case['id']}/{label}: division_number={position.division_number} "
-                    f"expected={expected.division_number}")
-            if position.fraction != expected.fraction:
-                mismatches.append(
-                    f"{case['id']}/{label}: fraction={position.fraction!r} "
-                    f"expected={expected.fraction!r}")
-
+        mismatches.extend(check_chart(case["id"], snapshot, divisional_chart(snapshot, 45)))
     return mismatches
 
 
@@ -296,33 +369,218 @@ def _corrupt_build_varga_chart_source_longitude():
     return pristine, corrupted
 
 
+def _corrupt_build_varga_chart_name_mislabel():
+    """One planet's name field carries another body's name; its values are right."""
+
+    from engine.astrology.varga_classifier import classify as _classify
+    from engine.models.varga_chart import VargaChart
+    from engine.models.varga_planet import VargaPlanet, VargaPosition
+
+    def corrupted(snapshot, division, rule, school):
+        asc = _classify(snapshot.houses.ascendant, rule)
+        ascendant = VargaPosition(
+            source_longitude=snapshot.houses.ascendant,
+            sign=asc.d_sign, division_number=asc.division_number, fraction=asc.fraction,
+        )
+        names = list(snapshot.sidereal_planets)
+        planets = {}
+        for name, planet in snapshot.sidereal_planets.items():
+            c = _classify(planet.longitude, rule)
+            planets[name] = VargaPlanet(
+                name=names[1] if name == names[0] else name,  # corrupted
+                source_longitude=planet.longitude,
+                sign=c.d_sign, division_number=c.division_number, fraction=c.fraction,
+            )
+        return VargaChart(varga=division, school=school, ascendant=ascendant,
+                           planets=planets, provenance=snapshot.provenance)
+
+    import engine.astrology.varga_chart_builder as builder_module
+    pristine = builder_module.build_varga_chart
+    corrupted.__module__ = pristine.__module__
+    corrupted.__name__ = pristine.__name__
+    corrupted.__qualname__ = getattr(pristine, "__qualname__", pristine.__name__)
+    return pristine, corrupted
+
+
+def _corrupt_build_varga_chart_body_set(change):
+    """The chart's set of bodies is wrong; `change` edits the finished planet dict."""
+
+    import engine.astrology.varga_chart_builder as builder_module
+    pristine = builder_module.build_varga_chart
+
+    def corrupted(snapshot, division, rule, school):
+        chart = pristine(snapshot, division, rule, school)
+        planets = dict(chart.planets)
+        change(planets)
+        return dataclasses.replace(chart, planets=planets)
+
+    corrupted.__module__ = pristine.__module__
+    corrupted.__name__ = pristine.__name__
+    corrupted.__qualname__ = getattr(pristine, "__qualname__", pristine.__name__)
+    return pristine, corrupted
+
+
+def _extra_planet(planets):
+    first = next(iter(planets.values()))
+    planets["Phantom"] = dataclasses.replace(first, name="Phantom")
+
+
+def _missing_planet(planets):
+    del planets[next(iter(planets))]
+
+
+def _corrupt_build_varga_chart_ascendant_from_planet():
+    """The ascendant is classified from the first planet's longitude."""
+
+    import engine.astrology.varga_chart_builder as builder_module
+    from engine.astrology.varga_classifier import classify as _classify
+    pristine = builder_module.build_varga_chart
+
+    def corrupted(snapshot, division, rule, school):
+        chart = pristine(snapshot, division, rule, school)
+        wrong = _classify(next(iter(snapshot.sidereal_planets.values())).longitude, rule)
+        ascendant = dataclasses.replace(chart.ascendant, sign=wrong.d_sign,
+                                        division_number=wrong.division_number,
+                                        fraction=wrong.fraction)
+        return dataclasses.replace(chart, ascendant=ascendant)
+
+    corrupted.__module__ = pristine.__module__
+    corrupted.__name__ = pristine.__name__
+    corrupted.__qualname__ = getattr(pristine, "__qualname__", pristine.__name__)
+    return pristine, corrupted
+
+
+def _corrupt_build_varga_chart_fraction_complement():
+    """Each planet's fraction is its complement, which stays in range."""
+
+    import engine.astrology.varga_chart_builder as builder_module
+    pristine = builder_module.build_varga_chart
+
+    def corrupted(snapshot, division, rule, school):
+        chart = pristine(snapshot, division, rule, school)
+        planets = {name: dataclasses.replace(planet, fraction=1.0 - planet.fraction)
+                   for name, planet in chart.planets.items()}
+        return dataclasses.replace(chart, planets=planets)
+
+    corrupted.__module__ = pristine.__module__
+    corrupted.__name__ = pristine.__name__
+    corrupted.__qualname__ = getattr(pristine, "__qualname__", pristine.__name__)
+    return pristine, corrupted
+
+
+def _corrupt_classifier(change):
+    """A defect inside the classifier, which the builder and classify() both inherit."""
+
+    import engine.astrology.varga_classifier as classifier_module
+    pristine = classifier_module._classify_cyclic
+
+    def corrupted(source_sign, degree, rule):
+        return change(pristine(source_sign, degree, rule))
+
+    corrupted.__module__ = pristine.__module__
+    corrupted.__name__ = pristine.__name__
+    corrupted.__qualname__ = getattr(pristine, "__qualname__", pristine.__name__)
+    return pristine, corrupted
+
+
+def _halve_fraction(result):
+    return dataclasses.replace(result, fraction=result.fraction / 2.0)
+
+
+def _shift_sign(result):
+    return dataclasses.replace(result, d_sign=(result.d_sign + 1) % 12)
+
+
+def _install_attribute(module_name, attribute, factory):
+    """Install a corruption on a module attribute; return its restore function."""
+
+    def install():
+        module = importlib.import_module(module_name)
+        pristine, corrupted = factory()
+        if getattr(module, attribute) is not pristine:
+            raise AssertionError(f"{module_name}.{attribute} is not pristine before the control")
+        setattr(module, attribute, corrupted)
+
+        def restore():
+            setattr(module, attribute, pristine)
+            if getattr(module, attribute) is not pristine:
+                raise AssertionError(f"{module_name}.{attribute} was not restored")
+
+        return restore
+
+    return install
+
+
+def _install_tampered_rule():
+    """The rule registered for D45 starts every source sign one sign later."""
+
+    original = get_varga_rule(45, "parashara")
+    tampered = dataclasses.replace(
+        original, start_sign=tuple((start + 1) % 12 for start in original.start_sign))
+    unregister_varga_rule(45, "parashara")
+    register_varga_rule(45, "parashara", tampered)
+
+    def restore():
+        unregister_varga_rule(45, "parashara")
+        register_varga_rule(45, "parashara", original)
+        if get_varga_rule(45, "parashara") is not original:
+            raise AssertionError("the registered D45 rule was not restored")
+
+    return restore
+
+
+_BUILDER = ("engine.astrology.varga_chart_builder", "build_varga_chart")
+_CLASSIFIER = ("engine.astrology.varga_classifier", "_classify_cyclic")
+
+#: (control, install, the layer its mismatches must be attributed to). Controls
+#: here are expected to be seen by verify_composition() only: they begin after
+#: the sweeps have finished, so no sweep observes them.
 _MUTATION_CONTROLS = (
-    ("field_order_swap", _corrupt_build_varga_chart_field_swap),
-    ("planet_cross_wiring", _corrupt_build_varga_chart_cross_wiring),
-    ("source_longitude_corruption", _corrupt_build_varga_chart_source_longitude),
+    ("field_order_swap", _install_attribute(*_BUILDER, _corrupt_build_varga_chart_field_swap),
+     "composition"),
+    ("planet_cross_wiring", _install_attribute(*_BUILDER, _corrupt_build_varga_chart_cross_wiring),
+     "composition"),
+    ("source_longitude_corruption",
+     _install_attribute(*_BUILDER, _corrupt_build_varga_chart_source_longitude), "composition"),
+    ("planet_name_mislabel", _install_attribute(*_BUILDER, _corrupt_build_varga_chart_name_mislabel),
+     "composition"),
+    ("extra_planet_entry",
+     _install_attribute(*_BUILDER, lambda: _corrupt_build_varga_chart_body_set(_extra_planet)),
+     "composition"),
+    ("missing_planet_entry",
+     _install_attribute(*_BUILDER, lambda: _corrupt_build_varga_chart_body_set(_missing_planet)),
+     "composition"),
+    ("ascendant_from_planet",
+     _install_attribute(*_BUILDER, _corrupt_build_varga_chart_ascendant_from_planet), "composition"),
+    ("fraction_complement",
+     _install_attribute(*_BUILDER, _corrupt_build_varga_chart_fraction_complement), "composition"),
+    ("classifier_fraction_shared",
+     _install_attribute(*_CLASSIFIER, lambda: _corrupt_classifier(_halve_fraction)), "classification"),
+    ("classifier_sign_shared",
+     _install_attribute(*_CLASSIFIER, lambda: _corrupt_classifier(_shift_sign)), "classification"),
+    ("registered_rule_tampered", _install_tampered_rule, "classification"),
 )
+
+
+def _attributions(mismatches):
+    return sorted({mismatch.rsplit("[attribution: ", 1)[1].rstrip("]") for mismatch in mismatches})
 
 
 def run_mutation_self_check():
     """
-    Genuine, real, in-process monkeypatch-and-re-execution mutation
-    detection (ADR-0085) - mirroring scripts/check_mutation_detection.py's
-    own established methodology (built for the ADR-0079/DP-030
-    KP_SIGNIFICATOR_V1 repair), applied here to
-    engine.astrology.varga_chart_builder.build_varga_chart. This is NOT a
-    synthetic side-by-side comparison of a hand-written "corrupted" copy
-    (the weakness ADR-0085 itself found in every existing negative-control
-    gate this repository has, including this D45 certifier's own gate H):
-    the REAL production function is replaced in-process, the REAL
-    verify_composition() is re-run against the REAL (corrupted) code path,
-    and a genuine mismatch is observed - then the pristine function is
-    restored and verify_composition() is re-confirmed to pass again.
+    Genuine, real, in-process mutation detection (ADR-0085): the REAL production
+    object is replaced in-process, the REAL verify_composition() is re-run
+    against the corrupted code path, and a mismatch attributed to the expected
+    layer must be observed. The pristine object is then restored, its identity
+    confirmed, and verify_composition() confirmed clean again.
+
+    The self-check alone cannot show that a certifier acts on a failure.
+    engine/tests/test_d45_reference_independence.py observes
+    scripts/certify_d45.py's real gate reaching fail() under real corruptions.
 
     Never touches any file on disk. Returns (all_detected: bool, results:
     list of per-control dicts).
     """
-    import engine.astrology.varga_chart_builder as builder_module
-
     clean = verify_composition()
     if clean:
         raise AssertionError(
@@ -332,18 +590,21 @@ def run_mutation_self_check():
 
     results = []
     all_detected = True
-    for control_name, corrupt_factory in _MUTATION_CONTROLS:
-        pristine, corrupted = corrupt_factory()
-        builder_module.build_varga_chart = corrupted
+    for control_name, install, expected_layer in _MUTATION_CONTROLS:
+        restore = install()
         try:
             mismatches_under_mutation = verify_composition()
         finally:
-            builder_module.build_varga_chart = pristine
+            restore()
 
-        detected = bool(mismatches_under_mutation)
+        layers = _attributions(mismatches_under_mutation)
+        detected = bool(mismatches_under_mutation) and layers == [expected_layer]
         results.append({
             "control": control_name,
             "detected": detected,
+            "mismatches": len(mismatches_under_mutation),
+            "attribution": layers,
+            "expected_attribution": expected_layer,
             "sample_mismatch": mismatches_under_mutation[0] if mismatches_under_mutation else None,
         })
         if not detected:
@@ -352,7 +613,7 @@ def run_mutation_self_check():
     restored = verify_composition()
     if restored:
         raise AssertionError(
-            f"production build_varga_chart was not correctly restored after mutation "
+            f"production code was not correctly restored after mutation "
             f"testing: {restored[:5]}"
         )
 
@@ -396,12 +657,15 @@ def main() -> int:
     print("=" * 60)
     print(f"Dense cases    : {dense}")
     print(f"Boundary cases : {boundary}")
+    # Each section reports for itself, so a classification defect is not
+    # recorded as a composition failure merely because the sweep ran first.
+    # Each sentinel below is printed only when its own section passes.
     if failures:
         print(f"FAILURES: {len(failures)}; first: {failures[:5]}")
         print("RESULT: FAIL")
-        return 1
-    print()
-    print("RESULT: ALL INDEPENDENT D45 CASES PASSED")
+    else:
+        print()
+        print("RESULT: ALL INDEPENDENT D45 CASES PASSED")
 
     print()
     print("=" * 60)
@@ -412,7 +676,10 @@ def main() -> int:
           f"(1 ascendant + N planets), every field")
     if composition_mismatches:
         print(f"FAILURES: {len(composition_mismatches)}; first: {composition_mismatches[:5]}")
+        print(f"ATTRIBUTION: {_attributions(composition_mismatches)}")
         print("RESULT: D45 COMPOSITION VERIFICATION FAILED")
+        print("RESULT: D45 COMPOSITION MUTATION SELF-CHECK NOT RUN - composition is not clean")
+        print("=" * 60)
         return 1
     print("RESULT: D45 COMPOSITION VERIFICATION PASSED")
 
@@ -423,16 +690,17 @@ def main() -> int:
     all_detected, mutation_results = run_mutation_self_check()
     for result in mutation_results:
         status = "DETECTED" if result["detected"] else "MISSED (BAD)"
-        print(f"  {result['control']:28s} {status}")
+        print(f"  {result['control']:28s} {status} mismatches={result['mismatches']} "
+              f"attribution={result['attribution']}")
         if not result["detected"]:
-            print(f"    (no mismatch reported under this corruption)")
+            print(f"    (expected a mismatch attributed to {result['expected_attribution']})")
     if not all_detected:
         print("RESULT: D45 COMPOSITION MUTATION SELF-CHECK FAILED - "
               "at least one control was not detected")
         return 1
     print("RESULT: D45 COMPOSITION MUTATION DETECTION PASSED")
     print("=" * 60)
-    return 0
+    return 1 if failures else 0
 
 
 if __name__ == "__main__":
