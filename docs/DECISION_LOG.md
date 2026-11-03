@@ -10206,6 +10206,36 @@ This comparison was by targeted reading of the named documents, not an exhaustiv
 
 ---
 
+## ADR-0106 - Owner closure of `Q28`: OR-1 to OR-7 decided
+
+- **Date:** 2026-11-03
+- **Status:** **ACCEPTED, on the owner's explicit instruction "ACE OWNER AUTHORIZATION — Q28 CLOSURE".**
+  Acceptance covers the seven decisions quoted below. `ADR-0105` stays `PROPOSED`, and its full text is
+  not ratified by this entry.
+- **Context:** `ADR-0105` s6 flagged `OR-1` to `OR-7` between the preserved owner rules
+  (`docs/owner_requirements/ACE_OWNER_RULES_FULL.txt`) and governance, registered as `Q28`. The owner has
+  now decided all seven.
+- **Decision:** quoted exactly from the owner's instruction:
+  - OR-1: Owner hierarchy shorthand defers to accepted ADR-0042, including Engineering Constitution.
+  - OR-2: Preserve Charter systems and qualifiers; Jaimini remains planned, requiring its own approved
+    specification.
+  - OR-3: Main merges require both ChatGPT CEO technical approval and explicit owner authorization.
+  - OR-4: UNKNOWN is required in future convergence design; no automatic ratification or implementation.
+  - OR-5: Owner rules inform Q5 but do not close formal mission ratification.
+  - OR-6: Section 13 governs future prerequisites; do not reopen certified Panchanga or rise/set.
+  - OR-7: Preserve original owner rules unchanged; integrate their authority through established
+    governance.
+- **Consequences:** `Q28` is `RESOLVED`. `Q5` and `Q2` stay `OPEN`. `ADR-0105`, `ADR-0042`, the Charter
+  and the preserved owner rules are unchanged. No production code, certification artifact or acceptance
+  criterion is altered, and no merge is approved by this entry. `.claude/rules/git-safety.md` still names
+  only owner authorization for `main`; OR-3 now also requires ChatGPT CEO technical approval, and that
+  file is left unedited here because this commit was authorized as minimal.
+- **Evidence:** the owner's instruction, which exists as session input and not as a repository file;
+  branch `wp-rd-b-mutation-harness` at `8eaf772b10510b05c2bdcef17ebdf403a65c4588` as the recorded starting
+  point; and the checks reported in `reports/AI_HANDOFF_CURRENT.md` for this task.
+
+---
+
 ## ADR template (copy, do not edit above the line)
 
 ## ADR-XXXX - <title>
