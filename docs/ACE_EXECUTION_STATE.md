@@ -4,7 +4,7 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | **ACCEPTED (`ADR-0062`) - canonical, machine-checkable current-state record.** Regenerate/refresh on every meaningful implementation task, same discipline as `reports/AI_HANDOFF_CURRENT.md`. |
-| Version | 7.21.0 |
+| Version | 7.22.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 | Last updated | 2026-11-04 (**Stage B delivery.** Records `ADR-0108` (`PROPOSED`) on `stage-b-c2-c5`; no `engine/` production change.) |
 | Review cadence | Refresh at the start of a session if stale; not load-bearing if it isn't. |
@@ -43,22 +43,22 @@ independently is in these fields plus the pointers they name.
 | Field | Value |
 |---|---|
 | `CURRENT_PHASE` | JATAKA entered (`ADR-0074`). JATAKA exit is neither declared nor performed and remains on HOLD (`ADR-0107`, `ADR-0108`). |
-| `CURRENT_MILESTONE` | **Stage B implemented (`ADR-0108`, `PROPOSED`), under review.** C2, C3 and C4 enforced; C5 has no claim to test; backlog-first migration done. |
+| `CURRENT_MILESTONE` | **Stage B under review (`ADR-0108`, `PROPOSED`).** CEO audit of `da29296`: HOLD on one C4 defect, corrected in this commit. C2, C3 and artifact reconciliation passed that audit. |
 | `CURRENT_AUTHORIZED_TASK` | None self-executable. The authorized Stage B delivery and review PR are complete. |
 | `TASK_OWNER` | CHATGPT (independent review of the PR); USER (ratification of `ADR-0108`, the dead-path ruling, merge). |
 | `STATUS` | On `stage-b-c2-c5`, under a review PR. Not merged. No `engine/` production code, holdout, threshold or calculated value changed. All 22 scope-bearing artifacts regenerated. |
-| `LAST_COMPLETED_ACTION` | Implemented C2 to C4, enumerated 43 capabilities across 22 artifacts, and migrated 26 corpus members to the backlog, with 3 overclaims and 11 reachability findings tracked `OPEN`. |
+| `LAST_COMPLETED_ACTION` | Separated `no_confirmed_violations` from `coverage_established` in C4, so an exit PASS is refused while material `UNKNOWN` remains. Resolved the two `DashaPeriod` properties with a committed runtime proof; 9 `UNKNOWN` remain, retained as unresolved. |
 | `LAST_COMMIT` (main) | `0a0dbea6fbf2e5d295b7805781a0f18f3d28bf83` (PR #38). Unchanged by this task. |
 | `LAST_COMMIT` (stage-b-c2-c5) | This task's own commit on `stage-b-c2-c5`, on top of `0a0dbea6fbf2e5d295b7805781a0f18f3d28bf83`. |
 | `LAST_CI_RUN` | `41805777185` at `0a0dbea6`: push to `main`, success on all four jobs. This branch's results are on its review PR, since a commit cannot record them. |
-| `LAST_CEO_DECISION` | Owner: "ACE OWNER AUTHORIZATION — COMPLETE STAGE B". Not certification of JATAKA exit, and not merge approval. |
+| `LAST_CEO_DECISION` | CEO audit of PR #39: HOLD on the C4 exit clause; C2, C3 and reconciliation passed the bounded review. Owner: "ACE OWNER AUTHORIZATION — COMPLETE STAGE B". Neither is a JATAKA exit or merge approval. |
 | `NEXT_AUTHORIZED_ACTION` | None self-executable. Merge, JATAKA exit, WP-N2, WP-RD-A and any `DP-040` selection are all unauthorized. |
 | `WAITING_FOR` | CHATGPT: independent review of the PR. USER: ratification of `ADR-0108` s3 and s4, the dead-path ruling, and the merge decision (`ADR-0106` OR-3). |
-| `BLOCKER` | None for this delivery. For JATAKA exit: exit clause 2 is open on 11 dead-path findings (`ADR-0108` s2); `N1` reconciliation and the `N5` completion record are outstanding. |
+| `BLOCKER` | None for this delivery. For JATAKA exit: `--exit-criterion` refuses on 11 dead-path findings and 9 material `UNKNOWN` methods; `N1` reconciliation and the `N5` completion record are outstanding. |
 | `CEO_APPROVAL_REQUIRED` | This PR and any merge (`ADR-0106` OR-3). The items in `ADR-0108` s3 and s4 need owner ratification. |
 | `CLAUDE_ACTION_REQUIRED` | None until directed. |
 | `CHATGPT_ACTION_REQUIRED` | Independent review of the PR, including `ADR-0108` s3 and s4. |
-| `USER_ACTION_REQUIRED` | Rule on dead-path `in use`; ratify or correct `ADR-0108`; decide on merge after review. |
+| `USER_ACTION_REQUIRED` | Rule on dead-path `in use`, and on the `cls.load_json` case; decide how the 9 `UNKNOWN` methods are to be resolved; ratify or correct `ADR-0108`; decide on merge after review. |
 | `HANDOFF_REQUIRED` | None beyond this file and the latest entry in `reports/AI_HANDOFF_CURRENT.md`. |
 
 ## How to independently verify every field above
@@ -79,6 +79,7 @@ exactly as `reports/AI_HANDOFF_CURRENT.md` already requires of itself.
 
 | Version | Date | Change |
 |---|---|---|
+| 7.22.0 | 2026-11-04 | C4 exit clause corrected after the CEO audit HOLD on PR #39 (`ADR-0108` addendum). |
 | 7.21.0 | 2026-11-04 | **Stage B delivered for review (`ADR-0108`, `PROPOSED`).** C2, C3 and C4 enforced; backlog migrated; exit clause 2 recorded as open. |
 | 7.20.0 | 2026-11-04 | **Consolidated Stage A recorded (`ADR-0107`).** Fields refreshed to `main` `7c653297`. The per-branch commit field is relabelled for the current branch. No engine, certification or merge state changed. |
 | 7.19.0 | 2026-11-03 | **`Q28` closed by the owner (`ADR-0106`).** Fields refreshed. No engine, certification or merge state changed. |

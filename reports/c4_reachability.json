@@ -6,6 +6,7 @@
   ]
  },
  "exit_clause_2": {
+  "coverage_established": false,
   "dead_path_uncovered": [
    "engine.astrology.house.equal_house_from_ascendant",
    "engine.astrology.planet_mapper.map_planet",
@@ -20,6 +21,18 @@
    "engine.knowledge.validator.SchemaValidator.load_json"
   ],
   "live_path_uncovered": [],
+  "material_unknown": [
+   "engine.astrology.varga_classifier.VargaClassification.division_number",
+   "engine.knowledge.cache.KnowledgeCache.clear",
+   "engine.knowledge.cache.KnowledgeCache.get",
+   "engine.knowledge.registry.KnowledgeRegistry.clear",
+   "engine.knowledge.repository.KnowledgeRepository.houses",
+   "engine.knowledge.repository.KnowledgeRepository.load_json",
+   "engine.knowledge.repository.KnowledgeRepository.planets",
+   "engine.knowledge.resolver.KnowledgeResolver.resolve",
+   "engine.knowledge.validator.SchemaValidator.validate"
+  ],
+  "no_confirmed_violations": false,
   "satisfied": false,
   "unknown_not_established_either_way": [
    "engine.astrology.varga_classifier.VargaClassification.division_number",
@@ -30,9 +43,7 @@
    "engine.knowledge.repository.KnowledgeRepository.load_json",
    "engine.knowledge.repository.KnowledgeRepository.planets",
    "engine.knowledge.resolver.KnowledgeResolver.resolve",
-   "engine.knowledge.validator.SchemaValidator.validate",
-   "engine.models.dasha.DashaPeriod.duration_years",
-   "engine.models.dasha.DashaPeriod.lord"
+   "engine.knowledge.validator.SchemaValidator.validate"
   ]
  },
  "rows": {
@@ -1036,7 +1047,7 @@
    "status": "UNKNOWN"
   },
   "engine.knowledge.cache.KnowledgeCache.get": {
-   "ambiguous_owner_count": 87,
+   "ambiguous_owner_count": 89,
    "ambiguous_owner_sample": [
     ".claude.hooks.git_safety_guard.main",
     ".claude.hooks.governance_gate_check.main",
@@ -1374,22 +1385,24 @@
    "status": "NOT_IN_USE"
   },
   "engine.models.dasha.DashaPeriod.duration_years": {
-   "ambiguous_owner_count": 1,
-   "ambiguous_owner_sample": [
+   "caller_count": 1,
+   "callers": [
     "engine.dasha.vimshottari._subdivide"
    ],
-   "covered": false,
+   "covered": true,
    "file": "engine/models/dasha.py",
-   "status": "UNKNOWN"
+   "receiver_evidence": "engine/tests/test_stage_b_coverage_gates.py::test_c4_dasha_period_properties_run_on_the_certified_path",
+   "status": "IN_USE_COVERED"
   },
   "engine.models.dasha.DashaPeriod.lord": {
-   "ambiguous_owner_count": 1,
-   "ambiguous_owner_sample": [
+   "caller_count": 1,
+   "callers": [
     "engine.dasha.vimshottari._subdivide"
    ],
-   "covered": false,
+   "covered": true,
    "file": "engine/models/dasha.py",
-   "status": "UNKNOWN"
+   "receiver_evidence": "engine/tests/test_stage_b_coverage_gates.py::test_c4_dasha_period_properties_run_on_the_certified_path",
+   "status": "IN_USE_COVERED"
   },
   "engine.models.dasha.VimshottariTimeline.antardashas": {
    "covered": false,
@@ -1633,12 +1646,23 @@
  "schema": "ace-c4-reachability-v1",
  "summary": {
   "DEAD_PATH_UNCOVERED": 11,
-  "IN_USE_COVERED": 90,
+  "IN_USE_COVERED": 92,
   "NOT_IN_USE": 99,
-  "UNKNOWN": 11
+  "UNKNOWN": 9
  },
  "universe_exclusions": {
   "engine.main.": "API route handlers: callers and exports, not capabilities",
   "engine.tools.": "developer scaffolding, not analytical"
+ },
+ "unknown_review": {
+  "engine.astrology.varga_classifier.VargaClassification.division_number": "Read as `asc.division_number` and `c.division_number` in build_varga_chart, on classify()'s result. The same shape as DashaPeriod, but no runtime proof is committed.",
+  "engine.knowledge.cache.KnowledgeCache.clear": "The only evidence is `._cache.clear()` inside the two clear methods. The receiver type is not established.",
+  "engine.knowledge.cache.KnowledgeCache.get": "The name collides with `.get` on many values, and the receivers are not type-resolved.",
+  "engine.knowledge.registry.KnowledgeRegistry.clear": "The only evidence is `._cache.clear()` inside the two clear methods. KnowledgeRegistry._cache is annotated dict.",
+  "engine.knowledge.repository.KnowledgeRepository.houses": "Every site reads `.houses` on a chart or snapshot-like value. The receivers are not type-resolved.",
+  "engine.knowledge.repository.KnowledgeRepository.load_json": "Used as `cls.load_json` in the class's own classmethods, which the analyser does not resolve. Resolving it could move dead-path finding KnowledgeLoader.load, which needs owner ratification (ADR-0108 addendum).",
+  "engine.knowledge.repository.KnowledgeRepository.planets": "Every site reads `.planets` on a chart value. The receivers are not type-resolved.",
+  "engine.knowledge.resolver.KnowledgeResolver.resolve": "The name collides with pathlib's Path.resolve at the sites found. The receivers are not type-resolved.",
+  "engine.knowledge.validator.SchemaValidator.validate": "The only evidence is `validator.validate(data)` inside the method itself. The receiver type is not established."
  }
 }

@@ -10486,6 +10486,32 @@ JATAKA exit. It changes no production code under `engine/`, holdout, threshold o
   the review PR's CI, which regenerates all 22 artifacts and asserts no drift. Baseline `main`
   `0a0dbea6fbf2e5d295b7805781a0f18f3d28bf83`.
 
+#### Addendum to ADR-0108: C4 exit clause separated, after the CEO audit HOLD on PR #39 (PROPOSED)
+
+- **Date:** 2026-11-04
+- **Status:** **PROPOSED. NOT RATIFIED**, like the entry above. Nothing in `ADR-0108` becomes ratified by this
+  addendum, and JATAKA exit is not declared.
+- **Context:** the CEO audit of `da29296ccc5501f12cba97b0a4c33d6511fd5f18` found that `exit_clause_2()` could report
+  `satisfied` while uncovered `UNKNOWN` methods remained. That was a real defect in the entry's implementation. C2, C3
+  and the artifact reconciliation passed that audit and are not reopened.
+- **Correction:** `no_confirmed_violations` and `coverage_established` are now separate, and only the second supports
+  `satisfied`. `--exit-criterion` refuses an exit PASS while any live-path, dead-path or material `UNKNOWN` item
+  remains. A material `UNKNOWN` is one no `GATED` member covers. `ADR-0099` U1 and U2 are unchanged.
+- **`UNKNOWN` review.** `DashaPeriod.lord` and `.duration_years` move to `IN_USE_COVERED` on evidence: each has one
+  use, in `_subdivide`, and a committed test records at runtime that the certified `vimshottari_from_moon` reads them
+  there, on `DashaPeriod` objects. The other 9 are **retained as unresolved**, with what the review found recorded
+  in the report's `unknown_review`. No inference was used to clear them. The receiver-evidence mechanism is a builder
+  proposal awaiting ratification with s4.
+- **Decisions for the owner, additional to s4:**
+  1. The 11 dead-path findings are unchanged and open. **One looks like an analyser limit rather than a real dead path:**
+     the analyser does not resolve `cls.load_json`, so `KnowledgeRepository.load_json` stays `UNKNOWN`, and
+     `KnowledgeLoader.load`, which it calls, reads as dead-path. If `is_exalted` reaches `dignities()`, that path may be
+     live and certified. Resolving it would reclassify a finding, so it was left alone and needs a ruling.
+  2. `VargaClassification.division_number` has the same shape as the two `DashaPeriod` properties, but was outside the
+     examples the audit named and has no committed proof yet, so it stays `UNKNOWN`.
+  3. Exit needs the remaining 9 `UNKNOWN` methods resolved with evidence, or a ruling on how they are to be treated.
+- **Evidence:** `engine/tests/test_stage_b_coverage_gates.py`; `reports/c4_reachability.json`; the review PR's CI.
+
 ---
 
 ## ADR template (copy, do not edit above the line)

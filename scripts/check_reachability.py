@@ -22,17 +22,31 @@ Excluded from the universe, disclosed in the report: engine/main.py's route hand
 (they are callers and exports, not capabilities) and engine/tools/ (developer scaffolding,
 not analytical). Both exclusions await ratification with ADR-0108.
 
+An UNKNOWN method leaves that status only through RECEIVER_EVIDENCE: a named caller whose
+unresolved use is still in the source, and a committed test proving at runtime that the
+use reaches this method. Inspection alone never resolves one.
+
 FAIL when: an uncovered in-use function is not tracked by an OPEN backlog finding; a
-tracked finding is no longer uncovered; a source file cannot be parsed; or the
-committed report differs from this run. PASS does NOT mean clause 2 of the JATAKA exit
-criterion is satisfied: the report's `exit_clause_2` field states that separately.
+tracked finding is no longer uncovered; a source file cannot be parsed; receiver evidence
+is stale or names no committed proof; or the committed report differs from this run.
+
+The gate's PASS does NOT mean clause 2 of the JATAKA exit criterion is satisfied. The
+report's `exit_clause_2` separates two different claims:
+
+  no_confirmed_violations   no live-path or dead-path uncovered function was found.
+  coverage_established      that, and no uncovered UNKNOWN method remains. Only this
+                            supports `satisfied`: an unresolved method is neither
+                            shown to be unused nor shown to be certified.
 
 Exit 0 = PASS, 1 = FAIL. `--write` regenerates the committed report. `--backlog PATH`
 lets a negative control run the real enforcement path against a planted backlog.
+`--exit-criterion` answers the exit question alone: exit 0 only if clause 2 is satisfied.
 """
 
 from __future__ import annotations
 
+import ast
+import dataclasses
 import json
 import sys
 from pathlib import Path
@@ -52,6 +66,42 @@ EXCLUDED_PREFIXES = {
 }
 FINDING_DISPOSITION = "OPEN_REACHABILITY_FINDING"
 UNCOVERED = ("IN_USE_UNCOVERED", "DEAD_PATH_UNCOVERED")
+
+_DASHA_PROOF = ("engine/tests/test_stage_b_coverage_gates.py::"
+                "test_c4_dasha_period_properties_run_on_the_certified_path")
+
+#: method -> the caller whose unresolved attribute use reaches it, with its committed proof.
+RECEIVER_EVIDENCE = {
+    "engine.models.dasha.DashaPeriod.lord": {
+        "caller": "engine.dasha.vimshottari._subdivide", "proof": _DASHA_PROOF},
+    "engine.models.dasha.DashaPeriod.duration_years": {
+        "caller": "engine.dasha.vimshottari._subdivide", "proof": _DASHA_PROOF},
+}
+
+#: What the review of each remaining UNKNOWN found. Each is retained as unresolved: nothing
+#: here is a classification, and none of these has a committed proof either way.
+UNKNOWN_REVIEW = {
+    "engine.astrology.varga_classifier.VargaClassification.division_number":
+        "Read as `asc.division_number` and `c.division_number` in build_varga_chart, on classify()'s result. "
+        "The same shape as DashaPeriod, but no runtime proof is committed.",
+    "engine.knowledge.cache.KnowledgeCache.clear":
+        "The only evidence is `._cache.clear()` inside the two clear methods. The receiver type is not established.",
+    "engine.knowledge.cache.KnowledgeCache.get":
+        "The name collides with `.get` on many values, and the receivers are not type-resolved.",
+    "engine.knowledge.registry.KnowledgeRegistry.clear":
+        "The only evidence is `._cache.clear()` inside the two clear methods. KnowledgeRegistry._cache is annotated dict.",
+    "engine.knowledge.repository.KnowledgeRepository.houses":
+        "Every site reads `.houses` on a chart or snapshot-like value. The receivers are not type-resolved.",
+    "engine.knowledge.repository.KnowledgeRepository.load_json":
+        "Used as `cls.load_json` in the class's own classmethods, which the analyser does not resolve. Resolving it "
+        "could move dead-path finding KnowledgeLoader.load, which needs owner ratification (ADR-0108 addendum).",
+    "engine.knowledge.repository.KnowledgeRepository.planets":
+        "Every site reads `.planets` on a chart value. The receivers are not type-resolved.",
+    "engine.knowledge.resolver.KnowledgeResolver.resolve":
+        "The name collides with pathlib's Path.resolve at the sites found. The receivers are not type-resolved.",
+    "engine.knowledge.validator.SchemaValidator.validate":
+        "The only evidence is `validator.validate(data)` inside the method itself. The receiver type is not established.",
+}
 
 
 def gated_members(certification_dir: Path) -> tuple[set[str], list[str]]:
@@ -174,23 +224,75 @@ def exit_clause_2(analysis: dict) -> dict:
     live = sorted(name for name, row in analysis["rows"].items() if row["status"] == "IN_USE_UNCOVERED")
     dead = sorted(name for name, row in analysis["rows"].items() if row["status"] == "DEAD_PATH_UNCOVERED")
     unknown = sorted(name for name, row in analysis["rows"].items() if row["status"] == "UNKNOWN")
+    material = [name for name in unknown if not analysis["rows"][name]["covered"]]
+    no_confirmed_violations = not live and not dead
+    coverage_established = no_confirmed_violations and not material
     return {
-        "satisfied": not live and not dead,
+        "no_confirmed_violations": no_confirmed_violations,
+        "coverage_established": coverage_established,
+        "satisfied": coverage_established,
         "live_path_uncovered": live,
         "dead_path_uncovered": dead,
+        "material_unknown": material,
         "unknown_not_established_either_way": unknown,
     }
 
 
-def build_report(root: Path, certification_dir: Path, graph=None) -> tuple[dict, list[str], object]:
+def exit_refusals(clause: dict) -> list[str]:
+    """Why an exit PASS must be refused. Empty only if coverage is established."""
+
+    refusals = [f"live-path uncovered: {name}" for name in clause["live_path_uncovered"]]
+    refusals += [f"dead-path uncovered: {name}" for name in clause["dead_path_uncovered"]]
+    refusals += [f"material UNKNOWN, neither shown unused nor shown certified: {name}"
+                 for name in clause["material_unknown"]]
+    return refusals
+
+
+def apply_receiver_evidence(graph, evidence: dict, root: Path) -> tuple[object, list[str]]:
+    """A copy of `graph` with each proven use as an edge, plus any evidence that fails."""
+
+    errors: list[str] = []
+    edges = {owner: set(targets) for owner, targets in graph.edges.items()}
+    for method, item in evidence.items():
+        caller, proof = item["caller"], item["proof"]
+        leaf = method.rsplit(".", 1)[-1]
+        if method not in graph.definitions:
+            errors.append(f"R6 receiver evidence names {method}, which does not exist")
+            continue
+        if leaf not in graph.ambiguous.get(caller, set()):
+            errors.append(f"R6 stale receiver evidence: {caller} no longer has an unresolved use of `{leaf}`")
+            continue
+        file_part, _, test_name = proof.partition("::")
+        source = root / file_part
+        names = set()
+        if source.is_file():
+            names = {node.name for node in ast.parse(source.read_text(encoding="utf-8-sig")).body
+                     if isinstance(node, ast.FunctionDef)}
+        if test_name not in names:
+            errors.append(f"R6 receiver evidence for {method} names no committed proof: {proof}")
+            continue
+        edges.setdefault(caller, set()).add(method)
+    return dataclasses.replace(graph, edges=edges), errors
+
+
+def build_report(root: Path, certification_dir: Path, graph=None,
+                 evidence: dict | None = None) -> tuple[dict, list[str], object]:
+    evidence = RECEIVER_EVIDENCE if evidence is None else evidence
     graph = coverage_static.build_graph(root) if graph is None else graph
     members, errors = gated_members(certification_dir)
     errors.extend(f"R3 cannot parse {name}: {why}" for name, why in graph.unparsed.items())
     for member in sorted(members):
         if member not in graph.definitions and member not in graph.data:
             errors.append(f"R3 GATED member {member} does not exist in the source")
-    analysis = analyse(graph, members)
+    resolved_graph, evidence_errors = apply_receiver_evidence(graph, evidence, root)
+    errors.extend(evidence_errors)
+    analysis = analyse(resolved_graph, members)
+    for method, item in evidence.items():
+        if method in analysis["rows"]:
+            analysis["rows"][method]["receiver_evidence"] = item["proof"]
     analysis["exit_clause_2"] = exit_clause_2(analysis)
+    analysis["unknown_review"] = {name: UNKNOWN_REVIEW.get(name, "NOT REVIEWED")
+                                  for name in analysis["exit_clause_2"]["material_unknown"]}
     return analysis, errors, graph
 
 
@@ -227,9 +329,17 @@ def main(argv: list[str]) -> int:
     errors, report = check(backlog_path=backlog_path)
     clause = report["exit_clause_2"]
     print(f"reachability: {report['summary']}")
-    print(f"exit clause 2 satisfied: {clause['satisfied']} ({len(clause['live_path_uncovered'])} live-path, "
-          f"{len(clause['dead_path_uncovered'])} dead-path uncovered; "
-          f"{len(clause['unknown_not_established_either_way'])} unknown)")
+    print(f"no confirmed violations: {clause['no_confirmed_violations']} ({len(clause['live_path_uncovered'])} "
+          f"live-path, {len(clause['dead_path_uncovered'])} dead-path uncovered)")
+    print(f"coverage established: {clause['coverage_established']} ({len(clause['material_unknown'])} material "
+          f"UNKNOWN of {len(clause['unknown_not_established_either_way'])})")
+    print(f"exit clause 2 satisfied: {clause['satisfied']}")
+    if "--exit-criterion" in argv:
+        refusals = exit_refusals(clause)
+        for refusal in refusals:
+            print(f"    {refusal}")
+        print(f"EXIT CRITERION: {'REFUSED' if refusals or errors else 'clause 2 satisfied'}")
+        return 1 if refusals or errors else 0
     if errors:
         print(f"FAIL: reachability ({len(errors)} failures)")
         for error in errors:

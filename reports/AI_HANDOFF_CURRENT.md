@@ -4,7 +4,7 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.21.0 |
+| Version | 9.22.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 | Last updated | 2026-11-04 (**Stage B delivery.** See the first task entry below.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
@@ -67,6 +67,15 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-04 - C4 exit clause corrected after the CEO audit HOLD on PR #39
+- Branch / commit SHA: `stage-b-c2-c5`, this task's own commit on top of
+  `da29296ccc5501f12cba97b0a4c33d6511fd5f18`. `main` unchanged. No force push.
+- Task: the CEO audit's one material defect: `exit_clause_2()` could report satisfied with uncovered `UNKNOWN` methods.
+- Result: `no_confirmed_violations` and `coverage_established` are separate; `--exit-criterion` refuses today. The two
+  `DashaPeriod` properties are `IN_USE_COVERED` by committed runtime proof; 9 `UNKNOWN` retained as unresolved; the 11
+  dead-path findings are unchanged. No schema is marked ratified: `ADR-0108` and its addendum stay `PROPOSED`.
+- Next genuine decision point: the owner's rulings listed in the `ADR-0108` addendum, then independent review.
 
 ### 2026-11-04 - Stage B: C2 to C5 and backlog-first migration (ADR-0108, PROPOSED)
 - Branch / commit SHA: `stage-b-c2-c5`, this task's own commit on top of
@@ -5340,6 +5349,7 @@ act.
 
 | Version | Date | Change |
 |---|---|---|
+| 9.22.0 | 2026-11-04 | C4 exit clause corrected after the CEO audit HOLD on PR #39. |
 | 9.21.0 | 2026-11-04 | Stage B delivered for review: `ADR-0108` (`PROPOSED`). No `engine/` production change. |
 | 9.20.0 | 2026-11-04 | Consolidated Stage A recorded: `ADR-0107`. No engine or certification change. |
 | 9.19.0 | 2026-11-03 | `Q28` closed by the owner: `ADR-0106` (`ACCEPTED`). No engine or certification change. |

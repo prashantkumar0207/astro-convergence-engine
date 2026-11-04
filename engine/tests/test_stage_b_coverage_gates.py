@@ -514,14 +514,168 @@ def test_c4_command_line_fails_on_a_stripped_backlog(tmp_path):
     assert result.returncode == 1 and "R1" in result.stdout
 
 
-def test_c4_exit_clause_2_is_reported_unsatisfied_while_findings_exist():
-    """A PASS from this gate must never read as clause 2 being satisfied."""
-
+def test_c4_findings_match_the_exit_clause():
     _errors, report = c4.check()
     clause = report["exit_clause_2"]
-    assert clause["satisfied"] is (not clause["live_path_uncovered"] and not clause["dead_path_uncovered"])
     open_items = c4.open_findings(json.loads(BACKLOG.read_text(encoding="utf-8")))
     assert set(open_items) == set(clause["live_path_uncovered"]) | set(clause["dead_path_uncovered"])
+
+
+#: The 11 dead-path findings stay open until the owner rules (CEO audit of PR #39).
+DEAD_PATH_FINDINGS = {
+    "engine.astrology.house.equal_house_from_ascendant", "engine.astrology.planet_mapper.map_planet",
+    "engine.astrology.rashi_chart.rashi_chart", "engine.astrology.sign.Sign.name",
+    "engine.astrology.sign.Sign.one_based", "engine.core.timezone_engine.to_utc",
+    "engine.dasha.vimshottari.vimshottari_from_snapshot", "engine.knowledge.loader.KnowledgeLoader.load",
+    "engine.knowledge.registry.KnowledgeRegistry.get",
+    "engine.knowledge.repository.KnowledgeRepository.natural_relationships",
+    "engine.knowledge.validator.SchemaValidator.load_json",
+}
+
+
+def test_c4_dead_path_findings_are_unchanged():
+    _errors, report = c4.check()
+    assert set(report["exit_clause_2"]["dead_path_uncovered"]) == DEAD_PATH_FINDINGS
+
+
+UNKNOWN_ONLY = {
+    "engine/__init__.py": "",
+    "engine/klass.py": "class Store:\n    def fetch_value(self):\n        return 5\n",
+    "scripts/tool.py": "def main(store):\n    return store.fetch_value()\n",
+}
+
+
+def test_c4_unknown_alone_refuses_an_exit_pass(tmp_path):
+    """The defect the CEO audit found: zero uncovered, one unresolved method, and the old
+    rule (`not live and not dead`) called that satisfied."""
+
+    clause = c4.exit_clause_2(c4.analyse(_tree(tmp_path, UNKNOWN_ONLY), set()))
+    assert clause["live_path_uncovered"] == [] and clause["dead_path_uncovered"] == []
+    assert clause["material_unknown"] == ["engine.klass.Store.fetch_value"]
+    assert clause["no_confirmed_violations"] is True
+    assert clause["coverage_established"] is False
+    assert clause["satisfied"] is False
+    assert any("material UNKNOWN" in refusal for refusal in c4.exit_refusals(clause))
+
+
+def test_c4_exit_can_be_satisfied_when_nothing_is_unresolved(tmp_path):
+    """The refusal is not vacuous: without the unresolved use, the same tree passes."""
+
+    files = dict(UNKNOWN_ONLY, **{"scripts/tool.py": "def main():\n    return 1\n"})
+    clause = c4.exit_clause_2(c4.analyse(_tree(tmp_path, files), set()))
+    assert clause["unknown_not_established_either_way"] == []
+    assert clause["satisfied"] is True and c4.exit_refusals(clause) == []
+
+
+def test_c4_a_covered_unknown_is_not_material(tmp_path):
+    analysis = c4.analyse(_tree(tmp_path, UNKNOWN_ONLY), {"engine.klass.Store.fetch_value"})
+    clause = c4.exit_clause_2(analysis)
+    assert clause["unknown_not_established_either_way"] == ["engine.klass.Store.fetch_value"]
+    assert clause["material_unknown"] == [] and clause["satisfied"] is True
+
+
+def test_c4_real_tree_with_findings_removed_still_refuses_on_unknown():
+    """The same control on real data: drop every dead-path row, and UNKNOWN alone still refuses."""
+
+    _errors, report = c4.check()
+    rows = {name: row for name, row in report["rows"].items() if row["status"] not in c4.UNCOVERED}
+    clause = c4.exit_clause_2({"rows": rows})
+    assert clause["live_path_uncovered"] == [] and clause["dead_path_uncovered"] == []
+    assert clause["no_confirmed_violations"] is True
+    assert clause["material_unknown"], "this control needs at least one real UNKNOWN"
+    assert clause["satisfied"] is False
+
+
+def test_c4_exit_criterion_command_refuses_today():
+    result = subprocess.run([sys.executable, str(ROOT / "scripts" / "check_reachability.py"), "--exit-criterion"],
+                            capture_output=True, text=True)
+    assert result.returncode == 1
+    assert "EXIT CRITERION: REFUSED" in result.stdout
+    assert "dead-path uncovered: engine.core.timezone_engine.to_utc" in result.stdout
+    assert "material UNKNOWN" in result.stdout
+
+
+def test_c4_the_ordinary_gate_still_passes_while_exit_is_refused():
+    result = subprocess.run([sys.executable, str(ROOT / "scripts" / "check_reachability.py")],
+                            capture_output=True, text=True)
+    assert result.returncode == 0, result.stdout
+    assert "coverage established: False" in result.stdout
+    assert "exit clause 2 satisfied: False" in result.stdout
+
+
+def test_c4_every_material_unknown_has_a_recorded_review():
+    _errors, report = c4.check()
+    assert set(report["exit_clause_2"]["material_unknown"]) == set(c4.UNKNOWN_REVIEW)
+    assert "NOT REVIEWED" not in report["unknown_review"].values()
+
+
+def test_c4_dasha_period_properties_run_on_the_certified_path(monkeypatch):
+    """The committed proof behind RECEIVER_EVIDENCE: run the certified function and record
+    what actually reads each property, and on what type of object."""
+
+    from engine.dasha.vimshottari import vimshottari_from_moon
+    from engine.models.dasha import DashaPeriod
+
+    reads = {"lord": [], "duration_years": []}
+
+    def recording(name):
+        original = vars(DashaPeriod)[name]
+
+        def getter(period):
+            reads[name].append((sys._getframe(1).f_code.co_name, type(period)))
+            return original.fget(period)
+
+        return property(getter)
+
+    for name in reads:
+        monkeypatch.setattr(DashaPeriod, name, recording(name))
+    timeline = vimshottari_from_moon(123.4, 2451545.0, depth=2)
+    assert timeline.periods
+    for name, seen in reads.items():
+        assert seen, f"{name} was not read on the certified path"
+        assert {caller for caller, _type in seen} == {"_subdivide"}, name
+        assert {kind for _caller, kind in seen} == {DashaPeriod}, name
+
+
+def test_c4_dasha_properties_are_covered_only_through_their_evidence(graph):
+    members, _errors = c4.gated_members(ROOT / "certification")
+    without = c4.analyse(graph, members)["rows"]
+    assert without["engine.models.dasha.DashaPeriod.lord"]["status"] == "UNKNOWN"
+    _errors, report = c4.check()
+    for name in ("lord", "duration_years"):
+        row = report["rows"][f"engine.models.dasha.DashaPeriod.{name}"]
+        assert row["status"] == "IN_USE_COVERED" and row["covered"] is True
+        assert row["callers"] == ["engine.dasha.vimshottari._subdivide"]
+        assert row["receiver_evidence"].endswith("test_c4_dasha_period_properties_run_on_the_certified_path")
+
+
+def test_c4_coverage_of_a_proven_method_is_withdrawn_with_its_certification(graph):
+    """Evidence shows the use, not the coverage: remove the certified caller and it is uncovered."""
+
+    members, _errors = c4.gated_members(ROOT / "certification")
+    resolved, errors = c4.apply_receiver_evidence(graph, c4.RECEIVER_EVIDENCE, ROOT)
+    assert errors == []
+    analysis = c4.analyse(resolved, members - {"engine.dasha.vimshottari.vimshottari_from_moon"})
+    assert analysis["rows"]["engine.models.dasha.DashaPeriod.lord"]["status"] in c4.UNCOVERED
+
+
+@pytest.mark.parametrize("item,fragment", [
+    ({"caller": "engine.kp.chain.kp_chain", "proof": c4._DASHA_PROOF}, "stale receiver evidence"),
+    ({"caller": "engine.dasha.vimshottari._subdivide",
+      "proof": "engine/tests/test_stage_b_coverage_gates.py::test_invented"}, "no committed proof"),
+    ({"caller": "engine.dasha.vimshottari._subdivide", "proof": "engine/tests/absent.py::test_x"}, "no committed proof"),
+])
+def test_c4_rejects_unsupported_receiver_evidence(item, fragment, graph):
+    evidence = {"engine.models.dasha.DashaPeriod.lord": item}
+    resolved, errors = c4.apply_receiver_evidence(graph, evidence, ROOT)
+    _expect(errors, "R6", fragment)
+    assert "engine.models.dasha.DashaPeriod.lord" not in resolved.edges.get(item["caller"], set())
+
+
+def test_c4_rejects_evidence_for_a_method_that_does_not_exist(graph):
+    evidence = {"engine.models.dasha.DashaPeriod.invented": {"caller": "engine.dasha.vimshottari._subdivide",
+                                                             "proof": c4._DASHA_PROOF}}
+    _expect(c4.apply_receiver_evidence(graph, evidence, ROOT)[1], "R6", "does not exist")
 
 
 # ------------------------------------------------------------------ C5
