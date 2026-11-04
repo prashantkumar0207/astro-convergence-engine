@@ -10393,8 +10393,11 @@ beyond its gates. The negative-control residual in `N2` stays unverified, and no
 ## ADR-0108 - Stage B: C2, C3, C4 and C5 implemented with backlog-first migration; indispensable schema and reachability details recorded for owner ratification; JATAKA exit clause 2 remains open (PROPOSED)
 
 - **Date:** 2026-11-04
-- **Status:** **PROPOSED. NOT RATIFIED.** Drafted on the owner's "ACE OWNER AUTHORIZATION — COMPLETE STAGE B"
-  instruction, which directs that indispensable missing schema details be resolved and "record[ed] ... for
+- **Status:** **ACCEPTED as to s3, s4 and the C4 correction addendum only, on the owner's ratifying instruction
+  recorded in the "Ratification of ADR-0108" sub-entry below, and subject to its five boundaries.** Originally drafted
+  `PROPOSED. NOT RATIFIED.` Per this repository's "change only the status" discipline, the Status lines are the only
+  text in this entry and its addendum that the ratification altered. As drafted: on the owner's "ACE OWNER AUTHORIZATION —
+  COMPLETE STAGE B" instruction, which directs that indispensable missing schema details be resolved and "record[ed] ... for
   owner ratification rather than claiming they were previously approved." The implementation exists on the
   owner's authorization; **the details in s3 and s4 are the builder's proposals and are not in force as
   decisions until the owner ratifies them.** Every accepted entry is unchanged. JATAKA exit is not declared.
@@ -10489,8 +10492,8 @@ JATAKA exit. It changes no production code under `engine/`, holdout, threshold o
 #### Addendum to ADR-0108: C4 exit clause separated, after the CEO audit HOLD on PR #39 (PROPOSED)
 
 - **Date:** 2026-11-04
-- **Status:** **PROPOSED. NOT RATIFIED**, like the entry above. Nothing in `ADR-0108` becomes ratified by this
-  addendum, and JATAKA exit is not declared.
+- **Status:** **ACCEPTED, on the owner's ratifying instruction recorded in the "Ratification of ADR-0108" sub-entry
+  below, and subject to its five boundaries.** Originally drafted `PROPOSED. NOT RATIFIED`. JATAKA exit is not declared.
 - **Context:** the CEO audit of `da29296ccc5501f12cba97b0a4c33d6511fd5f18` found that `exit_clause_2()` could report
   `satisfied` while uncovered `UNKNOWN` methods remained. That was a real defect in the entry's implementation. C2, C3
   and the artifact reconciliation passed that audit and are not reopened.
@@ -10511,6 +10514,46 @@ JATAKA exit. It changes no production code under `engine/`, holdout, threshold o
      examples the audit named and has no committed proof yet, so it stays `UNKNOWN`.
   3. Exit needs the remaining 9 `UNKNOWN` methods resolved with evidence, or a ruling on how they are to be treated.
 - **Evidence:** `engine/tests/test_stage_b_coverage_gates.py`; `reports/c4_reachability.json`; the review PR's CI.
+
+#### Ratification of ADR-0108: s3, s4 AND THE C4 CORRECTION ADDENDUM RATIFIED, WITH FIVE BOUNDARIES (2026-11-04)
+
+- **Status:** ACCEPTED. The owner instructed, quoted exactly:
+
+  ```text
+  ACE OWNER RATIFICATION — ADR-0108 / STAGE B
+
+  I ratify ADR-0108 sections 3 and 4 and its C4 correction addendum, as implemented in PR #39 at `7c05560db283eb8ef4720c90f67cc650f01f1b51`, subject to these explicit boundaries:
+
+  1. ADR-0099 U1/U2 remain unchanged. The 11 dead-path uncovered findings retain their current classification; no blanket exemption is granted.
+  2. The 9 material UNKNOWN findings remain unresolved until supported by actual evidence or a separately ratified rule.
+  3. The DashaPeriod receiver evidence and fail-closed exit criterion are accepted.
+  4. The three TRANSIT_V1 overclaims remain open; no DP-040 option is adopted.
+  5. No JATAKA exit, production capability expansion or ADR-0103 ratification is authorized.
+
+  I authorize Claude to append the ratification sub-entry and update ADR-0108's status accordingly, preserving its normative text. Make one minimal governance-only commit on PR #39, push normally, and run CI.
+
+  No unrelated code changes, force push, branch deletion or main merge.
+
+  Return exact SHA, ratification diff and CI result for final CEO merge verification.
+  ```
+
+  Per `docs/PROJECT_CONSTITUTION.md` s11, that instruction is the ratifying act. It covers s3, s4 and the addendum, as
+  implemented at `7c05560db283eb8ef4720c90f67cc650f01f1b51`. It does not extend to any other text.
+- **Decision:** the schema details in s3 and the reachability details in s4 are in force as written, with the
+  addendum's separation of `no_confirmed_violations` from `coverage_established`, its fail-closed `--exit-criterion` and
+  its `DashaPeriod` receiver evidence. The entry's normative text is unchanged: with its Status lines and this sub-entry
+  excluded, it hashes to SHA-256 `f05f7195d16586152919774daf39237ebc84e533b084f9b99773ca46bb42332e` both before and after this ratification.
+- **What stays open, by the owner's boundaries.** The 11 dead-path uncovered findings keep their classification, with
+  no blanket exemption, so s4 item 5 stands as the rule and those findings stay open. The 9 material `UNKNOWN` findings
+  stay unresolved until actual evidence or a separately ratified rule supports otherwise; the addendum's `cls.load_json`
+  question and `VargaClassification.division_number` are among them and are not decided here. The three `TRANSIT_V1`
+  overclaims stay open, and no `DP-040` option is adopted. `ADR-0099` U1 and U2 are unchanged.
+- **Consequences:** C2, C3 and C4 now rest on ratified schema and reachability details. **Nothing else becomes
+  authorized:** no JATAKA exit, no production capability expansion and no `ADR-0103` ratification. `--exit-criterion`
+  still refuses. `N1` reconciliation and the `N5` completion record remain outstanding. No merge is approved by this
+  entry: `ADR-0106` OR-3 still applies.
+- **Evidence:** the owner's instruction, quoted above, which exists as session input and not as a repository file; PR #39
+  at `7c05560db283eb8ef4720c90f67cc650f01f1b51`; CI run `41818223677` at that SHA, success on all four jobs; the hash above.
 
 ---
 
