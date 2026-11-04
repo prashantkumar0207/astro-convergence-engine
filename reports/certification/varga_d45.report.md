@@ -5,14 +5,14 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 
 - Decision entry: ADR-0077
 - Supersedes provisional identifier: NOTHING_AUTHORISED
-- Date: 2026-09-14
+- Date: 2026-11-04
 - Scope: D45 Akshavedamsa (Parashara variant, Traditional Parasara method / PyJHora chart_method=1). Registered in production through the generic registry (engine.astrology.varga_d45, VARGA_D45_V1), discoverable via engine.astrology.divisional_chart.divisional_chart(snapshot, 45).
 - Result: **PASS**
 
 ## Preconditions
 
 - Data assets verified against CHECKSUMS.sha256: 3
-- Anti-fitting scan: 202 production modules, 0 findings
+- Anti-fitting scan: 203 production modules, 0 findings
 
 ## Gates
 
@@ -25,6 +25,14 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 - **G_protected_holdout**: points=26278, mismatches=0
 - **H_negative_controls**: all_detected=True, original_object_unmutated=True
 - **I_composition_verification**: result=PASS, classification=correctness_evidence_and_mutation_detection
+
+## Capabilities (ADR-0101 s2)
+
+- **vargas.d45**: 6 members; GATED
+
+## Scope not gated (ADR-0099 s4)
+
+- none
 
 ## Explicit non-claims
 

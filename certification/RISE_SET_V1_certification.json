@@ -1,7 +1,7 @@
 {
  "schema": "rise_set_v1_certification",
  "adr": "ADR-0054",
- "date": "2026-09-14",
+ "date": "2026-11-04",
  "scope": "Sunrise and sunset (Sun only), upper-limb disc, standard atmospheric refraction, observer elevation (pressure and geometric horizon dip), structured NO_RISE/NO_SET for circumpolar days. FOUNDATION first work package.",
  "conventions": {
   "disc_reference": "upper_limb",
@@ -17,13 +17,21 @@
     "parashari_lahiri",
     "kp_krishnamurti"
    ],
-   "unratified_convention_rejected": true
+   "unratified_convention_rejected": true,
+   "exercises": [
+    "rise_set.sunrise"
+   ]
   },
   "B_dense_sweep": {
    "cases": 11,
    "comparisons": 22,
    "mismatches": 0,
-   "tolerance_seconds": 60.0
+   "tolerance_seconds": 60.0,
+   "exercises": [
+    "rise_set.horizon_dip",
+    "rise_set.sunrise",
+    "rise_set.sunset"
+   ]
   },
   "C_independent_reference": {
    "circumpolar_cases_checked": 2,
@@ -31,15 +39,27 @@
    "elevation_comparisons": 4,
    "elevation_tolerance_seconds": 150.0,
    "mismatches": 0,
-   "reference_method": "closed-form hour-angle/altitude bisection, independent of swe.rise_trans*"
+   "reference_method": "closed-form hour-angle/altitude bisection, independent of swe.rise_trans*",
+   "exercises": [
+    "rise_set.horizon_dip",
+    "rise_set.sunrise",
+    "rise_set.sunset"
+   ]
   },
   "D_non_invasiveness": {
    "ayanamsa_modes_unchanged": true,
    "house_systems_unchanged": true,
-   "strict_fallback_guard_verified": true
+   "strict_fallback_guard_verified": true,
+   "exercises": [
+    "rise_set.sunrise"
+   ]
   },
   "E_independent_validator": {
-   "result": "PASS"
+   "result": "PASS",
+   "exercises": [
+    "rise_set.sunrise",
+    "rise_set.sunset"
+   ]
   }
  },
  "explicit_non_claims": [
@@ -51,7 +71,7 @@
   "any other varga, dasha, or certified layer; each requires its own ADR and certification"
  ],
  "environment": {
-  "python": "3.11.16"
+  "python": "3.11.17"
  },
  "preconditions": {
   "data_assets": {
@@ -73,7 +93,7 @@
    "residual_limitation": "coordinated edits to every repository-held trust record cannot be cryptographically prevented by an in-repository trust anchor; only upstream provenance would anchor this, and it is out of M1 scope"
   },
   "anti_fitting": {
-   "modules_scanned": 202,
+   "modules_scanned": 203,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."
@@ -81,6 +101,56 @@
   }
  },
  "result": "PASS",
+ "capability_schema": "ace-capability-enumeration-v1",
+ "capabilities": [
+  {
+   "id": "rise_set.sunrise",
+   "members": [
+    {
+     "callable": "engine.astronomy.rise_set.sunrise",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_convention_integrity",
+      "B_dense_sweep",
+      "C_independent_reference",
+      "D_non_invasiveness",
+      "E_independent_validator"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "rise_set.sunset",
+   "members": [
+    {
+     "callable": "engine.astronomy.rise_set.sunset",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "B_dense_sweep",
+      "C_independent_reference",
+      "E_independent_validator"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "rise_set.horizon_dip",
+   "members": [
+    {
+     "callable": "engine.astronomy.rise_set.horizon_dip_degrees",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "B_dense_sweep",
+      "C_independent_reference"
+     ]
+    }
+   ]
+  }
+ ],
+ "scope_not_gated": [],
  "_artifact_name": "RISE_SET_V1_certification.json",
  "_slug": "rise_set"
 }

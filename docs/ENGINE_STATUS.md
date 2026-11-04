@@ -4,7 +4,7 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | CURRENT - regenerate on every certified change. Reconciled against live repository evidence 2026-09-05 per `ADR-0093`. Section 6's machine-readable capability block is now mechanically enforced against live sources by `scripts/check_capability_state.py` (`ADR-0094`); **the prose in sections 1-5 is not machine-checked and remains a manual discipline.** |
-| Version | 3.0.0 |
+| Version | 3.1.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 | Last updated | 2026-09-18 (**M2 record reconciliation.** Version raised to 3.0.0; **the basis for document version numbering is an unresolved governance issue** - `docs/DOCUMENTATION_STANDARD.md` s2 item 4 describes MAJOR/MINOR/PATCH, but that document is a DRAFT placeholder, so no version decision here rests on it. 3.0.0 records that statements changed meaning, following this document's own 2.0.0 precedent, and is open to correction. Corrections: section 2's statement that D16/D4 are not wired into CI was false since `ADR-0096`; section 3's "eleven served / eight registered" contradicted section 2 and the section 6 block; section 1's validator-source count was 21, not 22. No capability claim and no certified value changed.) |
 | Review cadence | TBD (see docs/OPEN_QUESTIONS.md Q1) |
@@ -79,9 +79,27 @@ not a current source of truth. That exclusion is asserted by a committed test, n
 Edit this block whenever certified capability changes; the prose above must be kept consistent with it
 by hand, which the gate cannot check.
 
+`declared_production_analytical_inputs` is C2 (`ADR-0099` s2 and s7): the union of the three declaring
+lists. The gate requires it to equal live state, and requires every member to hold a PASS artifact that
+gates its capability and cites an ACCEPTED decision entry.
+
 <!-- CAPABILITY-BLOCK:BEGIN - machine-readable, parsed by scripts/check_capability_state.py. Do not edit the delimiters. -->
 ```json
 {
+  "declared_production_analytical_inputs": [
+    "D1", "D2", "D3", "D7", "D9", "D10", "D12", "D20", "D24", "D30", "D40", "D45",
+    "current_engine",
+    "KP_CHAIN_V1",
+    "KP_SIGNIFICATOR_V1",
+    "PANCHANGA_V1",
+    "PARASHARI_DRISHTI_V1",
+    "PARASHARI_YOGA_V1",
+    "RISE_SET_V1",
+    "SIGN_CONVENTION_V1",
+    "TRANSIT_V1",
+    "TRIKALAM_V1",
+    "VIMSHOTTARI_V1"
+  ],
   "production_registered_vargas": [2, 3, 7, 12, 20, 24, 30, 40, 45],
   "dedicated_production_vargas": [1, 9, 10],
   "certified_not_registered_vargas": [4, 16],
@@ -123,6 +141,7 @@ by hand, which the gate cannot check.
 
 | Version | Date | Change |
 |---|---|---|
+| 3.1.0 | 2026-11-04 | Section 6 gains `declared_production_analytical_inputs` (C2, `ADR-0099` s7, recorded by `ADR-0108`). No certified capability changes. |
 | 2.4.0 | 2026-09-07 | **D20 Vimsamsa production implementation (`ADR-0095`).** `engine/astrology/varga_d20.py` created and registered; `CERTIFIED_PRODUCTION_VARGAS` grows 8 -> 9 divisions. The certifier was revised to certify the REGISTERED rule (gate D isolation -> non-invasiveness) and re-run: nine gates PASS, content hash `efd08cea...dac0` unchanged. Capability block: D20 moved from `certified_not_registered_vargas` to `production_registered_vargas`. Prose updated to match. D16 and D4 remain certified-but-unregistered. |
 | 2.3.0 | 2026-09-07 | D20 Vimsamsa certified as a STANDALONE, unregistered rule under `ADR-0095` (`certification/VARGA_D20_V1_certification.json`, nine gates PASS). Capability block: D20 moved from `not_certified_vargas` to `certified_not_registered_vargas`; counts 22/21 -> 23/22 for the newly registered certifier and validator sources. Prose updated to match. D20 remains absent from `CERTIFIED_PRODUCTION_VARGAS`; production implementation and CI wiring remain unauthorized. |
 | 2.2.1 | 2026-09-05 | Reproduced test count 937 -> 952, raised by the 15 controls committed with the B-1/B-2 gate remediation (second addendum to `ADR-0094`). No capability claim changed; the block itself is unchanged. |

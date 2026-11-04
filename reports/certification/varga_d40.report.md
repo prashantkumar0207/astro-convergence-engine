@@ -5,14 +5,14 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 
 - Decision entry: ADR-0087
 - Supersedes provisional identifier: NOTHING_AUTHORISED
-- Date: 2026-09-14
+- Date: 2026-11-04
 - Scope: D40 Khavedamsa, Parashara/BPHS variant, Traditional Parasara construction. Registered in production through the generic registry (engine.astrology.varga_d40, VARGA_D40_V1), discoverable via engine.astrology.divisional_chart.divisional_chart(snapshot, 40).
 - Result: **PASS**
 
 ## Preconditions
 
 - Data assets verified against CHECKSUMS.sha256: 3
-- Anti-fitting scan: 202 production modules, 0 findings
+- Anti-fitting scan: 203 production modules, 0 findings
 
 ## Gates
 
@@ -25,6 +25,14 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 - **G_protected_holdout**: points=26278, mismatches=0
 - **H_negative_controls**: all_detected=True, original_object_unmutated=True
 - **I_static_reference_regression**: cases=10, mismatches=0, classification=correctness_evidence
+
+## Capabilities (ADR-0101 s2)
+
+- **vargas.d40**: 5 members; GATED
+
+## Scope not gated (ADR-0099 s4)
+
+- none
 
 ## Explicit non-claims
 

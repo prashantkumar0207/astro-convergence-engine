@@ -1,7 +1,7 @@
 {
  "schema": "trikalam_v1_certification",
  "adr": "ADR-0060",
- "date": "2026-09-14",
+ "date": "2026-11-04",
  "scope": "Exactly one variant, PYJHORA_TRIKALAM_V1: Rahu Kalam, Yamaganda, Gulika window computation at a given calendar day and location. No Muhurta-specific consumption; no second variant.",
  "variant": "PYJHORA_TRIKALAM_V1",
  "oracle": {
@@ -41,14 +41,20 @@
      0.75,
      0.625
     ]
-   }
+   },
+   "exercises": [
+    "trikalam.periods"
+   ]
   },
   "B_dense_sweep": {
    "cases": 11,
    "profiles": 2,
    "elements": 3,
    "comparisons": 66,
-   "mismatches": 0
+   "mismatches": 0,
+   "exercises": [
+    "trikalam.periods"
+   ]
   },
   "C_boundary_ulp_and_circumpolar": {
    "weekday_element_combinations_checked": 21,
@@ -56,14 +62,23 @@
    "ulp_epsilon_days": 1e-09,
    "ulp_boundary_checked": true,
    "ulp_negative_control_verified": true,
-   "total_checks": 30
+   "total_checks": 30,
+   "exercises": [
+    "trikalam.periods"
+   ]
   },
   "D_non_invasiveness": {
    "ayanamsa_modes_unchanged": true,
-   "panchanga_vara_reuse_verified": true
+   "panchanga_vara_reuse_verified": true,
+   "exercises": [
+    "trikalam.periods"
+   ]
   },
   "E_independent_validator": {
-   "result": "PASS"
+   "result": "PASS",
+   "exercises": [
+    "trikalam.periods"
+   ]
   },
   "F_external_oracle": {
    "cases": 11,
@@ -77,7 +92,10 @@
    "mismatches": 0,
    "tolerance_minutes": 20.0,
    "tolerance_rationale": "empirically observed rise/set convention gap between this engine (ADR-0054: upper-limb disc, standard -50' refraction) and PyJHora's own sunrise/sunset (swe.BIT_HINDU_RISING) is roughly 4-8.5 minutes across the holdout's latitudes; a real offset-table transcription bug would produce errors an order of magnitude larger (60-100+ minutes)",
-   "negative_control_verified": true
+   "negative_control_verified": true,
+   "exercises": [
+    "trikalam.periods"
+   ]
   }
  },
  "explicit_non_claims": [
@@ -87,7 +105,7 @@
   "any other varga, dasha, panchanga classification, or certified layer"
  ],
  "environment": {
-  "python": "3.11.16"
+  "python": "3.11.17"
  },
  "preconditions": {
   "data_assets": {
@@ -109,7 +127,7 @@
    "residual_limitation": "coordinated edits to every repository-held trust record cannot be cryptographically prevented by an in-repository trust anchor; only upstream provenance would anchor this, and it is out of M1 scope"
   },
   "anti_fitting": {
-   "modules_scanned": 202,
+   "modules_scanned": 203,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."
@@ -117,6 +135,58 @@
   }
  },
  "result": "PASS",
+ "capability_schema": "ace-capability-enumeration-v1",
+ "capabilities": [
+  {
+   "id": "trikalam.periods",
+   "members": [
+    {
+     "callable": "engine.astrology.trikalam.trikalam_period",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "B_dense_sweep",
+      "C_boundary_ulp_and_circumpolar",
+      "E_independent_validator",
+      "F_external_oracle"
+     ]
+    },
+    {
+     "callable": "engine.astrology.panchanga.vara",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "B_dense_sweep",
+      "C_boundary_ulp_and_circumpolar",
+      "D_non_invasiveness",
+      "E_independent_validator"
+     ]
+    },
+    {
+     "callable": "engine.astrology.trikalam.PYJHORA_TRIKALAM_V1",
+     "kind": "data",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_convention_integrity",
+      "B_dense_sweep",
+      "C_boundary_ulp_and_circumpolar",
+      "E_independent_validator",
+      "F_external_oracle"
+     ]
+    },
+    {
+     "callable": "engine.astrology.trikalam.PERIOD_FRACTION",
+     "kind": "data",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_convention_integrity",
+      "B_dense_sweep"
+     ]
+    }
+   ]
+  }
+ ],
+ "scope_not_gated": [],
  "_artifact_name": "TRIKALAM_V1_certification.json",
  "_slug": "trikalam"
 }

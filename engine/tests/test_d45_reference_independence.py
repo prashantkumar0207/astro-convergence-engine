@@ -535,4 +535,5 @@ def test_gate_i_result_is_unchanged_so_no_artifact_regeneration_is_needed():
     that changes it needs regeneration, so this pins it to the stored text."""
 
     stored = json.loads((ROOT / "certification" / "VARGA_D45_V1_certification.json").read_text(encoding="utf-8"))
-    assert certifier.gate_i_composition_verification() == stored["gates"]["I_composition_verification"]
+    recorded = {key: value for key, value in stored["gates"]["I_composition_verification"].items() if key != "exercises"}
+    assert certifier.gate_i_composition_verification() == recorded

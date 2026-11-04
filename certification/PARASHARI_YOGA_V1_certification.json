@@ -1,7 +1,7 @@
 {
  "schema": "parashari_yoga_v1_certification",
  "adr": "ADR-0081",
- "date": "2026-09-14",
+ "date": "2026-11-04",
  "scope": "PARASHARI_YOGA_V1: the five Panch Mahapurusha yogas (Ruchaka/Bhadra/Hamsa/Malavya/Sasa) - BPHS base formation rule only (own-sign-or-exaltation-sign AND kendra-to-Lagna, whole-sign) for a natal D1 chart under the PARASHARI_LAHIRI profile. Rule under certification is the REAL PRODUCTION module engine/parashari/mahapurusha_yoga.py, authorized by the owner's 'CEO AUTHORIZATION - PARASHARI_YOGA_V1 PRODUCTION IMPLEMENTATION' instruction and recorded in docs/DECISION_LOG.md under ADR-0081.",
  "rule": {
   "kind": "engine/parashari/mahapurusha_yoga.py - registered production module",
@@ -100,25 +100,37 @@
    "production_dignity_cross_check": "PASS - 0 mismatches across all 5 grahas x 12 signs",
    "content_sha256": "93fb4daa21b567aa90486d3e88c05fda9732527a9982bef2d69ed7f11bd3ad13",
    "classification": "correctness_evidence",
-   "disclosure": "the independently-transcribed table is IMPLEMENTATION independent of production dignity.py (fresh transcription, no import), NOT source/edition independent (same cited BPHS edition) - per ADR-0081 section 4's own precise distinction, not overclaimed here."
+   "disclosure": "the independently-transcribed table is IMPLEMENTATION independent of production dignity.py (fresh transcription, no import), NOT source/edition independent (same cited BPHS edition) - per ADR-0081 section 4's own precise distinction, not overclaimed here.",
+   "exercises": [
+    "yogas.panch_mahapurusha"
+   ]
   },
   "B_logical_enumeration": {
    "cases": 720,
    "mismatches": 0,
    "space": "5 grahas x 12 graha signs x 12 ascendant signs = 720",
    "classification": "correctness_evidence",
-   "disclosure": "expected values from this file's own independently-transcribed dignity table; actual values from PRODUCTION engine.parashari.mahapurusha_yoga._yoga_predicate_from_sign_and_house, which consumes production engine.astrology.dignity - genuine cross-implementation agreement over the full state space, not a self-comparison."
+   "disclosure": "expected values from this file's own independently-transcribed dignity table; actual values from PRODUCTION engine.parashari.mahapurusha_yoga._yoga_predicate_from_sign_and_house, which consumes production engine.astrology.dignity - genuine cross-implementation agreement over the full state space, not a self-comparison.",
+   "exercises": [
+    "yogas.panch_mahapurusha"
+   ]
   },
   "B2_longitude_plumbing": {
    "cases": 1728,
    "mismatches": 0,
    "classification": "correctness_evidence",
-   "disclosure": "verifies real longitude -> sign/house resolution via the actual zodiac_sign()/whole_sign_house() production functions; does not re-test the yoga predicate's own boolean logic (gate_b's concern)."
+   "disclosure": "verifies real longitude -> sign/house resolution via the actual zodiac_sign()/whole_sign_house() production functions; does not re-test the yoga predicate's own boolean logic (gate_b's concern).",
+   "exercises": [
+    "yogas.panch_mahapurusha"
+   ]
   },
   "C_independent_validator": {
    "result": "PASS",
    "classification": "corroborating_correctness_evidence",
-   "note": "separate-process, from-scratch reimplementation; does not import engine.astrology.dignity, engine.astrology.house, engine.astrology.signs, or engine.parashari.mahapurusha_yoga - independently re-derives sign-of-longitude and whole-sign-house arithmetic itself"
+   "note": "separate-process, from-scratch reimplementation; does not import engine.astrology.dignity, engine.astrology.house, engine.astrology.signs, or engine.parashari.mahapurusha_yoga - independently re-derives sign-of-longitude and whole-sign-house arithmetic itself",
+   "exercises": [
+    "yogas.panch_mahapurusha"
+   ]
   },
   "D_non_invasiveness": {
    "production_module": "engine/parashari/mahapurusha_yoga.py",
@@ -126,12 +138,18 @@
    "production_module_content_sha256_matches_pinned": true,
    "production_dignity_module_importable": true,
    "production_house_module_importable": true,
-   "certifier_content_sha256_matches_pinned": true
+   "certifier_content_sha256_matches_pinned": true,
+   "exercises": [
+    "yogas.panch_mahapurusha"
+   ]
   },
   "E_boundary_cases": {
    "cases": 36,
    "mismatches": 0,
-   "convention": "sign-membership edges, including the documented internal 1e-10 promote-up tolerance and its absence at the 360/0 wrap, empirically verified against zodiac_sign() directly; ascendant-sign edges for whole_sign_house()"
+   "convention": "sign-membership edges, including the documented internal 1e-10 promote-up tolerance and its absence at the 360/0 wrap, empirically verified against zodiac_sign() directly; ascendant-sign edges for whole_sign_house()",
+   "exercises": [
+    "yogas.panch_mahapurusha"
+   ]
   },
   "F_multi_yoga_cases": {
    "cases": 3,
@@ -140,13 +158,19 @@
     "zero_yogas",
     "exactly_one",
     "multiple_simultaneous"
+   ],
+   "exercises": [
+    "yogas.panch_mahapurusha"
    ]
   },
   "G_retrograde_disclosure": {
    "cases": 11,
    "mismatches": 0,
    "structural_proof": "yoga_present() signature carries no retrograde parameter - the verdict predicate is structurally incapable of consuming retrograde state (ADR-0081 section 6)",
-   "live_disclosure_check": "Y1_london_1850: MahapurushaYogaChart.retrograde_qualifier matches the real speed_longitude sign, and `present` matches the retrograde-blind yoga_present(), on the real production pipeline"
+   "live_disclosure_check": "Y1_london_1850: MahapurushaYogaChart.retrograde_qualifier matches the real speed_longitude sign, and `present` matches the retrograde-blind yoga_present(), on the real production pipeline",
+   "exercises": [
+    "yogas.panch_mahapurusha"
+   ]
   },
   "H_static_reference_regression": {
    "cases": 40,
@@ -158,7 +182,10 @@
    "methodology": "LIVE production engine.parashari.mahapurusha_yoga.mahapurusha_yoga() output compared against STATIC expected values frozen from validate_parashari_yoga_holdout.py's own from-scratch judge() (never regenerated by production at certification time); real ephemeris-driven charts",
    "classification": "correctness_evidence",
    "name": "static independent-reference regression",
-   "disclosure": "named to avoid confusion with this project's separate protected historical validation concept (ADR-0047-style dataset forensics), which does not apply here - this is not a predictive-outcome validation"
+   "disclosure": "named to avoid confusion with this project's separate protected historical validation concept (ADR-0047-style dataset forensics), which does not apply here - this is not a predictive-outcome validation",
+   "exercises": [
+    "yogas.panch_mahapurusha"
+   ]
   },
   "I_negative_controls": {
    "controls": [
@@ -186,13 +213,19 @@
    ],
    "all_detected": true,
    "frozen_constants_unmutated": true,
-   "note": "in-process synthetic controls against the imported production predicate; a separate, one-time literal on-disk mutation proof against the real production file is recorded in docs/DECISION_LOG.md, not repeated here"
+   "note": "in-process synthetic controls against the imported production predicate; a separate, one-time literal on-disk mutation proof against the real production file is recorded in docs/DECISION_LOG.md, not repeated here",
+   "exercises": [
+    "yogas.panch_mahapurusha"
+   ]
   },
   "J_composition_verification": {
    "result": "PASS",
    "classification": "correctness_evidence_and_mutation_detection",
    "scope": "mahapurusha_yoga()/graha_mahapurusha_from_snapshot() field-level composition (house_number, sign_number) for every graha, across a fixed 6-chart real holdout, plus a genuine in-process monkeypatch mutation self-check (the exact reproduced whole_sign_house() argument-order swap, plus a sign_number-targeted wrong-body-longitude corruption) against the real production function",
-   "disclosure": "distinct from gates B/B2/G, which never exercise graha_mahapurusha_from_snapshot()'s own call sites directly; distinct from gate I, whose negative controls compare a hand-written mutated COPY against the unmutated real function in-process rather than genuinely monkeypatching and re-executing the real production function (ADR-0086)"
+   "disclosure": "distinct from gates B/B2/G, which never exercise graha_mahapurusha_from_snapshot()'s own call sites directly; distinct from gate I, whose negative controls compare a hand-written mutated COPY against the unmutated real function in-process rather than genuinely monkeypatching and re-executing the real production function (ADR-0086)",
+   "exercises": [
+    "yogas.panch_mahapurusha"
+   ]
   }
  },
  "explicit_non_claims": [
@@ -209,7 +242,7 @@
   "production implementation is scoped exactly to ADR-0081 - no convergence, UI, API, bhanga, combustion, strength, additional yoga, additional varga, or dasha integration exists in engine/parashari/mahapurusha_yoga.py"
  ],
  "environment": {
-  "python": "3.11.16"
+  "python": "3.11.17"
  },
  "preconditions": {
   "data_assets": {
@@ -231,7 +264,7 @@
    "residual_limitation": "coordinated edits to every repository-held trust record cannot be cryptographically prevented by an in-repository trust anchor; only upstream provenance would anchor this, and it is out of M1 scope"
   },
   "anti_fitting": {
-   "modules_scanned": 202,
+   "modules_scanned": 203,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."
@@ -239,6 +272,133 @@
   }
  },
  "result": "PASS",
+ "capability_schema": "ace-capability-enumeration-v1",
+ "capabilities": [
+  {
+   "id": "yogas.panch_mahapurusha",
+   "members": [
+    {
+     "callable": "engine.parashari.mahapurusha_yoga.mahapurusha_yoga",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "C_independent_validator",
+      "D_non_invasiveness",
+      "G_retrograde_disclosure",
+      "H_static_reference_regression",
+      "J_composition_verification"
+     ]
+    },
+    {
+     "callable": "engine.parashari.mahapurusha_yoga.graha_mahapurusha_from_snapshot",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "C_independent_validator",
+      "D_non_invasiveness",
+      "J_composition_verification"
+     ]
+    },
+    {
+     "callable": "engine.parashari.mahapurusha_yoga.yoga_present",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "D_non_invasiveness",
+      "F_multi_yoga_cases",
+      "G_retrograde_disclosure"
+     ]
+    },
+    {
+     "callable": "engine.parashari.mahapurusha_yoga._yoga_predicate_from_sign_and_house",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "B_logical_enumeration",
+      "C_independent_validator",
+      "D_non_invasiveness",
+      "I_negative_controls"
+     ]
+    },
+    {
+     "callable": "engine.astrology.house.whole_sign_house",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "B2_longitude_plumbing",
+      "C_independent_validator",
+      "D_non_invasiveness",
+      "E_boundary_cases",
+      "J_composition_verification"
+     ]
+    },
+    {
+     "callable": "engine.astrology.signs.zodiac_sign",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "B2_longitude_plumbing",
+      "C_independent_validator",
+      "D_non_invasiveness",
+      "E_boundary_cases",
+      "J_composition_verification"
+     ]
+    },
+    {
+     "callable": "engine.astrology.dignity.is_exalted",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_table_integrity",
+      "D_non_invasiveness"
+     ]
+    },
+    {
+     "callable": "engine.astrology.dignity.is_own_sign",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_table_integrity",
+      "D_non_invasiveness"
+     ]
+    },
+    {
+     "callable": "engine.parashari.mahapurusha_yoga.rule_content_sha256",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "D_non_invasiveness",
+      "I_negative_controls"
+     ]
+    },
+    {
+     "callable": "engine.parashari.mahapurusha_yoga.YOGA_GRAHAS",
+     "kind": "data",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_table_integrity",
+      "B_logical_enumeration",
+      "D_non_invasiveness",
+      "F_multi_yoga_cases",
+      "G_retrograde_disclosure",
+      "I_negative_controls"
+     ]
+    },
+    {
+     "callable": "engine.parashari.mahapurusha_yoga.KENDRA_HOUSES",
+     "kind": "data",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_table_integrity",
+      "B_logical_enumeration",
+      "D_non_invasiveness",
+      "I_negative_controls"
+     ]
+    }
+   ]
+  }
+ ],
+ "scope_not_gated": [],
  "_artifact_name": "PARASHARI_YOGA_V1_certification.json",
  "_slug": "parashari_yoga"
 }

@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.20.0 |
+| Version | 9.21.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-04 (**Stage A record only.** See the first task entry below.) |
+| Last updated | 2026-11-04 (**Stage B delivery.** See the first task entry below.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,22 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-04 - Stage B: C2 to C5 and backlog-first migration (ADR-0108, PROPOSED)
+- Branch / commit SHA: `stage-b-c2-c5`, this task's own commit on top of
+  `0a0dbea6fbf2e5d295b7805781a0f18f3d28bf83`. `main` unchanged.
+- Task: the owner's "ACE OWNER AUTHORIZATION — COMPLETE STAGE B": one branch, one review PR. No merge, no
+  JATAKA exit, PR #33 untouched.
+- Results: C2 F15 to F17, C3 S1 to S10 and C4 R1 to R5 enforced, each with committed negative controls in
+  `engine/tests/test_stage_b_coverage_gates.py`. C5 has no claim to test, and S9 refuses an unsupported one.
+  43 capabilities and 130 members across 22 artifacts; 145 gates declare `exercises`. Backlog: 26 of 26 corpus
+  members, 3 open overclaims, 11 open reachability findings.
+- Key findings: JATAKA exit clause 2 is NOT satisfied on `ADR-0099` s3's literal rule: 0 live-path and 11 dead-path
+  uncovered, with 11 more `UNKNOWN`. D9 and D10 lacked a live PASS artifact, closed by adding gates running their
+  existing validators. Five validators reach no production code.
+- For ratification: `ADR-0108` s3 (schema) and s4 (reachability, especially the dead-path rule).
+- Verification: see the commit message and the review PR's CI.
+- Next genuine decision point: the owner's dead-path ruling and ratification of `ADR-0108`.
 
 ### 2026-11-04 - Consolidated Stage A recorded (ADR-0107)
 - Branch / commit SHA: `stage-a-governance-record`, this task's own commit on top of
@@ -5324,6 +5340,7 @@ act.
 
 | Version | Date | Change |
 |---|---|---|
+| 9.21.0 | 2026-11-04 | Stage B delivered for review: `ADR-0108` (`PROPOSED`). No `engine/` production change. |
 | 9.20.0 | 2026-11-04 | Consolidated Stage A recorded: `ADR-0107`. No engine or certification change. |
 | 9.19.0 | 2026-11-03 | `Q28` closed by the owner: `ADR-0106` (`ACCEPTED`). No engine or certification change. |
 | 9.18.0 | 2026-11-02 | Bounded repository-memory update: `ADR-0105` (`PROPOSED`), WP-RD-B-F2 bounded CEO PASS, owner rules preserved, `Q28` flagged. No engine or certification change. |

@@ -1,0 +1,1644 @@
+{
+ "authority": "ADR-0099 s3, s7; ADR-0107",
+ "dynamic_dispatch_in_engine_modules": {
+  "engine.knowledge.registry": [
+   "getattr"
+  ]
+ },
+ "exit_clause_2": {
+  "dead_path_uncovered": [
+   "engine.astrology.house.equal_house_from_ascendant",
+   "engine.astrology.planet_mapper.map_planet",
+   "engine.astrology.rashi_chart.rashi_chart",
+   "engine.astrology.sign.Sign.name",
+   "engine.astrology.sign.Sign.one_based",
+   "engine.core.timezone_engine.to_utc",
+   "engine.dasha.vimshottari.vimshottari_from_snapshot",
+   "engine.knowledge.loader.KnowledgeLoader.load",
+   "engine.knowledge.registry.KnowledgeRegistry.get",
+   "engine.knowledge.repository.KnowledgeRepository.natural_relationships",
+   "engine.knowledge.validator.SchemaValidator.load_json"
+  ],
+  "live_path_uncovered": [],
+  "satisfied": false,
+  "unknown_not_established_either_way": [
+   "engine.astrology.varga_classifier.VargaClassification.division_number",
+   "engine.knowledge.cache.KnowledgeCache.clear",
+   "engine.knowledge.cache.KnowledgeCache.get",
+   "engine.knowledge.registry.KnowledgeRegistry.clear",
+   "engine.knowledge.repository.KnowledgeRepository.houses",
+   "engine.knowledge.repository.KnowledgeRepository.load_json",
+   "engine.knowledge.repository.KnowledgeRepository.planets",
+   "engine.knowledge.resolver.KnowledgeResolver.resolve",
+   "engine.knowledge.validator.SchemaValidator.validate",
+   "engine.models.dasha.DashaPeriod.duration_years",
+   "engine.models.dasha.DashaPeriod.lord"
+  ]
+ },
+ "rows": {
+  "engine.astrology.chart.birth_chart": {
+   "covered": false,
+   "file": "engine/astrology/chart.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.astrology.chart_builder.build_chart": {
+   "caller_count": 4,
+   "callers": [
+    "engine.astrology.chart.birth_chart",
+    "engine.astrology.chart_factory.build_master_chart",
+    "engine.astrology.divisional_chart.divisional_chart",
+    "engine.astrology.rashi_chart.rashi_chart"
+   ],
+   "covered": true,
+   "file": "engine/astrology/chart_builder.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.chart_compare.same_chart": {
+   "covered": false,
+   "file": "engine/astrology/chart_compare.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.astrology.chart_export.export_chart": {
+   "covered": false,
+   "file": "engine/astrology/chart_export.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.astrology.chart_factory.build_all_charts": {
+   "covered": false,
+   "file": "engine/astrology/chart_factory.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.astrology.chart_factory.build_master_chart": {
+   "covered": true,
+   "file": "engine/astrology/chart_factory.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.astrology.chart_formatter.format_chart": {
+   "covered": false,
+   "file": "engine/astrology/chart_formatter.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.astrology.chart_house_builder.build_chart_house": {
+   "caller_count": 1,
+   "callers": [
+    "engine.astrology.chart_builder.build_chart"
+   ],
+   "covered": true,
+   "file": "engine/astrology/chart_house_builder.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.chart_index.chart_index": {
+   "covered": false,
+   "file": "engine/astrology/chart_index.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.astrology.chart_json.chart_json": {
+   "covered": false,
+   "file": "engine/astrology/chart_json.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.astrology.chart_lagna_builder.build_chart_lagna": {
+   "caller_count": 1,
+   "callers": [
+    "engine.astrology.chart_builder.build_chart"
+   ],
+   "covered": true,
+   "file": "engine/astrology/chart_lagna_builder.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.chart_lookup.planet": {
+   "covered": false,
+   "file": "engine/astrology/chart_lookup.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.astrology.chart_mapper.map_chart": {
+   "covered": false,
+   "file": "engine/astrology/chart_mapper.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.astrology.chart_nakshatra_builder.build_chart_nakshatra": {
+   "caller_count": 1,
+   "callers": [
+    "engine.astrology.chart_builder.build_chart"
+   ],
+   "covered": true,
+   "file": "engine/astrology/chart_nakshatra_builder.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.chart_navamsa_builder.build_chart_navamsa": {
+   "caller_count": 1,
+   "callers": [
+    "engine.astrology.chart_planet_builder.build_chart_planet"
+   ],
+   "covered": true,
+   "file": "engine/astrology/chart_navamsa_builder.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.chart_pada_builder.build_chart_pada": {
+   "caller_count": 1,
+   "callers": [
+    "engine.astrology.chart_builder.build_chart"
+   ],
+   "covered": true,
+   "file": "engine/astrology/chart_pada_builder.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.chart_planet_builder.build_chart_planet": {
+   "caller_count": 1,
+   "callers": [
+    "engine.astrology.chart_builder.build_chart"
+   ],
+   "covered": true,
+   "file": "engine/astrology/chart_planet_builder.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.chart_registry.supported_charts": {
+   "covered": false,
+   "file": "engine/astrology/chart_registry.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.astrology.chart_serializer.serialize_chart": {
+   "covered": false,
+   "file": "engine/astrology/chart_serializer.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.astrology.chart_sign_builder.build_chart_sign": {
+   "caller_count": 1,
+   "callers": [
+    "engine.astrology.chart_builder.build_chart"
+   ],
+   "covered": true,
+   "file": "engine/astrology/chart_sign_builder.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.chart_sort.sort_chart": {
+   "covered": false,
+   "file": "engine/astrology/chart_sort.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.astrology.chart_statistics.planet_count": {
+   "covered": false,
+   "file": "engine/astrology/chart_statistics.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.astrology.chart_summary.chart_summary": {
+   "covered": false,
+   "file": "engine/astrology/chart_summary.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.astrology.chart_validator.validate_chart": {
+   "covered": false,
+   "file": "engine/astrology/chart_validator.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.astrology.dashamsa_chart.dashamsa_chart": {
+   "caller_count": 2,
+   "callers": [
+    "engine.astrology.chart_factory.build_all_charts",
+    "engine.astrology.divisional_chart.divisional_chart"
+   ],
+   "covered": true,
+   "file": "engine/astrology/dashamsa_chart.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.dashamsa_chart.dashamsa_longitude": {
+   "caller_count": 1,
+   "callers": [
+    "engine.astrology.dashamsa_chart.dashamsa_chart"
+   ],
+   "covered": true,
+   "file": "engine/astrology/dashamsa_chart.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.dashamsa_chart.dashamsa_sign": {
+   "caller_count": 1,
+   "callers": [
+    "engine.astrology.dashamsa_chart.dashamsa_chart"
+   ],
+   "covered": true,
+   "file": "engine/astrology/dashamsa_chart.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.degrees.degree_in_sign": {
+   "caller_count": 4,
+   "callers": [
+    "engine.astrology.chart_house_builder.build_chart_house",
+    "engine.astrology.chart_lagna_builder.build_chart_lagna",
+    "engine.astrology.chart_planet_builder.build_chart_planet",
+    "engine.astrology.planet_mapper.map_planet"
+   ],
+   "covered": true,
+   "file": "engine/astrology/degrees.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.dignity.dignity": {
+   "caller_count": 4,
+   "callers": [
+    "engine.astrology.dignity.is_debilitated",
+    "engine.astrology.dignity.is_exalted",
+    "engine.astrology.dignity.is_moolatrikona",
+    "engine.astrology.dignity.is_own_sign"
+   ],
+   "covered": true,
+   "file": "engine/astrology/dignity.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.dignity.is_debilitated": {
+   "covered": false,
+   "file": "engine/astrology/dignity.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.astrology.dignity.is_exalted": {
+   "caller_count": 1,
+   "callers": [
+    "engine.parashari.mahapurusha_yoga._yoga_predicate_from_sign_and_house"
+   ],
+   "covered": true,
+   "file": "engine/astrology/dignity.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.dignity.is_moolatrikona": {
+   "covered": false,
+   "file": "engine/astrology/dignity.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.astrology.dignity.is_own_sign": {
+   "caller_count": 1,
+   "callers": [
+    "engine.parashari.mahapurusha_yoga._yoga_predicate_from_sign_and_house"
+   ],
+   "covered": true,
+   "file": "engine/astrology/dignity.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.dignity.natural_relationship": {
+   "covered": false,
+   "file": "engine/astrology/dignity.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.astrology.divisional_chart.divisional_chart": {
+   "covered": true,
+   "file": "engine/astrology/divisional_chart.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.astrology.element.element": {
+   "covered": false,
+   "file": "engine/astrology/element.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.astrology.house.equal_house_from_ascendant": {
+   "caller_count": 1,
+   "callers": [
+    "engine.astrology.house.house_from_longitude"
+   ],
+   "covered": false,
+   "file": "engine/astrology/house.py",
+   "status": "DEAD_PATH_UNCOVERED"
+  },
+  "engine.astrology.house.house_from_longitude": {
+   "covered": false,
+   "file": "engine/astrology/house.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.astrology.house.whole_sign_house": {
+   "caller_count": 4,
+   "callers": [
+    "engine.astrology.chart_planet_builder.build_chart_planet",
+    "engine.astrology.planet_mapper.map_planet",
+    "engine.parashari.mahapurusha_yoga.graha_mahapurusha_from_snapshot",
+    "engine.parashari.mahapurusha_yoga.yoga_present"
+   ],
+   "covered": true,
+   "file": "engine/astrology/house.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.house_names.house_name": {
+   "covered": false,
+   "file": "engine/astrology/house_names.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.astrology.longitude_utils.division_index": {
+   "caller_count": 8,
+   "callers": [
+    "engine.astrology.house.equal_house_from_ascendant",
+    "engine.astrology.nakshatra.nakshatra",
+    "engine.astrology.pada.pada",
+    "engine.astrology.panchanga.karana_index",
+    "engine.astrology.panchanga.tithi_index"
+   ],
+   "covered": true,
+   "file": "engine/astrology/longitude_utils.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.longitude_utils.normalize_longitude": {
+   "caller_count": 7,
+   "callers": [
+    "engine.astrology.house.equal_house_from_ascendant",
+    "engine.astrology.nakshatra.nakshatra",
+    "engine.astrology.pada.pada",
+    "engine.astrology.panchanga._elongation",
+    "engine.astrology.panchanga.yoga_index"
+   ],
+   "covered": true,
+   "file": "engine/astrology/longitude_utils.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.modality.modality": {
+   "covered": false,
+   "file": "engine/astrology/modality.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.astrology.nakshatra.nakshatra": {
+   "caller_count": 4,
+   "callers": [
+    "engine.astrology.chart_lagna_builder.build_chart_lagna",
+    "engine.astrology.chart_planet_builder.build_chart_planet",
+    "engine.astrology.panchanga.nakshatra_index",
+    "engine.transits.events.nakshatra_ingresses"
+   ],
+   "covered": true,
+   "file": "engine/astrology/nakshatra.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.nakshatra_names.nakshatra_name": {
+   "caller_count": 1,
+   "callers": [
+    "engine.astrology.chart_nakshatra_builder.build_chart_nakshatra"
+   ],
+   "covered": true,
+   "file": "engine/astrology/nakshatra_names.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.navamsa_chart.navamsa_chart": {
+   "caller_count": 2,
+   "callers": [
+    "engine.astrology.chart_factory.build_all_charts",
+    "engine.astrology.divisional_chart.divisional_chart"
+   ],
+   "covered": true,
+   "file": "engine/astrology/navamsa_chart.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.navamsa_chart.navamsa_longitude": {
+   "caller_count": 1,
+   "callers": [
+    "engine.astrology.navamsa_chart.navamsa_chart"
+   ],
+   "covered": true,
+   "file": "engine/astrology/navamsa_chart.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.navamsa_chart.navamsa_number": {
+   "caller_count": 3,
+   "callers": [
+    "engine.astrology.chart_navamsa_builder.build_chart_navamsa",
+    "engine.astrology.navamsa_chart",
+    "engine.astrology.navamsa_chart.navamsa_chart"
+   ],
+   "covered": true,
+   "file": "engine/astrology/navamsa_chart.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.navamsa_chart.navamsa_sign": {
+   "caller_count": 2,
+   "callers": [
+    "engine.astrology.chart_navamsa_builder.build_chart_navamsa",
+    "engine.astrology.navamsa_chart.navamsa_chart"
+   ],
+   "covered": true,
+   "file": "engine/astrology/navamsa_chart.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.pada.pada": {
+   "caller_count": 2,
+   "callers": [
+    "engine.astrology.chart_lagna_builder.build_chart_lagna",
+    "engine.astrology.chart_planet_builder.build_chart_planet"
+   ],
+   "covered": true,
+   "file": "engine/astrology/pada.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.panchanga.karana_index": {
+   "caller_count": 1,
+   "callers": [
+    "engine.astrology.panchanga.panchanga"
+   ],
+   "covered": true,
+   "file": "engine/astrology/panchanga.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.panchanga.nakshatra_index": {
+   "caller_count": 1,
+   "callers": [
+    "engine.astrology.panchanga.panchanga"
+   ],
+   "covered": true,
+   "file": "engine/astrology/panchanga.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.panchanga.panchanga": {
+   "covered": true,
+   "file": "engine/astrology/panchanga.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.astrology.panchanga.tithi_index": {
+   "caller_count": 1,
+   "callers": [
+    "engine.astrology.panchanga.panchanga"
+   ],
+   "covered": true,
+   "file": "engine/astrology/panchanga.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.panchanga.vara": {
+   "caller_count": 2,
+   "callers": [
+    "engine.astrology.panchanga.panchanga",
+    "engine.astrology.trikalam.trikalam_period"
+   ],
+   "covered": true,
+   "file": "engine/astrology/panchanga.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.panchanga.yoga_index": {
+   "caller_count": 1,
+   "callers": [
+    "engine.astrology.panchanga.panchanga"
+   ],
+   "covered": true,
+   "file": "engine/astrology/panchanga.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.panchanga_names.karana_name": {
+   "covered": true,
+   "file": "engine/astrology/panchanga_names.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.astrology.panchanga_names.tithi_name": {
+   "covered": false,
+   "file": "engine/astrology/panchanga_names.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.astrology.panchanga_names.tithi_paksha": {
+   "covered": false,
+   "file": "engine/astrology/panchanga_names.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.astrology.panchanga_names.vara_name": {
+   "covered": false,
+   "file": "engine/astrology/panchanga_names.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.astrology.panchanga_names.yoga_name": {
+   "covered": false,
+   "file": "engine/astrology/panchanga_names.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.astrology.planet_element.planet_element": {
+   "covered": false,
+   "file": "engine/astrology/planet_element.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.astrology.planet_gender.planet_gender": {
+   "covered": false,
+   "file": "engine/astrology/planet_gender.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.astrology.planet_mapper.map_planet": {
+   "caller_count": 1,
+   "callers": [
+    "engine.astrology.chart_mapper.map_chart"
+   ],
+   "covered": false,
+   "file": "engine/astrology/planet_mapper.py",
+   "status": "DEAD_PATH_UNCOVERED"
+  },
+  "engine.astrology.planet_nature.planet_nature": {
+   "covered": false,
+   "file": "engine/astrology/planet_nature.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.astrology.planet_strength.planet_strength": {
+   "covered": false,
+   "file": "engine/astrology/planet_strength.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.astrology.rashi_chart.rashi_chart": {
+   "caller_count": 1,
+   "callers": [
+    "engine.astrology.chart_factory.build_all_charts"
+   ],
+   "covered": false,
+   "file": "engine/astrology/rashi_chart.py",
+   "status": "DEAD_PATH_UNCOVERED"
+  },
+  "engine.astrology.sign.Sign.from_one_based": {
+   "caller_count": 6,
+   "callers": [
+    "engine.models.chart_house.ChartHouse.sign_object",
+    "engine.models.chart_lagna.ChartLagna.sign_object",
+    "engine.models.chart_planet.ChartPlanet.sign_object",
+    "engine.models.drishti.DrishtiChart.ascendant_sign_object",
+    "engine.models.drishti.PlanetDrishti.sign_object"
+   ],
+   "covered": true,
+   "file": "engine/astrology/sign.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.sign.Sign.from_zero_based": {
+   "caller_count": 7,
+   "callers": [
+    "engine.models.chart_navamsa.ChartNavamsa.sign_object",
+    "engine.models.dashamsa_chart.DashamsaChart.ascendant_sign_object",
+    "engine.models.dashamsa_planet.DashamsaPlanet.sign_object",
+    "engine.models.navamsa_chart.NavamsaChart.ascendant_sign_object",
+    "engine.models.navamsa_planet.NavamsaPlanet.sign_object"
+   ],
+   "covered": true,
+   "file": "engine/astrology/sign.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.sign.Sign.name": {
+   "caller_count": 1,
+   "callers": [
+    "engine.astrology.sign.Sign.__str__"
+   ],
+   "covered": false,
+   "file": "engine/astrology/sign.py",
+   "status": "DEAD_PATH_UNCOVERED"
+  },
+  "engine.astrology.sign.Sign.one_based": {
+   "caller_count": 1,
+   "callers": [
+    "engine.astrology.sign.Sign.name"
+   ],
+   "covered": false,
+   "file": "engine/astrology/sign.py",
+   "status": "DEAD_PATH_UNCOVERED"
+  },
+  "engine.astrology.sign_conventions.declared": {
+   "covered": true,
+   "file": "engine/astrology/sign_conventions.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.astrology.sign_conventions.is_index": {
+   "covered": true,
+   "file": "engine/astrology/sign_conventions.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.astrology.sign_lord.sign_lord": {
+   "covered": false,
+   "file": "engine/astrology/sign_lord.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.astrology.sign_names.sign_name": {
+   "covered": false,
+   "file": "engine/astrology/sign_names.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.astrology.signs.zodiac_sign": {
+   "caller_count": 9,
+   "callers": [
+    "engine.astrology.chart_house_builder.build_chart_house",
+    "engine.astrology.chart_lagna_builder.build_chart_lagna",
+    "engine.astrology.chart_planet_builder.build_chart_planet",
+    "engine.astrology.house.whole_sign_house",
+    "engine.astrology.planet_mapper.map_planet"
+   ],
+   "covered": true,
+   "file": "engine/astrology/signs.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.trikalam.trikalam_period": {
+   "covered": true,
+   "file": "engine/astrology/trikalam.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.astrology.varga_chart_builder.build_varga_chart": {
+   "caller_count": 1,
+   "callers": [
+    "engine.astrology.divisional_chart.divisional_chart"
+   ],
+   "covered": true,
+   "file": "engine/astrology/varga_chart_builder.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.varga_classifier.VargaClassification.division_number": {
+   "ambiguous_owner_count": 1,
+   "ambiguous_owner_sample": [
+    "engine.astrology.varga_chart_builder.build_varga_chart"
+   ],
+   "covered": false,
+   "file": "engine/astrology/varga_classifier.py",
+   "status": "UNKNOWN"
+  },
+  "engine.astrology.varga_classifier.classify": {
+   "caller_count": 1,
+   "callers": [
+    "engine.astrology.varga_chart_builder.build_varga_chart"
+   ],
+   "covered": true,
+   "file": "engine/astrology/varga_classifier.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.varga_classifier.math_nextafter_below_one": {
+   "caller_count": 1,
+   "callers": [
+    "engine.astrology.varga_classifier._classify_segments"
+   ],
+   "covered": true,
+   "file": "engine/astrology/varga_classifier.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.varga_d12.ensure_registered": {
+   "caller_count": 1,
+   "callers": [
+    "engine.astrology.varga_d12"
+   ],
+   "covered": true,
+   "file": "engine/astrology/varga_d12.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.varga_d2.ensure_registered": {
+   "caller_count": 1,
+   "callers": [
+    "engine.astrology.varga_d2"
+   ],
+   "covered": true,
+   "file": "engine/astrology/varga_d2.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.varga_d20.ensure_registered": {
+   "caller_count": 1,
+   "callers": [
+    "engine.astrology.varga_d20"
+   ],
+   "covered": true,
+   "file": "engine/astrology/varga_d20.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.varga_d24.ensure_registered": {
+   "caller_count": 1,
+   "callers": [
+    "engine.astrology.varga_d24"
+   ],
+   "covered": true,
+   "file": "engine/astrology/varga_d24.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.varga_d3.ensure_registered": {
+   "caller_count": 1,
+   "callers": [
+    "engine.astrology.varga_d3"
+   ],
+   "covered": true,
+   "file": "engine/astrology/varga_d3.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.varga_d30.ensure_registered": {
+   "caller_count": 1,
+   "callers": [
+    "engine.astrology.varga_d30"
+   ],
+   "covered": true,
+   "file": "engine/astrology/varga_d30.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.varga_d40.ensure_registered": {
+   "caller_count": 1,
+   "callers": [
+    "engine.astrology.varga_d40"
+   ],
+   "covered": true,
+   "file": "engine/astrology/varga_d40.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.varga_d45.ensure_registered": {
+   "caller_count": 1,
+   "callers": [
+    "engine.astrology.varga_d45"
+   ],
+   "covered": true,
+   "file": "engine/astrology/varga_d45.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.varga_d7.ensure_registered": {
+   "caller_count": 1,
+   "callers": [
+    "engine.astrology.varga_d7"
+   ],
+   "covered": true,
+   "file": "engine/astrology/varga_d7.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.varga_registry.get_varga_rule": {
+   "caller_count": 1,
+   "callers": [
+    "engine.astrology.divisional_chart.divisional_chart"
+   ],
+   "covered": true,
+   "file": "engine/astrology/varga_registry.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.varga_registry.register_varga_rule": {
+   "caller_count": 9,
+   "callers": [
+    "engine.astrology.varga_d12.ensure_registered",
+    "engine.astrology.varga_d2.ensure_registered",
+    "engine.astrology.varga_d20.ensure_registered",
+    "engine.astrology.varga_d24.ensure_registered",
+    "engine.astrology.varga_d3.ensure_registered"
+   ],
+   "covered": true,
+   "file": "engine/astrology/varga_registry.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.varga_registry.registered_vargas": {
+   "caller_count": 9,
+   "callers": [
+    "engine.astrology.varga_d12.ensure_registered",
+    "engine.astrology.varga_d2.ensure_registered",
+    "engine.astrology.varga_d20.ensure_registered",
+    "engine.astrology.varga_d24.ensure_registered",
+    "engine.astrology.varga_d3.ensure_registered"
+   ],
+   "covered": true,
+   "file": "engine/astrology/varga_registry.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.varga_registry.unregister_varga_rule": {
+   "covered": false,
+   "file": "engine/astrology/varga_registry.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.astrology.varga_rules.rule_content_sha256": {
+   "covered": true,
+   "file": "engine/astrology/varga_rules.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.astronomy.aspects.aspect": {
+   "covered": false,
+   "file": "engine/astronomy/aspects.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.astronomy.astronomy_pipeline.astronomy_pipeline": {
+   "covered": false,
+   "file": "engine/astronomy/astronomy_pipeline.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.astronomy.astronomy_snapshot.astronomy_snapshot": {
+   "caller_count": 3,
+   "callers": [
+    "engine.calculations.calculations.calculate",
+    "engine.calculations.calculations.calculate_from_datetime",
+    "engine.transits.view.transit_view"
+   ],
+   "covered": true,
+   "file": "engine/astronomy/astronomy_snapshot.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astronomy.ayanamsa.ayanamsa": {
+   "caller_count": 1,
+   "callers": [
+    "engine.astronomy.astronomy_snapshot.astronomy_snapshot"
+   ],
+   "covered": true,
+   "file": "engine/astronomy/ayanamsa.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astronomy.ephemeris.calc_ut_checked": {
+   "caller_count": 3,
+   "callers": [
+    "engine.astronomy.planet_positions.planet_position",
+    "engine.astronomy.rise_set._rise_or_set",
+    "engine.astronomy.sidereal_planets.sidereal_planet_position"
+   ],
+   "covered": true,
+   "file": "engine/astronomy/ephemeris.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astronomy.ephemeris.default_ephemeris_path": {
+   "caller_count": 1,
+   "callers": [
+    "engine.astronomy.ephemeris.initialize_ephemeris"
+   ],
+   "covered": true,
+   "file": "engine/astronomy/ephemeris.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astronomy.ephemeris.ephemeris_mode_from_flags": {
+   "caller_count": 1,
+   "callers": [
+    "engine.astronomy.ephemeris.calc_ut_checked"
+   ],
+   "covered": true,
+   "file": "engine/astronomy/ephemeris.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astronomy.ephemeris.initialize_ephemeris": {
+   "caller_count": 3,
+   "callers": [
+    "engine.astronomy.astronomy_snapshot.astronomy_snapshot",
+    "engine.astronomy.ephemeris.calc_ut_checked",
+    "engine.astronomy.rise_set._rise_or_set"
+   ],
+   "covered": true,
+   "file": "engine/astronomy/ephemeris.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astronomy.house_positions.house_positions": {
+   "caller_count": 1,
+   "callers": [
+    "engine.astronomy.astronomy_snapshot.astronomy_snapshot"
+   ],
+   "covered": true,
+   "file": "engine/astronomy/house_positions.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astronomy.planet_collection.derive_ketu": {
+   "caller_count": 1,
+   "callers": [
+    "engine.astronomy.planet_collection.planet_collection"
+   ],
+   "covered": true,
+   "file": "engine/astronomy/planet_collection.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astronomy.planet_collection.planet_collection": {
+   "caller_count": 1,
+   "callers": [
+    "engine.astronomy.astronomy_snapshot.astronomy_snapshot"
+   ],
+   "covered": true,
+   "file": "engine/astronomy/planet_collection.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astronomy.planet_positions.planet_position": {
+   "caller_count": 1,
+   "callers": [
+    "engine.astronomy.planet_collection.planet_collection"
+   ],
+   "covered": true,
+   "file": "engine/astronomy/planet_positions.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astronomy.rise_set.horizon_dip_degrees": {
+   "caller_count": 1,
+   "callers": [
+    "engine.astronomy.rise_set._rise_or_set"
+   ],
+   "covered": true,
+   "file": "engine/astronomy/rise_set.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astronomy.rise_set.sunrise": {
+   "caller_count": 2,
+   "callers": [
+    "engine.astrology.panchanga.vara",
+    "engine.astrology.trikalam.trikalam_period"
+   ],
+   "covered": true,
+   "file": "engine/astronomy/rise_set.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astronomy.rise_set.sunset": {
+   "caller_count": 1,
+   "callers": [
+    "engine.astrology.trikalam.trikalam_period"
+   ],
+   "covered": true,
+   "file": "engine/astronomy/rise_set.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astronomy.sidereal_planets.sidereal_planet": {
+   "covered": false,
+   "file": "engine/astronomy/sidereal_planets.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.astronomy.sidereal_planets.sidereal_planet_collection": {
+   "caller_count": 1,
+   "callers": [
+    "engine.astronomy.astronomy_snapshot.astronomy_snapshot"
+   ],
+   "covered": true,
+   "file": "engine/astronomy/sidereal_planets.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astronomy.sidereal_planets.sidereal_planet_position": {
+   "caller_count": 5,
+   "callers": [
+    "engine.astrology.panchanga._sun_moon_sidereal_longitudes",
+    "engine.astronomy.sidereal_planets.sidereal_planet_collection",
+    "engine.transits.crossing._state",
+    "scripts.investigate_h02_pyjhora_precision.investigate_longitude_bias",
+    "scripts.reproduce_h02_ingress_seam.check_event"
+   ],
+   "covered": true,
+   "file": "engine/astronomy/sidereal_planets.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.calculations.calculations.calculate": {
+   "caller_count": 6,
+   "callers": [
+    "engine.dasha.vimshottari.vimshottari_kp",
+    "engine.dasha.vimshottari.vimshottari_parashari",
+    "engine.kp.chart.kp_chart",
+    "engine.main.engine_test",
+    "engine.parashari.drishti.parashari_drishti"
+   ],
+   "covered": true,
+   "exported_by": [
+    "engine/main.py"
+   ],
+   "file": "engine/calculations/calculations.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.calculations.calculations.calculate_from_datetime": {
+   "covered": false,
+   "file": "engine/calculations/calculations.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.core.julian_day.julian_day": {
+   "caller_count": 2,
+   "callers": [
+    "engine.calculations.calculations.calculate",
+    "engine.calculations.calculations.calculate_from_datetime"
+   ],
+   "covered": true,
+   "file": "engine/core/julian_day.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.core.timezone_engine.to_utc": {
+   "caller_count": 1,
+   "callers": [
+    "engine.calculations.calculations.calculate_from_datetime"
+   ],
+   "covered": false,
+   "file": "engine/core/timezone_engine.py",
+   "status": "DEAD_PATH_UNCOVERED"
+  },
+  "engine.core.validation.validate_birth_data": {
+   "caller_count": 1,
+   "callers": [
+    "engine.calculations.calculations.calculate"
+   ],
+   "covered": true,
+   "file": "engine/core/validation.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.dasha.profile.validate_dasha_profile": {
+   "caller_count": 1,
+   "callers": [
+    "engine.dasha.vimshottari.vimshottari_from_moon"
+   ],
+   "covered": true,
+   "file": "engine/dasha/profile.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.dasha.vimshottari.vimshottari_from_moon": {
+   "caller_count": 1,
+   "callers": [
+    "engine.dasha.vimshottari.vimshottari_from_snapshot"
+   ],
+   "covered": true,
+   "file": "engine/dasha/vimshottari.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.dasha.vimshottari.vimshottari_from_snapshot": {
+   "caller_count": 2,
+   "callers": [
+    "engine.dasha.vimshottari.vimshottari_kp",
+    "engine.dasha.vimshottari.vimshottari_parashari"
+   ],
+   "covered": false,
+   "file": "engine/dasha/vimshottari.py",
+   "status": "DEAD_PATH_UNCOVERED"
+  },
+  "engine.dasha.vimshottari.vimshottari_kp": {
+   "covered": false,
+   "file": "engine/dasha/vimshottari.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.dasha.vimshottari.vimshottari_parashari": {
+   "covered": false,
+   "file": "engine/dasha/vimshottari.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.knowledge.cache.KnowledgeCache.clear": {
+   "ambiguous_owner_count": 2,
+   "ambiguous_owner_sample": [
+    "engine.knowledge.cache.KnowledgeCache.clear",
+    "engine.knowledge.registry.KnowledgeRegistry.clear"
+   ],
+   "covered": false,
+   "file": "engine/knowledge/cache.py",
+   "status": "UNKNOWN"
+  },
+  "engine.knowledge.cache.KnowledgeCache.get": {
+   "ambiguous_owner_count": 87,
+   "ambiguous_owner_sample": [
+    ".claude.hooks.git_safety_guard.main",
+    ".claude.hooks.governance_gate_check.main",
+    "engine.astrology.dignity.is_debilitated"
+   ],
+   "covered": false,
+   "file": "engine/knowledge/cache.py",
+   "status": "UNKNOWN"
+  },
+  "engine.knowledge.cache.KnowledgeCache.has": {
+   "covered": false,
+   "file": "engine/knowledge/cache.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.knowledge.cache.KnowledgeCache.set": {
+   "covered": false,
+   "file": "engine/knowledge/cache.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.knowledge.loader.KnowledgeLoader.load": {
+   "caller_count": 1,
+   "callers": [
+    "engine.knowledge.repository.KnowledgeRepository.load_json"
+   ],
+   "covered": false,
+   "file": "engine/knowledge/loader.py",
+   "status": "DEAD_PATH_UNCOVERED"
+  },
+  "engine.knowledge.models.BaseModel.touch": {
+   "covered": false,
+   "file": "engine/knowledge/models.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.knowledge.models.KnowledgeNode.add_alias": {
+   "covered": false,
+   "file": "engine/knowledge/models.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.knowledge.models.KnowledgeNode.add_reference": {
+   "covered": false,
+   "file": "engine/knowledge/models.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.knowledge.models.KnowledgeNode.add_relation": {
+   "covered": false,
+   "file": "engine/knowledge/models.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.knowledge.models.KnowledgeNode.add_tag": {
+   "covered": false,
+   "file": "engine/knowledge/models.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.knowledge.registry.KnowledgeRegistry.clear": {
+   "ambiguous_owner_count": 2,
+   "ambiguous_owner_sample": [
+    "engine.knowledge.cache.KnowledgeCache.clear",
+    "engine.knowledge.registry.KnowledgeRegistry.clear"
+   ],
+   "covered": false,
+   "file": "engine/knowledge/registry.py",
+   "status": "UNKNOWN"
+  },
+  "engine.knowledge.registry.KnowledgeRegistry.get": {
+   "caller_count": 1,
+   "callers": [
+    "engine.knowledge.resolver.KnowledgeResolver.resolve"
+   ],
+   "covered": false,
+   "file": "engine/knowledge/registry.py",
+   "status": "DEAD_PATH_UNCOVERED"
+  },
+  "engine.knowledge.repository.KnowledgeRepository.dignities": {
+   "caller_count": 1,
+   "callers": [
+    "engine.astrology.dignity._dignity_table"
+   ],
+   "covered": true,
+   "file": "engine/knowledge/repository.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.knowledge.repository.KnowledgeRepository.houses": {
+   "ambiguous_owner_count": 9,
+   "ambiguous_owner_sample": [
+    "engine.astrology.chart_builder.build_chart",
+    "engine.astrology.chart_mapper.map_chart",
+    "engine.astrology.dashamsa_chart.dashamsa_chart"
+   ],
+   "covered": false,
+   "file": "engine/knowledge/repository.py",
+   "status": "UNKNOWN"
+  },
+  "engine.knowledge.repository.KnowledgeRepository.load_json": {
+   "ambiguous_owner_count": 6,
+   "ambiguous_owner_sample": [
+    "engine.knowledge.repository.KnowledgeRepository.dignities",
+    "engine.knowledge.repository.KnowledgeRepository.houses",
+    "engine.knowledge.repository.KnowledgeRepository.nakshatras"
+   ],
+   "covered": false,
+   "file": "engine/knowledge/repository.py",
+   "status": "UNKNOWN"
+  },
+  "engine.knowledge.repository.KnowledgeRepository.nakshatras": {
+   "covered": false,
+   "file": "engine/knowledge/repository.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.knowledge.repository.KnowledgeRepository.natural_relationships": {
+   "caller_count": 1,
+   "callers": [
+    "engine.astrology.dignity._relationship_table"
+   ],
+   "covered": false,
+   "file": "engine/knowledge/repository.py",
+   "status": "DEAD_PATH_UNCOVERED"
+  },
+  "engine.knowledge.repository.KnowledgeRepository.planets": {
+   "ambiguous_owner_count": 6,
+   "ambiguous_owner_sample": [
+    "engine.astrology.chart_formatter.format_chart",
+    "engine.astrology.chart_index.chart_index",
+    "engine.astrology.chart_lookup.planet"
+   ],
+   "covered": false,
+   "file": "engine/knowledge/repository.py",
+   "status": "UNKNOWN"
+  },
+  "engine.knowledge.repository.KnowledgeRepository.signs": {
+   "covered": false,
+   "file": "engine/knowledge/repository.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.knowledge.resolver.KnowledgeResolver.resolve": {
+   "ambiguous_owner_count": 35,
+   "ambiguous_owner_sample": [
+    "engine.astronomy.ephemeris.default_ephemeris_path",
+    "engine.tools.scaffold",
+    "scripts.certification_support"
+   ],
+   "covered": false,
+   "file": "engine/knowledge/resolver.py",
+   "status": "UNKNOWN"
+  },
+  "engine.knowledge.validator.SchemaValidator.load_json": {
+   "caller_count": 1,
+   "callers": [
+    "engine.knowledge.validator.SchemaValidator.validate"
+   ],
+   "covered": false,
+   "file": "engine/knowledge/validator.py",
+   "status": "DEAD_PATH_UNCOVERED"
+  },
+  "engine.knowledge.validator.SchemaValidator.validate": {
+   "ambiguous_owner_count": 1,
+   "ambiguous_owner_sample": [
+    "engine.knowledge.validator.SchemaValidator.validate"
+   ],
+   "covered": false,
+   "file": "engine/knowledge/validator.py",
+   "status": "UNKNOWN"
+  },
+  "engine.kp.chain.kp_chain": {
+   "caller_count": 2,
+   "callers": [
+    "engine.kp.chart.kp_chart_from_snapshot",
+    "scripts.check_mutation_detection._corrupt_kp_chain"
+   ],
+   "covered": true,
+   "file": "engine/kp/chain.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.kp.chart.kp_chart": {
+   "covered": true,
+   "file": "engine/kp/chart.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.kp.chart.kp_chart_from_snapshot": {
+   "caller_count": 1,
+   "callers": [
+    "engine.kp.chart.kp_chart"
+   ],
+   "covered": true,
+   "file": "engine/kp/chart.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.kp.intervals.all_boundaries": {
+   "covered": true,
+   "file": "engine/kp/intervals.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.kp.intervals.to_exact": {
+   "caller_count": 1,
+   "callers": [
+    "engine.kp.chain.kp_chain"
+   ],
+   "covered": true,
+   "file": "engine/kp/intervals.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.kp.intervals.walk": {
+   "caller_count": 1,
+   "callers": [
+    "engine.kp.chain.kp_chain"
+   ],
+   "covered": true,
+   "file": "engine/kp/intervals.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.kp.significators.aspected_signs": {
+   "caller_count": 1,
+   "callers": [
+    "engine.kp.significators.is_aspecting"
+   ],
+   "covered": true,
+   "file": "engine/kp/significators.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.kp.significators.full_name": {
+   "caller_count": 4,
+   "callers": [
+    "engine.kp.significators._signifies",
+    "engine.kp.significators.judge_marriage",
+    "engine.kp.significators.node_substitute",
+    "scripts.check_mutation_detection._corrupt_signifies"
+   ],
+   "covered": true,
+   "file": "engine/kp/significators.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.kp.significators.house_of_placidus": {
+   "caller_count": 2,
+   "callers": [
+    "engine.kp.significators._signifies",
+    "scripts.check_mutation_detection._corrupt_signifies"
+   ],
+   "covered": true,
+   "file": "engine/kp/significators.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.kp.significators.is_aspecting": {
+   "caller_count": 1,
+   "callers": [
+    "engine.kp.significators.node_substitute"
+   ],
+   "covered": true,
+   "file": "engine/kp/significators.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.kp.significators.is_conjunct": {
+   "caller_count": 1,
+   "callers": [
+    "engine.kp.significators.node_substitute"
+   ],
+   "covered": true,
+   "file": "engine/kp/significators.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.kp.significators.judge_marriage": {
+   "covered": true,
+   "file": "engine/kp/significators.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.kp.significators.node_substitute": {
+   "caller_count": 1,
+   "callers": [
+    "engine.kp.significators.signification_set"
+   ],
+   "covered": true,
+   "file": "engine/kp/significators.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.kp.significators.rule_content_sha256": {
+   "covered": true,
+   "file": "engine/kp/significators.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.kp.significators.sign_of": {
+   "caller_count": 1,
+   "callers": [
+    "engine.kp.significators.node_substitute"
+   ],
+   "covered": true,
+   "file": "engine/kp/significators.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.kp.significators.signification_set": {
+   "caller_count": 2,
+   "callers": [
+    "engine.kp.significators.judge_marriage",
+    "engine.kp.significators.signification_set"
+   ],
+   "covered": true,
+   "file": "engine/kp/significators.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.models.chart_house.ChartHouse.sign_object": {
+   "covered": false,
+   "file": "engine/models/chart_house.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.models.chart_house.ChartHouse.sign_zero_based": {
+   "covered": false,
+   "file": "engine/models/chart_house.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.models.chart_lagna.ChartLagna.sign_object": {
+   "covered": false,
+   "file": "engine/models/chart_lagna.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.models.chart_lagna.ChartLagna.sign_zero_based": {
+   "covered": false,
+   "file": "engine/models/chart_lagna.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.models.chart_navamsa.ChartNavamsa.sign_object": {
+   "covered": false,
+   "file": "engine/models/chart_navamsa.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.models.chart_navamsa.ChartNavamsa.sign_one_based": {
+   "covered": false,
+   "file": "engine/models/chart_navamsa.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.models.chart_planet.ChartPlanet.sign_object": {
+   "covered": false,
+   "file": "engine/models/chart_planet.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.models.chart_planet.ChartPlanet.sign_zero_based": {
+   "covered": false,
+   "file": "engine/models/chart_planet.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.models.dasha.DashaPeriod.duration_years": {
+   "ambiguous_owner_count": 1,
+   "ambiguous_owner_sample": [
+    "engine.dasha.vimshottari._subdivide"
+   ],
+   "covered": false,
+   "file": "engine/models/dasha.py",
+   "status": "UNKNOWN"
+  },
+  "engine.models.dasha.DashaPeriod.lord": {
+   "ambiguous_owner_count": 1,
+   "ambiguous_owner_sample": [
+    "engine.dasha.vimshottari._subdivide"
+   ],
+   "covered": false,
+   "file": "engine/models/dasha.py",
+   "status": "UNKNOWN"
+  },
+  "engine.models.dasha.VimshottariTimeline.antardashas": {
+   "covered": false,
+   "file": "engine/models/dasha.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.models.dasha.VimshottariTimeline.mahadashas": {
+   "covered": false,
+   "file": "engine/models/dasha.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.models.dasha.VimshottariTimeline.pratyantardashas": {
+   "covered": false,
+   "file": "engine/models/dasha.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.models.dashamsa_chart.DashamsaChart.ascendant_sign_object": {
+   "covered": false,
+   "file": "engine/models/dashamsa_chart.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.models.dashamsa_chart.DashamsaChart.ascendant_sign_one_based": {
+   "covered": false,
+   "file": "engine/models/dashamsa_chart.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.models.dashamsa_planet.DashamsaPlanet.sign_object": {
+   "covered": false,
+   "file": "engine/models/dashamsa_planet.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.models.dashamsa_planet.DashamsaPlanet.sign_one_based": {
+   "covered": false,
+   "file": "engine/models/dashamsa_planet.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.models.drishti.DrishtiChart.ascendant_sign_object": {
+   "covered": false,
+   "file": "engine/models/drishti.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.models.drishti.DrishtiChart.ascendant_sign_zero_based": {
+   "covered": false,
+   "file": "engine/models/drishti.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.models.drishti.PlanetDrishti.aspected_signs_zero_based": {
+   "covered": false,
+   "file": "engine/models/drishti.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.models.drishti.PlanetDrishti.sign_object": {
+   "covered": false,
+   "file": "engine/models/drishti.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.models.drishti.PlanetDrishti.sign_zero_based": {
+   "covered": false,
+   "file": "engine/models/drishti.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.models.kp_chain.KpChain.sign_object": {
+   "covered": false,
+   "file": "engine/models/kp_chain.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.models.kp_chain.KpChain.sign_zero_based": {
+   "covered": false,
+   "file": "engine/models/kp_chain.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.models.navamsa_chart.NavamsaChart.ascendant_sign_object": {
+   "covered": false,
+   "file": "engine/models/navamsa_chart.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.models.navamsa_chart.NavamsaChart.ascendant_sign_one_based": {
+   "covered": false,
+   "file": "engine/models/navamsa_chart.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.models.navamsa_planet.NavamsaPlanet.sign_object": {
+   "covered": false,
+   "file": "engine/models/navamsa_planet.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.models.navamsa_planet.NavamsaPlanet.sign_one_based": {
+   "covered": false,
+   "file": "engine/models/navamsa_planet.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.models.planet.Planet.ordered": {
+   "covered": false,
+   "file": "engine/models/planet.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.models.varga_planet.VargaPlanet.sign_object": {
+   "covered": false,
+   "file": "engine/models/varga_planet.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.models.varga_planet.VargaPlanet.sign_one_based": {
+   "covered": false,
+   "file": "engine/models/varga_planet.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.models.varga_planet.VargaPosition.sign_object": {
+   "covered": false,
+   "file": "engine/models/varga_planet.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.models.varga_planet.VargaPosition.sign_one_based": {
+   "covered": false,
+   "file": "engine/models/varga_planet.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.parashari.drishti.aspected_signs": {
+   "caller_count": 1,
+   "callers": [
+    "engine.parashari.drishti.graha_drishti_from_snapshot"
+   ],
+   "covered": true,
+   "file": "engine/parashari/drishti.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.parashari.drishti.graha_drishti_from_snapshot": {
+   "caller_count": 1,
+   "callers": [
+    "engine.parashari.drishti.parashari_drishti"
+   ],
+   "covered": true,
+   "file": "engine/parashari/drishti.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.parashari.drishti.parashari_drishti": {
+   "covered": true,
+   "file": "engine/parashari/drishti.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.parashari.mahapurusha_yoga.MahapurushaYogaChart.present_yogas": {
+   "covered": false,
+   "file": "engine/parashari/mahapurusha_yoga.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.parashari.mahapurusha_yoga.graha_mahapurusha_from_snapshot": {
+   "caller_count": 1,
+   "callers": [
+    "engine.parashari.mahapurusha_yoga.mahapurusha_yoga"
+   ],
+   "covered": true,
+   "file": "engine/parashari/mahapurusha_yoga.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.parashari.mahapurusha_yoga.mahapurusha_yoga": {
+   "covered": true,
+   "file": "engine/parashari/mahapurusha_yoga.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.parashari.mahapurusha_yoga.rule_content_sha256": {
+   "covered": true,
+   "file": "engine/parashari/mahapurusha_yoga.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.parashari.mahapurusha_yoga.yoga_present": {
+   "covered": true,
+   "file": "engine/parashari/mahapurusha_yoga.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.services.time_service.local_datetime": {
+   "caller_count": 1,
+   "callers": [
+    "engine.services.time_service.utc_datetime"
+   ],
+   "covered": true,
+   "file": "engine/services/time_service.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.services.time_service.utc_datetime": {
+   "caller_count": 1,
+   "callers": [
+    "engine.calculations.calculations.calculate"
+   ],
+   "covered": true,
+   "file": "engine/services/time_service.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.transits.crossing.find_crossings": {
+   "caller_count": 3,
+   "callers": [
+    "engine.transits.events._multi_target",
+    "engine.transits.events.natal_conjunctions",
+    "engine.transits.events.returns"
+   ],
+   "covered": true,
+   "file": "engine/transits/crossing.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.transits.events.nakshatra_ingresses": {
+   "caller_count": 1,
+   "callers": [
+    "scripts.reproduce_h02_ingress_seam.run"
+   ],
+   "covered": true,
+   "file": "engine/transits/events.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.transits.events.natal_conjunctions": {
+   "covered": false,
+   "file": "engine/transits/events.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.transits.events.returns": {
+   "covered": false,
+   "file": "engine/transits/events.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.transits.events.sign_ingresses": {
+   "caller_count": 1,
+   "callers": [
+    "scripts.reproduce_h02_ingress_seam.run"
+   ],
+   "covered": true,
+   "file": "engine/transits/events.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.transits.speeds.grid_step_days": {
+   "caller_count": 1,
+   "callers": [
+    "engine.transits.crossing.find_crossings"
+   ],
+   "covered": true,
+   "file": "engine/transits/speeds.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.transits.view.transit_view": {
+   "covered": false,
+   "file": "engine/transits/view.py",
+   "status": "NOT_IN_USE"
+  }
+ },
+ "schema": "ace-c4-reachability-v1",
+ "summary": {
+  "DEAD_PATH_UNCOVERED": 11,
+  "IN_USE_COVERED": 90,
+  "NOT_IN_USE": 99,
+  "UNKNOWN": 11
+ },
+ "universe_exclusions": {
+  "engine.main.": "API route handlers: callers and exports, not capabilities",
+  "engine.tools.": "developer scaffolding, not analytical"
+ }
+}

@@ -1,7 +1,7 @@
 {
  "schema": "sign_convention_v1_certification",
  "adr": "ADR-0012",
- "date": "2026-09-14",
+ "date": "2026-11-04",
  "scope": "explicit, machine-checked sign-index conventions across every layer; no certified value renumbered",
  "decisions": {
   "SC-A": "inert Sign value type as the shared convention carrier",
@@ -138,12 +138,18 @@
     "D40_parashara": "0397138480f9d6362baf6ed1fee4eefffb3dd2a670add781b2334e5a62c16334",
     "D45_parashara": "56a88127eb983a832e4016e0961c929b3accadcaf007def5210af2ab94818cce"
    },
-   "note": "compare against published main; this phase must change no certified value (Decision SC-B)"
+   "note": "compare against published main; this phase must change no certified value (Decision SC-B)",
+   "exercises": [
+    "conventions.cross_layer"
+   ]
   },
   "B_sign_type": {
    "signs": 12,
    "mismatches": 0,
-   "inert": true
+   "inert": true,
+   "exercises": [
+    "conventions.sign_type"
+   ]
   },
   "C_declaration_coverage": {
    "charts_swept": 192,
@@ -287,12 +293,22 @@
      "min": 0,
      "max": 11
     }
-   }
+   },
+   "exercises": [
+    "conventions.chart_fields",
+    "conventions.declarations",
+    "vargas.d1"
+   ]
   },
   "D_cross_layer_agreement": {
    "surface_checks": 79984,
    "mismatches": 0,
-   "surfaces": 6
+   "surfaces": 6,
+   "exercises": [
+    "conventions.cross_layer",
+    "conventions.declarations",
+    "conventions.sign_type"
+   ]
   }
  },
  "explicit_non_claims": [
@@ -302,7 +318,7 @@
   "nakshatra and division-index conventions are out of scope for V1"
  ],
  "environment": {
-  "python": "3.11.16"
+  "python": "3.11.17"
  },
  "preconditions": {
   "data_assets": {
@@ -324,7 +340,7 @@
    "residual_limitation": "coordinated edits to every repository-held trust record cannot be cryptographically prevented by an in-repository trust anchor; only upstream provenance would anchor this, and it is out of M1 scope"
   },
   "anti_fitting": {
-   "modules_scanned": 202,
+   "modules_scanned": 203,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."
@@ -332,6 +348,200 @@
   }
  },
  "result": "PASS",
+ "capability_schema": "ace-capability-enumeration-v1",
+ "capabilities": [
+  {
+   "id": "conventions.sign_type",
+   "members": [
+    {
+     "callable": "engine.astrology.sign.Sign.from_one_based",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "B_sign_type",
+      "D_cross_layer_agreement"
+     ]
+    },
+    {
+     "callable": "engine.astrology.sign.Sign.from_zero_based",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "B_sign_type",
+      "D_cross_layer_agreement"
+     ]
+    },
+    {
+     "callable": "engine.astrology.sign.SIGN_COUNT",
+     "kind": "data",
+     "disposition": "GATED",
+     "exercised_by": [
+      "B_sign_type"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "conventions.declarations",
+   "members": [
+    {
+     "callable": "engine.astrology.sign_conventions.declared",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "C_declaration_coverage"
+     ]
+    },
+    {
+     "callable": "engine.astrology.sign_conventions.is_index",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "C_declaration_coverage"
+     ]
+    },
+    {
+     "callable": "engine.astrology.sign_conventions.SIGN_FIELD_CONVENTIONS",
+     "kind": "data",
+     "disposition": "GATED",
+     "exercised_by": [
+      "C_declaration_coverage"
+     ]
+    },
+    {
+     "callable": "engine.astrology.sign_conventions.SIGN_FUNCTION_CONVENTIONS",
+     "kind": "data",
+     "disposition": "GATED",
+     "exercised_by": [
+      "D_cross_layer_agreement"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "conventions.cross_layer",
+   "members": [
+    {
+     "callable": "engine.astrology.signs.zodiac_sign",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "D_cross_layer_agreement"
+     ]
+    },
+    {
+     "callable": "engine.astrology.navamsa_chart.navamsa_sign",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_non_invasiveness",
+      "D_cross_layer_agreement"
+     ]
+    },
+    {
+     "callable": "engine.astrology.dashamsa_chart.dashamsa_sign",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_non_invasiveness",
+      "D_cross_layer_agreement"
+     ]
+    },
+    {
+     "callable": "engine.astrology.varga_classifier.classify",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_non_invasiveness",
+      "D_cross_layer_agreement"
+     ]
+    },
+    {
+     "callable": "engine.kp.chain.kp_chain",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "D_cross_layer_agreement"
+     ]
+    },
+    {
+     "callable": "engine.parashari.drishti.aspected_signs",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "D_cross_layer_agreement"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "conventions.chart_fields",
+   "members": [
+    {
+     "callable": "engine.astrology.navamsa_chart.navamsa_chart",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "C_declaration_coverage"
+     ]
+    },
+    {
+     "callable": "engine.astrology.dashamsa_chart.dashamsa_chart",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "C_declaration_coverage"
+     ]
+    },
+    {
+     "callable": "engine.astrology.chart_factory.build_master_chart",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "C_declaration_coverage"
+     ]
+    },
+    {
+     "callable": "engine.kp.chart.kp_chart",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "C_declaration_coverage"
+     ]
+    },
+    {
+     "callable": "engine.parashari.drishti.parashari_drishti",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "C_declaration_coverage"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "vargas.d1",
+   "members": [
+    {
+     "callable": "engine.astrology.divisional_chart.divisional_chart",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "C_declaration_coverage"
+     ]
+    },
+    {
+     "callable": "engine.astrology.chart_builder.build_chart",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "C_declaration_coverage"
+     ]
+    }
+   ]
+  }
+ ],
+ "scope_not_gated": [],
  "_artifact_name": "SIGN_CONVENTION_V1_certification.json",
  "_slug": "sign_convention"
 }

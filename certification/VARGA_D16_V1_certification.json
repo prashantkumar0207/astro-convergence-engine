@@ -2,7 +2,7 @@
  "schema": "varga_d16_v1_certification",
  "adr": "ADR-0089",
  "supersedes_provisional_id": "NOTHING_AUTHORISED",
- "date": "2026-09-14",
+ "date": "2026-11-04",
  "scope": "D16 Shodasamsa, Parashara/BPHS variant, Traditional Parasara construction. Rule under certification is a STANDALONE, UNREGISTERED CyclicVargaRule instance embedded in this certifier - not engine/astrology/varga_d16.py, no production module is authorized or created this execution.",
  "rule": {
   "kind": "standalone CyclicVargaRule instance embedded in this certifier (scripts/certify_d16.py) - not a registered production rule",
@@ -30,12 +30,18 @@
    "mismatches": 0,
    "content_sha256": "e86961e430114ba472c7def37e71a23a0761bd06531ef13b44a7716106072e48",
    "verified_against": "validate_d16_holdout.py's own independently-typed REFERENCE_TABLE (imported directly) - not a helper shared with this rule's own construction",
-   "disclosure": "movable source signs (0-based 0,3,6,9) start Aries (index 0); fixed source signs (1,4,7,10) start Leo (index 4); dual source signs (2,5,8,11) start Sagittarius (index 8); forward counting for all twelve - Parashara/BPHS, DP-032 section B (ADR-0089 section 3)"
+   "disclosure": "movable source signs (0-based 0,3,6,9) start Aries (index 0); fixed source signs (1,4,7,10) start Leo (index 4); dual source signs (2,5,8,11) start Sagittarius (index 8); forward counting for all twelve - Parashara/BPHS, DP-032 section B (ADR-0089 section 3)",
+   "exercises": [
+    "vargas.d16"
+   ]
   },
   "B_dense_sweep": {
    "points": 51429,
    "mismatches": 0,
-   "verified_against": "validate_d16_holdout.reference_d16() (imported directly, a genuinely separate implementation)"
+   "verified_against": "validate_d16_holdout.reference_d16() (imported directly, a genuinely separate implementation)",
+   "exercises": [
+    "vargas.d16"
+   ]
   },
   "C_oracle": {
    "oracle_executed": true,
@@ -48,30 +54,44 @@
    "tolerance": "zero categorical tolerance - pure longitude arithmetic, no astronomy, so no tolerance derivation applies",
    "comparisons": 5400,
    "mismatches": 0,
-   "classification": "genuine_external_oracle_agreement"
+   "classification": "genuine_external_oracle_agreement",
+   "exercises": [
+    "vargas.d16"
+   ]
   },
   "D_isolation": {
    "certifier_never_imports_varga_registry_or_varga_d16": true,
    "engine_astrology_varga_d16_absent": true,
    "content_sha256_matches_pinned": true,
-   "content_hash_enforcement": "ENFORCED - a mismatch fails this gate, not merely reported (DP-032 addendum, Finding 2)"
+   "content_hash_enforcement": "ENFORCED - a mismatch fails this gate, not merely reported (DP-032 addendum, Finding 2)",
+   "exercises": [
+    "vargas.d16"
+   ]
   },
   "E_independent_validator": {
    "result": "PASS",
    "classification": "corroborating_correctness_evidence",
-   "note": "separate-process, from-scratch reimplementation; does not import engine.astrology.varga_classifier, engine.astrology.varga_rules, or this certifier's own D16_SHODASAMSA object"
+   "note": "separate-process, from-scratch reimplementation; does not import engine.astrology.varga_classifier, engine.astrology.varga_rules, or this certifier's own D16_SHODASAMSA object",
+   "exercises": [],
+   "exercises_note": "the validator recomputes from its own embedded reference and calls no production code, so it exercises no production callable"
   },
   "F_boundary_cases": {
    "cases": 204,
    "mismatches": 0,
    "verified_against": "validate_d16_holdout.reference_d16() (imported directly)",
-   "convention": "engine-wide 1e-10 tolerance-promoted boundary convention (longitude_utils.py), unmodified; no D16-specific exception - cell width 30/16=1.875deg is exactly representable in IEEE-754 double precision (ADR-0089 section 3), zero floor-classification effect, identical clean result to D24's/D40's own"
+   "convention": "engine-wide 1e-10 tolerance-promoted boundary convention (longitude_utils.py), unmodified; no D16-specific exception - cell width 30/16=1.875deg is exactly representable in IEEE-754 double precision (ADR-0089 section 3), zero floor-classification effect, identical clean result to D24's/D40's own",
+   "exercises": [
+    "vargas.d16"
+   ]
   },
   "G_protected_holdout": {
    "points": 26278,
    "mismatches": 0,
    "verified_against": "validate_d16_holdout.reference_d16() (imported directly)",
-   "methodology": "prime-step deterministic sampling, independent of gate B/F points, never used to tune the frozen rule"
+   "methodology": "prime-step deterministic sampling, independent of gate B/F points, never used to tune the frozen rule",
+   "exercises": [
+    "vargas.d16"
+   ]
   },
   "H_negative_controls": {
    "controls": [
@@ -97,13 +117,19 @@
     }
    ],
    "all_detected": true,
-   "original_object_unmutated": true
+   "original_object_unmutated": true,
+   "exercises": [
+    "vargas.d16"
+   ]
   },
   "I_static_reference_regression": {
    "cases": 10,
    "mismatches": 0,
    "methodology": "LIVE certifier output (classify() + the standalone D16_SHODASAMSA rule) compared against STATIC values frozen from validate_d16_holdout.py's own from-scratch reference_d16() (never regenerated by this certifier's own rule at certification time)",
-   "classification": "correctness_evidence"
+   "classification": "correctness_evidence",
+   "exercises": [
+    "vargas.d16"
+   ]
   }
  },
  "explicit_non_claims": [
@@ -116,7 +142,7 @@
   "paraphrase-only caveat: the BPHS citation is corroborated by consistent modern paraphrase across independent sources, not a located verbatim Sanskrit verse/Sarga-and-Shloka citation (ADR-0089 section 3, DP-032 section B.B)"
  ],
  "environment": {
-  "python": "3.11.16"
+  "python": "3.11.17"
  },
  "preconditions": {
   "data_assets": {
@@ -138,7 +164,7 @@
    "residual_limitation": "coordinated edits to every repository-held trust record cannot be cryptographically prevented by an in-repository trust anchor; only upstream provenance would anchor this, and it is out of M1 scope"
   },
   "anti_fitting": {
-   "modules_scanned": 202,
+   "modules_scanned": 203,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."
@@ -146,6 +172,38 @@
   }
  },
  "result": "PASS",
+ "capability_schema": "ace-capability-enumeration-v1",
+ "capabilities": [
+  {
+   "id": "vargas.d16",
+   "members": [
+    {
+     "callable": "engine.astrology.varga_classifier.classify",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "B_dense_sweep",
+      "C_oracle",
+      "F_boundary_cases",
+      "G_protected_holdout",
+      "H_negative_controls",
+      "I_static_reference_regression"
+     ]
+    },
+    {
+     "callable": "engine.astrology.varga_rules.rule_content_sha256",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_table_integrity",
+      "D_isolation",
+      "H_negative_controls"
+     ]
+    }
+   ]
+  }
+ ],
+ "scope_not_gated": [],
  "_artifact_name": "VARGA_D16_V1_certification.json",
  "_slug": "varga_d16"
 }

@@ -2,7 +2,7 @@
  "schema": "varga_d45_v1_certification",
  "adr": "ADR-0077",
  "supersedes_provisional_id": "NOTHING_AUTHORISED",
- "date": "2026-09-14",
+ "date": "2026-11-04",
  "scope": "D45 Akshavedamsa (Parashara variant, Traditional Parasara method / PyJHora chart_method=1). Registered in production through the generic registry (engine.astrology.varga_d45, VARGA_D45_V1), discoverable via engine.astrology.divisional_chart.divisional_chart(snapshot, 45).",
  "rule": {
   "kind": "CyclicVargaRule",
@@ -19,15 +19,24 @@
  "gates": {
   "A_table_integrity": {
    "cells": 12,
-   "mismatches": 0
+   "mismatches": 0,
+   "exercises": [
+    "vargas.d45"
+   ]
   },
   "B_dense_sweep": {
    "points": 51429,
-   "mismatches": 0
+   "mismatches": 0,
+   "exercises": [
+    "vargas.d45"
+   ]
   },
   "C_oracle": {
    "comparisons": 5400,
-   "mismatches": 0
+   "mismatches": 0,
+   "exercises": [
+    "vargas.d45"
+   ]
   },
   "D_non_invasiveness": {
    "registry": [
@@ -81,10 +90,16 @@
     "D30_parashara": "deacd958cf19b7641c4f8cb086ad27d8a5efaeb6e38b594dc0cd4113a25794d3",
     "D40_parashara": "056e3e8af182568e9e2eaa5a1f54d86c40f7d97a53ece610f1e3105eb7a41006",
     "D45_parashara": "c8515e44be6e21e3e8c3298121b8c0e4687c0176d9da7e94f7d0aba53a8bf817"
-   }
+   },
+   "exercises": [
+    "vargas.d45"
+   ]
   },
   "E_independent_validator": {
-   "result": "PASS"
+   "result": "PASS",
+   "exercises": [
+    "vargas.d45"
+   ]
   },
   "F_boundary_cases": {
    "cases_checked": 60,
@@ -94,12 +109,18 @@
     26,
     29
    ],
-   "convention": "engine-wide 1e-10 tolerance-promoted boundary convention (longitude_utils.py), unmodified; no D45-specific exception"
+   "convention": "engine-wide 1e-10 tolerance-promoted boundary convention (longitude_utils.py), unmodified; no D45-specific exception",
+   "exercises": [
+    "vargas.d45"
+   ]
   },
   "G_protected_holdout": {
    "points": 26278,
    "mismatches": 0,
-   "methodology": "prime-step deterministic sampling, independent of gate B/F points, never used to tune the frozen rule"
+   "methodology": "prime-step deterministic sampling, independent of gate B/F points, never used to tune the frozen rule",
+   "exercises": [
+    "vargas.d45"
+   ]
   },
   "H_negative_controls": {
    "controls": [
@@ -117,13 +138,19 @@
     }
    ],
    "all_detected": true,
-   "original_object_unmutated": true
+   "original_object_unmutated": true,
+   "exercises": [
+    "vargas.d45"
+   ]
   },
   "I_composition_verification": {
    "result": "PASS",
    "classification": "correctness_evidence_and_mutation_detection",
    "scope": "divisional_chart(snapshot, 45)/build_varga_chart() field-level composition (source_longitude, sign, division_number, fraction) for the ascendant and every planet, across a fixed 5-chart real holdout, plus a genuine in-process monkeypatch mutation self-check (field-order swap, planet cross-wiring, source_longitude corruption) against the real production function",
-   "disclosure": "distinct from gates A/B/F/G, which test classify() directly and never exercise build_varga_chart()'s own field assignment; distinct from gate H, whose negative controls compare a hand-written mutated COPY against the unmutated rule object in-process rather than genuinely monkeypatching and re-executing the real production function (ADR-0085)"
+   "disclosure": "distinct from gates A/B/F/G, which test classify() directly and never exercise build_varga_chart()'s own field assignment; distinct from gate H, whose negative controls compare a hand-written mutated COPY against the unmutated rule object in-process rather than genuinely monkeypatching and re-executing the real production function (ADR-0085)",
+   "exercises": [
+    "vargas.d45"
+   ]
   }
  },
  "explicit_non_claims": [
@@ -135,7 +162,7 @@
   "any other varga; each requires its own ADR and certification"
  ],
  "environment": {
-  "python": "3.11.16"
+  "python": "3.11.17"
  },
  "preconditions": {
   "data_assets": {
@@ -157,7 +184,7 @@
    "residual_limitation": "coordinated edits to every repository-held trust record cannot be cryptographically prevented by an in-repository trust anchor; only upstream provenance would anchor this, and it is out of M1 scope"
   },
   "anti_fitting": {
-   "modules_scanned": 202,
+   "modules_scanned": 203,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."
@@ -165,6 +192,79 @@
   }
  },
  "result": "PASS",
+ "capability_schema": "ace-capability-enumeration-v1",
+ "capabilities": [
+  {
+   "id": "vargas.d45",
+   "members": [
+    {
+     "callable": "engine.astrology.varga_d45.D45_PARASHARA",
+     "kind": "data",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_table_integrity",
+      "B_dense_sweep",
+      "C_oracle",
+      "D_non_invasiveness",
+      "F_boundary_cases",
+      "G_protected_holdout",
+      "H_negative_controls"
+     ]
+    },
+    {
+     "callable": "engine.astrology.varga_classifier.classify",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "B_dense_sweep",
+      "C_oracle",
+      "F_boundary_cases",
+      "G_protected_holdout",
+      "H_negative_controls",
+      "E_independent_validator",
+      "I_composition_verification"
+     ]
+    },
+    {
+     "callable": "engine.astrology.varga_rules.rule_content_sha256",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "D_non_invasiveness",
+      "H_negative_controls"
+     ]
+    },
+    {
+     "callable": "engine.astrology.varga_d45.ensure_registered",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "D_non_invasiveness"
+     ]
+    },
+    {
+     "callable": "engine.astrology.divisional_chart.divisional_chart",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "D_non_invasiveness",
+      "E_independent_validator",
+      "I_composition_verification"
+     ]
+    },
+    {
+     "callable": "engine.astrology.varga_chart_builder.build_varga_chart",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "E_independent_validator",
+      "I_composition_verification"
+     ]
+    }
+   ]
+  }
+ ],
+ "scope_not_gated": [],
  "_artifact_name": "VARGA_D45_V1_certification.json",
  "_slug": "varga_d45"
 }

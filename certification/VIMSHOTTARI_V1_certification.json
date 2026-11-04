@@ -1,7 +1,7 @@
 {
  "schema": "vimshottari_v1_certification",
  "adr": "ADR-0007",
- "date": "2026-09-14",
+ "date": "2026-11-04",
  "scope": "Vimshottari maha/antar/pratyantar timelines, school-explicit seeding",
  "year_convention": {
   "profile": "vimshottari_mean_sidereal_year",
@@ -276,6 +276,9 @@
      "moon_distance_to_nearest_boundary_deg": 0.044714,
      "seed_nakshatra_boundary_arcsec": 160.969907
     }
+   ],
+   "exercises": [
+    "dasha.vimshottari"
    ]
   },
   "near_boundary_coverage": {
@@ -318,11 +321,17 @@
      "moon_distance_to_nearest_boundary_deg": 0.044714,
      "lord_mismatches": 0
     }
+   ],
+   "exercises": [
+    "dasha.vimshottari"
    ]
   },
   "boundary_proximity_indicator": {
    "methodology": "VimshottariTimeline.seed_nakshatra_boundary_arcsec (Dasha roadmap step 6, DP-020 Option 1, ADR-0073) is an exact re-expression of seed_elapsed_fraction, no new astronomical calculation. Verified per case above (each case's own seed_nakshatra_boundary_arcsec is checked against an independently measured distance, not the field's own formula; see run_case()). Hermetic pinning tests and a genuine negative control: engine/tests/test_vimshottari_boundary_proximity_indicator.py.",
-   "scope": "Nakshatra (seed) boundary only - does not cover deeper period-transition boundaries or any KP-specific level, and is not a dasha-date-uncertainty figure (that is DP-020 Option 2, not chosen)."
+   "scope": "Nakshatra (seed) boundary only - does not cover deeper period-transition boundaries or any KP-specific level, and is not a dasha-date-uncertainty figure (that is DP-020 Option 2, not chosen).",
+   "exercises": [
+    "dasha.vimshottari"
+   ]
   }
  },
  "explicit_non_claims": [
@@ -334,7 +343,7 @@
   "any distance-to-boundary claim beyond the nakshatra (seed) level: seed_nakshatra_boundary_arcsec (Dasha roadmap step 6, DP-020 Option 1, ADR-0073) does not cover antardasha/pratyantardasha period-transition boundaries, does not cover any KP-specific level, and is not a dasha-date-uncertainty figure. It must not be treated as equivalent to KP's own nearest_boundary_arcsec (which itself has an unresolved completeness defect, H-07) or to this certifier's own moon_distance_to_nearest_boundary_deg diagnostic (M-02)."
  ],
  "environment": {
-  "python": "3.11.16"
+  "python": "3.11.17"
  },
  "preconditions": {
   "data_assets": {
@@ -356,7 +365,7 @@
    "residual_limitation": "coordinated edits to every repository-held trust record cannot be cryptographically prevented by an in-repository trust anchor; only upstream provenance would anchor this, and it is out of M1 scope"
   },
   "anti_fitting": {
-   "modules_scanned": 202,
+   "modules_scanned": 203,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."
@@ -364,6 +373,102 @@
   }
  },
  "result": "PASS",
+ "capability_schema": "ace-capability-enumeration-v1",
+ "capabilities": [
+  {
+   "id": "dasha.vimshottari",
+   "members": [
+    {
+     "callable": "engine.dasha.vimshottari.vimshottari_from_moon",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "oracle_pratyantar_rows_compared",
+      "oracle_lord_mismatches",
+      "oracle_max_start_delta_days",
+      "independent_validator",
+      "cases",
+      "near_boundary_coverage",
+      "boundary_proximity_indicator"
+     ]
+    },
+    {
+     "callable": "engine.calculations.calculations.calculate",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "oracle_pratyantar_rows_compared",
+      "cases",
+      "near_boundary_coverage"
+     ]
+    },
+    {
+     "callable": "engine.dasha.vimshottari.vimshottari_from_snapshot",
+     "kind": "callable",
+     "disposition": "SCOPE_NOT_GATED",
+     "exercised_by": [],
+     "reason": "a public wrapper over the gated vimshottari_from_moon. No certification gate calls it. Test coverage is not gate coverage, and no inherited certification is claimed"
+    },
+    {
+     "callable": "engine.dasha.vimshottari.vimshottari_parashari",
+     "kind": "callable",
+     "disposition": "SCOPE_NOT_GATED",
+     "exercised_by": [],
+     "reason": "a public wrapper over the gated vimshottari_from_moon. No certification gate calls it. Test coverage is not gate coverage, and no inherited certification is claimed"
+    },
+    {
+     "callable": "engine.dasha.vimshottari.vimshottari_kp",
+     "kind": "callable",
+     "disposition": "SCOPE_NOT_GATED",
+     "exercised_by": [],
+     "reason": "a public wrapper over the gated vimshottari_from_moon. No certification gate calls it. Test coverage is not gate coverage, and no inherited certification is claimed"
+    }
+   ]
+  }
+ ],
+ "scope_not_gated": [
+  {
+   "id": "engine.dasha.vimshottari.vimshottari_from_snapshot",
+   "capability": "dasha.vimshottari",
+   "reason": "a public wrapper over the gated vimshottari_from_moon. No certification gate calls it. Test coverage is not gate coverage, and no inherited certification is claimed"
+  },
+  {
+   "id": "engine.dasha.vimshottari.vimshottari_parashari",
+   "capability": "dasha.vimshottari",
+   "reason": "a public wrapper over the gated vimshottari_from_moon. No certification gate calls it. Test coverage is not gate coverage, and no inherited certification is claimed"
+  },
+  {
+   "id": "engine.dasha.vimshottari.vimshottari_kp",
+   "capability": "dasha.vimshottari",
+   "reason": "a public wrapper over the gated vimshottari_from_moon. No certification gate calls it. Test coverage is not gate coverage, and no inherited certification is claimed"
+  }
+ ],
+ "scalar_gate_exercises": {
+  "oracle_pratyantar_rows_compared": {
+   "exercises": [
+    "dasha.vimshottari"
+   ]
+  },
+  "oracle_lord_mismatches": {
+   "exercises": [
+    "dasha.vimshottari"
+   ]
+  },
+  "oracle_max_start_delta_days": {
+   "exercises": [
+    "dasha.vimshottari"
+   ]
+  },
+  "start_tolerance_days": {
+   "exercises": [],
+   "exercises_note": "a declared tolerance value, not an execution of any callable"
+  },
+  "independent_validator": {
+   "exercises": [
+    "dasha.vimshottari"
+   ]
+  }
+ },
  "_artifact_name": "VIMSHOTTARI_V1_certification.json",
  "_slug": "vimshottari"
 }

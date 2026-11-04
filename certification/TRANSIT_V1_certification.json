@@ -1,7 +1,7 @@
 {
  "schema": "transit_v1_certification",
  "adr": "ADR-0008",
- "date": "2026-09-14",
+ "date": "2026-11-04",
  "scope": "longitude-crossing primitive; sign/nakshatra ingresses (with declared_division, H-02 fix Option 1, ADR-0065); returns; natal conjunctions; natal-relative view",
  "decisions": {
   "TR-A": "event-time guarantee 1e-6 day; bisection bracket 1e-9 day",
@@ -17,7 +17,12 @@
   "A_residual_battery": {
    "events": 74,
    "max_residual_arcsec": 2.1067717170808464e-05,
-   "bound_arcsec": 0.0001
+   "bound_arcsec": 0.0001,
+   "exercises": [
+    "transits.crossing",
+    "transits.nakshatra_ingress",
+    "transits.sign_ingress"
+   ]
   },
   "C_oracle_anchors": {
    "anchors": 24,
@@ -292,14 +297,27 @@
      "delta_days": 0.005684124771505594,
      "frozen_tolerance_days": 0.008217492980664478
     }
+   ],
+   "exercises": [
+    "transits.sign_ingress"
    ]
   },
   "D_independent_validator": {
-   "result": "PASS"
+   "result": "PASS",
+   "exercises": [
+    "transits.crossing",
+    "transits.nakshatra_ingress",
+    "transits.sign_ingress"
+   ]
   },
   "E_declared_division": {
    "cases_checked": 49,
-   "negative_control_verified": true
+   "negative_control_verified": true,
+   "exercises": [
+    "transits.crossing",
+    "transits.nakshatra_ingress",
+    "transits.sign_ingress"
+   ]
   }
  },
  "explicit_non_claims": [
@@ -309,7 +327,7 @@
   "interpretation"
  ],
  "environment": {
-  "python": "3.11.16"
+  "python": "3.11.17"
  },
  "preconditions": {
   "data_assets": {
@@ -331,7 +349,7 @@
    "residual_limitation": "coordinated edits to every repository-held trust record cannot be cryptographically prevented by an in-repository trust anchor; only upstream provenance would anchor this, and it is out of M1 scope"
   },
   "anti_fitting": {
-   "modules_scanned": 202,
+   "modules_scanned": 203,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."
@@ -339,6 +357,92 @@
   }
  },
  "result": "PASS",
+ "capability_schema": "ace-capability-enumeration-v1",
+ "capabilities": [
+  {
+   "id": "transits.crossing",
+   "members": [
+    {
+     "callable": "engine.transits.crossing.find_crossings",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_residual_battery",
+      "D_independent_validator",
+      "E_declared_division"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "transits.sign_ingress",
+   "members": [
+    {
+     "callable": "engine.transits.events.sign_ingresses",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_residual_battery",
+      "C_oracle_anchors",
+      "D_independent_validator",
+      "E_declared_division"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "transits.nakshatra_ingress",
+   "members": [
+    {
+     "callable": "engine.transits.events.nakshatra_ingresses",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_residual_battery",
+      "D_independent_validator",
+      "E_declared_division"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "transits.returns",
+   "members": [
+    {
+     "callable": "engine.transits.events.returns",
+     "kind": "callable",
+     "disposition": "OPEN_SCOPE_OVERCLAIM",
+     "exercised_by": [],
+     "backlog_entry": "OVERCLAIM-TRANSIT-RETURNS"
+    }
+   ]
+  },
+  {
+   "id": "transits.natal_conjunctions",
+   "members": [
+    {
+     "callable": "engine.transits.events.natal_conjunctions",
+     "kind": "callable",
+     "disposition": "OPEN_SCOPE_OVERCLAIM",
+     "exercised_by": [],
+     "backlog_entry": "OVERCLAIM-TRANSIT-NATAL-CONJUNCTIONS"
+    }
+   ]
+  },
+  {
+   "id": "transits.natal_view",
+   "members": [
+    {
+     "callable": "engine.transits.view.transit_view",
+     "kind": "callable",
+     "disposition": "OPEN_SCOPE_OVERCLAIM",
+     "exercised_by": [],
+     "backlog_entry": "OVERCLAIM-TRANSIT-NATAL-VIEW"
+    }
+   ]
+  }
+ ],
+ "scope_not_gated": [],
  "_artifact_name": "TRANSIT_V1_certification.json",
  "_slug": "transit"
 }

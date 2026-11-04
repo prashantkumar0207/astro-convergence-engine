@@ -1,8 +1,8 @@
 {
  "schema": "current_engine_certification_v1",
  "adr": "ADR-0005",
- "date": "2026-09-14",
- "scope": "Current modular engine, Tier-0 astronomical kernel: sidereal planetary longitudes, Ascendant and 12 Placidus cusps, under both ratified calculation profiles, against the bundled independent swetest 2.10.03 binary over the frozen 11-case holdout.",
+ "date": "2026-11-04",
+ "scope": "Current modular engine, Tier-0 astronomical kernel: sidereal planetary longitudes, Ascendant and 12 Placidus cusps, under both ratified calculation profiles, against the bundled independent swetest 2.10.03 binary over the frozen 11-case holdout; the certified D9/D10 mathematics through their independent holdout validators.",
  "engine": "engine/ (modular), version from engine/version.py",
  "reference": "Astrodienst swetest v2.10.03 (independent C binary, bundled, version-verified at runtime)",
  "tolerance_arcsec": 0.5,
@@ -26,7 +26,7 @@
    "residual_limitation": "coordinated edits to every repository-held trust record cannot be cryptographically prevented by an in-repository trust anchor; only upstream provenance would anchor this, and it is out of M1 scope"
   },
   "anti_fitting": {
-   "modules_scanned": 202,
+   "modules_scanned": 203,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."
@@ -34,11 +34,11 @@
   }
  },
  "run": {
-  "source_revision": "6b3b6d5a9e2cd41ee5d474cc6912c01fa67804cb",
-  "working_tree_dirty": true,
+  "source_revision": "1b1dcc8bcd1d5a3111901e4be3e5bb9555e119ef",
+  "working_tree_dirty": false,
   "engine_version": "0.3.0",
-  "executed_utc": "2026-09-14T16:01:18Z",
-  "python": "3.11.16",
+  "executed_utc": "2026-11-04T09:52:02Z",
+  "python": "3.11.17",
   "holdout_cases": "H1_london_1823, H2_newyork_1900, H3_sydney_1946, H4_delhi_1979, H5_reykjavik_1992, H6_quito_2010, H7_tokyo_2033, H8_mumbai_2077, H9_paris_2350, H10_boundary_moon_a, H11_boundary_moon_b",
   "reference_binary": "swetest 2.10.03 (bundled, version-verified at runtime)"
  },
@@ -1067,6 +1067,37 @@
    10.0
   ]
  },
+ "gates": {
+  "A_holdout_comparison": {
+   "result": "PASS",
+   "planet_comparisons": 264,
+   "cusp_comparisons": 264,
+   "exercises": [
+    "kernel.ascendant_and_cusps",
+    "kernel.sidereal_longitudes"
+   ]
+  },
+  "B_ayanamsa_profile_check": {
+   "result": "PASS",
+   "exercises": [
+    "kernel.ayanamsa_profiles"
+   ]
+  },
+  "C_d9_independent_validator": {
+   "result": "PASS",
+   "validator": "validate_d9_holdout.py",
+   "exercises": [
+    "vargas.d9"
+   ]
+  },
+  "D_d10_independent_validator": {
+   "result": "PASS",
+   "validator": "validate_d10_holdout.py",
+   "exercises": [
+    "vargas.d10"
+   ]
+  }
+ },
  "summary": {
   "cases_per_profile": 11,
   "profiles_certified": [
@@ -1082,6 +1113,91 @@
   "failures": [],
   "result": "PASS"
  },
+ "capability_schema": "ace-capability-enumeration-v1",
+ "capabilities": [
+  {
+   "id": "kernel.sidereal_longitudes",
+   "members": [
+    {
+     "callable": "engine.calculations.calculations.calculate",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_holdout_comparison"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "kernel.ascendant_and_cusps",
+   "members": [
+    {
+     "callable": "engine.calculations.calculations.calculate",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_holdout_comparison"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "kernel.ayanamsa_profiles",
+   "members": [
+    {
+     "callable": "engine.calculations.calculations.calculate",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "B_ayanamsa_profile_check"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "vargas.d9",
+   "members": [
+    {
+     "callable": "engine.astrology.navamsa_chart.navamsa_sign",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "C_d9_independent_validator"
+     ]
+    },
+    {
+     "callable": "engine.astrology.navamsa_chart.navamsa_longitude",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "C_d9_independent_validator"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "vargas.d10",
+   "members": [
+    {
+     "callable": "engine.astrology.dashamsa_chart.dashamsa_sign",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "D_d10_independent_validator"
+     ]
+    },
+    {
+     "callable": "engine.astrology.dashamsa_chart.dashamsa_longitude",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "D_d10_independent_validator"
+     ]
+    }
+   ]
+  }
+ ],
+ "scope_not_gated": [],
  "_artifact_name": "current_engine_certification.json",
  "_slug": "current_engine"
 }

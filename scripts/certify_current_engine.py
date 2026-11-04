@@ -254,6 +254,16 @@ def exact_nakshatra_reference(longitude: float) -> dict:
     return {"nakshatra": idx + 1, "nakshatra_pada": p + 1}
 
 
+def _validator_gate(script: str, failures: list) -> dict:
+    """Run an independent holdout validator as a subprocess; a failure fails certification."""
+
+    result = subprocess.run([sys.executable, str(ROOT / script)], capture_output=True, text=True)
+    passed = result.returncode == 0
+    if not passed:
+        failures.append(f"{script} failed: {result.stdout[-600:]} {result.stderr[-300:]}")
+    return {"result": "PASS" if passed else "FAIL", "validator": script}
+
+
 def main():
     # Capture the console transcript from the first line, so the retained
     # transcript is the whole run rather than the part after setup.
@@ -283,7 +293,8 @@ def main():
                  "planetary longitudes, Ascendant and 12 Placidus cusps, under "
                  "both ratified calculation profiles, against the bundled "
                  "independent swetest 2.10.03 binary over the frozen 11-case "
-                 "holdout.",
+                 "holdout; the certified D9/D10 mathematics through their "
+                 "independent holdout validators.",
         "engine": "engine/ (modular), version from engine/version.py",
         "reference": "Astrodienst swetest v2.10.03 (independent C binary, "
                      "bundled, version-verified at runtime)",
@@ -404,6 +415,24 @@ def main():
             f"ayanamsa profile difference {aya_diff_arcmin:.3f} arcmin "
             "outside the expected 3-10 arcmin band"
         )
+
+    # ADR-0005 locks the certified D9/D10 mathematics with this kernel. Their independent
+    # validators are run here so that a live PASS artifact records them (ADR-0099 s7, C2).
+    holdout_passed = not [item for item in failures if not item.startswith("ayanamsa profile difference")]
+    d9_gate = _validator_gate("validate_d9_holdout.py", failures)
+    d10_gate = _validator_gate("validate_d10_holdout.py", failures)
+    report["gates"] = {
+        "A_holdout_comparison": {
+            "result": "PASS" if holdout_passed else "FAIL",
+            "planet_comparisons": sum(p["planet_comparisons"] for p in report["profiles"].values()),
+            "cusp_comparisons": sum(p["cusp_comparisons"] for p in report["profiles"].values()),
+        },
+        "B_ayanamsa_profile_check": {
+            "result": "PASS" if 3.0 < aya_diff_arcmin < 10.0 else "FAIL",
+        },
+        "C_d9_independent_validator": d9_gate,
+        "D_d10_independent_validator": d10_gate,
+    }
 
     report["summary"] = {
         "cases_per_profile": len(HOLDOUT),

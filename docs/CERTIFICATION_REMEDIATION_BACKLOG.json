@@ -1,0 +1,412 @@
+{
+ "schema": "ace-remediation-backlog-v1",
+ "authority": "ADR-0101 s4, ADR-0102 s6, ADR-0107 Q-B and Q-D; shape proposed by ADR-0108",
+ "entries": [
+  {
+   "id": "CORPUS-current_engine",
+   "artifact": "current_engine_certification.json",
+   "deficiency": "At f8f13607: no capability enumeration, no per-gate `exercises`, no `scope_not_gated` (ADR-0101 s4).",
+   "required_remediation": "Certifier-generated `capabilities`, per-gate `exercises` and `scope_not_gated`, regenerated from a real run.",
+   "status": "CLOSED",
+   "disposition": "COMPLIANT_WITH_S2_S3",
+   "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
+   "evidence": "scripts/check_scope_coverage.py evaluates this artifact on every CI run."
+  },
+  {
+   "id": "CORPUS-KP_CHAIN_V1",
+   "artifact": "KP_CHAIN_V1_certification.json",
+   "deficiency": "At f8f13607: no capability enumeration, no per-gate `exercises`, no `scope_not_gated` (ADR-0101 s4).",
+   "required_remediation": "Certifier-generated `capabilities`, per-gate `exercises` and `scope_not_gated`, regenerated from a real run.",
+   "status": "CLOSED",
+   "disposition": "COMPLIANT_WITH_S2_S3",
+   "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
+   "evidence": "scripts/check_scope_coverage.py evaluates this artifact on every CI run."
+  },
+  {
+   "id": "CORPUS-KP_SIGNIFICATOR_V1",
+   "artifact": "KP_SIGNIFICATOR_V1_certification.json",
+   "deficiency": "At f8f13607: no capability enumeration, no per-gate `exercises`, no `scope_not_gated` (ADR-0101 s4).",
+   "required_remediation": "Certifier-generated `capabilities`, per-gate `exercises` and `scope_not_gated`, regenerated from a real run.",
+   "status": "CLOSED",
+   "disposition": "COMPLIANT_WITH_S2_S3",
+   "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
+   "evidence": "scripts/check_scope_coverage.py evaluates this artifact on every CI run."
+  },
+  {
+   "id": "CORPUS-PANCHANGA_V1",
+   "artifact": "PANCHANGA_V1_certification.json",
+   "deficiency": "At f8f13607: no capability enumeration, no per-gate `exercises`, no `scope_not_gated` (ADR-0101 s4).",
+   "required_remediation": "Certifier-generated `capabilities`, per-gate `exercises` and `scope_not_gated`, regenerated from a real run.",
+   "status": "CLOSED",
+   "disposition": "COMPLIANT_WITH_S2_S3",
+   "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
+   "evidence": "scripts/check_scope_coverage.py evaluates this artifact on every CI run."
+  },
+  {
+   "id": "CORPUS-PARASHARI_DRISHTI_V1",
+   "artifact": "PARASHARI_DRISHTI_V1_certification.json",
+   "deficiency": "At f8f13607: no capability enumeration, no per-gate `exercises`, no `scope_not_gated` (ADR-0101 s4).",
+   "required_remediation": "Certifier-generated `capabilities`, per-gate `exercises` and `scope_not_gated`, regenerated from a real run.",
+   "status": "CLOSED",
+   "disposition": "COMPLIANT_WITH_S2_S3",
+   "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
+   "evidence": "scripts/check_scope_coverage.py evaluates this artifact on every CI run."
+  },
+  {
+   "id": "CORPUS-PARASHARI_YOGA_V1",
+   "artifact": "PARASHARI_YOGA_V1_certification.json",
+   "deficiency": "At f8f13607: no capability enumeration, no per-gate `exercises`, no `scope_not_gated` (ADR-0101 s4).",
+   "required_remediation": "Certifier-generated `capabilities`, per-gate `exercises` and `scope_not_gated`, regenerated from a real run.",
+   "status": "CLOSED",
+   "disposition": "COMPLIANT_WITH_S2_S3",
+   "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
+   "evidence": "scripts/check_scope_coverage.py evaluates this artifact on every CI run."
+  },
+  {
+   "id": "CORPUS-RISE_SET_V1",
+   "artifact": "RISE_SET_V1_certification.json",
+   "deficiency": "At f8f13607: no capability enumeration, no per-gate `exercises`, no `scope_not_gated` (ADR-0101 s4).",
+   "required_remediation": "Certifier-generated `capabilities`, per-gate `exercises` and `scope_not_gated`, regenerated from a real run.",
+   "status": "CLOSED",
+   "disposition": "COMPLIANT_WITH_S2_S3",
+   "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
+   "evidence": "scripts/check_scope_coverage.py evaluates this artifact on every CI run."
+  },
+  {
+   "id": "CORPUS-SIGN_CONVENTION_V1",
+   "artifact": "SIGN_CONVENTION_V1_certification.json",
+   "deficiency": "At f8f13607: no capability enumeration, no per-gate `exercises`, no `scope_not_gated` (ADR-0101 s4).",
+   "required_remediation": "Certifier-generated `capabilities`, per-gate `exercises` and `scope_not_gated`, regenerated from a real run.",
+   "status": "CLOSED",
+   "disposition": "COMPLIANT_WITH_S2_S3",
+   "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
+   "evidence": "scripts/check_scope_coverage.py evaluates this artifact on every CI run."
+  },
+  {
+   "id": "CORPUS-TRANSIT_V1",
+   "artifact": "TRANSIT_V1_certification.json",
+   "deficiency": "At f8f13607: no capability enumeration, no per-gate `exercises`, no `scope_not_gated` (ADR-0101 s4).",
+   "required_remediation": "Certifier-generated `capabilities`, per-gate `exercises` and `scope_not_gated`, regenerated from a real run.",
+   "status": "CLOSED",
+   "disposition": "COMPLIANT_WITH_S2_S3",
+   "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
+   "evidence": "scripts/check_scope_coverage.py evaluates this artifact on every CI run."
+  },
+  {
+   "id": "CORPUS-TRIKALAM_V1",
+   "artifact": "TRIKALAM_V1_certification.json",
+   "deficiency": "At f8f13607: no capability enumeration, no per-gate `exercises`, no `scope_not_gated` (ADR-0101 s4).",
+   "required_remediation": "Certifier-generated `capabilities`, per-gate `exercises` and `scope_not_gated`, regenerated from a real run.",
+   "status": "CLOSED",
+   "disposition": "COMPLIANT_WITH_S2_S3",
+   "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
+   "evidence": "scripts/check_scope_coverage.py evaluates this artifact on every CI run."
+  },
+  {
+   "id": "CORPUS-VARGA_D2_V1",
+   "artifact": "VARGA_D2_V1_certification.json",
+   "deficiency": "At f8f13607: no capability enumeration, no per-gate `exercises`, no `scope_not_gated` (ADR-0101 s4).",
+   "required_remediation": "Certifier-generated `capabilities`, per-gate `exercises` and `scope_not_gated`, regenerated from a real run.",
+   "status": "CLOSED",
+   "disposition": "COMPLIANT_WITH_S2_S3",
+   "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
+   "evidence": "scripts/check_scope_coverage.py evaluates this artifact on every CI run."
+  },
+  {
+   "id": "CORPUS-VARGA_D3_V1",
+   "artifact": "VARGA_D3_V1_certification.json",
+   "deficiency": "At f8f13607: no capability enumeration, no per-gate `exercises`, no `scope_not_gated` (ADR-0101 s4).",
+   "required_remediation": "Certifier-generated `capabilities`, per-gate `exercises` and `scope_not_gated`, regenerated from a real run.",
+   "status": "CLOSED",
+   "disposition": "COMPLIANT_WITH_S2_S3",
+   "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
+   "evidence": "scripts/check_scope_coverage.py evaluates this artifact on every CI run."
+  },
+  {
+   "id": "CORPUS-VARGA_D4_V1",
+   "artifact": "VARGA_D4_V1_certification.json",
+   "deficiency": "At f8f13607: no capability enumeration, no per-gate `exercises`, no `scope_not_gated` (ADR-0101 s4).",
+   "required_remediation": "Certifier-generated `capabilities`, per-gate `exercises` and `scope_not_gated`, regenerated from a real run.",
+   "status": "CLOSED",
+   "disposition": "COMPLIANT_WITH_S2_S3",
+   "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
+   "evidence": "scripts/check_scope_coverage.py evaluates this artifact on every CI run."
+  },
+  {
+   "id": "CORPUS-VARGA_D7_V1",
+   "artifact": "VARGA_D7_V1_certification.json",
+   "deficiency": "At f8f13607: no capability enumeration, no per-gate `exercises`, no `scope_not_gated` (ADR-0101 s4).",
+   "required_remediation": "Certifier-generated `capabilities`, per-gate `exercises` and `scope_not_gated`, regenerated from a real run.",
+   "status": "CLOSED",
+   "disposition": "COMPLIANT_WITH_S2_S3",
+   "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
+   "evidence": "scripts/check_scope_coverage.py evaluates this artifact on every CI run."
+  },
+  {
+   "id": "CORPUS-VARGA_D12_V1",
+   "artifact": "VARGA_D12_V1_certification.json",
+   "deficiency": "At f8f13607: no capability enumeration, no per-gate `exercises`, no `scope_not_gated` (ADR-0101 s4).",
+   "required_remediation": "Certifier-generated `capabilities`, per-gate `exercises` and `scope_not_gated`, regenerated from a real run.",
+   "status": "CLOSED",
+   "disposition": "COMPLIANT_WITH_S2_S3",
+   "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
+   "evidence": "scripts/check_scope_coverage.py evaluates this artifact on every CI run."
+  },
+  {
+   "id": "CORPUS-VARGA_D16_V1",
+   "artifact": "VARGA_D16_V1_certification.json",
+   "deficiency": "At f8f13607: no capability enumeration, no per-gate `exercises`, no `scope_not_gated` (ADR-0101 s4).",
+   "required_remediation": "Certifier-generated `capabilities`, per-gate `exercises` and `scope_not_gated`, regenerated from a real run.",
+   "status": "CLOSED",
+   "disposition": "COMPLIANT_WITH_S2_S3",
+   "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
+   "evidence": "scripts/check_scope_coverage.py evaluates this artifact on every CI run."
+  },
+  {
+   "id": "CORPUS-VARGA_D20_V1",
+   "artifact": "VARGA_D20_V1_certification.json",
+   "deficiency": "At f8f13607: no capability enumeration, no per-gate `exercises`, no `scope_not_gated` (ADR-0101 s4).",
+   "required_remediation": "Certifier-generated `capabilities`, per-gate `exercises` and `scope_not_gated`, regenerated from a real run.",
+   "status": "CLOSED",
+   "disposition": "COMPLIANT_WITH_S2_S3",
+   "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
+   "evidence": "scripts/check_scope_coverage.py evaluates this artifact on every CI run."
+  },
+  {
+   "id": "CORPUS-VARGA_D24_V1",
+   "artifact": "VARGA_D24_V1_certification.json",
+   "deficiency": "At f8f13607: no capability enumeration, no per-gate `exercises`, no `scope_not_gated` (ADR-0101 s4).",
+   "required_remediation": "Certifier-generated `capabilities`, per-gate `exercises` and `scope_not_gated`, regenerated from a real run.",
+   "status": "CLOSED",
+   "disposition": "COMPLIANT_WITH_S2_S3",
+   "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
+   "evidence": "scripts/check_scope_coverage.py evaluates this artifact on every CI run."
+  },
+  {
+   "id": "CORPUS-VARGA_D30_V1",
+   "artifact": "VARGA_D30_V1_certification.json",
+   "deficiency": "At f8f13607: no capability enumeration, no per-gate `exercises`, no `scope_not_gated` (ADR-0101 s4).",
+   "required_remediation": "Certifier-generated `capabilities`, per-gate `exercises` and `scope_not_gated`, regenerated from a real run.",
+   "status": "CLOSED",
+   "disposition": "COMPLIANT_WITH_S2_S3",
+   "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
+   "evidence": "scripts/check_scope_coverage.py evaluates this artifact on every CI run."
+  },
+  {
+   "id": "CORPUS-VARGA_D40_V1",
+   "artifact": "VARGA_D40_V1_certification.json",
+   "deficiency": "At f8f13607: no capability enumeration, no per-gate `exercises`, no `scope_not_gated` (ADR-0101 s4).",
+   "required_remediation": "Certifier-generated `capabilities`, per-gate `exercises` and `scope_not_gated`, regenerated from a real run.",
+   "status": "CLOSED",
+   "disposition": "COMPLIANT_WITH_S2_S3",
+   "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
+   "evidence": "scripts/check_scope_coverage.py evaluates this artifact on every CI run."
+  },
+  {
+   "id": "CORPUS-VARGA_D45_V1",
+   "artifact": "VARGA_D45_V1_certification.json",
+   "deficiency": "At f8f13607: no capability enumeration, no per-gate `exercises`, no `scope_not_gated` (ADR-0101 s4).",
+   "required_remediation": "Certifier-generated `capabilities`, per-gate `exercises` and `scope_not_gated`, regenerated from a real run.",
+   "status": "CLOSED",
+   "disposition": "COMPLIANT_WITH_S2_S3",
+   "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
+   "evidence": "scripts/check_scope_coverage.py evaluates this artifact on every CI run."
+  },
+  {
+   "id": "CORPUS-VIMSHOTTARI_V1",
+   "artifact": "VIMSHOTTARI_V1_certification.json",
+   "deficiency": "At f8f13607: no capability enumeration, no per-gate `exercises`, no `scope_not_gated` (ADR-0101 s4).",
+   "required_remediation": "Certifier-generated `capabilities`, per-gate `exercises` and `scope_not_gated`, regenerated from a real run.",
+   "status": "CLOSED",
+   "disposition": "COMPLIANT_WITH_S2_S3",
+   "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
+   "evidence": "scripts/check_scope_coverage.py evaluates this artifact on every CI run."
+  },
+  {
+   "id": "CORPUS-CURRENT_ENGINE_LOCK",
+   "artifact": "CURRENT_ENGINE_LOCK.json",
+   "deficiency": "Carries no scope, runner or gates, so ADR-0101 s2 and s3 have nothing to bind.",
+   "required_remediation": "None. Preserved unmodified as frozen evidence.",
+   "status": "TERMINAL",
+   "disposition": "NOT_APPLICABLE_TO_S2_S3",
+   "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
+   "evidence": "Dated Tier-0 lock record, ratified by ADR-0034. Terminal under ADR-0102 s3 and s6, with ADR-0094 s4's frozen/live boundary as supporting evidence."
+  },
+  {
+   "id": "CORPUS-ENGINE_CAPABILITY_INVENTORY",
+   "artifact": "ENGINE_CAPABILITY_INVENTORY.json",
+   "deficiency": "Carries no scope, runner or gates, so ADR-0101 s2 and s3 have nothing to bind.",
+   "required_remediation": "None. Preserved unmodified as frozen evidence.",
+   "status": "TERMINAL",
+   "disposition": "NOT_APPLICABLE_TO_S2_S3",
+   "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
+   "evidence": "Frozen dated evidence; ADR-0092 forbids modifying it and forbids reading it as live authority. Terminal under ADR-0102 s3 and s6, with ADR-0094 s4's frozen/live boundary as supporting evidence."
+  },
+  {
+   "id": "CORPUS-G6_REMOTE_CI_VALIDATION",
+   "artifact": "G6_REMOTE_CI_VALIDATION.json",
+   "deficiency": "Carries no scope, runner or gates, so ADR-0101 s2 and s3 have nothing to bind.",
+   "required_remediation": "None. Preserved unmodified as frozen evidence.",
+   "status": "TERMINAL",
+   "disposition": "NOT_APPLICABLE_TO_S2_S3",
+   "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
+   "evidence": "Dated record of one remote CI validation. Terminal under ADR-0102 s3 and s6, with ADR-0094 s4's frozen/live boundary as supporting evidence."
+  },
+  {
+   "id": "CORPUS-ORACLE_ENVIRONMENT",
+   "artifact": "ORACLE_ENVIRONMENT.json",
+   "deficiency": "Carries no scope, runner or gates, so ADR-0101 s2 and s3 have nothing to bind.",
+   "required_remediation": "None. Preserved unmodified as frozen evidence.",
+   "status": "TERMINAL",
+   "disposition": "NOT_APPLICABLE_TO_S2_S3",
+   "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
+   "evidence": "Environment identity record for the oracle tier, not a certification of a capability. Terminal under ADR-0102 s3 and s6, with ADR-0094 s4's frozen/live boundary as supporting evidence."
+  },
+  {
+   "id": "OVERCLAIM-TRANSIT-RETURNS",
+   "artifact": "TRANSIT_V1_certification.json",
+   "capability": "transits.returns",
+   "callable": "engine.transits.events.returns",
+   "deficiency": "Named in TRANSIT_V1's scope and exercised by no gate: an ADR-0099 s4 SCOPE OVERCLAIM.",
+   "required_remediation": "Dispose of it under DP-040 by owner decision. No DP-040 option is selected here.",
+   "status": "OPEN",
+   "disposition": "OPEN_SCOPE_OVERCLAIM",
+   "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
+   "evidence": "ADR-0099 s4, ADR-0102 s7, ADR-0107. Does not gate JATAKA exit (ADR-0099 s4)."
+  },
+  {
+   "id": "OVERCLAIM-TRANSIT-NATAL-CONJUNCTIONS",
+   "artifact": "TRANSIT_V1_certification.json",
+   "capability": "transits.natal_conjunctions",
+   "callable": "engine.transits.events.natal_conjunctions",
+   "deficiency": "Named in TRANSIT_V1's scope and exercised by no gate: an ADR-0099 s4 SCOPE OVERCLAIM.",
+   "required_remediation": "Dispose of it under DP-040 by owner decision. No DP-040 option is selected here.",
+   "status": "OPEN",
+   "disposition": "OPEN_SCOPE_OVERCLAIM",
+   "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
+   "evidence": "ADR-0099 s4, ADR-0102 s7, ADR-0107. Does not gate JATAKA exit (ADR-0099 s4)."
+  },
+  {
+   "id": "OVERCLAIM-TRANSIT-NATAL-VIEW",
+   "artifact": "TRANSIT_V1_certification.json",
+   "capability": "transits.natal_view",
+   "callable": "engine.transits.view.transit_view",
+   "deficiency": "Named in TRANSIT_V1's scope and exercised by no gate: an ADR-0099 s4 SCOPE OVERCLAIM.",
+   "required_remediation": "Dispose of it under DP-040 by owner decision. No DP-040 option is selected here.",
+   "status": "OPEN",
+   "disposition": "OPEN_SCOPE_OVERCLAIM",
+   "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
+   "evidence": "ADR-0099 s4, ADR-0102 s7, ADR-0107. Does not gate JATAKA exit (ADR-0099 s4)."
+  },
+  {
+   "id": "REACHABILITY-astrology-house-equal_house_from_ascendant",
+   "callable": "engine.astrology.house.equal_house_from_ascendant",
+   "deficiency": "ADR-0099 s3's counting rule finds a call site outside the verification surface, every such caller is itself unreachable from any entry point, and no certification covers it.",
+   "required_remediation": "Owner decision: certify it, remove the dead caller, or rule on whether a dead-path call site is `in use`.",
+   "status": "OPEN",
+   "disposition": "OPEN_REACHABILITY_FINDING",
+   "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
+   "evidence": "reports/c4_reachability.json. Open against JATAKA exit clause 2 until decided."
+  },
+  {
+   "id": "REACHABILITY-astrology-planet_mapper-map_planet",
+   "callable": "engine.astrology.planet_mapper.map_planet",
+   "deficiency": "ADR-0099 s3's counting rule finds a call site outside the verification surface, every such caller is itself unreachable from any entry point, and no certification covers it.",
+   "required_remediation": "Owner decision: certify it, remove the dead caller, or rule on whether a dead-path call site is `in use`.",
+   "status": "OPEN",
+   "disposition": "OPEN_REACHABILITY_FINDING",
+   "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
+   "evidence": "reports/c4_reachability.json. Open against JATAKA exit clause 2 until decided."
+  },
+  {
+   "id": "REACHABILITY-astrology-rashi_chart-rashi_chart",
+   "callable": "engine.astrology.rashi_chart.rashi_chart",
+   "deficiency": "ADR-0099 s3's counting rule finds a call site outside the verification surface, every such caller is itself unreachable from any entry point, and no certification covers it.",
+   "required_remediation": "Owner decision: certify it, remove the dead caller, or rule on whether a dead-path call site is `in use`.",
+   "status": "OPEN",
+   "disposition": "OPEN_REACHABILITY_FINDING",
+   "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
+   "evidence": "reports/c4_reachability.json. Open against JATAKA exit clause 2 until decided."
+  },
+  {
+   "id": "REACHABILITY-astrology-sign-Sign-name",
+   "callable": "engine.astrology.sign.Sign.name",
+   "deficiency": "ADR-0099 s3's counting rule finds a call site outside the verification surface, every such caller is itself unreachable from any entry point, and no certification covers it.",
+   "required_remediation": "Owner decision: certify it, remove the dead caller, or rule on whether a dead-path call site is `in use`.",
+   "status": "OPEN",
+   "disposition": "OPEN_REACHABILITY_FINDING",
+   "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
+   "evidence": "reports/c4_reachability.json. Open against JATAKA exit clause 2 until decided."
+  },
+  {
+   "id": "REACHABILITY-astrology-sign-Sign-one_based",
+   "callable": "engine.astrology.sign.Sign.one_based",
+   "deficiency": "ADR-0099 s3's counting rule finds a call site outside the verification surface, every such caller is itself unreachable from any entry point, and no certification covers it.",
+   "required_remediation": "Owner decision: certify it, remove the dead caller, or rule on whether a dead-path call site is `in use`.",
+   "status": "OPEN",
+   "disposition": "OPEN_REACHABILITY_FINDING",
+   "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
+   "evidence": "reports/c4_reachability.json. Open against JATAKA exit clause 2 until decided."
+  },
+  {
+   "id": "REACHABILITY-core-timezone_engine-to_utc",
+   "callable": "engine.core.timezone_engine.to_utc",
+   "deficiency": "ADR-0099 s3's counting rule finds a call site outside the verification surface, every such caller is itself unreachable from any entry point, and no certification covers it.",
+   "required_remediation": "Owner decision: certify it, remove the dead caller, or rule on whether a dead-path call site is `in use`.",
+   "status": "OPEN",
+   "disposition": "OPEN_REACHABILITY_FINDING",
+   "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
+   "evidence": "reports/c4_reachability.json. Open against JATAKA exit clause 2 until decided."
+  },
+  {
+   "id": "REACHABILITY-dasha-vimshottari-vimshottari_from_snapshot",
+   "callable": "engine.dasha.vimshottari.vimshottari_from_snapshot",
+   "deficiency": "ADR-0099 s3's counting rule finds a call site outside the verification surface, every such caller is itself unreachable from any entry point, and no certification covers it.",
+   "required_remediation": "Owner decision: certify it, remove the dead caller, or rule on whether a dead-path call site is `in use`.",
+   "status": "OPEN",
+   "disposition": "OPEN_REACHABILITY_FINDING",
+   "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
+   "evidence": "reports/c4_reachability.json. Open against JATAKA exit clause 2 until decided."
+  },
+  {
+   "id": "REACHABILITY-knowledge-loader-KnowledgeLoader-load",
+   "callable": "engine.knowledge.loader.KnowledgeLoader.load",
+   "deficiency": "ADR-0099 s3's counting rule finds a call site outside the verification surface, every such caller is itself unreachable from any entry point, and no certification covers it.",
+   "required_remediation": "Owner decision: certify it, remove the dead caller, or rule on whether a dead-path call site is `in use`.",
+   "status": "OPEN",
+   "disposition": "OPEN_REACHABILITY_FINDING",
+   "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
+   "evidence": "reports/c4_reachability.json. Open against JATAKA exit clause 2 until decided."
+  },
+  {
+   "id": "REACHABILITY-knowledge-registry-KnowledgeRegistry-get",
+   "callable": "engine.knowledge.registry.KnowledgeRegistry.get",
+   "deficiency": "ADR-0099 s3's counting rule finds a call site outside the verification surface, every such caller is itself unreachable from any entry point, and no certification covers it.",
+   "required_remediation": "Owner decision: certify it, remove the dead caller, or rule on whether a dead-path call site is `in use`.",
+   "status": "OPEN",
+   "disposition": "OPEN_REACHABILITY_FINDING",
+   "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
+   "evidence": "reports/c4_reachability.json. Open against JATAKA exit clause 2 until decided."
+  },
+  {
+   "id": "REACHABILITY-knowledge-repository-KnowledgeRepository-natural_relationships",
+   "callable": "engine.knowledge.repository.KnowledgeRepository.natural_relationships",
+   "deficiency": "ADR-0099 s3's counting rule finds a call site outside the verification surface, every such caller is itself unreachable from any entry point, and no certification covers it.",
+   "required_remediation": "Owner decision: certify it, remove the dead caller, or rule on whether a dead-path call site is `in use`.",
+   "status": "OPEN",
+   "disposition": "OPEN_REACHABILITY_FINDING",
+   "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
+   "evidence": "reports/c4_reachability.json. Open against JATAKA exit clause 2 until decided."
+  },
+  {
+   "id": "REACHABILITY-knowledge-validator-SchemaValidator-load_json",
+   "callable": "engine.knowledge.validator.SchemaValidator.load_json",
+   "deficiency": "ADR-0099 s3's counting rule finds a call site outside the verification surface, every such caller is itself unreachable from any entry point, and no certification covers it.",
+   "required_remediation": "Owner decision: certify it, remove the dead caller, or rule on whether a dead-path call site is `in use`.",
+   "status": "OPEN",
+   "disposition": "OPEN_REACHABILITY_FINDING",
+   "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
+   "evidence": "reports/c4_reachability.json. Open against JATAKA exit clause 2 until decided."
+  }
+ ]
+}

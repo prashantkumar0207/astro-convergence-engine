@@ -10390,6 +10390,104 @@ beyond its gates. The negative-control residual in `N2` stays unverified, and no
 
 ---
 
+## ADR-0108 - Stage B: C2, C3, C4 and C5 implemented with backlog-first migration; indispensable schema and reachability details recorded for owner ratification; JATAKA exit clause 2 remains open (PROPOSED)
+
+- **Date:** 2026-11-04
+- **Status:** **PROPOSED. NOT RATIFIED.** Drafted on the owner's "ACE OWNER AUTHORIZATION — COMPLETE STAGE B"
+  instruction, which directs that indispensable missing schema details be resolved and "record[ed] ... for
+  owner ratification rather than claiming they were previously approved." The implementation exists on the
+  owner's authorization; **the details in s3 and s4 are the builder's proposals and are not in force as
+  decisions until the owner ratifies them.** Every accepted entry is unchanged. JATAKA exit is not declared.
+- **Context:** `ADR-0099` s7 set the programme C2 to C5; `ADR-0101` and `ADR-0102` fixed what artifacts must
+  contain and which artifacts; `ADR-0107` froze the exit scope and selected the design direction. `ADR-0101`
+  s6 and `ADR-0107` s3 item 7 left key names, full schema and vocabularies undecided. PR #33's `ADR-0103`
+  stays `PROPOSED`, unmerged and untouched, and its detailed semantics are not imported.
+
+### 1. What was implemented
+
+| Item | Implementation | Enforcement |
+|---|---|---|
+| C2 | `declared_production_analytical_inputs` in `docs/ENGINE_STATUS.md` s6 | `scripts/check_capability_state.py` F15 union equals the declaring lists and live state; F16 each member holds a PASS artifact gating its capability; F17 that artifact cites an `ACCEPTED` entry |
+| C3 | Certifier-generated `capabilities`, per-gate `exercises` and `scope_not_gated` in all 22 scope-bearing artifacts, applied by `certification_support.emit()` from `scripts/capability_declarations.py` | `scripts/check_scope_coverage.py` S1 to S10 |
+| C4 | `scripts/check_reachability.py` and `scripts/coverage_static.py`, with the committed report `reports/c4_reachability.json` | R1 to R5 |
+| C5 | No inherited certification is claimed, so **no neutrality test is added**, per `ADR-0107` | S9 refuses a claim without a named delegate and a committed test |
+| Backlog | `docs/CERTIFICATION_REMEDIATION_BACKLOG.json`: 26 corpus entries (22 `CLOSED`, 4 `TERMINAL`), 3 open `TRANSIT_V1` overclaims, 11 open reachability findings | Read by C3 and C4. Per `Q-F`, no separate completeness gate; 26-of-26 was reconciled at this review |
+
+**Tier-0 change.** D9 and D10 are locked by `ADR-0005` yet held no live PASS artifact, which C2 requires.
+`scripts/certify_current_engine.py` now runs their existing independent validators as gates
+`C_d9_independent_validator` and `D_d10_independent_validator`, and its `scope` text says so. No validator,
+holdout, tolerance or calculated value changed.
+
+**Independent evidence.** `ADR-0101` s3 records that an `exercises` array is a declaration, not an observation.
+S10 therefore checks each claim by a separate method, a static reading of the certifier and its validator. It
+caught one wrong declaration during this work (D45's Gate A does not reach `rule_content_sha256`). It shows a gate
+reaches a member; it cannot show that the gate's assertions about that member are strong.
+
+### 2. Recorded findings
+
+1. **JATAKA exit clause 2 is not satisfied on the literal rule.** C4 finds **0** live-path uncovered functions and
+   **11** dead-path uncovered ones: each has a call site outside the verification surface, as `ADR-0099` s3's
+   counting rule measures use, but every such caller is itself unreachable, and no certification covers it. They
+   are tracked as `REACHABILITY-*`. **11** further methods are `UNKNOWN`: ambiguous evidence, established neither
+   way. A green C4 gate means every finding is tracked, not that none exists.
+2. **Three `TRANSIT_V1` overclaims stay open.** They are enumerated, exercised by no gate, and tracked as `OPEN`.
+   They are deliberately **not** in `scope_not_gated`, because that would silently select a `DP-040` option.
+3. **Five validators reach no production code** (D4, D16, D20, D24, D40). Each `E_independent_validator` therefore
+   declares empty `exercises` with a stated reason. Those gates remain real checks of their own reference.
+4. **D1's certification is composite:** `SIGN_CONVENTION_V1` for sign and chart fields, over the longitudes
+   `current_engine` certifies. No gate compares a D1 chart with an external oracle.
+
+### 3. Schema details for owner ratification (C3 and backlog)
+
+Selected earlier by the owner: two-segment slugs, member callable paths, member-level dispositions, `capabilities`,
+`exercises`, register option 4-A and backlog-first migration. **Proposed here, not yet ratified:**
+
+1. Capability grammar `^[a-z][a-z0-9_]*\.[a-z][a-z0-9_]*$`, unique within an artifact, not across the corpus.
+2. Member fields `callable`, `kind`, `disposition`, `exercised_by`, plus `reason`, `backlog_entry`, `delegate` and
+   `neutrality_test` where they apply. Top-level `capability_schema`, and `scope_not_gated` items of `id`,
+   `capability` and `reason`.
+3. `kind: "data"` for frozen rule tables, which are exercised but are not callable. This extends the owner's
+   "callable paths" wording.
+4. Disposition vocabulary: `GATED`, `SCOPE_NOT_GATED`, `OPEN_SCOPE_OVERCLAIM`, `INHERITED_NEUTRALITY_PROVEN`.
+5. `exercised_by` on members, so a gate naming a parent never verifies a member.
+6. `exercises_note`, required when `exercises` is empty, and `scalar_gate_exercises` for `VIMSHOTTARI_V1`, whose
+   existing `gates` map holds scalar measurements that other code reads.
+7. Declarations held centrally and applied by `emit()`, rather than written into each of 145 gate functions, with
+   the file added to the anti-fitting scan (`modules_scanned` 202 to 203).
+8. The register path `docs/CERTIFICATION_REMEDIATION_BACKLOG.json`, the CEO's recommendation, and its fields, status
+   vocabulary (`CLOSED`, `TERMINAL`, `OPEN`) and disposition vocabulary. `owner` reads as the Project Owner, per `Q-C`.
+9. C2's member names (`D<n>` and artifact stems) and the `DEDICATED_COVERAGE` mapping for D1, D9 and D10.
+
+### 4. Reachability details for owner ratification (C4)
+
+1. **Universe:** public functions and methods in `engine/`. Constants and classes are not capabilities.
+2. **Exclusions:** `engine/main.py` route handlers and `engine/tools/`, disclosed in the report.
+3. **Entry points:** module-level code outside the surface, all functions in non-engine modules outside the surface,
+   and `ADR-0099` U2 exports.
+4. **Coverage** flows from a `GATED` member of a PASS artifact to what it calls, never from callee to caller, so a
+   delegator gains nothing here without C5.
+5. **Dead-path rule, the decision that matters most.** `DEAD_PATH_UNCOVERED` is reported as in use, following
+   `ADR-0099` s3's counting rule literally. **The owner must decide** whether such a call site counts as `in use`,
+   or whether each finding is certified or its dead caller removed. Until then clause 2 stays open.
+6. Files that `ADR-0099` s3's rule places outside the surface, such as root-level `test_*.py`, are treated as written.
+
+### 5. What this entry does not do
+
+It does not amend `ADR-0099`, `ADR-0101`, `ADR-0102`, `ADR-0107` or `Q8_CLOSURE_MATRIX.md`. It selects no `DP-040`
+option. It does not close `N1`, or produce the `N5` completion record. It does not declare, perform or recommend
+JATAKA exit. It changes no production code under `engine/`, holdout, threshold or calculated value.
+
+- **Decision:** none in force until ratified. The implementation in s1 proceeds on the owner's authorization, and
+  s3 and s4 await ratification.
+- **Consequences:** C2 to C4 are mechanically enforced and each can fail. Exit still needs: an owner ruling or
+  remediation on the 11 dead-path findings, the `N1` reconciliation, and the `N5` record. `C3`'s three overclaims
+  remain scheduled remediation. A later ruling may change these schemas, which would regenerate artifacts again.
+- **Evidence:** the owner's instruction; `engine/tests/test_stage_b_coverage_gates.py`; `reports/c4_reachability.json`;
+  the review PR's CI, which regenerates all 22 artifacts and asserts no drift. Baseline `main`
+  `0a0dbea6fbf2e5d295b7805781a0f18f3d28bf83`.
+
+---
+
 ## ADR template (copy, do not edit above the line)
 
 ## ADR-XXXX - <title>
