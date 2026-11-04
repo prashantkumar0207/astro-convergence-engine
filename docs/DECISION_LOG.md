@@ -10236,6 +10236,160 @@ This comparison was by targeted reading of the named documents, not an exhaustiv
 
 ---
 
+## ADR-0107 - Consolidated Stage A: N1, N2, N5, N6 and N7 classified; capability enumeration and backlog design choices recorded; JATAKA exit scope frozen; no Stage B implementation authorized
+
+- **Date:** 2026-11-04
+- **Status:** **ACCEPTED, on the owner's explicit instruction "ACE OWNER RATIFICATION — CONSOLIDATED
+  STAGE A" (s1), and only for the dispositions that instruction ratifies (s2).** s3 is CEO interpretation
+  and is **not** owner-ratified. s4 and s5 are the builder's verification and flags, and bind nothing.
+  **This entry authorizes no implementation.** `ADR-0103` stays `PROPOSED`, and every accepted entry is
+  unchanged.
+- **Context:** `DP-038` left `N1`, `N2`, `N5`, `N6` and `N7` open, and `DP-041` s10 left `Q-A`, `Q-B`,
+  `Q-C`, `Q-D` and `Q-F` for adjudication (`ADR-0102` resolved `Q-E`). The owner has now ratified the CEO's
+  Stage A dispositions at `main` `7c653297495ea51b2133427ccbb660405d3ce3ba`. The CEO also supplied
+  clarifications so that this record would not invent missing details, stating that they are not proof of
+  further owner ratification.
+
+  **Provenance limit.** The owner's instruction refers to dispositions "above", which did not reach the
+  builder with that instruction. The builder asked for them, and s2 and s3 were then supplied through the
+  owner's session. They exist as session input, not as repository files. The builder cannot independently
+  confirm that s2 is the identical text the owner read when ratifying; the independent CEO review should
+  confirm it.
+
+### 1. The owner's ratification (exact text)
+
+```text
+ACE OWNER RATIFICATION — CONSOLIDATED STAGE A
+
+I ratify ChatGPT's Stage A dispositions above at `main` `7c653297495ea51b2133427ccbb660405d3ce3ba`: N1 scoped-evidence reconciliation; N2 explicit nonblocking deferral with reopening trigger; N5 completion-report requirement; N6/N7 nonblocking governance classification; Q-A's previously selected 2-B/3-C design; the stated enumeration schema; Q-B 4-A; Q-C using ADR-0051 ownership; Q-D 7-A; and Q-F without an additional mandatory completeness gate.
+
+Preserve all accepted ADRs and historical qualifications unchanged. C2 and C4 are required for JATAKA exit; C3 is separately required certification-integrity remediation, not an automatic phase-exit blocker; C5 is conditional. Do not expand exit criteria.
+
+I authorize Claude to record these decisions in one append-only Stage A ADR on a new branch, reconcile the existing canonical execution-state and handoff indices, create one local commit, push normally and open one review PR. Reference PR #33 as PROPOSED historical draft; do not merge or modify it.
+
+No production code, certification-artifact changes, WP-N2, WP-RD-A, force push, cleanup or merge to main. No Stage B implementation is authorized by this instruction.
+
+Return the PR URL, exact SHA, governance checks and any genuine blocker for independent CEO review.
+```
+
+### 2. The ratified dispositions (exact text)
+
+Quoted as supplied. The label "settled proposal" and the wording "proposed at" are the source's own. The
+owner's s1 instruction is what ratifies these items.
+
+```text
+### Stage A decisions — CEO adjudication
+
+| Item | CEO disposition | Required before JATAKA exit? |
+|---|---|---|
+| **N1 — Certification qualifications** | Accept the current, explicitly scoped certification evidence. D24 now has Gate C oracle agreement (5,400 comparisons, zero mismatches); D45 has strengthened Gate I; Parashari Yoga has Gate J and observed failure-path tests. Preserve the older ADR qualifications as historical findings and record the subsequent remediation, without rewriting them. | **Reconcile the evidence formally; no repeat implementation** |
+| **N2 — Unexamined negative-control residual** | Defer the blanket audit. The broader defect is neither demonstrated nor cleared. Do not claim that all negative controls were independently mutation-tested. Reopen for a demonstrated escaped defect or a future decision that relies on the unverified property. | No, on present evidence |
+| **N5 — Completion report** | Require one concise JATAKA completion record stating what was verified, what was not, and the remaining limitations. | **Yes, at final exit** |
+| **N6 — ADR-0004** | Procedural identifier-governance debt, not a calculation-certification dependency. Preserve PROPOSED status. | No |
+| **N7 — ADR-0018** | Unratified CI-governance debt. Current executed CI evidence may be evaluated on its merits, but ADR-0018 must not be presented as ACCEPTED. | No, unless a concrete evidence-integrity defect emerges |
+
+These dispositions resolve the **decision classification**, not every underlying residual risk. In particular, N2 remains an expressly unverified property rather than becoming a manufactured PASS.
+
+### Implementation-design choices — settled proposal
+
+| Question | Selected design |
+|---|---|
+| **Q-A** | Preserve the earlier owner's 2-B / 3-C selection: two-segment dotted capability slugs, with full Python callable paths as members and member-level dispositions. Proposed ADR-0103 is supporting draft evidence, not ratified authority. |
+| **Enumeration shape** | Top-level certifier-generated `capabilities` array in each of the 22 scope-bearing artifacts; per-gate `exercises` arrays as required by ADR-0101. Member-level claims must not be misrepresented as verified merely because the parent capability is named. |
+| **Q-B** | Option 4-A: one canonical committed, machine-readable remediation register, proposed at `docs/CERTIFICATION_REMEDIATION_BACKLOG.json`, outside the existing certification-artifact corpus. |
+| **Q-C** | `owner` means accountable Project Owner under accepted ADR-0051 until explicitly delegated. Claude remains executor, not automatically the accountable owner. |
+| **Q-D** | Option 7-A: backlog-first migration. All 26 existing corpus members must be accounted for. The 22 scope-bearing artifacts receive explicit remediation status; the four frozen artifacts receive auditable terminal *not-applicable-to-s2/s3* dispositions under ADR-0102. No permanent grandfathering. |
+| **Q-F** | Do not introduce a separate permanent backlog-completeness gate solely by inference. ADR-0101 requires a governed backlog, not that extra gate. Independently reconcile its completeness at certification review. Any C2/C3/C4 gate actually implemented must retain its required negative controls. |
+
+The three known `TRANSIT_V1` scope overclaims remain explicit remediation entries, without silently selecting an option from DP-040. C5 applies if inherited certification is claimed; it is not an unconditional new work package.
+
+### Frozen scope for Stage B and exit
+
+**Before JATAKA exit:** C2 must establish the declared-input union and valid individual certification; C4 must check actual usage/reachability against certified coverage. Both require meaningful negative controls and executed evidence. The current qualification reconciliation and the N5 completion record must also be complete.
+
+**Separately required but not automatically phase-blocking:** C3 and its ADR-0101 scope-overclaim remediation. I am correcting my earlier overstatement here: ADR-0099 expressly says those scope overclaims do **not** themselves gate JATAKA exit. C3 remains an accepted obligation that must be scheduled and discharged, not silently abandoned.
+
+**Deferred without reopening JATAKA:** Q2, Q5, Q12, Q26, Q27 and the remaining nonblocking governance debt retain their recorded statuses and must be revisited when their actual prerequisites or risks arise. None is declared resolved by this packet.
+```
+
+### 3. CEO clarifications (exact text; NOT owner-ratified)
+
+Recorded so a later reader can see the CEO's reading. **They carry no authority of their own**, and where
+they add detail beyond s1 and s2, that detail is undecided until the owner adopts it.
+
+```text
+These clarifications explain the preceding decisions so that the append-only record does not silently invent missing details. They are CEO interpretations and recommendations, NOT proof of further owner ratification. The owner must expressly adopt any substantive new normative specification beyond the previously ratified choices.
+
+1. Q-A / ADR-0103 adoption boundary:
+   The earlier owner-selected OPTIONS 2-B and 3-C are the approved design direction: a two-segment dotted capability slug; members identified by full Python callable paths; dispositions attached to members. The detailed 15-section semantics in proposed ADR-0103 (including the exact lexical regular expression, uniqueness and retirement rules, versioning, naming conventions, migration rules and conformance checks) are NOT adopted wholesale by the Stage A text and do not become ACCEPTED by reference. PR #33 / ADR-0103 stays PROPOSED and unmerged. Do not silently import all of its semantics into the new Stage A ADR. Any indispensable unresolved detailed field or grammar choice must be explicitly marked for separate ratification, rather than guessed.
+
+2. N1 / qualification handling:
+   The Stage A decision is NOT that a PASS artifact alone overrides an accepted qualification. For JATAKA, count only the actually demonstrated and currently covered calculation scope: D24's current registered production Gate C oracle comparison, D45's independent Gate I composition/fraction checks and observed failure path, and Parashari Yoga's Gate J field checks and observed failure path. Link the later executed evidence and exact SHAs/CI to the historical ADR-0083/0085/0086 findings. Keep the original accepted findings unchanged and describe explicitly any remaining non-claim. This reconciles N1's question of 'individually certified' to the scope now independently evidenced, not to an unqualified blanket certification of all possible behaviour.
+
+3. N2 / reopening trigger:
+   Treat the approximately fourteen unaudited negative-control gates as a disclosed residual risk, neither tested nor cleared as a group. Reopen for a reproduced material mutation escaping a claimed certification gate, a demonstrated circular or non-failable check on a production analytical input, or a proposed new reliance/claim that requires the currently unverified property. Suspicion alone is not a HOLD. The deferral is not a claim that every other negative control is sound.
+
+4. N5 / completion report:
+   Due before the final JATAKA exit decision, not as a separate Stage A research deliverable. A concise completion record must state exact evaluated main SHA; declared and in-use analytical input sets; which certification artifact/gate covers each; regenerated test/CI evidence; actual exceptions, nonclaims and qualifications; what could not be verified; outstanding material blockers, if any; and CEO/owner approval status. An existing truthful report may serve if it satisfies Constitution/Q8 section 14; do not manufacture a duplicate report solely for its name.
+
+5. N6 / N7:
+   N6: classify the current ADR-0004 proposal as identifier-allocation procedure, not as independently necessary mathematical correctness evidence. N7: classify ADR-0018's proposed CI tiering policy as governance debt rather than treating executed CI results as non-evidence, but verify the actual environment and generated artifacts rather than presuming evidence quality from the proposal. Both remain PROPOSED, not ACCEPTED; new material technical evidence would reopen their classification.
+
+6. C5:
+   Accepted ADR-0099 s5: a pure delegator may inherit its delegate's certification ONLY if behavioural neutrality is proven by a committed test. C5 is required only when such inheritance is actually claimed; it is not mandatory for an unused non-claim. Specifically, TRANSIT_V1 returns() has no inherited certification simply because inspection suggests it delegates; its future certification claim would require the committed neutrality proof or independent certification.
+
+7. Enumeration / backlog scope:
+   The Stage A text fixes a top-level certifier-generated 'capabilities' array and gate-level 'exercises' arrays per ADR-0101, with a two-level capability/member relationship. It does NOT approve a complete JSON schema or decide every member field, disposition vocabulary, uniqueness grammar, or machine-checked owner representation. For the governed remediation register, Q-B selects 4-A (one canonical committed register); the proposed path 'docs/CERTIFICATION_REMEDIATION_BACKLOG.json' is a recommendation, not a pre-existing ratified path. Under Q-C, accountable ownership is the Project Owner until explicitly delegated, not automatically Claude. A full field schema must not be claimed as ratified if not expressly selected.
+
+8. C3 / ADR-0099 interpretation boundary:
+   There is a real textual nuance: ADR-0099 s7 describes deterministic exit evaluation once C2-C4 exist, while its s4 says individual SCOPE OVERCLAIMS do not gate JATAKA exit. Stage A's 'C3 not automatically phase-blocking' applies to the individual overclaim defects; it does NOT repeal the accepted C3 implementation obligation or authorize bypassing a normative coverage check. The lowest-conflict Stage B execution is to implement C2, C3 and C4 under their own authorizations, with negative controls, while leaving disclosed non-used overclaims as integrity remediation/backlog entries. If somebody proposes JATAKA exit without C3, the accepted-text conflict requires explicit owner adjudication; do not treat this clarification as silently amending ADR-0099.
+
+9. State of authorization:
+   This transcript does not authorize a production mutation, certification-artifact regeneration, WP-N2/WP-RD-A, merge or cleanup. Local recording, push and opening a review PR remain subject to the owner's separately given authorization. No append-only Stage A ADR may be labelled ACCEPTED before the owner-ratification basis and its exact scope are established.
+```
+
+### 4. Builder verification (executed 2026-11-04; supports the record, certifies nothing)
+
+| Claim | Result |
+|---|---|
+| Base | `origin/main` and the GitHub API both report `7c653297495ea51b2133427ccbb660405d3ce3ba` |
+| D24 Gate C (`ADR-0083` qualification) | Oracle job of CI run `41798264558` at that SHA: `C_oracle` 5,400 comparisons, 0 mismatches, `RESULT: PASS` |
+| D45 Gate I (`ADR-0085` qualification) | Same run: `I_composition_verification: PASS`, `RESULT: PASS`. Independent expectations and the observed failure path are commit `1f7bc79bb0833d57deeea9cb120a63de480d8ef3` (PR #36, merge `62baacc704adcfca62973a5d359d4698b9aaf1c3`, CI `41626489663`) |
+| Parashari Yoga Gate J (`ADR-0086` qualification) | Same run, all four no-oracle certifier runs: Gate J PASS, `RESULT: PASS`. Observed failure path is commit `06f69d54d0bc65b2988924a3d2756935cb32c185` (PR #37, merge `7c653297495ea51b2133427ccbb660405d3ce3ba`, CI `41798264558`) |
+| Statuses | `ADR-0004` and `ADR-0018` read `PROPOSED`. `ADR-0083`, `0085`, `0086`, `0099`, `0101`, `0102` and `0051` read `ACCEPTED`. `Q2`, `Q5`, `Q12`, `Q26` and `Q27` read `OPEN` |
+| PR #33 | `OPEN`, head `b0bf0235559b7ec919b8fffd15adf2de7dda2c67`, carrying `ADR-0103` as `PROPOSED`. Referenced as a historical draft; not merged or modified |
+| Text | `ADR-0099` s4 says scope overclaims do not gate JATAKA exit; s5 requires a committed neutrality test for inherited certification; `ADR-0051` D4 names the Project Owner until explicitly delegated; `ADR-0102` sets the 26 and 22 universes |
+
+Evidence the D24 row does not reach: that run proves what the current certifier reports, not behaviour
+beyond its gates. The negative-control residual in `N2` stays unverified, and nothing here clears it.
+
+### 5. Flags for CEO review (resolving none)
+
+1. **`ADR-0099`'s Consequences** state that "JATAKA exit remains blocked" by `N1`, `N2` and `N5`. Under s1
+   and s2, `N2` is now deferred as nonblocking on present evidence, `N1` needs formal reconciliation, and
+   `N5` is due at final exit. `ADR-0099` is not edited. This entry records the later owner decision.
+2. **Exit without `C3`.** `ADR-0099` s4 and s7 pull in different directions, as s3 item 8 notes. If anyone
+   proposes JATAKA exit without `C3`, that needs explicit owner adjudication. This entry does not settle it.
+3. **Undecided, each needing separate ratification before use:** the register's path; the full JSON schema
+   for `capabilities`, members and the register; member fields; the disposition vocabulary; the identifier
+   lexical grammar, uniqueness and retirement rules; and how `owner` is machine-represented.
+4. **Records not edited here, by the limits of this authorization:** `DP-038` and `DP-041` still read as
+   open, `DP-041`'s statement that `Q1` is open is stale, and `docs/OPEN_QUESTIONS.md` is unchanged. A later
+   authorized update could reconcile them.
+5. **`N1` formal reconciliation** is required before exit, and s4 supplies its evidence links. Whether s4
+   discharges it, or a further record is expected, is for the CEO and owner to say.
+
+- **Decision:** the items in s1 and s2 are recorded as ratified, within the limits stated above.
+- **Consequences:** C2 and C4 are required for JATAKA exit, along with the qualification reconciliation
+  and the `N5` record. C3 stays a required obligation that is not automatically phase-blocking. C5 is
+  conditional. JATAKA exit stays on HOLD, and no exit is declared. No production code, certification
+  artifact, gate or accepted entry changes. WP-N2, WP-RD-A and Stage B stay unauthorized.
+- **Evidence:** CI runs `41606386918`, `41626489663` and `41798264558`; PRs #35, #36 and #37; `DP-038`
+  s4; `DP-041` s8 and s10; `ADR-0099`, `ADR-0101`, `ADR-0102` and `ADR-0051`; and the owner and CEO text in
+  s1 to s3, which exists as session input and not as repository files.
+
+---
+
 ## ADR template (copy, do not edit above the line)
 
 ## ADR-XXXX - <title>

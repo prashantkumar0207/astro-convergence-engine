@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.19.0 |
+| Version | 9.20.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-03 (**`Q28` closure only.** See the first task entry below.) |
+| Last updated | 2026-11-04 (**Stage A record only.** See the first task entry below.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,23 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-04 - Consolidated Stage A recorded (ADR-0107)
+- Branch / commit SHA: `stage-a-governance-record`, this task's own commit on top of
+  `7c653297495ea51b2133427ccbb660405d3ce3ba`. `main` unchanged.
+- Task: the owner's "ACE OWNER RATIFICATION — CONSOLIDATED STAGE A": record the decisions in one append-only
+  ADR, reconcile the state and handoff indices, make one local commit, push normally and open one review
+  PR. No merge, no Stage B.
+- Files changed: `docs/DECISION_LOG.md`, `docs/ACE_EXECUTION_STATE.md`, `reports/AI_HANDOFF_CURRENT.md`
+  (this file).
+- Key findings: `ADR-0107` s1 and s2 hold the ratified text, exactly. s3 holds the CEO clarifications,
+  exactly, as not owner-ratified. PR #33 stays open and untouched, and `ADR-0103` stays `PROPOSED`.
+- Flags for review (`ADR-0107` s5): `ADR-0099`'s Consequences list `N2` as blocking; exit without `C3`
+  would need owner adjudication; detailed schema and grammar remain undecided; `DP-038`, `DP-041` and
+  `docs/OPEN_QUESTIONS.md` were not edited. The builder cannot confirm s2 is the text the owner read.
+- Verification: six governance gates `rc=0`; default `pytest` 1048 passed, 0 skipped (Windows host, Python 3.12.10). The
+  register's earlier text is byte-identical. CI results are on the review PR.
+- Next genuine decision point: independent CEO review of the PR, then the owner's merge decision.
 
 ### 2026-11-03 - Q28 closure: owner's seven decisions recorded (ADR-0106)
 - Branch / commit SHA: `wp-rd-b-mutation-harness`, this task's own commit on top of
@@ -5307,6 +5324,7 @@ act.
 
 | Version | Date | Change |
 |---|---|---|
+| 9.20.0 | 2026-11-04 | Consolidated Stage A recorded: `ADR-0107`. No engine or certification change. |
 | 9.19.0 | 2026-11-03 | `Q28` closed by the owner: `ADR-0106` (`ACCEPTED`). No engine or certification change. |
 | 9.18.0 | 2026-11-02 | Bounded repository-memory update: `ADR-0105` (`PROPOSED`), WP-RD-B-F2 bounded CEO PASS, owner rules preserved, `Q28` flagged. No engine or certification change. |
 | 8.1.0 | 2026-08-24 | **CI-run-ID discrepancy resolved (no fabrication); `main`-vs-`phase-g-governance` merge-readiness audit performed (READY, not performed).** Independent audit flagged this session's chat citation of CI run `32756205364` vs committed records citing only `32752248185`. Resolved by direct `gh run view` query: both runs genuine and `success` - `32752248185` -> `f0eb220` (16:41 UTC), `32756205364` -> `931b6d0` (17:22 UTC, later, current HEAD). Root cause: `ACE_EXECUTION_STATE.md`'s snapshot fields were never updated after the `931b6d0` push; `32756205364` had only been reported in chat, never committed. Corrected via the file's own designed overwrite mechanism, `ADR-0074` left unedited (its own citation was accurate when drafted). Merge-readiness audit: confirmed `main`'s merge-commit second parent is an ancestor of current `phase-g-governance` (no lost content, normal continued-branch topology); `main` has no independent work beyond its own two historical merges; `git merge-tree` reports a clean, conflict-free merge; all 13 ahead-of-main commits individually ratified; zero JATAKA production code found; no PR currently open. Result: READY. **No merge performed, no PR created, no self-authorization taken.** No code touched. Governance gates clean (74 ADR entries). H-03, the eight cross-certifier findings, and all closed Dasha/FOUNDATION items untouched. No JATAKA implementation begun. |
