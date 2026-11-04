@@ -25,7 +25,9 @@ def test_artifact_exists_and_claims_pass():
     assert report["schema"] == "kp_chain_v1_certification"
     assert report["adr"] == "ADR-0006"
     assert report["result"] == "PASS"
-    gates = report["gates"]
+    # ADR-0101 s3: `exercises` is checked by check_scope_coverage.py. Everything else stays pinned exactly.
+    gates = {name: {key: value for key, value in gate.items() if key not in ("exercises", "exercises_note")}
+             for name, gate in report["gates"].items()}
     assert gates["A_legacy_oracle_equivalence"]["mismatches"] == 0
     assert gates["A_legacy_oracle_equivalence"]["dense_points"] == 51429
     assert gates["B_holdout_chart_equivalence"]["chain_mismatches"] == 0

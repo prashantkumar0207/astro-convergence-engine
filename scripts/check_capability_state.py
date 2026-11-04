@@ -136,6 +136,7 @@ KNOWN_NON_CLAIMS = frozenset(NON_CLAIM_ARTIFACTS) | UNREFUTABLE_NON_CLAIMS
 # switchable off by the very document under test - the "reported but never
 # enforced" failure this gate was built in response to (DP-032 Finding 2).
 REQUIRED_KEYS = (
+    "declared_production_analytical_inputs",
     "production_registered_vargas",
     "dedicated_production_vargas",
     "certified_not_registered_vargas",
@@ -145,6 +146,20 @@ REQUIRED_KEYS = (
     "counts",
 )
 REQUIRED_COUNTS = ("certifier_sources", "validator_sources")
+
+# C2 (ADR-0099 s2 and s7). The dedicated divisions have no VARGA_D*_V1 artifact of their
+# own, so the artifact and capability that certify each are named here. D9 and D10 are
+# ADR-0005's locked mathematics, recorded through their independent validators by the
+# Tier-0 certifier. D1's sign and chart fields are certified by SIGN_CONVENTION_V1 over
+# the kernel longitudes that current_engine certifies.
+DEDICATED_COVERAGE = {
+    1: ("SIGN_CONVENTION_V1", "vargas.d1"),
+    9: ("current_engine", "vargas.d9"),
+    10: ("current_engine", "vargas.d10"),
+}
+DECISION_LOG = ROOT / "docs" / "DECISION_LOG.md"
+_ADR_HEADING = re.compile(r"(?m)^## (ADR-\d{4})\b")
+_STATUS_LINE = re.compile(r"\*\*Status:\*\*\s*\**\s*([A-Za-z]+)")
 
 
 def live_registered_divisions() -> set[int]:
@@ -224,6 +239,97 @@ def live_source_counts() -> dict[str, int]:
     }
 
 
+def live_artifact_payloads(certification_dir: Path | None = None) -> dict[str, dict]:
+    """Full artifact content by capability stem, for the C2 coverage check."""
+
+    directory = certification_dir or (ROOT / "certification")
+    payloads: dict[str, dict] = {}
+    for path in sorted(directory.glob("*.json")):
+        if path.name in FROZEN_EVIDENCE:
+            continue
+        try:
+            payloads[path.name.replace("_certification.json", "")] = json.loads(path.read_text())
+        except (OSError, json.JSONDecodeError):
+            continue  # live_pass_artifacts() already reports this as F9.
+    return payloads
+
+
+def accepted_decisions(register: Path | None = None) -> set[str]:
+    """ADR identifiers whose own Status line reads ACCEPTED (ADR-0099 s2, limb D1)."""
+
+    text = (register or DECISION_LOG).read_text(encoding="utf-8")
+    matches = list(_ADR_HEADING.finditer(text))
+    accepted: set[str] = set()
+    for index, match in enumerate(matches):
+        end = matches[index + 1].start() if index + 1 < len(matches) else len(text)
+        status = _STATUS_LINE.search(text, match.end(), end)
+        if status and status.group(1).upper() == "ACCEPTED":
+            accepted.add(match.group(1))
+    return accepted
+
+
+def _declared_input_coverage(name: str) -> tuple[str, str | None]:
+    """(artifact stem, required capability id, if one is fixed) for a declared input."""
+
+    if name.startswith("D") and name[1:].isdigit():
+        division = int(name[1:])
+        if division in DEDICATED_COVERAGE:
+            return DEDICATED_COVERAGE[division]
+        return f"VARGA_D{division}_V1", f"vargas.d{division}"
+    return name, None
+
+
+def _gated_capabilities(payload: dict) -> set[str]:
+    return {capability.get("id") for capability in payload.get("capabilities", [])
+            if any(member.get("disposition") == "GATED" for member in capability.get("members", []))}
+
+
+def check_declared_inputs(block: dict, registered: set[int], dedicated: set[int], artifacts: dict[str, str],
+                          payloads: dict[str, dict], accepted: set[str]) -> list[str]:
+    """C2: the declared union against live state, and each member's certification."""
+
+    errors: list[str] = []
+    declared = block.get("declared_production_analytical_inputs")
+    if not isinstance(declared, list):
+        return errors  # F10 has already reported the missing key.
+    claimed = set(declared)
+    if len(claimed) != len(declared):
+        errors.append("F15 declared_production_analytical_inputs contains a duplicate")
+
+    lists = {f"D{division}" for key in ("production_registered_vargas", "dedicated_production_vargas")
+             for division in block.get(key, [])} | set(block.get("certified_capabilities", []))
+    for name in sorted(lists - claimed):
+        errors.append(f"F15 {name} is in a declaring list but missing from declared_production_analytical_inputs")
+    for name in sorted(claimed - lists):
+        errors.append(f"F15 {name} is in declared_production_analytical_inputs but in no declaring list")
+
+    passing = {name for name, result in artifacts.items() if result == "PASS"}
+    live = {f"D{division}" for division in registered | dedicated} | {
+        name for name in passing if not name.startswith("VARGA_D")}
+    for name in sorted(live - claimed):
+        errors.append(f"F15 {name} is live but missing from declared_production_analytical_inputs")
+    for name in sorted(claimed - live):
+        errors.append(f"F15 {name} is declared a production analytical input but is not live")
+
+    for name in sorted(claimed):
+        artifact, capability = _declared_input_coverage(name)
+        verdict = artifacts.get(artifact)
+        if verdict != "PASS":
+            errors.append(f"F16 {name} is declared, but {artifact} "
+                          f"{'records ' + verdict if verdict else 'has no certification artifact'}, not PASS")
+            continue
+        gated = _gated_capabilities(payloads.get(artifact, {}))
+        if capability is not None and capability not in gated:
+            errors.append(f"F16 {name} is declared, but {artifact} does not gate capability {capability}")
+        elif capability is None and not gated:
+            errors.append(f"F16 {name} is declared, but {artifact} gates no capability")
+        adr = str(payloads.get(artifact, {}).get("adr", ""))
+        if adr not in accepted:
+            errors.append(f"F17 {name} is declared, but {artifact}'s decision entry {adr or '(none)'} is not "
+                          f"ACCEPTED; ADR-0099 s2 limb D1 requires a ratified entry")
+    return errors
+
+
 def extract_block(text: str) -> tuple[dict | None, list[str]]:
     match = _BLOCK.search(text)
     if match is None:
@@ -246,6 +352,8 @@ def check(
     artifacts: dict[str, str] | None = None,
     counts: dict[str, int] | None = None,
     dedicated_live: set[int] | None = None,
+    payloads: dict[str, dict] | None = None,
+    accepted: set[str] | None = None,
 ) -> list[str]:
     """Return every failure. Empty list means PASS.
 
@@ -343,6 +451,13 @@ def check(
                     f"F14 D{division} is declared in both {left} and {right}; "
                     f"the categories are mutually exclusive"
                 )
+
+    # C2 (ADR-0099 s7): the declared union, live state and each member's certification.
+    errors.extend(check_declared_inputs(
+        block, registered, dedicated, artifacts,
+        live_artifact_payloads() if payloads is None else payloads,
+        accepted_decisions() if accepted is None else accepted,
+    ))
 
     # F2: claimed as registered, not actually registered.
     for division in sorted(claimed_production - registered):

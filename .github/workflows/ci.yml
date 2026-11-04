@@ -600,3 +600,44 @@ jobs:
               sys.exit(1)
           print(f"negative control passed: planted stray artifact was caught ({errors})")
           PY
+
+      # C2, C3 and C4 (ADR-0099 s7, ADR-0107). Full negative controls are in
+      # engine/tests/test_stage_b_coverage_gates.py; the process-level controls
+      # below prove these exact commands can fail.
+      - name: C2, declared production analytical inputs match live state and hold valid certification
+        run: python scripts/check_capability_state.py
+
+      - name: C3, scope coverage from each artifact's own declarations
+        run: python scripts/check_scope_coverage.py
+
+      - name: C4, production reachability against certification coverage
+        run: python scripts/check_reachability.py
+
+      - name: Negative control, C2, C3 and C4 must each actually fail
+        run: |
+          set +e
+          python - <<'PY'
+          text = open("docs/ENGINE_STATUS.md", encoding="utf-8").read()
+          planted = text.replace('"D45",\n    "current_engine"', '"current_engine"', 1)
+          assert planted != text
+          open("/tmp/status_probe.md", "w", encoding="utf-8").write(planted)
+          PY
+          python scripts/check_capability_state.py /tmp/status_probe.md > /dev/null 2>&1
+          c2=$?
+          python - <<'PY'
+          import json
+          backlog = json.load(open("docs/CERTIFICATION_REMEDIATION_BACKLOG.json", encoding="utf-8"))
+          backlog["entries"] = [e for e in backlog["entries"]
+                                if e.get("disposition") not in ("OPEN_SCOPE_OVERCLAIM", "OPEN_REACHABILITY_FINDING")]
+          json.dump(backlog, open("/tmp/backlog_probe.json", "w", encoding="utf-8"))
+          PY
+          python scripts/check_scope_coverage.py certification /tmp/backlog_probe.json > /dev/null 2>&1
+          c3=$?
+          python scripts/check_reachability.py --backlog /tmp/backlog_probe.json > /dev/null 2>&1
+          c4=$?
+          set -e
+          if [ "$c2" -eq 0 ] || [ "$c3" -eq 0 ] || [ "$c4" -eq 0 ]; then
+            echo "a coverage gate did NOT flag its planted violation: C2=$c2 C3=$c3 C4=$c4"
+            exit 1
+          fi
+          echo "negative controls passed: C2 exit $c2, C3 exit $c3, C4 exit $c4"

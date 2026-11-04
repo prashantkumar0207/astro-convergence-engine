@@ -1,7 +1,7 @@
 {
  "schema": "parashari_drishti_v1_certification",
  "adr": "ADR-0012",
- "date": "2026-09-14",
+ "date": "2026-11-04",
  "scope": "Parashari graha drishti, full (purna) aspects; facts only",
  "decisions": {
   "AS-A": "full aspects only; sputa drishti (fractional) deferred",
@@ -16,20 +16,32 @@
  "gates": {
   "A_table_integrity": {
    "planets": 7,
-   "mismatches": 0
+   "mismatches": 0,
+   "exercises": [
+    "drishti.graha_full"
+   ]
   },
   "B_combinatorial_12x12": {
    "planet_sign_pairs": 84,
-   "mismatches": 0
+   "mismatches": 0,
+   "exercises": [
+    "drishti.graha_full"
+   ]
   },
   "C_oracle": {
    "cases": 11,
    "comparisons": 154,
    "mismatches": 0,
-   "node_divergence_note": "oracle gives Rahu/Ketu a 7th aspect; V1 excludes node-cast aspects per approved Decision AS-B (recorded variant)"
+   "node_divergence_note": "oracle gives Rahu/Ketu a 7th aspect; V1 excludes node-cast aspects per approved Decision AS-B (recorded variant)",
+   "exercises": [
+    "drishti.graha_full"
+   ]
   },
   "D_independent_validator": {
-   "result": "PASS"
+   "result": "PASS",
+   "exercises": [
+    "drishti.graha_full"
+   ]
   }
  },
  "explicit_non_claims": [
@@ -40,7 +52,7 @@
   "yogas, strengths, interpretation"
  ],
  "environment": {
-  "python": "3.11.16"
+  "python": "3.11.17"
  },
  "preconditions": {
   "data_assets": {
@@ -62,7 +74,7 @@
    "residual_limitation": "coordinated edits to every repository-held trust record cannot be cryptographically prevented by an in-repository trust anchor; only upstream provenance would anchor this, and it is out of M1 scope"
   },
   "anti_fitting": {
-   "modules_scanned": 202,
+   "modules_scanned": 203,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."
@@ -70,6 +82,49 @@
   }
  },
  "result": "PASS",
+ "capability_schema": "ace-capability-enumeration-v1",
+ "capabilities": [
+  {
+   "id": "drishti.graha_full",
+   "members": [
+    {
+     "callable": "engine.parashari.drishti.DRISHTI_OFFSETS",
+     "kind": "data",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_table_integrity",
+      "B_combinatorial_12x12"
+     ]
+    },
+    {
+     "callable": "engine.parashari.drishti.aspected_signs",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "B_combinatorial_12x12",
+      "D_independent_validator"
+     ]
+    },
+    {
+     "callable": "engine.parashari.drishti.parashari_drishti",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "C_oracle"
+     ]
+    },
+    {
+     "callable": "engine.parashari.drishti.graha_drishti_from_snapshot",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "C_oracle"
+     ]
+    }
+   ]
+  }
+ ],
+ "scope_not_gated": [],
  "_artifact_name": "PARASHARI_DRISHTI_V1_certification.json",
  "_slug": "parashari_drishti"
 }

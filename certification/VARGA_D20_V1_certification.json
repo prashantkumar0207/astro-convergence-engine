@@ -2,7 +2,7 @@
  "schema": "varga_d20_v1_certification",
  "adr": "ADR-0095",
  "supersedes_provisional_id": "NOTHING_AUTHORISED",
- "date": "2026-09-14",
+ "date": "2026-11-04",
  "scope": "D20 Vimsamsa, Parashara/BPHS Reading E. Rule under certification is the PRODUCTION, REGISTERED rule in engine/astrology/varga_d20.py, imported directly - not a standalone reproduction of it. This artifact therefore evidences that the actual production code produces the certified rule. The earlier standalone certification remains as historical evidence in git history; it is not overwritten in meaning, only superseded in stage.",
  "rule": {
   "kind": "PRODUCTION CyclicVargaRule registered through the generic registry (engine/astrology/varga_d20.py), imported by this certifier",
@@ -74,12 +74,18 @@
    "mismatches": 0,
    "content_sha256": "efd08cea451084fedbe444c5473d6d50dfc589055b585f172e8a6e537668dac0",
    "verified_against": "validate_d20_holdout.py's own independently-typed REFERENCE_TABLE (imported directly) - not a helper shared with this rule's own construction",
-   "disclosure": "movable source signs (0-based 0,3,6,9) start Aries (index 0); fixed source signs (1,4,7,10) start Sagittarius (index 8); dual source signs (2,5,8,11) start Leo (index 4); forward counting for all twelve - Parashara/BPHS Reading E (ADR-0095 section 1, DP-035)"
+   "disclosure": "movable source signs (0-based 0,3,6,9) start Aries (index 0); fixed source signs (1,4,7,10) start Sagittarius (index 8); dual source signs (2,5,8,11) start Leo (index 4); forward counting for all twelve - Parashara/BPHS Reading E (ADR-0095 section 1, DP-035)",
+   "exercises": [
+    "vargas.d20"
+   ]
   },
   "B_dense_sweep": {
    "points": 51429,
    "mismatches": 0,
-   "verified_against": "validate_d20_holdout.reference_d20() (imported directly, a genuinely separate implementation)"
+   "verified_against": "validate_d20_holdout.reference_d20() (imported directly, a genuinely separate implementation)",
+   "exercises": [
+    "vargas.d20"
+   ]
   },
   "C_oracle": {
    "oracle_executed": true,
@@ -92,7 +98,10 @@
    "tolerance": "zero categorical tolerance - pure longitude arithmetic, no astronomy, so no tolerance derivation applies",
    "comparisons": 5400,
    "mismatches": 0,
-   "classification": "genuine_external_oracle_agreement"
+   "classification": "genuine_external_oracle_agreement",
+   "exercises": [
+    "vargas.d20"
+   ]
   },
   "D_non_invasiveness": {
    "d20_registered": true,
@@ -116,12 +125,17 @@
    "content_sha256_matches_pinned": true,
    "content_hash_enforcement": "ENFORCED - a mismatch fails this gate, not merely reported (template v1.1.0 requirement C)",
    "reached_without_oracle": "gate C is non-blocking and main() evaluates this gate first, so isolation is verifiable on a host without PyJHora (owner's DP-036 decision 2)",
-   "stage": "production-registered rule (was standalone/unregistered at the certification-execution stage; see the historical artifacts)"
+   "stage": "production-registered rule (was standalone/unregistered at the certification-execution stage; see the historical artifacts)",
+   "exercises": [
+    "vargas.d20"
+   ]
   },
   "E_independent_validator": {
    "result": "PASS",
    "classification": "corroborating_correctness_evidence",
-   "note": "separate-process, from-scratch reimplementation; does not import engine.astrology.varga_classifier, engine.astrology.varga_rules, or this certifier's own D20_VIMSAMSA object"
+   "note": "separate-process, from-scratch reimplementation; does not import engine.astrology.varga_classifier, engine.astrology.varga_rules, or this certifier's own D20_VIMSAMSA object",
+   "exercises": [],
+   "exercises_note": "the validator recomputes from its own embedded reference and calls no production code, so it exercises no production callable"
   },
   "F_boundary_cases": {
    "exact_boundary_cases": 228,
@@ -130,13 +144,19 @@
    "mismatches": 0,
    "verified_against": "validate_d20_holdout.reference_d20() (imported directly)",
    "representability": "all 19 internal boundaries k*1.5 are EXACT binary fractions (verified: Fraction(k*1.5) == Fraction(3k,2) for k=1..19), so unlike D7/D9/D27 there is no representability error and any disagreement here would be a convention or table defect, not float drift (DP-036 section 2.2)",
-   "boundary_policy": "inherited locked promote-up convention; no D20-specific exception"
+   "boundary_policy": "inherited locked promote-up convention; no D20-specific exception",
+   "exercises": [
+    "vargas.d20"
+   ]
   },
   "G_protected_holdout": {
    "points": 26278,
    "mismatches": 0,
    "verified_against": "validate_d20_holdout.reference_d20() (imported directly)",
-   "methodology": "prime-step deterministic sampling, independent of gate B/F points, never used to tune the frozen rule"
+   "methodology": "prime-step deterministic sampling, independent of gate B/F points, never used to tune the frozen rule",
+   "exercises": [
+    "vargas.d20"
+   ]
   },
   "H_negative_controls": {
    "controls": [
@@ -168,13 +188,19 @@
     }
    ],
    "all_detected": true,
-   "original_object_unmutated": true
+   "original_object_unmutated": true,
+   "exercises": [
+    "vargas.d20"
+   ]
   },
   "I_static_reference_regression": {
    "cases": 10,
    "mismatches": 0,
    "methodology": "LIVE production output (classify() + the REGISTERED D20_VIMSAMSA rule) compared against STATIC values frozen from validate_d20_holdout.py's own from-scratch reference_d20() (never regenerated by this certifier at certification time)",
-   "classification": "correctness_evidence"
+   "classification": "correctness_evidence",
+   "exercises": [
+    "vargas.d20"
+   ]
   }
  },
  "explicit_non_claims": [
@@ -188,7 +214,7 @@
   "translation-only caveat: the BPHS citation is a translated verse plus convergent secondary attestation, not a located verbatim Sanskrit verse (ADR-0095 section 4, DP-035)"
  ],
  "environment": {
-  "python": "3.11.16"
+  "python": "3.11.17"
  },
  "preconditions": {
   "data_assets": {
@@ -210,7 +236,7 @@
    "residual_limitation": "coordinated edits to every repository-held trust record cannot be cryptographically prevented by an in-repository trust anchor; only upstream provenance would anchor this, and it is out of M1 scope"
   },
   "anti_fitting": {
-   "modules_scanned": 202,
+   "modules_scanned": 203,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."
@@ -218,6 +244,61 @@
   }
  },
  "result": "PASS",
+ "capability_schema": "ace-capability-enumeration-v1",
+ "capabilities": [
+  {
+   "id": "vargas.d20",
+   "members": [
+    {
+     "callable": "engine.astrology.varga_d20.D20_VIMSAMSA",
+     "kind": "data",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_table_integrity",
+      "B_dense_sweep",
+      "C_oracle",
+      "D_non_invasiveness",
+      "F_boundary_cases",
+      "G_protected_holdout",
+      "H_negative_controls",
+      "I_static_reference_regression"
+     ]
+    },
+    {
+     "callable": "engine.astrology.varga_classifier.classify",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "B_dense_sweep",
+      "C_oracle",
+      "F_boundary_cases",
+      "G_protected_holdout",
+      "H_negative_controls",
+      "I_static_reference_regression"
+     ]
+    },
+    {
+     "callable": "engine.astrology.varga_rules.rule_content_sha256",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_table_integrity",
+      "D_non_invasiveness",
+      "H_negative_controls"
+     ]
+    },
+    {
+     "callable": "engine.astrology.varga_d20.ensure_registered",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "D_non_invasiveness"
+     ]
+    }
+   ]
+  }
+ ],
+ "scope_not_gated": [],
  "_artifact_name": "VARGA_D20_V1_certification.json",
  "_slug": "varga_d20"
 }

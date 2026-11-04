@@ -1,7 +1,7 @@
 {
  "schema": "kp_significator_v1_certification",
  "adr": "ADR-0078",
- "date": "2026-09-14",
+ "date": "2026-11-04",
  "scope": "KP_SIGNIFICATOR_V1: a single narrow judgment - does the 7th house cusp's KP cuspal sub-lord signify the marriage-promise house group (2,7,11) or the marriage-denial group (1,6,10,12) - for a natal chart under the KP_KRISHNAMURTI profile. PRODUCTION implementation: engine.kp.significators, discoverable via engine.kp.significators.judge_marriage(chart).",
  "rule": {
   "kind": "module-level frozen functions (engine.kp.significators)",
@@ -83,19 +83,28 @@
     "Rahu",
     "Ketu"
    ],
-   "content_sha256": "0cb5aa8661c1d9b950c4d6f35d0b12baaf03aec3f28adc6937bbe257cd1f2ab9"
+   "content_sha256": "0cb5aa8661c1d9b950c4d6f35d0b12baaf03aec3f28adc6937bbe257cd1f2ab9",
+   "exercises": [
+    "kp.marriage_judgment"
+   ]
   },
   "B_dense_sweep": {
    "points": 12960,
    "mismatches": 0,
    "scope": "7th cusp longitude sweep, production wiring vs. a second call to the same kp_chain() function used internally by chart construction",
    "classification": "wiring_coverage_not_correctness_evidence",
-   "disclosure": "both sides call the identical kp_chain() function; this proves the production module correctly WIRES that function's output into its own chart data structures across a dense sample, not that kp_chain()'s own values are correct (KP_CHAIN_V1 already certifies that separately against PyJHora) or that the significator-derivation logic downstream is correct (see gate I for that evidence). A prior version of this gate was presented as correctness evidence; corrected 2026-08-27 per the certification-integrity repair, see docs/decisions/DP-030."
+   "disclosure": "both sides call the identical kp_chain() function; this proves the production module correctly WIRES that function's output into its own chart data structures across a dense sample, not that kp_chain()'s own values are correct (KP_CHAIN_V1 already certifies that separately against PyJHora) or that the significator-derivation logic downstream is correct (see gate I for that evidence). A prior version of this gate was presented as correctness evidence; corrected 2026-08-27 per the certification-integrity repair, see docs/decisions/DP-030.",
+   "exercises": [
+    "kp.marriage_judgment"
+   ]
   },
   "C_independent_validator": {
    "result": "PASS",
    "classification": "corroborating_correctness_evidence",
-   "note": "separate-process reimplementation; since 2026-08-27 also checked against static expected data (see validate_kp_significator_holdout.py)"
+   "note": "separate-process reimplementation; since 2026-08-27 also checked against static expected data (see validate_kp_significator_holdout.py)",
+   "exercises": [
+    "kp.marriage_judgment"
+   ]
   },
   "D_non_invasiveness": {
    "production_module": "engine.kp.significators",
@@ -105,19 +114,28 @@
    "kp_chain_v1_tables_unchanged": true,
    "sign_lord_table_unchanged": true,
    "parashari_drishti_v1_module_intact": true,
-   "kp_krishnamurti_profile_unchanged": true
+   "kp_krishnamurti_profile_unchanged": true,
+   "exercises": [
+    "kp.marriage_judgment"
+   ]
   },
   "E_boundary_cases": {
    "cases_checked": 10957,
    "mismatches": 0,
    "convention": "inherited KP_CHAIN_V1 sub-interval boundary set, tested at the 7th cusp",
    "classification": "wiring_coverage_not_correctness_evidence",
-   "disclosure": "the sub-lord portion of this gate calls the same kp_chain() function on both sides (see gate B's own disclosure); only the sign_of() boundary sweep is a genuine second, differently-implemented computation. A prior version of this gate was presented as correctness evidence; corrected 2026-08-27, see docs/decisions/DP-030."
+   "disclosure": "the sub-lord portion of this gate calls the same kp_chain() function on both sides (see gate B's own disclosure); only the sign_of() boundary sweep is a genuine second, differently-implemented computation. A prior version of this gate was presented as correctness evidence; corrected 2026-08-27, see docs/decisions/DP-030.",
+   "exercises": [
+    "kp.marriage_judgment"
+   ]
   },
   "F_retrograde_cases": {
    "cases_checked": 2,
    "mismatches": 0,
-   "rule": "conditional-on-direct-motion disclosure qualifier (KP_SIGNIFICATOR_SPEC.md section 19.2)"
+   "rule": "conditional-on-direct-motion disclosure qualifier (KP_SIGNIFICATOR_SPEC.md section 19.2)",
+   "exercises": [
+    "kp.marriage_judgment"
+   ]
   },
   "G_node_aspect_cases": {
    "cases_checked": 8,
@@ -128,6 +146,9 @@
     "sign_lord_fallback",
     "special_aspects(Mars,Jupiter,Saturn)",
     "universal_7th(Venus)"
+   ],
+   "exercises": [
+    "kp.marriage_judgment"
    ]
   },
   "H_strength_order_cases": {
@@ -137,7 +158,10 @@
     "owner",
     "occupant"
    ],
-   "note": "confirms Ordering A's categories are independently recognized; V1's own promise/deny judgment is a union test over the categories, not a priority selection - see ADR-0078 section 4"
+   "note": "confirms Ordering A's categories are independently recognized; V1's own promise/deny judgment is a union test over the categories, not a priority selection - see ADR-0078 section 4",
+   "exercises": [
+    "kp.marriage_judgment"
+   ]
   },
   "I_protected_holdout": {
    "cases": 12,
@@ -148,7 +172,10 @@
    },
    "methodology": "production output compared against STATIC expected values frozen from validate_kp_significator_holdout.py's own from-scratch reimplementation (never regenerated by production code at certification time); real ephemeris-driven charts, independent of every deliberately-constructed synthetic case in gates E-H, never used to tune any rule",
    "expected_value_provenance": "validate_kp_significator_holdout.py judge(), frozen 2026-08-27",
-   "classification": "correctness_evidence"
+   "classification": "correctness_evidence",
+   "exercises": [
+    "kp.marriage_judgment"
+   ]
   },
   "J_negative_controls": {
    "controls": [
@@ -167,7 +194,10 @@
    ],
    "all_detected": true,
    "frozen_constants_unmutated": true,
-   "production_module_unmutated": true
+   "production_module_unmutated": true,
+   "exercises": [
+    "kp.marriage_judgment"
+   ]
   }
  },
  "explicit_non_claims": [
@@ -184,7 +214,7 @@
   "no interpretation, convergence, BTR, historical prediction, or other KP variant is implemented - engine.kp.significators exposes exactly this one frozen judgment"
  ],
  "environment": {
-  "python": "3.11.16"
+  "python": "3.11.17"
  },
  "preconditions": {
   "data_assets": {
@@ -206,7 +236,7 @@
    "residual_limitation": "coordinated edits to every repository-held trust record cannot be cryptographically prevented by an in-repository trust anchor; only upstream provenance would anchor this, and it is out of M1 scope"
   },
   "anti_fitting": {
-   "modules_scanned": 202,
+   "modules_scanned": 203,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."
@@ -214,6 +244,169 @@
   }
  },
  "result": "PASS",
+ "capability_schema": "ace-capability-enumeration-v1",
+ "capabilities": [
+  {
+   "id": "kp.marriage_judgment",
+   "members": [
+    {
+     "callable": "engine.kp.significators.judge_marriage",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "D_non_invasiveness",
+      "F_retrograde_cases",
+      "G_node_aspect_cases",
+      "I_protected_holdout"
+     ]
+    },
+    {
+     "callable": "engine.kp.significators.signification_set",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "D_non_invasiveness",
+      "G_node_aspect_cases",
+      "J_negative_controls"
+     ]
+    },
+    {
+     "callable": "engine.kp.significators.node_substitute",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "D_non_invasiveness",
+      "G_node_aspect_cases",
+      "J_negative_controls"
+     ]
+    },
+    {
+     "callable": "engine.kp.significators.is_aspecting",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "D_non_invasiveness",
+      "G_node_aspect_cases",
+      "J_negative_controls"
+     ]
+    },
+    {
+     "callable": "engine.kp.significators.is_conjunct",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "D_non_invasiveness",
+      "G_node_aspect_cases",
+      "J_negative_controls"
+     ]
+    },
+    {
+     "callable": "engine.kp.significators.aspected_signs",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "D_non_invasiveness",
+      "G_node_aspect_cases"
+     ]
+    },
+    {
+     "callable": "engine.kp.significators.house_of_placidus",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "D_non_invasiveness",
+      "H_strength_order_cases",
+      "J_negative_controls"
+     ]
+    },
+    {
+     "callable": "engine.kp.significators.sign_of",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "D_non_invasiveness",
+      "E_boundary_cases",
+      "G_node_aspect_cases",
+      "H_strength_order_cases",
+      "J_negative_controls"
+     ]
+    },
+    {
+     "callable": "engine.kp.significators.full_name",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "F_retrograde_cases",
+      "G_node_aspect_cases",
+      "H_strength_order_cases",
+      "J_negative_controls"
+     ]
+    },
+    {
+     "callable": "engine.kp.significators.rule_content_sha256",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_table_integrity",
+      "D_non_invasiveness",
+      "J_negative_controls"
+     ]
+    },
+    {
+     "callable": "engine.kp.chain.kp_chain",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "B_dense_sweep",
+      "C_independent_validator",
+      "D_non_invasiveness",
+      "E_boundary_cases",
+      "F_retrograde_cases",
+      "G_node_aspect_cases",
+      "H_strength_order_cases",
+      "J_negative_controls"
+     ]
+    },
+    {
+     "callable": "engine.kp.chart.kp_chart",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "C_independent_validator",
+      "I_protected_holdout"
+     ]
+    },
+    {
+     "callable": "engine.kp.significators.PROMISE_HOUSES",
+     "kind": "data",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_table_integrity",
+      "J_negative_controls"
+     ]
+    },
+    {
+     "callable": "engine.kp.significators.DENY_HOUSES",
+     "kind": "data",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_table_integrity",
+      "J_negative_controls"
+     ]
+    },
+    {
+     "callable": "engine.kp.significators.SPECIAL_ASPECTS",
+     "kind": "data",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_table_integrity",
+      "G_node_aspect_cases"
+     ]
+    }
+   ]
+  }
+ ],
+ "scope_not_gated": [],
  "_artifact_name": "KP_SIGNIFICATOR_V1_certification.json",
  "_slug": "kp_significator"
 }

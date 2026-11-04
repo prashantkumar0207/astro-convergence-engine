@@ -1,7 +1,7 @@
 {
  "schema": "panchanga_v1_certification",
  "adr": "ADR-0055",
- "date": "2026-09-14",
+ "date": "2026-11-04",
  "scope": "Classification only, at a given instant: tithi, nakshatra (reused), yoga, karana, vara. FOUNDATION Panchanga first work package.",
  "conventions": {
   "boundary": "engine-wide 1e-10 promote-up, [start, end), applied uniformly to both certified profiles",
@@ -21,13 +21,23 @@
    "yoga_rule": "13.333333333333334 deg x 27",
    "karana_rule": "6.0 deg x 60",
    "boundary_convention": "engine-wide 1e-10 promote-up, [start, end)",
-   "profile_parameterization": "none - ADR-0055 item 1 applies one convention uniformly"
+   "profile_parameterization": "none - ADR-0055 item 1 applies one convention uniformly",
+   "exercises": [
+    "panchanga.karana",
+    "panchanga.tithi",
+    "panchanga.yoga"
+   ]
   },
   "B_dense_sweep": {
    "cases": 11,
    "profiles": 2,
    "comparisons": 66,
-   "mismatches": 0
+   "mismatches": 0,
+   "exercises": [
+    "panchanga.karana",
+    "panchanga.tithi",
+    "panchanga.yoga"
+   ]
   },
   "C_boundary_and_vara_edge_cases": {
    "tithi_boundaries_checked": 30,
@@ -35,14 +45,28 @@
    "karana_naming_checked": true,
    "vara_circumpolar_cases": 2,
    "vara_sunrise_rollover_checked": true,
-   "total_checks": 125
+   "total_checks": 125,
+   "exercises": [
+    "panchanga.karana",
+    "panchanga.tithi",
+    "panchanga.vara"
+   ]
   },
   "D_non_invasiveness": {
    "nakshatra_reuse_verified": true,
-   "ayanamsa_modes_unchanged": true
+   "ayanamsa_modes_unchanged": true,
+   "exercises": [
+    "panchanga.nakshatra"
+   ]
   },
   "E_independent_validator": {
-   "result": "PASS"
+   "result": "PASS",
+   "exercises": [
+    "panchanga.at_instant",
+    "panchanga.karana",
+    "panchanga.tithi",
+    "panchanga.yoga"
+   ]
   },
   "F_external_oracle": {
    "cases": 11,
@@ -55,7 +79,12 @@
    "comparisons": 66,
    "mismatches": 0,
    "negative_control_verified": true,
-   "nakshatra_excluded_reason": "already Tier-0-certified reuse, not new code introduced by this work package; proven identical to the certified nakshatra() in Gate D; out of the scope this gate was authorized to close"
+   "nakshatra_excluded_reason": "already Tier-0-certified reuse, not new code introduced by this work package; proven identical to the certified nakshatra() in Gate D; out of the scope this gate was authorized to close",
+   "exercises": [
+    "panchanga.karana",
+    "panchanga.tithi",
+    "panchanga.yoga"
+   ]
   }
  },
  "explicit_non_claims": [
@@ -66,7 +95,7 @@
   "any other varga, dasha, or certified layer"
  ],
  "environment": {
-  "python": "3.11.16"
+  "python": "3.11.17"
  },
  "preconditions": {
   "data_assets": {
@@ -88,7 +117,7 @@
    "residual_limitation": "coordinated edits to every repository-held trust record cannot be cryptographically prevented by an in-repository trust anchor; only upstream provenance would anchor this, and it is out of M1 scope"
   },
   "anti_fitting": {
-   "modules_scanned": 202,
+   "modules_scanned": 203,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."
@@ -96,6 +125,115 @@
   }
  },
  "result": "PASS",
+ "capability_schema": "ace-capability-enumeration-v1",
+ "capabilities": [
+  {
+   "id": "panchanga.tithi",
+   "members": [
+    {
+     "callable": "engine.astrology.panchanga.tithi_index",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_convention_integrity",
+      "B_dense_sweep",
+      "C_boundary_and_vara_edge_cases",
+      "E_independent_validator",
+      "F_external_oracle"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "panchanga.yoga",
+   "members": [
+    {
+     "callable": "engine.astrology.panchanga.yoga_index",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_convention_integrity",
+      "B_dense_sweep",
+      "E_independent_validator",
+      "F_external_oracle"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "panchanga.karana",
+   "members": [
+    {
+     "callable": "engine.astrology.panchanga.karana_index",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_convention_integrity",
+      "B_dense_sweep",
+      "C_boundary_and_vara_edge_cases",
+      "E_independent_validator",
+      "F_external_oracle"
+     ]
+    },
+    {
+     "callable": "engine.astrology.panchanga_names.karana_name",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "C_boundary_and_vara_edge_cases"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "panchanga.nakshatra",
+   "members": [
+    {
+     "callable": "engine.astrology.panchanga.nakshatra_index",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "D_non_invasiveness"
+     ]
+    },
+    {
+     "callable": "engine.astrology.nakshatra.nakshatra",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "D_non_invasiveness"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "panchanga.vara",
+   "members": [
+    {
+     "callable": "engine.astrology.panchanga.vara",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "C_boundary_and_vara_edge_cases"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "panchanga.at_instant",
+   "members": [
+    {
+     "callable": "engine.astrology.panchanga.panchanga",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "E_independent_validator"
+     ]
+    }
+   ]
+  }
+ ],
+ "scope_not_gated": [],
  "_artifact_name": "PANCHANGA_V1_certification.json",
  "_slug": "panchanga"
 }

@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import atexit
 import hashlib
+import importlib.util
 import io
 import json
 import re
@@ -112,7 +113,9 @@ VALIDATOR_SOURCES = (
     "validate_trikalam_holdout.py", "validate_vimshottari_holdout.py",
 )
 FIXTURE_SOURCES = ("brihat_fixtures.py",)
-SCAN_TARGETS = ("engine", *CERTIFIER_SOURCES, *VALIDATOR_SOURCES, *FIXTURE_SOURCES)
+# scripts/capability_declarations.py is scanned because it shapes what every artifact claims.
+DECLARATION_SOURCES = ("scripts/capability_declarations.py",)
+SCAN_TARGETS = ("engine", *CERTIFIER_SOURCES, *VALIDATOR_SOURCES, *FIXTURE_SOURCES, *DECLARATION_SOURCES)
 
 
 class CertificationFailure(RuntimeError):
@@ -422,6 +425,17 @@ def _render(report: dict) -> str:
         lines += ["## Summary", ""]
         lines += [f"- **{key}**: {_scalar(value)}" for key, value in summary.items()]
         lines.append("")
+    capabilities = report.get("capabilities")
+    if capabilities and report.get("capability_schema"):
+        lines += ["## Capabilities (ADR-0101 s2)", ""]
+        for capability in capabilities:
+            states = sorted({member["disposition"] for member in capability["members"]})
+            lines.append(f"- **{capability['id']}**: {len(capability['members'])} members; {', '.join(states)}")
+        lines.append("")
+        lines += ["## Scope not gated (ADR-0099 s4)", ""]
+        not_gated = report.get("scope_not_gated") or []
+        lines += [f"- {item['id']}: {item['reason']}" for item in not_gated] or ["- none"]
+        lines.append("")
     non_claims = report.get("explicit_non_claims")
     if non_claims:
         lines += ["## Explicit non-claims", ""] + [f"- {item}" for item in non_claims] + [""]
@@ -468,12 +482,31 @@ def preflight() -> dict:
     }
 
 
+def _apply_capability_declarations(report: dict, artifact_name: str) -> None:
+    """ADR-0101 s2-s3: the artifact carries its own enumeration and gate coverage.
+
+    Loaded by path because this module is imported both as `certification_support`
+    and as `scripts.certification_support`. A report that disagrees with its
+    declaration stops the certification rather than writing a partial artifact.
+    """
+
+    spec = importlib.util.spec_from_file_location(
+        "capability_declarations", ROOT / "scripts" / "capability_declarations.py")
+    declarations = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(declarations)
+    try:
+        declarations.apply(report, artifact_name)
+    except declarations.DeclarationError as exc:
+        raise CertificationFailure(str(exc)) from exc
+
+
 def emit(report: dict, artifact_name: str, slug: str, tee=None) -> Path:
     """
     Write the machine-readable artifact, the human-readable report
     derived from the same dict, and the console transcript.
     """
 
+    _apply_capability_declarations(report, artifact_name)
     report["_artifact_name"] = artifact_name
     report["_slug"] = slug
     artifact = ROOT / "certification" / artifact_name

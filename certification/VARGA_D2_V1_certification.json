@@ -2,7 +2,7 @@
  "schema": "varga_d2_v1_certification",
  "adr": "ADR-0011",
  "supersedes_provisional_id": "ADR-VARGA-D2-001",
- "date": "2026-09-14",
+ "date": "2026-11-04",
  "scope": "D2 Hora (Traditional Parashara): two-sign output space, Leo and Cancer only",
  "rule": {
   "kind": "SegmentVargaRule",
@@ -18,15 +18,24 @@
  "gates": {
   "A_table_integrity": {
    "cells": 24,
-   "mismatches": 0
+   "mismatches": 0,
+   "exercises": [
+    "vargas.d2"
+   ]
   },
   "B_dense_sweep": {
    "points": 51429,
-   "mismatches": 0
+   "mismatches": 0,
+   "exercises": [
+    "vargas.d2"
+   ]
   },
   "C_oracle": {
    "comparisons": 3600,
-   "mismatches": 0
+   "mismatches": 0,
+   "exercises": [
+    "vargas.d2"
+   ]
   },
   "D_non_invasiveness": {
    "registry": [
@@ -73,10 +82,16 @@
    "rule_content_sha256": "b78745de5d815b6635cca62d9d872c6dd7acd0a8cdbc5e5ecf53a0bc78ee1859",
    "d9_d10_sweep_points": 53019,
    "d9_sweep_sha256": "ca444f10dd17fb46d24f9354f0c7a8e75505617bf2b04277708056890611593a",
-   "d10_sweep_sha256": "78cd000fc7d16f4004020cda120ce6302bd220b2c4df8ac33481d4311095576a"
+   "d10_sweep_sha256": "78cd000fc7d16f4004020cda120ce6302bd220b2c4df8ac33481d4311095576a",
+   "exercises": [
+    "vargas.d2"
+   ]
   },
   "E_independent_validator": {
-   "result": "PASS"
+   "result": "PASS",
+   "exercises": [
+    "vargas.d2"
+   ]
   }
  },
  "explicit_non_claims": [
@@ -85,7 +100,7 @@
   "any other varga; each requires its own ADR and certification"
  ],
  "environment": {
-  "python": "3.11.16"
+  "python": "3.11.17"
  },
  "preconditions": {
   "data_assets": {
@@ -107,7 +122,7 @@
    "residual_limitation": "coordinated edits to every repository-held trust record cannot be cryptographically prevented by an in-repository trust anchor; only upstream provenance would anchor this, and it is out of M1 scope"
   },
   "anti_fitting": {
-   "modules_scanned": 202,
+   "modules_scanned": 203,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."
@@ -115,6 +130,52 @@
   }
  },
  "result": "PASS",
+ "capability_schema": "ace-capability-enumeration-v1",
+ "capabilities": [
+  {
+   "id": "vargas.d2",
+   "members": [
+    {
+     "callable": "engine.astrology.varga_d2.D2_PARASHARA",
+     "kind": "data",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_table_integrity",
+      "B_dense_sweep",
+      "C_oracle",
+      "D_non_invasiveness"
+     ]
+    },
+    {
+     "callable": "engine.astrology.varga_classifier.classify",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "B_dense_sweep",
+      "C_oracle",
+      "E_independent_validator"
+     ]
+    },
+    {
+     "callable": "engine.astrology.varga_d2.ensure_registered",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "D_non_invasiveness"
+     ]
+    },
+    {
+     "callable": "engine.astrology.divisional_chart.divisional_chart",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "D_non_invasiveness"
+     ]
+    }
+   ]
+  }
+ ],
+ "scope_not_gated": [],
  "_artifact_name": "VARGA_D2_V1_certification.json",
  "_slug": "varga_d2"
 }
