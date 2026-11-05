@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | **ACCEPTED (`ADR-0062`) - canonical, machine-checkable current-state record.** Regenerate/refresh on every meaningful implementation task, same discipline as `reports/AI_HANDOFF_CURRENT.md`. |
-| Version | 7.23.0 |
+| Version | 7.24.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-05 (**Stage C package.** Stage C exit-closure package, **uncommitted** on local branch `stage-c-exit-closure` at `8d59d6ddfefd38a94799b14fd80b4fab922316b8`. `ADR-0109` is `PROPOSED`. JATAKA exit is not declared. No `engine/` production change.) |
+| Last updated | 2026-11-05 (**Stage C review PR.** Stage C review branch `stage-c-exit-closure`, based on `8d59d6ddfefd38a94799b14fd80b4fab922316b8`. On the owner's "ACE OWNER AUTHORIZATION — STAGE C REVIEW PR", for preparation and review only. `ADR-0109` is `PROPOSED`. JATAKA exit is not declared. No `engine/` production change.) |
 | Review cadence | Refresh at the start of a session if stale; not load-bearing if it isn't. |
 
 # ACE execution state
@@ -43,8 +43,8 @@ independently is in these fields plus the pointers they name.
 | Field | Value |
 |---|---|
 | `CURRENT_PHASE` | JATAKA entered (`ADR-0074`). JATAKA exit is neither declared nor performed and remains on HOLD (`ADR-0107`, `ADR-0108`). |
-| `CURRENT_MILESTONE` | **Stage C package prepared for CEO review (`ADR-0109`, `PROPOSED`), uncommitted.** Stage B merged at `8d59d6d` (PR #39). JATAKA exit is not declared. |
-| `CURRENT_AUTHORIZED_TASK` | None self-executable. The packet is delivered. No commit, push, PR or merge is authorized. |
+| `CURRENT_MILESTONE` | **Stage C under review on its PR (`ADR-0109`, `PROPOSED`).** Stage B merged at `8d59d6d` (PR #39). JATAKA exit is not declared. |
+| `CURRENT_AUTHORIZED_TASK` | None self-executable beyond the review PR. Ratification of `ADR-0109`, merging and JATAKA exit are separate decisions. |
 | `TASK_OWNER` | CHATGPT (independent review of the PR); USER (ratification of `ADR-0108`, the dead-path ruling, merge). |
 | `STATUS` | On `stage-b-c2-c5`, under a review PR. Not merged. No `engine/` production code, holdout, threshold or calculated value changed. All 22 scope-bearing artifacts regenerated. |
 | `LAST_COMPLETED_ACTION` | Separated `no_confirmed_violations` from `coverage_established` in C4, so an exit PASS is refused while material `UNKNOWN` remains. Resolved the two `DashaPeriod` properties with a committed runtime proof; 9 `UNKNOWN` remain, retained as unresolved. |
@@ -79,6 +79,7 @@ exactly as `reports/AI_HANDOFF_CURRENT.md` already requires of itself.
 
 | Version | Date | Change |
 |---|---|---|
+| 7.24.0 | 2026-11-05 | Stage C review branch and PR prepared on the owner's authorization. `ADR-0109` stays `PROPOSED`. |
 | 7.23.0 | 2026-11-05 | **Stage C package prepared, uncommitted (`ADR-0109`, `PROPOSED`).** No `engine/` production change. JATAKA exit not declared. |
 | 7.22.0 | 2026-11-04 | C4 exit clause corrected after the CEO audit HOLD on PR #39 (`ADR-0108` addendum). |
 | 7.21.0 | 2026-11-04 | **Stage B delivered for review (`ADR-0108`, `PROPOSED`).** C2, C3 and C4 enforced; backlog migrated; exit clause 2 recorded as open. |

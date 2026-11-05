@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.23.0 |
+| Version | 9.24.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-05 (**Stage C package.** Stage C exit-closure package, **uncommitted** on local branch `stage-c-exit-closure` at `8d59d6ddfefd38a94799b14fd80b4fab922316b8`. `ADR-0109` is `PROPOSED`. JATAKA exit is not declared.) |
+| Last updated | 2026-11-05 (**Stage C review PR.** Stage C review branch `stage-c-exit-closure`, based on `8d59d6ddfefd38a94799b14fd80b4fab922316b8`. On the owner's "ACE OWNER AUTHORIZATION — STAGE C REVIEW PR", for preparation and review only. `ADR-0109` is `PROPOSED`. JATAKA exit is not declared.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -68,17 +68,18 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
 
-### 2026-11-05 - Stage C exit-closure package prepared (ADR-0109, PROPOSED), uncommitted
+### 2026-11-05 - Stage C review PR prepared (ADR-0109, PROPOSED)
 
-**Not committed, not pushed, no PR.** Local branch `stage-c-exit-closure` at base `main` `8d59d6d`. JATAKA exit is not
-declared, and CEO and owner approval are both outstanding. No Codex checkpoint or patch was found; built from verified `main`.
+**Review only: not ratified, not merged.** Branch `stage-c-exit-closure` on base `main` `8d59d6d`, with `stage_c.patch` and
+its review delta applied. JATAKA exit is not declared, and CEO and owner approval are both outstanding. No Codex checkpoint or patch was found; built from verified `main`.
 
 - **C4:** 11 dead-path and 9 material `UNKNOWN` findings resolved by evidence. `coverage_static` gains `cls.` and
   established receivers, `getattr` on engine classes, and containment.
 - **New:** `scripts/certify_support_paths.py` and `SUPPORT_PATHS_V1`; a gate in `VIMSHOTTARI_V1`; `Sign.name` and
   `Sign.one_based` declared under `SIGN_CONVENTION_V1` Gate B, which already asserted them.
 - **Records:** `reports/JATAKA_COMPLETION_RECORD.md` (`N5`, and `N1` in s4); `ADR-0109` lists what needs ratification.
-- **Read first:** `ADR-0109` s3. If containment is refused, five methods return to `UNKNOWN` and clause 2 is unsatisfied.
+- **Read first:** `ADR-0109` s3 and s3A. If containment is refused, five methods return to `UNKNOWN` and clause 2 is
+  unsatisfied. Per-method evidence: `engine/tests/test_stage_c_containment_evidence.py`.
 
 ### 2026-11-04 - C4 exit clause corrected after the CEO audit HOLD on PR #39
 - Branch / commit SHA: `stage-b-c2-c5`, this task's own commit on top of

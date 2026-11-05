@@ -10560,7 +10560,9 @@ JATAKA exit. It changes no production code under `engine/`, holdout, threshold o
 - **Date:** 2026-11-05
 - **Status:** **PROPOSED. NOT RATIFIED.** Drafted on the owner's "ACE — RESUME STAGE C FROM CODEX" instruction, which
   asks for the fixed Stage C package as one packet for independent CEO review and authorizes no commit, push, PR or
-  merge. **Nothing here is in force until the owner ratifies it, and JATAKA exit is not declared.**
+  merge. The owner's later "ACE OWNER AUTHORIZATION — STAGE C REVIEW PR" authorizes one review branch, commits, a push
+  and one PR, for preparation and review only. **Nothing here is in force until the owner ratifies it. Merging and
+  JATAKA exit stay separate decisions, and JATAKA exit is not declared.**
 - **Context:** at `main` `8d59d6ddfefd38a94799b14fd80b4fab922316b8`, `reports/c4_reachability.json` held 11
   `DEAD_PATH_UNCOVERED` findings and 9 material `UNKNOWN`s. `ADR-0108` s4 item 5 leaves a dead-path finding three ways
   out: an owner ruling, certification, or removing its dead caller. The ratification's boundary 2 leaves an `UNKNOWN`
@@ -10661,7 +10663,7 @@ accepted entry.
   re-evaluated at the exact merged `main` SHA, CEO technical approval and the owner's decision (`ADR-0106` OR-3).
 - **Evidence:** `reports/c4_reachability.json`; `certification/SUPPORT_PATHS_V1_certification.json`;
   `engine/tests/test_stage_c_exit_closure.py`; `engine/tests/test_stage_c_containment_evidence.py`; the Stage C
-  packet's local runs. **No CI has run on this tree.**
+  packet's local runs. CI evidence on the committed HEAD is on the review PR, not in this entry.
 
 ---
 

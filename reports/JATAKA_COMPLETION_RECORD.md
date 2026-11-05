@@ -17,7 +17,7 @@ from this tree's artifacts. A stored artifact is history, not proof, so the runs
 ## 1. What was evaluated
 
 - **Base `main`:** `8d59d6ddfefd38a94799b14fd80b4fab922316b8`. Its CI, run `41823126770`, succeeded on all four jobs.
-- **Evaluated tree:** that base plus the **uncommitted** Stage C changes on local branch `stage-c-exit-closure`.
+- **Evaluated tree:** that base plus the Stage C changes on review branch `stage-c-exit-closure`, not merged.
   **This is not a `main` SHA.** `N5` requires an exact evaluated `main` SHA, so this record must be regenerated after any
   authorized merge, before it can support an exit decision.
 
@@ -62,7 +62,8 @@ These three scope overclaims do not gate exit (`ADR-0099` s4), remain required r
 
 ## 3. Regenerated evidence
 
-Executed 2026-11-05 on this tree, in a clean native Linux copy (Python 3.11.17) unless stated. **CI has not run on it.**
+Executed 2026-11-05 before commit, in a clean native Linux copy (Python 3.11.17) unless stated. CI on the committed HEAD is
+recorded on the review PR, not here.
 
 | Check | Result |
 |---|---|
@@ -108,8 +109,8 @@ Whether this discharges `N1` is for the CEO and owner to decide (`ADR-0107` s5 i
 
 ## 6. What could not be verified
 
-- **No CI has run on this tree**, because no commit or push was authorized. Local runs were native Linux on Python 3.11
-  only, where CI also runs 3.12.
+- **This record cites no CI run of its own tree.** A record cannot hold the result of the commit that contains it, so that
+  evidence is on the review PR. The local runs above were native Linux on Python 3.11 only.
 - **`N2` stays an unverified property.** The roughly fourteen unaudited negative-control gates are neither tested nor cleared.
   The new gates' controls are self-authored, and no independent mutation harness has run against them.
 - **Static analysis has limits.** Dynamic dispatch in engine modules: {"engine.knowledge.registry": ["getattr"]}. Only the `getattr` on an engine
@@ -122,7 +123,7 @@ Whether this discharges `N1` is for the CEO and owner to decide (`ADR-0107` s5 i
 
 1. Owner ratification of `ADR-0109` s3's additions, on which clause 2's status depends. **If containment is refused, five
    methods return to `UNKNOWN` and clause 2 is unsatisfied.**
-2. Authorized commit, PR and CI, then regeneration of this record at the exact merged `main` SHA.
+2. CI on the review PR, an authorized merge, then regeneration of this record at the exact merged `main` SHA.
 3. The CEO's determination on `N1` and on this record.
 
 No material blocker to review is known. **Approval status: CEO technical approval not given. Owner decision not given.**
