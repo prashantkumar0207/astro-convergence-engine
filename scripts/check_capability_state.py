@@ -88,6 +88,11 @@ FROZEN_EVIDENCE = frozenset({
     "CURRENT_ENGINE_LOCK.json",
 })
 
+# Certified support, and NOT a production analytical input (ADR-0099 s2): no ratified entry serves
+# it in production and it is in no declaring list. Pinned here, not read from the document, so that
+# a documentation edit cannot move a declared capability out of the declared set.
+NON_DECLARING_SUPPORT = frozenset({"SUPPORT_PATHS_V1"})
+
 # D-1. Where a certification artifact records its verdict. `current_engine`
 # (Tier-0, ADR-0005) carries it at summary.result, not at top level, and the
 # original implementation therefore skipped the most foundational certification
@@ -305,7 +310,16 @@ def check_declared_inputs(block: dict, registered: set[int], dedicated: set[int]
 
     passing = {name for name, result in artifacts.items() if result == "PASS"}
     live = {f"D{division}" for division in registered | dedicated} | {
-        name for name in passing if not name.startswith("VARGA_D")}
+        name for name in passing if not name.startswith("VARGA_D") and name not in NON_DECLARING_SUPPORT}
+    support = block.get("certified_support_not_declared", [])
+    if set(support) != NON_DECLARING_SUPPORT:
+        errors.append(f"F18 certified_support_not_declared states {sorted(support)}; "
+                      f"only {sorted(NON_DECLARING_SUPPORT)} is certified support")
+    for name in sorted(NON_DECLARING_SUPPORT):
+        if artifacts.get(name) != "PASS":
+            errors.append(f"F18 {name} is listed as certified support, but holds no PASS artifact")
+        if name in lists or name in claimed:
+            errors.append(f"F18 {name} is certified support, and must not be in a declaring list")
     for name in sorted(live - claimed):
         errors.append(f"F15 {name} is live but missing from declared_production_analytical_inputs")
     for name in sorted(claimed - live):
@@ -503,7 +517,7 @@ def check(
 
     # Completeness: a PASS artifact accounted for nowhere. Without this, a
     # document could pass by simply omitting a capability.
-    accounted = set(claimed_capabilities)
+    accounted = set(claimed_capabilities) | NON_DECLARING_SUPPORT
     for division in claimed_production | claimed_unregistered:
         accounted.add(f"VARGA_D{division}_V1")
     for name in sorted(passing - accounted):

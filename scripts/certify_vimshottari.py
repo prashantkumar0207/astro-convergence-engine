@@ -19,6 +19,7 @@ production code). Exit 0 = PASS, 3 = FAIL.
 """
 
 import json
+import dataclasses
 import sys
 from datetime import date
 from pathlib import Path
@@ -35,7 +36,9 @@ from engine.astronomy.profile import KP_KRISHNAMURTI, PARASHARI_LAHIRI  # noqa: 
 from engine.calculations.calculations import calculate  # noqa: E402
 from engine.dasha import tables as dasha_tables  # noqa: E402
 from engine.dasha.profile import VIMSHOTTARI_MEAN_SIDEREAL_YEAR  # noqa: E402
-from engine.dasha.vimshottari import vimshottari_from_moon  # noqa: E402
+from engine.dasha.vimshottari import (  # noqa: E402
+    DashaSeedError, vimshottari_from_moon, vimshottari_from_snapshot,
+)
 from engine.models.birth_data import BirthData  # noqa: E402
 
 try:
@@ -205,6 +208,69 @@ def run_case(case, engine_profile, jhora_ayanamsa):
     }
 
 
+def _direct_timeline(snapshot, school):
+    """What the gated function gives for this snapshot, with the wrapper's job done by hand."""
+
+    return vimshottari_from_moon(
+        snapshot.sidereal_planets["Moon"].longitude, snapshot.julian_day,
+        dasha_profile=VIMSHOTTARI_MEAN_SIDEREAL_YEAR, depth=3, school=school, provenance=snapshot.provenance,
+    )
+
+
+def wrapper_mismatches(wrapper) -> int:
+    mismatches = 0
+    for case in HOLDOUT:
+        year, month, day = case["date"]
+        hour, minute, second = case["time"]
+        birth = BirthData(year, month, day, hour, minute, float(second), case["lat"], case["lon"], "UTC")
+        for engine_profile, school in ((PARASHARI_LAHIRI, "parashari"), (KP_KRISHNAMURTI, "kp")):
+            snapshot = calculate(birth, profile=engine_profile).snapshot
+            mismatches += wrapper(snapshot) != _direct_timeline(snapshot, school)
+    return mismatches
+
+
+def gate_snapshot_wrapper_neutrality():
+    """vimshottari_from_snapshot chooses the school and seed from the snapshot. It must give
+    exactly the gated function's timeline, and must refuse what it was written to refuse."""
+
+    def wrapper(snapshot):
+        return vimshottari_from_snapshot(snapshot, VIMSHOTTARI_MEAN_SIDEREAL_YEAR, depth=3)
+
+    mismatches = wrapper_mismatches(wrapper)
+    if mismatches:
+        fail(f"vimshottari_from_snapshot differs from vimshottari_from_moon on {mismatches} snapshots")
+
+    def swapped_school(snapshot):
+        timeline = wrapper(snapshot)
+        return dataclasses.replace(timeline, school="kp" if timeline.school == "parashari" else "parashari")
+
+    def shallower(snapshot):
+        return vimshottari_from_snapshot(snapshot, VIMSHOTTARI_MEAN_SIDEREAL_YEAR, depth=2)
+
+    controls = {"school swapped": wrapper_mismatches(swapped_school), "wrong depth": wrapper_mismatches(shallower)}
+    for control, rejected in controls.items():
+        if not rejected:
+            fail(f"negative control not rejected: {control}")
+
+    birth = BirthData(2000, 1, 1, 12, 0, 0.0, 0.0, 0.0, "UTC")
+    snapshot = calculate(birth, profile=PARASHARI_LAHIRI).snapshot
+    provenance = snapshot.provenance
+    refused = (
+        dataclasses.replace(snapshot, provenance=None),
+        dataclasses.replace(snapshot, provenance=dataclasses.replace(provenance, profile_name="other_profile")),
+        dataclasses.replace(snapshot, provenance=dataclasses.replace(
+            provenance, ayanamsa_mode=provenance.ayanamsa_mode + 1)),
+    )
+    for bad in refused:
+        try:
+            wrapper(bad)
+            fail("vimshottari_from_snapshot accepted a snapshot it must refuse")
+        except DashaSeedError:
+            pass
+    return {"snapshots_compared": 2 * len(HOLDOUT), "mismatches": 0, "refusals_verified": len(refused),
+            "negative_controls_rejected": controls}
+
+
 def main():
     tee = support.start_transcript()
     preconditions = support.preflight()
@@ -275,6 +341,7 @@ def main():
             "oracle_lord_mismatches": 0,
             "oracle_max_start_delta_days": worst_start,
             "start_tolerance_days": START_TOLERANCE_DAYS,
+            "snapshot_wrapper_neutrality": gate_snapshot_wrapper_neutrality(),
             "independent_validator": "PASS",
             "cases": per_profile,
             "near_boundary_coverage": {

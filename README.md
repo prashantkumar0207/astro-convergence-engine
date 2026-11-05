@@ -59,6 +59,7 @@ python scripts/certify_d2.py                       # regenerate VARGA_D2_V1 cert
 python validate_parashari_drishti_holdout.py       # independent graha drishti holdout
 python scripts/certify_parashari_drishti.py        # regenerate PARASHARI_DRISHTI_V1 certification (needs PyJHora)
 python scripts/certify_sign_convention.py          # regenerate SIGN_CONVENTION_V1 certification
+python scripts/certify_support_paths.py            # regenerate SUPPORT_PATHS_V1 certification (needs PyJHora)
 ```
 
 The stored `certification/current_engine_certification.json` is never accepted as proof; the certifier regenerates it from scratch on every run. Do not commit an audit-run regeneration.

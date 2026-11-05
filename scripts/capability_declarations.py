@@ -3,8 +3,8 @@
 `certification_support.emit()` applies this table, so every certifier writes its
 own `capabilities`, `scope_not_gated` and per-gate `exercises` from the run that
 produced the artifact. The two-segment capability slug, the callable-path members
-and the member-level dispositions are the owner's selections (2-B, 3-C). The rest
-of the shape is a builder specification awaiting ratification: see ADR-0108.
+and the member-level dispositions are the owner's selections (2-B, 3-C). ADR-0108 s3,
+ratified, specifies the rest of the shape.
 
 These are declarations, not observations (ADR-0101 s3). `scripts/check_scope_coverage.py`
 checks them against the source by a separate static method, and a declaration
@@ -133,6 +133,7 @@ _NAVAMSA = "engine.astrology.navamsa_chart"
 _DASHAMSA = "engine.astrology.dashamsa_chart"
 _DASHA = "engine.dasha.vimshottari"
 _CONVENTIONS = "engine.astrology.sign_conventions"
+_REPOSITORY = "engine.knowledge.repository.KnowledgeRepository"
 
 _DASHA_GATES = ("oracle_pratyantar_rows_compared", "oracle_lord_mismatches", "oracle_max_start_delta_days",
                 "independent_validator", "cases", "near_boundary_coverage", "boundary_proximity_indicator")
@@ -255,6 +256,8 @@ ARTIFACT_DECLARATIONS = {
             _cap("conventions.sign_type",
                  _fn("engine.astrology.sign.Sign.from_one_based", "B_sign_type", "D_cross_layer_agreement"),
                  _fn("engine.astrology.sign.Sign.from_zero_based", "B_sign_type", "D_cross_layer_agreement"),
+                 _fn("engine.astrology.sign.Sign.one_based", "B_sign_type", "D_cross_layer_agreement"),
+                 _fn("engine.astrology.sign.Sign.name", "B_sign_type"),
                  _data("engine.astrology.sign.SIGN_COUNT", "B_sign_type")),
             _cap("conventions.declarations",
                  _fn(f"{_CONVENTIONS}.declared", "C_declaration_coverage"),
@@ -306,6 +309,36 @@ ARTIFACT_DECLARATIONS = {
             _data("engine.astrology.trikalam.PERIOD_FRACTION", "A_convention_integrity", "B_dense_sweep"),
         )],
     },
+    "SUPPORT_PATHS_V1_certification.json": {
+        "capabilities": [
+            _cap("support.house_helpers",
+                 _fn("engine.astrology.house.equal_house_from_ascendant", "A_equal_house_closed_form"),
+                 _fn("engine.astrology.planet_mapper.map_planet", "B_map_planet_closed_form")),
+            _cap("support.time_conversion",
+                 _fn("engine.core.timezone_engine.to_utc", "C_to_utc_reference")),
+            _cap("support.knowledge_access",
+                 _fn("engine.knowledge.loader.KnowledgeLoader.load", "D_knowledge_access_fidelity"),
+                 _fn(f"{_REPOSITORY}.load_json", "D_knowledge_access_fidelity"),
+                 _fn(f"{_REPOSITORY}.planets", "D_knowledge_access_fidelity"),
+                 _fn(f"{_REPOSITORY}.signs", "D_knowledge_access_fidelity"),
+                 _fn(f"{_REPOSITORY}.houses", "D_knowledge_access_fidelity"),
+                 _fn(f"{_REPOSITORY}.dignities", "D_knowledge_access_fidelity"),
+                 _fn(f"{_REPOSITORY}.nakshatras", "D_knowledge_access_fidelity"),
+                 _fn(f"{_REPOSITORY}.natural_relationships", "D_knowledge_access_fidelity",
+                     "E_natural_relationship_oracle"),
+                 _fn("engine.knowledge.registry.KnowledgeRegistry.get", "D_knowledge_access_fidelity"),
+                 _fn("engine.knowledge.registry.KnowledgeRegistry.clear", "D_knowledge_access_fidelity"),
+                 _fn("engine.knowledge.validator.SchemaValidator.load_json", "D_knowledge_access_fidelity")),
+            _cap("support.natural_relationship",
+                 _fn("engine.astrology.dignity.natural_relationship", "E_natural_relationship_oracle")),
+            _cap("support.d1_delegate",
+                 _fn("engine.astrology.rashi_chart.rashi_chart", "F_rashi_chart_neutrality")),
+        ],
+        "empty_exercises": {
+            "G_negative_controls": "runs the other gates' comparators against planted wrong functions, so no "
+                                   "production callable is the thing under test",
+        },
+    },
     "VARGA_D2_V1_certification.json": _varga_five(2, "engine.astrology.varga_d2.D2_PARASHARA"),
     "VARGA_D3_V1_certification.json": _varga_five(3, "engine.astrology.varga_d3.D3_PARASHARA"),
     "VARGA_D4_V1_certification.json": _varga_nine_standalone(4),
@@ -323,7 +356,7 @@ ARTIFACT_DECLARATIONS = {
             "dasha.vimshottari",
             _fn(f"{_DASHA}.vimshottari_from_moon", *_DASHA_GATES),
             _fn(CALCULATE, "oracle_pratyantar_rows_compared", "cases", "near_boundary_coverage"),
-            _ungated(f"{_DASHA}.vimshottari_from_snapshot", _DASHA_WRAPPER_REASON),
+            _fn(f"{_DASHA}.vimshottari_from_snapshot", "snapshot_wrapper_neutrality"),
             _ungated(f"{_DASHA}.vimshottari_parashari", _DASHA_WRAPPER_REASON),
             _ungated(f"{_DASHA}.vimshottari_kp", _DASHA_WRAPPER_REASON),
         )],
