@@ -20,11 +20,13 @@ module outside the surface, and names exported through ADR-0099 U2's surfaces.
 
 Excluded from the universe, disclosed in the report: engine/main.py's route handlers
 (they are callers and exports, not capabilities) and engine/tools/ (developer scaffolding,
-not analytical). Both exclusions await ratification with ADR-0108.
+not analytical). ADR-0108 s4 item 2, ratified.
 
-An UNKNOWN method leaves that status only through RECEIVER_EVIDENCE: a named caller whose
-unresolved use is still in the source, and a committed test proving at runtime that the
-use reaches this method. Inspection alone never resolves one.
+An UNKNOWN method leaves that status through one of three kinds of evidence, never through
+inspection alone: coverage_static resolves the receiver from the source; the method's class
+is CONTAINED, so no value of it exists outside the surface for an unresolved call to land on;
+or RECEIVER_EVIDENCE, a named caller whose unresolved use is still in the source, and a
+committed test proving at runtime that the use reaches this method.
 
 FAIL when: an uncovered in-use function is not tracked by an OPEN backlog finding; a
 tracked finding is no longer uncovered; a source file cannot be parsed; receiver evidence
@@ -38,9 +40,10 @@ report's `exit_clause_2` separates two different claims:
                             supports `satisfied`: an unresolved method is neither
                             shown to be unused nor shown to be certified.
 
-Exit 0 = PASS, 1 = FAIL. `--write` regenerates the committed report. `--backlog PATH`
-lets a negative control run the real enforcement path against a planted backlog.
-`--exit-criterion` answers the exit question alone: exit 0 only if clause 2 is satisfied.
+Exit 0 = PASS, 1 = FAIL. `--write` regenerates the committed report. `--backlog PATH` and
+`--certification-dir PATH` let a negative control run the real enforcement path against a
+planted backlog or a planted artifact set. `--exit-criterion` answers one question: exit 0
+only if clause 2 is satisfied. That is clause 2 alone, and it is never JATAKA exit.
 """
 
 from __future__ import annotations
@@ -78,30 +81,10 @@ RECEIVER_EVIDENCE = {
         "caller": "engine.dasha.vimshottari._subdivide", "proof": _DASHA_PROOF},
 }
 
-#: What the review of each remaining UNKNOWN found. Each is retained as unresolved: nothing
-#: here is a classification, and none of these has a committed proof either way.
-UNKNOWN_REVIEW = {
-    "engine.astrology.varga_classifier.VargaClassification.division_number":
-        "Read as `asc.division_number` and `c.division_number` in build_varga_chart, on classify()'s result. "
-        "The same shape as DashaPeriod, but no runtime proof is committed.",
-    "engine.knowledge.cache.KnowledgeCache.clear":
-        "The only evidence is `._cache.clear()` inside the two clear methods. The receiver type is not established.",
-    "engine.knowledge.cache.KnowledgeCache.get":
-        "The name collides with `.get` on many values, and the receivers are not type-resolved.",
-    "engine.knowledge.registry.KnowledgeRegistry.clear":
-        "The only evidence is `._cache.clear()` inside the two clear methods. KnowledgeRegistry._cache is annotated dict.",
-    "engine.knowledge.repository.KnowledgeRepository.houses":
-        "Every site reads `.houses` on a chart or snapshot-like value. The receivers are not type-resolved.",
-    "engine.knowledge.repository.KnowledgeRepository.load_json":
-        "Used as `cls.load_json` in the class's own classmethods, which the analyser does not resolve. Resolving it "
-        "could move dead-path finding KnowledgeLoader.load, which needs owner ratification (ADR-0108 addendum).",
-    "engine.knowledge.repository.KnowledgeRepository.planets":
-        "Every site reads `.planets` on a chart value. The receivers are not type-resolved.",
-    "engine.knowledge.resolver.KnowledgeResolver.resolve":
-        "The name collides with pathlib's Path.resolve at the sites found. The receivers are not type-resolved.",
-    "engine.knowledge.validator.SchemaValidator.validate":
-        "The only evidence is `validator.validate(data)` inside the method itself. The receiver type is not established.",
-}
+#: What a review found about each remaining UNKNOWN. A future one stays unresolved until it
+#: has evidence, and reads NOT REVIEWED in the report until it is listed here. The nine reviewed
+#: at ADR-0108 each now have evidence: see the C4 report and the Stage C record.
+UNKNOWN_REVIEW: dict[str, str] = {}
 
 
 def gated_members(certification_dir: Path) -> tuple[set[str], list[str]]:
@@ -153,7 +136,10 @@ def analyse(graph, members: set[str]) -> dict:
             for name in names:
                 ambiguous.setdefault(name, set()).add(owner)
 
-    method_names = {dotted for names in graph.methods.values() for dotted in names}
+    # A contained class has no value outside the surface, so an unresolved `x.m` there cannot
+    # land on its methods. Its direct callers still count, exactly as before.
+    method_names = {dotted for names in graph.methods.values() for dotted in names
+                    if not graph.contained(dotted.rsplit(".", 1)[0])}
     rows: dict[str, dict] = {}
     for name in sorted(graph.definitions):
         leaf = name.rsplit(".", 1)[-1]
@@ -326,7 +312,9 @@ def main(argv: list[str]) -> int:
             print(f"    {error}")
         return 1 if errors else 0
     backlog_path = Path(argv[argv.index("--backlog") + 1]) if "--backlog" in argv else BACKLOG
-    errors, report = check(backlog_path=backlog_path)
+    certification_dir = (Path(argv[argv.index("--certification-dir") + 1]) if "--certification-dir" in argv
+                         else CERTIFICATION_DIR)
+    errors, report = check(certification_dir=certification_dir, backlog_path=backlog_path)
     clause = report["exit_clause_2"]
     print(f"reachability: {report['summary']}")
     print(f"no confirmed violations: {clause['no_confirmed_violations']} ({len(clause['live_path_uncovered'])} "
@@ -338,7 +326,8 @@ def main(argv: list[str]) -> int:
         refusals = exit_refusals(clause)
         for refusal in refusals:
             print(f"    {refusal}")
-        print(f"EXIT CRITERION: {'REFUSED' if refusals or errors else 'clause 2 satisfied'}")
+        print("EXIT CRITERION: " + ("REFUSED" if refusals or errors
+                                    else "clause 2 satisfied. Clause 2 alone: this is not JATAKA exit"))
         return 1 if refusals or errors else 0
     if errors:
         print(f"FAIL: reachability ({len(errors)} failures)")
