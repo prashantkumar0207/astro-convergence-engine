@@ -10558,8 +10558,11 @@ JATAKA exit. It changes no production code under `engine/`, holdout, threshold o
 ## ADR-0109 - Stage C exit closure: reachability findings resolved by evidence; `SUPPORT_PATHS_V1`; N1 reconciled; N5 record prepared (PROPOSED - not ratified; JATAKA exit not declared)
 
 - **Date:** 2026-11-05
-- **Status:** **PROPOSED. NOT RATIFIED.** Drafted on the owner's "ACE — RESUME STAGE C FROM CODEX" instruction, which
-  asks for the fixed Stage C package as one packet for independent CEO review and authorizes no commit, push, PR or
+- **Status:** **ACCEPTED as to s1 item 4, s3A items 1 to 3 and the N1 reconciliation only, on the owner's ratifying
+  instruction recorded in the "Ratification of ADR-0109" sub-entry below, and subject to its limits.** Originally drafted
+  `PROPOSED. NOT RATIFIED.` Per this repository's "change only the status" discipline, the Status line is the only text
+  in this entry that the ratification altered. As drafted: on the owner's "ACE — RESUME STAGE C FROM CODEX" instruction,
+  which asks for the fixed Stage C package as one packet for independent CEO review and authorizes no commit, push, PR or
   merge. The owner's later "ACE OWNER AUTHORIZATION — STAGE C REVIEW PR" authorizes one review branch, commits, a push
   and one PR, for preparation and review only. **Nothing here is in force until the owner ratifies it. Merging and
   JATAKA exit stay separate decisions, and JATAKA exit is not declared.**
@@ -10664,6 +10667,46 @@ accepted entry.
 - **Evidence:** `reports/c4_reachability.json`; `certification/SUPPORT_PATHS_V1_certification.json`;
   `engine/tests/test_stage_c_exit_closure.py`; `engine/tests/test_stage_c_containment_evidence.py`; the Stage C
   packet's local runs. CI evidence on the committed HEAD is on the review PR, not in this entry.
+
+#### Ratification of ADR-0109: CONTAINMENT, s3A ITEMS 1 TO 3 AND THE N1 RECONCILIATION RATIFIED (2026-11-05)
+
+- **Status:** ACCEPTED. The owner instructed, quoted exactly:
+
+  ```text
+  **ACE OWNER RATIFICATION — STAGE C / ADR-0109**
+
+  I ratify ADR-0109's Stage C decisions as implemented in PR #40 at `7dae563d762326a0286f6573a22c8315087ed9ec`, limited to:
+
+  1. Receiver-aware containment under §1 item 4, with conservative U1/U2 attribution and fail-closed treatment of unresolved plausible call paths. No blanket exemption.
+  2. §3A item 1: 23 scope-bearing and 27 total certification artifacts, supplementing ADR-0102.
+  3. §3A item 2: the pinned, non-declaring `certified_support_not_declared` category, without altering the three production-declaring lists.
+  4. §3A item 3: the two evidence-backed, closed-finding backlog dispositions.
+
+  I accept the scoped N1 reconciliation, preserving ADR-0083, ADR-0085 and ADR-0086's original qualifications and remaining non-claims.
+
+  I authorize a minimal ratification-only commit on PR #40 and its complete four-job CI verification.
+
+  No production expansion, weakening of certification gates, DP-040 selection, force push, main merge or JATAKA exit is authorized by this instruction.
+
+  Report the exact ratification SHA and CI results for the final merge decision.
+  ```
+
+  Per `docs/PROJECT_CONSTITUTION.md` s11, that instruction is the ratifying act, as implemented at `7dae563d762326a0286f6573a22c8315087ed9ec`. It does not
+  extend to any other text.
+- **Decision:** s1 item 4 and s3A items 1 to 3 are in force as written, and the scoped N1 reconciliation in
+  `reports/JATAKA_COMPLETION_RECORD.md` s4 is accepted. The entry's text is unchanged: with its Status line and this
+  sub-entry excluded, it hashes to SHA-256 `d7604aebf69848c0e86fb89e2ab84c523347c52a745de03dd5e559b29dcc08ea` both before and after this ratification. `ADR-0083`, `ADR-0085`,
+  `ADR-0086`, `ADR-0099`, `ADR-0102` and `ADR-0108` are not edited, and their qualifications and non-claims stand.
+- **What this does not cover.** The instruction names nothing else, so this entry does not ratify s1 items 1 to 3 or s3
+  item 5. Those were built under the owner's Stage C instruction, and are reviewed as part of PR #40. It does not approve
+  the `N5` completion record, which remains `PROPOSED`. The three `TRANSIT_V1` overclaims stay open, and no `DP-040`
+  option is selected.
+- **Consequences:** clause 2's reported status no longer waits on the rulings in s3. **Nothing else becomes authorized:** no
+  production expansion, no weakening of any gate, no merge and no JATAKA exit, which is not declared. A merge still
+  needs CEO technical approval and the owner's authorization (`ADR-0106` OR-3). An exit decision still needs the `N5` record
+  regenerated at the exact merged `main` SHA.
+- **Evidence:** the owner's instruction, quoted above, which exists as session input and not as a repository file; PR #40
+  at `7dae563d762326a0286f6573a22c8315087ed9ec`; CI run `42032604189` at that SHA, success on all four jobs; the hash above.
 
 ---
 

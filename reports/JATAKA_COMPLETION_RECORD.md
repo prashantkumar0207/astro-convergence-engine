@@ -89,7 +89,8 @@ demonstrated and currently covered. It is not blanket certification of all possi
 | `ADR-0085` (D45 composition layer had no D45-specific exact-value check) | Gate I, commit `1f7bc79bb0833d57deeea9cb120a63de480d8ef3`, PR #36, merge `62baacc704adcfca62973a5d359d4698b9aaf1c3`, CI `41626489663` | Gate I: PASS | The excluded Parivritti and Somanatha methods. `ADR-0077`'s A-H result alone remains no proof of composition |
 | `ADR-0086` (Yoga composition had no independent house or sign evidence) | Gate J, commit `06f69d54d0bc65b2988924a3d2756935cb32c185`, PR #37, merge `7c653297495ea51b2133427ccbb660405d3ce3ba`, CI `41798264558` | Gate J: PASS | Bhanga or cancellation logic and combustion gating. Retrograde is a disclosed qualifier, not a gate. `ADR-0081`'s A-I result alone remains no proof of composition |
 
-Whether this discharges `N1` is for the CEO and owner to decide (`ADR-0107` s5 item 5).
+The owner accepted this scoped reconciliation, preserving those qualifications and non-claims (`ADR-0109`, ratification
+sub-entry).
 
 ## 5. Exceptions, qualifications and non-claims
 
@@ -121,12 +122,11 @@ Whether this discharges `N1` is for the CEO and owner to decide (`ADR-0107` s5 i
 
 ## 7. Outstanding before any exit decision
 
-1. Owner ratification of `ADR-0109` s3's additions, on which clause 2's status depends. **If containment is refused, five
-   methods return to `UNKNOWN` and clause 2 is unsatisfied.**
-2. CI on the review PR, an authorized merge, then regeneration of this record at the exact merged `main` SHA.
-3. The CEO's determination on `N1` and on this record.
+1. CI on the review PR, an authorized merge, then regeneration of this record at the exact merged `main` SHA.
+2. The CEO's determination on this record.
 
-No material blocker to review is known. **Approval status: CEO technical approval not given. Owner decision not given.**
+No material blocker to review is known. **Approval status: the owner ratified `ADR-0109`'s stated items and accepted the `N1` reconciliation. CEO technical approval
+not given. Owner exit decision not given.**
 
 ## Appendix A: coverage of each in-use function
 

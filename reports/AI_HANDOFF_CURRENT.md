@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.24.0 |
+| Version | 9.25.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-05 (**Stage C review PR.** Stage C review branch `stage-c-exit-closure`, based on `8d59d6ddfefd38a94799b14fd80b4fab922316b8`. On the owner's "ACE OWNER AUTHORIZATION — STAGE C REVIEW PR", for preparation and review only. `ADR-0109` is `PROPOSED`. JATAKA exit is not declared.) |
+| Last updated | 2026-11-05 (**ADR-0109 ratified in part.** Stage C on PR #40. `ADR-0109` is `ACCEPTED` for s1 item 4, s3A items 1 to 3 and the N1 reconciliation only. Not merged. JATAKA exit is not declared.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,11 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-05 - ADR-0109 ratified in part; PR #40 awaits the final merge decision
+
+**Not merged.** Stage C on PR #40. `ADR-0109` is `ACCEPTED` for s1 item 4, s3A items 1 to 3 and the N1 reconciliation only. Not merged. JATAKA exit is not declared. The ratification sub-entry states what it does not cover. A merge needs CEO technical approval and
+the owner's authorization (`ADR-0106` OR-3).
 
 ### 2026-11-05 - Stage C review PR prepared (ADR-0109, PROPOSED)
 

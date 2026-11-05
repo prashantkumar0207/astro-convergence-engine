@@ -4,7 +4,7 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | CURRENT - regenerate on every certified change. Reconciled against live repository evidence 2026-09-05 per `ADR-0093`. Section 6's machine-readable capability block is now mechanically enforced against live sources by `scripts/check_capability_state.py` (`ADR-0094`); **the prose in sections 1-5 is not machine-checked and remains a manual discipline.** |
-| Version | 3.2.0 |
+| Version | 3.2.1 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 | Last updated | 2026-09-18 (**M2 record reconciliation.** Version raised to 3.0.0; **the basis for document version numbering is an unresolved governance issue** - `docs/DOCUMENTATION_STANDARD.md` s2 item 4 describes MAJOR/MINOR/PATCH, but that document is a DRAFT placeholder, so no version decision here rests on it. 3.0.0 records that statements changed meaning, following this document's own 2.0.0 precedent, and is open to correction. Corrections: section 2's statement that D16/D4 are not wired into CI was false since `ADR-0096`; section 3's "eleven served / eight registered" contradicted section 2 and the section 6 block; section 1's validator-source count was 21, not 22. No capability claim and no certified value changed.) |
 | Review cadence | TBD (see docs/OPEN_QUESTIONS.md Q1) |
@@ -142,6 +142,7 @@ gates its capability and cites an ACCEPTED decision entry.
 
 | Version | Date | Change |
 |---|---|---|
+| 3.2.1 | 2026-11-05 | `certified_support_not_declared` ratified by the owner (`ADR-0109` s3A item 2). No list or count changes. |
 | 3.2.0 | 2026-11-05 | Section 6 gains `certified_support_not_declared`: `SUPPORT_PATHS_V1` is certified support that `ADR-0099` s3 places in use, and is not a production analytical input. The declaring lists do not change. Certifier count 22 -> 23. **PROPOSED with the Stage C record, not ratified.** |
 | 3.1.0 | 2026-11-04 | Section 6 gains `declared_production_analytical_inputs` (C2, `ADR-0099` s7, recorded by `ADR-0108`). No certified capability changes. |
 | 2.4.0 | 2026-09-07 | **D20 Vimsamsa production implementation (`ADR-0095`).** `engine/astrology/varga_d20.py` created and registered; `CERTIFIED_PRODUCTION_VARGAS` grows 8 -> 9 divisions. The certifier was revised to certify the REGISTERED rule (gate D isolation -> non-invasiveness) and re-run: nine gates PASS, content hash `efd08cea...dac0` unchanged. Capability block: D20 moved from `certified_not_registered_vargas` to `production_registered_vargas`. Prose updated to match. D16 and D4 remain certified-but-unregistered. |
