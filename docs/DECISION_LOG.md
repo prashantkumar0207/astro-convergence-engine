@@ -10555,6 +10555,114 @@ JATAKA exit. It changes no production code under `engine/`, holdout, threshold o
 - **Evidence:** the owner's instruction, quoted above, which exists as session input and not as a repository file; PR #39
   at `7c05560db283eb8ef4720c90f67cc650f01f1b51`; CI run `41818223677` at that SHA, success on all four jobs; the hash above.
 
+## ADR-0109 - Stage C exit closure: reachability findings resolved by evidence; `SUPPORT_PATHS_V1`; N1 reconciled; N5 record prepared (PROPOSED - not ratified; JATAKA exit not declared)
+
+- **Date:** 2026-11-05
+- **Status:** **PROPOSED. NOT RATIFIED.** Drafted on the owner's "ACE — RESUME STAGE C FROM CODEX" instruction, which
+  asks for the fixed Stage C package as one packet for independent CEO review and authorizes no commit, push, PR or
+  merge. **Nothing here is in force until the owner ratifies it, and JATAKA exit is not declared.**
+- **Context:** at `main` `8d59d6ddfefd38a94799b14fd80b4fab922316b8`, `reports/c4_reachability.json` held 11
+  `DEAD_PATH_UNCOVERED` findings and 9 material `UNKNOWN`s. `ADR-0108` s4 item 5 leaves a dead-path finding three ways
+  out: an owner ruling, certification, or removing its dead caller. The ratification's boundary 2 leaves an `UNKNOWN`
+  unresolved until actual evidence or a separately ratified rule. `ADR-0099` U1 and U2 stay as written. No Codex
+  checkpoint or patch was found in any location searched, so this package was built from verified `main`. `ADR-0056`
+  gives Codex output no authority in any case.
+
+### 1. Analyser changes (`scripts/coverage_static.py`)
+
+Each has controls both ways in `engine/tests/test_stage_c_exit_closure.py`.
+
+1. **`cls.x`** resolves to the enclosing class, as `self.x` already did.
+2. **Established receivers.** A name's engine class is established by an annotation, a constructor call or the
+   callee's return annotation. A name given two types, or rebound in any other way, stays unresolved.
+3. **`getattr(C, name)` on an engine class** is an edge to each public method of C. This adds findings rather than
+   removing them: four accessors moved to dead-path because of it.
+4. **Containment**, the one rule that removes evidence and so **the one the CEO and owner should examine first.** An
+   unresolved `x.m` cannot land on `C.m` when no value of C can exist outside the verification surface. C is contained
+   only if, outside the surface, it is never instantiated, subclassed, aliased, passed or exported, it has no base,
+   metaclass or non-dataclass decorator, and no star-import reaches it. Anything unrecognised counts against containment.
+   It never hides a direct caller.
+
+### 2. How each of the 20 findings resolved
+
+No finding was exempted, and U1 still counts each dead-path call site: all 11 original findings are `IN_USE_COVERED`
+with their callers intact.
+
+| Finding | Was | Now | Evidence |
+|---|---|---|---|
+| `KnowledgeLoader.load` | dead-path | covered | Rule 1 exposes the live path from the gated `is_exalted`. Runtime proof committed |
+| `Sign.name`, `Sign.one_based` | dead-path | covered | `SIGN_CONVENTION_V1` Gate B already asserted them. The declaration omitted them. Failure proof committed |
+| `vimshottari_from_snapshot` | dead-path | covered | New `VIMSHOTTARI_V1` gate `snapshot_wrapper_neutrality` |
+| `equal_house_from_ascendant`, `map_planet` | dead-path | covered | `SUPPORT_PATHS_V1` Gates A, B: exact rational arithmetic and literals |
+| `to_utc` | dead-path | covered | `SUPPORT_PATHS_V1` Gate C: offset subtraction and literal instants |
+| `KnowledgeRegistry.get`, `SchemaValidator.load_json` | dead-path | covered | `SUPPORT_PATHS_V1` Gate D: **access-path fidelity only** |
+| `natural_relationships` | dead-path | covered | `SUPPORT_PATHS_V1` Gates D, E: PyJHora's tables, 42 ordered pairs |
+| `rashi_chart` | dead-path | covered | `SUPPORT_PATHS_V1` Gate F: **neutrality over `build_chart` only** |
+| `VargaClassification.division_number` | UNKNOWN | covered | Rule 2, from `classify`'s return annotation. Runtime proof committed |
+| `KnowledgeRepository.load_json` | UNKNOWN | covered | Rule 1 |
+| `KnowledgeRepository.houses`, `.planets` | UNKNOWN | covered | Rule 3 then Gate D: **access-path fidelity only, not data correctness** |
+| `KnowledgeCache.clear`, `.get`; `KnowledgeRegistry.clear`; `KnowledgeResolver.resolve`; `SchemaValidator.validate` | UNKNOWN | not in use | Rule 4, with per-method U1, U2, receiver and value-route evidence and real-tree controls in `engine/tests/test_stage_c_containment_evidence.py`. The earlier regex test is corroboration only |
+
+### 3. Additions that go beyond existing ratified text
+
+**Each needs the owner's ratification, and the package depends on them:**
+
+1. **`SUPPORT_PATHS_V1`** adds a 23rd scope-bearing artifact to `ADR-0102` s2's 22, and a 23rd certifier.
+2. **`certified_support_not_declared`** is a new non-declaring list beside those `ADR-0099` s2 names. `C2` treated any
+   non-varga PASS artifact as a production input, and declaring this one would be the production expansion `ADR-0108`'s
+   boundary 5 refuses. The list is pinned in `scripts/check_capability_state.py`, so a document edit cannot use it to
+   un-declare anything (`F18`, with negative controls).
+3. **Containment** (s1 item 4), if the CEO or owner reads it as a rule rather than as evidence under boundary 2. If it
+   is refused, the five methods in s2's last row return to `UNKNOWN`, and clause 2 is unsatisfied.
+4. **Backlog dispositions** `RESOLVED_CALL_PATH` and `RESOLVED_CERTIFIED`, new to `ADR-0108` s3 item 8's vocabulary.
+5. **Reachability negative control in CI** now withdraws `SUPPORT_PATHS_V1` and requires the exact `R1`, because a
+   stripped backlog no longer fails once nothing is open. `check_reachability.py` gains `--certification-dir`.
+
+### 3A. Text proposed for ratification, item by item
+
+Each item supplements the accepted entry it names. **None of those entries is edited**, and each stands as the record
+of its own date.
+
+1. **Corpus (supplements `ADR-0102` s2, s3 and s4).** `SUPPORT_PATHS_V1_certification.json` is scope-bearing, so
+   `ADR-0101` s2 and s3 apply to it. The universes become **23 scope-bearing and 27 total**: `ADR-0102` s2's 22 plus this
+   artifact, and s3's four frozen artifacts unchanged. Any further artifact needs its own decision entry.
+2. **C2 support classification (supplements `ADR-0099` s2).** `certified_support_not_declared` in `docs/ENGINE_STATUS.md`
+   s6 is a non-declaring list. Its member holds a PASS artifact, counts as certification coverage for clause 2, and is
+   **not** a production analytical input: clause 1 does not apply to it, and limbs D1 and D2 and the three declaring lists
+   are unchanged. Its only member is `SUPPORT_PATHS_V1`. Membership is pinned in `scripts/check_capability_state.py`,
+   so changing it needs a decision entry and a code change, and `F18` fails on any disagreement.
+3. **Backlog dispositions (supplements `ADR-0108` s3 item 8).** Each applies only to a `CLOSED` reachability finding, and
+   neither is an exemption: if the evidence is withdrawn, `C4` reports the function again and `R1` fails.
+   - `RESOLVED_CALL_PATH`: a resolved call path from a `GATED` member of a PASS artifact reaches the function, with a
+     committed runtime proof. Used once: `KnowledgeLoader.load`.
+   - `RESOLVED_CERTIFIED`: the function is itself a `GATED` member of a PASS artifact, and the entry names the gate. Used
+     ten times.
+
+**If an item is refused.** Item 1 refused: `SUPPORT_PATHS_V1` goes, and seven original findings plus `houses`, `planets`,
+`signs` and `nakshatras` reopen as dead-path; item 2 then has no subject. Item 2 alone refused: `C2` fails, because the
+artifact would need declaring, which `ADR-0108`'s boundary 5 refuses. Item 3 alone refused: only the labels change.
+Containment (s3 item 3) is a separate ruling, with the consequence stated there.
+
+### 4. N1 reconciliation
+
+`reports/JATAKA_COMPLETION_RECORD.md` s4 links `ADR-0083`, `ADR-0085` and `ADR-0086` to the later executed evidence and
+states what remains unclaimed, without repeating any remediation. Those entries' qualifications stand as written.
+
+### 5. What this entry does not do
+
+It does not declare, perform or recommend JATAKA exit. It adds nothing to the declaring lists, and it changes no
+`engine/` production code, holdout, threshold or tolerance. It selects no `DP-040` option, and the three `TRANSIT_V1`
+overclaims stay open. It does not ratify `ADR-0103`, `ADR-0004` or `ADR-0018`, and it does not reopen `N2`. It amends no
+accepted entry.
+
+- **Decision:** none in force until ratified.
+- **Consequences:** `--exit-criterion` reports clause 2 satisfied on this tree. That is one clause of one tool's answer,
+  and neither exit nor approval of exit. Exit still needs this entry's ratification, CI on a committed tree, the record
+  re-evaluated at the exact merged `main` SHA, CEO technical approval and the owner's decision (`ADR-0106` OR-3).
+- **Evidence:** `reports/c4_reachability.json`; `certification/SUPPORT_PATHS_V1_certification.json`;
+  `engine/tests/test_stage_c_exit_closure.py`; `engine/tests/test_stage_c_containment_evidence.py`; the Stage C
+  packet's local runs. **No CI has run on this tree.**
+
 ---
 
 ## ADR template (copy, do not edit above the line)
