@@ -73,6 +73,36 @@ def test_c2_pristine_passes():
     assert c2.check(_status_text()) == []
 
 
+SUPPORT_LINE = '"certified_support_not_declared": ["SUPPORT_PATHS_V1"]'
+
+
+def test_c2_support_artifact_is_not_declared():
+    """ADR-0099 s2: certified is not declared. It must appear in no declaring list."""
+
+    assert "SUPPORT_PATHS_V1" not in c2.extract_block(_status_text())[0]["declared_production_analytical_inputs"]
+    assert "SUPPORT_PATHS_V1" not in c2.extract_block(_status_text())[0]["certified_capabilities"]
+
+
+@pytest.mark.parametrize("planted", [
+    '"certified_support_not_declared": ["SUPPORT_PATHS_V1", "TRANSIT_V1"]',
+    '"certified_support_not_declared": ["TRANSIT_V1"]',
+    '"certified_support_not_declared": []',
+])
+def test_c2_rejects_a_document_edit_of_the_support_list(planted):
+    """The list cannot be a way to move a declared capability out of the declared set."""
+
+    text = _status_text()
+    assert SUPPORT_LINE in text
+    _expect(c2.check(text.replace(SUPPORT_LINE, planted)), "F18")
+
+
+def test_c2_rejects_declaring_the_support_artifact():
+    text = _status_text()
+    planted = text.replace('"certified_capabilities": [\n', '"certified_capabilities": [\n    "SUPPORT_PATHS_V1",\n', 1)
+    assert planted != text
+    _expect(c2.check(planted), "F18", "must not be in a declaring list")
+
+
 def test_c2_declared_union_is_the_three_declaring_lists_and_live_state():
     block, _ = c2.extract_block(_status_text())
     declared = set(block["declared_production_analytical_inputs"])
@@ -152,7 +182,8 @@ def test_c3_pristine_passes(corpus, graph):
 
 
 def test_c3_covers_exactly_the_adr_0102_universe():
-    assert len(c3.SCOPE_BEARING_ARTIFACTS) == 22
+    # ADR-0102 s2's 22, plus the artifact ADR-0108 s4 item 5's certification route added.
+    assert len(c3.SCOPE_BEARING_ARTIFACTS) == 23 and "SUPPORT_PATHS_V1_certification.json" in c3.SCOPE_BEARING_ARTIFACTS
     frozen = c2.FROZEN_EVIDENCE
     assert not frozen & set(c3.SCOPE_BEARING_ARTIFACTS)
     assert set(c3.SCOPE_BEARING_ARTIFACTS) | frozen == {p.name for p in (ROOT / "certification").glob("*.json")}
@@ -339,7 +370,8 @@ FIXTURE = {
     "engine/leaf.py": "def only_dead_caller():\n    return 3\n",
     "engine/unused.py": "def not_in_use():\n    return 4\n",
     "engine/klass.py": "class Store:\n    def fetch_value(self):\n        return 5\n",
-    "scripts/tool.py": "from engine.live import uncovered\n\ndef main(store):\n    uncovered()\n    return store.fetch_value()\n",
+    "scripts/tool.py": ("from engine.klass import Store\nfrom engine.live import uncovered\n\nMADE = Store()\n\n"
+                        "def main(store):\n    uncovered()\n    return store.fetch_value()\n"),
     "scripts/certify_x.py": "from engine.unused import not_in_use\n\ndef gate():\n    return not_in_use()\n",
 }
 
@@ -420,12 +452,12 @@ def test_c4_pristine_passes():
     assert "IN_USE_UNCOVERED" not in report["summary"], "no live-path uncovered function at this commit"
 
 
-def test_c4_rejects_an_untracked_finding(tmp_path):
-    backlog = json.loads(BACKLOG.read_text(encoding="utf-8"))
-    backlog["entries"] = [e for e in backlog["entries"] if e.get("callable") != "engine.core.timezone_engine.to_utc"]
-    probe = tmp_path / "backlog.json"
-    probe.write_text(json.dumps(backlog), encoding="utf-8")
-    errors, _report = c4.check(backlog_path=probe)
+def test_c4_rejects_an_untracked_finding(corpus):
+    """Withdraw the certification that covers it. No backlog entry tracks it, so R1 must fire."""
+
+    directory, backlog = corpus
+    (directory / "SUPPORT_PATHS_V1_certification.json").unlink()
+    errors, _report = c4.check(certification_dir=directory, backlog_path=backlog)
     _expect(errors, "R1", "to_utc")
 
 
@@ -504,14 +536,15 @@ def test_c4_rejects_a_stale_committed_report(tmp_path):
     _expect(errors, "R4", "report.json")
 
 
-def test_c4_command_line_fails_on_a_stripped_backlog(tmp_path):
+def test_c4_command_line_fails_on_a_planted_stale_finding(tmp_path):
     backlog = json.loads(BACKLOG.read_text(encoding="utf-8"))
-    backlog["entries"] = []
+    backlog["entries"].append({"id": "REACHABILITY-planted", "callable": "engine.kp.chain.kp_chain",
+                               "status": "OPEN", "disposition": "OPEN_REACHABILITY_FINDING"})
     probe = tmp_path / "backlog.json"
     probe.write_text(json.dumps(backlog), encoding="utf-8")
     result = subprocess.run([sys.executable, str(ROOT / "scripts" / "check_reachability.py"), "--backlog", str(probe)],
                             capture_output=True, text=True)
-    assert result.returncode == 1 and "R1" in result.stdout
+    assert result.returncode == 1 and "R2" in result.stdout
 
 
 def test_c4_findings_match_the_exit_clause():
@@ -521,27 +554,12 @@ def test_c4_findings_match_the_exit_clause():
     assert set(open_items) == set(clause["live_path_uncovered"]) | set(clause["dead_path_uncovered"])
 
 
-#: The 11 dead-path findings stay open until the owner rules (CEO audit of PR #39).
-DEAD_PATH_FINDINGS = {
-    "engine.astrology.house.equal_house_from_ascendant", "engine.astrology.planet_mapper.map_planet",
-    "engine.astrology.rashi_chart.rashi_chart", "engine.astrology.sign.Sign.name",
-    "engine.astrology.sign.Sign.one_based", "engine.core.timezone_engine.to_utc",
-    "engine.dasha.vimshottari.vimshottari_from_snapshot", "engine.knowledge.loader.KnowledgeLoader.load",
-    "engine.knowledge.registry.KnowledgeRegistry.get",
-    "engine.knowledge.repository.KnowledgeRepository.natural_relationships",
-    "engine.knowledge.validator.SchemaValidator.load_json",
-}
-
-
-def test_c4_dead_path_findings_are_unchanged():
-    _errors, report = c4.check()
-    assert set(report["exit_clause_2"]["dead_path_uncovered"]) == DEAD_PATH_FINDINGS
-
-
+#: A value of Store exists outside the surface, so the unresolved call may land on it.
 UNKNOWN_ONLY = {
     "engine/__init__.py": "",
     "engine/klass.py": "class Store:\n    def fetch_value(self):\n        return 5\n",
-    "scripts/tool.py": "def main(store):\n    return store.fetch_value()\n",
+    "scripts/tool.py": ("from engine.klass import Store\nMADE = Store()\n"
+                        "def main(store):\n    return store.fetch_value()\n"),
 }
 
 
@@ -574,39 +592,33 @@ def test_c4_a_covered_unknown_is_not_material(tmp_path):
     assert clause["material_unknown"] == [] and clause["satisfied"] is True
 
 
-def test_c4_real_tree_with_findings_removed_still_refuses_on_unknown():
-    """The same control on real data: drop every dead-path row, and UNKNOWN alone still refuses."""
+def test_c4_real_tree_with_a_planted_unknown_refuses_on_unknown_alone(graph):
+    """The same control on real data: one unresolved method, no dead path, and exit is refused."""
 
-    _errors, report = c4.check()
-    rows = {name: row for name, row in report["rows"].items() if row["status"] not in c4.UNCOVERED}
-    clause = c4.exit_clause_2({"rows": rows})
+    planted = copy.deepcopy(graph)
+    planted.escaping.add("engine.knowledge.cache.KnowledgeCache")
+    members, _errors = c4.gated_members(ROOT / "certification")
+    clause = c4.exit_clause_2(c4.analyse(planted, members))
     assert clause["live_path_uncovered"] == [] and clause["dead_path_uncovered"] == []
     assert clause["no_confirmed_violations"] is True
     assert clause["material_unknown"], "this control needs at least one real UNKNOWN"
     assert clause["satisfied"] is False
+    assert any("material UNKNOWN" in refusal for refusal in c4.exit_refusals(clause))
 
 
-def test_c4_exit_criterion_command_refuses_today():
-    result = subprocess.run([sys.executable, str(ROOT / "scripts" / "check_reachability.py"), "--exit-criterion"],
-                            capture_output=True, text=True)
-    assert result.returncode == 1
-    assert "EXIT CRITERION: REFUSED" in result.stdout
-    assert "dead-path uncovered: engine.core.timezone_engine.to_utc" in result.stdout
-    assert "material UNKNOWN" in result.stdout
-
-
-def test_c4_the_ordinary_gate_still_passes_while_exit_is_refused():
+def test_c4_the_ordinary_gate_states_the_exit_clause():
     result = subprocess.run([sys.executable, str(ROOT / "scripts" / "check_reachability.py")],
                             capture_output=True, text=True)
     assert result.returncode == 0, result.stdout
-    assert "coverage established: False" in result.stdout
-    assert "exit clause 2 satisfied: False" in result.stdout
+    assert "coverage established: True" in result.stdout
+    assert "exit clause 2 satisfied: True" in result.stdout
 
 
-def test_c4_every_material_unknown_has_a_recorded_review():
-    _errors, report = c4.check()
-    assert set(report["exit_clause_2"]["material_unknown"]) == set(c4.UNKNOWN_REVIEW)
-    assert "NOT REVIEWED" not in report["unknown_review"].values()
+def test_c4_a_new_unknown_is_reported_as_not_reviewed(graph, tmp_path):
+    planted = copy.deepcopy(graph)
+    planted.escaping.add("engine.knowledge.cache.KnowledgeCache")
+    report, _errors, _graph = c4.build_report(ROOT, ROOT / "certification", planted)
+    assert report["unknown_review"]["engine.knowledge.cache.KnowledgeCache.get"] == "NOT REVIEWED"
 
 
 def test_c4_dasha_period_properties_run_on_the_certified_path(monkeypatch):
@@ -655,7 +667,8 @@ def test_c4_coverage_of_a_proven_method_is_withdrawn_with_its_certification(grap
     members, _errors = c4.gated_members(ROOT / "certification")
     resolved, errors = c4.apply_receiver_evidence(graph, c4.RECEIVER_EVIDENCE, ROOT)
     assert errors == []
-    analysis = c4.analyse(resolved, members - {"engine.dasha.vimshottari.vimshottari_from_moon"})
+    analysis = c4.analyse(resolved, members - {"engine.dasha.vimshottari.vimshottari_from_moon",
+                                               "engine.dasha.vimshottari.vimshottari_from_snapshot"})
     assert analysis["rows"]["engine.models.dasha.DashaPeriod.lord"]["status"] in c4.UNCOVERED
 
 
