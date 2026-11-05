@@ -336,7 +336,8 @@ jobs:
                    scripts/certify_transits.py \
                    scripts/certify_parashari_drishti.py \
                    scripts/certify_panchanga.py \
-                   scripts/certify_trikalam.py; do
+                   scripts/certify_trikalam.py \
+                   scripts/certify_support_paths.py; do
             echo "::group::$c"
             python "$c"
             echo "::endgroup::"
@@ -633,8 +634,12 @@ jobs:
           PY
           python scripts/check_scope_coverage.py certification /tmp/backlog_probe.json > /dev/null 2>&1
           c3=$?
-          python scripts/check_reachability.py --backlog /tmp/backlog_probe.json > /dev/null 2>&1
+          mkdir -p /tmp/certification_probe
+          cp certification/*.json /tmp/certification_probe/
+          rm /tmp/certification_probe/SUPPORT_PATHS_V1_certification.json
+          python scripts/check_reachability.py --certification-dir /tmp/certification_probe > /tmp/c4_probe.txt 2>&1
           c4=$?
+          grep -q 'R1 engine.core.timezone_engine.to_utc is DEAD_PATH_UNCOVERED' /tmp/c4_probe.txt || c4=0
           set -e
           if [ "$c2" -eq 0 ] || [ "$c3" -eq 0 ] || [ "$c4" -eq 0 ]; then
             echo "a coverage gate did NOT flag its planted violation: C2=$c2 C3=$c3 C4=$c4"

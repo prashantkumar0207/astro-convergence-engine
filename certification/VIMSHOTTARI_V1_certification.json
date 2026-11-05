@@ -1,7 +1,7 @@
 {
  "schema": "vimshottari_v1_certification",
  "adr": "ADR-0007",
- "date": "2026-11-04",
+ "date": "2026-11-05",
  "scope": "Vimshottari maha/antar/pratyantar timelines, school-explicit seeding",
  "year_convention": {
   "profile": "vimshottari_mean_sidereal_year",
@@ -19,6 +19,18 @@
   "oracle_lord_mismatches": 0,
   "oracle_max_start_delta_days": 1.862645149230957e-09,
   "start_tolerance_days": 1e-05,
+  "snapshot_wrapper_neutrality": {
+   "snapshots_compared": 22,
+   "mismatches": 0,
+   "refusals_verified": 3,
+   "negative_controls_rejected": {
+    "school swapped": 22,
+    "wrong depth": 22
+   },
+   "exercises": [
+    "dasha.vimshottari"
+   ]
+  },
   "independent_validator": "PASS",
   "cases": {
    "parashari_lahiri": [
@@ -365,7 +377,7 @@
    "residual_limitation": "coordinated edits to every repository-held trust record cannot be cryptographically prevented by an in-repository trust anchor; only upstream provenance would anchor this, and it is out of M1 scope"
   },
   "anti_fitting": {
-   "modules_scanned": 203,
+   "modules_scanned": 204,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."
@@ -405,9 +417,10 @@
     {
      "callable": "engine.dasha.vimshottari.vimshottari_from_snapshot",
      "kind": "callable",
-     "disposition": "SCOPE_NOT_GATED",
-     "exercised_by": [],
-     "reason": "a public wrapper over the gated vimshottari_from_moon. No certification gate calls it. Test coverage is not gate coverage, and no inherited certification is claimed"
+     "disposition": "GATED",
+     "exercised_by": [
+      "snapshot_wrapper_neutrality"
+     ]
     },
     {
      "callable": "engine.dasha.vimshottari.vimshottari_parashari",
@@ -427,11 +440,6 @@
   }
  ],
  "scope_not_gated": [
-  {
-   "id": "engine.dasha.vimshottari.vimshottari_from_snapshot",
-   "capability": "dasha.vimshottari",
-   "reason": "a public wrapper over the gated vimshottari_from_moon. No certification gate calls it. Test coverage is not gate coverage, and no inherited certification is claimed"
-  },
   {
    "id": "engine.dasha.vimshottari.vimshottari_parashari",
    "capability": "dasha.vimshottari",

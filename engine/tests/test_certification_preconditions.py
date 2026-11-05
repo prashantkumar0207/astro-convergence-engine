@@ -59,7 +59,8 @@ def test_anti_fitting_scan_covers_every_declared_certification_source():
     # `astro_kernel` package that no longer exists, resolved ROOT to scripts/,
     # ran in no CI job, and was already recorded broken in three places with
     # its disposition assigned to Phase G item G7 and never executed.
-    assert len(support.CERTIFIER_SOURCES) == 22
+    # Stage C: 22 -> 23. `scripts/certify_support_paths.py` added (ADR-0108 s4 item 5's certification route).
+    assert len(support.CERTIFIER_SOURCES) == 23
     assert len(support.VALIDATOR_SOURCES) == 22
     assert support.FIXTURE_SOURCES == ("brihat_fixtures.py",)
     discovered_certifiers = {

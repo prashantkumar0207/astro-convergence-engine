@@ -96,7 +96,7 @@ CERTIFIER_SOURCES = (
     "scripts/certify_panchanga.py", "scripts/certify_parashari_drishti.py",
     "scripts/certify_parashari_yoga.py",
     "scripts/certify_rise_set.py", "scripts/certify_sign_convention.py",
-    "scripts/certify_transits.py",
+    "scripts/certify_support_paths.py", "scripts/certify_transits.py",
     "scripts/certify_trikalam.py", "scripts/certify_vimshottari.py",
 )
 VALIDATOR_SOURCES = (

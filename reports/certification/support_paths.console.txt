@@ -1,0 +1,12 @@
+============================================================
+SUPPORT_PATHS_V1 CERTIFICATION
+============================================================
+A_equal_house_closed_form: 0
+B_map_planet_closed_form: 0
+C_to_utc_reference: 0
+D_knowledge_access_fidelity: 0
+E_natural_relationship_oracle: 0
+F_rashi_chart_neutrality: 0
+G_negative_controls: 10
+archived: certification/SUPPORT_PATHS_V1_certification.json
+RESULT  : PASS

@@ -263,6 +263,16 @@
    "evidence": "Environment identity record for the oracle tier, not a certification of a capability. Terminal under ADR-0102 s3 and s6, with ADR-0094 s4's frozen/live boundary as supporting evidence."
   },
   {
+   "id": "CORPUS-SUPPORT_PATHS_V1",
+   "artifact": "SUPPORT_PATHS_V1_certification.json",
+   "deficiency": "Not part of the f8f13607 corpus. Created compliant, by ADR-0108 s4 item 5's certification route.",
+   "required_remediation": "None: the certifier generates `capabilities`, per-gate `exercises` and `scope_not_gated`.",
+   "status": "CLOSED",
+   "disposition": "COMPLIANT_WITH_S2_S3",
+   "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
+   "evidence": "scripts/check_scope_coverage.py evaluates this artifact on every CI run."
+  },
+  {
    "id": "OVERCLAIM-TRANSIT-RETURNS",
    "artifact": "TRANSIT_V1_certification.json",
    "capability": "transits.returns",
@@ -303,110 +313,110 @@
    "callable": "engine.astrology.house.equal_house_from_ascendant",
    "deficiency": "ADR-0099 s3's counting rule finds a call site outside the verification surface, every such caller is itself unreachable from any entry point, and no certification covers it.",
    "required_remediation": "Owner decision: certify it, remove the dead caller, or rule on whether a dead-path call site is `in use`.",
-   "status": "OPEN",
-   "disposition": "OPEN_REACHABILITY_FINDING",
+   "status": "CLOSED",
+   "disposition": "RESOLVED_CERTIFIED",
    "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
-   "evidence": "reports/c4_reachability.json. Open against JATAKA exit clause 2 until decided."
+   "evidence": "SUPPORT_PATHS_V1 A_equal_house_closed_form. Current state: reports/c4_reachability.json."
   },
   {
    "id": "REACHABILITY-astrology-planet_mapper-map_planet",
    "callable": "engine.astrology.planet_mapper.map_planet",
    "deficiency": "ADR-0099 s3's counting rule finds a call site outside the verification surface, every such caller is itself unreachable from any entry point, and no certification covers it.",
    "required_remediation": "Owner decision: certify it, remove the dead caller, or rule on whether a dead-path call site is `in use`.",
-   "status": "OPEN",
-   "disposition": "OPEN_REACHABILITY_FINDING",
+   "status": "CLOSED",
+   "disposition": "RESOLVED_CERTIFIED",
    "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
-   "evidence": "reports/c4_reachability.json. Open against JATAKA exit clause 2 until decided."
+   "evidence": "SUPPORT_PATHS_V1 B_map_planet_closed_form. Current state: reports/c4_reachability.json."
   },
   {
    "id": "REACHABILITY-astrology-rashi_chart-rashi_chart",
    "callable": "engine.astrology.rashi_chart.rashi_chart",
    "deficiency": "ADR-0099 s3's counting rule finds a call site outside the verification surface, every such caller is itself unreachable from any entry point, and no certification covers it.",
    "required_remediation": "Owner decision: certify it, remove the dead caller, or rule on whether a dead-path call site is `in use`.",
-   "status": "OPEN",
-   "disposition": "OPEN_REACHABILITY_FINDING",
+   "status": "CLOSED",
+   "disposition": "RESOLVED_CERTIFIED",
    "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
-   "evidence": "reports/c4_reachability.json. Open against JATAKA exit clause 2 until decided."
+   "evidence": "SUPPORT_PATHS_V1 F_rashi_chart_neutrality: neutrality over build_chart only. Current state: reports/c4_reachability.json."
   },
   {
    "id": "REACHABILITY-astrology-sign-Sign-name",
    "callable": "engine.astrology.sign.Sign.name",
    "deficiency": "ADR-0099 s3's counting rule finds a call site outside the verification surface, every such caller is itself unreachable from any entry point, and no certification covers it.",
    "required_remediation": "Owner decision: certify it, remove the dead caller, or rule on whether a dead-path call site is `in use`.",
-   "status": "OPEN",
-   "disposition": "OPEN_REACHABILITY_FINDING",
+   "status": "CLOSED",
+   "disposition": "RESOLVED_CERTIFIED",
    "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
-   "evidence": "reports/c4_reachability.json. Open against JATAKA exit clause 2 until decided."
+   "evidence": "SIGN_CONVENTION_V1 B_sign_type already asserted it for all 12 signs. The declaration omitted it, and now lists it. Current state: reports/c4_reachability.json."
   },
   {
    "id": "REACHABILITY-astrology-sign-Sign-one_based",
    "callable": "engine.astrology.sign.Sign.one_based",
    "deficiency": "ADR-0099 s3's counting rule finds a call site outside the verification surface, every such caller is itself unreachable from any entry point, and no certification covers it.",
    "required_remediation": "Owner decision: certify it, remove the dead caller, or rule on whether a dead-path call site is `in use`.",
-   "status": "OPEN",
-   "disposition": "OPEN_REACHABILITY_FINDING",
+   "status": "CLOSED",
+   "disposition": "RESOLVED_CERTIFIED",
    "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
-   "evidence": "reports/c4_reachability.json. Open against JATAKA exit clause 2 until decided."
+   "evidence": "SIGN_CONVENTION_V1 B_sign_type and D_cross_layer_agreement already asserted it. The declaration omitted it, and now lists it. Current state: reports/c4_reachability.json."
   },
   {
    "id": "REACHABILITY-core-timezone_engine-to_utc",
    "callable": "engine.core.timezone_engine.to_utc",
    "deficiency": "ADR-0099 s3's counting rule finds a call site outside the verification surface, every such caller is itself unreachable from any entry point, and no certification covers it.",
    "required_remediation": "Owner decision: certify it, remove the dead caller, or rule on whether a dead-path call site is `in use`.",
-   "status": "OPEN",
-   "disposition": "OPEN_REACHABILITY_FINDING",
+   "status": "CLOSED",
+   "disposition": "RESOLVED_CERTIFIED",
    "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
-   "evidence": "reports/c4_reachability.json. Open against JATAKA exit clause 2 until decided."
+   "evidence": "SUPPORT_PATHS_V1 C_to_utc_reference. Current state: reports/c4_reachability.json."
   },
   {
    "id": "REACHABILITY-dasha-vimshottari-vimshottari_from_snapshot",
    "callable": "engine.dasha.vimshottari.vimshottari_from_snapshot",
    "deficiency": "ADR-0099 s3's counting rule finds a call site outside the verification surface, every such caller is itself unreachable from any entry point, and no certification covers it.",
    "required_remediation": "Owner decision: certify it, remove the dead caller, or rule on whether a dead-path call site is `in use`.",
-   "status": "OPEN",
-   "disposition": "OPEN_REACHABILITY_FINDING",
+   "status": "CLOSED",
+   "disposition": "RESOLVED_CERTIFIED",
    "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
-   "evidence": "reports/c4_reachability.json. Open against JATAKA exit clause 2 until decided."
+   "evidence": "VIMSHOTTARI_V1 snapshot_wrapper_neutrality, added here. Current state: reports/c4_reachability.json."
   },
   {
    "id": "REACHABILITY-knowledge-loader-KnowledgeLoader-load",
    "callable": "engine.knowledge.loader.KnowledgeLoader.load",
    "deficiency": "ADR-0099 s3's counting rule finds a call site outside the verification surface, every such caller is itself unreachable from any entry point, and no certification covers it.",
    "required_remediation": "Owner decision: certify it, remove the dead caller, or rule on whether a dead-path call site is `in use`.",
-   "status": "OPEN",
-   "disposition": "OPEN_REACHABILITY_FINDING",
+   "status": "CLOSED",
+   "disposition": "RESOLVED_CALL_PATH",
    "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
-   "evidence": "reports/c4_reachability.json. Open against JATAKA exit clause 2 until decided."
+   "evidence": "coverage_static now resolves `cls.load_json`, so the live certified path is_exalted -> dignity -> KnowledgeRepository.dignities -> load_json -> load is an edge. Gated also by SUPPORT_PATHS_V1 D_knowledge_access_fidelity. Current state: reports/c4_reachability.json."
   },
   {
    "id": "REACHABILITY-knowledge-registry-KnowledgeRegistry-get",
    "callable": "engine.knowledge.registry.KnowledgeRegistry.get",
    "deficiency": "ADR-0099 s3's counting rule finds a call site outside the verification surface, every such caller is itself unreachable from any entry point, and no certification covers it.",
    "required_remediation": "Owner decision: certify it, remove the dead caller, or rule on whether a dead-path call site is `in use`.",
-   "status": "OPEN",
-   "disposition": "OPEN_REACHABILITY_FINDING",
+   "status": "CLOSED",
+   "disposition": "RESOLVED_CERTIFIED",
    "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
-   "evidence": "reports/c4_reachability.json. Open against JATAKA exit clause 2 until decided."
+   "evidence": "SUPPORT_PATHS_V1 D_knowledge_access_fidelity. Access-path fidelity only. Current state: reports/c4_reachability.json."
   },
   {
    "id": "REACHABILITY-knowledge-repository-KnowledgeRepository-natural_relationships",
    "callable": "engine.knowledge.repository.KnowledgeRepository.natural_relationships",
    "deficiency": "ADR-0099 s3's counting rule finds a call site outside the verification surface, every such caller is itself unreachable from any entry point, and no certification covers it.",
    "required_remediation": "Owner decision: certify it, remove the dead caller, or rule on whether a dead-path call site is `in use`.",
-   "status": "OPEN",
-   "disposition": "OPEN_REACHABILITY_FINDING",
+   "status": "CLOSED",
+   "disposition": "RESOLVED_CERTIFIED",
    "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
-   "evidence": "reports/c4_reachability.json. Open against JATAKA exit clause 2 until decided."
+   "evidence": "SUPPORT_PATHS_V1 D_knowledge_access_fidelity and E_natural_relationship_oracle. Current state: reports/c4_reachability.json."
   },
   {
    "id": "REACHABILITY-knowledge-validator-SchemaValidator-load_json",
    "callable": "engine.knowledge.validator.SchemaValidator.load_json",
    "deficiency": "ADR-0099 s3's counting rule finds a call site outside the verification surface, every such caller is itself unreachable from any entry point, and no certification covers it.",
    "required_remediation": "Owner decision: certify it, remove the dead caller, or rule on whether a dead-path call site is `in use`.",
-   "status": "OPEN",
-   "disposition": "OPEN_REACHABILITY_FINDING",
+   "status": "CLOSED",
+   "disposition": "RESOLVED_CERTIFIED",
    "owner": "Project Owner (ADR-0051 D4; ADR-0107 Q-C)",
-   "evidence": "reports/c4_reachability.json. Open against JATAKA exit clause 2 until decided."
+   "evidence": "SUPPORT_PATHS_V1 D_knowledge_access_fidelity. Current state: reports/c4_reachability.json."
   }
  ]
 }
