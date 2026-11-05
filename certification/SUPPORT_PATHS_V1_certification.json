@@ -1,0 +1,310 @@
+{
+ "schema": "support_paths_v1_certification",
+ "adr": "ADR-0108 s4 item 5",
+ "date": "2026-11-05",
+ "scope": "Support functions certified under ADR-0108 s4 item 5, each only as far as its gate's classification: mathematical correctness of equal-house arithmetic, the planet mapper and timezone conversion; external-oracle agreement of the naisargika relationship lookup; access-path fidelity of the knowledge loaders, not of the data they return; and rashi_chart's neutrality over build_chart.",
+ "reference": {
+  "equal_house_and_map_planet": "exact rational arithmetic and hand-derived literal cases",
+  "to_utc": "offset subtraction and literal UTC instants",
+  "knowledge_access": "the data files read independently of the code under test",
+  "natural_relationship": "PyJHora 4.8.7, compared at run time",
+  "rashi_chart": "build_chart, a GATED member of SIGN_CONVENTION_V1"
+ },
+ "gates": {
+  "A_equal_house_closed_form": {
+   "classification": "mathematical_correctness",
+   "grid_comparisons": 36864,
+   "literal_cases": 13,
+   "mismatches": 0,
+   "exercises": [
+    "support.house_helpers"
+   ]
+  },
+  "B_map_planet_closed_form": {
+   "classification": "mathematical_correctness",
+   "grid_comparisons": 9216,
+   "mismatches": 0,
+   "exercises": [
+    "support.house_helpers"
+   ]
+  },
+  "C_to_utc_reference": {
+   "classification": "mathematical_correctness",
+   "offsets_checked": 105,
+   "instants_per_offset": 4,
+   "named_zone_literals": 8,
+   "refusals_verified": 2,
+   "mismatches": 0,
+   "exercises": [
+    "support.time_conversion"
+   ]
+  },
+  "D_knowledge_access_fidelity": {
+   "classification": "access_path_fidelity",
+   "access_paths": [
+    "KnowledgeLoader.load",
+    "KnowledgeRegistry.get",
+    "KnowledgeRepository accessors",
+    "KnowledgeRepository.load_json",
+    "SchemaValidator.load_json"
+   ],
+   "data_sets": [
+    "planets",
+    "signs",
+    "houses",
+    "dignities",
+    "natural_relationships",
+    "nakshatras"
+   ],
+   "data_sha256": {
+    "planets": "64e861a06eccf54b62f2c003cecfa64d9a5141590bbb3374938369b35ba97750",
+    "signs": "41aed4c91cc37b5a90cfad0dc695c216bc41c4c7149a80aaa42a6b6e9aa2f0a5",
+    "houses": "c3732c30839df04563d8c3d15317be0d9049e67418a01108f242e3609b30a819",
+    "dignities": "7ad126298ac902c9b03cf8fccea72750484b609c87ba6d20f0f28042d56b67f6",
+    "natural_relationships": "857d3733770acaf1e002e1ab6b6d3b113da3d4adc461b22393fad9269fa8b3d6",
+    "nakshatras": "27e139a71478dc420af48bf2cc01eba6e312b67b1f34c10c1b83d1378f4b432f"
+   },
+   "mismatches": 0,
+   "exercises": [
+    "support.knowledge_access"
+   ]
+  },
+  "E_natural_relationship_oracle": {
+   "classification": "external_oracle_agreement",
+   "ordered_pairs_compared": 42,
+   "mismatches": 0,
+   "reference": "PyJHora 4.8.7 jhora.const._friendly_planets, _neutral_planets, _enemy_planets",
+   "exercises": [
+    "support.knowledge_access",
+    "support.natural_relationship"
+   ]
+  },
+  "F_rashi_chart_neutrality": {
+   "classification": "wrapper_neutrality",
+   "snapshots_compared": 12,
+   "mismatches": 0,
+   "delegate": "engine.astrology.chart_builder.build_chart",
+   "exercises": [
+    "support.d1_delegate"
+   ]
+  },
+  "G_negative_controls": {
+   "classification": "negative_control",
+   "controls_rejected": 10,
+   "rejections_by_control": {
+    "equal_house: the whole-sign rule": 17281,
+    "equal_house: one house too far": 36877,
+    "map_planet: a zero-based sign": 9216,
+    "map_planet: equal houses": 3456,
+    "to_utc: the wall clock relabelled as UTC": 423,
+    "to_utc: the aware value returned unconverted": 423,
+    "knowledge: a tampered value": 6,
+    "knowledge: the wrong data set": 5,
+    "natural_relationship: the Mercury-Moon asymmetry removed": 1,
+    "rashi_chart: the snapshot returned unchanged": 12
+   },
+   "exercises": [],
+   "exercises_note": "runs the other gates' comparators against planted wrong functions, so no production callable is the thing under test"
+  }
+ },
+ "explicit_non_claims": [
+  "declares no production analytical input: ADR-0099 s2's D1 and D2 are untouched",
+  "certifies no dead caller: house_from_longitude, map_chart, build_all_charts, calculate_from_datetime and KnowledgeResolver.resolve stay uncertified",
+  "Gate D proves that the access path returns the file. It does not prove the classical correctness of the planets, signs, houses, nakshatras or dignities data",
+  "Gate F proves rashi_chart equals build_chart. It adds nothing to what is certified about D1 charts",
+  "Gate C does not validate the timezone database against a second source beyond its literal cases",
+  "a GATED member is not thereby in use: KnowledgeRegistry.clear is gated here and is NOT_IN_USE under C4",
+  "KnowledgeLoader.load, load_json and dignities are also reached through PARASHARI_YOGA_V1, so this artifact is not their only coverage"
+ ],
+ "environment": {
+  "python": "3.11.17"
+ },
+ "preconditions": {
+  "data_assets": {
+   "assets_verified": 3,
+   "sha256": {
+    "seas_18.se1": "a2cd8fc33807c78ca9a700c91c2e042258b12fc4796519e00781440b5ad8b2e2",
+    "semo_18.se1": "1ca07bd67c24374d77226180c20a4f9996cba013697894810518e7eb582ca4f7",
+    "sepl_18.se1": "ca1393ceab3a44fbc895887cf789c68819ae6a1cbc9b22225872dbe4ccd99a66"
+   }
+  },
+  "trust_records": {
+   "reference_binary": "swetest",
+   "reference_binary_sha256_verified": "f53943bb6ede1575974270e0a01aff9affdabe58315c1cf69ed4d4738346dac5",
+   "reference_binary_bytes": 712872,
+   "manifest_sha256_verified": "74de363ec1d335ecce26e891634ca9358a4ac198c56c226f22c3d6b4c3401ad1",
+   "manifest_blob_id_verified": "0885f0446ba4306c7afa78eef06a0be2e7b6c5a7",
+   "manifest_anchor_commit": "a62a2c8f9e021575deeac7dee61f53aaae1bc265",
+   "cross_record_assets_agreed": 3,
+   "residual_limitation": "coordinated edits to every repository-held trust record cannot be cryptographically prevented by an in-repository trust anchor; only upstream provenance would anchor this, and it is out of M1 scope"
+  },
+  "anti_fitting": {
+   "modules_scanned": 204,
+   "findings": [],
+   "justified_exceptions": [
+    "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."
+   ]
+  }
+ },
+ "result": "PASS",
+ "capability_schema": "ace-capability-enumeration-v1",
+ "capabilities": [
+  {
+   "id": "support.house_helpers",
+   "members": [
+    {
+     "callable": "engine.astrology.house.equal_house_from_ascendant",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_equal_house_closed_form"
+     ]
+    },
+    {
+     "callable": "engine.astrology.planet_mapper.map_planet",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "B_map_planet_closed_form"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "support.time_conversion",
+   "members": [
+    {
+     "callable": "engine.core.timezone_engine.to_utc",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "C_to_utc_reference"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "support.knowledge_access",
+   "members": [
+    {
+     "callable": "engine.knowledge.loader.KnowledgeLoader.load",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "D_knowledge_access_fidelity"
+     ]
+    },
+    {
+     "callable": "engine.knowledge.repository.KnowledgeRepository.load_json",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "D_knowledge_access_fidelity"
+     ]
+    },
+    {
+     "callable": "engine.knowledge.repository.KnowledgeRepository.planets",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "D_knowledge_access_fidelity"
+     ]
+    },
+    {
+     "callable": "engine.knowledge.repository.KnowledgeRepository.signs",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "D_knowledge_access_fidelity"
+     ]
+    },
+    {
+     "callable": "engine.knowledge.repository.KnowledgeRepository.houses",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "D_knowledge_access_fidelity"
+     ]
+    },
+    {
+     "callable": "engine.knowledge.repository.KnowledgeRepository.dignities",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "D_knowledge_access_fidelity"
+     ]
+    },
+    {
+     "callable": "engine.knowledge.repository.KnowledgeRepository.nakshatras",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "D_knowledge_access_fidelity"
+     ]
+    },
+    {
+     "callable": "engine.knowledge.repository.KnowledgeRepository.natural_relationships",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "D_knowledge_access_fidelity",
+      "E_natural_relationship_oracle"
+     ]
+    },
+    {
+     "callable": "engine.knowledge.registry.KnowledgeRegistry.get",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "D_knowledge_access_fidelity"
+     ]
+    },
+    {
+     "callable": "engine.knowledge.registry.KnowledgeRegistry.clear",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "D_knowledge_access_fidelity"
+     ]
+    },
+    {
+     "callable": "engine.knowledge.validator.SchemaValidator.load_json",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "D_knowledge_access_fidelity"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "support.natural_relationship",
+   "members": [
+    {
+     "callable": "engine.astrology.dignity.natural_relationship",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "E_natural_relationship_oracle"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "support.d1_delegate",
+   "members": [
+    {
+     "callable": "engine.astrology.rashi_chart.rashi_chart",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "F_rashi_chart_neutrality"
+     ]
+    }
+   ]
+  }
+ ],
+ "scope_not_gated": [],
+ "_artifact_name": "SUPPORT_PATHS_V1_certification.json",
+ "_slug": "support_paths"
+}

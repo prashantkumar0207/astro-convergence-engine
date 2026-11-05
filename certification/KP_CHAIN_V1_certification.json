@@ -1,7 +1,7 @@
 {
  "schema": "kp_chain_v1_certification",
  "adr": "ADR-0006",
- "date": "2026-11-04",
+ "date": "2026-11-05",
  "scope": "KP lordship chain (SL/NL/SB/SS) and KP fact charts under kp_krishnamurti",
  "explicit_non_claims": [
   "significators (Tier-1 KP_SIGNIFICATOR_V1; spec must be frozen first, D-008)",
@@ -66,7 +66,7 @@
    "residual_limitation": "coordinated edits to every repository-held trust record cannot be cryptographically prevented by an in-repository trust anchor; only upstream provenance would anchor this, and it is out of M1 scope"
   },
   "anti_fitting": {
-   "modules_scanned": 203,
+   "modules_scanned": 204,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."

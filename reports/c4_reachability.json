@@ -6,45 +6,13 @@
   ]
  },
  "exit_clause_2": {
-  "coverage_established": false,
-  "dead_path_uncovered": [
-   "engine.astrology.house.equal_house_from_ascendant",
-   "engine.astrology.planet_mapper.map_planet",
-   "engine.astrology.rashi_chart.rashi_chart",
-   "engine.astrology.sign.Sign.name",
-   "engine.astrology.sign.Sign.one_based",
-   "engine.core.timezone_engine.to_utc",
-   "engine.dasha.vimshottari.vimshottari_from_snapshot",
-   "engine.knowledge.loader.KnowledgeLoader.load",
-   "engine.knowledge.registry.KnowledgeRegistry.get",
-   "engine.knowledge.repository.KnowledgeRepository.natural_relationships",
-   "engine.knowledge.validator.SchemaValidator.load_json"
-  ],
+  "coverage_established": true,
+  "dead_path_uncovered": [],
   "live_path_uncovered": [],
-  "material_unknown": [
-   "engine.astrology.varga_classifier.VargaClassification.division_number",
-   "engine.knowledge.cache.KnowledgeCache.clear",
-   "engine.knowledge.cache.KnowledgeCache.get",
-   "engine.knowledge.registry.KnowledgeRegistry.clear",
-   "engine.knowledge.repository.KnowledgeRepository.houses",
-   "engine.knowledge.repository.KnowledgeRepository.load_json",
-   "engine.knowledge.repository.KnowledgeRepository.planets",
-   "engine.knowledge.resolver.KnowledgeResolver.resolve",
-   "engine.knowledge.validator.SchemaValidator.validate"
-  ],
-  "no_confirmed_violations": false,
-  "satisfied": false,
-  "unknown_not_established_either_way": [
-   "engine.astrology.varga_classifier.VargaClassification.division_number",
-   "engine.knowledge.cache.KnowledgeCache.clear",
-   "engine.knowledge.cache.KnowledgeCache.get",
-   "engine.knowledge.registry.KnowledgeRegistry.clear",
-   "engine.knowledge.repository.KnowledgeRepository.houses",
-   "engine.knowledge.repository.KnowledgeRepository.load_json",
-   "engine.knowledge.repository.KnowledgeRepository.planets",
-   "engine.knowledge.resolver.KnowledgeResolver.resolve",
-   "engine.knowledge.validator.SchemaValidator.validate"
-  ]
+  "material_unknown": [],
+  "no_confirmed_violations": true,
+  "satisfied": true,
+  "unknown_not_established_either_way": []
  },
  "rows": {
   "engine.astrology.chart.birth_chart": {
@@ -283,7 +251,7 @@
    "status": "IN_USE_COVERED"
   },
   "engine.astrology.dignity.natural_relationship": {
-   "covered": false,
+   "covered": true,
    "file": "engine/astrology/dignity.py",
    "status": "NOT_IN_USE"
   },
@@ -302,9 +270,9 @@
    "callers": [
     "engine.astrology.house.house_from_longitude"
    ],
-   "covered": false,
+   "covered": true,
    "file": "engine/astrology/house.py",
-   "status": "DEAD_PATH_UNCOVERED"
+   "status": "IN_USE_COVERED"
   },
   "engine.astrology.house.house_from_longitude": {
    "covered": false,
@@ -521,9 +489,9 @@
    "callers": [
     "engine.astrology.chart_mapper.map_chart"
    ],
-   "covered": false,
+   "covered": true,
    "file": "engine/astrology/planet_mapper.py",
-   "status": "DEAD_PATH_UNCOVERED"
+   "status": "IN_USE_COVERED"
   },
   "engine.astrology.planet_nature.planet_nature": {
    "covered": false,
@@ -540,9 +508,9 @@
    "callers": [
     "engine.astrology.chart_factory.build_all_charts"
    ],
-   "covered": false,
+   "covered": true,
    "file": "engine/astrology/rashi_chart.py",
-   "status": "DEAD_PATH_UNCOVERED"
+   "status": "IN_USE_COVERED"
   },
   "engine.astrology.sign.Sign.from_one_based": {
    "caller_count": 6,
@@ -575,18 +543,18 @@
    "callers": [
     "engine.astrology.sign.Sign.__str__"
    ],
-   "covered": false,
+   "covered": true,
    "file": "engine/astrology/sign.py",
-   "status": "DEAD_PATH_UNCOVERED"
+   "status": "IN_USE_COVERED"
   },
   "engine.astrology.sign.Sign.one_based": {
    "caller_count": 1,
    "callers": [
     "engine.astrology.sign.Sign.name"
    ],
-   "covered": false,
+   "covered": true,
    "file": "engine/astrology/sign.py",
-   "status": "DEAD_PATH_UNCOVERED"
+   "status": "IN_USE_COVERED"
   },
   "engine.astrology.sign_conventions.declared": {
    "covered": true,
@@ -636,13 +604,13 @@
    "status": "IN_USE_COVERED"
   },
   "engine.astrology.varga_classifier.VargaClassification.division_number": {
-   "ambiguous_owner_count": 1,
-   "ambiguous_owner_sample": [
+   "caller_count": 1,
+   "callers": [
     "engine.astrology.varga_chart_builder.build_varga_chart"
    ],
-   "covered": false,
+   "covered": true,
    "file": "engine/astrology/varga_classifier.py",
-   "status": "UNKNOWN"
+   "status": "IN_USE_COVERED"
   },
   "engine.astrology.varga_classifier.classify": {
    "caller_count": 1,
@@ -985,9 +953,9 @@
    "callers": [
     "engine.calculations.calculations.calculate_from_datetime"
    ],
-   "covered": false,
+   "covered": true,
    "file": "engine/core/timezone_engine.py",
-   "status": "DEAD_PATH_UNCOVERED"
+   "status": "IN_USE_COVERED"
   },
   "engine.core.validation.validate_birth_data": {
    "caller_count": 1,
@@ -1022,9 +990,9 @@
     "engine.dasha.vimshottari.vimshottari_kp",
     "engine.dasha.vimshottari.vimshottari_parashari"
    ],
-   "covered": false,
+   "covered": true,
    "file": "engine/dasha/vimshottari.py",
-   "status": "DEAD_PATH_UNCOVERED"
+   "status": "IN_USE_COVERED"
   },
   "engine.dasha.vimshottari.vimshottari_kp": {
    "covered": false,
@@ -1037,25 +1005,14 @@
    "status": "NOT_IN_USE"
   },
   "engine.knowledge.cache.KnowledgeCache.clear": {
-   "ambiguous_owner_count": 2,
-   "ambiguous_owner_sample": [
-    "engine.knowledge.cache.KnowledgeCache.clear",
-    "engine.knowledge.registry.KnowledgeRegistry.clear"
-   ],
    "covered": false,
    "file": "engine/knowledge/cache.py",
-   "status": "UNKNOWN"
+   "status": "NOT_IN_USE"
   },
   "engine.knowledge.cache.KnowledgeCache.get": {
-   "ambiguous_owner_count": 89,
-   "ambiguous_owner_sample": [
-    ".claude.hooks.git_safety_guard.main",
-    ".claude.hooks.governance_gate_check.main",
-    "engine.astrology.dignity.is_debilitated"
-   ],
    "covered": false,
    "file": "engine/knowledge/cache.py",
-   "status": "UNKNOWN"
+   "status": "NOT_IN_USE"
   },
   "engine.knowledge.cache.KnowledgeCache.has": {
    "covered": false,
@@ -1072,9 +1029,9 @@
    "callers": [
     "engine.knowledge.repository.KnowledgeRepository.load_json"
    ],
-   "covered": false,
+   "covered": true,
    "file": "engine/knowledge/loader.py",
-   "status": "DEAD_PATH_UNCOVERED"
+   "status": "IN_USE_COVERED"
   },
   "engine.knowledge.models.BaseModel.touch": {
    "covered": false,
@@ -1102,113 +1059,106 @@
    "status": "NOT_IN_USE"
   },
   "engine.knowledge.registry.KnowledgeRegistry.clear": {
-   "ambiguous_owner_count": 2,
-   "ambiguous_owner_sample": [
-    "engine.knowledge.cache.KnowledgeCache.clear",
-    "engine.knowledge.registry.KnowledgeRegistry.clear"
-   ],
-   "covered": false,
+   "covered": true,
    "file": "engine/knowledge/registry.py",
-   "status": "UNKNOWN"
+   "status": "NOT_IN_USE"
   },
   "engine.knowledge.registry.KnowledgeRegistry.get": {
    "caller_count": 1,
    "callers": [
     "engine.knowledge.resolver.KnowledgeResolver.resolve"
    ],
-   "covered": false,
+   "covered": true,
    "file": "engine/knowledge/registry.py",
-   "status": "DEAD_PATH_UNCOVERED"
+   "status": "IN_USE_COVERED"
   },
   "engine.knowledge.repository.KnowledgeRepository.dignities": {
-   "caller_count": 1,
+   "caller_count": 2,
    "callers": [
-    "engine.astrology.dignity._dignity_table"
+    "engine.astrology.dignity._dignity_table",
+    "engine.knowledge.registry.KnowledgeRegistry.get"
    ],
    "covered": true,
    "file": "engine/knowledge/repository.py",
    "status": "IN_USE_COVERED"
   },
   "engine.knowledge.repository.KnowledgeRepository.houses": {
-   "ambiguous_owner_count": 9,
-   "ambiguous_owner_sample": [
-    "engine.astrology.chart_builder.build_chart",
-    "engine.astrology.chart_mapper.map_chart",
-    "engine.astrology.dashamsa_chart.dashamsa_chart"
-   ],
-   "covered": false,
-   "file": "engine/knowledge/repository.py",
-   "status": "UNKNOWN"
-  },
-  "engine.knowledge.repository.KnowledgeRepository.load_json": {
-   "ambiguous_owner_count": 6,
-   "ambiguous_owner_sample": [
-    "engine.knowledge.repository.KnowledgeRepository.dignities",
-    "engine.knowledge.repository.KnowledgeRepository.houses",
-    "engine.knowledge.repository.KnowledgeRepository.nakshatras"
-   ],
-   "covered": false,
-   "file": "engine/knowledge/repository.py",
-   "status": "UNKNOWN"
-  },
-  "engine.knowledge.repository.KnowledgeRepository.nakshatras": {
-   "covered": false,
-   "file": "engine/knowledge/repository.py",
-   "status": "NOT_IN_USE"
-  },
-  "engine.knowledge.repository.KnowledgeRepository.natural_relationships": {
    "caller_count": 1,
    "callers": [
-    "engine.astrology.dignity._relationship_table"
+    "engine.knowledge.registry.KnowledgeRegistry.get"
    ],
-   "covered": false,
+   "covered": true,
    "file": "engine/knowledge/repository.py",
-   "status": "DEAD_PATH_UNCOVERED"
+   "status": "IN_USE_COVERED"
+  },
+  "engine.knowledge.repository.KnowledgeRepository.load_json": {
+   "caller_count": 7,
+   "callers": [
+    "engine.knowledge.registry.KnowledgeRegistry.get",
+    "engine.knowledge.repository.KnowledgeRepository.dignities",
+    "engine.knowledge.repository.KnowledgeRepository.houses",
+    "engine.knowledge.repository.KnowledgeRepository.nakshatras",
+    "engine.knowledge.repository.KnowledgeRepository.natural_relationships"
+   ],
+   "covered": true,
+   "file": "engine/knowledge/repository.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.knowledge.repository.KnowledgeRepository.nakshatras": {
+   "caller_count": 1,
+   "callers": [
+    "engine.knowledge.registry.KnowledgeRegistry.get"
+   ],
+   "covered": true,
+   "file": "engine/knowledge/repository.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.knowledge.repository.KnowledgeRepository.natural_relationships": {
+   "caller_count": 2,
+   "callers": [
+    "engine.astrology.dignity._relationship_table",
+    "engine.knowledge.registry.KnowledgeRegistry.get"
+   ],
+   "covered": true,
+   "file": "engine/knowledge/repository.py",
+   "status": "IN_USE_COVERED"
   },
   "engine.knowledge.repository.KnowledgeRepository.planets": {
-   "ambiguous_owner_count": 6,
-   "ambiguous_owner_sample": [
-    "engine.astrology.chart_formatter.format_chart",
-    "engine.astrology.chart_index.chart_index",
-    "engine.astrology.chart_lookup.planet"
+   "caller_count": 1,
+   "callers": [
+    "engine.knowledge.registry.KnowledgeRegistry.get"
    ],
-   "covered": false,
+   "covered": true,
    "file": "engine/knowledge/repository.py",
-   "status": "UNKNOWN"
+   "status": "IN_USE_COVERED"
   },
   "engine.knowledge.repository.KnowledgeRepository.signs": {
-   "covered": false,
+   "caller_count": 1,
+   "callers": [
+    "engine.knowledge.registry.KnowledgeRegistry.get"
+   ],
+   "covered": true,
    "file": "engine/knowledge/repository.py",
-   "status": "NOT_IN_USE"
+   "status": "IN_USE_COVERED"
   },
   "engine.knowledge.resolver.KnowledgeResolver.resolve": {
-   "ambiguous_owner_count": 35,
-   "ambiguous_owner_sample": [
-    "engine.astronomy.ephemeris.default_ephemeris_path",
-    "engine.tools.scaffold",
-    "scripts.certification_support"
-   ],
    "covered": false,
    "file": "engine/knowledge/resolver.py",
-   "status": "UNKNOWN"
+   "status": "NOT_IN_USE"
   },
   "engine.knowledge.validator.SchemaValidator.load_json": {
    "caller_count": 1,
    "callers": [
     "engine.knowledge.validator.SchemaValidator.validate"
    ],
-   "covered": false,
+   "covered": true,
    "file": "engine/knowledge/validator.py",
-   "status": "DEAD_PATH_UNCOVERED"
+   "status": "IN_USE_COVERED"
   },
   "engine.knowledge.validator.SchemaValidator.validate": {
-   "ambiguous_owner_count": 1,
-   "ambiguous_owner_sample": [
-    "engine.knowledge.validator.SchemaValidator.validate"
-   ],
    "covered": false,
    "file": "engine/knowledge/validator.py",
-   "status": "UNKNOWN"
+   "status": "NOT_IN_USE"
   },
   "engine.kp.chain.kp_chain": {
    "caller_count": 2,
@@ -1645,24 +1595,12 @@
  },
  "schema": "ace-c4-reachability-v1",
  "summary": {
-  "DEAD_PATH_UNCOVERED": 11,
-  "IN_USE_COVERED": 92,
-  "NOT_IN_USE": 99,
-  "UNKNOWN": 9
+  "IN_USE_COVERED": 109,
+  "NOT_IN_USE": 102
  },
  "universe_exclusions": {
   "engine.main.": "API route handlers: callers and exports, not capabilities",
   "engine.tools.": "developer scaffolding, not analytical"
  },
- "unknown_review": {
-  "engine.astrology.varga_classifier.VargaClassification.division_number": "Read as `asc.division_number` and `c.division_number` in build_varga_chart, on classify()'s result. The same shape as DashaPeriod, but no runtime proof is committed.",
-  "engine.knowledge.cache.KnowledgeCache.clear": "The only evidence is `._cache.clear()` inside the two clear methods. The receiver type is not established.",
-  "engine.knowledge.cache.KnowledgeCache.get": "The name collides with `.get` on many values, and the receivers are not type-resolved.",
-  "engine.knowledge.registry.KnowledgeRegistry.clear": "The only evidence is `._cache.clear()` inside the two clear methods. KnowledgeRegistry._cache is annotated dict.",
-  "engine.knowledge.repository.KnowledgeRepository.houses": "Every site reads `.houses` on a chart or snapshot-like value. The receivers are not type-resolved.",
-  "engine.knowledge.repository.KnowledgeRepository.load_json": "Used as `cls.load_json` in the class's own classmethods, which the analyser does not resolve. Resolving it could move dead-path finding KnowledgeLoader.load, which needs owner ratification (ADR-0108 addendum).",
-  "engine.knowledge.repository.KnowledgeRepository.planets": "Every site reads `.planets` on a chart value. The receivers are not type-resolved.",
-  "engine.knowledge.resolver.KnowledgeResolver.resolve": "The name collides with pathlib's Path.resolve at the sites found. The receivers are not type-resolved.",
-  "engine.knowledge.validator.SchemaValidator.validate": "The only evidence is `validator.validate(data)` inside the method itself. The receiver type is not established."
- }
+ "unknown_review": {}
 }
