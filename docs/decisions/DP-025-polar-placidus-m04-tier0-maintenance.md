@@ -3,10 +3,10 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | OPEN - decision paper. Presents options. DECIDES NOTHING. Requires owner approval. |
-| Version | 1.0.0 |
+| Status | PARTLY ADDRESSED: A2 Option 1 selected by `ADR-0111` (2026-11-06). A1 stays OPEN. The paper itself decides nothing and is otherwise unchanged. |
+| Version | 1.1.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-25 |
+| Last updated | 2026-11-06 |
 | Review cadence | TBD |
 
 # DP-025. Polar-Placidus certification gap and M-04 provenance mislabeling: Tier-0/FOUNDATION-tier
@@ -134,3 +134,4 @@ explicitly scoped as Tier-0/FOUNDATION-tier maintenance, per instruction.
 | Version | Date | Change |
 |---|---|---|
 | 1.0.0 | 2026-08-25 | Created, consolidating `DP-021` sections D/N.1 into a standalone Tier-0/FOUNDATION-tier maintenance decision-readiness paper, kept explicitly separate from any JATAKA-capability decision per instruction. Presents options for both the polar-Placidus certification gap and the M-04 provenance mislabeling, a certification plan, and three exact owner decisions required. Decides nothing; no code touched; no capability implementation authorized. |
+| 1.1.0 | 2026-11-06 | Status header only: A2 Option 1 selected by `ADR-0111`; A1 open. |

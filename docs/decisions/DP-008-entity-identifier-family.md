@@ -3,10 +3,10 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | OPEN - decision paper. Presents options and recommends one. DECIDES NOTHING. Requires owner approval before any identifier format is used. |
-| Version | 1.0.0 |
+| Status | ADDRESSED by `ADR-0111` (2026-11-06): the owner adopted Option B and settled s7. The paper itself decides nothing and is otherwise unchanged. |
+| Version | 1.1.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-11 |
+| Last updated | 2026-11-06 |
 | Review cadence | TBD |
 
 # DP-008. Entity identifier family and pattern
@@ -105,3 +105,4 @@ kinds or whether questions, being ephemeral in Prashna, get their own family.
 | Version | Date | Change |
 |---|---|---|
 | 1.0.0 | 2026-08-11 | Drafted on CEO direction. Presents options; decides nothing. |
+| 1.1.0 | 2026-11-06 | Status header only: addressed by `ADR-0111`. |
