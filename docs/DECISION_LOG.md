@@ -10708,6 +10708,93 @@ accepted entry.
 - **Evidence:** the owner's instruction, quoted above, which exists as session input and not as a repository file; PR #40
   at `7dae563d762326a0286f6573a22c8315087ed9ec`; CI run `42032604189` at that SHA, success on all four jobs; the hash above.
 
+## ADR-0110 - JATAKA phase exit ratified by the owner, at evaluated engine `7ffe60b`; no further phase entered
+
+- **Date:** 2026-11-06
+- **Status:** **ACCEPTED, on the owner's ratifying instruction quoted in s1.** It records the owner's decision, and adds none
+  of its own.
+- **Context:** `docs/Q8_CLOSURE_MATRIX.md` s5 (`ADR-0048`) sets JATAKA's exit criterion, and `ADR-0099` defines its terms.
+  `ADR-0107` s2 requires C2 and C4 for exit, and requires `N1`'s reconciliation and the `N5` completion record. Those have
+  now been delivered: C2, C3 and C4 by `ADR-0108`; the remaining findings and the `N1` reconciliation by `ADR-0109`, which is
+  accepted in part; and the `N5` record (`reports/JATAKA_COMPLETION_RECORD.md` 0.2.0), evaluated at `main`
+  `7ffe60bd702a8ee36f1bea8d42a19b685e341df0` and merged at `7e5265b3feec04b38a0df83e2fee806d5dacba71`. The owner states that the independent CEO
+  technical PASS came first. Its text is not a repository file.
+
+### 1. The owner's instruction (exact text)
+
+```text
+**ACE OWNER RATIFICATION — JATAKA PHASE EXIT**
+
+I ratify the formal completion and exit of the JATAKA phase, following ChatGPT's independent CEO technical PASS.
+
+**Verified baseline**
+- Current main: `7e5265b3feec04b38a0df83e2fee806d5dacba71`
+- Evaluated engine: `7ffe60bd702a8ee36f1bea8d42a19b685e341df0`
+- Post-merge CI: `42182711752`, all four jobs successful
+- N5: `reports/JATAKA_COMPLETION_RECORD.md` version 0.2.0
+
+I accept the N5 completion record as evidence within its expressly stated certification scope.
+
+Both JATAKA exit clauses are satisfied: 23 declared production inputs individually certified, 109 in-use functions covered, zero uncovered findings and zero material UNKNOWNs.
+
+I preserve all documented limitations, including N2's unverified deferred status, three open TRANSIT_V1 overclaims, containment qualifications and the existing certification non-claims.
+
+**I authorize Claude to record this JATAKA exit decision in one minimal documentation-only PR**, starting from the verified main SHA.
+
+Update the existing canonical decision log, N5 approval status, execution-state record and handoff index. Preserve historical ADR text and prior evidence.
+
+No production code, certification artifact, calculation, holdout, threshold or gate changes. No new certification programme or capability expansion.
+
+JATAKA exit does not automatically authorize entry into EVIDENCE or any other phase. That requires a separate decision under the accepted phase matrix.
+
+Create one scoped commit, push normally, open a review PR and run CI. No force push, branch deletion or merge to main without separate CEO approval and owner authorization.
+
+Return the exact SHA, diff and CI result for final governance verification.
+```
+
+Per `docs/PROJECT_CONSTITUTION.md` s11, that instruction is the ratifying act.
+
+### 2. What is decided
+
+1. **The JATAKA phase is complete and exited.** The evaluated engine is `7ffe60bd702a8ee36f1bea8d42a19b685e341df0`. The decision rests on the
+   record as merged at `main` `7e5265b3feec04b38a0df83e2fee806d5dacba71`.
+2. **Clause 1** (every declared production analytical input individually certified) is satisfied: 23 declared inputs,
+   each holding a PASS artifact (C2).
+3. **Clause 2** (nothing in use that a certification artifact does not cover) is satisfied: 109 in-use functions covered,
+   0 live-path or dead-path uncovered, and 0 material `UNKNOWN` (C4).
+4. **The `N5` record** is accepted as evidence within its expressly stated certification scope.
+
+### 3. What stays as recorded
+
+None of these is closed or weakened by this entry.
+
+- **`N2`:** unverified, and deferred as nonblocking on present evidence (`ADR-0107` s2), with its reopening trigger.
+- **The three `TRANSIT_V1` scope overclaims:** open and tracked in the backlog (`ADR-0099` s4). No `DP-040` option is selected.
+- **Containment qualifications:** `ADR-0109` s1 item 4 and its ratification. These include the 415 `KnowledgeCache.get` sites
+  that rest on containment rather than on per-site typing.
+- **Certification non-claims:** the `N5` record s5 and s6, and each artifact's own.
+- **Other entries' statuses:** `ADR-0109` is accepted in part. `ADR-0103`, `ADR-0004` and `ADR-0018` stay `PROPOSED`.
+  `Q2`, `Q5`, `Q12`, `Q26` and `Q27` keep their recorded statuses.
+
+### 4. What this entry does not do
+
+- **It enters no phase.** Entry into EVIDENCE or any other phase needs a separate decision under the phase matrix.
+  `Q8_CLOSURE_MATRIX.md` s6 lists EVIDENCE's prerequisites beyond JATAKA exit: DP-005 and DP-008 answered, and findings M-04,
+  M-05 and M-09 resolved.
+- **It changes no engineering artifact:** no production code, certification artifact, calculation, holdout, threshold or
+  gate.
+- **It expands nothing:** no capability, and no new certification programme.
+- **It edits no earlier entry**, and does not amend `Q8_CLOSURE_MATRIX.md`.
+- **It does not declare anything "Locked"** in `PROJECT_CONSTITUTION.md` s12's sense.
+
+- **Decision:** as s2 states.
+- **Consequences:** JATAKA is closed as a phase. Its limitations carry forward as recorded in s3, so a future claim that
+  relies on them still needs its own evidence. This entry merges only on separate CEO approval and owner authorization.
+- **Evidence:** `main` `7e5265b3feec04b38a0df83e2fee806d5dacba71`, post-merge CI run `42182711752`, success on all four jobs. Evaluated engine
+  `7ffe60bd702a8ee36f1bea8d42a19b685e341df0`, post-merge CI run `42039426497`, success on all four jobs. PR #40 and PR #41. The record at
+  `7e5265b3feec04b38a0df83e2fee806d5dacba71` has SHA-256 `a69af0b172cf8991e710a8c4a5d3d3b51c232fc38d6e8d6986fdcc25fac7d532`. The owner's instruction, quoted
+  in s1, exists as session input and not as a repository file.
+
 ---
 
 ## ADR template (copy, do not edit above the line)

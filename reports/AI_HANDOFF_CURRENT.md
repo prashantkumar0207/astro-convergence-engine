@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.26.0 |
+| Version | 9.27.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-06 (**N5 reconciliation.** JATAKA N5 record reconciled to evaluated `main` `7ffe60bd702a8ee36f1bea8d42a19b685e341df0` on documentation-only branch `jataka-n5-reconciliation`. Not merged. JATAKA exit is not declared.) |
+| Last updated | 2026-11-06 (**JATAKA exit recorded** in `ADR-0110`, on a documentation-only review PR. No next phase entered.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,16 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-06 - JATAKA exit ratified by the owner; recorded in ADR-0110 (documentation-only PR)
+
+**Exit is the owner's decision**, recorded in `ADR-0110`. The PR that records it is not yet merged. Evaluated engine `7ffe60b`;
+record merged at `7e5265b`; post-merge CI `42182711752` green.
+
+- The N5 record is accepted as evidence within its stated scope, at version 0.3.0. The limitations carried forward are in
+  `ADR-0110` s3: N2, the three `TRANSIT_V1` overclaims, containment and the non-claims.
+- **No next phase is entered.** EVIDENCE entry needs a separate decision under `Q8_CLOSURE_MATRIX.md`.
+- No production code, artifact, holdout, threshold or gate changed.
 
 ### 2026-11-06 - N5 record reconciled to the merged main SHA (documentation-only PR)
 

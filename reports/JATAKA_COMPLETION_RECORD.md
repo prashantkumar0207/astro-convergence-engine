@@ -3,8 +3,8 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | **PROPOSED - not approved. JATAKA exit is NOT declared.** |
-| Version | 0.2.0 |
+| Status | **ACCEPTED by the owner as evidence within its stated scope (`ADR-0110`).** This record declares nothing: `ADR-0110` records the exit decision. |
+| Version | 0.3.0 |
 | Owner | Project Owner (`ADR-0051` D4; `ADR-0107` Q-C) |
 | Last updated | 2026-11-06 |
 | Review cadence | Regenerate at the exact `main` SHA of any exit decision |
@@ -130,15 +130,15 @@ sub-entry).
 
 ## 7. Outstanding before any exit decision
 
-1. The CEO's JATAKA exit determination, on this record.
-2. The owner's JATAKA exit decision. **This record declares nothing.**
-3. Review of this record's documentation-only PR, and separate approval to merge it.
+Resolved, as `ADR-0110` records. The owner states that the CEO's independent technical PASS came first; its text is not a
+repository file. The owner then ratified JATAKA exit, and this record merged with PR #41 at `main` `7e5265b`. Entry into
+EVIDENCE or any other phase is a separate decision. **This record declares nothing.**
 
 No material blocker to that review is known. The three `TRANSIT_V1` overclaims remain open (`ADR-0099` s4: they do not gate
 exit), and PR #33 and `ADR-0103` stay unmerged and `PROPOSED`.
 
-**Approval status: the owner ratified `ADR-0109`'s stated items, accepted the `N1` reconciliation and authorized the merge. CEO
-exit determination not given. Owner exit decision not given.**
+**Approval status: CEO technical PASS, as the owner states. Owner exit ratified (`ADR-0110`), with this record accepted as
+evidence within its stated scope. The evaluated engine SHA above is unchanged.**
 
 ## Appendix A: coverage of each in-use function
 
