@@ -70,10 +70,9 @@ def test_dense_sweep_against_independent_classical_rule():
 
 
 def test_ulp_boundary_battery():
-    # All 144 boundaries at 2.5 degree spacing. Locked convention as
-    # verified in the D3 phase: intra-sign boundaries promote within
-    # 1e-10; sign boundaries carry no tolerance in the source-sign
-    # decomposition (documented pre-existing behavior).
+    # All 144 boundaries at 2.5 degree spacing. Every boundary promotes
+    # within 1e-10, sign boundaries included: the parent sign follows D1
+    # (ADR-0112 s3, superseding the earlier no-tolerance sign split).
     for k in range(144):
         boundary = k * 2.5
         at = classify(boundary, D12_PARASHARA)
@@ -84,13 +83,9 @@ def test_ulp_boundary_battery():
         just_below = boundary - 1e-11
         if just_below >= 0.0:
             promoted = classify(just_below, D12_PARASHARA)
-            if k % 12 == 0:  # sign boundary: stays in previous sign's last division
-                previous_sign = (k // 12 - 1) % 12
-                assert promoted.division_index == 11, boundary
-                assert promoted.d_sign == (previous_sign + 11) % 12, boundary
-            else:
-                assert (promoted.d_sign, promoted.division_index) == (
-                    at.d_sign, at.division_index), boundary
+            # Sign boundaries promote too: the parent sign follows D1 (ADR-0112 s3).
+            assert (promoted.d_sign, promoted.division_index) == (
+                at.d_sign, at.division_index), boundary
 
         clearly_below = boundary - 1e-6
         if clearly_below >= 0.0:

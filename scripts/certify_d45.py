@@ -265,7 +265,17 @@ def gate_f_boundary_cases():
         near_end = classify(sign * 30.0 + 29.9999999999, D45_PARASHARA)
         start = classify(sign * 30.0, D45_PARASHARA)
         cases_checked += 2
-        if near_end.division_index != 44:
+        # ADR-0112 s3: inside the 1e-10 window the parent sign follows D1, so a
+        # near-end value classifies as the next sign's boundary itself. At 360
+        # degrees the top edge clamps to Pisces, as D1 does.
+        if sign < 11:
+            if near_end != classify((sign + 1) * 30.0, D45_PARASHARA):
+                mismatches += 1
+        elif near_end.division_index != 44:
+            mismatches += 1
+        # Just outside the window nothing is promoted: still the last division.
+        cases_checked += 1
+        if classify((sign + 1) * 30.0 - 2e-10, D45_PARASHARA).division_index != 44:
             mismatches += 1
         if start.division_index != 0:
             mismatches += 1
@@ -274,7 +284,8 @@ def gate_f_boundary_cases():
     return {"cases_checked": cases_checked, "mismatches": 0,
             "boundary_k_values": list(BOUNDARY_K_VALUES),
             "convention": "engine-wide 1e-10 tolerance-promoted boundary convention "
-                           "(longitude_utils.py), unmodified; no D45-specific exception"}
+                           "(longitude_utils.py), with the parent sign promoted as D1's is (ADR-0112 s3); "
+                           "no D45-specific exception"}
 
 
 def gate_g_protected_holdout():
