@@ -5,6 +5,8 @@ H-02 fix Option 1, ADR-0065).
 
 from dataclasses import dataclass
 
+from engine.models.provenance import Provenance
+
 
 @dataclass(frozen=True, slots=True)
 class TransitEvent:
@@ -32,6 +34,9 @@ class TransitEvent:
         "return", "natal_conjunction", or "tangent".
     profile_name
         CalculationProfile that produced the positions.
+    provenance
+        The full provenance of that profile, as a snapshot under it carries (M-05, ADR-0111).
+        ``profile_name`` is kept, and always equals ``provenance.profile_name``.
     declared_division
         H-02 fix (ADR-0065, DP-013 Option 1). For "sign_ingress" and
         "nakshatra_ingress" events, the sign (1-12) or nakshatra (1-27)
@@ -53,4 +58,5 @@ class TransitEvent:
     residual_arcsec: float
     kind: str
     profile_name: str
+    provenance: Provenance
     declared_division: int | None = None

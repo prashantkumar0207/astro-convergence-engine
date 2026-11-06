@@ -66,6 +66,9 @@ class DrishtiChart:
     planet_signs: dict
     drishti: tuple
     provenance: Provenance
+    #: The house convention of every ``aspected_houses`` value (M-04, ADR-0111, DP-025 A2 Option 1).
+    #: ``provenance.house_system`` describes the snapshot's cusps, which these houses do not use.
+    houses_convention: str = "whole_sign"
 
     @property
     def ascendant_sign_zero_based(self) -> int:
