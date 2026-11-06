@@ -53,6 +53,19 @@ def normalize_longitude(longitude: float) -> float:
     return longitude
 
 
+def parent_sign(longitude: float) -> int:
+    """
+    The 0-based sign that contains ``longitude``, under the project
+    boundary convention at sign level (ADR-0112 s3).
+
+    A value within BOUNDARY_TOLERANCE below a multiple of 30 degrees
+    belongs to the next sign; at 360 degrees the top edge clamps to
+    Pisces. This is exactly what D1's zodiac_sign() computes, so every
+    layer that derives a parent sign from it agrees with D1.
+    """
+    return division_index(normalize_longitude(longitude), 30.0, 12)
+
+
 def division_index(value: float, size: float, count: int) -> int:
     """
     Return the zero-based division index of `value` within `count`
