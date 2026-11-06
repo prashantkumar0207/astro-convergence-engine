@@ -74,14 +74,7 @@ def astronomy_snapshot(
         strict=profile.strict_ephemeris,
     )
 
-    provenance = Provenance(
-        profile_name=profile.name,
-        ayanamsa_mode=profile.ayanamsa_mode,
-        frame="sidereal",
-        house_system=profile.house_system.decode("ascii"),
-        node_policy=profile.node_policy,
-        ephemeris_mode=MODE_SWIEPH if profile.strict_ephemeris else "unverified",
-    )
+    provenance = profile_provenance(profile)
 
     return AstronomySnapshot(
         julian_day=julian_day,
@@ -90,4 +83,21 @@ def astronomy_snapshot(
         ayanamsa=aya,
         sidereal_planets=sidereal,
         provenance=provenance,
+    )
+
+
+def profile_provenance(profile: CalculationProfile) -> Provenance:
+    """The provenance of anything calculated under ``profile``.
+
+    One builder, so that a snapshot and a transit event computed under the same profile cannot
+    disagree about it (M-05, ADR-0111).
+    """
+
+    return Provenance(
+        profile_name=profile.name,
+        ayanamsa_mode=profile.ayanamsa_mode,
+        frame="sidereal",
+        house_system=profile.house_system.decode("ascii"),
+        node_policy=profile.node_policy,
+        ephemeris_mode=MODE_SWIEPH if profile.strict_ephemeris else "unverified",
     )

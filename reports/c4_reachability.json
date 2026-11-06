@@ -777,6 +777,16 @@
    "file": "engine/astronomy/astronomy_snapshot.py",
    "status": "IN_USE_COVERED"
   },
+  "engine.astronomy.astronomy_snapshot.profile_provenance": {
+   "caller_count": 2,
+   "callers": [
+    "engine.astronomy.astronomy_snapshot.astronomy_snapshot",
+    "engine.transits.crossing.find_crossings"
+   ],
+   "covered": true,
+   "file": "engine/astronomy/astronomy_snapshot.py",
+   "status": "IN_USE_COVERED"
+  },
   "engine.astronomy.ayanamsa.ayanamsa": {
    "caller_count": 1,
    "callers": [
@@ -1595,7 +1605,7 @@
  },
  "schema": "ace-c4-reachability-v1",
  "summary": {
-  "IN_USE_COVERED": 109,
+  "IN_USE_COVERED": 110,
   "NOT_IN_USE": 102
  },
  "universe_exclusions": {
