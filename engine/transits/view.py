@@ -38,6 +38,8 @@ class TransitView:
     natal_longitudes: dict
     contacts: tuple
     provenance: Provenance
+    #: The natal snapshot's provenance, which the view validates against ``profile`` (M-05, ADR-0111).
+    natal_provenance: Provenance
 
 
 def _separation(a: float, b: float) -> float:
@@ -99,4 +101,5 @@ def transit_view(
         natal_longitudes=natal_longitudes,
         contacts=contacts,
         provenance=moment.provenance,
+        natal_provenance=natal_provenance,
     )

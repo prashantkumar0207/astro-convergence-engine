@@ -27,6 +27,7 @@ import swisseph as swe
 from engine.astronomy.planet_collection import PLANET_BODIES
 from engine.astronomy.profile import NODE_POLICY_MEAN, CalculationProfile
 from engine.astronomy.sidereal_planets import sidereal_planet_position
+from engine.astronomy.astronomy_snapshot import profile_provenance
 from engine.models.transit_event import TransitEvent
 from engine.transits.speeds import grid_step_days
 
@@ -98,6 +99,7 @@ def find_crossings(
     All events at which ``body`` crosses ``target_longitude`` in
     [jd_start, jd_end] under ``profile``, ordered by time.
     """
+    provenance = profile_provenance(profile)
 
     if jd_end <= jd_start:
         raise ValueError("empty window")
@@ -177,6 +179,7 @@ def find_crossings(
             residual_arcsec=abs(diff(lon_event)) * 3600.0,
             kind=kind,
             profile_name=profile.name,
+            provenance=provenance,
         ))
 
     # 3. Tangent rule: a station whose extremum touches the target
@@ -195,6 +198,7 @@ def find_crossings(
                 residual_arcsec=residual,
                 kind="tangent",
                 profile_name=profile.name,
+                provenance=provenance,
             ))
 
     return tuple(sorted(events, key=lambda event: event.julian_day))
