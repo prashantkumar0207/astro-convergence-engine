@@ -2,7 +2,7 @@
  "schema": "varga_d24_v1_certification",
  "adr": "ADR-0083",
  "supersedes_provisional_id": "NOTHING_AUTHORISED",
- "date": "2026-11-05",
+ "date": "2026-11-06",
  "scope": "D24 Siddhamsa (Chaturvimshamsha), Parashara/BPHS variant, Traditional Parasara construction. Registered in production through the generic registry (engine.astrology.varga_d24, VARGA_D24_V1), discoverable via engine.astrology.divisional_chart.divisional_chart(snapshot, 24).",
  "rule": {
   "kind": "CyclicVargaRule",
@@ -107,9 +107,9 @@
    "exercises_note": "the validator recomputes from its own embedded reference and calls no production code, so it exercises no production callable"
   },
   "F_boundary_cases": {
-   "cases": 300,
+   "cases": 312,
    "mismatches": 0,
-   "convention": "engine-wide 1e-10 tolerance-promoted boundary convention (longitude_utils.py), unmodified; no D24-specific exception - cell width 30/24=1.25deg is exactly representable in IEEE-754 double precision (ADR-0083 section 3), zero floor-classification effect, cleaner than D45's own measured result",
+   "convention": "engine-wide 1e-10 tolerance-promoted boundary convention (longitude_utils.py), with the parent sign promoted as D1's is (ADR-0112 s3); no D24-specific exception - cell width 30/24=1.25deg is exactly representable in IEEE-754 double precision (ADR-0083 section 3), zero floor-classification effect, cleaner than D45's own measured result",
    "exercises": [
     "vargas.d24"
    ]

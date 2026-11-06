@@ -2,7 +2,7 @@
  "schema": "varga_d16_v1_certification",
  "adr": "ADR-0089",
  "supersedes_provisional_id": "NOTHING_AUTHORISED",
- "date": "2026-11-05",
+ "date": "2026-11-06",
  "scope": "D16 Shodasamsa, Parashara/BPHS variant, Traditional Parasara construction. Rule under certification is a STANDALONE, UNREGISTERED CyclicVargaRule instance embedded in this certifier - not engine/astrology/varga_d16.py, no production module is authorized or created this execution.",
  "rule": {
   "kind": "standalone CyclicVargaRule instance embedded in this certifier (scripts/certify_d16.py) - not a registered production rule",
@@ -76,10 +76,10 @@
    "exercises_note": "the validator recomputes from its own embedded reference and calls no production code, so it exercises no production callable"
   },
   "F_boundary_cases": {
-   "cases": 204,
+   "cases": 216,
    "mismatches": 0,
    "verified_against": "validate_d16_holdout.reference_d16() (imported directly)",
-   "convention": "engine-wide 1e-10 tolerance-promoted boundary convention (longitude_utils.py), unmodified; no D16-specific exception - cell width 30/16=1.875deg is exactly representable in IEEE-754 double precision (ADR-0089 section 3), zero floor-classification effect, identical clean result to D24's/D40's own",
+   "convention": "engine-wide 1e-10 tolerance-promoted boundary convention (longitude_utils.py), with the parent sign promoted as D1's is (ADR-0112 s3); no D16-specific exception - cell width 30/16=1.875deg is exactly representable in IEEE-754 double precision (ADR-0089 section 3), zero floor-classification effect, identical clean result to D24's/D40's own",
    "exercises": [
     "vargas.d16"
    ]

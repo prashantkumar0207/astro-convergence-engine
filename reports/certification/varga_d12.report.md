@@ -5,7 +5,7 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 
 - Decision entry: ADR-0010
 - Supersedes provisional identifier: ADR-VARGA-D12-001
-- Date: 2026-11-05
+- Date: 2026-11-06
 - Scope: D12 Dwadasamsa (Parashara variant); first production use of the CyclicVargaRule path
 - Result: **PASS**
 
@@ -19,7 +19,7 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 - **A_table_integrity**: cells=24, mismatches=0
 - **B_dense_sweep**: points=51429, mismatches=0
 - **C_oracle**: comparisons=3600, mismatches=0
-- **D_non_invasiveness**: certified_dispatch=intact, refusals=intact, registered_rule_identity=is D12_PARASHARA, rule_content_sha256=224ece371b1fd024a49d545556e2f9b842343c44c17b9af666b7052b5e6cd195, d9_d10_sweep_points=53019, d9_sweep_sha256=ca444f10dd17fb46d24f9354f0c7a8e75505617bf2b04277708056890611593a, d10_sweep_sha256=78cd000fc7d16f4004020cda120ce6302bd220b2c4df8ac33481d4311095576a
+- **D_non_invasiveness**: certified_dispatch=intact, refusals=intact, registered_rule_identity=is D12_PARASHARA, rule_content_sha256=224ece371b1fd024a49d545556e2f9b842343c44c17b9af666b7052b5e6cd195, d9_d10_sweep_points=53019, d9_sweep_sha256=4fbd2883771976dcfe36c5f8a79f1efdbec012bef6347591ba8fb289ab8fcbc2, d10_sweep_sha256=b23ce537861ff537c8114e1c4d69a40e6f56c14cfe19d8520a117b816efeb2cf
 - **E_independent_validator**: result=PASS
 
 ## Capabilities (ADR-0101 s2)
