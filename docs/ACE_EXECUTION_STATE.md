@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | **ACCEPTED (`ADR-0062`) - canonical, machine-checkable current-state record.** Regenerate/refresh on every meaningful implementation task, same discipline as `reports/AI_HANDOFF_CURRENT.md`. |
-| Version | 7.26.0 |
+| Version | 7.27.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-06 (**N5 reconciliation.** JATAKA N5 record reconciled to evaluated `main` `7ffe60bd702a8ee36f1bea8d42a19b685e341df0` on documentation-only branch `jataka-n5-reconciliation`. Not merged. JATAKA exit is not declared. No `engine/` production change.) |
+| Last updated | 2026-11-06 (**JATAKA exit recorded** in `ADR-0110`, on a documentation-only review PR. No `engine/` production change.) |
 | Review cadence | Refresh at the start of a session if stale; not load-bearing if it isn't. |
 
 # ACE execution state
@@ -42,23 +42,23 @@ independently is in these fields plus the pointers they name.
 
 | Field | Value |
 |---|---|
-| `CURRENT_PHASE` | JATAKA entered (`ADR-0074`). JATAKA exit is neither declared nor performed and remains on HOLD (`ADR-0107`, `ADR-0108`). |
-| `CURRENT_MILESTONE` | **Stage C merged at `7ffe60bd702a8ee36f1bea8d42a19b685e341df0` (PR #40); N5 record reconciled to that SHA on a documentation-only PR.** JATAKA exit is not declared. |
-| `CURRENT_AUTHORIZED_TASK` | None self-executable. The CEO exit determination, the owner's exit decision and this PR's merge are separate decisions. |
-| `TASK_OWNER` | CHATGPT (independent review of the PR); USER (ratification of `ADR-0108`, the dead-path ruling, merge). |
-| `STATUS` | On `stage-b-c2-c5`, under a review PR. Not merged. No `engine/` production code, holdout, threshold or calculated value changed. All 22 scope-bearing artifacts regenerated. |
-| `LAST_COMPLETED_ACTION` | Separated `no_confirmed_violations` from `coverage_established` in C4, so an exit PASS is refused while material `UNKNOWN` remains. Resolved the two `DashaPeriod` properties with a committed runtime proof; 9 `UNKNOWN` remain, retained as unresolved. |
-| `LAST_COMMIT` (main) | `0a0dbea6fbf2e5d295b7805781a0f18f3d28bf83` (PR #38). Unchanged by this task. |
-| `LAST_COMMIT` (stage-b-c2-c5) | This task's own commit on `stage-b-c2-c5`, on top of `0a0dbea6fbf2e5d295b7805781a0f18f3d28bf83`. |
-| `LAST_CI_RUN` | `41805777185` at `0a0dbea6`: push to `main`, success on all four jobs. This branch's results are on its review PR, since a commit cannot record them. |
-| `LAST_CEO_DECISION` | CEO audit of PR #39: HOLD on the C4 exit clause; C2, C3 and reconciliation passed the bounded review. Owner: "ACE OWNER AUTHORIZATION — COMPLETE STAGE B". Neither is a JATAKA exit or merge approval. |
-| `NEXT_AUTHORIZED_ACTION` | None self-executable. Merge, JATAKA exit, WP-N2, WP-RD-A and any `DP-040` selection are all unauthorized. |
-| `WAITING_FOR` | CHATGPT: independent review of the PR. USER: ratification of `ADR-0108` s3 and s4, the dead-path ruling, and the merge decision (`ADR-0106` OR-3). |
-| `BLOCKER` | None for this delivery. For JATAKA exit: `--exit-criterion` refuses on 11 dead-path findings and 9 material `UNKNOWN` methods; `N1` reconciliation and the `N5` completion record are outstanding. |
-| `CEO_APPROVAL_REQUIRED` | This PR and any merge (`ADR-0106` OR-3). The items in `ADR-0108` s3 and s4 need owner ratification. |
+| `CURRENT_PHASE` | JATAKA exited (`ADR-0110`, owner-ratified 2026-11-06). Evaluated engine `7ffe60bd702a8ee36f1bea8d42a19b685e341df0`; record merged at `7e5265b3feec04b38a0df83e2fee806d5dacba71`. No next phase entered: EVIDENCE entry needs a separate decision under `Q8_CLOSURE_MATRIX.md`. `ADR-0110` itself is on a review PR until merged. |
+| `CURRENT_MILESTONE` | **JATAKA exit recorded (`ADR-0110`) on documentation-only branch `jataka-phase-exit`, under review.** |
+| `CURRENT_AUTHORIZED_TASK` | None self-executable. Merging the exit record needs CEO approval and owner authorization. |
+| `TASK_OWNER` | CHATGPT (governance verification of the review PR); USER (merge authorization). |
+| `STATUS` | Documentation-only review PR, not merged. No production code, artifact, holdout, threshold or gate changed. |
+| `LAST_COMPLETED_ACTION` | Recorded the owner's JATAKA exit ratification in `ADR-0110`, the N5 record's approval status, this file and the handoff. |
+| `LAST_COMMIT` (main) | `7e5265b3feec04b38a0df83e2fee806d5dacba71` (PR #41 merge). Unchanged by this task. |
+| `LAST_COMMIT` (jataka-phase-exit) | This task's one commit, on top of `7e5265b3feec04b38a0df83e2fee806d5dacba71`. |
+| `LAST_CI_RUN` | `42182711752` at `7e5265b3`: push to `main`, success on all four jobs. This branch's results are on its review PR. |
+| `LAST_CEO_DECISION` | Independent technical PASS before the owner's JATAKA exit ratification, as the owner states. Its text is not a repository file. |
+| `NEXT_AUTHORIZED_ACTION` | None self-executable. EVIDENCE entry, `DP-040`, WP-N2 and WP-RD-A are all unauthorized. |
+| `WAITING_FOR` | CHATGPT: governance verification of the review PR. USER: merge authorization (`ADR-0106` OR-3). |
+| `BLOCKER` | None. Limitations carried forward are listed in `ADR-0110` s3. |
+| `CEO_APPROVAL_REQUIRED` | This PR's merge (`ADR-0106` OR-3), and entry into any further phase. |
 | `CLAUDE_ACTION_REQUIRED` | None until directed. |
-| `CHATGPT_ACTION_REQUIRED` | Independent review of the PR, including `ADR-0108` s3 and s4. |
-| `USER_ACTION_REQUIRED` | Rule on dead-path `in use`, and on the `cls.load_json` case; decide how the 9 `UNKNOWN` methods are to be resolved; ratify or correct `ADR-0108`; decide on merge after review. |
+| `CHATGPT_ACTION_REQUIRED` | Governance verification of the review PR. |
+| `USER_ACTION_REQUIRED` | Merge authorization for the review PR. Any decision on entering EVIDENCE, separately. |
 | `HANDOFF_REQUIRED` | None beyond this file and the latest entry in `reports/AI_HANDOFF_CURRENT.md`. |
 
 ## How to independently verify every field above
@@ -79,6 +79,7 @@ exactly as `reports/AI_HANDOFF_CURRENT.md` already requires of itself.
 
 | Version | Date | Change |
 |---|---|---|
+| 7.27.0 | 2026-11-06 | **JATAKA exit ratified by the owner, recorded in `ADR-0110`.** Current-state rows refreshed; several were stale from Stage B. No next phase entered. |
 | 7.26.0 | 2026-11-06 | PR #40 merged as `7ffe60b`, post-merge CI `42039426497` green; N5 record reconciled to that SHA. Not merged. |
 | 7.25.0 | 2026-11-05 | `ADR-0109` ratified for s1 item 4, s3A items 1 to 3 and the N1 reconciliation. Not merged. |
 | 7.24.0 | 2026-11-05 | Stage C review branch and PR prepared on the owner's authorization. `ADR-0109` stays `PROPOSED`. |
