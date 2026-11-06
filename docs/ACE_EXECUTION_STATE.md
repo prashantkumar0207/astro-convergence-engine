@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | **ACCEPTED (`ADR-0062`) - canonical, machine-checkable current-state record.** Regenerate/refresh on every meaningful implementation task, same discipline as `reports/AI_HANDOFF_CURRENT.md`. |
-| Version | 7.25.0 |
+| Version | 7.26.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-05 (**ADR-0109 ratified in part.** Stage C on PR #40. `ADR-0109` is `ACCEPTED` for s1 item 4, s3A items 1 to 3 and the N1 reconciliation only. Not merged. JATAKA exit is not declared. No `engine/` production change.) |
+| Last updated | 2026-11-06 (**N5 reconciliation.** JATAKA N5 record reconciled to evaluated `main` `7ffe60bd702a8ee36f1bea8d42a19b685e341df0` on documentation-only branch `jataka-n5-reconciliation`. Not merged. JATAKA exit is not declared. No `engine/` production change.) |
 | Review cadence | Refresh at the start of a session if stale; not load-bearing if it isn't. |
 
 # ACE execution state
@@ -43,8 +43,8 @@ independently is in these fields plus the pointers they name.
 | Field | Value |
 |---|---|
 | `CURRENT_PHASE` | JATAKA entered (`ADR-0074`). JATAKA exit is neither declared nor performed and remains on HOLD (`ADR-0107`, `ADR-0108`). |
-| `CURRENT_MILESTONE` | **Stage C on PR #40. `ADR-0109` is `ACCEPTED` for s1 item 4, s3A items 1 to 3 and the N1 reconciliation only. Not merged. JATAKA exit is not declared.** Stage B merged at `8d59d6d` (PR #39). |
-| `CURRENT_AUTHORIZED_TASK` | None self-executable. Merging and JATAKA exit are separate decisions. |
+| `CURRENT_MILESTONE` | **Stage C merged at `7ffe60bd702a8ee36f1bea8d42a19b685e341df0` (PR #40); N5 record reconciled to that SHA on a documentation-only PR.** JATAKA exit is not declared. |
+| `CURRENT_AUTHORIZED_TASK` | None self-executable. The CEO exit determination, the owner's exit decision and this PR's merge are separate decisions. |
 | `TASK_OWNER` | CHATGPT (independent review of the PR); USER (ratification of `ADR-0108`, the dead-path ruling, merge). |
 | `STATUS` | On `stage-b-c2-c5`, under a review PR. Not merged. No `engine/` production code, holdout, threshold or calculated value changed. All 22 scope-bearing artifacts regenerated. |
 | `LAST_COMPLETED_ACTION` | Separated `no_confirmed_violations` from `coverage_established` in C4, so an exit PASS is refused while material `UNKNOWN` remains. Resolved the two `DashaPeriod` properties with a committed runtime proof; 9 `UNKNOWN` remain, retained as unresolved. |
@@ -79,6 +79,7 @@ exactly as `reports/AI_HANDOFF_CURRENT.md` already requires of itself.
 
 | Version | Date | Change |
 |---|---|---|
+| 7.26.0 | 2026-11-06 | PR #40 merged as `7ffe60b`, post-merge CI `42039426497` green; N5 record reconciled to that SHA. Not merged. |
 | 7.25.0 | 2026-11-05 | `ADR-0109` ratified for s1 item 4, s3A items 1 to 3 and the N1 reconciliation. Not merged. |
 | 7.24.0 | 2026-11-05 | Stage C review branch and PR prepared on the owner's authorization. `ADR-0109` stays `PROPOSED`. |
 | 7.23.0 | 2026-11-05 | **Stage C package prepared, uncommitted (`ADR-0109`, `PROPOSED`).** No `engine/` production change. JATAKA exit not declared. |

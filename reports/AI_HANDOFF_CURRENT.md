@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.25.0 |
+| Version | 9.26.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-05 (**ADR-0109 ratified in part.** Stage C on PR #40. `ADR-0109` is `ACCEPTED` for s1 item 4, s3A items 1 to 3 and the N1 reconciliation only. Not merged. JATAKA exit is not declared.) |
+| Last updated | 2026-11-06 (**N5 reconciliation.** JATAKA N5 record reconciled to evaluated `main` `7ffe60bd702a8ee36f1bea8d42a19b685e341df0` on documentation-only branch `jataka-n5-reconciliation`. Not merged. JATAKA exit is not declared.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,16 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-06 - N5 record reconciled to the merged main SHA (documentation-only PR)
+
+**Not merged. JATAKA exit is not declared.** PR #40 merged as `7ffe60bd702a8ee36f1bea8d42a19b685e341df0` (parents `8d59d6d` and `147b19b`); post-merge CI run
+`42039426497` succeeded on all four jobs.
+
+- `reports/JATAKA_COMPLETION_RECORD.md` 0.2.0 evaluates that SHA. It records the post-merge CI, the owner's acceptance of N1,
+  the N2 deferral with its reopening trigger, the scope limits and the three open `TRANSIT_V1` overclaims.
+- No production code, gate or artifact changed. `ADR-0109` is `ACCEPTED` in part, as its ratification sub-entry states.
+- **Open:** the CEO's JATAKA exit determination and the owner's exit decision.
 
 ### 2026-11-05 - ADR-0109 ratified in part; PR #40 awaits the final merge decision
 

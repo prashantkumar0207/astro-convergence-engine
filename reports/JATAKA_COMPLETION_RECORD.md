@@ -4,26 +4,27 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | **PROPOSED - not approved. JATAKA exit is NOT declared.** |
-| Version | 0.1.0 |
+| Version | 0.2.0 |
 | Owner | Project Owner (`ADR-0051` D4; `ADR-0107` Q-C) |
-| Last updated | 2026-11-05 |
+| Last updated | 2026-11-06 |
 | Review cadence | Regenerate at the exact `main` SHA of any exit decision |
 
 # JATAKA completion record (N5) and qualification reconciliation (N1)
 
 This is the concise record `ADR-0107` requires for `N5`, with `N1`'s reconciliation in s4. Every count below was generated
-from this tree's artifacts. A stored artifact is history, not proof, so the runs are listed in s3.
+from the artifacts at the evaluated `main` SHA. A stored artifact is history, not proof, so the runs are listed in s3.
 
 ## 1. What was evaluated
 
-- **Base `main`:** `8d59d6ddfefd38a94799b14fd80b4fab922316b8`. Its CI, run `41823126770`, succeeded on all four jobs.
-- **Evaluated tree:** that base plus the Stage C changes on review branch `stage-c-exit-closure`, not merged.
-  **This is not a `main` SHA.** `N5` requires an exact evaluated `main` SHA, so this record must be regenerated after any
-  authorized merge, before it can support an exit decision.
+- **Evaluated `main` SHA:** `7ffe60bd702a8ee36f1bea8d42a19b685e341df0`, the merge of PR #40. Parents `8d59d6ddfefd38a94799b14fd80b4fab922316b8` and
+  `147b19b73b68b3c0684c84f2b0380706443817df`. Tree `63af0b0a890e607a71f3f6853a084224918837a6`, identical to the PR head.
+- **CI at that SHA:** run `42039426497`, push event, success on all four jobs.
+- **Later commits:** committing this record creates a later SHA. That SHA is not the one evaluated here, and differs from it
+  by this file alone only if its own diff shows that.
 
 ## 2. Exit criterion (`Q8_CLOSURE_MATRIX.md` s5, under `ADR-0099`)
 
-**Clause 1, every declared capability individually certified: met on this tree, by C2.** The declaring lists did not
+**Clause 1, every declared capability individually certified: met at `7ffe60b`, by C2.** The declaring lists did not
 change. 23 inputs are declared:
 
 | Declared input | Artifact | Capability | Verdict | Gates | Decision entry |
@@ -52,7 +53,7 @@ change. 23 inputs are declared:
 | TRIKALAM_V1 | TRIKALAM_V1 | (all) | PASS | 6 | ADR-0060 |
 | VIMSHOTTARI_V1 | VIMSHOTTARI_V1 | (all) | PASS | 8 | ADR-0007 |
 
-**Clause 2, nothing in use without certification coverage: met on this tree, by C4, subject to s5 and s6.** Of
+**Clause 2, nothing in use without certification coverage: met at `7ffe60b`, by C4, subject to s5 and s6.** Of
 211 public functions: 109 are in use and covered, 102 are not in use,
 0 are live uncovered, 0 are dead-path uncovered, and 0 are `UNKNOWN`. Appendix A gives the artifact and
 gate covering each.
@@ -62,20 +63,21 @@ These three scope overclaims do not gate exit (`ADR-0099` s4), remain required r
 
 ## 3. Regenerated evidence
 
-Executed 2026-11-05 before commit, in a clean native Linux copy (Python 3.11.17) unless stated. CI on the committed HEAD is
-recorded on the review PR, not here.
+CI is run `42039426497`. "Local" is a clean native Linux copy from `git archive` of that SHA, on Python 3.11.17, executed
+2026-11-05 after the merge. A stored artifact is history, so both regenerated it.
 
-| Check | Result |
-|---|---|
-| All 23 certifiers, in CI's two tiers | 23 PASS, 0 failures |
-| Evidence drift (`check_artifact_drift.py`) | PASS: 73 files identical outside volatile fields |
-| C2, C3, C4 | PASS. C3: 23 artifacts, 48 capabilities, 148 members, 153 gates |
-| `check_reachability.py --exit-criterion` | Clause 2 satisfied, clause 2 alone |
-| Default `pytest` | 1,210 passed, 0 skipped (Linux, Python 3.11) |
-| Default `pytest` on the Windows host | 1,210 passed, 0 skipped (Python 3.12) |
-| CI governance-job steps, run as written in `ci.yml` | All passed, including the C2, C3 and C4 negative controls |
-| Reconciliation against `8d59d6d` | No calculated value changed. Of 22 changed artifacts: module count +1 and volatile fields, plus the intended changes to `SIGN_CONVENTION_V1` and `VIMSHOTTARI_V1`. The 4 frozen artifacts are identical |
-| `engine/` production code, `validate_*.py`, `engine/knowledge/data/` | Zero diff against `8d59d6d` |
+| Check | CI at `7ffe60b` | Local at `7ffe60b` |
+|---|---|---|
+| Certifiers | All PASS: 41 result lines across three certifier jobs, including `SUPPORT_PATHS_V1` | 23 of 23 PASS |
+| Evidence drift | PASS, 73 files, in all three certifier jobs | PASS, 73 files |
+| C2, C3, C4 | PASS. C3: 23 artifacts, 48 capabilities, 148 members, 153 gates | PASS, same counts |
+| C4 clause 2 | Coverage established; clause 2 satisfied. Clause 2 alone | Gate PASS |
+| C2, C3, C4 negative controls | Each exits 1 on its planted violation | Same, as written in `ci.yml` |
+| Default `pytest` | 1,254 passed on both runs, on Python 3.11 and on 3.12 | 1,254 passed, 0 skipped |
+| Governance job | Success | All 12 steps passed |
+| Default `pytest`, Windows host | Not applicable | 1,254 passed (Python 3.12), on the identical tree |
+
+**Reconciliation against `8d59d6d`:** no calculated value changed. All 22 pre-existing scope-bearing artifacts differ only by module count and volatile fields, plus the intended `SIGN_CONVENTION_V1` and `VIMSHOTTARI_V1` changes, and the 4 frozen artifacts are identical. `engine/` production code, `validate_*.py` and `engine/knowledge/data/` have zero diff.
 
 ## 4. N1: qualifications reconciled to demonstrated scope
 
@@ -83,7 +85,7 @@ No remediation was repeated. Each accepted qualification stands unchanged, and t
 the CEO's reading in `ADR-0107` s3 item 2, which the owner has not separately adopted, this counts only what is
 demonstrated and currently covered. It is not blanket certification of all possible behaviour.
 
-| Qualification | Later evidence | Regenerated on this tree | Still not claimed |
+| Qualification | Later evidence | Regenerated at `7ffe60b` | Still not claimed |
 |---|---|---|---|
 | `ADR-0083`, as ratified: "Local certification: PASS. 8/9 failable gates independently verified. Gate C/oracle corroboration: PENDING." Gate C then had no failure path | Registered production Gate C, CI `41798264558` | Gate C: 5,400 comparisons, 0 mismatches | Deity or label payloads, non-default PyJHora chart methods, non-Parashara variants |
 | `ADR-0085` (D45 composition layer had no D45-specific exact-value check) | Gate I, commit `1f7bc79bb0833d57deeea9cb120a63de480d8ef3`, PR #36, merge `62baacc704adcfca62973a5d359d4698b9aaf1c3`, CI `41626489663` | Gate I: PASS | The excluded Parivritti and Somanatha methods. `ADR-0077`'s A-H result alone remains no proof of composition |
@@ -106,27 +108,37 @@ sub-entry).
   and `KnowledgeResolver.resolve` have no outside caller, and are `NOT_IN_USE`. Nothing was removed.
 - **Universe limits (`ADR-0108` s4):** public functions and methods only. Classes, constants and dunder methods are not
   rows, `engine/main.py` handlers and `engine/tools/` are excluded, and implicit dispatch such as `Sign.__str__` is not a row.
+- **`ADR-0109` is `ACCEPTED` only in part:** s1 item 4, s3A items 1 to 3 and the `N1` reconciliation. Its s1 items 1 to 3 and
+  s3 item 5 are in force as merged code, but the ratification does not name them.
 - **`ADR-0103`, `ADR-0004`, `ADR-0018`** stay `PROPOSED`. `Q2`, `Q5`, `Q12`, `Q26` and `Q27` keep their recorded statuses.
 
 ## 6. What could not be verified
 
-- **This record cites no CI run of its own tree.** A record cannot hold the result of the commit that contains it, so that
-  evidence is on the review PR. The local runs above were native Linux on Python 3.11 only.
-- **`N2` stays an unverified property.** The roughly fourteen unaudited negative-control gates are neither tested nor cleared.
-  The new gates' controls are self-authored, and no independent mutation harness has run against them.
+- **The local certifier runs were on Python 3.11 only.** CI's certifier jobs are the evidence for the rest of its matrix.
+- **`N2` stays an unresolved, unverified property.** The roughly fourteen unaudited negative-control gates are neither tested
+  nor cleared. `ADR-0107` s2 defers it as nonblocking on present evidence: it reopens for a demonstrated escaped defect or a
+  future decision that relies on the unverified property. The new gates' controls are self-authored, and no independent
+  mutation harness has run against them.
 - **Static analysis has limits.** Dynamic dispatch in engine modules: {"engine.knowledge.registry": ["getattr"]}. Only the `getattr` on an engine
   class is modelled. `import_module`-style reach into a contained class would not be seen, and none was found by search.
-- **Containment has per-method evidence and real-tree controls** (`engine/tests/test_stage_c_containment_evidence.py`),
-  all written by the builder. It has not been independently reviewed. Its runtime test covers executed paths only.
+- **Containment has per-method evidence and real-tree controls** (`engine/tests/test_stage_c_containment_evidence.py`), all
+  written by the builder, and the owner has ratified the rule. The 415 `KnowledgeCache.get` call sites outside `engine/` are
+  not individually typed: they rest on no importer and no constructor. Its runtime test covers executed paths only, and
+  does not execute the FastAPI routes, because `fastapi` is not in the gate environment.
+- **The CEO's technical PASS on PR #40** is stated in the owner's merge authorization. Its text is not a repository file.
 - **The owner's Stage A and ADR-0108 text** exists as session input, per `ADR-0107`'s provenance limit.
 
 ## 7. Outstanding before any exit decision
 
-1. CI on the review PR, an authorized merge, then regeneration of this record at the exact merged `main` SHA.
-2. The CEO's determination on this record.
+1. The CEO's JATAKA exit determination, on this record.
+2. The owner's JATAKA exit decision. **This record declares nothing.**
+3. Review of this record's documentation-only PR, and separate approval to merge it.
 
-No material blocker to review is known. **Approval status: the owner ratified `ADR-0109`'s stated items and accepted the `N1` reconciliation. CEO technical approval
-not given. Owner exit decision not given.**
+No material blocker to that review is known. The three `TRANSIT_V1` overclaims remain open (`ADR-0099` s4: they do not gate
+exit), and PR #33 and `ADR-0103` stay unmerged and `PROPOSED`.
+
+**Approval status: the owner ratified `ADR-0109`'s stated items, accepted the `N1` reconciliation and authorized the merge. CEO
+exit determination not given. Owner exit decision not given.**
 
 ## Appendix A: coverage of each in-use function
 
