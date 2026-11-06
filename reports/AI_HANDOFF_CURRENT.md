@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.27.0 |
+| Version | 9.28.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-06 (**JATAKA exit recorded** in `ADR-0110`, on a documentation-only review PR. No next phase entered.) |
+| Last updated | 2026-11-06 (EVIDENCE prerequisite governance package on branch `evidence-prerequisite-governance`: `ADR-0111` records the owner's Q6, Q9, DP-008 and M-04 rulings; DP-005 drafted; M-04, M-05 and M-09 contracts prepared. Not merged. EVIDENCE not entered.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,17 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-06 - EVIDENCE prerequisite governance package (ADR-0111), documentation-only PR
+
+**Not merged. EVIDENCE is not entered.** The base is `main` `6c93a14`.
+
+- `ADR-0111` records the owner's rulings: Q6 and Q9 resolved; DP-008 Option B; M-04 as DP-025 A2 Option 1; M-05 decoupled
+  from DP-040. `ADR-0020` and `ADR-0004` are not ratified.
+- New documents: `docs/decisions/DP-005-knowledge-boundary-h3-h4-h5.md`, which decides nothing, and
+  `docs/EVIDENCE_PREREQUISITE_CONTRACTS.md`, with the M-04, M-05 and M-09 contracts and the specification table.
+- **Open for the owner:** DP-005 D-1 to D-3; the M-09 convention (A recommended); implementation authorization; the
+  specification decisions.
 
 ### 2026-11-06 - JATAKA exit ratified by the owner; recorded in ADR-0110 (documentation-only PR)
 

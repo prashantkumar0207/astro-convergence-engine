@@ -1068,7 +1068,7 @@ at 0015..0017 is a reservation, not a lost entry, and a gap is not a monotonicit
 ## ADR-0024 - Engine to knowledge boundary (resolves Q6)
 
 - **Date:** 2026-08-11
-- **Status:** PROPOSED - pending owner ratification (Q1).
+- **Status:** **Q6 RESOLVED by `ADR-0111`,** which ratifies `ADR-0030` clause 1 and this entry's D2 permitted case. D1's narrowing stays withdrawn by `ADR-0030`. D3 and D4 are not ratified (see `DP-005`). Originally: PROPOSED - pending owner ratification (Q1).
 - **Context:** Q6 asks whether `engine/` may read `knowledge/` at runtime. ADR-0013 conflict 4
   records that it was answered in practice rather than by decision.
 - **Decision:**
@@ -1104,7 +1104,7 @@ at 0015..0017 is a reservation, not a lost entry, and a gap is not a monotonicit
 ## ADR-0025 - Certified kernel lineage (resolves Q9)
 
 - **Date:** 2026-08-11
-- **Status:** PROPOSED - pending owner ratification (Q1).
+- **Status:** **Q9 RESOLVED by `ADR-0111`, in the owner's words,** which match `ADR-0030` clause 2 (a) to (c). This entry's decisions are not otherwise ratified. Originally: PROPOSED - pending owner ratification (Q1).
 - **Context:** Q9 asks whether the certified kernel should be imported into `engine/` and under what
   name. It has been open while `engine/` was heavily populated and certified.
 - **Decision:**
@@ -1433,7 +1433,7 @@ makes no change to any calculation, test, certification artifact or gate.
 ## ADR-0030 - Normative strengthening of the Q6 and Q9 decisions, and the complete ADR-0013 mapping
 
 - **Date:** 2026-08-11
-- **Status:** PROPOSED - pending owner ratification (Q1).
+- **Status:** **ACCEPTED as to clause 1 and clause 2 (a) to (c) only, by `ADR-0111`.** Clause 2 (d) and clause 3 are not ratified. Originally: PROPOSED - pending owner ratification (Q1).
 - **Context:** The CEO correction pass required that the Q6 and Q9 decisions read as architectural
   rules rather than as observations of current behaviour. On re-reading, ADR-0024 and ADR-0025 were
   found to be **weaker than intended in three specific respects**, recorded below. Because the
@@ -10794,6 +10794,106 @@ None of these is closed or weakened by this entry.
   `7ffe60bd702a8ee36f1bea8d42a19b685e341df0`, post-merge CI run `42039426497`, success on all four jobs. PR #40 and PR #41. The record at
   `7e5265b3feec04b38a0df83e2fee806d5dacba71` has SHA-256 `a69af0b172cf8991e710a8c4a5d3d3b51c232fc38d6e8d6986fdcc25fac7d532`. The owner's instruction, quoted
   in s1, exists as session input and not as a repository file.
+
+## ADR-0111 - Q6, Q9, DP-008 and M-04 ratified by the owner; M-05 decoupled from DP-040; EVIDENCE prerequisite records reconciled
+
+- **Date:** 2026-11-06
+- **Status:** **ACCEPTED, on the owner's ratifying instruction quoted in s1, for exactly the items it names.** It adds no
+  decision of its own.
+- **Context:** `Q8_CLOSURE_MATRIX.md` s6 makes EVIDENCE entry depend on:
+  - JATAKA exit (`ADR-0110`)
+  - DP-005 and DP-008 answered
+  - M-04, M-05 and M-09 resolved
+  - H0, H1, H2, H4 and H5 ratified
+
+  The entry-readiness review at `main` `6c93a1405d3c1e3c9e15ecac09883e90c0308a19` found:
+  - Q6 and Q9 rested on `ADR-0024`, `ADR-0025` and `ADR-0030`, all `PROPOSED`.
+  - DP-008 was open and DP-005 was undrafted.
+  - All three findings were still live in code.
+
+### 1. The owner's instruction (exact text)
+
+```text
+ACE — OWNER RATIFICATION & EVIDENCE PREREQUISITE CLOSURE
+
+Baseline: `main` `6c93a1405d3c1e3c9e15ecac09883e90c0308a19`.
+
+I ratify these architectural decisions:
+
+1. Q6: Adopt ADR-0030's strict engine/top-level-knowledge boundary. Implementation-owned `engine/knowledge/` remains permitted.
+2. Q9: `engine/` remains the authoritative certified kernel. `legacy/` is retained; retirement requires separate authorization and completed migration certification.
+3. DP-008: Adopt Option B, kind-neutral `ENT-00000001`, eight-digit monotone immutable IDs for persisted entities. Allocate transactionally at first persistence using a durable central counter. All persistent entity kinds, including questions, share the family. Non-persisted questions receive no permanent entity ID. Fixtures use isolated allocators, not a reserved production range.
+4. ADR-0020 and ADR-0004 are not blanket-ratified.
+5. M-04: Select DP-025 A2 Option 1, additive whole-sign disclosure. The separate polar-Placidus A1 question remains open.
+6. M-05 must not wait for DP-040; preserve the three TRANSIT_V1 overclaims.
+
+Execute one coordinated governance package:
+
+- Verify current Git state and accepted authority.
+- Append one narrow ratification ADR; reconcile Q6/Q9, DP-008 and canonical state records.
+- Draft DP-005 from these accepted boundaries, identifying only genuinely missing owner decisions.
+- Prepare exact, minimal implementation contracts and certification impacts for M-04, M-05 and M-09. For M-09, present the competing boundary conventions, affected certified paths and one recommended choice; change no calculation.
+- Consolidate remaining H0/H1/H2/H4/H5 owner decisions into one short ratification table. Do not silently promote specifications to ACCEPTED.
+- Create one governance branch, commit, push normally, open one PR and run applicable CI.
+
+No production changes, certification regeneration, force push, main merge or EVIDENCE entry.
+
+Do not repeat completed research or expand the prerequisite list. Do not request routine intermediate approvals. Return exact SHA, PR, CI, and only the indispensable remaining owner decisions in one concise response.
+```
+
+Per `docs/PROJECT_CONSTITUTION.md` s11, that instruction is the ratifying act.
+
+### 2. What is decided
+
+1. **Q6 is resolved.** `ADR-0030` clause 1 governs: `engine/` must not have an uncontrolled runtime dependency on top-level
+   `knowledge/`. `engine/knowledge/` stays permitted, as `ADR-0024` D2 records.
+2. **Q9 is resolved, in the owner's words.** These match `ADR-0030` clause 2 (a) to (c):
+   - `engine/` remains the authoritative certified kernel.
+   - `legacy/` is retained.
+   - Retiring it requires separate authorization and completed migration certification.
+3. **DP-008: Option B is adopted.**
+   - The family is kind-neutral `ENT-00000001`: eight-digit, monotone, immutable identifiers for persisted entities.
+   - They are allocated transactionally at first persistence, from a durable central counter.
+   - Every persistent entity kind, questions included, shares the family. A non-persisted question gets no permanent ID.
+   - Fixtures use isolated allocators, not a reserved production range.
+4. **`ADR-0020` and `ADR-0004` are not blanket-ratified.** Any part of them that a future decision relies on needs its own
+   ratification.
+5. **M-04: `DP-025` A2 Option 1 is selected,** an additive whole-sign disclosure. `DP-025` A1, the polar-Placidus gap,
+   stays open.
+6. **M-05 does not wait for `DP-040`.** The three `TRANSIT_V1` overclaims stay open, and no `DP-040` option is selected.
+
+### 3. What this entry records, and what it leaves
+
+- **Statuses, changed on the Status line only:** `ADR-0024`, `ADR-0025` and `ADR-0030` now state what this entry ratifies.
+  Their text is otherwise unchanged, which a hash of each entry confirms (see Evidence).
+- **Not ratified:**
+  - `ADR-0024` D3 and D4
+  - `ADR-0025`'s own decisions, beyond what s2 item 2 states
+  - `ADR-0030` clause 2 (d) and clause 3
+- **The open questions register:** Q6 and Q9 are marked resolved in `docs/OPEN_QUESTIONS.md`.
+- **The decision-paper index:**
+  - DP-008 is recorded as addressed by this entry.
+  - DP-025 is recorded with its A2 selection and A1 still open.
+  - DP-005 is drafted, at `docs/decisions/DP-005-knowledge-boundary-h3-h4-h5.md`. It decides nothing.
+- **Before first use of the `ENT` family:** `docs/NAMING_STANDARD.md` s2 requires the family to be registered with its
+  pattern, width, scope and issuer, and a uniqueness check added. That registration belongs to the H0 implementation, and is
+  not made here, because no gate is added by this package.
+- **Implementation contracts:** `docs/EVIDENCE_PREREQUISITE_CONTRACTS.md` holds the contracts for M-04 and M-05, the M-09
+  options with a recommendation, and the remaining specification decisions.
+
+### 4. What this entry does not do
+
+- It authorizes no implementation of M-04, M-05 or M-09.
+- It decides nothing about M-09.
+- It changes no production code, certification artifact, calculation, holdout, threshold or gate.
+- It ratifies no H-specification, and enters no phase.
+
+- **Decision:** as s2 states.
+- **Consequences:** two of EVIDENCE's prerequisites now rest on accepted decisions: DP-008, and the Q6/Q9 basis that DP-005
+  needs. DP-005 itself, M-04 to M-09 and the five specifications still need owner action, as the contracts document lists.
+- **Evidence:** `main` `6c93a1405d3c1e3c9e15ecac09883e90c0308a19`; the entry-readiness review's runtime probes of M-04, M-05 and M-09 against that SHA; the
+  status-only hashes for `ADR-0024`, `ADR-0025` and `ADR-0030`, below. The owner's instruction exists as session input,
+  not as a repository file.
 
 ---
 
