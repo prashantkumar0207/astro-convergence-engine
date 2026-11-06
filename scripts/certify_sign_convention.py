@@ -107,6 +107,16 @@ def gate_a_non_invasiveness():
         "registry_varga_sweep_sha256": registry_hashes,
         "note": ("compare against published main; this phase must change no "
                  "certified value (Decision SC-B)"),
+        "authorized_boundary_change": {
+            "authority": "ADR-0112 s3 (M-09)",
+            "distinct_from": "Decision SC-B, which stands: adopting the Sign type itself changed no certified value",
+            "what_changed": ("the parent sign of D9, D10 and every registry varga now promotes with D1 for a "
+                             "longitude within 1e-10 below a sign boundary; this sweep's ULP-adversarial points "
+                             "include such values, so these hashes changed under ADR-0112, not under SC-B"),
+            "outside_that_window": "no swept output changed (63,305-point before/after comparison, PR #46)",
+            "pins": ("engine/tests/test_sign_convention_certification.py CERTIFIED_SWEEP_HASHES, with the "
+                     "pre-ADR-0112 values kept as SWEEP_HASHES_BEFORE_ADR_0112"),
+        },
     }
 
 
@@ -249,6 +259,8 @@ def main():
         "decisions": {
             "SC-A": "inert Sign value type as the shared convention carrier",
             "SC-B": "purely additive adoption; no certified value or field changed",
+            "ADR-0112": ("a later, separately authorized boundary change, not part of SC-B: the varga, D9 and "
+                         "D10 parent sign promotes with D1 inside the 1e-10 window; D1 unchanged"),
             "SC-C": "declaration registry enforced by a collected gate",
         },
         "certified_conventions": {

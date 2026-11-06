@@ -373,8 +373,8 @@ def gate_f_boundary_cases():
         start = classify(sign * 30.0, D40_KHAVEDAMSA)
         cases += 2
         # ADR-0112 s3: inside the 1e-10 window the parent sign follows D1, so a
-        # near-end value classifies as the next sign's boundary itself. At 360
-        # degrees the top edge clamps to Pisces, as D1 does.
+        # near-end value classifies as the next sign's boundary itself. Just below
+        # 360 degrees the top edge clamps to Pisces, as D1 does; exactly 360 is 0 Aries.
         if sign < 11:
             if near_end != classify((sign + 1) * 30.0, D40_KHAVEDAMSA):
                 mismatches += 1

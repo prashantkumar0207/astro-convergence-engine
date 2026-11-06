@@ -10950,8 +10950,9 @@ No force push, unrelated features, broad research, gate weakening or cleanup.
 **Rule.** Every layer that derives a parent (source) sign from a sidereal longitude `L` uses the project boundary
 convention at sign level, exactly as D1's `zodiac_sign` already does:
 - **Parent sign:** `division_index(normalize_longitude(L), 30, 12)` from `engine/astrology/longitude_utils.py`. A value within
-  `BOUNDARY_TOLERANCE` (1e-10 degree) below a multiple of 30 degrees belongs to the next sign. At 360 degrees the top edge
-  clamps to Pisces, as it does for D1.
+  `BOUNDARY_TOLERANCE` (1e-10 degree) below a multiple of 30 degrees belongs to the next sign. Exactly 360 degrees
+  normalizes to 0 degrees, Aries. Values immediately below 360 degrees, including those within the tolerance, stay in
+  Pisces: the top edge clamps there, as it does for D1.
 - **Degree within that sign:** each module's existing expression, except that a promoted value sits at degree 0 of its new
   sign.
 

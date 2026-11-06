@@ -59,8 +59,9 @@ def parent_sign(longitude: float) -> int:
     boundary convention at sign level (ADR-0112 s3).
 
     A value within BOUNDARY_TOLERANCE below a multiple of 30 degrees
-    belongs to the next sign; at 360 degrees the top edge clamps to
-    Pisces. This is exactly what D1's zodiac_sign() computes, so every
+    belongs to the next sign. Exactly 360 degrees normalizes to 0
+    degrees, Aries; values immediately below 360 stay in Pisces, where
+    the top edge clamps. This is exactly what D1's zodiac_sign() computes, so every
     layer that derives a parent sign from it agrees with D1.
     """
     return division_index(normalize_longitude(longitude), 30.0, 12)

@@ -103,6 +103,30 @@ def test_the_top_edge_clamps_to_pisces_as_d1_does():
         assert zodiac_sign(longitude) == 12 and parent_sign(longitude) == 11
 
 
+@pytest.mark.parametrize("full_turn", [360.0, 720.0, -360.0])
+def test_exactly_360_degrees_is_aries_in_every_layer(full_turn):
+    """Regression: a full turn normalizes to 0 degrees, Aries, in D1 and every varga layer alike."""
+
+    from engine.astrology.longitude_utils import parent_sign
+
+    assert zodiac_sign(full_turn) == 1 and parent_sign(full_turn) == 0
+    assert navamsa_sign(full_turn) == navamsa_sign(0.0) and navamsa_longitude(full_turn) == navamsa_longitude(0.0)
+    assert dashamsa_sign(full_turn) == dashamsa_sign(0.0) and dashamsa_longitude(full_turn) == dashamsa_longitude(0.0)
+    for rule in RULES.values():
+        assert classify(full_turn, rule) == classify(0.0, rule)
+
+
+@pytest.mark.parametrize("longitude", [math.nextafter(360.0, -math.inf), 360.0 - 5e-11, 360.0 - 2e-10])
+def test_values_immediately_below_360_stay_in_pisces(longitude):
+    from engine.astrology.longitude_utils import parent_sign
+
+    assert zodiac_sign(longitude) == 12 and parent_sign(longitude) == 11
+    for rule in RULES.values():
+        result, pisces = classify(longitude, rule), classify(359.9999, rule)
+        assert (result.d_sign, result.division_index) == (pisces.d_sign, pisces.division_index)
+        assert (result.d_sign, result.division_index) != (classify(0.0, rule).d_sign, 0)
+
+
 def test_the_check_rejects_the_superseded_floor_rule():
     """The historical source-sign floor is exactly what this suite must refuse."""
 
