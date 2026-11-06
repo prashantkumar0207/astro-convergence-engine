@@ -4,7 +4,7 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | PROPOSED - index of decision papers. Papers present options; they decide nothing. |
-| Version | 4.23.0 |
+| Version | 4.24.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 | Last updated | 2026-11-06 (DP-005 drafted; DP-008 addressed and DP-025 A2 selected by ADR-0111) |
 | Review cadence | TBD |
@@ -36,7 +36,7 @@ register uses for ADR-0015 through ADR-0017.
 | DP-002 | Q7 repository licensing given AGPL Swiss Ephemeris | distribution and hosted deployment | RESERVED, not drafted |
 | DP-003 | Q8 roadmap and build order | Phase H sequencing | RESERVED, superseded in part by ADR-0020 D6 and `docs/Q8_CLOSURE_MATRIX.md` |
 | DP-004 | Q5 ratified mission | constitution sections 1, 2, 4 | RESERVED, not drafted |
-| DP-005 | Q6, Q9 and the knowledge boundary | H3, H4, H5 | **OPEN, drafted** (2026-11-06, `DP-005-knowledge-boundary-h3-h4-h5.md`), on the Q6/Q9 basis `ADR-0111` ratifies. Decides nothing |
+| DP-005 | Q6, Q9 and the knowledge boundary | H3, H4, H5 | **ADDRESSED by ADR-0112** (2026-11-06): C, A, C, with conditions. Drafted under `ADR-0111` |
 | DP-006 | precedence between the two decision registers | every future decision entry | RESERVED, not drafted |
 | DP-007 | root D-008 disposition | KP tier sequencing | RESERVED, not drafted |
 | DP-008 | entity identifier family and pattern | H0 implementation | **ADDRESSED by ADR-0111** (2026-11-06), adopting Option B, kind-neutral `ENT-00000001` |
@@ -79,6 +79,7 @@ register uses for ADR-0015 through ADR-0017.
 
 | Version | Date | Change |
 |---|---|---|
+| 4.24.0 | 2026-11-06 | `DP-005` addressed by `ADR-0112` (C, A, C). |
 | 4.23.0 | 2026-11-06 | `DP-005` drafted on its existing registration. `DP-008` addressed, and `DP-025` A2 selected (A1 open), by `ADR-0111`. |
 | 4.22.0 | 2026-09-29 | Allocated `DP-042`, per `ADR-0040`, with the identifier taken before the paper's substantive content was written - though the index row and the paper were committed together, so the commit graph does not independently prove that ordering; per the owner's "CEO DIRECTIVE - BEGIN DP-041 Q-E ADJUDICATION PREPARATION" instruction: the forensic evidence brief for `Q-E`, the `ADR-0101` obligation universe. Evidence and candidate readings only - it decides nothing, selects none of 26/22/mixed, authorizes no `C2`-`C5` implementation, creates no enumeration, `exercises` array, `scope_not_gated` or backlog, does not touch `Q-A`/`Q-B`/`Q-C`/`Q-D`/`Q-F` or the three `TRANSIT_V1` scope overclaims, and declares no JATAKA phase exit, which remains HOLD. |
 | 4.21.0 | 2026-09-24 | `DP-041`'s index row corrected for consistency with the merged `DP-041` v1.1.0, on a CEO post-merge audit finding. The row was written for v1.0.0 and still said "Establishes that the obligation universe is 22 artifacts, not 26" - a claim v1.1.0 **withdrew** - and still reported a four/ten adjudication split that v1.1.0 changed to six/ten. `DP-041` itself is unchanged and was re-verified as internally consistent: its three remaining mentions of the 22-vs-26 claim are all withdrawal statements, and its `U1`/`U2`/`U3` table is present and correct. Documentation consistency only - it adjudicates nothing, decides no part of `Q-A` through `Q-F`, authorizes no `C2`-`C5` work, and declares no JATAKA phase exit, which remains HOLD. The 4.20.0 row below is preserved unedited. |

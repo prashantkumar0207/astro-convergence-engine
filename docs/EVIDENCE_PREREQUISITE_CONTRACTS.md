@@ -4,7 +4,7 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | PROPOSED - implementation contracts and one decision record. Authorizes no implementation. |
-| Version | 1.0.0 |
+| Version | 1.1.0 |
 | Owner | Project Owner (`ADR-0051` D4) |
 | Last updated | 2026-11-06 |
 | Review cadence | On each authorization below |
@@ -73,9 +73,9 @@ produced it. A test rejects a view whose `natal_provenance` is not the natal sna
   They then clamp to Aries's last division.
 - So two facts that should share a parent sign do not. The certified sweeps step around this by probing at `+0.0007`
   (`scripts/certify_sign_convention.py:219`).
-- **D9 and D10 also disagree with themselves inside the window.** At `29.99999999995`, `navamsa_sign` gives 8 but
-  `navamsa_longitude` gives 270.0, which is sign 9. `dashamsa_sign` gives 9 but `dashamsa_longitude` gives 300.0, which is
-  sign 10.
+- **Corrected (`ADR-0112` s5):** version 1.0.0 said D9 and D10 disagree with themselves inside the window. They do not.
+  At `29.99999999995`, `navamsa_longitude` is `269.99999999954997` (sign 8), consistent with `navamsa_sign`. D10 is
+  consistent too. The earlier figure came from a probe that rounded to nine decimals.
 
 **Affected only by inputs in `[30k - 1e-10, 30k)`.** That window is 0.36 micro-arcseconds wide, six orders of magnitude
 below the certified ephemeris tolerance.
@@ -153,3 +153,4 @@ should be corrected when each is ratified, and not before.
 | Version | Date | Change |
 |---|---|---|
 | 1.0.0 | 2026-11-06 | Created under `ADR-0111`. Contracts and one recommendation; no implementation. |
+| 1.1.0 | 2026-11-06 | M-09's D9/D10 self-inconsistency claim corrected (`ADR-0112` s5). The owner selected M-09 option A and authorized all three contracts (`ADR-0112`). |
