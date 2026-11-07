@@ -1,0 +1,206 @@
+"""The append-only entity store, and the ENT issuer (ADR-0111 s2 item 3; ADR-0114 s3).
+
+The store is one SQLite database. Its counter is the durable, central ENT issuer: a number is
+taken in the same transaction that writes the entity, so a failed persistence takes none. Each
+store instance is its own issuer, which is how fixtures stay isolated from any other store.
+
+Records are never updated or deleted. Triggers refuse both at the database layer, so even direct
+SQL cannot rewrite history. A correction appends a new revision, with its reason.
+"""
+
+from __future__ import annotations
+
+import json
+import sqlite3
+from enum import Enum
+from pathlib import Path
+
+from engine.evidence.entity import (
+    SUBJECT_FIELDS, SUBJECT_TYPES, AstrologicalSubject, ChartCandidate, DataClass, EntityKind, EntityLink,
+    OriginCertainty, OriginMoment, ParentLink, RecordProvenance, Shape,
+)
+from engine.evidence.identifiers import FAMILY, LAST, EntityId
+
+SCHEMA_VERSION = "ace-entity-store-v1"
+
+_SCHEMA = """
+CREATE TABLE IF NOT EXISTS issuer (family TEXT PRIMARY KEY, last_number INTEGER NOT NULL CHECK (last_number >= 0));
+CREATE TABLE IF NOT EXISTS entity_revisions (
+    entity_id TEXT NOT NULL CHECK (entity_id GLOB 'ENT-[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'),
+    revision INTEGER NOT NULL CHECK (revision >= 1),
+    payload TEXT NOT NULL,
+    reason TEXT NOT NULL,
+    PRIMARY KEY (entity_id, revision)
+);
+CREATE TABLE IF NOT EXISTS entity_links (
+    link_number INTEGER PRIMARY KEY AUTOINCREMENT,
+    payload TEXT NOT NULL
+);
+CREATE TRIGGER IF NOT EXISTS revisions_no_update BEFORE UPDATE ON entity_revisions
+    BEGIN SELECT RAISE(ABORT, 'entity revisions are append-only'); END;
+CREATE TRIGGER IF NOT EXISTS revisions_no_delete BEFORE DELETE ON entity_revisions
+    BEGIN SELECT RAISE(ABORT, 'entity revisions are append-only'); END;
+CREATE TRIGGER IF NOT EXISTS links_no_update BEFORE UPDATE ON entity_links
+    BEGIN SELECT RAISE(ABORT, 'entity links are append-only'); END;
+CREATE TRIGGER IF NOT EXISTS links_no_delete BEFORE DELETE ON entity_links
+    BEGIN SELECT RAISE(ABORT, 'entity links are append-only'); END;
+CREATE TRIGGER IF NOT EXISTS issuer_never_decreases BEFORE UPDATE ON issuer
+    WHEN NEW.last_number < OLD.last_number
+    BEGIN SELECT RAISE(ABORT, 'the ENT issuer never reuses a number'); END;
+CREATE TRIGGER IF NOT EXISTS issuer_no_delete BEFORE DELETE ON issuer
+    BEGIN SELECT RAISE(ABORT, 'the ENT issuer cannot be removed'); END;
+"""
+
+
+class StoreError(RuntimeError):
+    """The store refused an operation."""
+
+
+def _plain(value):
+    if isinstance(value, Enum):
+        return value.value
+    if isinstance(value, EntityId):
+        return value.value
+    if isinstance(value, tuple):
+        return [_plain(v) for v in value]
+    if hasattr(value, "__dataclass_fields__"):
+        return {name: _plain(getattr(value, name)) for name in value.__dataclass_fields__}
+    return value
+
+
+def subject_to_record(subject: AstrologicalSubject) -> dict:
+    if not isinstance(subject, AstrologicalSubject):
+        raise StoreError("only an AstrologicalSubject can be stored")
+    return {"schema": SCHEMA_VERSION, "subject": _plain(subject)}
+
+
+def _provenance(data) -> RecordProvenance:
+    return RecordProvenance(**data)
+
+
+def subject_from_record(record: dict) -> AstrologicalSubject:
+    """Rebuild a subject, refusing any key the model does not define (H0 s5)."""
+
+    if set(record) != {"schema", "subject"} or record["schema"] != SCHEMA_VERSION:
+        raise StoreError("not an entity record of this schema")
+    data = record["subject"]
+    if not isinstance(data, dict) or set(data) != set(SUBJECT_FIELDS):
+        extra = sorted(set(data) - set(SUBJECT_FIELDS)) if isinstance(data, dict) else data
+        raise StoreError(f"an entity carries only its model fields; refused: {extra}")
+    charts = tuple(
+        ChartCandidate(label=chart["label"], origin=OriginMoment(**chart["origin"]),
+                       origin_certainty=OriginCertainty(chart["origin_certainty"]),
+                       provenance=_provenance(chart["provenance"]))
+        for chart in data["charts"])
+    parent = data["parent"]
+    kind = EntityKind(data["kind"])
+    return SUBJECT_TYPES[kind](
+        kind=kind, shape=Shape(data["shape"]), charts=charts,
+        applicable_domains=tuple(data["applicable_domains"]), applicable_systems=tuple(data["applicable_systems"]),
+        provenance=_provenance(data["provenance"]), data_class=DataClass(data["data_class"]),
+        parent=None if parent is None else ParentLink(parent=EntityId(parent["parent"]),
+                                                      parent_chart=parent["parent_chart"],
+                                                      derivation=parent["derivation"]))
+
+
+def _encode(record: dict) -> str:
+    return json.dumps(record, sort_keys=True, separators=(",", ":"))
+
+
+class EntityStore:
+    """An append-only entity store, and that store's own ENT issuer."""
+
+    def __init__(self, path: Path | str):
+        self.path = Path(path)
+        self._db = sqlite3.connect(str(self.path), isolation_level=None, timeout=10.0)
+        self._db.executescript(_SCHEMA)
+        self._db.execute("INSERT OR IGNORE INTO issuer (family, last_number) VALUES (?, 0)", (FAMILY,))
+
+    def close(self) -> None:
+        self._db.close()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *_exc):
+        self.close()
+
+    def persist(self, subject: AstrologicalSubject, reason: str = "first record") -> EntityId:
+        """Write a new entity and issue its ENT number, in one transaction."""
+
+        payload = _encode(subject_to_record(subject))
+        subject_from_record(json.loads(payload))  # Refuse anything that would not reload.
+        self._db.execute("BEGIN IMMEDIATE")
+        try:
+            (last,) = self._db.execute("SELECT last_number FROM issuer WHERE family = ?", (FAMILY,)).fetchone()
+            if last >= LAST:
+                raise StoreError("the ENT family is exhausted")
+            entity_id = EntityId.from_number(last + 1)
+            self._db.execute("INSERT INTO entity_revisions (entity_id, revision, payload, reason) VALUES (?, 1, ?, ?)",
+                             (entity_id.value, payload, reason))
+            self._db.execute("UPDATE issuer SET last_number = ? WHERE family = ?", (last + 1, FAMILY))
+            self._db.execute("COMMIT")
+        except BaseException:
+            self._db.execute("ROLLBACK")
+            raise
+        return entity_id
+
+    def append_revision(self, entity_id: EntityId, subject: AstrologicalSubject, reason: str) -> int:
+        """Record a correction as a new revision. The superseded revision stays."""
+
+        if not reason or not reason.strip():
+            raise StoreError("a correction records its reason")
+        payload = _encode(subject_to_record(subject))
+        subject_from_record(json.loads(payload))
+        self._db.execute("BEGIN IMMEDIATE")
+        try:
+            row = self._db.execute("SELECT MAX(revision) FROM entity_revisions WHERE entity_id = ?",
+                                   (entity_id.value,)).fetchone()
+            if row[0] is None:
+                raise StoreError(f"no such entity: {entity_id}")
+            current = subject_from_record(json.loads(self._db.execute(
+                "SELECT payload FROM entity_revisions WHERE entity_id = ? AND revision = ?",
+                (entity_id.value, row[0])).fetchone()[0]))
+            if current.kind is not subject.kind:
+                raise StoreError("a correction cannot change an entity's kind")
+            self._db.execute("INSERT INTO entity_revisions (entity_id, revision, payload, reason) VALUES (?, ?, ?, ?)",
+                             (entity_id.value, row[0] + 1, payload, reason))
+            self._db.execute("COMMIT")
+        except BaseException:
+            self._db.execute("ROLLBACK")
+            raise
+        return row[0] + 1
+
+    def history(self, entity_id: EntityId) -> list:
+        rows = self._db.execute(
+            "SELECT revision, payload, reason FROM entity_revisions WHERE entity_id = ? ORDER BY revision",
+            (entity_id.value,)).fetchall()
+        if not rows:
+            raise StoreError(f"no such entity: {entity_id}")
+        return [(revision, subject_from_record(json.loads(payload)), reason) for revision, payload, reason in rows]
+
+    def load(self, entity_id: EntityId) -> AstrologicalSubject:
+        return self.history(entity_id)[-1][1]
+
+    def entity_ids(self) -> list:
+        return [EntityId(value) for (value,) in self._db.execute(
+            "SELECT DISTINCT entity_id FROM entity_revisions ORDER BY entity_id")]
+
+    def add_link(self, link: EntityLink) -> None:
+        if not isinstance(link, EntityLink):
+            raise StoreError("only an EntityLink can be stored as a relationship")
+        known = {entity.value for entity in self.entity_ids()}
+        if link.source.value not in known or link.target.value not in known:
+            raise StoreError("a link joins two entities already in this store")
+        self._db.execute("INSERT INTO entity_links (payload) VALUES (?)", (_encode(_plain(link)),))
+
+    def links(self) -> list:
+        out = []
+        for (payload,) in self._db.execute("SELECT payload FROM entity_links ORDER BY link_number"):
+            data = json.loads(payload)
+            out.append(EntityLink(source=EntityId(data["source"]), relation=data["relation"],
+                                  target=EntityId(data["target"]), provenance=_provenance(data["provenance"])))
+        return out
+
+    def issued_count(self) -> int:
+        return self._db.execute("SELECT last_number FROM issuer WHERE family = ?", (FAMILY,)).fetchone()[0]
