@@ -12,7 +12,6 @@ from __future__ import annotations
 
 import json
 import sqlite3
-from enum import Enum
 from pathlib import Path
 
 from engine.evidence.entity import (
@@ -56,22 +55,44 @@ class StoreError(RuntimeError):
     """The store refused an operation."""
 
 
-def _plain(value):
-    if isinstance(value, Enum):
-        return value.value
-    if isinstance(value, EntityId):
-        return value.value
-    if isinstance(value, tuple):
-        return [_plain(v) for v in value]
-    if hasattr(value, "__dataclass_fields__"):
-        return {name: _plain(getattr(value, name)) for name in value.__dataclass_fields__}
-    return value
+def _provenance_record(provenance: RecordProvenance) -> dict:
+    return {"source": provenance.source, "method": provenance.method, "schema_version": provenance.schema_version}
+
+
+def _chart_record(chart: ChartCandidate) -> dict:
+    origin = chart.origin
+    return {
+        "label": chart.label,
+        "origin": {"local_datetime": origin.local_datetime, "timezone": origin.timezone,
+                   "timezone_source": origin.timezone_source, "latitude": origin.latitude,
+                   "longitude": origin.longitude, "precision": origin.precision},
+        "origin_certainty": chart.origin_certainty.value,
+        "provenance": _provenance_record(chart.provenance),
+    }
 
 
 def subject_to_record(subject: AstrologicalSubject) -> dict:
+    """The stored form of a subject, written field by field so the schema is explicit."""
+
     if not isinstance(subject, AstrologicalSubject):
         raise StoreError("only an AstrologicalSubject can be stored")
-    return {"schema": SCHEMA_VERSION, "subject": _plain(subject)}
+    parent = subject.parent
+    return {"schema": SCHEMA_VERSION, "subject": {
+        "kind": subject.kind.value,
+        "shape": subject.shape.value,
+        "charts": [_chart_record(chart) for chart in subject.charts],
+        "applicable_domains": list(subject.applicable_domains),
+        "applicable_systems": list(subject.applicable_systems),
+        "provenance": _provenance_record(subject.provenance),
+        "data_class": subject.data_class.value,
+        "parent": None if parent is None else {"parent": parent.parent.value, "parent_chart": parent.parent_chart,
+                                               "derivation": parent.derivation},
+    }}
+
+
+def _link_record(link: EntityLink) -> dict:
+    return {"source": link.source.value, "relation": link.relation, "target": link.target.value,
+            "provenance": _provenance_record(link.provenance)}
 
 
 def _provenance(data) -> RecordProvenance:
@@ -192,7 +213,7 @@ class EntityStore:
         known = {entity.value for entity in self.entity_ids()}
         if link.source.value not in known or link.target.value not in known:
             raise StoreError("a link joins two entities already in this store")
-        self._db.execute("INSERT INTO entity_links (payload) VALUES (?)", (_encode(_plain(link)),))
+        self._db.execute("INSERT INTO entity_links (payload) VALUES (?)", (_encode(_link_record(link)),))
 
     def links(self) -> list:
         out = []

@@ -1,12 +1,6 @@
 {
  "authority": "ADR-0099 s3, s7; ADR-0107",
  "dynamic_dispatch_in_engine_modules": {
-  "engine.evidence.entity": [
-   "getattr"
-  ],
-  "engine.evidence.store": [
-   "getattr"
-  ],
   "engine.knowledge.registry": [
    "getattr"
   ]

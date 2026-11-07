@@ -63,8 +63,9 @@ class RecordProvenance:
     schema_version: str
 
     def __post_init__(self):
-        for name in ("source", "method", "schema_version"):
-            if not isinstance(getattr(self, name), str) or not getattr(self, name).strip():
+        for name, value in (("source", self.source), ("method", self.method),
+                            ("schema_version", self.schema_version)):
+            if not isinstance(value, str) or not value.strip():
                 raise EntityModelError(f"provenance.{name} is required")
 
 
@@ -82,8 +83,9 @@ class OriginMoment:
     def __post_init__(self):
         if not -90.0 <= self.latitude <= 90.0 or not -180.0 <= self.longitude <= 180.0:
             raise EntityModelError("origin place is out of range")
-        for name in ("local_datetime", "timezone", "timezone_source", "precision"):
-            if not getattr(self, name).strip():
+        for name, value in (("local_datetime", self.local_datetime), ("timezone", self.timezone),
+                            ("timezone_source", self.timezone_source), ("precision", self.precision)):
+            if not isinstance(value, str) or not value.strip():
                 raise EntityModelError(f"origin.{name} is required")
 
 
@@ -146,8 +148,8 @@ class AstrologicalSubject:
             raise EntityModelError("an origin-moment subject needs at least one chart")
         if self.shape is Shape.QUERY and len(self.charts) != 1:
             raise EntityModelError("a query moment has exactly one chart: the moment of asking")
-        for name in ("applicable_domains", "applicable_systems"):
-            value = getattr(self, name)
+        for name, value in (("applicable_domains", self.applicable_domains),
+                            ("applicable_systems", self.applicable_systems)):
             if not isinstance(value, tuple) or not value or not all(isinstance(v, str) and v for v in value):
                 raise EntityModelError(f"{name} must be declared, never inferred (H0 s5)")
 
