@@ -3,8 +3,8 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | OPEN - decision paper. Presents options and recommends one. DECIDES NOTHING. Requires owner approval. |
-| Version | 1.0.0 |
+| Status | ADDRESSED by `ADR-0112` (2026-11-06): the owner chose C, A, C, with conditions recorded there. The paper itself decides nothing and is otherwise unchanged. |
+| Version | 1.1.0 |
 | Owner | Project Owner (`ADR-0051` D4) |
 | Last updated | 2026-11-06 |
 | Review cadence | On decision |
@@ -77,3 +77,4 @@ Choose an option for each of D-1, D-2 and D-3, to be recorded in one ADR. The re
 | Version | Date | Change |
 |---|---|---|
 | 1.0.0 | 2026-11-06 | Drafted under `ADR-0111`, on the identifier registered in `docs/decisions/README.md`. Decides nothing. |
+| 1.1.0 | 2026-11-06 | Status header only: addressed by `ADR-0112`. |

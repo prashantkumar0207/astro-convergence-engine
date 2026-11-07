@@ -5,7 +5,7 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 
 - Decision entry: ADR-0089
 - Supersedes provisional identifier: NOTHING_AUTHORISED
-- Date: 2026-11-05
+- Date: 2026-11-06
 - Scope: D16 Shodasamsa, Parashara/BPHS variant, Traditional Parasara construction. Rule under certification is a STANDALONE, UNREGISTERED CyclicVargaRule instance embedded in this certifier - not engine/astrology/varga_d16.py, no production module is authorized or created this execution.
 - Result: **PASS**
 
@@ -21,7 +21,7 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 - **C_oracle**: oracle_executed=True, execution_tier=CI hash-pinned oracle environment (requirements-oracle.lock), blocking=False, package=PyJHora, version=4.8.7, function=shodasamsa_chart(chart_method=1, Traditional Parasara), comparisons=5400, mismatches=0, classification=genuine_external_oracle_agreement
 - **D_isolation**: certifier_never_imports_varga_registry_or_varga_d16=True, engine_astrology_varga_d16_absent=True, content_sha256_matches_pinned=True
 - **E_independent_validator**: result=PASS, classification=corroborating_correctness_evidence
-- **F_boundary_cases**: cases=204, mismatches=0, verified_against=validate_d16_holdout.reference_d16() (imported directly)
+- **F_boundary_cases**: cases=216, mismatches=0, verified_against=validate_d16_holdout.reference_d16() (imported directly)
 - **G_protected_holdout**: points=26278, mismatches=0, verified_against=validate_d16_holdout.reference_d16() (imported directly)
 - **H_negative_controls**: all_detected=True, original_object_unmutated=True
 - **I_static_reference_regression**: cases=10, mismatches=0, classification=correctness_evidence

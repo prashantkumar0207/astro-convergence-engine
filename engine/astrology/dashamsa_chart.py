@@ -25,6 +25,7 @@ Sign indices:
 
 from collections.abc import Mapping
 
+from engine.astrology.longitude_utils import parent_sign
 from engine.models.astronomy_snapshot import AstronomySnapshot
 
 
@@ -80,6 +81,13 @@ def _segment(longitude: float) -> tuple[int, int, float]:
     source_sign = int(longitude // 30.0)
 
     degree = longitude - source_sign * 30.0
+
+    # ADR-0112 s3: the parent sign follows D1. Inside the 1e-10 window
+    # below a sign boundary the value belongs to the next sign, at its
+    # start; everywhere else nothing changes.
+    promoted = parent_sign(longitude)
+    if promoted != source_sign:
+        source_sign, degree = promoted, 0.0
 
     # Project boundary convention (audit finding F-19): a value
     # within 1e-10 of a segment boundary belongs to the NEXT

@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.28.0 |
+| Version | 9.29.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-06 (EVIDENCE prerequisite governance package on branch `evidence-prerequisite-governance`: `ADR-0111` records the owner's Q6, Q9, DP-008 and M-04 rulings; DP-005 drafted; M-04, M-05 and M-09 contracts prepared. Not merged. EVIDENCE not entered.) |
+| Last updated | 2026-11-06 (EVIDENCE prerequisite remediation: M-04 (PR #44), M-05 (PR #45) and M-09 (this branch, with `ADR-0112`) under review. None merged. EVIDENCE not entered.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,19 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-06 - EVIDENCE prerequisite remediation: M-04, M-05 and M-09 in three PRs (ADR-0112)
+
+**None merged. EVIDENCE is not entered.** PR #43 merged as `8c89a42`; post-merge CI `42206963452` green.
+
+- **M-04 (PR #44):** `DrishtiChart.houses_convention = "whole_sign"`. No artifact changes.
+- **M-05 (PR #45):** complete provenance on transit events and views. 1,180 computed transit values are identical to `main`.
+- **M-09 (`m09-parent-sign-promotion`):** `ADR-0112` records DP-005 (C, A, C) and the parent-sign rule, before the code.
+  - The rule changed all 33 in-window points of a 63,305-point before/after comparison, and no point outside the window.
+  - Eleven artifacts were regenerated: sweep hashes, plus each varga's added outside-window probe.
+  - Holdout data and validators are unchanged, except the D45 validator's own reference rule.
+- **Correction:** the contracts document's claim that D9/D10 disagree with themselves was wrong; `ADR-0112` s5 corrects it.
+- **Residual seam, out of scope:** the KP chain's own sign floor.
 
 ### 2026-11-06 - EVIDENCE prerequisite governance package (ADR-0111), documentation-only PR
 

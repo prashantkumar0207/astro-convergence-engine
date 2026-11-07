@@ -21,7 +21,25 @@ import certify_sign_convention as certifier  # noqa: E402
 #: Certified sweep hashes, verified EQUAL at published main 7d170f8 and
 #: at the commit introducing this phase, proving no certified value
 #: changed (Gate A, Decision SC-B).
+#: ADR-0112 s3 (M-09): the parent sign now promotes with D1 inside the 1e-10 window, and Gate A's
+#: ULP-adversarial sweep includes window points, so these hashes changed. The values before ADR-0112 are
+#: kept beside them. A before/after comparison of 63,305 points found changes at window points only.
 CERTIFIED_SWEEP_HASHES = {
+    "d9": "a429641617d6b339b4866833b67f75d612530fa66ff458fc5a91c6d6c2005c62",
+    "d10": "59e911728f341cad17d58feffd46669d38872854feeb51c2965535fd582f86bd",
+    "D2_parashara": "b33a34c720c348404357054cc53b6a03bf8bd1b053834f138514445fbf4cd5ee",
+    "D3_parashara": "777601a180f967a4de3db7750d84b41161637bf47d0e275bff956e361f68981c",
+    "D7_parashara": "5971396ae37e2caee2814feb77c30665fce0d3975ed4fc8e70aa65f59a0053d0",
+    "D12_parashara": "4575e6727dd9598fd6ff805cf8fa2e21f47919e32de052b60368971bc0949bb8",
+    "D20_parashara": "d3e2fa95e0e54c2152dcd363235d8a058e0942859775abb71d251961a25f876c",
+    "D24_parashara": "b00666888eabca0b2b9d0a78772f8f4f0d10c765827f591ec59f7cc7ae3cd579",
+    "D30_parashara": "93e95319015fac76737e0e1cc8ff139484dad3fe51e441a8937d573d97c384dc",
+    "D40_parashara": "bb00421de438ad1290defcc9211b057e40ec59d53c6c3fd0b27a05b7567ee47a",
+    "D45_parashara": "9e8fc47be859d84f5205c4d2f2b96ba28a7a393a63b0f2670be92d060cefd370",
+}
+
+#: The same hashes before ADR-0112, for the record.
+SWEEP_HASHES_BEFORE_ADR_0112 = {
     "d9": "58b133367fba404976f3e562fd46ed50bd332006b8c7107415e9d3a3a9263c5e",
     "d10": "5678aecfe9576ca81ecf818566b9a9302ffb62eeb5a7cfcce8cc2f86504ab9e3",
     "D2_parashara": "41c2cb733f3bdb18e63cab9f9d837f013977c6d171229f4e865b85056c4b5436",

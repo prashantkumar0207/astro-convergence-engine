@@ -106,10 +106,18 @@ def test_reference_promotion_and_top_edge():
     for k in (1, 13, 26, 29, 44):
         _sign, index, fraction = validator.reference_d45_position(k * width - 5e-11)
         assert (index, fraction) == (k, 0.0)
+    # ADR-0112 s3: within the tolerance below a sign boundary the parent sign
+    # promotes, as D1's does, so the value is the next sign's boundary itself.
     for degree in (29.99999999995, math.nextafter(30.0, 0.0)):
+        assert validator.reference_d45_position(degree) == validator.reference_d45_position(30.0)
+    # Pisces' top edge clamps instead, as D1 does: still the last division.
+    for degree in (359.99999999995, math.nextafter(360.0, 0.0)):
         _sign, index, fraction = validator.reference_d45_position(degree)
         assert index == 44
         assert 0.99 < fraction < 1.0
+    # Just outside the window nothing promotes.
+    _sign, index, fraction = validator.reference_d45_position(30.0 - 2e-10)
+    assert index == 44 and 0.99 < fraction < 1.0
 
 
 def _exact_position(longitude: float):
@@ -193,10 +201,11 @@ def test_reference_section_uses_nothing_imported():
 
 def test_independence_check_can_fail():
     source = VALIDATOR_PATH.read_text(encoding="utf-8")
+    # Plant the production call in the position reference's own sign split (ADR-0112 s3 promotion lines included).
     wired = source.replace("    source = int(longitude // 30.0)\n    degree = longitude - source * 30.0\n"
-                           "    index = int(",
+                           "    # ADR-0112 s3: within the tolerance below the next sign, the value belongs to it,\n",
                            "    source = classify(longitude, None)\n    degree = longitude - source * 30.0\n"
-                           "    index = int(", 1)
+                           "    # ADR-0112 s3: within the tolerance below the next sign, the value belongs to it,\n", 1)
     assert wired != source
     assert any("uses imported name classify" in item for item in independence_violations(wired))
 

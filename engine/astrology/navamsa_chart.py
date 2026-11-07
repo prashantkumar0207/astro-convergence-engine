@@ -2,6 +2,7 @@
 
 from collections.abc import Mapping
 
+from engine.astrology.longitude_utils import parent_sign
 from engine.models.astronomy_snapshot import AstronomySnapshot
 
 
@@ -44,6 +45,23 @@ def _navamsa_index(degree: float) -> int:
     )
 
 
+def _sign_and_degree(longitude: float) -> tuple[int, float]:
+    """
+    The parent sign and the degree within it, for a normalized longitude.
+
+    ADR-0112 s3: the parent sign follows D1. Inside the 1e-10 window below a
+    sign boundary the value belongs to the next sign, at degree 0; elsewhere
+    this is exactly the historical ``int(longitude // 30)`` and
+    ``longitude % 30``, so no value outside the window changes.
+    """
+    sign = int(longitude // 30.0)
+    degree = longitude % 30.0
+    promoted = parent_sign(longitude)
+    if promoted != sign:
+        return promoted, 0.0
+    return sign, degree
+
+
 def _navamsa_start_sign(sign: int) -> int:
     """Return the first D9 sign for a source zodiac sign (0-based)."""
     if sign in _MOVABLE_SIGNS:
@@ -57,8 +75,7 @@ def navamsa_sign(longitude: float) -> int:
     """Return the D9 sign index (0-11) for a sidereal longitude."""
     longitude = _normalize_longitude(longitude)
 
-    sign = int(longitude // 30.0)
-    degree = longitude % 30.0
+    sign, degree = _sign_and_degree(longitude)
 
     navamsa_index = _navamsa_index(degree)
 
@@ -69,8 +86,7 @@ def navamsa_longitude(longitude: float) -> float:
     """Map a sidereal longitude to its continuous D9 longitude."""
     longitude = _normalize_longitude(longitude)
 
-    sign = int(longitude // 30.0)
-    degree = longitude % 30.0
+    sign, degree = _sign_and_degree(longitude)
 
     navamsa_index = _navamsa_index(degree)
 
@@ -98,7 +114,7 @@ def navamsa_number(longitude: float) -> int:
     """
     longitude = _normalize_longitude(longitude)
 
-    sign_degree = longitude % 30.0
+    _sign, sign_degree = _sign_and_degree(longitude)
 
     # Each Navamsa = 10/3 degrees.
     # The shared helper applies the boundary tolerance so exact

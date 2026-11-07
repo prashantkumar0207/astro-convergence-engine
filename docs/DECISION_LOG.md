@@ -10895,6 +10895,107 @@ Per `docs/PROJECT_CONSTITUTION.md` s11, that instruction is the ratifying act.
   status-only hashes for `ADR-0024`, `ADR-0025` and `ADR-0030`, below. The owner's instruction exists as session input,
   not as a repository file.
 
+## ADR-0112 - DP-005 decided (C/A/C, with conditions); M-09 parent-sign promotion rule adopted, superseding the historical source-sign floor; M-04, M-05 and M-09 remediation authorized
+
+- **Date:** 2026-11-06
+- **Status:** **ACCEPTED, on the owner's instruction quoted in s1, for exactly the items it names.**
+- **Context:** `ADR-0111` drafted `DP-005` and presented the M-09 options in `docs/EVIDENCE_PREREQUISITE_CONTRACTS.md`. Both
+  needed owner decisions before M-09 could be implemented, and the owner requires the M-09 rule to be recorded before any
+  M-09 code. Baseline `main` `8c89a42b38bf3563d438d484ad0465bb7f0d6018`.
+
+### 1. The owner's instruction (exact text)
+
+```text
+**ACE OWNER AUTHORIZATION — PR #43 AND EVIDENCE PREREQUISITE REMEDIATION**
+
+I authorize merging PR #43 at `d6dfc6b0e762bebcb10e87be74fb9f3b92b2d381`, following ChatGPT's CEO PASS and successful four-job CI `42203812693`. Use a normal two-parent merge; verify the exact merged main SHA and post-merge CI.
+
+I ratify DP-005 choices C/A/C, subject to an immutable archived snapshot, content-hash pinning, schema validation, fail-closed mismatch handling and explicit certification effects. No uncontrolled top-level knowledge dependency is permitted.
+
+I select M-09 Option A: consistent parent-sign promotion throughout D1 and vargas, with D1 unchanged. Record the governing semantic rule and explicit supersession of conflicting historical source-sign conventions before implementation.
+
+Authorize M-04, M-05 and M-09 remediation under `docs/EVIDENCE_PREREQUISITE_CONTRACTS.md`, in three separately reviewable PRs.
+
+Fixed exit criteria for each:
+- Reproduce the original defect; commit a meaningful negative control.
+- Regenerate and independently reconcile every affected certification artifact.
+- Preserve protected holdouts and certified outputs outside the authorized change scope.
+- M-04: only the additive house-convention disclosure changes.
+- M-05: provenance becomes complete for the specified event/view contracts; all three TRANSIT_V1 overclaims remain open.
+- M-09: test exact boundaries and D9/D10 sign-longitude consistency; verify no values outside the 1e-10 window change; recertify all affected artifacts, including Tier-0 where applicable.
+- Four-job CI PASS; no artifact drift.
+
+Execute sequentially where dependencies require it. Claude self-audits; submit each PR with concise SHA/diff/CI evidence for independent CEO review. No remediation PR may be merged without separate CEO and owner approval.
+
+Do not enter EVIDENCE or ratify H0/H1/H2/H4/H5 by inference. Preserve the existing 18-item specification decision table for one consolidated owner adjudication.
+
+No force push, unrelated features, broad research, gate weakening or cleanup.
+```
+
+### 2. DP-005: C, A, C, with the owner's conditions
+
+1. **D-1, option C.** H3, H4 and H5 may consume top-level `knowledge/` only through an **immutable, archived snapshot**.
+   Five conditions hold together:
+   - the snapshot's content hash is pinned, and recorded in each evidence item's provenance;
+   - it is schema-validated;
+   - **any mismatch fails closed**;
+   - its effect on certification is stated explicitly;
+   - **no uncontrolled top-level knowledge dependency is permitted** (`ADR-0030` clause 1).
+2. **D-2, option A.** The H4 and H5 layers live inside `engine/`.
+3. **D-3, option C.** Interpretation rules are data, in a pinned, schema-validated registry. Certified calculation rule
+   tables stay as they are.
+
+### 3. M-09: the governing semantic rule (option A)
+
+**Rule.** Every layer that derives a parent (source) sign from a sidereal longitude `L` uses the project boundary
+convention at sign level, exactly as D1's `zodiac_sign` already does:
+- **Parent sign:** `division_index(normalize_longitude(L), 30, 12)` from `engine/astrology/longitude_utils.py`. A value within
+  `BOUNDARY_TOLERANCE` (1e-10 degree) below a multiple of 30 degrees belongs to the next sign. Exactly 360 degrees
+  normalizes to 0 degrees, Aries. Values immediately below 360 degrees, including those within the tolerance, stay in
+  Pisces: the top edge clamps there, as it does for D1.
+- **Degree within that sign:** each module's existing expression, except that a promoted value sits at degree 0 of its new
+  sign.
+
+**D1 does not change.** The rule changes outputs only for `L` in `[30k - 1e-10, 30k)`, for k from 1 to 11. Any change
+outside that window is a defect.
+
+**Superseded.** The historical convention that took the source sign by plain floor (`int(L // 30)`), leaving sign-boundary
+dust in the previous sign's last division, is superseded by this rule for:
+- the varga framework (`classify`)
+- D9 (`navamsa_sign`, `navamsa_longitude`, `navamsa_number`)
+- D10 (`dashamsa_sign`, `dashamsa_longitude`)
+- every independent reference that encoded the old floor for them
+
+That convention is recorded as "pre-existing locked behavior" in `docs/VARGA_REGISTRY_SPEC.md`'s D3 publication record, and
+appears in `DP-032`'s pseudocode. Those texts stay as historical records and are not edited. This entry governs where they
+differ.
+
+**Out of scope, stated so it is not assumed.** The KP chain (`engine/kp/chain.py`) and KP significators' `sign_of` also
+floor the sign. They are not vargas, they were not named, and they are unchanged. They remain a recorded residual seam
+against D1 inside the same window.
+
+### 4. Remediation authorized
+
+M-04, M-05 and M-09, under `docs/EVIDENCE_PREREQUISITE_CONTRACTS.md` and the owner's fixed exit criteria in s1, in three
+separately reviewable PRs. No PR merges without separate CEO and owner approval.
+
+### 5. A correction to the contracts document
+
+`docs/EVIDENCE_PREREQUISITE_CONTRACTS.md` 1.0.0 said D9 and D10 "disagree with themselves inside the window". **That was
+wrong.** The probe rounded `navamsa_longitude` to nine decimals: at `29.99999999995` the true value is
+`269.99999999954997`, which is sign 8, consistent with `navamsa_sign`. D10 is consistent the same way. The seam is D1 versus
+the vargas only. The document is corrected in the same change as this entry.
+
+### 6. What this entry does not do
+
+It enters no phase, and ratifies no H-specification. The 18-item specification table stays for one consolidated owner
+adjudication. It selects no `DP-040` option. It does not decide `DP-025` A1.
+
+- **Decision:** as s2 to s4 state.
+- **Consequences:** M-09 may now be implemented against s3. `DP-005` is answered.
+- **Evidence:** the owner's instruction, quoted in s1, exists as session input and not as a repository file. The
+  full-precision probe in s5.
+
 ---
 
 ## ADR template (copy, do not edit above the line)

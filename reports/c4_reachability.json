@@ -297,26 +297,37 @@
    "status": "NOT_IN_USE"
   },
   "engine.astrology.longitude_utils.division_index": {
-   "caller_count": 8,
+   "caller_count": 9,
    "callers": [
     "engine.astrology.house.equal_house_from_ascendant",
+    "engine.astrology.longitude_utils.parent_sign",
     "engine.astrology.nakshatra.nakshatra",
     "engine.astrology.pada.pada",
-    "engine.astrology.panchanga.karana_index",
-    "engine.astrology.panchanga.tithi_index"
+    "engine.astrology.panchanga.karana_index"
    ],
    "covered": true,
    "file": "engine/astrology/longitude_utils.py",
    "status": "IN_USE_COVERED"
   },
   "engine.astrology.longitude_utils.normalize_longitude": {
-   "caller_count": 7,
+   "caller_count": 8,
    "callers": [
     "engine.astrology.house.equal_house_from_ascendant",
+    "engine.astrology.longitude_utils.parent_sign",
     "engine.astrology.nakshatra.nakshatra",
     "engine.astrology.pada.pada",
-    "engine.astrology.panchanga._elongation",
-    "engine.astrology.panchanga.yoga_index"
+    "engine.astrology.panchanga._elongation"
+   ],
+   "covered": true,
+   "file": "engine/astrology/longitude_utils.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.astrology.longitude_utils.parent_sign": {
+   "caller_count": 3,
+   "callers": [
+    "engine.astrology.dashamsa_chart._segment",
+    "engine.astrology.navamsa_chart._sign_and_degree",
+    "engine.astrology.varga_classifier.classify"
    ],
    "covered": true,
    "file": "engine/astrology/longitude_utils.py",
@@ -1605,7 +1616,7 @@
  },
  "schema": "ace-c4-reachability-v1",
  "summary": {
-  "IN_USE_COVERED": 110,
+  "IN_USE_COVERED": 111,
   "NOT_IN_USE": 102
  },
  "universe_exclusions": {

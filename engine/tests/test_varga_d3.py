@@ -82,13 +82,9 @@ def test_dense_sweep_against_independent_classical_rule():
 
 def test_ulp_boundary_battery_promote_up():
     # Every 10-degree boundary in [0, 360): exact hit owns the new
-    # division. The locked convention, exactly as certified for
-    # D9/D10 and proven bit-identical in the framework mirrors:
-    # INTRA-SIGN boundaries promote values within 1e-10 below them;
-    # SIGN boundaries do not (the source-sign decomposition carries
-    # no tolerance), so dust 1e-11 below a sign boundary stays in
-    # the previous sign's LAST division. Pre-existing locked
-    # behavior, verified here for D3 and recorded in the artifact.
+    # division, and values within 1e-10 below any boundary promote to
+    # it. Sign boundaries promote too: ADR-0112 s3 supersedes the
+    # earlier rule that left sign-boundary dust in the previous sign.
     for k in range(36):
         boundary = k * 10.0
         at = classify(boundary, D3_PARASHARA)
@@ -99,13 +95,9 @@ def test_ulp_boundary_battery_promote_up():
         just_below = boundary - 1e-11  # inside promote-up tolerance
         if just_below >= 0.0:
             promoted = classify(just_below, D3_PARASHARA)
-            if k % 3 == 0:  # sign boundary: no promotion by design
-                previous_sign = (k // 3 - 1) % 12
-                assert promoted.division_index == 2, boundary
-                assert promoted.d_sign == (previous_sign + 8) % 12, boundary
-            else:  # intra-sign boundary: promoted up
-                assert (promoted.d_sign, promoted.division_index) == (
-                    at.d_sign, at.division_index), boundary
+            # Sign boundaries promote too: the parent sign follows D1 (ADR-0112 s3).
+            assert (promoted.d_sign, promoted.division_index) == (
+                at.d_sign, at.division_index), boundary
 
         clearly_below = boundary - 1e-6
         if clearly_below >= 0.0:

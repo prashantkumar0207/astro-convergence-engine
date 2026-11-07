@@ -165,9 +165,9 @@ def _boundaries(rule):
 @pytest.mark.parametrize("rule", [D7_PARASHARA, D30_PARASHARA, D2_PARASHARA],
                          ids=["d7", "d30", "d2"])
 def test_ulp_boundary_battery(rule):
-    # Locked convention: at-boundary owns the new division; ULP
-    # neighbors above agree; clearly-below stays in the previous
-    # division (or previous sign's last, at sign boundaries).
+    # At-boundary owns the new division; ULP neighbours above agree;
+    # dust within 1e-10 below promotes, at sign boundaries too
+    # (ADR-0112 s3); clearly-below stays in the previous division.
     for boundary in _boundaries(rule):
         at = classify(boundary, rule)
         assert at.fraction == 0.0 or boundary % 30.0 != 0.0
@@ -190,13 +190,9 @@ def test_ulp_boundary_battery(rule):
         just_below = boundary - 1e-11
         if just_below >= 0.0 and boundary > 0.0:
             promoted = classify(just_below, rule)
-            if boundary % 30.0 == 0.0:  # sign boundary: no promotion
-                assert promoted.division_index == len(
-                    rule.segments[int(just_below // 30.0)]) - 1 if hasattr(
-                    rule, "segments") else promoted.division_index == rule.divisions - 1
-            else:  # intra-sign boundary: promoted up
-                assert (promoted.d_sign, promoted.division_index) == (
-                    at.d_sign, at.division_index), boundary
+            # Sign boundaries promote too: the parent sign follows D1 (ADR-0112 s3).
+            assert (promoted.d_sign, promoted.division_index) == (
+                at.d_sign, at.division_index), boundary
 
 
 def test_d2_output_space_is_only_leo_and_cancer():

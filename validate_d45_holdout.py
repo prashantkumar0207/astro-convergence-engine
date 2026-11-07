@@ -98,6 +98,10 @@ def reference_d45(longitude: float):
     longitude = _reference_normalize(longitude)
     source = int(longitude // 30.0)
     degree = longitude - source * 30.0
+    # ADR-0112 s3: within the tolerance below the next sign, the value belongs to it,
+    # at degree 0, as D1 classifies it. Pisces' top edge is not promoted.
+    if source < 11 and degree + _BOUNDARY_TOLERANCE >= 30.0:
+        source, degree = source + 1, 0.0
     width = 30.0 / 45.0
     division = int((degree + _BOUNDARY_TOLERANCE) / width)
     if division > 44:
@@ -109,13 +113,18 @@ def reference_d45_position(longitude: float):
     """Independent (sign, division_index, fraction), both indices 0-based.
 
     Uses nothing from engine.*: engine/tests/test_d45_reference_independence.py
-    enforces that by parsing this file. The sign split takes no tolerance. A
+    enforces that by parsing this file. The sign split promotes within the tolerance,
+    as D1 does (ADR-0112 s3). A
     degree within the tolerance below a division's edge promotes to the next
     division, where it sits at fraction 0.0. The top division is clamped.
     """
     longitude = _reference_normalize(longitude)
     source = int(longitude // 30.0)
     degree = longitude - source * 30.0
+    # ADR-0112 s3: within the tolerance below the next sign, the value belongs to it,
+    # at degree 0, as D1 classifies it. Pisces' top edge is not promoted.
+    if source < 11 and degree + _BOUNDARY_TOLERANCE >= 30.0:
+        source, degree = source + 1, 0.0
     index = int((degree + _BOUNDARY_TOLERANCE) / _REFERENCE_WIDTH)
     if index >= _REFERENCE_COUNT:
         index = _REFERENCE_COUNT - 1

@@ -26,6 +26,7 @@ from engine.astrology.longitude_utils import (
     BOUNDARY_TOLERANCE,
     division_index as _uniform_division_index,
     normalize_longitude,
+    parent_sign,
 )
 from engine.astrology.varga_rules import (
     CyclicVargaRule,
@@ -61,6 +62,13 @@ def classify(longitude: float, rule) -> VargaClassification:
 
     source_sign = int(longitude // 30.0)
     degree = longitude - source_sign * 30.0
+
+    # ADR-0112 s3: the parent sign follows D1. Inside the 1e-10 window
+    # below a sign boundary the value belongs to the next sign, at its
+    # start; everywhere else nothing changes.
+    promoted = parent_sign(longitude)
+    if promoted != source_sign:
+        source_sign, degree = promoted, 0.0
 
     if isinstance(rule, CyclicVargaRule):
         return _classify_cyclic(source_sign, degree, rule)

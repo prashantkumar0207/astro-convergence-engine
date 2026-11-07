@@ -299,7 +299,17 @@ def gate_f_boundary_cases():
         near_end = classify(math.nextafter((sign + 1) * 30.0, -math.inf), D24_SIDDHAMSA)
         start = classify(sign * 30.0, D24_SIDDHAMSA)
         cases += 2
-        if near_end.division_index != 23:
+        # ADR-0112 s3: inside the 1e-10 window the parent sign follows D1, so a
+        # near-end value classifies as the next sign's boundary itself. Just below
+        # 360 degrees the top edge clamps to Pisces, as D1 does; exactly 360 is 0 Aries.
+        if sign < 11:
+            if near_end != classify((sign + 1) * 30.0, D24_SIDDHAMSA):
+                mismatches += 1
+        elif near_end.division_index != 23:
+            mismatches += 1
+        # Just outside the window nothing is promoted: still the last division.
+        cases += 1
+        if classify((sign + 1) * 30.0 - 2e-10, D24_SIDDHAMSA).division_index != 23:
             mismatches += 1
         if start.division_index != 0:
             mismatches += 1
@@ -307,7 +317,7 @@ def gate_f_boundary_cases():
         fail(f"boundary case failures: {mismatches}/{cases}")
     return {"cases": cases, "mismatches": 0,
             "convention": "engine-wide 1e-10 tolerance-promoted boundary convention "
-                           "(longitude_utils.py), unmodified; no D24-specific exception - "
+                           "(longitude_utils.py), with the parent sign promoted as D1's is (ADR-0112 s3); no D24-specific exception - "
                            "cell width 30/24=1.25deg is exactly representable in IEEE-754 "
                            "double precision (ADR-0083 section 3), zero floor-"
                            "classification effect, cleaner than D45's own measured result"}
