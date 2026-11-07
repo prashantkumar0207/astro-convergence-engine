@@ -2,7 +2,7 @@
  "schema": "varga_d40_v1_certification",
  "adr": "ADR-0087",
  "supersedes_provisional_id": "NOTHING_AUTHORISED",
- "date": "2026-11-06",
+ "date": "2026-11-07",
  "scope": "D40 Khavedamsa, Parashara/BPHS variant, Traditional Parasara construction. Registered in production through the generic registry (engine.astrology.varga_d40, VARGA_D40_V1), discoverable via engine.astrology.divisional_chart.divisional_chart(snapshot, 40).",
  "rule": {
   "kind": "CyclicVargaRule",
@@ -201,7 +201,7 @@
    "residual_limitation": "coordinated edits to every repository-held trust record cannot be cryptographically prevented by an in-repository trust anchor; only upstream provenance would anchor this, and it is out of M1 scope"
   },
   "anti_fitting": {
-   "modules_scanned": 204,
+   "modules_scanned": 208,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."

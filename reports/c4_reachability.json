@@ -1025,6 +1025,112 @@
    "file": "engine/dasha/vimshottari.py",
    "status": "NOT_IN_USE"
   },
+  "engine.evidence.entity.AstrologicalSubject.chart": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.entity.rectification_permitted"
+   ],
+   "covered": true,
+   "file": "engine/evidence/entity.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.entity.rectification_permitted": {
+   "covered": true,
+   "file": "engine/evidence/entity.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.evidence.identifiers.EntityId.from_number": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.store.EntityStore.persist"
+   ],
+   "covered": true,
+   "file": "engine/evidence/identifiers.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.identifiers.EntityId.number": {
+   "covered": true,
+   "file": "engine/evidence/identifiers.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.evidence.store.EntityStore.add_link": {
+   "covered": true,
+   "file": "engine/evidence/store.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.evidence.store.EntityStore.append_revision": {
+   "covered": true,
+   "file": "engine/evidence/store.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.evidence.store.EntityStore.close": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.store.EntityStore.__exit__"
+   ],
+   "covered": true,
+   "file": "engine/evidence/store.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.store.EntityStore.entity_ids": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.store.EntityStore.add_link"
+   ],
+   "covered": true,
+   "file": "engine/evidence/store.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.store.EntityStore.history": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.store.EntityStore.load"
+   ],
+   "covered": true,
+   "file": "engine/evidence/store.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.store.EntityStore.issued_count": {
+   "covered": true,
+   "file": "engine/evidence/store.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.evidence.store.EntityStore.links": {
+   "covered": true,
+   "file": "engine/evidence/store.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.evidence.store.EntityStore.load": {
+   "covered": true,
+   "file": "engine/evidence/store.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.evidence.store.EntityStore.persist": {
+   "covered": true,
+   "file": "engine/evidence/store.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.evidence.store.subject_from_record": {
+   "caller_count": 3,
+   "callers": [
+    "engine.evidence.store.EntityStore.append_revision",
+    "engine.evidence.store.EntityStore.history",
+    "engine.evidence.store.EntityStore.persist"
+   ],
+   "covered": true,
+   "file": "engine/evidence/store.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.store.subject_to_record": {
+   "caller_count": 2,
+   "callers": [
+    "engine.evidence.store.EntityStore.append_revision",
+    "engine.evidence.store.EntityStore.persist"
+   ],
+   "covered": true,
+   "file": "engine/evidence/store.py",
+   "status": "IN_USE_COVERED"
+  },
   "engine.knowledge.cache.KnowledgeCache.clear": {
    "covered": false,
    "file": "engine/knowledge/cache.py",
@@ -1616,8 +1722,8 @@
  },
  "schema": "ace-c4-reachability-v1",
  "summary": {
-  "IN_USE_COVERED": 111,
-  "NOT_IN_USE": 102
+  "IN_USE_COVERED": 118,
+  "NOT_IN_USE": 110
  },
  "universe_exclusions": {
   "engine.main.": "API route handlers: callers and exports, not capabilities",

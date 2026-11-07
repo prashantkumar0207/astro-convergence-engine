@@ -1,8 +1,8 @@
 {
  "schema": "support_paths_v1_certification",
  "adr": "ADR-0108 s4 item 5",
- "date": "2026-11-05",
- "scope": "Support functions certified under ADR-0108 s4 item 5, each only as far as its gate's classification: mathematical correctness of equal-house arithmetic, the planet mapper and timezone conversion; external-oracle agreement of the naisargika relationship lookup; access-path fidelity of the knowledge loaders, not of the data they return; and rashi_chart's neutrality over build_chart.",
+ "date": "2026-11-07",
+ "scope": "Support functions certified under ADR-0108 s4 item 5, each only as far as its gate's classification: mathematical correctness of equal-house arithmetic, the planet mapper and timezone conversion; external-oracle agreement of the naisargika relationship lookup; access-path fidelity of the knowledge loaders, not of the data they return; rashi_chart's neutrality over build_chart; and the structural integrity of the EVIDENCE entity foundations (ADR-0114 WP-E1): the H0 entity model, the append-only store and the ENT issuer.",
  "reference": {
   "equal_house_and_map_planet": "exact rational arithmetic and hand-derived literal cases",
   "to_utc": "offset subtraction and literal UTC instants",
@@ -105,6 +105,43 @@
    },
    "exercises": [],
    "exercises_note": "runs the other gates' comparators against planted wrong functions, so no production callable is the thing under test"
+  },
+  "H_entity_foundations": {
+   "classification": "structural_integrity",
+   "kinds": 5,
+   "round_trips": 5,
+   "competing_charts_held": 2,
+   "revisions_checked": 2,
+   "links_checked": 1,
+   "mismatches": 0,
+   "exercises": [
+    "support.entity_foundations"
+   ]
+  },
+  "I_entity_store_refusals": {
+   "classification": "negative_control",
+   "refusals_verified": 16,
+   "refused": [
+    "analytical key confidence",
+    "analytical key interpretation",
+    "analytical key score",
+    "analytical key weight",
+    "delete a link",
+    "delete a revision",
+    "delete the issuer",
+    "identifier: lower-case family",
+    "identifier: number zero",
+    "identifier: seven digits",
+    "kind change",
+    "lower the issuer",
+    "non-subject",
+    "non-synthetic data",
+    "update a link",
+    "update a revision"
+   ],
+   "exercises": [
+    "support.entity_foundations"
+   ]
   }
  },
  "explicit_non_claims": [
@@ -114,6 +151,8 @@
   "Gate F proves rashi_chart equals build_chart. It adds nothing to what is certified about D1 charts",
   "Gate C does not validate the timezone database against a second source beyond its literal cases",
   "a GATED member is not thereby in use: KnowledgeRegistry.clear is gated here and is NOT_IN_USE under C4",
+  "Gates H and I certify structure only: the entity model, store and issuer make no analytical claim, and carry no score, weight or confidence; every record they use is synthetic",
+  "the EVIDENCE entity foundations are not a production analytical input and are not served by any API",
   "KnowledgeLoader.load, load_json and dignities are also reached through PARASHARI_YOGA_V1, so this artifact is not their only coverage"
  ],
  "environment": {
@@ -139,7 +178,7 @@
    "residual_limitation": "coordinated edits to every repository-held trust record cannot be cryptographically prevented by an in-repository trust anchor; only upstream provenance would anchor this, and it is out of M1 scope"
   },
   "anti_fitting": {
-   "modules_scanned": 204,
+   "modules_scanned": 208,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."
@@ -299,6 +338,138 @@
      "disposition": "GATED",
      "exercised_by": [
       "F_rashi_chart_neutrality"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "support.entity_foundations",
+   "members": [
+    {
+     "callable": "engine.evidence.identifiers.EntityId.from_number",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "H_entity_foundations"
+     ]
+    },
+    {
+     "callable": "engine.evidence.identifiers.EntityId.number",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "H_entity_foundations"
+     ]
+    },
+    {
+     "callable": "engine.evidence.entity.AstrologicalSubject.chart",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "H_entity_foundations"
+     ]
+    },
+    {
+     "callable": "engine.evidence.entity.rectification_permitted",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "H_entity_foundations"
+     ]
+    },
+    {
+     "callable": "engine.evidence.store.EntityStore.persist",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "H_entity_foundations",
+      "I_entity_store_refusals"
+     ]
+    },
+    {
+     "callable": "engine.evidence.store.EntityStore.append_revision",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "H_entity_foundations",
+      "I_entity_store_refusals"
+     ]
+    },
+    {
+     "callable": "engine.evidence.store.EntityStore.history",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "H_entity_foundations"
+     ]
+    },
+    {
+     "callable": "engine.evidence.store.EntityStore.load",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "H_entity_foundations"
+     ]
+    },
+    {
+     "callable": "engine.evidence.store.EntityStore.entity_ids",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "H_entity_foundations"
+     ]
+    },
+    {
+     "callable": "engine.evidence.store.EntityStore.add_link",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "H_entity_foundations",
+      "I_entity_store_refusals"
+     ]
+    },
+    {
+     "callable": "engine.evidence.store.EntityStore.links",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "H_entity_foundations"
+     ]
+    },
+    {
+     "callable": "engine.evidence.store.EntityStore.issued_count",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "H_entity_foundations",
+      "I_entity_store_refusals"
+     ]
+    },
+    {
+     "callable": "engine.evidence.store.EntityStore.close",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "H_entity_foundations",
+      "I_entity_store_refusals"
+     ]
+    },
+    {
+     "callable": "engine.evidence.store.subject_to_record",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "H_entity_foundations",
+      "I_entity_store_refusals"
+     ]
+    },
+    {
+     "callable": "engine.evidence.store.subject_from_record",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "H_entity_foundations",
+      "I_entity_store_refusals"
      ]
     }
    ]

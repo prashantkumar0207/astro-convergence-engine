@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.30.0 |
+| Version | 9.31.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-07 (`ADR-0113` records the owner's ratification of the EVIDENCE specifications, and promotes H0, H1, H2, H4 and H5 to ACCEPTED, on documentation-only branch `evidence-specifications-ratification`. Not merged. EVIDENCE not entered.) |
+| Last updated | 2026-11-07 (EVIDENCE entered (`ADR-0114`). WP-E1, the H0 entity foundations and ENT governance, is on review branch `evidence-wp-e1-entity-foundations`. Not merged.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,20 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-07 - EVIDENCE entered (ADR-0114); WP-E1 H0 entity foundations on review
+
+**WP-E1 not merged.** PR #47 merged as `90cd0ca`; post-merge CI `42358762644` green. EVIDENCE was entered on the
+owner's authorization, after the CEO PASS.
+
+- **`ADR-0114`** fixes WP-E1's 14 acceptance criteria. It was committed before any code.
+- **`engine/evidence/`** holds the H0 entity model (five specialised types, shapes, competing charts, links), an
+  append-only SQLite store whose triggers refuse update and delete, and the `ENT` issuer.
+- **`ENT-\d{8}`** is registered in `NAMING_STANDARD.md` s2. `scripts/check_entity_identifiers.py` is in the CI sweep, with
+  a negative-control step.
+- **Certification:** `SUPPORT_PATHS_V1` gates H (structural integrity) and I (16 refusals) cover the package, following
+  ADR-0108 s4 item 5's route for dead-path functions.
+- **Synthetic data only.** No scoring, weight or confidence anywhere in the package.
 
 ### 2026-11-07 - EVIDENCE specifications ratified (ADR-0113); H0/H1/H2/H4/H5 promoted (documentation-only PR)
 

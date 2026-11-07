@@ -2,7 +2,7 @@
  "schema": "varga_d4_v1_certification",
  "adr": "ADR-0090",
  "supersedes_provisional_id": "NOTHING_AUTHORISED",
- "date": "2026-11-06",
+ "date": "2026-11-07",
  "scope": "D4 Chaturthamsa, Parashara/BPHS variant, Traditional Parasara construction. Rule under certification is a STANDALONE, UNREGISTERED SegmentVargaRule instance embedded in this certifier - not engine/astrology/varga_d4.py, no production module is authorized or created this execution. DP-024 Option A2 (SegmentVargaRule) selected for D4 specifically, per the owner's explicit instruction - CyclicVargaRule is untouched.",
  "rule": {
   "kind": "standalone SegmentVargaRule instance embedded in this certifier (scripts/certify_d4.py) - not a registered production rule",
@@ -172,7 +172,7 @@
    "residual_limitation": "coordinated edits to every repository-held trust record cannot be cryptographically prevented by an in-repository trust anchor; only upstream provenance would anchor this, and it is out of M1 scope"
   },
   "anti_fitting": {
-   "modules_scanned": 204,
+   "modules_scanned": 208,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."

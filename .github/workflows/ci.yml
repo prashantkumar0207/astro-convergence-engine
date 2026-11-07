@@ -416,6 +416,29 @@ jobs:
           fi
           echo "negative control passed: planted violation was caught (exit $rc)"
 
+      - name: ENT identifier-family uniqueness (ADR-0111, ADR-0114)
+        run: python scripts/check_entity_identifiers.py
+
+      - name: Negative control, the ENT uniqueness gate must actually fail
+        run: |
+          set +e
+          # Assembled at run time, for the same reason as the identifier probe above.
+          python -c "open('_ent_probe.py','w').write('# planted: ' + 'ENT-' + '00000001' + chr(10))"
+          git add -N _ent_probe.py
+          python scripts/check_entity_identifiers.py > /dev/null 2>&1
+          literal=$?
+          git rm -q --cached --force _ent_probe.py 2>/dev/null
+          rm -f _ent_probe.py
+          python -c "import re; t=open('docs/NAMING_STANDARD.md',encoding='utf-8').read(); open('/tmp/naming_probe.md','w',encoding='utf-8').write(re.sub(r'ENT-.d\{8\}', 'ENT-' + chr(92) + 'd{6}', t, count=1))"
+          python scripts/check_entity_identifiers.py --naming /tmp/naming_probe.md > /dev/null 2>&1
+          naming=$?
+          set -e
+          if [ "$literal" -eq 0 ] || [ "$naming" -eq 0 ]; then
+            echo "the ENT gate did NOT flag a planted violation: literal=$literal naming=$naming"
+            exit 1
+          fi
+          echo "negative controls passed: literal exit $literal, registration exit $naming"
+
       - name: ADR numbering is unique and monotonic
         run: python scripts/check_adr_numbering.py
 
