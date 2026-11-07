@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | **ACCEPTED (`ADR-0062`) - canonical, machine-checkable current-state record.** Regenerate/refresh on every meaningful implementation task, same discipline as `reports/AI_HANDOFF_CURRENT.md`. |
-| Version | 7.30.0 |
+| Version | 7.31.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-07 (**`ADR-0113` records the owner's ratification of the EVIDENCE specifications, and promotes H0, H1, H2, H4 and H5 to ACCEPTED, on documentation-only branch `evidence-specifications-ratification`. Not merged. EVIDENCE not entered.** No `engine/` production change.) |
+| Last updated | 2026-11-07 (**EVIDENCE entered (`ADR-0114`). WP-E1, the H0 entity foundations and ENT governance, is on review branch `evidence-wp-e1-entity-foundations`. Not merged.**) |
 | Review cadence | Refresh at the start of a session if stale; not load-bearing if it isn't. |
 
 # ACE execution state
@@ -42,23 +42,23 @@ independently is in these fields plus the pointers they name.
 
 | Field | Value |
 |---|---|
-| `CURRENT_PHASE` | JATAKA exited (`ADR-0110`). **No next phase entered.** EVIDENCE entry needs CEO approval and the owner's explicit authorization; once `ADR-0113` merges, every `Q8_CLOSURE_MATRIX.md` s6 prerequisite and entry criterion is on the record. |
-| `CURRENT_MILESTONE` | **EVIDENCE specifications ratified (`ADR-0113`) on a review PR.** M-04, M-05 and M-09 merged: PR #44 `e3b81c6`, PR #45 `8ecfeca`, PR #46 `46536da`. |
-| `CURRENT_AUTHORIZED_TASK` | None self-executable beyond the review PR. |
-| `TASK_OWNER` | CHATGPT (review of the PR, then EVIDENCE entry review); USER (merge, and the entry decision). |
-| `STATUS` | Documentation-only review PR, not merged. No production code, artifact, calculation, holdout, threshold or gate changed. |
-| `LAST_COMPLETED_ACTION` | Recorded `ADR-0113`; promoted H0, H1, H2, H4 and H5 with their superseded wording named; reconciled the 18 items. |
-| `LAST_COMMIT` (main) | `46536da177509c68325e309a15982cf4a1bbddd8` (PR #46 merge). Unchanged by this task. |
-| `LAST_COMMIT` (evidence-specifications-ratification) | This task's one commit, on top of `46536da177509c68325e309a15982cf4a1bbddd8`. |
-| `LAST_CI_RUN` | `42353659011` at `46536da1`: push to `main`, success on all four jobs. This branch's results are on its review PR. |
-| `LAST_CEO_DECISION` | PASS on PR #46, as the owner states. |
-| `NEXT_AUTHORIZED_ACTION` | None self-executable. EVIDENCE entry and any implementation are unauthorized. |
-| `WAITING_FOR` | CHATGPT: review of the PR and EVIDENCE entry review. USER: merge, then the explicit entry decision. |
+| `CURRENT_PHASE` | **EVIDENCE entered** (`ADR-0114`, owner-authorized 2026-11-07, from `main` `90cd0ca`). JATAKA exited (`ADR-0110`). Mandatory CEO checkpoints remain: the evidence model (H4), and phase exit. |
+| `CURRENT_MILESTONE` | **WP-E1 (H0 entity foundations and ENT identifier governance) on a review PR.** PR #47 merged as `90cd0ca`. |
+| `CURRENT_AUTHORIZED_TASK` | None self-executable beyond the WP-E1 review PR. |
+| `TASK_OWNER` | CHATGPT (review of WP-E1); USER (merge authorization). |
+| `STATUS` | WP-E1 review PR, not merged. No certified calculation changed; every artifact's only non-volatile change is `modules_scanned`, apart from `SUPPORT_PATHS_V1`'s new gates. |
+| `LAST_COMPLETED_ACTION` | Recorded `ADR-0114`; implemented WP-E1 against its 14 acceptance criteria; certified the new package in `SUPPORT_PATHS_V1` gates H and I. |
+| `LAST_COMMIT` (main) | `90cd0cae777f6e7e67b78b109be68b714fa8cf91` (PR #47 merge). Unchanged by this task. |
+| `LAST_COMMIT` (evidence-wp-e1-entity-foundations) | This branch's commits, on top of `90cd0cae777f6e7e67b78b109be68b714fa8cf91`. |
+| `LAST_CI_RUN` | `42358762644` at `90cd0cae`: push to `main`, success on all four jobs. This branch's results are on its review PR. |
+| `LAST_CEO_DECISION` | EVIDENCE entry PASS, as the owner states. |
+| `NEXT_AUTHORIZED_ACTION` | None self-executable. WP-E1's merge, and any further work package, need separate approval. |
+| `WAITING_FOR` | CHATGPT: review of WP-E1. USER: merge authorization, and the next work package. |
 | `BLOCKER` | None for this delivery. |
-| `CEO_APPROVAL_REQUIRED` | This PR's merge (`ADR-0106` OR-3), and EVIDENCE entry (`Q8_CLOSURE_MATRIX.md` s6). |
+| `CEO_APPROVAL_REQUIRED` | WP-E1's merge (`ADR-0106` OR-3); the evidence-model checkpoint (Q8 s6); phase exit. |
 | `CLAUDE_ACTION_REQUIRED` | None until directed. |
-| `CHATGPT_ACTION_REQUIRED` | Review of the PR, then EVIDENCE entry review. |
-| `USER_ACTION_REQUIRED` | Merge authorization; then the explicit EVIDENCE entry decision. |
+| `CHATGPT_ACTION_REQUIRED` | Review of the WP-E1 PR. |
+| `USER_ACTION_REQUIRED` | Merge authorization for WP-E1; direction for WP-E2. |
 | `HANDOFF_REQUIRED` | None beyond this file and the latest entry in `reports/AI_HANDOFF_CURRENT.md`. |
 
 ## How to independently verify every field above
@@ -79,6 +79,7 @@ exactly as `reports/AI_HANDOFF_CURRENT.md` already requires of itself.
 
 | Version | Date | Change |
 |---|---|---|
+| 7.31.0 | 2026-11-07 | **EVIDENCE entered (`ADR-0114`); WP-E1 implemented and on review.** Also records PR #47's merge. |
 | 7.30.0 | 2026-11-07 | **`ADR-0113`: EVIDENCE specifications ratified; H0, H1, H2, H4 and H5 promoted.** Also records the M-04, M-05 and M-09 merges. |
 | 7.29.0 | 2026-11-06 | M-04, M-05 and M-09 remediation PRs opened; `ADR-0112` recorded. None merged. |
 | 7.28.0 | 2026-11-06 | **`ADR-0111`: owner ratifies Q6, Q9, DP-008 and M-04 (A2); EVIDENCE prerequisite package prepared.** Also corrects rows left stale by PR #42's merge. |
