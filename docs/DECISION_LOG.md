@@ -11175,6 +11175,102 @@ With that section, each specification's complete normative text agrees with s2. 
   line removed, identical before and after: `ADR-0020` `61833f1da65c25f86b9929f09225dcc767b47add9f49aa7d79eddc6811e2e9c8`; `ADR-0021` `6a3bb1dc0145fdb703a77d26e0d871eba13c8bab49ebbb3fd64e5314bdb6bbd2`. The owner's
   instruction exists as session input, not as a repository file.
 
+## ADR-0114 - EVIDENCE phase entered on owner authorization; work package WP-E1 (H0 entity foundations and ENT identifier governance) defined, with its acceptance criteria fixed before coding
+
+- **Date:** 2026-11-07
+- **Status:** **ACCEPTED, on the owner's instruction quoted in s1.** It records the owner's phase-entry decision, and fixes
+  WP-E1's acceptance criteria as that instruction requires.
+- **Context:**
+  - **Entry conditions:** every `Q8_CLOSURE_MATRIX.md` s6 prerequisite and entry criterion is on the record at `main`
+    `90cd0cae777f6e7e67b78b109be68b714fa8cf91` (`ADR-0110` to `ADR-0113`).
+  - **Approval:** the owner states that the independent CEO PASS for entry came first. Its text is not a repository file.
+
+### 1. The owner's instruction (exact text)
+
+```text
+**ACE — OWNER AUTHORIZATION: ENTER EVIDENCE**
+
+Following ChatGPT's independent CEO PASS, I authorize formal entry into the EVIDENCE phase under `docs/Q8_CLOSURE_MATRIX.md` §6.
+
+Verified baseline: `main` `90cd0cae777f6e7e67b78b109be68b714fa8cf91`. PR #47 is merged and post-merge CI `42358762644` passed all four jobs.
+
+Proceed as follows:
+
+1. Record this owner-authorized phase entry in the canonical ADR register and update the existing execution-state and handoff records.
+2. Begin the first bounded EVIDENCE implementation work package, starting with H0 entity foundations and required identifier governance. Define measurable acceptance criteria before coding.
+3. Implement against the accepted H0/H1/H2/H4/H5 specifications, ADR-0111/0112/0113 and Q8 §6. Preserve calculation lineage, provenance, holdout protection and system independence.
+4. Establish and strengthen the applicable certification gates, including meaningful negative controls. No scoring, weighting, fitting, predictive-confidence computation or real personal data.
+5. Submit implementation through reviewable PRs with tests, certification evidence and concise self-audits. No merge to main without separate CEO approval and owner authorization.
+6. Respect Q8 §6's mandatory CEO checkpoint at the evidence model and its separate phase-exit approval.
+
+Do not reopen JATAKA, repeat completed prerequisite research, modify unrelated certified calculations or expand the authorized phase scope.
+
+Report the first work package's precise exit criteria, implementation SHA, tests, outstanding limitations and next decision in one concise handoff.
+```
+
+### 2. Phase entry
+
+**EVIDENCE is entered**, under `Q8_CLOSURE_MATRIX.md` s6, from `main` `90cd0cae777f6e7e67b78b109be68b714fa8cf91`.
+
+- **Its scope is s6's alone:**
+  - an entity model with specialised subject types;
+  - an event model;
+  - a historical event ledger, with protected-holdout support in the store;
+  - an evidence model with the five relationship classes;
+  - an interpretation rule registry;
+  - provenance-graph recording.
+- **Outside the scope:** scoring, weighting, fitting and predictive-confidence computation.
+- **Data:** real personal data is not permitted (`ADR-0113` s2 C3).
+- **Mandatory CEO checkpoints:** the evidence model, and the separate phase exit (s6).
+
+### 3. WP-E1: H0 entity foundations and ENT identifier governance
+
+**Scope.** A new `engine/evidence/` package, inside `engine/` per `ADR-0112` DP-005 D-2. It holds:
+- the H0 entity model;
+- an append-only entity store;
+- the `ENT` family's registration and uniqueness check.
+
+No H1, H2, H4 or H5 code is in WP-E1. Nothing in the package is wired into the calculation path, the API or any certified
+artifact.
+
+**`ENT` registration, as `ADR-0111` s2 item 3 and `NAMING_STANDARD.md` s2 require:**
+- **Pattern and width:** `ENT-\d{8}`, 8 digits, kind-neutral.
+- **Scope:** persisted entities, repository-wide.
+- **Issuer:** `EntityStore`'s durable central counter, held in the store's own database.
+- **Allocation point:** transactionally, at first persistence. A failed persistence consumes no number.
+- **Fixtures:** isolated allocators, meaning separate store instances. There is no reserved production range.
+
+**Acceptance criteria.** Each must be met, with evidence, before WP-E1 can be proposed for merge.
+
+| # | Criterion | Measured by |
+|---|---|---|
+| AC1 | `ENT` is registered in `NAMING_STANDARD.md` s2 with pattern, width, scope and issuer, and matches the code's own constants | The new uniqueness gate fails on any disagreement |
+| AC2 | `EntityId` accepts exactly `ENT-` plus 8 digits | Positive and negative tests |
+| AC3 | Allocation is monotone, durable across reopening, never reuses a number, consumes none on a failed persistence, and gives distinct numbers to two connections | Tests |
+| AC4 | The five kinds of `ADR-0021` D3, as specialised subject types on a common subject (`ADR-0020` D1) | Tests |
+| AC5 | Shapes A to C carry operation validity. Rectification is refused for shape C and for a documented origin. Shape D is not an entity. | Tests |
+| AC6 | Competing charts are held in full, each with its own provenance, with no selection field (`ADR-0020` D3) | Round-trip test |
+| AC7 | Relationships are links, not entities (`ADR-0021` D4) | Tests |
+| AC8 | Records are immutable. The store is append-only: an update or delete is refused at the database layer. A correction appends a superseding revision with its reason. | Tests, including direct SQL attempts |
+| AC9 | Analytical content cannot be stored on an entity | Negative tests for the model fields and the store payload |
+| AC10 | Synthetic data only: the store refuses any record not marked synthetic | Negative test |
+| AC11 | Schema round-trip: persisted and reloaded subjects are equal | Tests |
+| AC12 | The `ENT` uniqueness gate is in the CI conformance sweep, with a negative-control step | CI |
+| AC13 | No certified output changes. All certifiers PASS. The only artifact change is the anti-fitting scan's `modules_scanned`, which counts the new package. C2, C3 and C4 pass. | Controlled two-tier regeneration and reconciliation, then four-job CI |
+| AC14 | No scoring, weight or confidence field appears in the package | Structural test |
+
+### 4. What this entry does not do
+
+- It authorizes no merge: each PR still needs CEO approval and owner authorization.
+- It does not register `EVR`, `EVD` or `RUL`.
+- It implements no H1, H2, H4 or H5 model.
+- It changes no certified calculation.
+
+- **Decision:** as s2 and s3 state.
+- **Consequences:** WP-E1 is implemented against s3, and submitted for review. The evidence-model checkpoint comes with H4.
+- **Evidence:** `main` `90cd0cae777f6e7e67b78b109be68b714fa8cf91`; post-merge CI `42358762644`. The owner's instruction exists as session input, not as a
+  repository file.
+
 ---
 
 ## ADR template (copy, do not edit above the line)
