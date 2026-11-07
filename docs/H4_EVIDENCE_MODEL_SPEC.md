@@ -3,11 +3,11 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | PROPOSED, C0 RESEARCH. Specification only. No implementation is authorised by this document. Pending owner ratification (docs/OPEN_QUESTIONS.md Q1). |
-| Version | 1.0.0 |
-| Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-11 |
-| Review cadence | TBD |
+| Status | ACCEPTED (`ADR-0113`, 2026-11-07). Specification only: no implementation is authorised by this document, and EVIDENCE entry needs CEO approval and the owner's explicit authorization. |
+| Version | 2.0.0 |
+| Owner | Project Owner (`ADR-0051` D4) |
+| Last updated | 2026-11-07 |
+| Review cadence | On amendment |
 
 # H4. Evidence Model, the central hub
 
@@ -159,10 +159,34 @@ explicitly absent rather than defaulting it to independent. Defaulting an unmeas
 independent is the failure mode: it would overstate confidence in exactly the situations where
 correlation is most likely.
 
-## 11. Change history
+## 11. Ratified decisions and superseded wording (ADR-0113)
+
+This section controls. Where earlier text differs from it, this section governs, and the earlier sentence stays only as
+history.
+
+**Ratified.** `ADR-0020` D4 (s10) and `ADR-0021` D5, the independence principle. The UNKNOWN rule in s10 below applies D5.
+
+**Decided.**
+- **Identity:** `EVD-\d{10}`, under the same pre-first-use governance as every new family.
+- **Persistence:** evidence is persisted, immutable and fully provenance-linked. A recomputation creates a new, linked record.
+- **Traceability:** rule ID, rule version, rule content hash and knowledge snapshot hash (`ADR-0112`) stay traceable from
+  every item.
+- **Strength:** a rule's source-declared strength is recorded as declared, and is distinct from measured reliability.
+
+**Superseded.**
+- **s3's "Confidence, decomposed" and "Historical performance"** are fields that EVIDENCE records as supplied, or leaves
+  explicitly absent. EVIDENCE computes no confidence, score or weight. Cross-method convergence and timing convergence are
+  later-phase values, and absent here.
+- **s10:** relationship classification has the five classes **and an explicit UNKNOWN state**, used whenever a class cannot be
+  established. UNKNOWN is never treated as INDEPENDENT. CORRELATED is assigned only from measured evidence.
+- **s3's note** that the transit and drishti provenance defects must be fixed before either feeds evidence is satisfied. M-05
+  is PR #45 and M-04 is PR #44, both merged.
+
+## 12. Change history
 
 | Version | Date | Change |
 |---|---|---|
 | 1.0.0 | 2026-08-11 | Created in the G1 work package as Phase H preparation. |
 | 1.1.0 | 2026-08-11 | Additive section 8: entity, domain and chart reference, and the shared-origin rationale. Sections 1 to 7 unmodified. |
 | 1.2.0 | 2026-08-11 | Additive section 10: the five evidence relationship classes per ADR-0020 D4, and the structural-versus-measured distinction. Sections 1 to 9 unmodified. |
+| 2.0.0 | 2026-11-07 | **Promoted to ACCEPTED by `ADR-0113`.** Additive decisions section; superseded wording named, not deleted. |

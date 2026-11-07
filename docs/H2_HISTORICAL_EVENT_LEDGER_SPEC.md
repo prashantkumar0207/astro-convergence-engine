@@ -3,11 +3,11 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | PROPOSED, C0 RESEARCH. Specification only. No implementation is authorised by this document. Pending owner ratification (docs/OPEN_QUESTIONS.md Q1). |
-| Version | 1.0.0 |
-| Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-11 |
-| Review cadence | TBD |
+| Status | ACCEPTED (`ADR-0113`, 2026-11-07). Specification only: no implementation is authorised by this document, and EVIDENCE entry needs CEO approval and the owner's explicit authorization. |
+| Version | 2.0.0 |
+| Owner | Project Owner (`ADR-0051` D4) |
+| Last updated | 2026-11-07 |
+| Review cadence | On amendment |
 
 # H2. Historical Event Ledger
 
@@ -113,9 +113,30 @@ lives in the store.
 Results reported without their hypothesis and event counts are incomplete, and the ledger should be
 unable to emit them that way.
 
-## 10. Change history
+## 10. Ratified decisions and superseded wording (ADR-0113)
+
+This section controls. Where earlier text differs from it, this section governs, and the earlier sentence stays only as
+history.
+
+**Ratified.** `ADR-0021` D1, pre-registration (s9).
+
+**Decided.**
+- **Holdout selection:** a protected holdout is selected before any protected validation, by a recorded, reproducible random
+  procedure over a frozen eligible set. It is then locked against tuning, leakage and automated clearing.
+- **Minimum N:** each pre-registered protocol fixes its minimum N before testing.
+- **Rejected hypotheses:** they are retained and counted. Disclosure respects the protected-holdout access controls.
+
+**Superseded, for the EVIDENCE phase.**
+- **s2's CONFIDENCE and FUTURE steps, and s8's "class-partitioned scoring correctness".** In EVIDENCE the ledger records
+  performance fields and their counts, and computes no confidence, score or weight (`Q8_CLOSURE_MATRIX.md` s6). Deriving
+  confidence belongs to a later phase, under its own decision.
+- **s9's reliance on `docs/VALIDATION_STANDARD.md` s5.** That document is `DRAFT`. The registration's contents are governed by
+  `ADR-0021` D1 as ratified, and the reference is informative.
+
+## 11. Change history
 
 | Version | Date | Change |
 |---|---|---|
 | 1.0.0 | 2026-08-11 | Created in the G1 work package as Phase H preparation. |
 | 1.1.0 | 2026-08-11 | Additive section 9: the pre-registered mundane validation protocol per ADR-0021 D1. Sections 1 to 9 unmodified. |
+| 2.0.0 | 2026-11-07 | **Promoted to ACCEPTED by `ADR-0113`.** Additive decisions section; superseded wording named, not deleted. |

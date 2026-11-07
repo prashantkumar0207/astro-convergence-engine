@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | **ACCEPTED (`ADR-0062`) - canonical, machine-checkable current-state record.** Regenerate/refresh on every meaningful implementation task, same discipline as `reports/AI_HANDOFF_CURRENT.md`. |
-| Version | 7.29.0 |
+| Version | 7.30.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-06 (**EVIDENCE prerequisite remediation: M-04 (PR #44), M-05 (PR #45) and M-09 (this branch, with `ADR-0112`) under review. None merged. EVIDENCE not entered.**) |
+| Last updated | 2026-11-07 (**`ADR-0113` records the owner's ratification of the EVIDENCE specifications, and promotes H0, H1, H2, H4 and H5 to ACCEPTED, on documentation-only branch `evidence-specifications-ratification`. Not merged. EVIDENCE not entered.** No `engine/` production change.) |
 | Review cadence | Refresh at the start of a session if stale; not load-bearing if it isn't. |
 
 # ACE execution state
@@ -42,23 +42,23 @@ independently is in these fields plus the pointers they name.
 
 | Field | Value |
 |---|---|
-| `CURRENT_PHASE` | JATAKA exited (`ADR-0110`). No next phase entered. EVIDENCE entry is not authorized; its §6 prerequisites are being closed. |
-| `CURRENT_MILESTONE` | **EVIDENCE prerequisite remediation under review: M-04 (PR #44), M-05 (PR #45), M-09 with `ADR-0112`.** |
-| `CURRENT_AUTHORIZED_TASK` | None self-executable beyond the three review PRs. |
-| `TASK_OWNER` | CHATGPT (review of each PR); USER (merge approval for each, and the 18-item specification adjudication). |
-| `STATUS` | Three remediation PRs, none merged. Certified outputs change only inside M-09's 1e-10 window. |
-| `LAST_COMPLETED_ACTION` | Opened M-04 and M-05; implemented M-09 under `ADR-0112`, with 11 artifacts regenerated and reconciled. |
-| `LAST_COMMIT` (main) | `8c89a42b38bf3563d438d484ad0465bb7f0d6018` (PR #43 merge). Unchanged by this task. |
-| `LAST_COMMIT` (m09-parent-sign-promotion) | This branch's commits, on top of `8c89a42b38bf3563d438d484ad0465bb7f0d6018`. |
-| `LAST_CI_RUN` | `42206963452` at `8c89a42b`: push to `main`, success on all four jobs. Each PR's results are on that PR. |
-| `LAST_CEO_DECISION` | PASS on PR #43, as the owner states. |
-| `NEXT_AUTHORIZED_ACTION` | None self-executable. Each merge, EVIDENCE entry and specification ratification need separate approval. |
-| `WAITING_FOR` | CHATGPT: review of PRs #44, #45 and the M-09 PR. USER: merge approvals and the 18-item specification adjudication. |
-| `BLOCKER` | None for these deliveries. For EVIDENCE entry: the three merges and the specification ratifications. |
-| `CEO_APPROVAL_REQUIRED` | Each remediation PR's merge (`ADR-0106` OR-3), and EVIDENCE entry. |
+| `CURRENT_PHASE` | JATAKA exited (`ADR-0110`). **No next phase entered.** EVIDENCE entry needs CEO approval and the owner's explicit authorization; once `ADR-0113` merges, every `Q8_CLOSURE_MATRIX.md` s6 prerequisite and entry criterion is on the record. |
+| `CURRENT_MILESTONE` | **EVIDENCE specifications ratified (`ADR-0113`) on a review PR.** M-04, M-05 and M-09 merged: PR #44 `e3b81c6`, PR #45 `8ecfeca`, PR #46 `46536da`. |
+| `CURRENT_AUTHORIZED_TASK` | None self-executable beyond the review PR. |
+| `TASK_OWNER` | CHATGPT (review of the PR, then EVIDENCE entry review); USER (merge, and the entry decision). |
+| `STATUS` | Documentation-only review PR, not merged. No production code, artifact, calculation, holdout, threshold or gate changed. |
+| `LAST_COMPLETED_ACTION` | Recorded `ADR-0113`; promoted H0, H1, H2, H4 and H5 with their superseded wording named; reconciled the 18 items. |
+| `LAST_COMMIT` (main) | `46536da177509c68325e309a15982cf4a1bbddd8` (PR #46 merge). Unchanged by this task. |
+| `LAST_COMMIT` (evidence-specifications-ratification) | This task's one commit, on top of `46536da177509c68325e309a15982cf4a1bbddd8`. |
+| `LAST_CI_RUN` | `42353659011` at `46536da1`: push to `main`, success on all four jobs. This branch's results are on its review PR. |
+| `LAST_CEO_DECISION` | PASS on PR #46, as the owner states. |
+| `NEXT_AUTHORIZED_ACTION` | None self-executable. EVIDENCE entry and any implementation are unauthorized. |
+| `WAITING_FOR` | CHATGPT: review of the PR and EVIDENCE entry review. USER: merge, then the explicit entry decision. |
+| `BLOCKER` | None for this delivery. |
+| `CEO_APPROVAL_REQUIRED` | This PR's merge (`ADR-0106` OR-3), and EVIDENCE entry (`Q8_CLOSURE_MATRIX.md` s6). |
 | `CLAUDE_ACTION_REQUIRED` | None until directed. |
-| `CHATGPT_ACTION_REQUIRED` | Independent review of PRs #44, #45 and the M-09 PR. |
-| `USER_ACTION_REQUIRED` | Approve each merge; adjudicate the 18-item specification table. |
+| `CHATGPT_ACTION_REQUIRED` | Review of the PR, then EVIDENCE entry review. |
+| `USER_ACTION_REQUIRED` | Merge authorization; then the explicit EVIDENCE entry decision. |
 | `HANDOFF_REQUIRED` | None beyond this file and the latest entry in `reports/AI_HANDOFF_CURRENT.md`. |
 
 ## How to independently verify every field above
@@ -79,6 +79,7 @@ exactly as `reports/AI_HANDOFF_CURRENT.md` already requires of itself.
 
 | Version | Date | Change |
 |---|---|---|
+| 7.30.0 | 2026-11-07 | **`ADR-0113`: EVIDENCE specifications ratified; H0, H1, H2, H4 and H5 promoted.** Also records the M-04, M-05 and M-09 merges. |
 | 7.29.0 | 2026-11-06 | M-04, M-05 and M-09 remediation PRs opened; `ADR-0112` recorded. None merged. |
 | 7.28.0 | 2026-11-06 | **`ADR-0111`: owner ratifies Q6, Q9, DP-008 and M-04 (A2); EVIDENCE prerequisite package prepared.** Also corrects rows left stale by PR #42's merge. |
 | 7.27.0 | 2026-11-06 | **JATAKA exit ratified by the owner, recorded in `ADR-0110`.** Current-state rows refreshed; several were stale from Stage B. No next phase entered. |

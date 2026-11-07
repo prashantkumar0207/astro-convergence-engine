@@ -726,7 +726,7 @@ at 0015..0017 is a reservation, not a lost entry, and a gap is not a monotonicit
 ## ADR-0020 - Multi-domain platform: ten ratified architecture decisions
 
 - **Date:** 2026-08-11
-- **Status:** PROPOSED - pending owner ratification (Q1). Recorded on CEO direction following
+- **Status:** **ACCEPTED in part, by `ADR-0113`: D1, D3 and D4 only.** D2 and D5 to D10 are not ratified, and D6 is superseded by `Q8_CLOSURE_MATRIX.md`. Originally: PROPOSED - pending owner ratification (Q1). Recorded on CEO direction following
   review of ADR-0019. Supersedes no entry; resolves several questions ADR-0019 left open.
 - **Context:** ADR-0019 recorded the multi-domain product identity and deliberately left the
   consequent architecture questions open. The CEO reviewed the findings and issued ten decisions.
@@ -847,7 +847,7 @@ at 0015..0017 is a reservation, not a lost entry, and a gap is not a monotonicit
 ## ADR-0021 - Mundane validation discipline, Q8 status, entity vocabulary and relationships, and the independence principle
 
 - **Date:** 2026-08-11
-- **Status:** PROPOSED - pending owner ratification (Q1). Recorded on CEO direction following
+- **Status:** **ACCEPTED in part, by `ADR-0113`: D1, D3, D4 and D5 only.** D2 is not ratified: it conflicts with `ADR-0048`, which closed Q8. Originally: PROPOSED - pending owner ratification (Q1). Recorded on CEO direction following
   approval of ADR-0020 as the current architectural baseline.
 - **Context:** ADR-0020 was approved and four of its recorded residues were referred back for
   decision: the multiple-comparison discipline for mundane validation, the status of Q8, the entity
@@ -10995,6 +10995,185 @@ adjudication. It selects no `DP-040` option. It does not decide `DP-025` A1.
 - **Consequences:** M-09 may now be implemented against s3. `DP-005` is answered.
 - **Evidence:** the owner's instruction, quoted in s1, exists as session input and not as a repository file. The
   full-precision probe in s5.
+
+## ADR-0113 - EVIDENCE specifications ratified: selected ADR-0020/0021 clauses, three identifier families, and the H0/H1/H2/H4/H5 decisions; the five specifications promoted
+
+- **Date:** 2026-11-07
+- **Status:** **ACCEPTED, on the owner's ratifying instruction quoted in s1, for exactly the items it names.**
+- **Context:** `Q8_CLOSURE_MATRIX.md` s6 makes EVIDENCE entry depend on H0, H1, H2, H4 and H5 being "promoted from C0
+  research to ratified specifications". Its other prerequisites are now met:
+  - JATAKA exit (`ADR-0110`)
+  - DP-005 answered (`ADR-0112`) and DP-008 answered (`ADR-0111`)
+  - M-04, M-05 and M-09 resolved, by PRs #44, #45 and #46, merged at `46536da177509c68325e309a15982cf4a1bbddd8`
+
+  The 18 specification items still open were set out in `docs/EVIDENCE_PREREQUISITE_CONTRACTS.md` s4, and adjudicated in
+  the owner-ratification matrix.
+
+### 1. The owner's instruction (exact text)
+
+```text
+**ACE — OWNER RATIFICATION: EVIDENCE ARCHITECTURAL SPECIFICATIONS**
+
+Baseline: `main` `46536da177509c68325e309a15982cf4a1bbddd8`.
+
+I ratify the recommendations in the EVIDENCE entry owner-ratification matrix, subject to the following controlling clarifications:
+
+1. **Selective architectural ratification:** Accept exactly ADR-0020 D1, D3 and D4, and ADR-0021 D1, D3, D4 and D5. Do not ratify other clauses by implication. Preserve the five relationship classes and an explicit UNKNOWN state, never treated as independence. CORRELATED requires measured evidence.
+
+2. **Identifier families:** Accept EVR (8 digits), EVD (10 digits) and RUL (6 digits, separately versioned). Each family requires its own issuer, allocation point, registered pattern, uniqueness gate and negative control before first use. Apply NAMING_STANDARD's monotone, immutable, never-reused rules. Do not automatically extend ADR-0111's ENT-specific allocation procedure to other families.
+
+3. **Event model:** Use registered EV-CAR classes as the initial seed, with future event classes admitted by governed registry changes. Architectural changes to entity kinds still require an ADR. Events attach to ENT entities; any chart reference captured as assertion context is explicit and provenance-bearing. Analysis-specific candidate-chart references remain separate. Reconcile and explicitly supersede conflicting H1 §§4/9 wording. No silent re-anchoring or duplication.
+
+4. **Privacy:** V1 permits synthetic data only until applicable privacy, retention, consent and legal requirements are separately approved. Separate identifying information where applicable, retain correction and erasure auditability, and do not claim guaranteed anonymization or legal compliance.
+
+5. **Historical ledger:** Protected holdouts are selected by a recorded reproducible random procedure over a frozen eligible set, before protected validation, and locked against tuning, leakage and automated clearing. Each pre-registered protocol sets its minimum N before testing. Rejected hypotheses are retained and counted; disclosure must respect protected-holdout access controls.
+
+6. **Evidence and rules:** Persist immutable, fully provenance-linked evidence. Keep source-declared rule strength distinct from measured reliability. Represent decomposed uncertainty and historical-performance fields without computing confidence, scores or weights in EVIDENCE. Recomputations create new linked records. Rule IDs, versions, content hashes and knowledge snapshot hashes must remain traceable. Interpretation rules are data under ADR-0112. Variant selection must be explicit; disagreements are preserved.
+
+All other recommendations in Groups A–F are ratified as written where consistent with these clarifications and accepted authority.
+
+**Authorize one documentation-only governance PR** to:
+- Append one narrowly scoped owner-ratification ADR.
+- Reconcile all 18 specification-table items, recording previously settled decisions without re-ratification.
+- Promote H0, H1, H2, H4 and H5 to ACCEPTED only where their complete normative text agrees with the decisions above.
+- Reconcile conflicting historical PROPOSED references without blanket ratification.
+- Update the canonical execution state and handoff, including the completed M-04/M-05/M-09 merges.
+
+Use one branch, one PR, applicable CI and a concise self-audit. No production code, calculation changes, artifact changes, phase implementation, force push or merge to main.
+
+Return exact SHA, diff, CI results and any demonstrated material conflict for independent CEO review.
+
+EVIDENCE phase entry remains separately subject to CEO approval and my explicit entry authorization.
+```
+
+Per `docs/PROJECT_CONSTITUTION.md` s11, that instruction is the ratifying act.
+
+### 2. The decisions, as normative text
+
+**A. Architectural clauses, ratified one by one.** Exactly these, and no other clause of either entry:
+- `ADR-0020` **D1**: entity architecture, a common subject abstraction with specialised subject types;
+- `ADR-0020` **D3**: the multi-chart model, with no silent chart selection;
+- `ADR-0020` **D4**: the five evidence relationship classes;
+- `ADR-0021` **D1**: mundane validation is pre-registered, not mined;
+- `ADR-0021` **D3**: the entity vocabulary is provisional, and a new entity kind requires an ADR;
+- `ADR-0021` **D4**: relationships are explicit links between entities, with D4's promotion criteria;
+- `ADR-0021` **D5**: the independence principle.
+
+Under D4 and D5, relationship classification has the five classes **and an explicit UNKNOWN state**, used whenever a class
+cannot be established. UNKNOWN is never treated as INDEPENDENT. CORRELATED may be assigned only from measured evidence.
+
+**B. Identifier families.** Three families are accepted:
+
+| Family | Pattern | Use |
+|---|---|---|
+| `EVR` | `EVR-\d{8}` | event records |
+| `EVD` | `EVD-\d{10}` | evidence items |
+| `RUL` | `RUL-\d{6}` | rules, each version identified separately from the rule's ID |
+
+- **Before first use,** each family needs its own issuer, its own allocation point, a registered pattern in
+  `docs/NAMING_STANDARD.md` s2, a committed uniqueness gate and that gate's negative control.
+- **`NAMING_STANDARD.md` s2's rules apply:** zero-padded, monotone, immutable, never reused.
+- **`ADR-0111`'s `ENT` allocation procedure does not extend** to these families. Each family's issuer and allocation point
+  are decided at its registration.
+
+**C. Event model (H1).**
+1. **Event classes.** The registered `EV-CAR` classes are the initial seed. Further event classes are admitted by governed
+   registry changes. A change to the entity kinds remains an architectural change that requires an ADR.
+2. **Attachment.** An event record attaches to an `ENT` entity.
+   - A chart reference captured as the context in which an event was asserted is optional, explicit and provenance-bearing.
+   - Analysis-specific candidate-chart references belong to the analysis, and are kept separate from the event.
+   - No event is silently re-anchored to another chart, and no event is duplicated across charts.
+3. **Privacy and retention.** V1 permits **synthetic data only**, until the applicable privacy, retention, consent and legal
+   requirements are separately approved.
+   - Identifying information is separated where applicable.
+   - Correction and erasure remain auditable.
+   - Nothing here claims guaranteed anonymisation or legal compliance.
+
+**D. Historical ledger (H2).**
+1. **Holdout selection.** A protected holdout is selected before any protected validation, by a recorded, reproducible
+   random procedure over a frozen eligible set. Once selected, it is locked against tuning, leakage and automated clearing.
+2. **Minimum N.** Each pre-registered protocol fixes its minimum N before testing.
+3. **Rejected hypotheses.** They are retained and counted. Any disclosure of them respects the protected-holdout access
+   controls.
+
+**E. Evidence and rules (H4, H5).**
+1. **Persistence.** Evidence is persisted, immutable and fully provenance-linked. A recomputation creates a new, linked
+   record.
+2. **Strength versus reliability.** A rule's source-declared strength is recorded as declared, and is kept distinct from its
+   measured reliability.
+3. **Uncertainty and performance fields.** EVIDENCE represents decomposed uncertainty and historical-performance fields, but
+   **computes no confidence, score or weight**.
+4. **Traceability.** Rule IDs, rule versions, rule content hashes and knowledge snapshot hashes remain traceable from every
+   evidence item.
+5. **Rules are data.** Interpretation rules are data, under `ADR-0112`.
+6. **Variants.** Variant selection is explicit, and disagreement between variants is preserved.
+
+**F. The rest of the ratification matrix.** Its other recommendations are ratified as written, wherever consistent with the
+above and with accepted authority.
+
+### 3. The 18 specification items, reconciled
+
+Earlier decisions are recorded here, not re-ratified.
+
+| Spec | Item | Resolved by |
+|---|---|---|
+| H0 | Identifier family | `ADR-0111` (`ENT`), already decided |
+| H0 | Subject shape | s2 A, `ADR-0020` D1 |
+| H0 | Competing charts | s2 A, `ADR-0020` D3 |
+| H0 | Entity vocabulary | s2 A, `ADR-0021` D3 |
+| H0 | Relationships as links | s2 A, `ADR-0021` D4 |
+| H1 | Event-record identifier | s2 B (`EVR`) |
+| H1 | Event-class vocabulary | s2 C1 |
+| H1 | Per person or per birth record | s2 C2: per `ENT` entity |
+| H1 | Retention and privacy | s2 C3 |
+| H2 | Holdout selection | s2 D1 |
+| H2 | Minimum sample size | s2 D2 |
+| H2 | Rejected hypotheses shown | s2 D3 |
+| H4 | Evidence identifier | s2 B (`EVD`) |
+| H4 | Strength | s2 E2 |
+| H4 | Persisted or recomputed | s2 E1 |
+| H5 | Rule identifier | s2 B (`RUL`, separately versioned) |
+| H5 | Rules as data or code | `ADR-0112` (DP-005 D-3, option C), already decided |
+| H5 | Variant selection | s2 E6 |
+
+### 4. Specifications promoted, and the wording superseded
+
+Each of H0, H1, H2, H4 and H5 is promoted to `ACCEPTED`. Each gains one additive section that records the decisions that
+apply to it, and names every sentence they supersede. The superseded sentences stay in place, as the historical record.
+With that section, each specification's complete normative text agrees with s2. H3, H6, H7 and H8 are not promoted.
+
+| Spec | Superseded wording, and why |
+|---|---|
+| H0 | **s2's example list** names "a relationship" and "a market", which are not among the provisional kinds (s2 A, `ADR-0021` D3 and D4). **s6's** "the birth-record anchor generalises to a chart reference" (s2 C2). |
+| H1 | **s4's** "which birth-data record the event is anchored to" (s2 C2). **s9's** "The birth-record anchor becomes a chart reference ... the one it was evaluated against": a chart that an analysis evaluated belongs to the analysis, not to the event (s2 C2). |
+| H2 | **s2's CONFIDENCE and FUTURE steps,** and **s8's** "class-partitioned scoring correctness": in EVIDENCE the ledger records performance fields and computes no confidence or score (s2 E3, `Q8_CLOSURE_MATRIX.md` s6). **s9's** reliance on `docs/VALIDATION_STANDARD.md` s5: that document is `DRAFT`, so the registration contents are governed by `ADR-0021` D1 as ratified here. |
+| H4 | **s3's** decomposed-confidence and historical-performance fields are fields EVIDENCE records, or leaves explicitly absent. They are not computed (s2 E3). Cross-method and timing convergence belong to a later phase. **s10** gains the explicit UNKNOWN state (s2 A). **s3's** note that the transit and drishti provenance defects must be fixed is now satisfied: M-05 (PR #45) and M-04 (PR #44) are merged. |
+| H5 | No conflicting sentence. **s5's** open questions are answered: s2 B, E5 and E6. |
+
+### 5. Conflicts with accepted decisions, and historical references reconciled
+
+- **`ADR-0021` D2** ("Q8 REMAINS OPEN") conflicts with `ADR-0048`, which closed Q8. It is not ratified.
+- **`ADR-0020` D6's** domain roadmap is superseded by `Q8_CLOSURE_MATRIX.md`. It is not ratified.
+- **No other conflict with an accepted decision was found.** `EVR` is a record family, distinct from `ADR-0111`'s entity
+  family, so event-kind entities remain `ENT`.
+- **Status lines only.** `ADR-0020`'s and `ADR-0021`'s Status lines now name exactly the clauses ratified here. Each entry's
+  text is otherwise unchanged, which the hashes in Evidence confirm.
+- **Not edited:** documents outside the five specifications that cite those entries as `PROPOSED`. They remain history.
+
+### 6. What this entry does not do
+
+- It enters no phase. **EVIDENCE entry needs CEO approval and the owner's explicit entry authorization.**
+- It authorizes no implementation.
+- It registers no identifier family, and adds no gate.
+- It changes no production code, artifact, calculation, holdout, threshold or gate.
+- It ratifies no other clause of `ADR-0020` or `ADR-0021`, and promotes no other specification.
+
+- **Decision:** as s2 to s4 state.
+- **Consequences:** every `Q8_CLOSURE_MATRIX.md` s6 prerequisite and entry criterion is now met on the record, once this
+  entry merges. EVIDENCE entry remains a separate decision.
+- **Evidence:** `main` `46536da177509c68325e309a15982cf4a1bbddd8`; PRs #44, #45 and #46. Status-only hashes, being the SHA-256 of each entry with its Status
+  line removed, identical before and after: `ADR-0020` `61833f1da65c25f86b9929f09225dcc767b47add9f49aa7d79eddc6811e2e9c8`; `ADR-0021` `6a3bb1dc0145fdb703a77d26e0d871eba13c8bab49ebbb3fd64e5314bdb6bbd2`. The owner's
+  instruction exists as session input, not as a repository file.
 
 ---
 

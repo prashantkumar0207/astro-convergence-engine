@@ -3,8 +3,8 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | PROPOSED - implementation contracts and one decision record. Authorizes no implementation. |
-| Version | 1.1.0 |
+| Status | IMPLEMENTED AND DECIDED: M-04, M-05 and M-09 are merged (PRs #44, #45 and #46), and every s4 item is resolved by `ADR-0111`, `ADR-0112` or `ADR-0113`. Kept as the record of the contracts. |
+| Version | 1.2.0 |
 | Owner | Project Owner (`ADR-0051` D4) |
 | Last updated | 2026-11-06 |
 | Review cadence | On each authorization below |
@@ -121,6 +121,9 @@ below the certified ephemeris tolerance.
 
 ## 4. Specification decisions still open (H0, H1, H2, H4, H5)
 
+**Resolved, 2026-11-07.** Every item below is resolved, as `ADR-0113` s3 records item by item, and H0, H1, H2, H4 and H5
+are promoted to `ACCEPTED` by `ADR-0113` s4. The text below is the record as it stood before that.
+
 No specification is promoted here. Each stays `PROPOSED, C0 RESEARCH` until the owner ratifies it. Several items that
 the specs record as "decided" rest on `ADR-0020` and `ADR-0021`, which stay `PROPOSED` and were not blanket-ratified.
 
@@ -153,4 +156,5 @@ should be corrected when each is ratified, and not before.
 | Version | Date | Change |
 |---|---|---|
 | 1.0.0 | 2026-11-06 | Created under `ADR-0111`. Contracts and one recommendation; no implementation. |
+| 1.2.0 | 2026-11-07 | Status updated: the contracts are implemented and s4 is resolved (`ADR-0113`). |
 | 1.1.0 | 2026-11-06 | M-09's D9/D10 self-inconsistency claim corrected (`ADR-0112` s5). The owner selected M-09 option A and authorized all three contracts (`ADR-0112`). |
