@@ -8,5 +8,7 @@ D_knowledge_access_fidelity: 0
 E_natural_relationship_oracle: 0
 F_rashi_chart_neutrality: 0
 G_negative_controls: 10
+H_entity_foundations: 0
+I_entity_store_refusals: None
 archived: certification/SUPPORT_PATHS_V1_certification.json
 RESULT  : PASS

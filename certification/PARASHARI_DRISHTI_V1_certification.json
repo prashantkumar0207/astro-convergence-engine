@@ -1,7 +1,7 @@
 {
  "schema": "parashari_drishti_v1_certification",
  "adr": "ADR-0012",
- "date": "2026-11-05",
+ "date": "2026-11-07",
  "scope": "Parashari graha drishti, full (purna) aspects; facts only",
  "decisions": {
   "AS-A": "full aspects only; sputa drishti (fractional) deferred",
@@ -74,7 +74,7 @@
    "residual_limitation": "coordinated edits to every repository-held trust record cannot be cryptographically prevented by an in-repository trust anchor; only upstream provenance would anchor this, and it is out of M1 scope"
   },
   "anti_fitting": {
-   "modules_scanned": 204,
+   "modules_scanned": 208,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."
