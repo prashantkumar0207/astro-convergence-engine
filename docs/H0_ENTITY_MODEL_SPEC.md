@@ -3,11 +3,11 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | PROPOSED, C0 RESEARCH. Specification only. No implementation is authorised by this document. Pending owner ratification (docs/OPEN_QUESTIONS.md Q1). |
-| Version | 1.0.0 |
-| Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-11 |
-| Review cadence | TBD |
+| Status | ACCEPTED (`ADR-0113`, 2026-11-07). Specification only: no implementation is authorised by this document, and EVIDENCE entry needs CEO approval and the owner's explicit authorization. |
+| Version | 2.0.0 |
+| Owner | Project Owner (`ADR-0051` D4) |
+| Last updated | 2026-11-07 |
+| Review cadence | On amendment |
 
 # H0. Astrological Entity Model
 
@@ -178,10 +178,28 @@ drift, which is the same discipline applied to entity kinds and to identifier fa
 
 Section 7's remaining open item is therefore the identifier family and pattern.
 
-## 10. Change history
+## 10. Ratified decisions and superseded wording (ADR-0113)
+
+This section controls. Where earlier text differs from it, this section governs, and the earlier sentence stays only as
+history.
+
+**Ratified.** `ADR-0020` D1 (s9) and D3 (s9), and `ADR-0021` D3 and D4 (s9.1), are now ratified, clause by clause. No
+other clause of those entries is. The identifier family is `ENT-00000001` (`ADR-0111`).
+
+**Superseded.**
+- **s2's list** of what an entity can be is illustrative only. The kinds are the five provisional kinds of `ADR-0021` D3:
+  Person, Organisation/Company, Geographic/National Entity, Event and Question. A new kind needs an ADR. "A relationship" is
+  a link (`ADR-0021` D4) unless it is promoted by D4's criteria. "A market" is not a kind until an ADR admits it.
+- **s6's** "the birth-record anchor generalises to a chart reference" is replaced by `ADR-0113` s2 C2:
+  - an event attaches to an `ENT` entity;
+  - any chart reference captured as the context of an assertion is explicit and provenance-bearing;
+  - analysis-specific candidate-chart references belong to the analysis.
+
+## 11. Change history
 
 | Version | Date | Change |
 |---|---|---|
 | 1.0.0 | 2026-08-11 | Created from the CEO multi-domain platform vision, as the abstraction beneath H1 through H8. |
 | 1.1.0 | 2026-08-11 | Additive section 9: records ADR-0020 D1 and D3, which decide two of the section 7 open questions. Sections 1 to 8 unmodified. |
 | 1.2.0 | 2026-08-11 | Additive section 9.1: ADR-0021 D3 extensible vocabulary and D4 relationships as links, resolving the last section 7 question but one. |
+| 2.0.0 | 2026-11-07 | **Promoted to ACCEPTED by `ADR-0113`.** Additive decisions section; superseded wording named, not deleted. |

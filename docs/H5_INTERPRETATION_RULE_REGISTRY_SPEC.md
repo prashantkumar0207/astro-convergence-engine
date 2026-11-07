@@ -3,11 +3,11 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | PROPOSED, C0 RESEARCH. Specification only. No implementation is authorised by this document. Pending owner ratification (docs/OPEN_QUESTIONS.md Q1). |
-| Version | 1.0.0 |
-| Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-11 |
-| Review cadence | TBD |
+| Status | ACCEPTED (`ADR-0113`, 2026-11-07). Specification only: no implementation is authorised by this document, and EVIDENCE entry needs CEO approval and the owner's explicit authorization. |
+| Version | 2.0.0 |
+| Owner | Project Owner (`ADR-0051` D4) |
+| Last updated | 2026-11-07 |
+| Review cadence | On amendment |
 
 # H5. Interpretation Rule Registry
 
@@ -61,8 +61,20 @@ surfaced, which would be the honest treatment.
 Refusal of unregistered rules. Source-citation completeness. A negative test proving generated text
 cannot introduce a rule. Variant coverage.
 
-## 7. Change history
+## 7. Ratified decisions (ADR-0113)
+
+This section controls. No earlier sentence conflicts with it, so nothing is superseded.
+
+**Decided.**
+- **Identity:** `RUL-\d{6}`, with each version identified separately from the rule's ID. Both are under the same
+  pre-first-use governance as every new family.
+- **Rules are data:** interpretation rules are data, in a pinned, schema-validated registry, reached through the
+  immutable knowledge snapshot (`ADR-0112`, DP-005 D-1 and D-3). Certified calculation rule tables are unchanged.
+- **Variants:** variant selection is explicit, and disagreement between variants is preserved, consistent with s2.
+
+## 8. Change history
 
 | Version | Date | Change |
 |---|---|---|
 | 1.0.0 | 2026-08-11 | Created in the G1 work package as Phase H preparation. |
+| 2.0.0 | 2026-11-07 | **Promoted to ACCEPTED by `ADR-0113`.** Additive decisions section; superseded wording named, not deleted. |

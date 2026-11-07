@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.29.0 |
+| Version | 9.30.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-06 (EVIDENCE prerequisite remediation: M-04 (PR #44), M-05 (PR #45) and M-09 (this branch, with `ADR-0112`) under review. None merged. EVIDENCE not entered.) |
+| Last updated | 2026-11-07 (`ADR-0113` records the owner's ratification of the EVIDENCE specifications, and promotes H0, H1, H2, H4 and H5 to ACCEPTED, on documentation-only branch `evidence-specifications-ratification`. Not merged. EVIDENCE not entered.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,19 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-07 - EVIDENCE specifications ratified (ADR-0113); H0/H1/H2/H4/H5 promoted (documentation-only PR)
+
+**Not merged. EVIDENCE is not entered.** The base is `main` `46536da`.
+
+- **Merged since the last entry:** M-04 (PR #44, `e3b81c6`), M-05 (PR #45, `8ecfeca`) and M-09 (PR #46, `46536da`), each
+  with four-job post-merge CI green.
+- **`ADR-0113` ratifies** `ADR-0020` D1, D3 and D4, and `ADR-0021` D1, D3, D4 and D5, and no other clause. It also accepts
+  the `EVR`, `EVD` and `RUL` families, which are not usable before their own registration, uniqueness gate and negative
+  control.
+- **The five specifications are promoted.** Each gains a controlling section that names the sentences it supersedes; none
+  is deleted.
+- **Next:** CEO review of the PR, then the CEO's EVIDENCE entry review and the owner's explicit entry decision.
 
 ### 2026-11-06 - EVIDENCE prerequisite remediation: M-04, M-05 and M-09 in three PRs (ADR-0112)
 

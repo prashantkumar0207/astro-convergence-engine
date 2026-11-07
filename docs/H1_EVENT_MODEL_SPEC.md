@@ -3,11 +3,11 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | PROPOSED, C0 RESEARCH. Specification only. No implementation is authorised by this document. Pending owner ratification (docs/OPEN_QUESTIONS.md Q1). |
-| Version | 1.0.0 |
-| Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-08-11 |
-| Review cadence | TBD |
+| Status | ACCEPTED (`ADR-0113`, 2026-11-07). Specification only: no implementation is authorised by this document, and EVIDENCE entry needs CEO approval and the owner's explicit authorization. |
+| Version | 2.0.0 |
+| Owner | Project Owner (`ADR-0051` D4) |
+| Last updated | 2026-11-07 |
+| Review cadence | On amendment |
 
 # H1. Structured Event Model
 
@@ -117,9 +117,40 @@ The section 3 property that events are asserted rather than silently inferred is
 applies with equal force to public-record events: a date scraped from a source is an assertion by
 that source, not a fact the system may treat as confirmed.
 
-## 10. Change history
+## 10. Ratified decisions and superseded wording (ADR-0113)
+
+This section controls. Where earlier text differs from it, this section governs, and the earlier sentence stays only as
+history.
+
+**Decided.**
+- **Identity:** `EVR-\d{8}`. It may not be used before its issuer, allocation point, `NAMING_STANDARD.md` s2 registration,
+  uniqueness gate and negative control exist.
+- **Event classes:** the registered `EV-CAR` classes are the initial seed. Further classes are admitted by governed registry
+  changes. A change to the entity kinds needs an ADR.
+- **Privacy and retention:** V1 permits synthetic data only, until the privacy, retention, consent and legal requirements are
+  separately approved.
+  - Identifying information is separated where applicable.
+  - Correction and erasure stay auditable.
+  - No claim of guaranteed anonymisation or legal compliance is made.
+
+**Superseded.**
+- **s4's** "which person, and which birth-data record the event is anchored to", **and s9's** "The birth-record anchor becomes
+  a chart reference, because an entity may carry several competing charts and an event must be attributable to the one it
+  was evaluated against", are both replaced by this rule:
+  - An event attaches to an **`ENT` entity**.
+  - A chart reference may be captured as the **context in which the event was asserted**. It is optional, explicit and
+    provenance-bearing.
+  - The charts an analysis evaluates are the **analysis's** candidate-chart references, held separately from the event
+    (`ADR-0020` D3).
+  - No event is silently re-anchored, and none is duplicated across charts.
+
+  s4's concern, that an event asserted under one birth time must not be silently reinterpreted under another, is met by that
+  explicit assertion-context reference.
+
+## 11. Change history
 
 | Version | Date | Change |
 |---|---|---|
 | 1.0.0 | 2026-08-11 | Created in the G1 work package as Phase H preparation. |
 | 1.1.0 | 2026-08-11 | Additive section 9: entity generalisation and the public-record assertion path. Sections 1 to 8 unmodified. |
+| 2.0.0 | 2026-11-07 | **Promoted to ACCEPTED by `ADR-0113`.** Additive decisions section; superseded wording named, not deleted. |
