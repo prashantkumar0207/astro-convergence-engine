@@ -21,8 +21,8 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 - **D_event_store_refusals**: classification=negative_control, refusals_verified=60
 - **E_event_class_registry**: classification=registry_conformance, registry=knowledge/hlkg/domains/career/CAREER_EVENT_REGISTRY.md, classes=47, groups=10, origin_model=42, origin_proposed_addition=5, mismatches=0
 - **F_negative_controls**: classification=negative_control, controls_rejected=8
-- **G_ledger_integrity**: classification=structural_integrity, entries_admitted=10, outcomes=3, elicitation_kinds=3, count_axes=3, corrections_checked=1, holdout_members=8, holdout_selected=3, protocols_checked=1, access_rows_checked=4, mismatches=0
-- **H_ledger_refusals**: classification=negative_control, refusals_verified=53
+- **G_ledger_integrity**: classification=structural_integrity, entries_admitted=10, outcomes=3, elicitation_kinds=3, count_axes=3, corrections_checked=1, holdout_members=8, holdout_selected=3, protocols_checked=1, access_rows_checked=5, mismatches=0
+- **H_ledger_refusals**: classification=negative_control, refusals_verified=64
 - **I_holdout_leakage**: classification=negative_control, controls_rejected=10, holdout_members=10, holdout_selected=4
 
 ## Capabilities (ADR-0101 s2)
