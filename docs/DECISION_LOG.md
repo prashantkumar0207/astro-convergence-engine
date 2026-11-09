@@ -11271,6 +11271,130 @@ artifact.
 - **Evidence:** `main` `90cd0cae777f6e7e67b78b109be68b714fa8cf91`; post-merge CI `42358762644`. The owner's instruction exists as session input, not as a
   repository file.
 
+## ADR-0115 - WP-E1 closed at its merge; work package WP-E2 (the H1 event model, EVR identifier governance and EVIDENCE_FOUNDATIONS_V1 structural certification) defined, with its exit criteria fixed before coding
+
+- **Date:** 2026-11-09
+- **Status:** **ACCEPTED, on the owner's instruction quoted in s1.** It records WP-E1's closure and the owner's WP-E2
+  direction, and fixes WP-E2's exit criteria as that instruction requires. s3's registration details and s4's C2 category
+  are this work package's design. They take effect only if the WP-E2 pull request receives CEO approval and the owner's
+  merge authorization.
+- **Context:**
+  - **WP-E1 (`ADR-0114` s3)** merged as PR #48. The head was `18b3ce4c1e526cd0d7be3e3a9fa69d197ede3f2d`, with four-job CI
+    `42579955507`, and the merge commit is `06267f19f9681f4f1ce06b559bc9aa7abed57ddd`.
+    Post-merge CI `42581789417` passed all four jobs.
+  - **Approval:** the owner states that the independent CEO PASS for WP-E1 came first. Its text is not a repository file.
+
+### 1. The owner's instruction (exact text)
+
+```text
+**ACE — OWNER AUTHORIZATION: WP-E1 MERGE AND WP-E2**
+
+Following the independent CEO PASS, I authorize merging PR #48 at `18b3ce4c1e526cd0d7be3e3a9fa69d197ede3f2d`, after rechecking HEAD, base, mergeability and successful four-job CI `42579955507`.
+
+Use a normal two-parent merge. No squash, rebase, force push or branch deletion. Verify post-merge SHA, ancestry, artifacts and four-job CI.
+
+I approve the following direction for WP-E2:
+
+1. Implement H1's structured event model with EVR identifier governance, under accepted H1 v2.0.0 and ADR-0113.
+2. Fix measurable WP-E2 exit criteria in an ADR before coding.
+3. Introduce dedicated EVIDENCE_FOUNDATIONS_V1 structural certification for H0/H1, preserving existing SUPPORT_PATHS_V1 evidence until the replacement's coverage and negative controls are verified. Explicitly register the new artifact under C2/C3/C4; do not classify it as astrological-calculation certification.
+4. Preserve synthetic-only data, immutable corrections, source provenance, event-time uncertainty and strict separation of assertion from confirmation.
+5. Keep scoring, weighting, fitting, H2, H4, H5 and API integration outside WP-E2.
+6. Update the canonical execution state and handoff with verified WP-E1 closure and WP-E2 authorization.
+
+Submit WP-E2 in a separate reviewable PR with code, tests, certification evidence and concise self-audit. Do not merge without separate CEO approval and owner authorization.
+
+Report the WP-E1 merge SHA and post-merge CI, then WP-E2's exact HEAD, acceptance-criteria results and any material blockers.
+```
+
+### 2. WP-E1 closure
+
+WP-E1 is **closed**. It was merged by a normal two-parent merge with parents `90cd0cae777f6e7e67b78b109be68b714fa8cf91` and
+`18b3ce4c1e526cd0d7be3e3a9fa69d197ede3f2d`. The merge tree is identical to the reviewed head's tree, and the head branch
+is kept. Its 14 acceptance criteria (`ADR-0114` s3) were met as reviewed.
+
+### 3. WP-E2: the H1 event model and EVR identifier governance
+
+**Scope.** New modules in `engine/evidence/` that hold:
+- the H1 event model;
+- the seeded event-class vocabulary;
+- an append-only event store, with confirmations held separately from assertions;
+- the `EVR` family's registration and uniqueness gate;
+- a new structural certifier, `EVIDENCE_FOUNDATIONS_V1`.
+
+**Outside the scope:**
+- scoring, weighting, fitting and any confidence computation;
+- H2, H4 and H5;
+- API integration.
+
+Nothing in the new modules is wired into the calculation path or the API.
+
+**`EVR` registration (`ADR-0113` s2 B; `NAMING_STANDARD.md` s2).** `ADR-0111`'s `ENT` procedure is not extended. The
+following is decided here for `EVR` on its own:
+- **Pattern and width:** `EVR-\d{8}`, 8 digits.
+- **Scope:** persisted event records, repository-wide.
+- **Issuer:** the `EventStore`'s own durable counter, held in its own table, separate from the `ENT` issuer.
+- **Allocation point:** transactionally, at first persistence. A failed or refused persistence consumes no number.
+- **Fixtures:** isolated allocators, meaning separate store instances. There is no reserved production range.
+
+**Seed vocabulary (`ADR-0113` s2 C1).** The seed is the 47 `EV-CAR` rows of
+`knowledge/hlkg/domains/career/CAREER_EVENT_REGISTRY.md` s3. Each row carries its registered origin, either `MODEL` or
+`PROPOSED-ADDITION`. Recording that origin decides nothing about the registry's own open items `EVR-1` to `EVR-3`, and
+does not change the registry's `DRAFT` status.
+
+**Naming of H1 s4's "confidence the asserter holds in their own memory".** It is recorded as `asserter_certainty`. This is
+a categorical value the asserter declares, and nothing computes it. A system hypothesis carries no declared certainty.
+
+### 4. EVIDENCE_FOUNDATIONS_V1
+
+- **What it is:** a dedicated structural certifier for H0 and H1, at
+  `certification/EVIDENCE_FOUNDATIONS_V1_certification.json`. It needs no oracle.
+- **What it is not:** it is **not astrological-calculation certification**, and not a production analytical input.
+- **C2:** registered in its own list, `certified_evidence_structure_not_calculation` in `docs/ENGINE_STATUS.md` s6. It is
+  pinned in `scripts/check_capability_state.py`, in no declaring list, and separate from `certified_support_not_declared`.
+- **C3:** a scope-bearing artifact, with its own capability declarations.
+- **C4:** its members count as certification coverage.
+- **`SUPPORT_PATHS_V1`:** its gates H and I, and its `support.entity_foundations` capability, are **kept unchanged**.
+  Retiring them is a separate decision, to be taken after the CEO has verified the replacement's coverage and negative
+  controls.
+
+### 5. Exit criteria
+
+Each must be met, with evidence, before WP-E2 can be proposed for merge.
+
+| # | Criterion | Measured by |
+|---|---|---|
+| AC1 | `EVR` is registered in `NAMING_STANDARD.md` s2 with pattern, width, scope and issuer, and matches the code's own constants | The new gate fails on any disagreement |
+| AC2 | `EventRecordId` accepts exactly `EVR-` plus 8 digits, from 1 | Positive and negative tests |
+| AC3 | Allocation is monotone and durable across reopening, and never reuses a number. It consumes none on a failed or refused persistence. Two connections get distinct numbers. The issuer cannot decrease or be removed. | Tests, including direct SQL |
+| AC4 | The event-class seed equals the 47 registry rows of s3 exactly: identifier, name, group and origin. An unregistered class is refused. | The gate fails on any disagreement, and a test plants an unregistered class |
+| AC5 | Every time kind is represented and round-trips, including both degenerate cases (a zero-length interval and an unbounded one): an instant, a closed interval, an open interval and a fuzzy window with a stated tolerance. Precision is explicit, and every value is written at exactly that precision. A timezone and its source are required whenever a value is present. The birth-time-sensitive flag is refused below hour precision. | Tests |
+| AC6 | Every event records its asserter's kind, reference, assertion time, method and declared certainty. The four asserter kinds are user recollection, document, public record and system hypothesis, so a public record is distinguished from recollection. A system hypothesis cannot carry a declared certainty. | Tests |
+| AC7 | An event attaches to an existing `ENT` entity. An optional assertion context names an existing entity revision and chart label, with its own provenance, and there is no analysis candidate-chart field. A missing entity, revision or chart is refused. A correction cannot change the entity or the context. A record identical to a stored one apart from its context is refused. | Tests |
+| AC8 | Records are immutable. Update and delete are refused at the database layer on every event table. A correction appends a revision with its reason, and cannot change the asserter's kind, reference or assertion time. There is no update or delete API. | Tests, including direct SQL |
+| AC9 | Assertion is strictly separated from confirmation. Confirmations are separate append-only records, each naming an event revision. The four states are confirmed, partially confirmed, rejected and unconfirmed. Only a human may confirm, and the model has no system confirmer. A confirmation applies only to the revision it names. A system hypothesis is inadmissible as validation input until a human confirms it, and a rejected event is never admissible. | Tests |
+| AC10 | Interpretation, rule, astrological or analytical content cannot be stored. Unknown keys are refused at every level of the stored record. | Negative tests, and a structural test over every model dataclass |
+| AC11 | Synthetic data only. The store refuses any record not marked synthetic. | Negative test |
+| AC12 | Events and confirmations round-trip: what is persisted and reloaded is equal | Tests |
+| AC13 | The `EVR` gate is in the CI conformance sweep, with a negative-control step | CI |
+| AC14 | `EVIDENCE_FOUNDATIONS_V1` passes, and every gate either carries rejection controls or is itself one. It is registered as s4 states. C2, C3 and C4 each fail on a planted misregistration. `SUPPORT_PATHS_V1` gates H and I are unchanged. | Tests, gate negative controls and the artifact itself |
+| AC15 | No certified output changes. All 24 certifiers pass. The existing artifacts differ only in volatile fields and the anti-fitting scan's `modules_scanned`, which counts the new modules. C2, C3 and C4 pass. | Controlled two-tier regeneration and reconciliation, then four-job CI |
+| AC16 | The canonical execution state and handoff record WP-E1's verified closure and the WP-E2 authorization | Diff |
+
+### 6. What this entry does not do
+
+- **It authorizes no merge.** The WP-E2 PR needs CEO approval and the owner's authorization.
+- **It registers no `EVD` or `RUL` family,** and implements no H2, H4 or H5 model.
+- **It retires nothing in `SUPPORT_PATHS_V1`,** and changes no certified calculation.
+- **It ratifies nothing in the career event registry.**
+
+- **Decision:** as s2 to s5 state.
+- **Consequences:** WP-E2 is implemented against s3 to s5, and submitted for review. The evidence-model checkpoint comes
+  with H4.
+- **Evidence:** merge `06267f19f9681f4f1ce06b559bc9aa7abed57ddd`; PR #48; head CI `42579955507`; post-merge CI
+  `42581789417`, all four jobs passed. The owner's instruction
+  exists as session input, not as a repository file.
+
 ---
 
 ## ADR template (copy, do not edit above the line)
