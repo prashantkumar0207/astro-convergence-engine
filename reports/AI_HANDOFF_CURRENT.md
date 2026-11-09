@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.32.0 |
+| Version | 9.33.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-09 (WP-E1 merged and closed (`06267f1`). WP-E2, the H1 event model, EVR governance and `EVIDENCE_FOUNDATIONS_V1`, is on review branch `evidence-wp-e2-event-model`. Not merged.) |
+| Last updated | 2026-11-09 (WP-E2 merged and closed (`dfdfadb`). WP-E3's exit criteria fixed in `ADR-0116`, before coding.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,20 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-09 - WP-E2 merged and closed; WP-E3 exit criteria fixed (ADR-0116)
+
+**No WP-E3 code yet.** PR #49 merged as `dfdfadb` (parents `06267f1` and `d1c2ee8`, tree identical to the reviewed head);
+post-merge CI `42589414966` green on all four jobs.
+
+- **`ADR-0116`** records the owner's instruction verbatim and closes WP-E2. It ratifies three decisions:
+  - the 47-class seed keeps its origins, and the `DRAFT` registry is not ratified;
+  - `asserter_certainty` is a declared input, never a computed confidence;
+  - `SUPPORT_PATHS_V1` gates H and I are retired only in a later bounded change.
+- **WP-E3 scope:** the H2 ledger over confirmed and rejected events, with elicitation provenance; holdouts by a frozen set
+  and a hash-ranked seeded selection, with protection that cannot be cleared, purpose-declared access and an access log;
+  and pre-registered protocols with a minimum N. It fixes 16 exit criteria.
+- **Deferred:** TEST and performance records, which need H4 `EVD` and H5 `RUL`. No new identifier family.
 
 ### 2026-11-09 - WP-E1 merged and closed; WP-E2 H1 event model on review (ADR-0115)
 
