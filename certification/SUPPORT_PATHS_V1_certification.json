@@ -1,7 +1,7 @@
 {
  "schema": "support_paths_v1_certification",
  "adr": "ADR-0108 s4 item 5",
- "date": "2026-11-07",
+ "date": "2026-11-09",
  "scope": "Support functions certified under ADR-0108 s4 item 5, each only as far as its gate's classification: mathematical correctness of equal-house arithmetic, the planet mapper and timezone conversion; external-oracle agreement of the naisargika relationship lookup; access-path fidelity of the knowledge loaders, not of the data they return; rashi_chart's neutrality over build_chart; and the structural integrity of the EVIDENCE entity foundations (ADR-0114 WP-E1): the H0 entity model, the append-only store and the ENT issuer.",
  "reference": {
   "equal_house_and_map_planet": "exact rational arithmetic and hand-derived literal cases",
@@ -109,9 +109,10 @@
   "H_entity_foundations": {
    "classification": "structural_integrity",
    "kinds": 5,
-   "round_trips": 5,
+   "round_trips": 6,
    "competing_charts_held": 2,
-   "revisions_checked": 2,
+   "revisions_checked": 3,
+   "derived_links_checked": 1,
    "links_checked": 1,
    "mismatches": 0,
    "exercises": [
@@ -120,12 +121,15 @@
   },
   "I_entity_store_refusals": {
    "classification": "negative_control",
-   "refusals_verified": 16,
+   "refusals_verified": 22,
    "refused": [
     "analytical key confidence",
     "analytical key interpretation",
     "analytical key score",
     "analytical key weight",
+    "dangling parent chart",
+    "dangling parent entity",
+    "dangling parent in a correction",
     "delete a link",
     "delete a revision",
     "delete the issuer",
@@ -136,6 +140,9 @@
     "lower the issuer",
     "non-subject",
     "non-synthetic data",
+    "parent correction removing a referenced chart",
+    "self-derivation",
+    "shape B with no chart",
     "update a link",
     "update a revision"
    ],

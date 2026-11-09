@@ -52,9 +52,13 @@ from engine.knowledge.repository import KnowledgeRepository  # noqa: E402
 from engine.knowledge.validator import SchemaValidator  # noqa: E402
 from engine.models.birth_data import BirthData  # noqa: E402
 from engine.evidence.entity import (  # noqa: E402
-    ChartCandidate, DataClass, EntityKind, EntityLink, EventEntity, GeographicEntity, Organisation,
-    OriginCertainty, OriginMoment, Person, Question, RecordProvenance, Shape, rectification_permitted,
+    ChartCandidate, DataClass, EntityKind, EntityLink, EntityModelError, EventEntity, GeographicEntity,
+    Organisation, OriginCertainty, OriginMoment, ParentLink, Person, Question, RecordProvenance, Shape,
+    rectification_permitted,
 )
+
+#: A number no certifier store reaches, for the dangling-parent control.
+LAST_TEST = 99999999
 from engine.evidence.identifiers import EntityId, IdentifierError  # noqa: E402
 from engine.evidence.store import EntityStore, StoreError, subject_from_record, subject_to_record  # noqa: E402
 
@@ -392,13 +396,23 @@ def gate_h_entity_foundations():
         history = store.history(issued[0])
         if revision != 2 or [number for number, _subject, _reason in history] != [1, 2]:
             fail("a correction did not append a revision")
+        derived = Person(kind=EntityKind.PERSON, shape=Shape.DERIVED, charts=subjects[0].charts[:1],
+                         applicable_domains=subjects[0].applicable_domains,
+                         applicable_systems=subjects[0].applicable_systems, provenance=subjects[0].provenance,
+                         data_class=DataClass.SYNTHETIC,
+                         parent=ParentLink(parent=issued[0], parent_chart="documented", derivation="annual chart"))
+        if store.load(store.persist(derived)) != derived:
+            fail("a derived subject with a valid parent link did not round-trip")
+        if store.append_revision(issued[0], subjects[0], "keeps the referenced chart") != 3:
+            fail("a parent correction that keeps the referenced chart was refused")
         link = EntityLink(source=issued[0], relation="LEADS", target=issued[1], provenance=subjects[0].provenance)
         store.add_link(link)
-        if store.links() != [link] or store.entity_ids() != issued:
+        if store.links() != [link] or store.entity_ids()[:len(issued)] != issued:
             fail("links or entity listing did not round-trip")
         store.close()
         reopened = EntityStore(path)
-        durable = reopened.issued_count() == len(subjects) and reopened.persist(subjects[1]).number == len(subjects) + 1
+        durable = (reopened.issued_count() == len(subjects) + 1
+                   and reopened.persist(subjects[1]).number == len(subjects) + 2)
         reopened.close()
         if not durable:
             fail("the issuer is not durable across reopening")
@@ -406,8 +420,9 @@ def gate_h_entity_foundations():
         fail("a documented origin must not be rectified; a reported one may be")
     if rectification_permitted(subjects[4], "asked"):
         fail("a query moment must not be rectified")
-    return {"classification": "structural_integrity", "kinds": len(subjects), "round_trips": len(subjects),
-            "competing_charts_held": 2, "revisions_checked": 2, "links_checked": 1, "mismatches": 0}
+    return {"classification": "structural_integrity", "kinds": len(subjects), "round_trips": len(subjects) + 1,
+            "competing_charts_held": 2, "revisions_checked": 3, "derived_links_checked": 1, "links_checked": 1,
+            "mismatches": 0}
 
 
 def gate_i_entity_store_refusals():
@@ -467,8 +482,43 @@ def gate_i_entity_store_refusals():
             fail("persisted a non-subject")
         except StoreError:
             refused["non-subject"] = True
+
+        def derived_from(parent, parent_chart, charts):
+            return Person(kind=EntityKind.PERSON, shape=Shape.DERIVED, charts=charts,
+                          applicable_domains=subjects[0].applicable_domains,
+                          applicable_systems=subjects[0].applicable_systems, provenance=subjects[0].provenance,
+                          data_class=DataClass.SYNTHETIC,
+                          parent=ParentLink(parent=parent, parent_chart=parent_chart, derivation="annual chart"))
+
+        try:
+            derived_from(first, "documented", ())
+            fail("a shape B subject was built with no chart")
+        except EntityModelError:
+            refused["shape B with no chart"] = True
+        charts = subjects[0].charts[:1]
+        for label, subject in (("dangling parent entity", derived_from(EntityId.from_number(LAST_TEST), "documented", charts)),
+                               ("dangling parent chart", derived_from(first, "no-such-chart", charts))):
+            try:
+                store.persist(subject)
+                fail(f"the store accepted a {label}")
+            except StoreError:
+                refused[label] = True
         if store.issued_count() != before:
             fail("a failed persistence consumed an ENT number")
+        child = store.persist(derived_from(first, "documented", charts))
+        for label, correction, target in (
+                ("self-derivation", derived_from(child, "documented", charts), child),
+                ("dangling parent in a correction", derived_from(first, "no-such-chart", charts), child),
+                ("parent correction removing a referenced chart",
+                 dataclasses.replace(subjects[0], charts=subjects[0].charts[1:]), first)):
+            revisions = len(store.history(target))
+            try:
+                store.append_revision(target, correction, label)
+                fail(f"the store accepted a {label}")
+            except StoreError:
+                refused[label] = True
+            if len(store.history(target)) != revisions:
+                fail(f"a refused {label} still wrote a revision")
         store.close()
     return {"classification": "negative_control", "refusals_verified": len(refused), "refused": sorted(refused)}
 

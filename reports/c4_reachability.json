@@ -1111,8 +1111,9 @@
    "status": "NOT_IN_USE"
   },
   "engine.evidence.store.subject_from_record": {
-   "caller_count": 3,
+   "caller_count": 4,
    "callers": [
+    "engine.evidence.store.EntityStore._latest",
     "engine.evidence.store.EntityStore.append_revision",
     "engine.evidence.store.EntityStore.history",
     "engine.evidence.store.EntityStore.persist"
