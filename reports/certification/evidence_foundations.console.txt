@@ -1,0 +1,11 @@
+============================================================
+EVIDENCE_FOUNDATIONS_V1 CERTIFICATION
+============================================================
+A_entity_model_integrity: 0
+B_entity_store_refusals: 22
+C_event_model_integrity: 0
+D_event_store_refusals: 60
+E_event_class_registry: 0
+F_negative_controls: 8
+archived: certification/EVIDENCE_FOUNDATIONS_V1_certification.json
+RESULT  : PASS
