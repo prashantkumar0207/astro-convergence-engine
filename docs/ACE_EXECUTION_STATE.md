@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | **ACCEPTED (`ADR-0062`) - canonical, machine-checkable current-state record.** Regenerate/refresh on every meaningful implementation task, same discipline as `reports/AI_HANDOFF_CURRENT.md`. |
-| Version | 7.31.0 |
+| Version | 7.32.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-07 (**EVIDENCE entered (`ADR-0114`). WP-E1, the H0 entity foundations and ENT governance, is on review branch `evidence-wp-e1-entity-foundations`. Not merged.**) |
+| Last updated | 2026-11-09 (**WP-E1 merged and closed (`06267f1`, `ADR-0115` s2). WP-E2, the H1 event model, EVR governance and `EVIDENCE_FOUNDATIONS_V1`, is on review branch `evidence-wp-e2-event-model`. Not merged.**) |
 | Review cadence | Refresh at the start of a session if stale; not load-bearing if it isn't. |
 
 # ACE execution state
@@ -43,22 +43,22 @@ independently is in these fields plus the pointers they name.
 | Field | Value |
 |---|---|
 | `CURRENT_PHASE` | **EVIDENCE entered** (`ADR-0114`, owner-authorized 2026-11-07, from `main` `90cd0ca`). JATAKA exited (`ADR-0110`). Mandatory CEO checkpoints remain: the evidence model (H4), and phase exit. |
-| `CURRENT_MILESTONE` | **WP-E1 (H0 entity foundations and ENT identifier governance) on a review PR.** PR #47 merged as `90cd0ca`. |
-| `CURRENT_AUTHORIZED_TASK` | None self-executable beyond the WP-E1 review PR. |
-| `TASK_OWNER` | CHATGPT (review of WP-E1); USER (merge authorization). |
-| `STATUS` | WP-E1 review PR, not merged. No certified calculation changed; every artifact's only non-volatile change is `modules_scanned`, apart from `SUPPORT_PATHS_V1`'s new gates. |
-| `LAST_COMPLETED_ACTION` | Recorded `ADR-0114`; implemented WP-E1 against its 14 acceptance criteria; certified the new package in `SUPPORT_PATHS_V1` gates H and I. |
-| `LAST_COMMIT` (main) | `90cd0cae777f6e7e67b78b109be68b714fa8cf91` (PR #47 merge). Unchanged by this task. |
-| `LAST_COMMIT` (evidence-wp-e1-entity-foundations) | This branch's commits, on top of `90cd0cae777f6e7e67b78b109be68b714fa8cf91`. |
-| `LAST_CI_RUN` | `42358762644` at `90cd0cae`: push to `main`, success on all four jobs. This branch's results are on its review PR. |
-| `LAST_CEO_DECISION` | EVIDENCE entry PASS, as the owner states. |
-| `NEXT_AUTHORIZED_ACTION` | None self-executable. WP-E1's merge, and any further work package, need separate approval. |
-| `WAITING_FOR` | CHATGPT: review of WP-E1. USER: merge authorization, and the next work package. |
+| `CURRENT_MILESTONE` | **WP-E2 (H1 event model, EVR identifier governance, `EVIDENCE_FOUNDATIONS_V1`) on a review PR.** WP-E1 closed: PR #48 merged as `06267f1`. |
+| `CURRENT_AUTHORIZED_TASK` | None self-executable beyond the WP-E2 review PR. |
+| `TASK_OWNER` | CHATGPT (review of WP-E2); USER (merge authorization). |
+| `STATUS` | WP-E2 review PR, not merged. No certified calculation changed: existing artifacts differ only in volatile fields and `modules_scanned`. One new structural artifact, `EVIDENCE_FOUNDATIONS_V1`. `SUPPORT_PATHS_V1` gates H and I kept unchanged. |
+| `LAST_COMPLETED_ACTION` | Merged PR #48 on the owner's authorization; recorded `ADR-0115`; implemented WP-E2 against its 16 exit criteria. |
+| `LAST_COMMIT` (main) | `06267f19f9681f4f1ce06b559bc9aa7abed57ddd` (PR #48 merge; parents `90cd0ca` and `18b3ce4`). |
+| `LAST_COMMIT` (evidence-wp-e2-event-model) | This branch's commits, on top of `06267f19f9681f4f1ce06b559bc9aa7abed57ddd`. |
+| `LAST_CI_RUN` | `42581789417` at `06267f19`: push to `main`, success on all four jobs. This branch's results are on its review PR. |
+| `LAST_CEO_DECISION` | WP-E1 PASS, as the owner states. |
+| `NEXT_AUTHORIZED_ACTION` | None self-executable. WP-E2's merge, retiring `SUPPORT_PATHS_V1` gates H and I, and any further work package need separate approval. |
+| `WAITING_FOR` | CHATGPT: review of WP-E2. USER: merge authorization, and direction on the next work package. |
 | `BLOCKER` | None for this delivery. |
-| `CEO_APPROVAL_REQUIRED` | WP-E1's merge (`ADR-0106` OR-3); the evidence-model checkpoint (Q8 s6); phase exit. |
+| `CEO_APPROVAL_REQUIRED` | WP-E2's merge (`ADR-0106` OR-3); the evidence-model checkpoint (Q8 s6); phase exit. |
 | `CLAUDE_ACTION_REQUIRED` | None until directed. |
-| `CHATGPT_ACTION_REQUIRED` | Review of the WP-E1 PR. |
-| `USER_ACTION_REQUIRED` | Merge authorization for WP-E1; direction for WP-E2. |
+| `CHATGPT_ACTION_REQUIRED` | Review of the WP-E2 PR. |
+| `USER_ACTION_REQUIRED` | Merge authorization for WP-E2; a decision on retiring `SUPPORT_PATHS_V1` gates H and I once the replacement is verified. |
 | `HANDOFF_REQUIRED` | None beyond this file and the latest entry in `reports/AI_HANDOFF_CURRENT.md`. |
 
 ## How to independently verify every field above
@@ -79,6 +79,7 @@ exactly as `reports/AI_HANDOFF_CURRENT.md` already requires of itself.
 
 | Version | Date | Change |
 |---|---|---|
+| 7.32.0 | 2026-11-09 | **WP-E1 merged (`06267f1`, post-merge CI `42581789417`) and closed (`ADR-0115` s2); WP-E2 implemented and on review.** |
 | 7.31.0 | 2026-11-07 | **EVIDENCE entered (`ADR-0114`); WP-E1 implemented and on review.** Also records PR #47's merge. |
 | 7.30.0 | 2026-11-07 | **`ADR-0113`: EVIDENCE specifications ratified; H0, H1, H2, H4 and H5 promoted.** Also records the M-04, M-05 and M-09 merges. |
 | 7.29.0 | 2026-11-06 | M-04, M-05 and M-09 remediation PRs opened; `ADR-0112` recorded. None merged. |

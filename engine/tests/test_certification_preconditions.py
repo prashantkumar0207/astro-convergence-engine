@@ -60,7 +60,8 @@ def test_anti_fitting_scan_covers_every_declared_certification_source():
     # ran in no CI job, and was already recorded broken in three places with
     # its disposition assigned to Phase G item G7 and never executed.
     # Stage C: 22 -> 23. `scripts/certify_support_paths.py` added (ADR-0108 s4 item 5's certification route).
-    assert len(support.CERTIFIER_SOURCES) == 23
+    # WP-E2: 23 -> 24. `scripts/certify_evidence_foundations.py` added (ADR-0115 s4, structural, no oracle).
+    assert len(support.CERTIFIER_SOURCES) == 24
     assert len(support.VALIDATOR_SOURCES) == 22
     assert support.FIXTURE_SOURCES == ("brihat_fixtures.py",)
     discovered_certifiers = {

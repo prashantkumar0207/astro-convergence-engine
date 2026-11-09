@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.31.0 |
+| Version | 9.32.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-07 (EVIDENCE entered (`ADR-0114`). WP-E1, the H0 entity foundations and ENT governance, is on review branch `evidence-wp-e1-entity-foundations`. Not merged.) |
+| Last updated | 2026-11-09 (WP-E1 merged and closed (`06267f1`). WP-E2, the H1 event model, EVR governance and `EVIDENCE_FOUNDATIONS_V1`, is on review branch `evidence-wp-e2-event-model`. Not merged.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,26 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-09 - WP-E1 merged and closed; WP-E2 H1 event model on review (ADR-0115)
+
+**WP-E2 not merged.** PR #48 merged as `06267f1` (parents `90cd0ca` and `18b3ce4`, tree identical to the reviewed head);
+post-merge CI `42581789417` green on all four jobs.
+
+- **`ADR-0115`** records WP-E1's closure and the owner's WP-E2 direction verbatim, and fixes WP-E2's 16 exit criteria. It
+  was committed before any code.
+- **`engine/evidence/`** gains the H1 event model, the 47-class `EV-CAR` seed, an append-only event store and the `EVR`
+  issuer.
+  - Time is uncertain by default: instants, closed, open and unbounded intervals, and fuzzy windows.
+  - An event attaches to an `ENT` entity. Its optional assertion context names an entity revision and chart.
+  - Confirmations are separate append-only records. Only a human confirms.
+- **`EVR-\d{8}`** is registered in `NAMING_STANDARD.md` s2. `scripts/check_event_identifiers.py` is in the CI sweep, with a
+  negative-control step. It also fails if the seed and the registry disagree.
+- **Certification:** a new structural artifact, `EVIDENCE_FOUNDATIONS_V1`, covers H0 and H1. It is registered in C2's own
+  evidence-structure list, as a C3 scope-bearing artifact, and as C4 coverage. `SUPPORT_PATHS_V1` gates H and I are kept.
+- **Found and fixed:** the ENT gate's CI registration control could not fail. Its probe raised `re.error`, so the gate
+  failed on a missing file. Both identifier controls now assert the specific error.
+- **Synthetic data only.** No scoring, weight or confidence anywhere.
 
 ### 2026-11-07 - EVIDENCE entered (ADR-0114); WP-E1 H0 entity foundations on review
 

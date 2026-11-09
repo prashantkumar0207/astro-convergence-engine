@@ -41,6 +41,7 @@ of times and written once, so every rule here optimises for the reader, the diff
 | Decision | `ADR-\d{4}` | 4 | repository-wide | Decision log | DECISION_LOG.md |
 | Decision paper | `DP-\d{3}` | 3 | repository-wide | Decision-paper index | docs/decisions/README.md; ADR-0040 |
 | Entity | `ENT-\d{8}` | 8 | repository-wide; persisted entities only | `engine/evidence/store.py` EntityStore durable counter, transactionally at first persistence; fixtures use isolated stores | ADR-0111; ADR-0114; uniqueness gate `scripts/check_entity_identifiers.py` |
+| Event record | `EVR-\d{8}` | 8 | repository-wide; persisted event records only | `engine/evidence/event_store.py` EventStore's own durable counter, separate from the ENT issuer, transactionally at first persistence; fixtures use isolated stores | ADR-0113 s2 B; ADR-0115 s3; uniqueness gate `scripts/check_event_identifiers.py` |
 
 Rules:
 - **Zero-padded, monotone, immutable, never reused** - all families, no exceptions. `DP-NNN` uses three digits as its registered width.

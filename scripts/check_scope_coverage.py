@@ -19,7 +19,8 @@ Evaluated from each artifact's own declarations, never by parsing `scope` prose:
       and cannot prove a gate's assertions are strong.
 
 The gate reads the 22 scope-bearing artifacts named by ADR-0102 s2, plus SUPPORT_PATHS_V1,
-which ADR-0108 s4 item 5's certification route added later. The four frozen artifacts carry
+which ADR-0108 s4 item 5's certification route added later, and EVIDENCE_FOUNDATIONS_V1, the
+structural EVIDENCE certification ADR-0115 s4 added. The four frozen artifacts carry
 no such content; their dispositions live in the backlog.
 
 Exit 0 = PASS, 1 = FAIL. Paths are injectable so the negative controls can run the
@@ -43,6 +44,7 @@ CERTIFICATION_DIR = ROOT / "certification"
 BACKLOG = ROOT / "docs" / "CERTIFICATION_REMEDIATION_BACKLOG.json"
 
 SCOPE_BEARING_ARTIFACTS = (
+    "EVIDENCE_FOUNDATIONS_V1_certification.json",
     "current_engine_certification.json", "KP_CHAIN_V1_certification.json",
     "KP_SIGNIFICATOR_V1_certification.json", "PANCHANGA_V1_certification.json",
     "PARASHARI_DRISHTI_V1_certification.json", "PARASHARI_YOGA_V1_certification.json",
@@ -68,6 +70,7 @@ CERTIFIERS = {
     "RISE_SET_V1_certification.json": "certify_rise_set.py",
     "SIGN_CONVENTION_V1_certification.json": "certify_sign_convention.py",
     "SUPPORT_PATHS_V1_certification.json": "certify_support_paths.py",
+    "EVIDENCE_FOUNDATIONS_V1_certification.json": "certify_evidence_foundations.py",
     "TRANSIT_V1_certification.json": "certify_transits.py",
     "TRIKALAM_V1_certification.json": "certify_trikalam.py",
     "VIMSHOTTARI_V1_certification.json": "certify_vimshottari.py",

@@ -1,0 +1,523 @@
+{
+ "schema": "evidence_foundations_v1_certification",
+ "adr": "ADR-0115 s4",
+ "date": "2026-11-09",
+ "scope": "Structural certification of the EVIDENCE foundations: the H0 entity model, append-only entity store and ENT issuer (ADR-0114 WP-E1), and the H1 event model, append-only event store, separate confirmation records, EVR issuer and seeded event-class vocabulary (ADR-0115 WP-E2).",
+ "reference": {
+  "structure": "the model contracts of ADR-0114 s3 and ADR-0115 s5, exercised on synthetic records",
+  "event_classes": "knowledge/hlkg/domains/career/CAREER_EVENT_REGISTRY.md s3, read by this runner independently of the code"
+ },
+ "gates": {
+  "A_entity_model_integrity": {
+   "classification": "structural_integrity",
+   "kinds": 5,
+   "round_trips": 6,
+   "competing_charts_held": 2,
+   "revisions_checked": 3,
+   "derived_links_checked": 1,
+   "links_checked": 1,
+   "mismatches": 0,
+   "exercises": [
+    "evidence.entity_foundations"
+   ]
+  },
+  "B_entity_store_refusals": {
+   "classification": "negative_control",
+   "refusals_verified": 22,
+   "refused": [
+    "ENT identifier: lower-case family",
+    "ENT identifier: number zero",
+    "ENT identifier: seven digits",
+    "dangling parent chart",
+    "dangling parent entity",
+    "dangling parent in a correction",
+    "delete a link",
+    "delete an entity revision",
+    "delete the ENT issuer",
+    "entity analytical key confidence",
+    "entity analytical key interpretation",
+    "entity analytical key score",
+    "entity analytical key weight",
+    "kind change",
+    "lower the ENT issuer",
+    "non-subject",
+    "non-synthetic entity",
+    "parent correction removing a referenced chart",
+    "self-derivation",
+    "shape B with no chart",
+    "update a link",
+    "update an entity revision"
+   ],
+   "exercises": [
+    "evidence.entity_foundations"
+   ]
+  },
+  "C_event_model_integrity": {
+   "classification": "structural_integrity",
+   "time_kinds": 4,
+   "time_cases": 6,
+   "asserter_kinds": 4,
+   "confirmation_states": 4,
+   "round_trips": 14,
+   "revisions_checked": 2,
+   "assertion_contexts_checked": 1,
+   "mismatches": 0,
+   "exercises": [
+    "evidence.event_records"
+   ]
+  },
+  "D_event_store_refusals": {
+   "classification": "negative_control",
+   "refusals_verified": 60,
+   "refused": [
+    "EVR identifier: lower-case family",
+    "EVR identifier: number zero",
+    "EVR identifier: seven digits",
+    "a correction duplicating another event",
+    "a system confirmer",
+    "a system confirmer in the model",
+    "analytical key confidence on the assertion",
+    "analytical key confidence on the assertion_context",
+    "analytical key confidence on the event",
+    "analytical key confidence on the provenance",
+    "analytical key confidence on the time",
+    "analytical key interpretation on the assertion",
+    "analytical key interpretation on the assertion_context",
+    "analytical key interpretation on the event",
+    "analytical key interpretation on the provenance",
+    "analytical key interpretation on the time",
+    "analytical key planet on the assertion",
+    "analytical key planet on the assertion_context",
+    "analytical key planet on the event",
+    "analytical key planet on the provenance",
+    "analytical key planet on the time",
+    "analytical key rule_id on the assertion",
+    "analytical key rule_id on the assertion_context",
+    "analytical key rule_id on the event",
+    "analytical key rule_id on the provenance",
+    "analytical key rule_id on the time",
+    "analytical key score on a confirmation",
+    "analytical key score on the assertion",
+    "analytical key score on the assertion_context",
+    "analytical key score on the event",
+    "analytical key score on the provenance",
+    "analytical key score on the time",
+    "birth-time sensitivity without a known hour",
+    "changing the asserter",
+    "closed interval ending before it starts",
+    "confirming a missing event",
+    "confirming a superseded revision",
+    "dangling context chart",
+    "dangling context revision",
+    "dangling entity",
+    "delete a confirmation",
+    "delete an event revision",
+    "delete the EVR issuer",
+    "duplicate under another chart",
+    "duplicate with no chart",
+    "exact duplicate",
+    "fuzzy window without a tolerance",
+    "laundering a system hypothesis",
+    "lower the EVR issuer",
+    "non-event",
+    "non-synthetic event",
+    "re-anchoring to another chart",
+    "re-anchoring to another entity",
+    "system hypothesis with a declared certainty",
+    "time value without a timezone",
+    "unconfirmed or rejected system hypothesis as validation input",
+    "unregistered event class",
+    "update a confirmation",
+    "update an event revision",
+    "value more precise than its stated precision"
+   ],
+   "exercises": [
+    "evidence.event_records"
+   ]
+  },
+  "E_event_class_registry": {
+   "classification": "registry_conformance",
+   "registry": "knowledge/hlkg/domains/career/CAREER_EVENT_REGISTRY.md",
+   "classes": 47,
+   "groups": 10,
+   "origin_model": 42,
+   "origin_proposed_addition": 5,
+   "mismatches": 0,
+   "exercises": [
+    "evidence.event_class_seed"
+   ]
+  },
+  "F_negative_controls": {
+   "classification": "negative_control",
+   "controls_rejected": 8,
+   "controls": [
+    "admissibility rule that would admit everything",
+    "admissibility rule that would ignore the asserter",
+    "seed in another order",
+    "seed missing a class",
+    "seed with a renamed class",
+    "seed with an extra class",
+    "serializer that coarsens a precision",
+    "serializer that drops a tolerance"
+   ],
+   "exercises": [],
+   "exercises_note": "runs the other gates' comparators against planted wrong functions, so no production callable is the thing under test"
+  }
+ },
+ "explicit_non_claims": [
+  "structural certification only: this is not astrological-calculation certification",
+  "declares no production analytical input, and is served by no API",
+  "makes no analytical claim: nothing here scores, weights, fits or computes confidence",
+  "every record used is synthetic; no real personal data is certified or permitted",
+  "the event-class seed is certified equal to the registry, not the registry's classes correct; the registry stays DRAFT and its origin column is carried, not ratified",
+  "admissibility as validation input is a gate on system hypotheses and rejections only; H2 and H4 may add requirements",
+  "SUPPORT_PATHS_V1 gates H and I still certify the H0 foundations; this artifact does not retire them"
+ ],
+ "environment": {
+  "python": "3.11.17"
+ },
+ "preconditions": {
+  "data_assets": {
+   "assets_verified": 3,
+   "sha256": {
+    "seas_18.se1": "a2cd8fc33807c78ca9a700c91c2e042258b12fc4796519e00781440b5ad8b2e2",
+    "semo_18.se1": "1ca07bd67c24374d77226180c20a4f9996cba013697894810518e7eb582ca4f7",
+    "sepl_18.se1": "ca1393ceab3a44fbc895887cf789c68819ae6a1cbc9b22225872dbe4ccd99a66"
+   }
+  },
+  "trust_records": {
+   "reference_binary": "swetest",
+   "reference_binary_sha256_verified": "f53943bb6ede1575974270e0a01aff9affdabe58315c1cf69ed4d4738346dac5",
+   "reference_binary_bytes": 712872,
+   "manifest_sha256_verified": "74de363ec1d335ecce26e891634ca9358a4ac198c56c226f22c3d6b4c3401ad1",
+   "manifest_blob_id_verified": "0885f0446ba4306c7afa78eef06a0be2e7b6c5a7",
+   "manifest_anchor_commit": "a62a2c8f9e021575deeac7dee61f53aaae1bc265",
+   "cross_record_assets_agreed": 3,
+   "residual_limitation": "coordinated edits to every repository-held trust record cannot be cryptographically prevented by an in-repository trust anchor; only upstream provenance would anchor this, and it is out of M1 scope"
+  },
+  "anti_fitting": {
+   "modules_scanned": 213,
+   "findings": [],
+   "justified_exceptions": [
+    "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."
+   ]
+  }
+ },
+ "result": "PASS",
+ "capability_schema": "ace-capability-enumeration-v1",
+ "capabilities": [
+  {
+   "id": "evidence.entity_foundations",
+   "members": [
+    {
+     "callable": "engine.evidence.identifiers.EntityId.from_number",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_entity_model_integrity",
+      "B_entity_store_refusals"
+     ]
+    },
+    {
+     "callable": "engine.evidence.identifiers.EntityId.number",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_entity_model_integrity"
+     ]
+    },
+    {
+     "callable": "engine.evidence.entity.AstrologicalSubject.chart",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_entity_model_integrity"
+     ]
+    },
+    {
+     "callable": "engine.evidence.entity.rectification_permitted",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_entity_model_integrity"
+     ]
+    },
+    {
+     "callable": "engine.evidence.store.EntityStore.persist",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_entity_model_integrity",
+      "B_entity_store_refusals"
+     ]
+    },
+    {
+     "callable": "engine.evidence.store.EntityStore.append_revision",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_entity_model_integrity",
+      "B_entity_store_refusals"
+     ]
+    },
+    {
+     "callable": "engine.evidence.store.EntityStore.history",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_entity_model_integrity",
+      "B_entity_store_refusals"
+     ]
+    },
+    {
+     "callable": "engine.evidence.store.EntityStore.load",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_entity_model_integrity"
+     ]
+    },
+    {
+     "callable": "engine.evidence.store.EntityStore.entity_ids",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_entity_model_integrity"
+     ]
+    },
+    {
+     "callable": "engine.evidence.store.EntityStore.add_link",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_entity_model_integrity",
+      "B_entity_store_refusals"
+     ]
+    },
+    {
+     "callable": "engine.evidence.store.EntityStore.links",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_entity_model_integrity"
+     ]
+    },
+    {
+     "callable": "engine.evidence.store.EntityStore.issued_count",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_entity_model_integrity",
+      "B_entity_store_refusals"
+     ]
+    },
+    {
+     "callable": "engine.evidence.store.EntityStore.close",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_entity_model_integrity",
+      "B_entity_store_refusals"
+     ]
+    },
+    {
+     "callable": "engine.evidence.store.subject_to_record",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_entity_model_integrity",
+      "B_entity_store_refusals"
+     ]
+    },
+    {
+     "callable": "engine.evidence.store.subject_from_record",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_entity_model_integrity",
+      "B_entity_store_refusals"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "evidence.event_records",
+   "members": [
+    {
+     "callable": "engine.evidence.event_identifiers.EventRecordId.from_number",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "C_event_model_integrity",
+      "D_event_store_refusals"
+     ]
+    },
+    {
+     "callable": "engine.evidence.event_identifiers.EventRecordId.number",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "C_event_model_integrity"
+     ]
+    },
+    {
+     "callable": "engine.evidence.event_classes.registered",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "C_event_model_integrity"
+     ]
+    },
+    {
+     "callable": "engine.evidence.event_store.event_to_record",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "C_event_model_integrity",
+      "D_event_store_refusals"
+     ]
+    },
+    {
+     "callable": "engine.evidence.event_store.event_from_record",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "C_event_model_integrity",
+      "D_event_store_refusals"
+     ]
+    },
+    {
+     "callable": "engine.evidence.event_store.confirmation_to_record",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "C_event_model_integrity",
+      "D_event_store_refusals"
+     ]
+    },
+    {
+     "callable": "engine.evidence.event_store.confirmation_from_record",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "C_event_model_integrity",
+      "D_event_store_refusals"
+     ]
+    },
+    {
+     "callable": "engine.evidence.event_store.EventStore.persist",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "C_event_model_integrity",
+      "D_event_store_refusals"
+     ]
+    },
+    {
+     "callable": "engine.evidence.event_store.EventStore.append_revision",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "C_event_model_integrity",
+      "D_event_store_refusals"
+     ]
+    },
+    {
+     "callable": "engine.evidence.event_store.EventStore.confirm",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "C_event_model_integrity",
+      "D_event_store_refusals"
+     ]
+    },
+    {
+     "callable": "engine.evidence.event_store.EventStore.history",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "C_event_model_integrity",
+      "D_event_store_refusals"
+     ]
+    },
+    {
+     "callable": "engine.evidence.event_store.EventStore.load",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "C_event_model_integrity"
+     ]
+    },
+    {
+     "callable": "engine.evidence.event_store.EventStore.event_ids",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "C_event_model_integrity"
+     ]
+    },
+    {
+     "callable": "engine.evidence.event_store.EventStore.confirmations",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "C_event_model_integrity",
+      "D_event_store_refusals"
+     ]
+    },
+    {
+     "callable": "engine.evidence.event_store.EventStore.confirmation_state",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "C_event_model_integrity",
+      "D_event_store_refusals"
+     ]
+    },
+    {
+     "callable": "engine.evidence.event_store.EventStore.validation_input_permitted",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "C_event_model_integrity",
+      "D_event_store_refusals"
+     ]
+    },
+    {
+     "callable": "engine.evidence.event_store.EventStore.issued_count",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "C_event_model_integrity",
+      "D_event_store_refusals"
+     ]
+    },
+    {
+     "callable": "engine.evidence.event_store.EventStore.close",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "C_event_model_integrity",
+      "D_event_store_refusals"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "evidence.event_class_seed",
+   "members": [
+    {
+     "callable": "engine.evidence.event_classes.SEED",
+     "kind": "data",
+     "disposition": "GATED",
+     "exercised_by": [
+      "E_event_class_registry"
+     ]
+    }
+   ]
+  }
+ ],
+ "scope_not_gated": [],
+ "_artifact_name": "EVIDENCE_FOUNDATIONS_V1_certification.json",
+ "_slug": "evidence_foundations"
+}

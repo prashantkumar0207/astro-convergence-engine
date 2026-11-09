@@ -1039,6 +1039,153 @@
    "file": "engine/evidence/entity.py",
    "status": "NOT_IN_USE"
   },
+  "engine.evidence.event_classes.registered": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.events.EventRecord.__post_init__"
+   ],
+   "covered": true,
+   "file": "engine/evidence/event_classes.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.event_identifiers.EventRecordId.from_number": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.event_store.EventStore.persist"
+   ],
+   "covered": true,
+   "file": "engine/evidence/event_identifiers.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.event_identifiers.EventRecordId.number": {
+   "covered": true,
+   "file": "engine/evidence/event_identifiers.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.evidence.event_store.EventStore.append_revision": {
+   "covered": true,
+   "file": "engine/evidence/event_store.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.evidence.event_store.EventStore.close": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.event_store.EventStore.__exit__"
+   ],
+   "covered": true,
+   "file": "engine/evidence/event_store.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.event_store.EventStore.confirm": {
+   "covered": true,
+   "file": "engine/evidence/event_store.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.evidence.event_store.EventStore.confirmation_state": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.event_store.EventStore.validation_input_permitted"
+   ],
+   "covered": true,
+   "file": "engine/evidence/event_store.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.event_store.EventStore.confirmations": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.event_store.EventStore.confirmation_state"
+   ],
+   "covered": true,
+   "file": "engine/evidence/event_store.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.event_store.EventStore.event_ids": {
+   "covered": true,
+   "file": "engine/evidence/event_store.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.evidence.event_store.EventStore.history": {
+   "caller_count": 2,
+   "callers": [
+    "engine.evidence.event_store.EventStore.confirmations",
+    "engine.evidence.event_store.EventStore.load"
+   ],
+   "covered": true,
+   "file": "engine/evidence/event_store.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.event_store.EventStore.issued_count": {
+   "covered": true,
+   "file": "engine/evidence/event_store.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.evidence.event_store.EventStore.load": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.event_store.EventStore.validation_input_permitted"
+   ],
+   "covered": true,
+   "file": "engine/evidence/event_store.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.event_store.EventStore.persist": {
+   "covered": true,
+   "file": "engine/evidence/event_store.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.evidence.event_store.EventStore.validation_input_permitted": {
+   "covered": true,
+   "file": "engine/evidence/event_store.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.evidence.event_store.confirmation_from_record": {
+   "caller_count": 2,
+   "callers": [
+    "engine.evidence.event_store.EventStore.confirm",
+    "engine.evidence.event_store.EventStore.confirmations"
+   ],
+   "covered": true,
+   "file": "engine/evidence/event_store.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.event_store.confirmation_to_record": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.event_store.EventStore.confirm"
+   ],
+   "covered": true,
+   "file": "engine/evidence/event_store.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.event_store.event_from_record": {
+   "caller_count": 3,
+   "callers": [
+    "engine.evidence.event_store.EventStore._current",
+    "engine.evidence.event_store.EventStore._payload",
+    "engine.evidence.event_store.EventStore.history"
+   ],
+   "covered": true,
+   "file": "engine/evidence/event_store.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.event_store.event_to_record": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.event_store.EventStore._payload"
+   ],
+   "covered": true,
+   "file": "engine/evidence/event_store.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.events.validation_input_permitted": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.event_store.EventStore.validation_input_permitted"
+   ],
+   "covered": true,
+   "file": "engine/evidence/events.py",
+   "status": "IN_USE_COVERED"
+  },
   "engine.evidence.identifiers.EntityId.from_number": {
    "caller_count": 1,
    "callers": [
@@ -1723,8 +1870,8 @@
  },
  "schema": "ace-c4-reachability-v1",
  "summary": {
-  "IN_USE_COVERED": 118,
-  "NOT_IN_USE": 110
+  "IN_USE_COVERED": 130,
+  "NOT_IN_USE": 117
  },
  "universe_exclusions": {
   "engine.main.": "API route handlers: callers and exports, not capabilities",

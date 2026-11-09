@@ -135,6 +135,7 @@ _DASHA = "engine.dasha.vimshottari"
 _CONVENTIONS = "engine.astrology.sign_conventions"
 _REPOSITORY = "engine.knowledge.repository.KnowledgeRepository"
 _STORE = "engine.evidence.store.EntityStore"
+_EVENT_STORE = "engine.evidence.event_store.EventStore"
 
 _DASHA_GATES = ("oracle_pratyantar_rows_compared", "oracle_lord_mismatches", "oracle_max_start_delta_days",
                 "independent_validator", "cases", "near_boundary_coverage", "boundary_proximity_indicator")
@@ -353,6 +354,59 @@ ARTIFACT_DECLARATIONS = {
         ],
         "empty_exercises": {
             "G_negative_controls": "runs the other gates' comparators against planted wrong functions, so no "
+                                   "production callable is the thing under test",
+        },
+    },
+    "EVIDENCE_FOUNDATIONS_V1_certification.json": {
+        # ADR-0115 s4: structural certification of the EVIDENCE foundations, not astrological calculation.
+        "capabilities": [
+            _cap("evidence.entity_foundations",
+                 _fn("engine.evidence.identifiers.EntityId.from_number", "A_entity_model_integrity",
+                     "B_entity_store_refusals"),
+                 _fn("engine.evidence.identifiers.EntityId.number", "A_entity_model_integrity"),
+                 _fn("engine.evidence.entity.AstrologicalSubject.chart", "A_entity_model_integrity"),
+                 _fn("engine.evidence.entity.rectification_permitted", "A_entity_model_integrity"),
+                 _fn(f"{_STORE}.persist", "A_entity_model_integrity", "B_entity_store_refusals"),
+                 _fn(f"{_STORE}.append_revision", "A_entity_model_integrity", "B_entity_store_refusals"),
+                 _fn(f"{_STORE}.history", "A_entity_model_integrity", "B_entity_store_refusals"),
+                 _fn(f"{_STORE}.load", "A_entity_model_integrity"),
+                 _fn(f"{_STORE}.entity_ids", "A_entity_model_integrity"),
+                 _fn(f"{_STORE}.add_link", "A_entity_model_integrity", "B_entity_store_refusals"),
+                 _fn(f"{_STORE}.links", "A_entity_model_integrity"),
+                 _fn(f"{_STORE}.issued_count", "A_entity_model_integrity", "B_entity_store_refusals"),
+                 _fn(f"{_STORE}.close", "A_entity_model_integrity", "B_entity_store_refusals"),
+                 _fn("engine.evidence.store.subject_to_record", "A_entity_model_integrity", "B_entity_store_refusals"),
+                 _fn("engine.evidence.store.subject_from_record", "A_entity_model_integrity",
+                     "B_entity_store_refusals")),
+            _cap("evidence.event_records",
+                 _fn("engine.evidence.event_identifiers.EventRecordId.from_number", "C_event_model_integrity",
+                     "D_event_store_refusals"),
+                 _fn("engine.evidence.event_identifiers.EventRecordId.number", "C_event_model_integrity"),
+                 _fn("engine.evidence.event_classes.registered", "C_event_model_integrity"),
+                 _fn("engine.evidence.event_store.event_to_record", "C_event_model_integrity", "D_event_store_refusals"),
+                 _fn("engine.evidence.event_store.event_from_record", "C_event_model_integrity",
+                     "D_event_store_refusals"),
+                 _fn("engine.evidence.event_store.confirmation_to_record", "C_event_model_integrity",
+                     "D_event_store_refusals"),
+                 _fn("engine.evidence.event_store.confirmation_from_record", "C_event_model_integrity",
+                     "D_event_store_refusals"),
+                 _fn(f"{_EVENT_STORE}.persist", "C_event_model_integrity", "D_event_store_refusals"),
+                 _fn(f"{_EVENT_STORE}.append_revision", "C_event_model_integrity", "D_event_store_refusals"),
+                 _fn(f"{_EVENT_STORE}.confirm", "C_event_model_integrity", "D_event_store_refusals"),
+                 _fn(f"{_EVENT_STORE}.history", "C_event_model_integrity", "D_event_store_refusals"),
+                 _fn(f"{_EVENT_STORE}.load", "C_event_model_integrity"),
+                 _fn(f"{_EVENT_STORE}.event_ids", "C_event_model_integrity"),
+                 _fn(f"{_EVENT_STORE}.confirmations", "C_event_model_integrity", "D_event_store_refusals"),
+                 _fn(f"{_EVENT_STORE}.confirmation_state", "C_event_model_integrity", "D_event_store_refusals"),
+                 _fn(f"{_EVENT_STORE}.validation_input_permitted", "C_event_model_integrity",
+                     "D_event_store_refusals"),
+                 _fn(f"{_EVENT_STORE}.issued_count", "C_event_model_integrity", "D_event_store_refusals"),
+                 _fn(f"{_EVENT_STORE}.close", "C_event_model_integrity", "D_event_store_refusals")),
+            _cap("evidence.event_class_seed",
+                 _data("engine.evidence.event_classes.SEED", "E_event_class_registry")),
+        ],
+        "empty_exercises": {
+            "F_negative_controls": "runs the other gates' comparators against planted wrong functions, so no "
                                    "production callable is the thing under test",
         },
     },

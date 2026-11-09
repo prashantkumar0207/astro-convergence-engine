@@ -122,6 +122,8 @@ jobs:
           python scripts/certify_rise_set.py
           python scripts/certify_kp_significator.py
           python scripts/certify_parashari_yoga.py
+          # ADR-0115 s4: structural EVIDENCE certification. It imports no oracle and needs no network.
+          python scripts/certify_evidence_foundations.py
 
       - name: Re-run a representative subset under the in-process network guard
         run: |
@@ -136,6 +138,7 @@ jobs:
           python scripts/ci_no_network.py scripts/certify_rise_set.py
           python scripts/ci_no_network.py scripts/certify_kp_significator.py
           python scripts/ci_no_network.py scripts/certify_parashari_yoga.py
+          python scripts/ci_no_network.py scripts/certify_evidence_foundations.py
 
       - name: Assert the network guard actually blocks (negative control)
         run: |
@@ -429,15 +432,46 @@ jobs:
           literal=$?
           git rm -q --cached --force _ent_probe.py 2>/dev/null
           rm -f _ent_probe.py
-          python -c "import re; t=open('docs/NAMING_STANDARD.md',encoding='utf-8').read(); open('/tmp/naming_probe.md','w',encoding='utf-8').write(re.sub(r'ENT-.d\{8\}', 'ENT-' + chr(92) + 'd{6}', t, count=1))"
-          python scripts/check_entity_identifiers.py --naming /tmp/naming_probe.md > /dev/null 2>&1
+          # str.replace, not re.sub: a "\d" in an re.sub replacement is a bad escape, so the probe was
+          # never written and the gate failed on the missing file, not on the registration (found in WP-E2).
+          python -c "t=open('docs/NAMING_STANDARD.md',encoding='utf-8').read(); b=chr(92); old='ENT-'+b+'d{8}'; assert old in t; open('/tmp/naming_probe.md','w',encoding='utf-8').write(t.replace(old, 'ENT-'+b+'d{6}', 1))"
+          python scripts/check_entity_identifiers.py --naming /tmp/naming_probe.md > /tmp/ent_naming.txt 2>&1
           naming=$?
+          grep -q 'E1 registered pattern' /tmp/ent_naming.txt || naming=0
           set -e
           if [ "$literal" -eq 0 ] || [ "$naming" -eq 0 ]; then
             echo "the ENT gate did NOT flag a planted violation: literal=$literal naming=$naming"
             exit 1
           fi
           echo "negative controls passed: literal exit $literal, registration exit $naming"
+
+      - name: EVR identifier-family uniqueness and event-class seed (ADR-0113, ADR-0115)
+        run: python scripts/check_event_identifiers.py
+
+      - name: Negative control, the EVR gate must actually fail
+        run: |
+          set +e
+          # Assembled at run time, for the same reason as the identifier probe above.
+          python -c "open('_evr_probe.py','w').write('# planted: ' + 'EVR-' + '00000001' + chr(10))"
+          git add -N _evr_probe.py
+          python scripts/check_event_identifiers.py > /dev/null 2>&1
+          literal=$?
+          git rm -q --cached --force _evr_probe.py 2>/dev/null
+          rm -f _evr_probe.py
+          python -c "t=open('docs/NAMING_STANDARD.md',encoding='utf-8').read(); b=chr(92); old='EVR-'+b+'d{8}'; assert old in t; open('/tmp/evr_naming_probe.md','w',encoding='utf-8').write(t.replace(old, 'EVR-'+b+'d{6}', 1))"
+          python scripts/check_event_identifiers.py --naming /tmp/evr_naming_probe.md > /tmp/evr_naming.txt 2>&1
+          naming=$?
+          grep -q 'V1 registered pattern' /tmp/evr_naming.txt || naming=0
+          python -c "t=open('knowledge/hlkg/domains/career/CAREER_EVENT_REGISTRY.md',encoding='utf-8').read(); assert '| EV-CAR-047 |' in t; open('/tmp/registry_probe.md','w',encoding='utf-8').write(t.replace('| EV-CAR-047 |', '| EV-CAR-048 |', 1))"
+          python scripts/check_event_identifiers.py --registry /tmp/registry_probe.md > /tmp/evr_seed.txt 2>&1
+          seed=$?
+          grep -q 'V4 the event-class seed differs' /tmp/evr_seed.txt || seed=0
+          set -e
+          if [ "$literal" -eq 0 ] || [ "$naming" -eq 0 ] || [ "$seed" -eq 0 ]; then
+            echo "the EVR gate did NOT flag a planted violation: literal=$literal naming=$naming seed=$seed"
+            exit 1
+          fi
+          echo "negative controls passed: literal exit $literal, registration exit $naming, seed exit $seed"
 
       - name: ADR numbering is unique and monotonic
         run: python scripts/check_adr_numbering.py
