@@ -7,5 +7,8 @@ C_event_model_integrity: 0
 D_event_store_refusals: 60
 E_event_class_registry: 0
 F_negative_controls: 8
+G_ledger_integrity: 0
+H_ledger_refusals: 53
+I_holdout_leakage: 10
 archived: certification/EVIDENCE_FOUNDATIONS_V1_certification.json
 RESULT  : PASS

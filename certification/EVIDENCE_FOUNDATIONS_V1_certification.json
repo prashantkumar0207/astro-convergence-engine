@@ -1,10 +1,10 @@
 {
  "schema": "evidence_foundations_v1_certification",
- "adr": "ADR-0115 s4",
+ "adr": "ADR-0115 s4; ADR-0116 s4",
  "date": "2026-11-09",
- "scope": "Structural certification of the EVIDENCE foundations: the H0 entity model, append-only entity store and ENT issuer (ADR-0114 WP-E1), and the H1 event model, append-only event store, separate confirmation records, EVR issuer and seeded event-class vocabulary (ADR-0115 WP-E2).",
+ "scope": "Structural certification of the EVIDENCE foundations: the H0 entity model, append-only entity store and ENT issuer (ADR-0114 WP-E1), and the H1 event model, append-only event store, separate confirmation records, EVR issuer and seeded event-class vocabulary (ADR-0115 WP-E2), and the H2 historical ledger, protected holdouts, pre-registered protocols and purpose-declared access log (ADR-0116 WP-E3).",
  "reference": {
-  "structure": "the model contracts of ADR-0114 s3 and ADR-0115 s5, exercised on synthetic records",
+  "structure": "the model contracts of ADR-0114 s3, ADR-0115 s5 and ADR-0116 s5, exercised on synthetic records",
   "event_classes": "knowledge/hlkg/domains/career/CAREER_EVENT_REGISTRY.md s3, read by this runner independently of the code"
  },
  "gates": {
@@ -162,6 +162,105 @@
    ],
    "exercises": [],
    "exercises_note": "runs the other gates' comparators against planted wrong functions, so no production callable is the thing under test"
+  },
+  "G_ledger_integrity": {
+   "classification": "structural_integrity",
+   "entries_admitted": 10,
+   "outcomes": 3,
+   "elicitation_kinds": 3,
+   "count_axes": 3,
+   "corrections_checked": 1,
+   "holdout_members": 8,
+   "holdout_selected": 3,
+   "protocols_checked": 1,
+   "access_rows_checked": 4,
+   "mismatches": 0,
+   "exercises": [
+    "evidence.historical_ledger"
+   ]
+  },
+  "H_ledger_refusals": {
+   "classification": "negative_control",
+   "refusals_verified": 53,
+   "refused": [
+    "a correction that changes nothing",
+    "a correction with no reason",
+    "a development read of a protected entry",
+    "a non-synthetic ledger entry",
+    "a protocol citing rules before RUL exists",
+    "a protocol naming no locked holdout",
+    "a protocol whose hypothesis count disagrees",
+    "a protocol with no minimum N",
+    "a read with no declared purpose",
+    "a rectification read of a protected entry",
+    "a rejected entry in an eligible set",
+    "a second entry superseding the same entry",
+    "a second selection row for a frozen set",
+    "a selection read of a protected entry",
+    "a tuning read of a protected entry",
+    "admitting an event answered unconfirmed",
+    "admitting an event twice",
+    "admitting an unanswered event",
+    "admitting without an elicitation",
+    "an audit read naming a protocol",
+    "an event outside the ledger in an eligible set",
+    "analytical key confidence on a ledger entry",
+    "analytical key confidence on a protocol",
+    "analytical key interpretation on a ledger entry",
+    "analytical key interpretation on a protocol",
+    "analytical key planet on a ledger entry",
+    "analytical key planet on a protocol",
+    "analytical key rule_id on a ledger entry",
+    "analytical key rule_id on a protocol",
+    "analytical key score on a ledger entry",
+    "analytical key score on a protocol",
+    "delete access_log",
+    "delete eligible_members",
+    "delete eligible_sets",
+    "delete holdouts",
+    "delete ledger_entries",
+    "delete protected_events",
+    "delete protocols",
+    "protected validation below the protocol's minimum N",
+    "protected validation under an unregistered protocol",
+    "protected validation with no protocol",
+    "refreezing a subset",
+    "refreezing a superset",
+    "refreezing an overlapping set",
+    "refreezing it reordered",
+    "refreezing the same set",
+    "update access_log",
+    "update eligible_members",
+    "update eligible_sets",
+    "update holdouts",
+    "update ledger_entries",
+    "update protected_events",
+    "update protocols"
+   ],
+   "exercises": [
+    "evidence.historical_ledger"
+   ]
+  },
+  "I_holdout_leakage": {
+   "classification": "negative_control",
+   "controls_rejected": 10,
+   "controls": [
+    "planted leak flagged: a granted read with no declared purpose",
+    "planted leak flagged: protected entry served for development",
+    "planted leak flagged: protected entry served for rectification",
+    "planted leak flagged: protected entry served for selection",
+    "planted leak flagged: protected entry served for tuning",
+    "planted leak flagged: protected validation before its protocol",
+    "planted leak flagged: protected validation outside its holdout",
+    "planted leak flagged: protected validation with no protocol",
+    "selection from another seed rejected",
+    "selection from first-k instead of the hash order rejected"
+   ],
+   "holdout_members": 10,
+   "holdout_selected": 4,
+   "exercises": [
+    "evidence.historical_ledger"
+   ]
   }
  },
  "explicit_non_claims": [
@@ -171,7 +270,10 @@
   "every record used is synthetic; no real personal data is certified or permitted",
   "the event-class seed is certified equal to the registry, not the registry's classes correct; the registry stays DRAFT and its origin column is carried, not ratified",
   "admissibility as validation input is a gate on system hypotheses and rejections only; H2 and H4 may add requirements",
-  "SUPPORT_PATHS_V1 gates H and I still certify the H0 foundations; this artifact does not retire them"
+  "SUPPORT_PATHS_V1 gates H and I still certify the H0 foundations; this artifact does not retire them",
+  "the ledger's purpose check and leakage check cover reads through the ledger only: EventStore, EntityStore, the ledger's own database connection and direct SQLite access read protected events without a purpose and without a log entry, and no such read can be detected here",
+  "the store draws the holdout seed and forbids refreezing any frozen event, but cannot stop a caller recording near-duplicate events to build a new eligible set",
+  "no TEST record, performance measurement or validation-run result is certified: they need H4 and H5"
  ],
  "environment": {
   "python": "3.11.17"
@@ -196,7 +298,7 @@
    "residual_limitation": "coordinated edits to every repository-held trust record cannot be cryptographically prevented by an in-repository trust anchor; only upstream provenance would anchor this, and it is out of M1 scope"
   },
   "anti_fitting": {
-   "modules_scanned": 213,
+   "modules_scanned": 214,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."
@@ -512,6 +614,210 @@
      "disposition": "GATED",
      "exercised_by": [
       "E_event_class_registry"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "evidence.historical_ledger",
+   "members": [
+    {
+     "callable": "engine.evidence.ledger.HistoricalLedger.admit",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "G_ledger_integrity",
+      "H_ledger_refusals"
+     ]
+    },
+    {
+     "callable": "engine.evidence.ledger.HistoricalLedger.correct",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "G_ledger_integrity",
+      "H_ledger_refusals"
+     ]
+    },
+    {
+     "callable": "engine.evidence.ledger.HistoricalLedger.history",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "G_ledger_integrity",
+      "H_ledger_refusals"
+     ]
+    },
+    {
+     "callable": "engine.evidence.ledger.HistoricalLedger.freeze_and_select",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "G_ledger_integrity",
+      "H_ledger_refusals",
+      "I_holdout_leakage"
+     ]
+    },
+    {
+     "callable": "engine.evidence.ledger.HistoricalLedger.holdout",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "G_ledger_integrity",
+      "H_ledger_refusals",
+      "I_holdout_leakage"
+     ]
+    },
+    {
+     "callable": "engine.evidence.ledger.HistoricalLedger.reproduces",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "G_ledger_integrity",
+      "I_holdout_leakage"
+     ]
+    },
+    {
+     "callable": "engine.evidence.ledger.HistoricalLedger.protected",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "G_ledger_integrity",
+      "H_ledger_refusals"
+     ]
+    },
+    {
+     "callable": "engine.evidence.ledger.HistoricalLedger.register_protocol",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "G_ledger_integrity",
+      "H_ledger_refusals",
+      "I_holdout_leakage"
+     ]
+    },
+    {
+     "callable": "engine.evidence.ledger.HistoricalLedger.protocol",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "G_ledger_integrity"
+     ]
+    },
+    {
+     "callable": "engine.evidence.ledger.HistoricalLedger.read",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "G_ledger_integrity",
+      "H_ledger_refusals",
+      "I_holdout_leakage"
+     ]
+    },
+    {
+     "callable": "engine.evidence.ledger.HistoricalLedger.counts",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "G_ledger_integrity"
+     ]
+    },
+    {
+     "callable": "engine.evidence.ledger.HistoricalLedger.access_log",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "G_ledger_integrity",
+      "H_ledger_refusals"
+     ]
+    },
+    {
+     "callable": "engine.evidence.ledger.HistoricalLedger.close",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "G_ledger_integrity",
+      "H_ledger_refusals",
+      "I_holdout_leakage"
+     ]
+    },
+    {
+     "callable": "engine.evidence.ledger.content_hash",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "G_ledger_integrity"
+     ]
+    },
+    {
+     "callable": "engine.evidence.ledger.ordered_selection",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "G_ledger_integrity",
+      "I_holdout_leakage"
+     ]
+    },
+    {
+     "callable": "engine.evidence.ledger.entry_to_record",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "G_ledger_integrity",
+      "H_ledger_refusals"
+     ]
+    },
+    {
+     "callable": "engine.evidence.ledger.entry_from_record",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "G_ledger_integrity",
+      "H_ledger_refusals"
+     ]
+    },
+    {
+     "callable": "engine.evidence.ledger.holdout_to_record",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "G_ledger_integrity"
+     ]
+    },
+    {
+     "callable": "engine.evidence.ledger.holdout_from_record",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "G_ledger_integrity"
+     ]
+    },
+    {
+     "callable": "engine.evidence.ledger.protocol_to_record",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "G_ledger_integrity",
+      "H_ledger_refusals"
+     ]
+    },
+    {
+     "callable": "engine.evidence.ledger.protocol_from_record",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "G_ledger_integrity",
+      "H_ledger_refusals"
+     ]
+    },
+    {
+     "callable": "engine.evidence.ledger.leakage_findings",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "G_ledger_integrity",
+      "H_ledger_refusals",
+      "I_holdout_leakage"
      ]
     }
    ]
