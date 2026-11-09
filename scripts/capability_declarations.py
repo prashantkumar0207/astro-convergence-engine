@@ -136,6 +136,7 @@ _CONVENTIONS = "engine.astrology.sign_conventions"
 _REPOSITORY = "engine.knowledge.repository.KnowledgeRepository"
 _STORE = "engine.evidence.store.EntityStore"
 _EVENT_STORE = "engine.evidence.event_store.EventStore"
+_LEDGER = "engine.evidence.ledger.HistoricalLedger"
 
 _DASHA_GATES = ("oracle_pratyantar_rows_compared", "oracle_lord_mismatches", "oracle_max_start_delta_days",
                 "independent_validator", "cases", "near_boundary_coverage", "boundary_proximity_indicator")
@@ -404,6 +405,31 @@ ARTIFACT_DECLARATIONS = {
                  _fn(f"{_EVENT_STORE}.close", "C_event_model_integrity", "D_event_store_refusals")),
             _cap("evidence.event_class_seed",
                  _data("engine.evidence.event_classes.SEED", "E_event_class_registry")),
+            # ADR-0116 s4: the H2 ledger, protected holdouts, protocols and access log.
+            _cap("evidence.historical_ledger",
+                 _fn(f"{_LEDGER}.admit", "G_ledger_integrity", "H_ledger_refusals"),
+                 _fn(f"{_LEDGER}.correct", "G_ledger_integrity", "H_ledger_refusals"),
+                 _fn(f"{_LEDGER}.history", "G_ledger_integrity", "H_ledger_refusals"),
+                 _fn(f"{_LEDGER}.freeze_and_select", "G_ledger_integrity", "H_ledger_refusals", "I_holdout_leakage"),
+                 _fn(f"{_LEDGER}.holdout", "G_ledger_integrity", "H_ledger_refusals", "I_holdout_leakage"),
+                 _fn(f"{_LEDGER}.reproduces", "G_ledger_integrity", "I_holdout_leakage"),
+                 _fn(f"{_LEDGER}.protected", "G_ledger_integrity", "H_ledger_refusals"),
+                 _fn(f"{_LEDGER}.register_protocol", "G_ledger_integrity", "H_ledger_refusals", "I_holdout_leakage"),
+                 _fn(f"{_LEDGER}.protocol", "G_ledger_integrity"),
+                 _fn(f"{_LEDGER}.read", "G_ledger_integrity", "H_ledger_refusals", "I_holdout_leakage"),
+                 _fn(f"{_LEDGER}.counts", "G_ledger_integrity"),
+                 _fn(f"{_LEDGER}.access_log", "G_ledger_integrity", "H_ledger_refusals"),
+                 _fn(f"{_LEDGER}.close", "G_ledger_integrity", "H_ledger_refusals", "I_holdout_leakage"),
+                 _fn("engine.evidence.ledger.content_hash", "G_ledger_integrity"),
+                 _fn("engine.evidence.ledger.ordered_selection", "G_ledger_integrity", "I_holdout_leakage"),
+                 _fn("engine.evidence.ledger.entry_to_record", "G_ledger_integrity", "H_ledger_refusals"),
+                 _fn("engine.evidence.ledger.entry_from_record", "G_ledger_integrity", "H_ledger_refusals"),
+                 _fn("engine.evidence.ledger.holdout_to_record", "G_ledger_integrity"),
+                 _fn("engine.evidence.ledger.holdout_from_record", "G_ledger_integrity"),
+                 _fn("engine.evidence.ledger.protocol_to_record", "G_ledger_integrity", "H_ledger_refusals"),
+                 _fn("engine.evidence.ledger.protocol_from_record", "G_ledger_integrity", "H_ledger_refusals"),
+                 _fn("engine.evidence.ledger.leakage_findings", "G_ledger_integrity", "H_ledger_refusals",
+                     "I_holdout_leakage")),
         ],
         "empty_exercises": {
             "F_negative_controls": "runs the other gates' comparators against planted wrong functions, so no "

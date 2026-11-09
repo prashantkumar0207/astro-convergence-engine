@@ -1,11 +1,11 @@
-"""EVIDENCE_FOUNDATIONS_V1 CERTIFICATION RUNNER (ADR-0115 s4).
+"""EVIDENCE_FOUNDATIONS_V1 CERTIFICATION RUNNER (ADR-0115 s4; ADR-0116 s4).
 
 Regenerates certification/EVIDENCE_FOUNDATIONS_V1_certification.json FROM SCRATCH on every run;
 the stored JSON is never accepted as proof.
 
 STRUCTURAL certification of the EVIDENCE foundations: the H0 entity model and store (ADR-0114),
-and the H1 event model, event store and EVR issuer (ADR-0115). It is NOT astrological-calculation
-certification and certifies no production analytical input. Every record it uses is synthetic, and
+the H1 event model, event store and EVR issuer (ADR-0115), and the H2 historical ledger and its
+protected holdouts (ADR-0116). It is NOT astrological-calculation certification and certifies no production analytical input. Every record it uses is synthetic, and
 nothing it runs scores, weights, fits or computes confidence. It needs no oracle.
 
 Gates:
@@ -20,11 +20,16 @@ Gates:
   E  the event-class seed against the career event registry, read here independently.
   F  every comparator above rejects a planted wrong function. A gate that cannot fail is not
      evidence.
+  G  H2 structural integrity: admission with outcomes, elicitation, superseding corrections,
+     decomposable counts, a reproducible holdout, a protocol, and a clean, durable access log.
+  H  H2 refusals: each one the WP-E3 contract requires, triggered for real; refused reads are logged.
+  I  the holdout's reproduction check and the leakage check each reject planted wrong inputs.
 
 Exit 0 = PASS, 3 = FAIL.
 """
 
 import dataclasses
+import json
 import re
 import sqlite3
 import sys
@@ -55,6 +60,11 @@ from engine.evidence.events import (  # noqa: E402
 )
 from engine.evidence.identifiers import EntityId, IdentifierError  # noqa: E402
 from engine.evidence.store import EntityStore, StoreError, subject_from_record, subject_to_record  # noqa: E402
+from engine.evidence.ledger import (  # noqa: E402
+    EXCLUDED_FROM_PROTECTED, Elicitation, HistoricalLedger, LedgerError, Outcome, Protocol, Purpose, content_hash,
+    entry_from_record, entry_to_record, holdout_from_record, holdout_to_record, leakage_findings, ordered_selection,
+    protocol_from_record, protocol_to_record,
+)
 
 #: A number no certifier store reaches, for the dangling-reference controls.
 LAST_TEST = 99999999
@@ -553,6 +563,274 @@ def gate_f_negative_controls():
     return {"classification": "negative_control", "controls_rejected": len(controls), "controls": sorted(controls)}
 
 
+# ------------------------------------------------------------------ H2
+
+def _ledger_world(path):
+    """A synthetic entity, and an event store, in one database."""
+
+    entities = EntityStore(path)
+    owner = entities.persist(_synthetic_subjects()[0])
+    events = EventStore(path)
+    return entities, events, owner
+
+
+def _answered(events, owner, day, state=ConfirmationState.CONFIRMED, kind=AsserterKind.USER_RECOLLECTION,
+              event_class=SEED[0].class_id):
+    identifier = events.persist(_event(owner, EventTime(TimeKind.INSTANT, TimeUnit.DAY, "UTC", "fixture",
+                                                        at=f"2010-01-{day:02d}"), kind, event_class=event_class))
+    if state is not None:
+        events.confirm(identifier, 1, _answer(state, "" if state is ConfirmationState.CONFIRMED else "stated reason"))
+    return identifier
+
+
+def _protocol(holdout, minimum_n):
+    return Protocol(holdout=holdout, event_classes=(SEED[0].class_id,), hypotheses=("synthetic hypothesis",),
+                    rule_references=(), development_set="entries outside the holdout", hypothesis_count=1,
+                    event_count=4, multiple_comparison_method="Bonferroni", effect_size_measures=("risk difference",),
+                    negative_controls=("events shifted to random dates",), replication="not feasible: synthetic",
+                    minimum_n=minimum_n, provenance=PROVENANCE, data_class=DataClass.SYNTHETIC)
+
+
+def gate_g_ledger_integrity():
+    """H2 structural integrity: admission, elicitation, correction, decomposable counts and the holdout (ADR-0116 s5)."""
+
+    with tempfile.TemporaryDirectory() as folder:
+        path = Path(folder) / "evidence.sqlite"
+        entities, events, owner = _ledger_world(path)
+        ledger = HistoricalLedger(path)
+        confirmed = [_answered(events, owner, day) for day in range(1, 9)]
+        partial = _answered(events, owner, 9, ConfirmationState.PARTIALLY_CONFIRMED, event_class=SEED[4].class_id)
+        rejected = _answered(events, owner, 10, ConfirmationState.REJECTED, AsserterKind.SYSTEM_HYPOTHESIS)
+        elicitations = list(Elicitation)
+        for index, identifier in enumerate(confirmed + [partial, rejected]):
+            ledger.admit(identifier, elicitations[index % len(elicitations)], PROVENANCE)
+        audit = ledger.read(Purpose.AUDIT)
+        if [entry.outcome for entry in audit].count(Outcome.REJECTED) != 1 or len(audit) != 10:
+            fail("the ledger did not admit every answered event with its outcome, rejections included")
+        if any(entry_from_record(entry_to_record(entry)) != entry for entry in audit):
+            fail("a ledger entry did not round-trip")
+        counts = ledger.counts(Purpose.AUDIT)
+        for axis in ("event_class", "elicitation", "outcome"):
+            parts = [set(members) for members in counts[axis].values()]
+            if set().union(*parts) != set(counts["total"]) or sum(len(part) for part in parts) != len(counts["total"]):
+                fail(f"the {axis} partition does not decompose the total")
+        events.append_revision(partial, dataclasses.replace(events.load(partial), time=EventTime(
+            TimeKind.INSTANT, TimeUnit.DAY, "UTC", "fixture", at="2011-02-01")), "recalled 2011")
+        events.confirm(partial, 2, _answer(ConfirmationState.CONFIRMED, ""))
+        second = ledger.correct(partial, Elicitation.VOLUNTEERED, PROVENANCE, "event corrected and re-answered")
+        history = ledger.history(partial)
+        if len(history) != 2 or history[1][2] != history[0][0] or history[1][0] != second or \
+                history[0][1].event_revision != 1 or history[1][1].event_revision != 2:
+            fail("a correction did not append a superseding entry beside the one it supersedes")
+        number = ledger.freeze_and_select("the eight confirmed entries", confirmed, 3)
+        holdout = ledger.holdout(number)
+        if not ledger.reproduces(number) or holdout_from_record(holdout_to_record(holdout)) != holdout:
+            fail("the holdout does not reproduce from its own record")
+        if ordered_selection(holdout.seed, holdout.members, holdout.size) != holdout.selected or \
+                content_hash(holdout.members) != holdout.content_hash or ledger.protected() != set(holdout.selected):
+            fail("the recorded selection, hash or protection disagrees with the procedure")
+        development = {entry.event for entry in ledger.read(Purpose.DEVELOPMENT)}
+        if development & set(holdout.selected) or len(development) != 10 - holdout.size:
+            fail("a development read saw a protected entry")
+        registered = _protocol(number, 3)
+        protocol_number = ledger.register_protocol(registered)
+        if ledger.protocol(protocol_number) != registered or \
+                protocol_from_record(protocol_to_record(registered)) != registered:
+            fail("a protocol did not round-trip")
+        served = {entry.event for entry in ledger.read(Purpose.PROTECTED_VALIDATION, protocol_number)}
+        if served != set(holdout.selected):
+            fail("protected validation did not serve exactly the holdout")
+        log = ledger.access_log()
+        if [row[3] for row in log] != [True] * 4 or leakage_findings(path) != []:
+            fail("a clean run was not logged as granted reads with no leakage")
+        ledger.close()
+        events.close()
+        entities.close()
+        reopened = HistoricalLedger(path)
+        durable = reopened.reproduces(number) and reopened.holdout(number) == holdout and \
+            len(reopened.access_log()) == len(log)
+        reopened.close()
+        if not durable:
+            fail("the ledger, holdout or access log is not durable across reopening")
+    return {"classification": "structural_integrity", "entries_admitted": 10, "outcomes": len(Outcome),
+            "elicitation_kinds": len(Elicitation), "count_axes": 3, "corrections_checked": 1, "holdout_members": 8,
+            "holdout_selected": 3, "protocols_checked": 1, "access_rows_checked": len(log), "mismatches": 0}
+
+
+def gate_h_ledger_refusals():
+    """Each H2 refusal the WP-E3 contract requires, triggered for real (ADR-0116 s5 AC1 to AC12)."""
+
+    refused = {}
+
+    def refuses(label, action, errors=(LedgerError,), reason=""):
+        try:
+            action()
+        except errors as exc:
+            if reason not in str(exc):
+                fail(f"{label} was refused for another reason: {exc}")
+            refused[label] = True
+            return
+        fail(f"not refused: {label}")
+
+    with tempfile.TemporaryDirectory() as folder:
+        path = Path(folder) / "evidence.sqlite"
+        entities, events, owner = _ledger_world(path)
+        ledger = HistoricalLedger(path)
+        members = [_answered(events, owner, day) for day in range(1, 7)]
+        extra = [_answered(events, owner, day) for day in range(7, 9)]
+        rejected = _answered(events, owner, 9, ConfirmationState.REJECTED)
+        unanswered = _answered(events, owner, 10, None)
+        unconfirmed = _answered(events, owner, 11, ConfirmationState.UNCONFIRMED)
+        for identifier in members + extra + [rejected]:
+            ledger.admit(identifier, Elicitation.VOLUNTEERED, PROVENANCE)
+        refuses("admitting an unanswered event", lambda: ledger.admit(unanswered, Elicitation.VOLUNTEERED, PROVENANCE),
+                reason="no human answer")
+        refuses("admitting an event answered unconfirmed",
+                lambda: ledger.admit(unconfirmed, Elicitation.VOLUNTEERED, PROVENANCE), reason="no human answer")
+        refuses("admitting an event twice", lambda: ledger.admit(members[0], Elicitation.VOLUNTEERED, PROVENANCE),
+                reason="already")
+        refuses("admitting without an elicitation", lambda: ledger.admit(unanswered, None, PROVENANCE),
+                reason="elicited")
+        refuses("a correction that changes nothing",
+                lambda: ledger.correct(members[0], Elicitation.VOLUNTEERED, PROVENANCE, "no change"),
+                reason="change something")
+        refuses("a correction with no reason",
+                lambda: ledger.correct(members[0], Elicitation.PROMPTED_FOR_NULL_PERIOD, PROVENANCE, " "),
+                reason="reason")
+        entry = ledger.read(Purpose.AUDIT, event_id=members[0])[0]
+        for key in ("interpretation", "rule_id", "planet", "score", "confidence"):
+            planted = entry_to_record(entry)
+            planted["entry"][key] = 1
+            refuses(f"analytical key {key} on a ledger entry", lambda planted=planted: entry_from_record(planted),
+                    reason="refused")
+            planted = protocol_to_record(_protocol(1, 1))
+            planted["protocol"][key] = 1
+            refuses(f"analytical key {key} on a protocol", lambda planted=planted: protocol_from_record(planted),
+                    reason="refused")
+        refuses("a non-synthetic ledger entry", lambda: dataclasses.replace(entry, data_class="real"),
+                reason="synthetic")
+        refuses("a protocol citing rules before RUL exists", lambda: dataclasses.replace(
+            _protocol(1, 1), rule_references=("a rule",)), reason="RUL")
+        refuses("a protocol whose hypothesis count disagrees", lambda: dataclasses.replace(
+            _protocol(1, 1), hypothesis_count=2), reason="hypothesis_count")
+        refuses("a protocol with no minimum N", lambda: dataclasses.replace(_protocol(1, 1), minimum_n=0),
+                reason="minimum_n")
+        refuses("a protocol naming no locked holdout", lambda: ledger.register_protocol(_protocol(1, 1)),
+                reason="locked holdout")
+        refuses("a rejected entry in an eligible set",
+                lambda: ledger.freeze_and_select("bad", members[:2] + [rejected], 1), reason="not a confirmed")
+        refuses("an event outside the ledger in an eligible set",
+                lambda: ledger.freeze_and_select("bad", members[:2] + [unanswered], 1), reason="not a confirmed")
+        number = ledger.freeze_and_select("six", members, 3)
+        holdout = ledger.holdout(number)
+        for label, again in (("refreezing the same set", members), ("refreezing it reordered", members[::-1]),
+                             ("refreezing a subset", members[:2]), ("refreezing a superset", members + extra),
+                             ("refreezing an overlapping set", members[5:] + extra)):
+            refuses(label, lambda again=again: ledger.freeze_and_select("again", again, 1), reason="frozen set")
+        if ledger.holdout(number) != holdout or ledger.protected() != set(holdout.selected):
+            fail("a refused reselection changed the holdout or its protection")
+        refuses("a second selection row for a frozen set", lambda: ledger._db.execute(
+            "INSERT INTO holdouts (set_number, after_access, payload) VALUES (1, 0, '{}')"), (sqlite3.IntegrityError,))
+        short = ledger.register_protocol(_protocol(number, holdout.size + 1))
+        for table in ("ledger_entries", "eligible_sets", "eligible_members", "holdouts", "protected_events",
+                      "protocols", "access_log"):
+            if not ledger._db.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]:
+                fail(f"{table} is empty, so a refused update or delete of it would prove nothing")
+        for table, column in (("ledger_entries", "reason"), ("eligible_sets", "payload"),
+                              ("eligible_members", "set_number"), ("holdouts", "payload"),
+                              ("protected_events", "holdout_number"), ("protocols", "payload"),
+                              ("access_log", "note")):
+            for verb, sql in (("update", f"UPDATE {table} SET {column} = {column}"), ("delete", f"DELETE FROM {table}")):
+                refuses(f"{verb} {table}", lambda sql=sql: ledger._db.execute(sql), (sqlite3.DatabaseError,),
+                        reason="append-only")
+        logged = len(ledger.access_log())
+        for purpose in sorted(EXCLUDED_FROM_PROTECTED, key=lambda item: item.value):
+            refuses(f"a {purpose.value} read of a protected entry",
+                    lambda purpose=purpose: ledger.read(purpose, event_id=holdout.selected[0]), reason="not available")
+        refuses("a read with no declared purpose", lambda: ledger.read(None), reason="Purpose")
+        refuses("protected validation with no protocol", lambda: ledger.read(Purpose.PROTECTED_VALIDATION),
+                reason="registered protocol")
+        refuses("protected validation under an unregistered protocol",
+                lambda: ledger.read(Purpose.PROTECTED_VALIDATION, LAST_TEST), reason="no protocol")
+        refuses("protected validation below the protocol's minimum N",
+                lambda: ledger.read(Purpose.PROTECTED_VALIDATION, short), reason="minimum N")
+        refuses("an audit read naming a protocol", lambda: ledger.read(Purpose.AUDIT, short), reason="names no protocol")
+        log = ledger.access_log()
+        if len(log) != logged + 9 or any(row[3] for row in log[logged:]) or                 log[logged + 4][1] != "undeclared":
+            fail("a refused ledger read was not logged as refused")
+        if leakage_findings(path) != []:
+            fail("refused reads were reported as leakage")
+        # Last, because it plants a raw row: one entry can be superseded only once, so history cannot fork.
+        first_entry = ledger.history(members[0])[0][0]
+        ledger._db.execute("INSERT INTO ledger_entries (event_id, supersedes, payload, reason) VALUES (?, ?, '{}', 'x')",
+                           (members[1].value, first_entry))
+        refuses("a second entry superseding the same entry", lambda: ledger._db.execute(
+            "INSERT INTO ledger_entries (event_id, supersedes, payload, reason) VALUES (?, ?, '{}', 'x')",
+            (members[2].value, first_entry)), (sqlite3.IntegrityError,))
+        ledger.close()
+        events.close()
+        entities.close()
+    return {"classification": "negative_control", "refusals_verified": len(refused), "refused": sorted(refused)}
+
+
+def gate_i_holdout_leakage():
+    """The holdout re-derives from its record, and the leakage check flags every planted leak (H2 s5, s8)."""
+
+    controls = {}
+    with tempfile.TemporaryDirectory() as folder:
+        path = Path(folder) / "evidence.sqlite"
+        entities, events, owner = _ledger_world(path)
+        ledger = HistoricalLedger(path)
+        members = [_answered(events, owner, day) for day in range(1, 11)]
+        for identifier in members:
+            ledger.admit(identifier, Elicitation.PROMPTED_FOR_NULL_PERIOD, PROVENANCE)
+        ledger.read(Purpose.DEVELOPMENT)
+        number = ledger.freeze_and_select("ten", members, 4)
+        holdout = ledger.holdout(number)
+        protocol_number = ledger.register_protocol(_protocol(number, 4))
+        ledger.read(Purpose.PROTECTED_VALIDATION, protocol_number)
+        if not ledger.reproduces(number) or leakage_findings(path) != []:
+            fail("a clean holdout did not reproduce, or a clean log reported leakage")
+        for label, planted in (("another seed", dataclasses.replace(holdout, seed="0" * 64)),
+                               ("first-k instead of the hash order",
+                                dataclasses.replace(holdout, selected=tuple(sorted(holdout.members)[:holdout.size])))):
+            if planted.selected == ordered_selection(planted.seed, planted.members, planted.size):
+                fail(f"the reproduction check accepted a selection from {label}")
+            controls[f"selection from {label} rejected"] = True
+        outside = sorted(set(members) - set(holdout.selected))[0].value
+        db = ledger._db
+        for purpose in sorted(EXCLUDED_FROM_PROTECTED, key=lambda item: item.value):
+            db.execute("INSERT INTO access_log (purpose, protocol_number, granted, served, note) "
+                       "VALUES (?, NULL, 1, ?, 'planted')", (purpose.value, json.dumps([holdout.selected[0].value])))
+        db.execute("INSERT INTO access_log (purpose, protocol_number, granted, served, note) "
+                   "VALUES ('protected_validation', ?, 1, '[]', 'planted')", (LAST_TEST,))
+        db.execute("INSERT INTO access_log (purpose, protocol_number, granted, served, note) "
+                   "VALUES ('protected_validation', ?, 1, ?, 'planted')", (protocol_number, json.dumps([outside])))
+        db.execute("INSERT INTO access_log (purpose, protocol_number, granted, served, note) "
+                   "VALUES ('undeclared', NULL, 1, '[]', 'planted')")
+        (last,) = db.execute("SELECT MAX(access_number) FROM access_log").fetchone()
+        late = db.execute("INSERT INTO protocols (holdout_number, after_access, payload) VALUES (?, ?, '{}')",
+                          (number, last + 1)).lastrowid
+        db.execute("INSERT INTO access_log (purpose, protocol_number, granted, served, note) "
+                   "VALUES ('protected_validation', ?, 1, '[]', 'planted')", (late,))
+        findings = leakage_findings(path)
+        planted_leaks = [(f"protected entry served for {purpose.value}", "L1", f"served for {purpose.value}")
+                         for purpose in sorted(EXCLUDED_FROM_PROTECTED, key=lambda item: item.value)]
+        planted_leaks += [("protected validation with no protocol", "L2", "no registered protocol"),
+                          ("protected validation before its protocol", "L2", f"before protocol {late}"),
+                          ("protected validation outside its holdout", "L3", outside),
+                          ("a granted read with no declared purpose", "L4", "no declared purpose")]
+        for label, code, fragment in planted_leaks:
+            if not any(finding.startswith(code) and fragment in finding for finding in findings):
+                fail(f"the leakage check missed a planted leak: {label}")
+            controls[f"planted leak flagged: {label}"] = True
+        ledger.close()
+        events.close()
+        entities.close()
+    return {"classification": "negative_control", "controls_rejected": len(controls), "controls": sorted(controls),
+            "holdout_members": len(members), "holdout_selected": 4}
+
+
 def main():
     tee = support.start_transcript()
     preconditions = support.preflight()
@@ -563,16 +841,22 @@ def main():
         "D_event_store_refusals": gate_d_event_store_refusals(),
         "E_event_class_registry": gate_e_event_class_registry(),
         "F_negative_controls": gate_f_negative_controls(),
+        "G_ledger_integrity": gate_g_ledger_integrity(),
+        "H_ledger_refusals": gate_h_ledger_refusals(),
+        "I_holdout_leakage": gate_i_holdout_leakage(),
     }
     report = {
         "schema": "evidence_foundations_v1_certification",
-        "adr": "ADR-0115 s4",
+        "adr": "ADR-0115 s4; ADR-0116 s4",
         "date": str(date.today()),
         "scope": ("Structural certification of the EVIDENCE foundations: the H0 entity model, append-only entity store "
                   "and ENT issuer (ADR-0114 WP-E1), and the H1 event model, append-only event store, separate "
-                  "confirmation records, EVR issuer and seeded event-class vocabulary (ADR-0115 WP-E2)."),
+                  "confirmation records, EVR issuer and seeded event-class vocabulary (ADR-0115 WP-E2), and the H2 "
+                  "historical ledger, protected holdouts, pre-registered protocols and purpose-declared access log "
+                  "(ADR-0116 WP-E3)."),
         "reference": {
-            "structure": "the model contracts of ADR-0114 s3 and ADR-0115 s5, exercised on synthetic records",
+            "structure": "the model contracts of ADR-0114 s3, ADR-0115 s5 and ADR-0116 s5, exercised on synthetic "
+                         "records",
             "event_classes": f"{REGISTRY_PATH} s3, read by this runner independently of the code",
         },
         "gates": gates,
@@ -586,6 +870,12 @@ def main():
             "admissibility as validation input is a gate on system hypotheses and rejections only; H2 and H4 may add "
             "requirements",
             "SUPPORT_PATHS_V1 gates H and I still certify the H0 foundations; this artifact does not retire them",
+            "the ledger's purpose check and leakage check cover reads through the ledger only: EventStore, "
+            "EntityStore, the ledger's own database connection and direct SQLite access read protected events "
+            "without a purpose and without a log entry, and no such read can be detected here",
+            "the store draws the holdout seed and forbids refreezing any frozen event, but cannot stop a caller "
+            "recording near-duplicate events to build a new eligible set",
+            "no TEST record, performance measurement or validation-run result is certified: they need H4 and H5",
         ],
         "environment": {"python": sys.version.split()[0]},
         "preconditions": preconditions,
