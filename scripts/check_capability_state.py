@@ -93,6 +93,11 @@ FROZEN_EVIDENCE = frozenset({
 # a documentation edit cannot move a declared capability out of the declared set.
 NON_DECLARING_SUPPORT = frozenset({"SUPPORT_PATHS_V1"})
 
+# Structural certification of the EVIDENCE foundations (ADR-0115 s4). It is NOT astrological-calculation
+# certification and NOT a production analytical input, so it has its own list, apart from certified
+# support. Pinned here for the same reason as NON_DECLARING_SUPPORT.
+EVIDENCE_STRUCTURE = frozenset({"EVIDENCE_FOUNDATIONS_V1"})
+
 # D-1. Where a certification artifact records its verdict. `current_engine`
 # (Tier-0, ADR-0005) carries it at summary.result, not at top level, and the
 # original implementation therefore skipped the most foundational certification
@@ -310,7 +315,8 @@ def check_declared_inputs(block: dict, registered: set[int], dedicated: set[int]
 
     passing = {name for name, result in artifacts.items() if result == "PASS"}
     live = {f"D{division}" for division in registered | dedicated} | {
-        name for name in passing if not name.startswith("VARGA_D") and name not in NON_DECLARING_SUPPORT}
+        name for name in passing
+        if not name.startswith("VARGA_D") and name not in NON_DECLARING_SUPPORT | EVIDENCE_STRUCTURE}
     support = block.get("certified_support_not_declared", [])
     if set(support) != NON_DECLARING_SUPPORT:
         errors.append(f"F18 certified_support_not_declared states {sorted(support)}; "
@@ -320,6 +326,16 @@ def check_declared_inputs(block: dict, registered: set[int], dedicated: set[int]
             errors.append(f"F18 {name} is listed as certified support, but holds no PASS artifact")
         if name in lists or name in claimed:
             errors.append(f"F18 {name} is certified support, and must not be in a declaring list")
+    structure = block.get("certified_evidence_structure_not_calculation", [])
+    if set(structure) != EVIDENCE_STRUCTURE or len(structure) != len(EVIDENCE_STRUCTURE):
+        errors.append(f"F19 certified_evidence_structure_not_calculation states {sorted(structure)}; "
+                      f"exactly {sorted(EVIDENCE_STRUCTURE)} is evidence-structure certification")
+    for name in sorted(EVIDENCE_STRUCTURE):
+        if artifacts.get(name) != "PASS":
+            errors.append(f"F19 {name} is listed as evidence-structure certification, but holds no PASS artifact")
+        if name in lists or name in claimed or name in support:
+            errors.append(f"F19 {name} is evidence-structure certification, not astrological calculation or "
+                          f"certified support, and must not be in a declaring or support list")
     for name in sorted(live - claimed):
         errors.append(f"F15 {name} is live but missing from declared_production_analytical_inputs")
     for name in sorted(claimed - live):
@@ -517,7 +533,7 @@ def check(
 
     # Completeness: a PASS artifact accounted for nowhere. Without this, a
     # document could pass by simply omitting a capability.
-    accounted = set(claimed_capabilities) | NON_DECLARING_SUPPORT
+    accounted = set(claimed_capabilities) | NON_DECLARING_SUPPORT | EVIDENCE_STRUCTURE
     for division in claimed_production | claimed_unregistered:
         accounted.add(f"VARGA_D{division}_V1")
     for name in sorted(passing - accounted):

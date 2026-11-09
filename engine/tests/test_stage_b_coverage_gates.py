@@ -182,8 +182,9 @@ def test_c3_pristine_passes(corpus, graph):
 
 
 def test_c3_covers_exactly_the_adr_0102_universe():
-    # ADR-0102 s2's 22, plus the artifact ADR-0108 s4 item 5's certification route added.
-    assert len(c3.SCOPE_BEARING_ARTIFACTS) == 23 and "SUPPORT_PATHS_V1_certification.json" in c3.SCOPE_BEARING_ARTIFACTS
+    # ADR-0102 s2's 22, plus the artifact ADR-0108 s4 item 5's certification route added, plus ADR-0115 s4's.
+    assert len(c3.SCOPE_BEARING_ARTIFACTS) == 24 and "SUPPORT_PATHS_V1_certification.json" in c3.SCOPE_BEARING_ARTIFACTS
+    assert "EVIDENCE_FOUNDATIONS_V1_certification.json" in c3.SCOPE_BEARING_ARTIFACTS
     frozen = c2.FROZEN_EVIDENCE
     assert not frozen & set(c3.SCOPE_BEARING_ARTIFACTS)
     assert set(c3.SCOPE_BEARING_ARTIFACTS) | frozen == {p.name for p in (ROOT / "certification").glob("*.json")}

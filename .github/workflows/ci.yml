@@ -122,6 +122,8 @@ jobs:
           python scripts/certify_rise_set.py
           python scripts/certify_kp_significator.py
           python scripts/certify_parashari_yoga.py
+          # ADR-0115 s4: structural EVIDENCE certification. It imports no oracle and needs no network.
+          python scripts/certify_evidence_foundations.py
 
       - name: Re-run a representative subset under the in-process network guard
         run: |
@@ -136,6 +138,7 @@ jobs:
           python scripts/ci_no_network.py scripts/certify_rise_set.py
           python scripts/ci_no_network.py scripts/certify_kp_significator.py
           python scripts/ci_no_network.py scripts/certify_parashari_yoga.py
+          python scripts/ci_no_network.py scripts/certify_evidence_foundations.py
 
       - name: Assert the network guard actually blocks (negative control)
         run: |
