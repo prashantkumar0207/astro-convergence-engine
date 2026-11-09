@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.33.0 |
+| Version | 9.34.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-09 (WP-E2 merged and closed (`dfdfadb`). WP-E3's exit criteria fixed in `ADR-0116`, before coding.) |
+| Last updated | 2026-11-09 (WP-E3, the H2 historical ledger and protected holdouts, is on review branch `evidence-wp-e3-historical-ledger`. Not merged.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,24 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-09 - WP-E3 H2 historical ledger and protected holdouts on review (ADR-0116)
+
+**Not merged.** The CEO said PROCEED, with two clarifications; both are implemented.
+
+- **`engine/evidence/ledger.py`:**
+  - Admission takes answered events only. Rejections are retained. Every entry records how the event was elicited.
+  - A correction appends a superseding entry, and one entry is superseded only once.
+  - Freezing a set and selecting its holdout happen in one transaction, with a seed the store draws and a SHA-256 order
+    anyone can re-derive. An event belongs to one frozen set ever, so no equivalent or overlapping set can be reselected.
+  - Protection cannot be cleared.
+  - Every ledger read declares a purpose and is logged, granted or refused. Protected validation needs a registered
+    protocol, at its minimum N. `leakage_findings()` audits the log.
+- **Disclosed limit:** reads through `EventStore`, `EntityStore`, raw connections or the SQLite file are not purpose-checked
+  or logged. The leakage check covers ledger reads only.
+- **Certification:** `EVIDENCE_FOUNDATIONS_V1` gains gates G (integrity), H (53 refusals) and I (10 rejected planted
+  inputs). Gates A to F are unchanged.
+- **Out of scope:** TEST and performance records (they need H4 and H5); scoring; API. No new identifier family.
 
 ### 2026-11-09 - WP-E2 merged and closed; WP-E3 exit criteria fixed (ADR-0116)
 

@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | **ACCEPTED (`ADR-0062`) - canonical, machine-checkable current-state record.** Regenerate/refresh on every meaningful implementation task, same discipline as `reports/AI_HANDOFF_CURRENT.md`. |
-| Version | 7.33.0 |
+| Version | 7.34.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-09 (**WP-E2 merged and closed (`dfdfadb`, `ADR-0116` s2). WP-E3's exit criteria fixed in `ADR-0116` s5, before coding, on branch `evidence-wp-e3-historical-ledger`.**) |
+| Last updated | 2026-11-09 (**WP-E3, the H2 historical ledger and protected holdouts, is on review branch `evidence-wp-e3-historical-ledger`. Not merged.**) |
 | Review cadence | Refresh at the start of a session if stale; not load-bearing if it isn't. |
 
 # ACE execution state
@@ -43,20 +43,20 @@ independently is in these fields plus the pointers they name.
 | Field | Value |
 |---|---|
 | `CURRENT_PHASE` | **EVIDENCE entered** (`ADR-0114`, owner-authorized 2026-11-07, from `main` `90cd0ca`). JATAKA exited (`ADR-0110`). Mandatory CEO checkpoints remain: the evidence model (H4), and phase exit. |
-| `CURRENT_MILESTONE` | **WP-E3 (H2 historical event ledger and protected-holdout infrastructure): exit criteria fixed in `ADR-0116`, before coding.** WP-E2 closed: PR #49 merged as `dfdfadb`. |
-| `CURRENT_AUTHORIZED_TASK` | WP-E3, implemented against `ADR-0116` s4 and s5 on branch `evidence-wp-e3-historical-ledger`, and submitted as a separate review PR. |
-| `TASK_OWNER` | CLAUDE (WP-E3 implementation); CHATGPT (review); USER (merge authorization). |
-| `STATUS` | WP-E3 criteria fixed; no WP-E3 code yet. |
-| `LAST_COMPLETED_ACTION` | Merged PR #49 on the owner's authorization; recorded `ADR-0116` (WP-E2 closure, three ratified decisions, WP-E3 criteria). |
+| `CURRENT_MILESTONE` | **WP-E3 (H2 historical event ledger and protected-holdout infrastructure) on a review PR.** WP-E2 closed: PR #49 merged as `dfdfadb`. |
+| `CURRENT_AUTHORIZED_TASK` | None self-executable beyond the WP-E3 review PR. |
+| `TASK_OWNER` | CHATGPT (review of WP-E3); USER (merge authorization). |
+| `STATUS` | WP-E3 review PR, not merged. No certified calculation changed: existing artifacts differ only in volatile fields and `modules_scanned`. `EVIDENCE_FOUNDATIONS_V1` gains gates G, H and I, and its gates A to F are unchanged. `SUPPORT_PATHS_V1` untouched. |
+| `LAST_COMPLETED_ACTION` | Implemented WP-E3 against `ADR-0116` s5 and the CEO's two clarifications (holdout locking; purpose-declared reads, with the uncontrolled paths disclosed). |
 | `LAST_COMMIT` (main) | `dfdfadbed219ba44a026dcb935866640e4ac483b` (PR #49 merge; parents `06267f1` and `d1c2ee8`). |
 | `LAST_COMMIT` (evidence-wp-e3-historical-ledger) | This branch's commits, on top of `dfdfadbed219ba44a026dcb935866640e4ac483b`. |
-| `LAST_CI_RUN` | `42589414966` at `dfdfadbe`: push to `main`, success on all four jobs. |
-| `LAST_CEO_DECISION` | WP-E2 PASS, as the owner states. |
-| `NEXT_AUTHORIZED_ACTION` | Implement WP-E3 against `ADR-0116`. Its merge, the retirement of `SUPPORT_PATHS_V1` gates H and I, and any further work package need separate approval. |
-| `WAITING_FOR` | CHATGPT: review of the WP-E3 PR once submitted. USER: its merge authorization. |
-| `BLOCKER` | None. |
+| `LAST_CI_RUN` | `42589414966` at `dfdfadbe`: push to `main`, success on all four jobs. This branch's results are on its review PR. |
+| `LAST_CEO_DECISION` | WP-E3 PROCEED, with two clarifications. |
+| `NEXT_AUTHORIZED_ACTION` | None self-executable. WP-E3's merge, the retirement of `SUPPORT_PATHS_V1` gates H and I, and any further work package need separate approval. |
+| `WAITING_FOR` | CHATGPT: review of WP-E3. USER: merge authorization, and direction on the next work package. |
+| `BLOCKER` | None for this delivery. |
 | `CEO_APPROVAL_REQUIRED` | WP-E3's merge (`ADR-0106` OR-3); the evidence-model checkpoint (Q8 s6); phase exit. |
-| `CLAUDE_ACTION_REQUIRED` | Implement WP-E3. |
+| `CLAUDE_ACTION_REQUIRED` | None until directed. |
 | `CHATGPT_ACTION_REQUIRED` | Review of the WP-E3 PR. |
 | `USER_ACTION_REQUIRED` | Merge authorization for WP-E3; a separate authorization for the bounded retirement of `SUPPORT_PATHS_V1` gates H and I. |
 | `HANDOFF_REQUIRED` | None beyond this file and the latest entry in `reports/AI_HANDOFF_CURRENT.md`. |
@@ -79,6 +79,7 @@ exactly as `reports/AI_HANDOFF_CURRENT.md` already requires of itself.
 
 | Version | Date | Change |
 |---|---|---|
+| 7.34.0 | 2026-11-09 | **WP-E3 implemented and on review** (`ADR-0116`; the CEO's PROCEED and two clarifications). |
 | 7.33.0 | 2026-11-09 | **WP-E2 merged (`dfdfadb`, post-merge CI `42589414966`) and closed; three decisions ratified; WP-E3 criteria fixed (`ADR-0116`).** |
 | 7.32.0 | 2026-11-09 | **WP-E1 merged (`06267f1`, post-merge CI `42581789417`) and closed (`ADR-0115` s2); WP-E2 implemented and on review.** |
 | 7.31.0 | 2026-11-07 | **EVIDENCE entered (`ADR-0114`); WP-E1 implemented and on review.** Also records PR #47's merge. |
