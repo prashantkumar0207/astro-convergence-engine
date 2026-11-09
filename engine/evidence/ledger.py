@@ -11,7 +11,8 @@
   draws its own seed and selects the holdout by a recorded, reproducible hash ordering. An event can
   belong to one frozen set only, ever, so no equivalent or overlapping set can be frozen again under
   another seed. Protection is set once, at selection, and nothing clears it.
-- Access (H2 s5, s9): every ledger read declares a purpose and is logged, granted or refused.
+- Access (H2 s5, s9): every ledger read, an entry's history included, declares a purpose and is
+  logged, granted or refused; a malformed request is logged as a refusal, never let past the log.
   Protected entries are never served for selection, tuning, rectification or development. Protected
   validation needs a protocol registered after the holdout was locked and before the read, naming
   that holdout, with the holdout holding at least the protocol's minimum N.
@@ -357,6 +358,18 @@ def protocol_from_record(record: dict) -> Protocol:
         data_class=DataClass(data["data_class"]))
 
 
+#: Stands in for a history read that names no event, so the refusal is decided, and logged, like any other.
+_MISSING = object()
+#: SQLite stores a signed 64-bit integer; a protocol number outside 1 .. 2**63 - 1 is malformed.
+_PROTOCOL_LIMIT = 2 ** 63
+
+
+def _protocol_number(value) -> bool:
+    """A well-formed protocol number: a plain int (not bool) that SQLite can store, and positive."""
+
+    return type(value) is int and 0 < value < _PROTOCOL_LIMIT
+
+
 def _encode(record: dict) -> str:
     return json.dumps(record, sort_keys=True, separators=(",", ":"))
 
@@ -456,15 +469,24 @@ class HistoricalLedger:
             "(SELECT supersedes FROM ledger_entries WHERE supersedes IS NOT NULL) ORDER BY event_id")
         return {value: entry_from_record(json.loads(payload)) for value, payload in rows}
 
-    def history(self, event_id: EventRecordId) -> list:
-        """Every entry this event has had, oldest first: (entry number, entry, supersedes, reason)."""
+    def history(self, purpose: Purpose, event_id: EventRecordId, protocol: int | None = None) -> list:
+        """Every entry this event has had, oldest first: (entry number, entry, supersedes, reason).
 
-        rows = self._db.execute("SELECT entry_number, payload, supersedes, reason FROM ledger_entries "
-                                "WHERE event_id = ? ORDER BY entry_number", (event_id.value,)).fetchall()
-        if not rows:
-            raise LedgerError(f"{event_id} is not in the ledger")
-        return [(number, entry_from_record(json.loads(payload)), supersedes, reason)
-                for number, payload, supersedes, reason in rows]
+        A history read is a ledger read: it declares a purpose, sees only what that purpose may see, and is
+        logged whether granted or refused. A protected event's history, superseded entries included, is
+        never served for selection, tuning, rectification or development.
+        """
+
+        def serve(visible):
+            (value,) = visible
+            return [(number, entry_from_record(json.loads(payload)), supersedes, reason)
+                    for number, payload, supersedes, reason in self._db.execute(
+                        "SELECT entry_number, payload, supersedes, reason FROM ledger_entries "
+                        "WHERE event_id = ? ORDER BY entry_number", (value,))]
+
+        if event_id is None:
+            event_id = _MISSING
+        return self._gated(purpose, protocol, event_id, serve, "granted: history")
 
     # ------------------------------------------------------------ holdouts
 
@@ -568,8 +590,56 @@ class HistoricalLedger:
         label = purpose.value if isinstance(purpose, Purpose) else UNDECLARED
         return self._db.execute(
             "INSERT INTO access_log (purpose, protocol_number, granted, served, note) VALUES (?, ?, ?, ?, ?)",
-            (label, protocol if isinstance(protocol, int) else None, 1 if granted else 0, json.dumps(sorted(served)),
+            (label, protocol if _protocol_number(protocol) else None, 1 if granted else 0, json.dumps(sorted(served)),
              note)).lastrowid
+
+    def _decide(self, purpose, protocol, event_id) -> dict:
+        """Check the request's shape, then return what `purpose` may see. Raises LedgerError on any refusal."""
+
+        if not isinstance(purpose, Purpose):
+            raise LedgerError("every ledger read declares a Purpose")
+        if protocol is not None and not _protocol_number(protocol):
+            raise LedgerError(f"a protocol is named by a positive protocol number; refused {protocol!r:.60}")
+        if event_id is _MISSING:
+            raise LedgerError("a history read names one event")
+        if event_id is not None and not isinstance(event_id, EventRecordId):
+            raise LedgerError(f"an event is named by its EventRecordId; refused {event_id!r:.60}")
+        visible = self._visible(purpose, protocol)
+        if event_id is not None:
+            if event_id.value not in visible:
+                raise LedgerError(f"{event_id} is not available for a {purpose.value} read")
+            visible = {event_id.value: visible[event_id.value]}
+        return visible
+
+    def _gated(self, purpose, protocol, event_id, serve, note: str):
+        """Decide, log and serve one access attempt in one transaction.
+
+        Every attempt is logged. A refusal is logged as refused; any other failure while deciding or serving
+        is logged as a refused malformed request and raised as a LedgerError, so no attempt escapes the log.
+        """
+
+        self._db.execute("BEGIN IMMEDIATE")
+        try:
+            try:
+                visible = self._decide(purpose, protocol, event_id)
+                result = serve(visible)
+            except Exception as exc:
+                refusal = exc if isinstance(exc, LedgerError) else LedgerError(
+                    f"malformed request refused: {type(exc).__name__}: {exc}")
+                requested = [event_id.value] if isinstance(event_id, EventRecordId) else []
+                self._log(purpose, protocol, False, requested, str(refusal)[:200])
+                self._db.execute("COMMIT")
+                if refusal is exc:
+                    raise
+                raise refusal from exc
+            self._log(purpose, protocol, True, visible, note)
+            self._db.execute("COMMIT")
+        except LedgerError:
+            raise
+        except BaseException:
+            self._db.execute("ROLLBACK")
+            raise
+        return result
 
     def _visible(self, purpose: Purpose, protocol) -> dict:
         """The current entries `purpose` may see, or a refusal. Called inside the read's transaction."""
@@ -602,29 +672,8 @@ class HistoricalLedger:
     def read(self, purpose: Purpose, protocol: int | None = None, event_id: EventRecordId | None = None) -> list:
         """The current entries `purpose` may see, or one of them. Logged whether granted or refused."""
 
-        self._db.execute("BEGIN IMMEDIATE")
-        try:
-            try:
-                if not isinstance(purpose, Purpose):
-                    raise LedgerError("every ledger read declares a Purpose")
-                visible = self._visible(purpose, protocol)
-                if event_id is not None:
-                    if event_id.value not in visible:
-                        raise LedgerError(f"{event_id} is not available for a {purpose.value} read")
-                    visible = {event_id.value: visible[event_id.value]}
-            except LedgerError as refusal:
-                requested = [event_id.value] if isinstance(event_id, EventRecordId) else []
-                self._log(purpose, protocol, False, requested, str(refusal)[:200])
-                self._db.execute("COMMIT")
-                raise
-            self._log(purpose, protocol, True, visible, "granted")
-            self._db.execute("COMMIT")
-        except LedgerError:
-            raise
-        except BaseException:
-            self._db.execute("ROLLBACK")
-            raise
-        return [visible[value] for value in sorted(visible)]
+        return self._gated(purpose, protocol, event_id, lambda visible: [visible[value] for value in sorted(visible)],
+                           "granted")
 
     def counts(self, purpose: Purpose, protocol: int | None = None) -> dict:
         """Counts by event class, elicitation and outcome, each with its members (Q8 s6: decomposability).

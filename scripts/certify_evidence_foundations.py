@@ -618,7 +618,7 @@ def gate_g_ledger_integrity():
             TimeKind.INSTANT, TimeUnit.DAY, "UTC", "fixture", at="2011-02-01")), "recalled 2011")
         events.confirm(partial, 2, _answer(ConfirmationState.CONFIRMED, ""))
         second = ledger.correct(partial, Elicitation.VOLUNTEERED, PROVENANCE, "event corrected and re-answered")
-        history = ledger.history(partial)
+        history = ledger.history(Purpose.AUDIT, partial)
         if len(history) != 2 or history[1][2] != history[0][0] or history[1][0] != second or \
                 history[0][1].event_revision != 1 or history[1][1].event_revision != 2:
             fail("a correction did not append a superseding entry beside the one it supersedes")
@@ -641,7 +641,7 @@ def gate_g_ledger_integrity():
         if served != set(holdout.selected):
             fail("protected validation did not serve exactly the holdout")
         log = ledger.access_log()
-        if [row[3] for row in log] != [True] * 4 or leakage_findings(path) != []:
+        if [row[3] for row in log] != [True] * 5 or log[2][5] != "granted: history" or leakage_findings(path) != []:
             fail("a clean run was not logged as granted reads with no leakage")
         ledger.close()
         events.close()
@@ -755,13 +755,36 @@ def gate_h_ledger_refusals():
         refuses("protected validation below the protocol's minimum N",
                 lambda: ledger.read(Purpose.PROTECTED_VALIDATION, short), reason="minimum N")
         refuses("an audit read naming a protocol", lambda: ledger.read(Purpose.AUDIT, short), reason="names no protocol")
+        # A history read is a ledger read (CEO HOLD on PR #50, defect 1).
+        for purpose in sorted(EXCLUDED_FROM_PROTECTED, key=lambda item: item.value):
+            refuses(f"a {purpose.value} history read of a protected entry",
+                    lambda purpose=purpose: ledger.history(purpose, holdout.selected[0]), reason="not available")
+        refuses("a history read with no declared purpose", lambda: ledger.history(None, members[0]), reason="Purpose")
+        refuses("a history read naming no event", lambda: ledger.history(Purpose.AUDIT, None), reason="names one event")
+        # A malformed request is a logged refusal, never an escape (CEO HOLD on PR #50, defect 2).
+        for label, call in (("an event named by text", lambda: ledger.read(Purpose.AUDIT, None, members[0].value)),
+                            ("a protocol named by text", lambda: ledger.read(Purpose.PROTECTED_VALIDATION, "1")),
+                            ("a protocol named by a bool", lambda: ledger.read(Purpose.PROTECTED_VALIDATION, True)),
+                            ("a protocol number beyond 64 bits",
+                             lambda: ledger.read(Purpose.PROTECTED_VALIDATION, 2 ** 70))):
+            refuses(f"a read with {label}", call, reason="refused")
+
+        def broken(*_args):
+            raise RuntimeError("planted failure")
+
+        ledger._visible = broken
+        refuses("an unexpected failure while deciding a read", lambda: ledger.read(Purpose.AUDIT),
+                reason="malformed request refused")
+        del ledger._visible
         log = ledger.access_log()
-        if len(log) != logged + 9 or any(row[3] for row in log[logged:]) or                 log[logged + 4][1] != "undeclared":
-            fail("a refused ledger read was not logged as refused")
+        if len(log) != logged + 20 or any(row[3] for row in log[logged:]) or \
+                log[logged + 4][1] != "undeclared" or log[logged + 13][1] != "undeclared" or \
+                any(row[2] is not None for row in log[logged + 15:logged + 19]):
+            fail("a refused ledger read was not logged as refused, with its declared purpose and protocol")
         if leakage_findings(path) != []:
             fail("refused reads were reported as leakage")
         # Last, because it plants a raw row: one entry can be superseded only once, so history cannot fork.
-        first_entry = ledger.history(members[0])[0][0]
+        first_entry = ledger.history(Purpose.AUDIT, members[0])[0][0]
         ledger._db.execute("INSERT INTO ledger_entries (event_id, supersedes, payload, reason) VALUES (?, ?, '{}', 'x')",
                            (members[1].value, first_entry))
         refuses("a second entry superseding the same entry", lambda: ledger._db.execute(

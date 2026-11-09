@@ -212,7 +212,7 @@ def test_ac4_a_correction_appends_and_keeps_the_superseded_entry(world):
         record, time=EventTime(TimeKind.INSTANT, TimeUnit.DAY, "UTC", "fixture", at="2011-01-01")), "recalled 2011")
     world.ledger.events.confirm(identifier, 2, answer(ConfirmationState.PARTIALLY_CONFIRMED, "spring, not autumn"))
     second = world.ledger.correct(identifier, VOL, PROV, "event corrected and re-answered")
-    history = world.ledger.history(identifier)
+    history = world.ledger.history(Purpose.AUDIT, identifier)
     assert [(number, supersedes, reason) for number, _entry, supersedes, reason in history] == [
         (first, None, "first record"), (second, first, "event corrected and re-answered")]
     assert history[0][1].event_revision == 1 and history[1][1].event_revision == 2
@@ -229,7 +229,8 @@ def test_ac4_a_correction_appends_and_keeps_the_superseded_entry(world):
 def test_ac4_a_correction_can_change_the_elicitation_record(world):
     (identifier,) = world.admitted(1)
     world.ledger.correct(identifier, NULL, PROV, "it was prompted for a null period")
-    assert world.ledger.read(Purpose.AUDIT)[0].elicitation is NULL and len(world.ledger.history(identifier)) == 2
+    assert world.ledger.read(Purpose.AUDIT)[0].elicitation is NULL
+    assert len(world.ledger.history(Purpose.AUDIT, identifier)) == 2
 
 
 # ------------------------------------------------------------------ AC5 decomposable counts, nothing computed
@@ -420,6 +421,123 @@ def test_ac9_disclosed_limit_reads_outside_the_ledger_are_not_controlled(world):
     assert world.ledger._db.execute("SELECT COUNT(*) FROM event_revisions").fetchone()[0] == 3
     assert len(world.ledger.access_log()) == before
     assert "does NOT control" in model.__doc__ and "never that no process anywhere" in model.__doc__
+
+
+# CEO HOLD on PR #50, defect 1: history() served protected entries with no purpose and no log row.
+
+def _locked_with_protocol(world, count=6, size=2):
+    members = world.admitted(count)
+    holdout = world.ledger.holdout(world.ledger.freeze_and_select("set", members, size))
+    world.ledger.register_protocol(protocol(1, minimum_n=size))
+    outside = sorted(set(members) - set(holdout.selected))
+    return members, holdout, outside
+
+
+@pytest.mark.parametrize("purpose", sorted(model.EXCLUDED_FROM_PROTECTED, key=lambda p: p.value))
+def test_ac9_history_of_a_protected_event_is_refused_and_logged_for_excluded_purposes(world, purpose):
+    _members, holdout, outside = _locked_with_protocol(world)
+    target = holdout.selected[0]
+    before = len(world.ledger.access_log())
+    with pytest.raises(LedgerError, match="not available"):
+        world.ledger.history(purpose, target)
+    assert len(world.ledger.history(purpose, outside[0])) == 1
+    log = world.ledger.access_log()[before:]
+    assert [(row[1], row[3], row[4]) for row in log] == [(purpose, False, (target.value,)),
+                                                         (purpose, True, (outside[0].value,))]
+    assert log[1][5] == "granted: history"
+    assert leakage_findings(world.ledger.path) == []
+
+
+def test_ac9_a_protected_events_superseded_history_is_never_served_to_excluded_purposes(world):
+    _members, holdout, _outside = _locked_with_protocol(world)
+    target = holdout.selected[0]
+    world.ledger.events.confirm(target, 1, answer(ConfirmationState.REJECTED, "on reflection, no"))
+    world.ledger.correct(target, VOL, PROV, "answer changed")
+    for purpose in model.EXCLUDED_FROM_PROTECTED:
+        with pytest.raises(LedgerError, match="not available"):
+            world.ledger.history(purpose, target)
+    assert len(world.ledger.history(Purpose.AUDIT, target)) == 2
+
+
+def test_ac9_history_for_audit_and_protected_validation_follows_read(world):
+    _members, holdout, outside = _locked_with_protocol(world)
+    target = holdout.selected[0]
+    assert world.ledger.history(Purpose.AUDIT, target)[0][1].event == target
+    assert world.ledger.history(Purpose.PROTECTED_VALIDATION, target, 1)[0][1].event == target
+    for refused, match in ((lambda: world.ledger.history(Purpose.PROTECTED_VALIDATION, outside[0], 1), "not available"),
+                           (lambda: world.ledger.history(Purpose.PROTECTED_VALIDATION, target), "registered protocol"),
+                           (lambda: world.ledger.history(None, target), "Purpose"),
+                           (lambda: world.ledger.history(Purpose.AUDIT, None), "names one event"),
+                           (lambda: world.ledger.history(Purpose.AUDIT, EventRecordId.from_number(99999999)),
+                            "not available")):
+        before = len(world.ledger.access_log())
+        with pytest.raises(LedgerError, match=match):
+            refused()
+        log = world.ledger.access_log()
+        assert len(log) == before + 1 and log[-1][3] is False
+    assert world.ledger.access_log()[-3][1] == model.UNDECLARED
+    assert leakage_findings(world.ledger.path) == []
+
+
+# CEO HOLD on PR #50, defect 2: a malformed read could raise past the log, or log the wrong protocol.
+
+MALFORMED = [
+    ("event_id as text", {"event_id": "EVR-00000001"}),
+    ("event_id as a number", {"event_id": 1}),
+    ("protocol as text that SQLite would match", {"protocol": "1"}),
+    ("protocol as a bool", {"protocol": True}),
+    ("protocol as a float", {"protocol": 1.0}),
+    ("protocol zero", {"protocol": 0}),
+    ("protocol negative", {"protocol": -1}),
+    ("protocol beyond 64 bits", {"protocol": 2 ** 70}),
+    ("protocol at the 64-bit limit", {"protocol": 2 ** 63}),
+]
+
+
+#: counts() takes no event_id, so those requests cannot be expressed through it and are not generated.
+MALFORMED_CASES = [(method, label, request_) for method in ("read", "counts", "history")
+                   for label, request_ in MALFORMED if not (method == "counts" and "event_id" in request_)]
+
+
+@pytest.mark.parametrize("method,label,request_", MALFORMED_CASES,
+                         ids=[f"{method}-{label}" for method, label, _ in MALFORMED_CASES])
+def test_ac9_a_malformed_request_is_a_logged_refusal(world, method, label, request_):
+    _members, holdout, _outside = _locked_with_protocol(world)
+    kwargs = {"protocol": 1, **request_}
+    if method == "history":
+        kwargs.setdefault("event_id", holdout.selected[0])
+        call = lambda: world.ledger.history(Purpose.PROTECTED_VALIDATION, kwargs["event_id"], kwargs["protocol"])
+    elif method == "counts":
+        call = lambda: world.ledger.counts(Purpose.PROTECTED_VALIDATION, kwargs["protocol"])
+    else:
+        call = lambda: world.ledger.read(Purpose.PROTECTED_VALIDATION, kwargs["protocol"], kwargs.get("event_id"))
+    before = len(world.ledger.access_log())
+    with pytest.raises(LedgerError, match="refused"):
+        call()
+    log = world.ledger.access_log()
+    assert len(log) == before + 1, label
+    number, purpose, logged_protocol, granted, served, _note = log[-1]
+    assert (purpose, granted) == (Purpose.PROTECTED_VALIDATION, False)
+    assert logged_protocol == (1 if "protocol" not in request_ else None)
+    assert served == (() if "event_id" in request_ or method != "history" else (holdout.selected[0].value,))
+    assert leakage_findings(world.ledger.path) == []
+
+
+def test_ac9_an_unexpected_failure_while_deciding_is_a_logged_refusal(world, monkeypatch):
+    (identifier,) = world.admitted(1)
+
+    def broken(*_args):
+        raise RuntimeError("planted failure")
+
+    monkeypatch.setattr(world.ledger, "_visible", broken)
+    for call in (lambda: world.ledger.read(Purpose.AUDIT), lambda: world.ledger.history(Purpose.AUDIT, identifier)):
+        before = len(world.ledger.access_log())
+        with pytest.raises(LedgerError, match="malformed request refused: RuntimeError: planted failure"):
+            call()
+        log = world.ledger.access_log()
+        assert len(log) == before + 1 and log[-1][3] is False
+    monkeypatch.undo()
+    assert world.ledger.read(Purpose.AUDIT)[0].event == identifier
 
 
 # ------------------------------------------------------------------ AC10 protocols
