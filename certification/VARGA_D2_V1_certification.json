@@ -2,7 +2,7 @@
  "schema": "varga_d2_v1_certification",
  "adr": "ADR-0011",
  "supersedes_provisional_id": "ADR-VARGA-D2-001",
- "date": "2026-11-06",
+ "date": "2026-11-07",
  "scope": "D2 Hora (Traditional Parashara): two-sign output space, Leo and Cancer only",
  "rule": {
   "kind": "SegmentVargaRule",
@@ -122,7 +122,7 @@
    "residual_limitation": "coordinated edits to every repository-held trust record cannot be cryptographically prevented by an in-repository trust anchor; only upstream provenance would anchor this, and it is out of M1 scope"
   },
   "anti_fitting": {
-   "modules_scanned": 204,
+   "modules_scanned": 208,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."

@@ -51,6 +51,16 @@ from engine.knowledge.registry import KnowledgeRegistry  # noqa: E402
 from engine.knowledge.repository import KnowledgeRepository  # noqa: E402
 from engine.knowledge.validator import SchemaValidator  # noqa: E402
 from engine.models.birth_data import BirthData  # noqa: E402
+from engine.evidence.entity import (  # noqa: E402
+    ChartCandidate, DataClass, EntityKind, EntityLink, EntityModelError, EventEntity, GeographicEntity,
+    Organisation, OriginCertainty, OriginMoment, ParentLink, Person, Question, RecordProvenance, Shape,
+    rectification_permitted,
+)
+
+#: A number no certifier store reaches, for the dangling-parent control.
+LAST_TEST = 99999999
+from engine.evidence.identifiers import EntityId, IdentifierError  # noqa: E402
+from engine.evidence.store import EntityStore, StoreError, subject_from_record, subject_to_record  # noqa: E402
 
 #: Set by gate_e_natural_relationship() itself. PyJHora is required only by Gate E.
 PYJHORA_VERSION = None
@@ -337,6 +347,182 @@ def gate_g_negative_controls():
             "rejections_by_control": controls}
 
 
+def _synthetic_subjects():
+    """One synthetic subject of each of the five kinds. No real person, place or organisation."""
+
+    provenance = RecordProvenance(source="synthetic certifier fixture", method="constructed", schema_version="h0-v2")
+
+    def chart(label, certainty):
+        return ChartCandidate(label=label, origin=OriginMoment(local_datetime="2000-01-01T12:00:00", timezone="UTC",
+                                                               timezone_source="fixture", latitude=10.0,
+                                                               longitude=20.0, precision="minute"),
+                              origin_certainty=certainty, provenance=provenance)
+
+    common = {"applicable_domains": ("synthetic",), "applicable_systems": ("parashari",), "provenance": provenance,
+              "data_class": DataClass.SYNTHETIC}
+    two_charts = (chart("documented", OriginCertainty.DOCUMENTED), chart("reported", OriginCertainty.REPORTED))
+    return [
+        Person(kind=EntityKind.PERSON, shape=Shape.ORIGIN, charts=two_charts, **common),
+        Organisation(kind=EntityKind.ORGANISATION, shape=Shape.ORIGIN, charts=two_charts, **common),
+        GeographicEntity(kind=EntityKind.GEOGRAPHIC, shape=Shape.ORIGIN, charts=two_charts, **common),
+        EventEntity(kind=EntityKind.EVENT, shape=Shape.ORIGIN, charts=two_charts, **common),
+        Question(kind=EntityKind.QUESTION, shape=Shape.QUERY, charts=(chart("asked", OriginCertainty.DOCUMENTED),),
+                 **common),
+    ]
+
+
+def gate_h_entity_foundations():
+    """Structural integrity of the H0 model, the append-only store and the ENT issuer (ADR-0114 s3)."""
+
+    import tempfile
+
+    subjects = _synthetic_subjects()
+    with tempfile.TemporaryDirectory() as folder:
+        path = Path(folder) / "entities.sqlite"
+        store = EntityStore(path)
+        issued = [store.persist(subject) for subject in subjects]
+        if [entity.number for entity in issued] != list(range(1, len(subjects) + 1)):
+            fail("ENT numbers are not issued 1..n")
+        if [str(entity) for entity in issued] != [str(EntityId.from_number(n)) for n in range(1, len(subjects) + 1)]:
+            fail("issued identifiers do not match the family's format")
+        if EntityId.from_number(len(subjects)).number != len(subjects):
+            fail("an identifier's number does not round-trip")
+        for entity, subject in zip(issued, subjects):
+            if store.load(entity) != subject:
+                fail(f"{entity} did not round-trip")
+            if subject_from_record(subject_to_record(subject)) != subject:
+                fail(f"{entity} record did not round-trip")
+        revision = store.append_revision(issued[0], subjects[0], "certifier correction")
+        history = store.history(issued[0])
+        if revision != 2 or [number for number, _subject, _reason in history] != [1, 2]:
+            fail("a correction did not append a revision")
+        derived = Person(kind=EntityKind.PERSON, shape=Shape.DERIVED, charts=subjects[0].charts[:1],
+                         applicable_domains=subjects[0].applicable_domains,
+                         applicable_systems=subjects[0].applicable_systems, provenance=subjects[0].provenance,
+                         data_class=DataClass.SYNTHETIC,
+                         parent=ParentLink(parent=issued[0], parent_chart="documented", derivation="annual chart"))
+        if store.load(store.persist(derived)) != derived:
+            fail("a derived subject with a valid parent link did not round-trip")
+        if store.append_revision(issued[0], subjects[0], "keeps the referenced chart") != 3:
+            fail("a parent correction that keeps the referenced chart was refused")
+        link = EntityLink(source=issued[0], relation="LEADS", target=issued[1], provenance=subjects[0].provenance)
+        store.add_link(link)
+        if store.links() != [link] or store.entity_ids()[:len(issued)] != issued:
+            fail("links or entity listing did not round-trip")
+        store.close()
+        reopened = EntityStore(path)
+        durable = (reopened.issued_count() == len(subjects) + 1
+                   and reopened.persist(subjects[1]).number == len(subjects) + 2)
+        reopened.close()
+        if not durable:
+            fail("the issuer is not durable across reopening")
+    if rectification_permitted(subjects[0], "documented") or not rectification_permitted(subjects[0], "reported"):
+        fail("a documented origin must not be rectified; a reported one may be")
+    if rectification_permitted(subjects[4], "asked"):
+        fail("a query moment must not be rectified")
+    return {"classification": "structural_integrity", "kinds": len(subjects), "round_trips": len(subjects) + 1,
+            "competing_charts_held": 2, "revisions_checked": 3, "derived_links_checked": 1, "links_checked": 1,
+            "mismatches": 0}
+
+
+def gate_i_entity_store_refusals():
+    """Each refusal the WP-E1 contract requires, triggered for real (ADR-0114 s3 AC2, AC3, AC8 to AC10)."""
+
+    import sqlite3
+    import tempfile
+
+    subjects = _synthetic_subjects()
+    refused = {}
+    with tempfile.TemporaryDirectory() as folder:
+        store = EntityStore(Path(folder) / "entities.sqlite")
+        first = store.persist(subjects[0])
+        second = store.persist(subjects[1])
+        store.add_link(EntityLink(source=first, relation="LEADS", target=second, provenance=subjects[0].provenance))
+        for label, sql in (("update a revision", "UPDATE entity_revisions SET reason = 'x'"),
+                           ("delete a revision", "DELETE FROM entity_revisions"),
+                           ("update a link", "UPDATE entity_links SET payload = '{}'"),
+                           ("delete a link", "DELETE FROM entity_links"),
+                           ("lower the issuer", "UPDATE issuer SET last_number = 0"),
+                           ("delete the issuer", "DELETE FROM issuer")):
+            try:
+                store._db.execute(sql)
+                fail(f"the store allowed: {label}")
+            except sqlite3.DatabaseError:
+                refused[label] = True
+        record = subject_to_record(subjects[0])
+        for key in ("interpretation", "score", "weight", "confidence"):
+            planted = {"schema": record["schema"], "subject": dict(record["subject"], **{key: 1})}
+            try:
+                subject_from_record(planted)
+                fail(f"the store accepted analytical content: {key}")
+            except StoreError:
+                refused[f"analytical key {key}"] = True
+        try:
+            subject_from_record({"schema": record["schema"], "subject": dict(record["subject"], data_class="real")})
+            fail("the store accepted non-synthetic data")
+        except ValueError:
+            refused["non-synthetic data"] = True
+        try:
+            store.append_revision(first, subjects[4], "a kind change")
+            fail("a correction changed an entity's kind")
+        except StoreError:
+            refused["kind change"] = True
+        # Assembled at run time and labelled descriptively, so no identifier literal enters the evidence.
+        family = "ENT" + "-"
+        for label, bad in (("seven digits", family + "0" * 6 + "1"), ("lower-case family", family.lower() + "0" * 7 + "1"),
+                           ("number zero", family + "0" * 8)):
+            try:
+                EntityId(bad)
+                fail(f"accepted an invalid identifier: {label}")
+            except IdentifierError:
+                refused[f"identifier: {label}"] = True
+        before = store.issued_count()
+        try:
+            store.persist("not a subject")
+            fail("persisted a non-subject")
+        except StoreError:
+            refused["non-subject"] = True
+
+        def derived_from(parent, parent_chart, charts):
+            return Person(kind=EntityKind.PERSON, shape=Shape.DERIVED, charts=charts,
+                          applicable_domains=subjects[0].applicable_domains,
+                          applicable_systems=subjects[0].applicable_systems, provenance=subjects[0].provenance,
+                          data_class=DataClass.SYNTHETIC,
+                          parent=ParentLink(parent=parent, parent_chart=parent_chart, derivation="annual chart"))
+
+        try:
+            derived_from(first, "documented", ())
+            fail("a shape B subject was built with no chart")
+        except EntityModelError:
+            refused["shape B with no chart"] = True
+        charts = subjects[0].charts[:1]
+        for label, subject in (("dangling parent entity", derived_from(EntityId.from_number(LAST_TEST), "documented", charts)),
+                               ("dangling parent chart", derived_from(first, "no-such-chart", charts))):
+            try:
+                store.persist(subject)
+                fail(f"the store accepted a {label}")
+            except StoreError:
+                refused[label] = True
+        if store.issued_count() != before:
+            fail("a failed persistence consumed an ENT number")
+        child = store.persist(derived_from(first, "documented", charts))
+        for label, correction, target in (
+                ("self-derivation", derived_from(child, "documented", charts), child),
+                ("dangling parent in a correction", derived_from(first, "no-such-chart", charts), child),
+                ("parent correction removing a referenced chart",
+                 dataclasses.replace(subjects[0], charts=subjects[0].charts[1:]), first)):
+            revisions = len(store.history(target))
+            try:
+                store.append_revision(target, correction, label)
+                fail(f"the store accepted a {label}")
+            except StoreError:
+                refused[label] = True
+            if len(store.history(target)) != revisions:
+                fail(f"a refused {label} still wrote a revision")
+        store.close()
+    return {"classification": "negative_control", "refusals_verified": len(refused), "refused": sorted(refused)}
+
+
 def main():
     tee = support.start_transcript()
     preconditions = support.preflight()
@@ -348,6 +534,8 @@ def main():
         "E_natural_relationship_oracle": gate_e_natural_relationship(),
         "F_rashi_chart_neutrality": gate_f_rashi_chart(),
         "G_negative_controls": gate_g_negative_controls(),
+        "H_entity_foundations": gate_h_entity_foundations(),
+        "I_entity_store_refusals": gate_i_entity_store_refusals(),
     }
     report = {
         "schema": "support_paths_v1_certification",
@@ -356,8 +544,10 @@ def main():
         "scope": ("Support functions certified under ADR-0108 s4 item 5, each only as far as its gate's "
                   "classification: mathematical correctness of equal-house arithmetic, the planet mapper and "
                   "timezone conversion; external-oracle agreement of the naisargika relationship lookup; "
-                  "access-path fidelity of the knowledge loaders, not of the data they return; and "
-                  "rashi_chart's neutrality over build_chart."),
+                  "access-path fidelity of the knowledge loaders, not of the data they return; "
+                  "rashi_chart's neutrality over build_chart; and the structural integrity of the EVIDENCE "
+                  "entity foundations (ADR-0114 WP-E1): the H0 entity model, the append-only store and the "
+                  "ENT issuer."),
         "reference": {
             "equal_house_and_map_planet": "exact rational arithmetic and hand-derived literal cases",
             "to_utc": "offset subtraction and literal UTC instants",
@@ -375,6 +565,9 @@ def main():
             "Gate F proves rashi_chart equals build_chart. It adds nothing to what is certified about D1 charts",
             "Gate C does not validate the timezone database against a second source beyond its literal cases",
             "a GATED member is not thereby in use: KnowledgeRegistry.clear is gated here and is NOT_IN_USE under C4",
+            "Gates H and I certify structure only: the entity model, store and issuer make no analytical claim, and "
+            "carry no score, weight or confidence; every record they use is synthetic",
+            "the EVIDENCE entity foundations are not a production analytical input and are not served by any API",
             "KnowledgeLoader.load, load_json and dignities are also reached through PARASHARI_YOGA_V1, so this "
             "artifact is not their only coverage",
         ],

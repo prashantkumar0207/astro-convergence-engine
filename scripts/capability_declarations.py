@@ -134,6 +134,7 @@ _DASHAMSA = "engine.astrology.dashamsa_chart"
 _DASHA = "engine.dasha.vimshottari"
 _CONVENTIONS = "engine.astrology.sign_conventions"
 _REPOSITORY = "engine.knowledge.repository.KnowledgeRepository"
+_STORE = "engine.evidence.store.EntityStore"
 
 _DASHA_GATES = ("oracle_pratyantar_rows_compared", "oracle_lord_mismatches", "oracle_max_start_delta_days",
                 "independent_validator", "cases", "near_boundary_coverage", "boundary_proximity_indicator")
@@ -333,6 +334,22 @@ ARTIFACT_DECLARATIONS = {
                  _fn("engine.astrology.dignity.natural_relationship", "E_natural_relationship_oracle")),
             _cap("support.d1_delegate",
                  _fn("engine.astrology.rashi_chart.rashi_chart", "F_rashi_chart_neutrality")),
+            _cap("support.entity_foundations",
+                 _fn("engine.evidence.identifiers.EntityId.from_number", "H_entity_foundations"),
+                 _fn("engine.evidence.identifiers.EntityId.number", "H_entity_foundations"),
+                 _fn("engine.evidence.entity.AstrologicalSubject.chart", "H_entity_foundations"),
+                 _fn("engine.evidence.entity.rectification_permitted", "H_entity_foundations"),
+                 _fn(f"{_STORE}.persist", "H_entity_foundations", "I_entity_store_refusals"),
+                 _fn(f"{_STORE}.append_revision", "H_entity_foundations", "I_entity_store_refusals"),
+                 _fn(f"{_STORE}.history", "H_entity_foundations"),
+                 _fn(f"{_STORE}.load", "H_entity_foundations"),
+                 _fn(f"{_STORE}.entity_ids", "H_entity_foundations"),
+                 _fn(f"{_STORE}.add_link", "H_entity_foundations", "I_entity_store_refusals"),
+                 _fn(f"{_STORE}.links", "H_entity_foundations"),
+                 _fn(f"{_STORE}.issued_count", "H_entity_foundations", "I_entity_store_refusals"),
+                 _fn(f"{_STORE}.close", "H_entity_foundations", "I_entity_store_refusals"),
+                 _fn("engine.evidence.store.subject_to_record", "H_entity_foundations", "I_entity_store_refusals"),
+                 _fn("engine.evidence.store.subject_from_record", "H_entity_foundations", "I_entity_store_refusals")),
         ],
         "empty_exercises": {
             "G_negative_controls": "runs the other gates' comparators against planted wrong functions, so no "
