@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | **ACCEPTED (`ADR-0062`) - canonical, machine-checkable current-state record.** Regenerate/refresh on every meaningful implementation task, same discipline as `reports/AI_HANDOFF_CURRENT.md`. |
-| Version | 7.34.0 |
+| Version | 7.35.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-09 (**WP-E3, the H2 historical ledger and protected holdouts, is on review branch `evidence-wp-e3-historical-ledger`. Not merged.**) |
+| Last updated | 2026-11-09 (**WP-E3's AC9 HOLD addressed on review branch `evidence-wp-e3-historical-ledger`. Not merged.**) |
 | Review cadence | Refresh at the start of a session if stale; not load-bearing if it isn't. |
 
 # ACE execution state
@@ -46,13 +46,13 @@ independently is in these fields plus the pointers they name.
 | `CURRENT_MILESTONE` | **WP-E3 (H2 historical event ledger and protected-holdout infrastructure) on a review PR.** WP-E2 closed: PR #49 merged as `dfdfadb`. |
 | `CURRENT_AUTHORIZED_TASK` | None self-executable beyond the WP-E3 review PR. |
 | `TASK_OWNER` | CHATGPT (review of WP-E3); USER (merge authorization). |
-| `STATUS` | WP-E3 review PR, not merged. No certified calculation changed: existing artifacts differ only in volatile fields and `modules_scanned`. `EVIDENCE_FOUNDATIONS_V1` gains gates G, H and I, and its gates A to F are unchanged. `SUPPORT_PATHS_V1` untouched. |
-| `LAST_COMPLETED_ACTION` | Implemented WP-E3 against `ADR-0116` s5 and the CEO's two clarifications (holdout locking; purpose-declared reads, with the uncontrolled paths disclosed). |
+| `STATUS` | WP-E3 review PR, not merged; the CEO's AC9 HOLD addressed. No certified calculation changed: existing artifacts differ only in volatile fields and `modules_scanned`. `EVIDENCE_FOUNDATIONS_V1` gains gates G, H (64 refusals) and I, and its gates A to F are unchanged. `SUPPORT_PATHS_V1` untouched. |
+| `LAST_COMPLETED_ACTION` | Closed the two AC9 defects behind the CEO's HOLD on PR #50 at `6485c80`: `history()` is now purpose-gated and logged, and every malformed read is a logged refusal. The 16 acceptance criteria are unchanged. |
 | `LAST_COMMIT` (main) | `dfdfadbed219ba44a026dcb935866640e4ac483b` (PR #49 merge; parents `06267f1` and `d1c2ee8`). |
 | `LAST_COMMIT` (evidence-wp-e3-historical-ledger) | This branch's commits, on top of `dfdfadbed219ba44a026dcb935866640e4ac483b`. |
 | `LAST_CI_RUN` | `42589414966` at `dfdfadbe`: push to `main`, success on all four jobs. This branch's results are on its review PR. |
-| `LAST_CEO_DECISION` | WP-E3 PROCEED, with two clarifications. |
-| `NEXT_AUTHORIZED_ACTION` | None self-executable. WP-E3's merge, the retirement of `SUPPORT_PATHS_V1` gates H and I, and any further work package need separate approval. |
+| `LAST_CEO_DECISION` | HOLD on PR #50 at `6485c80` (two AC9 defects), relayed in the owner's directive "WP-E3 CLOSURE AND PERMANENT PRODUCT CONTRACT". |
+| `NEXT_AUTHORIZED_ACTION` | None self-executable. After a CEO PASS and the owner's separate merge authorization for PR #50: the owner-directed, documentation-only Charter product-contract PR (Task 2 of the same directive). The retirement of `SUPPORT_PATHS_V1` gates H and I needs separate approval. |
 | `WAITING_FOR` | CHATGPT: review of WP-E3. USER: merge authorization, and direction on the next work package. |
 | `BLOCKER` | None for this delivery. |
 | `CEO_APPROVAL_REQUIRED` | WP-E3's merge (`ADR-0106` OR-3); the evidence-model checkpoint (Q8 s6); phase exit. |
@@ -79,6 +79,7 @@ exactly as `reports/AI_HANDOFF_CURRENT.md` already requires of itself.
 
 | Version | Date | Change |
 |---|---|---|
+| 7.35.0 | 2026-11-09 | **WP-E3 AC9 HOLD addressed** (`history()` purpose-gated and logged; malformed reads logged as refusals). |
 | 7.34.0 | 2026-11-09 | **WP-E3 implemented and on review** (`ADR-0116`; the CEO's PROCEED and two clarifications). |
 | 7.33.0 | 2026-11-09 | **WP-E2 merged (`dfdfadb`, post-merge CI `42589414966`) and closed; three decisions ratified; WP-E3 criteria fixed (`ADR-0116`).** |
 | 7.32.0 | 2026-11-09 | **WP-E1 merged (`06267f1`, post-merge CI `42581789417`) and closed (`ADR-0115` s2); WP-E2 implemented and on review.** |

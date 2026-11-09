@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.34.0 |
+| Version | 9.35.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-09 (WP-E3, the H2 historical ledger and protected holdouts, is on review branch `evidence-wp-e3-historical-ledger`. Not merged.) |
+| Last updated | 2026-11-09 (WP-E3's AC9 HOLD addressed on review branch `evidence-wp-e3-historical-ledger`. Not merged.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,25 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-09 - WP-E3 AC9 HOLD addressed on PR #50 (ADR-0116 AC9)
+
+**Not merged.** The CEO held PR #50 at `6485c80` on two AC9 defects. Both are fixed, and the 16 acceptance criteria are
+unchanged.
+
+- **Defect 1, `history()`:** it served protected entries with no purpose and no log row. It now declares a purpose, goes
+  through the same visibility rules as `read()`, and is logged granted or refused. A protected event's history,
+  superseded entries included, is never served for selection, tuning, rectification or development.
+- **Defect 2, malformed reads:** a text `event_id` (AttributeError) and a protocol number beyond 64 bits (OverflowError)
+  escaped with no log row. A text protocol `"1"` matched protocol 1 through SQLite type affinity and was granted, logged
+  with no protocol. Request shape is now checked before any query, and any other failure is logged as a refused
+  malformed request.
+- **Evidence:** 32 regression tests, all failing against the `6485c80` ledger. Gate G checks the history read's log row;
+  gate H gains 11 refusals (53 to 64), purely additive. Every other artifact is unchanged outside volatile fields.
+- **Disclosed limit unchanged:** reads through `EventStore`, `EntityStore`, raw connections or the SQLite file are not
+  controlled.
+- **Next, sequenced by the owner:** the documentation-only Charter product-contract PR, only after a CEO PASS and the
+  owner's separate merge authorization for PR #50.
 
 ### 2026-11-09 - WP-E3 H2 historical ledger and protected holdouts on review (ADR-0116)
 
