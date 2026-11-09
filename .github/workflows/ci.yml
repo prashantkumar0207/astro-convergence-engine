@@ -429,9 +429,12 @@ jobs:
           literal=$?
           git rm -q --cached --force _ent_probe.py 2>/dev/null
           rm -f _ent_probe.py
-          python -c "import re; t=open('docs/NAMING_STANDARD.md',encoding='utf-8').read(); open('/tmp/naming_probe.md','w',encoding='utf-8').write(re.sub(r'ENT-.d\{8\}', 'ENT-' + chr(92) + 'd{6}', t, count=1))"
-          python scripts/check_entity_identifiers.py --naming /tmp/naming_probe.md > /dev/null 2>&1
+          # str.replace, not re.sub: a "\d" in an re.sub replacement is a bad escape, so the probe was
+          # never written and the gate failed on the missing file, not on the registration (found in WP-E2).
+          python -c "t=open('docs/NAMING_STANDARD.md',encoding='utf-8').read(); b=chr(92); old='ENT-'+b+'d{8}'; assert old in t; open('/tmp/naming_probe.md','w',encoding='utf-8').write(t.replace(old, 'ENT-'+b+'d{6}', 1))"
+          python scripts/check_entity_identifiers.py --naming /tmp/naming_probe.md > /tmp/ent_naming.txt 2>&1
           naming=$?
+          grep -q 'E1 registered pattern' /tmp/ent_naming.txt || naming=0
           set -e
           if [ "$literal" -eq 0 ] || [ "$naming" -eq 0 ]; then
             echo "the ENT gate did NOT flag a planted violation: literal=$literal naming=$naming"
