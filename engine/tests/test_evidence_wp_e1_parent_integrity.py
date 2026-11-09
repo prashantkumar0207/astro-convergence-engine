@@ -97,6 +97,13 @@ def test_a_subject_cannot_derive_from_itself(store):
         store.append_revision(first, derived_subject(first, "natal"), "planted self-derivation")
 
 
+def test_a_longer_derivation_cycle_is_refused(store):
+    root = store.persist(origin_subject("natal"))
+    middle = store.persist(derived_subject(root, "natal", charts=("annual",)))
+    with pytest.raises(StoreError, match="itself"):
+        store.append_revision(root, derived_subject(middle, "annual", charts=("natal",)), "planted cycle")
+
+
 def test_a_parent_correction_cannot_silently_invalidate_a_child_link(store):
     parent = store.persist(origin_subject("natal", "rectified"))
     store.persist(derived_subject(parent, "natal"))

@@ -157,6 +157,7 @@ class EntityStore:
             if last >= LAST:
                 raise StoreError("the ENT family is exhausted")
             entity_id = EntityId.from_number(last + 1)
+            self._check_parent(subject, entity_id)
             self._db.execute("INSERT INTO entity_revisions (entity_id, revision, payload, reason) VALUES (?, 1, ?, ?)",
                              (entity_id.value, payload, reason))
             self._db.execute("UPDATE issuer SET last_number = ? WHERE family = ?", (last + 1, FAMILY))
@@ -184,6 +185,8 @@ class EntityStore:
                 (entity_id.value, row[0])).fetchone()[0]))
             if current.kind is not subject.kind:
                 raise StoreError("a correction cannot change an entity's kind")
+            self._check_parent(subject, entity_id)
+            self._check_dependents(entity_id, subject)
             self._db.execute("INSERT INTO entity_revisions (entity_id, revision, payload, reason) VALUES (?, ?, ?, ?)",
                              (entity_id.value, row[0] + 1, payload, reason))
             self._db.execute("COMMIT")
@@ -191,6 +194,45 @@ class EntityStore:
             self._db.execute("ROLLBACK")
             raise
         return row[0] + 1
+
+    def _latest(self) -> dict:
+        """The current revision of every entity, read inside the caller's transaction."""
+
+        rows = self._db.execute(
+            "SELECT r.entity_id, r.payload FROM entity_revisions AS r JOIN (SELECT entity_id, MAX(revision) AS top "
+            "FROM entity_revisions GROUP BY entity_id) AS m ON r.entity_id = m.entity_id AND r.revision = m.top")
+        return {value: subject_from_record(json.loads(payload)) for value, payload in rows}
+
+    def _check_parent(self, subject: AstrologicalSubject, own_id: EntityId) -> None:
+        """A derived subject's parent and parent chart must exist in this store, and derivation must not cycle."""
+
+        link = subject.parent
+        if link is None:
+            return
+        if link.parent == own_id:
+            raise StoreError(f"{own_id} cannot derive from itself")
+        current = self._latest()
+        if link.parent.value not in current:
+            raise StoreError(f"parent entity {link.parent} is not in this store")
+        parent = current[link.parent.value]
+        if link.parent_chart not in {chart.label for chart in parent.charts}:
+            raise StoreError(f"parent chart {link.parent_chart!r} is not a chart of {link.parent}")
+        seen, ancestor = {own_id.value}, parent
+        while ancestor.parent is not None:
+            if ancestor.parent.parent.value in seen:
+                raise StoreError(f"{own_id} would derive from itself through {ancestor.parent.parent}")
+            seen.add(ancestor.parent.parent.value)
+            ancestor = current[ancestor.parent.parent.value]
+
+    def _check_dependents(self, entity_id: EntityId, subject: AstrologicalSubject) -> None:
+        """A correction must not remove a chart that another entity's parent link names."""
+
+        labels = {chart.label for chart in subject.charts}
+        for value, other in self._latest().items():
+            link = other.parent
+            if link is not None and link.parent == entity_id and link.parent_chart not in labels:
+                raise StoreError(f"{value} derives from chart {link.parent_chart!r} of {entity_id}; "
+                                 f"this correction would remove it")
 
     def history(self, entity_id: EntityId) -> list:
         rows = self._db.execute(

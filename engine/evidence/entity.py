@@ -144,8 +144,8 @@ class AstrologicalSubject:
                 raise EntityModelError("a derived subject needs its parent link (H0 s4)")
         elif self.parent is not None:
             raise EntityModelError("only a derived subject has a parent link")
-        if self.shape is Shape.ORIGIN and not self.charts:
-            raise EntityModelError("an origin-moment subject needs at least one chart")
+        if self.shape in (Shape.ORIGIN, Shape.DERIVED) and not self.charts:
+            raise EntityModelError(f"a shape {self.shape.value} subject needs at least one chart (H0 s4)")
         if self.shape is Shape.QUERY and len(self.charts) != 1:
             raise EntityModelError("a query moment has exactly one chart: the moment of asking")
         for name, value in (("applicable_domains", self.applicable_domains),
