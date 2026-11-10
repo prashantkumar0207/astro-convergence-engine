@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.35.0 |
+| Version | 9.40.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-09 (WP-E3's AC9 HOLD addressed on review branch `evidence-wp-e3-historical-ledger`. Not merged.) |
+| Last updated | 2026-11-10 (The complete product contract owner-ratified (Charter v1.4.0; `ADR-0117` addendum). PR #51 not merged.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,64 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-10 - The complete product contract owner-ratified (Charter v1.4.0; ADR-0117 addendum)
+
+**Not merged.** Documentation only.
+
+- **Applied, and nothing else:** the two approved replacements now stand in natal step 3 and the historical-prediction
+  bullet; Charter s10 (the proposed-replacement wording) is removed; statuses, headings, version and history updated.
+- **Verified:** the four adopted sections, s1 to s9 and AT1 to AT16 are byte-identical to `cafa85b`; the natal contract
+  differs only by the two replacements. In `ADR-0117`, only the addendum's two Status lines changed, plus the new
+  ratification sub-entry.
+- **Next:** final verification and merge authorization; then the separately authorized gate I fix PR against `main`.
+
+### 2026-11-10 - PR #51 completeness HOLD closed (ADR-0117 addendum, revision 1, PROPOSED)
+
+**Not merged.** Documentation only.
+
+- **Charter v1.3.1:** generation no longer takes the question as input; the question selects by topic among frozen
+  predictions, and the selection is recorded. Historical facts in the opening question are recorded as disclosed and
+  never counted as blind successes. AT9 and AT10 are clarified (volunteered events need no prediction link).
+- **Ratified wording:** the new s10 proposes replacements for natal step 3 and the historical-prediction bullet, pending
+  separate owner approval. The ratified text is unedited (hash in the revision block).
+- **Q8 disposition:** prediction issuance requires an owner-approved roadmap placement before its implementation;
+  EVIDENCE and INTERPRETATION boundaries are unchanged; no new phase.
+- **Next:** final verification, owner approval, merge authorization.
+
+### 2026-11-10 - The complete product contract proposed on PR #51 (ADR-0117 addendum, PROPOSED)
+
+**Not merged.** Documentation only, for one CEO completeness audit and the owner's approval.
+
+- **Charter v1.3.0** adds the "Complete product contract" section and acceptance tests AT8 to AT16. Canonical there; not
+  restated here. The ratified sections are byte-identical (hash in the addendum).
+- **`ADR-0117` addendum:** the owner's directive verbatim; a checklist of every directive item; the audit against all 14
+  owner-rule sections and accepted governance; the conflicts, together.
+- **Material conflict for the owner:** the accepted roadmap (`docs/Q8_CLOSURE_MATRIX.md`) places prediction issuance in
+  no phase. Reconciliation items: H6, H7 Mode A, H3's stale blocker note (all PROPOSED).
+- **Next:** CEO completeness audit, owner approval, merge authorization; then the authorized EVIDENCE roadmap.
+
+### 2026-11-10 - ADR-0117 and the natal product contract owner-ratified (status only)
+
+**Not merged.** The owner ratified `ADR-0117` and the Charter's "Natal product contract" as reviewed at `86dab3e`.
+
+- `ADR-0117`'s Status line now reads ACCEPTED, and a "Ratification of ADR-0117" sub-entry quotes the owner exactly.
+- The Charter's status header, the contract heading's status note, its version (1.2.1) and its change history are updated.
+- Normative text is unchanged, shown by SHA-256 before and after (recorded in the sub-entry).
+- Next: final verification and the owner's merge authorization. No implementation milestone is started.
+
+### 2026-11-10 - WP-E3 closed; the Charter's natal product contract on review (ADR-0117, PROPOSED)
+
+**Not merged.** Documentation only.
+
+- **WP-E3 closed:** PR #50 merged as `0f50bc8`, a normal two-parent merge (parents `dfdfadb`, `75ddc11`) with the tree
+  identical to the reviewed head. Post-merge CI `42771214588` passed all four jobs.
+- **The product contract:** canonical in `specs/PROJECT_CHARTER.md`, section "Natal product contract" (v1.2.0). Not
+  restated here. The four adopted Charter sections are byte-identical.
+- **Not changed:** the Constitution stays DRAFT, `Q5` stays OPEN, and no PROPOSED specification is ratified.
+- **Flagged for review:** H6 orders issuance only against the window, which cannot apply to historical predictions;
+  and the ledger cannot yet link an answer to a frozen prediction (`ADR-0117` s6).
+- **Next:** CEO review and the owner's final ratification. No WP-E4 or other implementation before that.
 
 ### 2026-11-09 - WP-E3 AC9 HOLD addressed on PR #50 (ADR-0116 AC9)
 
