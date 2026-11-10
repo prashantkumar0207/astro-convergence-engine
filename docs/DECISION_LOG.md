@@ -11395,6 +11395,121 @@ Each must be met, with evidence, before WP-E2 can be proposed for merge.
   `42581789417`, all four jobs passed. The owner's instruction
   exists as session input, not as a repository file.
 
+## ADR-0116 - WP-E2 closed at its merge; three WP-E2 decisions ratified; work package WP-E3 (the H2 historical event ledger and protected-holdout infrastructure) defined, with its exit criteria fixed before coding
+
+- **Date:** 2026-11-09
+- **Status:** **ACCEPTED, on the owner's instruction quoted in s1.** It records WP-E2's closure and the owner's ratification
+  of three decisions, and fixes WP-E3's exit criteria as that instruction requires. s4's design choices take effect only if
+  the WP-E3 pull request receives CEO approval and the owner's merge authorization.
+- **Context:**
+  - **WP-E2 (`ADR-0115` s5)** merged as PR #49. The head was `d1c2ee83e8fd10954b67073b393cb82212a8f6fd`, with four-job
+    CI `42585698424`, and the merge commit is `dfdfadbed219ba44a026dcb935866640e4ac483b`.
+    Post-merge CI `42589414966` passed all four jobs.
+  - **Approval:** the owner states that the independent CEO PASS for WP-E2 came first. Its text is not a repository file.
+
+### 1. The owner's instruction (exact text)
+
+```text
+**ACE OWNER AUTHORIZATION — WP-E2 MERGE**
+
+Following independent CEO PASS, I authorize merging PR #49 at `d1c2ee83e8fd10954b67073b393cb82212a8f6fd`.
+
+Reverify HEAD, base, mergeability and four-job CI `42585698424`. Use a normal two-parent merge, with no squash, rebase, force push or branch deletion. Verify the merge SHA, tree, ancestry and post-merge CI.
+
+I ratify these decisions:
+- Keep 47 seeded event classes, retaining their registered origins without ratifying the DRAFT registry.
+- Accept `asserter_certainty` as declared categorical input, never computed confidence.
+- Retire duplicate SUPPORT_PATHS_V1 gates H/I only in a subsequent authorized bounded change, preserving all C2/C3/C4 coverage. Do not alter them in PR #49.
+
+After verified merge, close WP-E2. Prepare WP-E3 for H2 historical event ledger and protected-holdout infrastructure under the accepted specification and Q8 §6. Fix measurable exit criteria before coding. Keep scoring, weighting, fitting, H4, H5, real personal data and API integration out of WP-E3.
+
+Submit WP-E3 through a separate reviewable PR. No merge without CEO approval and owner authorization.
+
+Return the merge SHA, post-merge CI evidence and WP-E3's fixed criteria concisely.
+```
+
+### 2. WP-E2 closure
+
+WP-E2 is **closed**. It was merged by a normal two-parent merge with parents `06267f19f9681f4f1ce06b559bc9aa7abed57ddd`
+and `d1c2ee83e8fd10954b67073b393cb82212a8f6fd`. The merge tree is identical to the reviewed head's tree, and the head
+branch is kept. Its 16 exit criteria (`ADR-0115` s5) were met as reviewed.
+
+### 3. Decisions ratified
+
+1. **The event-class seed:** the 47 seeded classes are kept, each with its registered origin. This does not ratify the
+   career event registry, which stays `DRAFT`.
+2. **`asserter_certainty`:** accepted as a declared categorical input. It is never a computed confidence.
+3. **`SUPPORT_PATHS_V1` gates H and I:** they are retired only in a later, separately authorized, bounded change, which
+   must preserve all C2, C3 and C4 coverage. WP-E3 does not alter them.
+
+### 4. WP-E3: the H2 historical event ledger and protected-holdout infrastructure
+
+**Scope.** New modules in `engine/evidence/` that hold:
+- a historical ledger over confirmed and rejected H1 events, recording how each was elicited (H2 s2 PAST, s4);
+- protected-holdout infrastructure: a frozen eligible set, a recorded and reproducible random selection, protection that
+  cannot be cleared, purpose-declared access, and an access log (H2 s5; `ADR-0113` s2 D1);
+- pre-registered protocol records carrying `ADR-0021` D1's fields and a minimum N fixed before testing (H2 s9; `ADR-0113`
+  s2 D2).
+
+H2 s6's correction rule is carried by pinning each ledger entry to an event revision and appending, never rewriting.
+
+**Outside the scope:**
+- H2 s2's TEST records, and any performance measurement or validation-run result. These need `EVD` evidence items (H4)
+  and `RUL` rule identifiers (H5), and both are excluded.
+- Scoring, weighting, fitting, confidence, and any rate or ratio.
+- H4, H5, real personal data and API integration.
+
+Because no `RUL` family is registered, a protocol records its hypotheses as declared statements. Its rule references stay
+empty until `RUL` exists.
+
+**Identifiers.** No new identifier family is introduced. Ledger, holdout, protocol and access-log records use store-local
+sequence numbers, which are never cited outside their store. Giving any of them a repository-wide family needs its own
+ADR and gate.
+
+**Holdout selection procedure.** The procedure is designed here, under `ADR-0113` s2 D1.
+- An eligible set is frozen. Its members and its SHA-256 content hash are recorded, with a seed fixed at the freeze.
+- The holdout is chosen by ranking members by SHA-256 of the seed and the member's `EVR` identifier, then taking a
+  recorded size. This is reproducible on any platform, and it does not depend on any library's random generator.
+- One selection is permitted per frozen set.
+
+**Certification.** `EVIDENCE_FOUNDATIONS_V1` gains H2 gates, and its gates A to F are unchanged. No new artifact is added.
+
+### 5. Exit criteria
+
+Each must be met, with evidence, before WP-E3 can be proposed for merge.
+
+| # | Criterion | Measured by |
+|---|---|---|
+| AC1 | **Admission.** Only an `EVR` event whose current revision has a human answer is admitted, and the entry pins that revision and that answer. A confirmed or partially confirmed event is admitted as past. A rejected event is admitted as a retained rejection. An unconfirmed event is refused. | Tests |
+| AC2 | **Elicitation.** Every entry records one of three elicitation kinds: volunteered, prompted by a system expectation, or prompted for a period with nothing expected. A missing or unknown kind is refused. | Tests |
+| AC3 | **Rejections.** A rejected hypothesis is retained with the same permanence as a confirmation, and counted. No API removes or hides one. | Tests |
+| AC4 | **Append-only.** Update and delete are refused at the database layer on every ledger, holdout, protocol and access-log table. A correction appends a superseding entry with its reason and a pointer to the entry it supersedes, and the superseded entry stays. | Tests, including direct SQL |
+| AC5 | **Counts.** Every count, by event class, elicitation and outcome, returns its member entries. The partitions sum to the total. Nothing computes a score, rate, ratio, weight or confidence. | Tests, and a structural test |
+| AC6 | **Frozen eligible set.** It records its declared criteria, its members and a content hash, and it is immutable. | Tests |
+| AC7 | **Selection.** The holdout is reproducible: re-deriving it from the recorded seed, procedure version and frozen set gives the recorded selection. A second selection over the same frozen set is refused. | Tests, and the certifier |
+| AC8 | **Protection.** It is set once, at selection. No API clears it, and direct SQL cannot. It survives a correction of the underlying event. | Tests, including direct SQL |
+| AC9 | **Access and leakage.** Every ledger read declares a purpose. A protected entry is refused for selection, tuning, rectification and development purposes. Every access attempt, granted or refused, is logged append-only. A leakage check flags two things: any forbidden-purpose read of a protected entry recorded in the log, and any protected-validation read made before its protocol was registered. | Tests, and a planted-leak negative control |
+| AC10 | **Protocols.** A protocol records every `ADR-0021` D1 field and a minimum N of at least 1, and is immutable once registered. Protected-validation access is refused if no protocol is registered, if the protocol names another holdout, or if the holdout holds fewer than the minimum N. | Tests |
+| AC11 | **Disclosure.** Counts that include protected entries are given only for audit and protected-validation purposes. Every other purpose's counts exclude protected entries. | Tests |
+| AC12 | **Data limits.** Synthetic data only. No analytical content can be stored on any ledger record. No new identifier family is introduced. | Negative tests, and a structural test |
+| AC13 | **Round trip.** Every ledger, holdout, protocol and access-log record round-trips. | Tests |
+| AC14 | **Certification.** `EVIDENCE_FOUNDATIONS_V1` gains H2 gates: integrity; refusals; and holdout reproducibility and leakage detection, each with rejection controls. Its gates A to F are unchanged. C2, C3 and C4 pass. `SUPPORT_PATHS_V1` is untouched. | The artifact, and reconciliation |
+| AC15 | **No certified output changes.** All 24 certifiers pass. The other artifacts differ only in volatile fields and `modules_scanned`. | Controlled two-tier regeneration and reconciliation, then four-job CI |
+| AC16 | **Records.** The canonical execution state and handoff record WP-E2's closure and WP-E3. | Diff |
+
+### 6. What this entry does not do
+
+- **It authorizes no merge.** The WP-E3 PR needs CEO approval and the owner's authorization.
+- **It registers no identifier family,** and implements no H4, H5, TEST record, performance measurement or validation run.
+- **It changes nothing in `SUPPORT_PATHS_V1`** or in any certified calculation.
+- **It ratifies nothing in the career event registry.**
+
+- **Decision:** as s2 to s5 state.
+- **Consequences:** WP-E3 is implemented against s4 and s5, and submitted for review. The evidence-model checkpoint comes
+  with H4.
+- **Evidence:** merge `dfdfadbed219ba44a026dcb935866640e4ac483b`; PR #49; head CI `42585698424`; post-merge CI
+  `42589414966`, all four jobs passed. The owner's instruction exists as session input, not as a repository file.
+
 ---
 
 ## ADR template (copy, do not edit above the line)

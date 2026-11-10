@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.32.0 |
+| Version | 9.35.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-09 (WP-E1 merged and closed (`06267f1`). WP-E2, the H1 event model, EVR governance and `EVIDENCE_FOUNDATIONS_V1`, is on review branch `evidence-wp-e2-event-model`. Not merged.) |
+| Last updated | 2026-11-09 (WP-E3's AC9 HOLD addressed on review branch `evidence-wp-e3-historical-ledger`. Not merged.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,57 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-09 - WP-E3 AC9 HOLD addressed on PR #50 (ADR-0116 AC9)
+
+**Not merged.** The CEO held PR #50 at `6485c80` on two AC9 defects. Both are fixed, and the 16 acceptance criteria are
+unchanged.
+
+- **Defect 1, `history()`:** it served protected entries with no purpose and no log row. It now declares a purpose, goes
+  through the same visibility rules as `read()`, and is logged granted or refused. A protected event's history,
+  superseded entries included, is never served for selection, tuning, rectification or development.
+- **Defect 2, malformed reads:** a text `event_id` (AttributeError) and a protocol number beyond 64 bits (OverflowError)
+  escaped with no log row. A text protocol `"1"` matched protocol 1 through SQLite type affinity and was granted, logged
+  with no protocol. Request shape is now checked before any query, and any other failure is logged as a refused
+  malformed request.
+- **Evidence:** 32 regression tests, all failing against the `6485c80` ledger. Gate G checks the history read's log row;
+  gate H gains 11 refusals (53 to 64), purely additive. Every other artifact is unchanged outside volatile fields.
+- **Disclosed limit unchanged:** reads through `EventStore`, `EntityStore`, raw connections or the SQLite file are not
+  controlled.
+- **Next, sequenced by the owner:** the documentation-only Charter product-contract PR, only after a CEO PASS and the
+  owner's separate merge authorization for PR #50.
+
+### 2026-11-09 - WP-E3 H2 historical ledger and protected holdouts on review (ADR-0116)
+
+**Not merged.** The CEO said PROCEED, with two clarifications; both are implemented.
+
+- **`engine/evidence/ledger.py`:**
+  - Admission takes answered events only. Rejections are retained. Every entry records how the event was elicited.
+  - A correction appends a superseding entry, and one entry is superseded only once.
+  - Freezing a set and selecting its holdout happen in one transaction, with a seed the store draws and a SHA-256 order
+    anyone can re-derive. An event belongs to one frozen set ever, so no equivalent or overlapping set can be reselected.
+  - Protection cannot be cleared.
+  - Every ledger read declares a purpose and is logged, granted or refused. Protected validation needs a registered
+    protocol, at its minimum N. `leakage_findings()` audits the log.
+- **Disclosed limit:** reads through `EventStore`, `EntityStore`, raw connections or the SQLite file are not purpose-checked
+  or logged. The leakage check covers ledger reads only.
+- **Certification:** `EVIDENCE_FOUNDATIONS_V1` gains gates G (integrity), H (53 refusals) and I (10 rejected planted
+  inputs). Gates A to F are unchanged.
+- **Out of scope:** TEST and performance records (they need H4 and H5); scoring; API. No new identifier family.
+
+### 2026-11-09 - WP-E2 merged and closed; WP-E3 exit criteria fixed (ADR-0116)
+
+**No WP-E3 code yet.** PR #49 merged as `dfdfadb` (parents `06267f1` and `d1c2ee8`, tree identical to the reviewed head);
+post-merge CI `42589414966` green on all four jobs.
+
+- **`ADR-0116`** records the owner's instruction verbatim and closes WP-E2. It ratifies three decisions:
+  - the 47-class seed keeps its origins, and the `DRAFT` registry is not ratified;
+  - `asserter_certainty` is a declared input, never a computed confidence;
+  - `SUPPORT_PATHS_V1` gates H and I are retired only in a later bounded change.
+- **WP-E3 scope:** the H2 ledger over confirmed and rejected events, with elicitation provenance; holdouts by a frozen set
+  and a hash-ranked seeded selection, with protection that cannot be cleared, purpose-declared access and an access log;
+  and pre-registered protocols with a minimum N. It fixes 16 exit criteria.
+- **Deferred:** TEST and performance records, which need H4 `EVD` and H5 `RUL`. No new identifier family.
 
 ### 2026-11-09 - WP-E1 merged and closed; WP-E2 H1 event model on review (ADR-0115)
 

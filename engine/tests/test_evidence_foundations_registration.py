@@ -103,7 +103,8 @@ def test_c2_rejects_classifying_it_as_certified_support():
 def test_c3_reads_it_with_its_own_certifier():
     assert FILE in c3.SCOPE_BEARING_ARTIFACTS and c3.CERTIFIERS[FILE] == "certify_evidence_foundations.py"
     capabilities = [capability["id"] for capability in declarations.ARTIFACT_DECLARATIONS[FILE]["capabilities"]]
-    assert capabilities == ["evidence.entity_foundations", "evidence.event_records", "evidence.event_class_seed"]
+    assert capabilities == ["evidence.entity_foundations", "evidence.event_records", "evidence.event_class_seed",
+                            "evidence.historical_ledger"]  # the last added by ADR-0116 s4 (WP-E3)
 
 
 def test_c3_rejects_a_withdrawn_enumeration(corpus, graph):

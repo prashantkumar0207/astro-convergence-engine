@@ -1040,9 +1040,11 @@
    "status": "NOT_IN_USE"
   },
   "engine.evidence.event_classes.registered": {
-   "caller_count": 1,
+   "caller_count": 3,
    "callers": [
-    "engine.evidence.events.EventRecord.__post_init__"
+    "engine.evidence.events.EventRecord.__post_init__",
+    "engine.evidence.ledger.LedgerEntry.__post_init__",
+    "engine.evidence.ledger.Protocol.__post_init__"
    ],
    "covered": true,
    "file": "engine/evidence/event_classes.py",
@@ -1199,6 +1201,178 @@
    "covered": true,
    "file": "engine/evidence/identifiers.py",
    "status": "NOT_IN_USE"
+  },
+  "engine.evidence.ledger.HistoricalLedger.access_log": {
+   "covered": true,
+   "file": "engine/evidence/ledger.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.evidence.ledger.HistoricalLedger.admit": {
+   "covered": true,
+   "file": "engine/evidence/ledger.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.evidence.ledger.HistoricalLedger.close": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.ledger.HistoricalLedger.__exit__"
+   ],
+   "covered": true,
+   "file": "engine/evidence/ledger.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.ledger.HistoricalLedger.correct": {
+   "covered": true,
+   "file": "engine/evidence/ledger.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.evidence.ledger.HistoricalLedger.counts": {
+   "covered": true,
+   "file": "engine/evidence/ledger.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.evidence.ledger.HistoricalLedger.freeze_and_select": {
+   "covered": true,
+   "file": "engine/evidence/ledger.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.evidence.ledger.HistoricalLedger.history": {
+   "covered": true,
+   "file": "engine/evidence/ledger.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.evidence.ledger.HistoricalLedger.holdout": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.ledger.HistoricalLedger.reproduces"
+   ],
+   "covered": true,
+   "file": "engine/evidence/ledger.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.ledger.HistoricalLedger.protected": {
+   "covered": true,
+   "file": "engine/evidence/ledger.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.evidence.ledger.HistoricalLedger.protocol": {
+   "covered": true,
+   "file": "engine/evidence/ledger.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.evidence.ledger.HistoricalLedger.read": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.ledger.HistoricalLedger.counts"
+   ],
+   "covered": true,
+   "file": "engine/evidence/ledger.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.ledger.HistoricalLedger.register_protocol": {
+   "covered": true,
+   "file": "engine/evidence/ledger.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.evidence.ledger.HistoricalLedger.reproduces": {
+   "covered": true,
+   "file": "engine/evidence/ledger.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.evidence.ledger.content_hash": {
+   "caller_count": 3,
+   "callers": [
+    "engine.evidence.ledger.HistoricalLedger.freeze_and_select",
+    "engine.evidence.ledger.HistoricalLedger.reproduces",
+    "engine.evidence.ledger.selection_hash"
+   ],
+   "covered": true,
+   "file": "engine/evidence/ledger.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.ledger.entry_from_record": {
+   "caller_count": 3,
+   "callers": [
+    "engine.evidence.ledger.HistoricalLedger._current",
+    "engine.evidence.ledger.HistoricalLedger._entry",
+    "engine.evidence.ledger.HistoricalLedger.history"
+   ],
+   "covered": true,
+   "file": "engine/evidence/ledger.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.ledger.entry_to_record": {
+   "caller_count": 2,
+   "callers": [
+    "engine.evidence.ledger.HistoricalLedger.admit",
+    "engine.evidence.ledger.HistoricalLedger.correct"
+   ],
+   "covered": true,
+   "file": "engine/evidence/ledger.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.ledger.holdout_from_record": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.ledger.HistoricalLedger.holdout"
+   ],
+   "covered": true,
+   "file": "engine/evidence/ledger.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.ledger.holdout_to_record": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.ledger.HistoricalLedger.freeze_and_select"
+   ],
+   "covered": true,
+   "file": "engine/evidence/ledger.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.ledger.leakage_findings": {
+   "covered": true,
+   "file": "engine/evidence/ledger.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.evidence.ledger.ordered_selection": {
+   "caller_count": 2,
+   "callers": [
+    "engine.evidence.ledger.HistoricalLedger.freeze_and_select",
+    "engine.evidence.ledger.HistoricalLedger.reproduces"
+   ],
+   "covered": true,
+   "file": "engine/evidence/ledger.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.ledger.protocol_from_record": {
+   "caller_count": 3,
+   "callers": [
+    "engine.evidence.ledger.HistoricalLedger._visible",
+    "engine.evidence.ledger.HistoricalLedger.protocol",
+    "engine.evidence.ledger.HistoricalLedger.register_protocol"
+   ],
+   "covered": true,
+   "file": "engine/evidence/ledger.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.ledger.protocol_to_record": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.ledger.HistoricalLedger.register_protocol"
+   ],
+   "covered": true,
+   "file": "engine/evidence/ledger.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.ledger.selection_hash": {
+   "caller_count": 2,
+   "callers": [
+    "engine.evidence.ledger.HistoricalLedger.freeze_and_select",
+    "engine.evidence.ledger.HistoricalLedger.reproduces"
+   ],
+   "covered": true,
+   "file": "engine/evidence/ledger.py",
+   "status": "IN_USE_COVERED"
   },
   "engine.evidence.store.EntityStore.add_link": {
    "covered": true,
@@ -1870,8 +2044,8 @@
  },
  "schema": "ace-c4-reachability-v1",
  "summary": {
-  "IN_USE_COVERED": 130,
-  "NOT_IN_USE": 117
+  "IN_USE_COVERED": 142,
+  "NOT_IN_USE": 128
  },
  "universe_exclusions": {
   "engine.main.": "API route handlers: callers and exports, not capabilities",
