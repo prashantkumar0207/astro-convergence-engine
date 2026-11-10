@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.38.0 |
+| Version | 9.39.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-10 (The complete product contract (Charter v1.3.0, `ADR-0117` addendum, PROPOSED) added to PR #51. Not merged.) |
+| Last updated | 2026-11-10 (PR #51's completeness HOLD closed (Charter v1.3.1; `ADR-0117` addendum revision 1, PROPOSED). Not merged.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,19 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-10 - PR #51 completeness HOLD closed (ADR-0117 addendum, revision 1, PROPOSED)
+
+**Not merged.** Documentation only.
+
+- **Charter v1.3.1:** generation no longer takes the question as input; the question selects by topic among frozen
+  predictions, and the selection is recorded. Historical facts in the opening question are recorded as disclosed and
+  never counted as blind successes. AT9 and AT10 are clarified (volunteered events need no prediction link).
+- **Ratified wording:** the new s10 proposes replacements for natal step 3 and the historical-prediction bullet, pending
+  separate owner approval. The ratified text is unedited (hash in the revision block).
+- **Q8 disposition:** prediction issuance requires an owner-approved roadmap placement before its implementation;
+  EVIDENCE and INTERPRETATION boundaries are unchanged; no new phase.
+- **Next:** final verification, owner approval, merge authorization.
 
 ### 2026-11-10 - The complete product contract proposed on PR #51 (ADR-0117 addendum, PROPOSED)
 

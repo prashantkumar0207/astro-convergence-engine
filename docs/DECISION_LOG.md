@@ -11860,6 +11860,52 @@ above, not an exhaustive review.
 - **Evidence:** PR #51; the checks in this commit's message and the PR. The owner's directive exists as session input,
   not as a repository file.
 
+##### Revision 1 of the addendum, after the CEO completeness HOLD (2026-11-10; PROPOSED)
+
+- **Status:** **PROPOSED**, as part of this addendum, pending the owner's separate approval. The addendum above is left
+  as drafted; this block records what changed and why.
+- **The instruction (exact text):**
+
+  ```text
+  **ACE — CLOSE PR #51 COMPLETENESS HOLD**
+
+  At PR #51 HEAD `2247e65a45871797404ee22c0358532a1e92f9cd`, correct only these demonstrated product-contract inconsistencies:
+
+  1. Reconcile the ratified natal issuance-before-any-disclosure wording with the newly required question-first workflow. Record historical facts already disclosed in the opening question, exclude them from blind-success claims, and preserve freezing before presentation and verification.
+
+  2. Make question-topic selection, birth-only generation and reproducibility (AT1/AT3/AT9) mutually consistent. Prefer keeping blind prediction generation independent of historical disclosure and using the question to select relevant analysis from independently generated results.
+
+  3. Clarify AT10: answers link to their predictions; volunteered events are distinct records and do not require a prediction link.
+
+  Record any proposed changes to previously ratified wording explicitly for separate owner approval. Preserve every other product requirement and acceptance test.
+
+  For Q8, record this disposition: prediction issuance requires an owner-approved roadmap placement before its implementation; the existing EVIDENCE and INTERPRETATION phase boundaries remain unchanged. Do not create a new phase now or delay unrelated authorized EVIDENCE work.
+
+  Run governance and CI. Return the exact HEAD and concise changes for a final verification. No other expansion, no merge.
+  ```
+
+- **Changes, in `specs/PROJECT_CHARTER.md` v1.3.1:**
+  1. **Disclosure in the opening question** (item 1): s3 item 3 and AT9 record historical facts in the opening question
+     as disclosed, and s3 item 4 excludes them from blind successes. s3 item 5 keeps the whole set frozen before
+     presentation and before verification.
+  2. **Generation, topic selection and reproducibility** (item 2): the question is no longer an input to generation (s3
+     item 1). After the set is frozen, the question selects relevant predictions by topic, and the selection is recorded
+     (s3 item 2). AT9 states that the selection never alters the generated set, so the ratified AT1 and AT3 now hold
+     whatever the question. This supersedes the addendum's checklist row 3 phrase "the question guides topic only".
+  3. **AT10** (item 3): answers link to exactly the prediction they answer; volunteered events are distinct records that
+     need no prediction link. s4 says the same.
+  4. **Ratified wording:** the new s10 states the ratified text of natal step 3 and of the historical-prediction bullet,
+     with a proposed replacement for each, **pending separate owner approval**. The ratified text itself is unedited:
+     the Charter from "Product motive" up to the new section still hashes to
+     `f54115c6c410fe9af0c8f7028bdb8fe15c4fca0557526f4e262e76225364de51`.
+- **Q8 disposition of conflict 1**, recorded as instructed: prediction issuance requires an owner-approved roadmap
+  placement before its implementation. The existing EVIDENCE and INTERPRETATION phase boundaries in
+  `docs/Q8_CLOSURE_MATRIX.md` remain unchanged. No new phase is created, and unrelated authorized EVIDENCE work is not
+  delayed. Conflict 1 is thereby dispositioned, not resolved: the placement is still owed before any prediction
+  implementation.
+- **Unchanged:** every other product requirement; AT1 to AT8 and AT11 to AT16; `docs/Q8_CLOSURE_MATRIX.md`; and this
+  entry above the addendum.
+
 ---
 
 ## ADR template (copy, do not edit above the line)

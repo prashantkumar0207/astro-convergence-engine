@@ -4,7 +4,7 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | **ACCEPTED - adopted as the ACE Project Charter, `ADR-0015`/`ADR-0051` (owner-ratified 2026-08-17); its "Natal product contract" section owner-ratified under `ADR-0117` (2026-11-10).** Subordinate to, and does not replace or supersede, `docs/PROJECT_CONSTITUTION.md`, which remains the governing constitution. The four sections adopted in 2026-08 (Product motive, Analytical systems, Isolation protocol, Scientific limitation) are unedited, and the contract's text is unedited by its ratification. **The "Complete product contract" section is PROPOSED under the `ADR-0117` addendum**: pending the owner's separate approval, and not binding until then. |
-| Version | 1.3.0 |
+| Version | 1.3.1 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 | Last updated | 2026-11-10 |
 | Review cadence | TBD |
@@ -108,7 +108,7 @@ through a decision entry.
 This section completes the product contract across the whole user experience and all five domains. It is not binding
 until the owner approves it. It does not edit the ratified "Natal product contract" above: where it adds detail to a
 natal step, it adds and never narrows, and if the two ever appear to differ, the ratified section governs until the
-owner decides.
+owner decides. s10 proposes the two wording changes that reconcile them.
 
 ### 1. The question comes first, and is kept
 
@@ -138,20 +138,23 @@ discipline through its own evidence and validation.
 
 ### 3. What "blind" means for natal historical predictions
 
-1. Historical predictions are generated from birth data and registered, versioned rules only.
-2. The question may choose the topic. Any historical fact contained in the question counts as disclosed.
-3. Each issuance records what had been disclosed before it: facts in the question, earlier answers, volunteered
-   events and stored event records. That record is made by a step separate from generation. None of these is an input
-   to blind generation, and generation itself reads none of them (AT1).
+1. Historical predictions are generated from birth data and registered, versioned rules only. The question is not an
+   input to generation, so the same birth details and versions produce the identical set whatever the user asked (AT3).
+2. After the generated set is frozen, the question selects which of its predictions are relevant to present and to
+   answer from. The selection is recorded, and it selects by topic, never by a prediction's content or likely success.
+3. Each issuance records what had been disclosed before it: historical facts in the opening question, earlier answers,
+   volunteered events and stored event records. That record is made by a step separate from generation. None of these
+   is an input to generation, and generation reads none of them (AT1).
 4. A prediction counts as a blind success only if its event was not disclosed, by any of those routes, before the
    prediction was issued.
-5. Predictions are frozen and versioned before they are presented, and before any answer is requested.
+5. The whole generated set is frozen and versioned before any of it is presented, and before any answer is requested.
 
 ### 4. Every answer, and every non-answer, is kept
 
-ACE keeps confirmations, partial confirmations, rejections, reported non-events, unanswered predictions and
-volunteered events, each as its own kind of record. Every answer is linked, immutably, to the frozen prediction it
-answers. An unanswered prediction is never counted as a success or a failure.
+Confirmations, partial confirmations, rejections and reported non-events are answers. Each is kept as its own kind of
+record and linked, immutably, to the one frozen prediction it answers. A presented prediction left unanswered is
+recorded as unanswered against that prediction, and is never counted as a success or a failure. Volunteered events are
+kept as their own records. They are not answers, and they need no prediction link.
 
 ### 5. Evaluation, independence and uncertainty
 
@@ -199,6 +202,38 @@ frozen predictions. Prospective predictive performance is evaluated and reported
 
 No certified calculation is altered and no certification gate is weakened by this contract.
 
+### 10. Proposed changes to the ratified natal wording (pending separate owner approval)
+
+Starting from a question means the user may disclose historical facts before ACE issues anything, which two ratified
+passages above do not allow for. Until the owner approves the replacements below, the ratified text stands unchanged.
+
+**Natal flow, step 3.** Ratified text:
+
+> 3. **Issuance before disclosure.** The predictions are frozen and recorded before any of them is shown to
+>    the user and before the user discloses any event. An issued prediction is never edited. Regenerating
+>    produces a new issuance beside the original, never a replacement.
+
+Proposed replacement:
+
+> 3. **Issuance blind to disclosure, before verification.** The predictions are generated without reference to
+>    anything the user has disclosed, and are frozen and recorded before any of them is shown to the user and before
+>    the user is asked to verify any of them. Historical facts the user disclosed before issuance, including any in
+>    the opening question, are recorded as disclosed and never counted as blind successes. An issued prediction is
+>    never edited. Regenerating produces a new issuance beside the original, never a replacement.
+
+**Two kinds of prediction, the historical bullet.** Ratified text:
+
+> - A **historical prediction** concerns a period that has already happened, so it cannot be issued before
+>   its outcome. Its guarantee is that it was issued **before the user disclosed anything** about that
+>   period. Agreement with the user's answers is evidence of historical fit only.
+
+Proposed replacement:
+
+> - A **historical prediction** concerns a period that has already happened, so it cannot be issued before
+>   its outcome. Its guarantee is that it was **generated blind to anything the user disclosed and frozen before the
+>   user verified it**. It counts as a blind success only for an event the user had not disclosed before it was
+>   issued. Agreement with the user's answers is evidence of historical fit only.
+
 ### Further acceptance tests owed by future work
 
 These add to AT1 to AT7 above. None is implemented by this amendment. Any work package that implements part of the
@@ -207,8 +242,8 @@ contract must fix the applicable tests among its exit criteria before coding, an
 | ID | Test | Required behaviour |
 |---|---|---|
 | AT8 | Question intake and routing | The request is stored verbatim and never altered. Intent, subject, domain, timeframe and required inputs are recorded, with anything unresolved. A request routed to an unregistered domain, or missing a required input, is refused or returned for clarification; no answer content is produced for it. |
-| AT9 | Disclosure isolation | Each issuance records the disclosure state before it, through a step separate from generation. A historical fact contained in the question, an earlier answer, a volunteered event or a stored event record is never an input to blind generation. A prediction whose event was disclosed before issuance is never counted as a blind success. |
-| AT10 | Verification records | Confirmations, partial confirmations, rejections, reported non-events, unanswered predictions and volunteered events are each stored as their own kind, with immutable links to their predictions. Unanswered predictions are counted as neither success nor failure. |
+| AT9 | Disclosure isolation | Each issuance records the disclosure state before it, through a step separate from generation, including historical facts in the opening question. Disclosed facts, earlier answers, volunteered events and stored event records are never inputs to generation. The question selects among frozen predictions by topic, the selection is recorded, and it never alters the generated set: the same birth details and versions yield the identical set whatever the question. A prediction whose event was disclosed before issuance is never counted as a blind success. |
+| AT10 | Verification records | Every answer (a confirmation, partial confirmation, rejection or reported non-event) is stored as its own kind and linked immutably to exactly the one frozen prediction it answers. A presented prediction left unanswered is recorded as unanswered against that prediction and counted as neither success nor failure. Volunteered events are distinct records: they need no prediction link and are never counted as answers. |
 | AT11 | System independence | No system's output reaches another system's input. Every result carries its system and rule provenance. An UNKNOWN relationship is never counted as independent, and agreeing systems never raise the independent-evidence count above the number of genuinely independent paths. Disagreement is reported, never netted. |
 | AT12 | Feedback and learning protection | A rule changed in response to evidence is a new version, linked to that evidence, and evaluated only on evidence it has not seen. Protected holdouts are unreadable for tuning or selection. Rectification is never invoked automatically after a failed prediction, and never selects a birth time solely because it improves future prediction. |
 | AT13 | Answering the original question | Every output references the preserved question or reading scope. It carries the supported answer, timing only where justified, its evidence, provenance, uncertainty and limitations, or an explicit statement that a reliable answer cannot be established and why. Text the LLM generates cannot introduce a claim, rule or calculation absent from the evidence. |
@@ -223,6 +258,7 @@ routing and answering the original question.
 
 | Version | Date | Change |
 |---|---|---|
+| 1.3.1 | 2026-11-10 | `ADR-0117` addendum, revised after the CEO completeness HOLD (PROPOSED): s3, s4, AT9 and AT10 reconciled; s10 proposes two changes to ratified natal wording, pending separate owner approval. Ratified text unedited. |
 | 1.3.0 | 2026-11-10 | `ADR-0117` addendum (PROPOSED): added the "Complete product contract" section and acceptance tests AT8 to AT16 on the owner's directive. Every earlier section is unedited. |
 | 1.2.1 | 2026-11-10 | `ADR-0117` ratified by the owner: the "Natal product contract" section is ACCEPTED. Status text only; no section's content changed. |
 | 1.2.0 | 2026-11-10 | `ADR-0117` (PROPOSED): added the "Natal product contract" section on the owner's directive. The four adopted sections are unedited. |
