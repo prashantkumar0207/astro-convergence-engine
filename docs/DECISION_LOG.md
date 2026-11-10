@@ -11515,7 +11515,8 @@ Each must be met, with evidence, before WP-E3 can be proposed for merge.
 ## ADR-0117 - WP-E3 closed at its merge; the natal product contract proposed as a Charter amendment, on the owner's directive (PROPOSED - for CEO review and the owner's final ratification)
 
 - **Date:** 2026-11-10
-- **Status:** **PROPOSED.** Drafted on the owner's directives quoted in s1, for independent CEO review and the owner's
+- **Status:** **ACCEPTED, on the owner's ratifying instruction recorded in the "Ratification of ADR-0117" sub-entry below.** Originally drafted `PROPOSED`. Per this repository's "change only the status" discipline, this
+  Status line and that sub-entry are the only text in this entry the ratification altered. As drafted: **PROPOSED.** Drafted on the owner's directives quoted in s1, for independent CEO review and the owner's
   final ratification. The Charter amendment (s4) is not binding until the owner ratifies it. s2 records WP-E3's closure,
   which the owner authorized and which was verified before this entry was written; recording it here ratifies nothing
   else.
@@ -11696,6 +11697,37 @@ above, not an exhaustive review.
 - **Evidence:** merge `0f50bc84612989e96934694f821d8a64fef0080a`; PR #50; head CI `42609850007`; post-merge CI
   `42771214588`, all four jobs passed; `scripts/check_adr_numbering.py`; a byte comparison of the Charter's four
   adopted sections against `0f50bc8`. The owner's directives exist as session input, not as repository files.
+
+#### Ratification of ADR-0117: THE NATAL PRODUCT CONTRACT RATIFIED (2026-11-10)
+
+- **Status:** ACCEPTED. The owner instructed, quoted exactly:
+
+  ```text
+  **ACE OWNER RATIFICATION — ADR-0117**
+
+  Following independent CEO PASS, I ratify ADR-0117 and the "Natal product contract" in Project Charter v1.2.0, as reviewed in PR #51 at `86dab3e7326977015fd926f9ee8cb769de8bb305`.
+
+  This is ACE's binding natal product objective. All future relevant specifications, milestones and reviews must comply with it.
+
+  Update the Charter and ADR-0117 from PROPOSED to ACCEPTED/owner-ratified, without substantive alterations. Run governance and CI checks, and provide the exact updated PR HEAD for final verification.
+
+  Do not begin another implementation milestone or merge unrelated work.
+  ```
+
+  Per `docs/PROJECT_CONSTITUTION.md` s11, that instruction is the ratifying act. It covers this entry and the "Natal
+  product contract" section of `specs/PROJECT_CHARTER.md` v1.2.0, as reviewed in PR #51 at
+  `86dab3e7326977015fd926f9ee8cb769de8bb305`. It does not extend to any other text.
+- **Decision:** the natal product contract is ACE's binding natal product objective. Every future relevant
+  specification, milestone and review must comply with it, through the contract's own "Charter compliance in reviews"
+  obligation.
+- **Text unchanged.** With its Status line and this sub-entry excluded, this entry hashes to SHA-256 `6099e754ea43c3e80aa8bbdc308058a3944b77d551e2e3b65ff4433e90ec728a` both
+  before and after the ratification. The Charter, with its status header, version, the contract heading's status note and
+  its change history excluded, hashes to `99a86caee1218b272bdd8e65d246d86524300d3545225b4cd6fe65e41dc30fbd` before and after.
+- **Unchanged by this ratification:** `docs/PROJECT_CONSTITUTION.md` stays `DRAFT`; `Q5` stays `OPEN`; no `PROPOSED`
+  specification is ratified, including `docs/PLATFORM_DOMAIN_ARCHITECTURE.md` and `docs/H6_PREDICTION_LEDGER_SPEC.md`;
+  no implementation milestone is authorized.
+- **Evidence:** PR #51 at `86dab3e7326977015fd926f9ee8cb769de8bb305`, CI `42773489716`, all four jobs passed. The CEO
+  PASS and the owner's instruction exist as session input, not as repository files.
 
 ---
 

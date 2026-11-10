@@ -3,8 +3,8 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | **ACCEPTED - adopted as the ACE Project Charter, `ADR-0015`/`ADR-0051` (owner-ratified 2026-08-17).** Subordinate to, and does not replace or supersede, `docs/PROJECT_CONSTITUTION.md`, which remains the governing constitution. The four adopted sections (Product motive, Analytical systems, Isolation protocol, Scientific limitation) are unedited. **The "Natal product contract" section is PROPOSED under `ADR-0117`**: owner-directed, pending independent CEO review and the owner's final ratification, and not binding until then. |
-| Version | 1.2.0 |
+| Status | **ACCEPTED - adopted as the ACE Project Charter, `ADR-0015`/`ADR-0051` (owner-ratified 2026-08-17); its "Natal product contract" section owner-ratified under `ADR-0117` (2026-11-10).** Subordinate to, and does not replace or supersede, `docs/PROJECT_CONSTITUTION.md`, which remains the governing constitution. The four sections adopted in 2026-08 (Product motive, Analytical systems, Isolation protocol, Scientific limitation) are unedited, and the contract's text is unedited by its ratification. |
+| Version | 1.2.1 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 | Last updated | 2026-11-10 |
 | Review cadence | TBD |
@@ -27,7 +27,7 @@ Each methodology starts from the same validated raw data but must derive its res
 
 Astrology and numerology are interpretive systems and are not scientifically validated predictive methods. Engineering certification in this repository refers to reproducibility and correctness against a frozen calculation specification, not proof of predictive validity.
 
-## Natal product contract (v1.2.0; PROPOSED under `ADR-0117`, pending the owner's final ratification)
+## Natal product contract (v1.2.0; ACCEPTED, owner-ratified under `ADR-0117`)
 
 This section states what the natal (Jataka) product must do. It adds to the sections above and removes or
 narrows none of them.
@@ -107,6 +107,7 @@ through a decision entry.
 
 | Version | Date | Change |
 |---|---|---|
+| 1.2.1 | 2026-11-10 | `ADR-0117` ratified by the owner: the "Natal product contract" section is ACCEPTED. Status text only; no section's content changed. |
 | 1.2.0 | 2026-11-10 | `ADR-0117` (PROPOSED): added the "Natal product contract" section on the owner's directive. The four adopted sections are unedited. |
 | 1.1.0 | 2026-08-17 | `ADR-0051`: owner-adopted as the ACE Project Charter, subordinate to `docs/PROJECT_CONSTITUTION.md`. Sections above unedited. |
 | 1.0.0 | 2026-08-17 | `ADR-0015` (PROPOSED): added the mandatory status header, absent since the bootstrap era. Sections above unedited. |

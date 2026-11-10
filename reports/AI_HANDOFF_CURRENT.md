@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.36.0 |
+| Version | 9.37.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-10 (WP-E3 merged and closed (`0f50bc8`). The Charter's natal product contract (`ADR-0117`, PROPOSED) is on review branch `charter-natal-product-contract`. Not merged.) |
+| Last updated | 2026-11-10 (`ADR-0117` and the Charter's natal product contract owner-ratified; status updated on review branch `charter-natal-product-contract`. Not merged.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,15 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-10 - ADR-0117 and the natal product contract owner-ratified (status only)
+
+**Not merged.** The owner ratified `ADR-0117` and the Charter's "Natal product contract" as reviewed at `86dab3e`.
+
+- `ADR-0117`'s Status line now reads ACCEPTED, and a "Ratification of ADR-0117" sub-entry quotes the owner exactly.
+- The Charter's status header, the contract heading's status note, its version (1.2.1) and its change history are updated.
+- Normative text is unchanged, shown by SHA-256 before and after (recorded in the sub-entry).
+- Next: final verification and the owner's merge authorization. No implementation milestone is started.
 
 ### 2026-11-10 - WP-E3 closed; the Charter's natal product contract on review (ADR-0117, PROPOSED)
 
