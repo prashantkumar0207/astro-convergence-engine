@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | **ACCEPTED (`ADR-0062`) - canonical, machine-checkable current-state record.** Regenerate/refresh on every meaningful implementation task, same discipline as `reports/AI_HANDOFF_CURRENT.md`. |
-| Version | 7.42.0 |
+| Version | 7.43.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-10 (**PR #52 merged (`686d89d`). WP-E4's exit criteria (`ADR-0119`, PROPOSED) on review branch `evidence-wp-e4-criteria` for the evidence-model checkpoint. Not merged.**) |
+| Last updated | 2026-11-10 (**WP-E4's exit criteria (`ADR-0119`, PROPOSED) revised at the CEO's evidence-model checkpoint; on review branch `evidence-wp-e4-criteria` for final verification. Not merged.**) |
 | Review cadence | Refresh at the start of a session if stale; not load-bearing if it isn't. |
 
 # ACE execution state
@@ -47,17 +47,17 @@ independently is in these fields plus the pointers they name.
 | `CURRENT_AUTHORIZED_TASK` | None self-executable beyond the WP-E4 criteria PR. Implementation starts only after the CEO PASS and the owner's acceptance of `ADR-0119`. |
 | `TASK_OWNER` | CHATGPT (evidence-model checkpoint review); USER (acceptance of the criteria and decision points). |
 | `STATUS` | WP-E4 criteria on review, not merged. Documentation only. The product contract's canonical text is `specs/PROJECT_CHARTER.md` v1.4.0, sections "Natal product contract" and "Complete product contract" (owner-ratified, `ADR-0117` and its addendum), ACE's binding product objective; the product-objective definition is CLOSED (`ADR-0118` s2). Neither is restated here. |
-| `LAST_COMPLETED_ACTION` | Merged PR #52 (the gate I fix); drafted WP-E4's scope, five decision points and twenty exit criteria (`ADR-0119`). |
+| `LAST_COMPLETED_ACTION` | Applied the checkpoint corrections to `ADR-0119` (revision 1): AC11 across every `Provenance` field; AC12 INDEPENDENT only on positive recorded evidence; D1, AC3 and AC15 mark rule references as synthetic structural references. |
 | `LAST_COMMIT` (main) | `686d89d35efdeb00bc94679e80a8bc0b682ced20` (PR #52 merge; parents `23ce0a9` and `065ed6f`). |
 | `LAST_COMMIT` (evidence-wp-e4-criteria) | This branch's commits, on top of `686d89d35efdeb00bc94679e80a8bc0b682ced20`. |
 | `LAST_CI_RUN` | `42803387445` at `686d89d`: push to `main`, success on all four jobs. This branch's results are on its review PR. |
-| `LAST_CEO_DECISION` | PASS on PR #52 at `065ed6f`, as the owner states. |
+| `LAST_CEO_DECISION` | Evidence-model checkpoint on PR #53 at `a5b85c5`: option A accepted for D1 to D5 and the scope, with a bounded HOLD for two criteria corrections and one clarification. |
 | `NEXT_AUTHORIZED_ACTION` | None self-executable. After the checkpoint: WP-E4 implementation against `ADR-0119` s5. Before any prediction implementation, an owner-approved roadmap placement (Q8 disposition). The retirement of `SUPPORT_PATHS_V1` gates H and I needs separate approval. |
-| `WAITING_FOR` | CHATGPT: the evidence-model checkpoint review of `ADR-0119`. USER: acceptance of the criteria and decision points D1 to D5. |
+| `WAITING_FOR` | CHATGPT: final verification of PR #53. USER: acceptance of the criteria and decision points D1 to D5. |
 | `BLOCKER` | None for this delivery. |
 | `CEO_APPROVAL_REQUIRED` | The evidence-model checkpoint (Q8 s6, now); WP-E4's merge; phase exit. |
 | `CLAUDE_ACTION_REQUIRED` | None until the checkpoint. Every relevant specification, milestone and review carries the Charter-compliance statement. |
-| `CHATGPT_ACTION_REQUIRED` | The evidence-model checkpoint review. |
+| `CHATGPT_ACTION_REQUIRED` | Final verification of PR #53. |
 | `USER_ACTION_REQUIRED` | Acceptance of `ADR-0119`'s criteria and decision points; a roadmap placement for prediction issuance before its implementation; a separate authorization for the bounded retirement of `SUPPORT_PATHS_V1` gates H and I. |
 | `HANDOFF_REQUIRED` | None beyond this file and the latest entry in `reports/AI_HANDOFF_CURRENT.md`. |
 
@@ -79,6 +79,7 @@ exactly as `reports/AI_HANDOFF_CURRENT.md` already requires of itself.
 
 | Version | Date | Change |
 |---|---|---|
+| 7.43.0 | 2026-11-10 | **WP-E4 criteria revised at the evidence-model checkpoint** (`ADR-0119`, revision 1). |
 | 7.42.0 | 2026-11-10 | **Gate I fix closed; WP-E4 criteria proposed for the evidence-model checkpoint** (`ADR-0119`). |
 | 7.41.0 | 2026-11-10 | **Product-objective definition CLOSED; gate I fix on review** (`ADR-0118`). |
 | 7.40.0 | 2026-11-10 | **Complete product contract owner-ratified** (Charter v1.4.0; `ADR-0117` addendum). |

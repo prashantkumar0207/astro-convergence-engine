@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.42.0 |
+| Version | 9.43.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-10 (PR #52 merged (`686d89d`). WP-E4's exit criteria (`ADR-0119`, PROPOSED) on review branch `evidence-wp-e4-criteria`. Not merged.) |
+| Last updated | 2026-11-10 (WP-E4's exit criteria (`ADR-0119`, PROPOSED) revised at the evidence-model checkpoint; on review branch `evidence-wp-e4-criteria`. Not merged.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,18 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-10 - WP-E4 criteria revised at the CEO's evidence-model checkpoint (ADR-0119, revision 1)
+
+**Not merged. No code.** The CEO accepted option A for D1 to D5 and the scope, with a bounded HOLD.
+
+- **AC11:** mismatch detection and a negative test across every field of the frozen `Provenance`, `profile_name` and
+  `time_basis` included; identical provenance still joins.
+- **AC12:** INDEPENDENT only on positive recorded structural evidence; missing links, incomplete lineage or unverified
+  derivation paths yield UNKNOWN; no convergence algorithm or new graph implementation.
+- **D1, AC3, AC15:** WP-E4's rule-version references are synthetic structural references, not proof of H5 registration or
+  validation, and authorize no real interpretation.
+- AC1 to AC20 keep their numbers; every other criterion and the scope are unchanged.
 
 ### 2026-11-10 - Gate I fix closed; WP-E4 exit criteria for the evidence-model checkpoint (ADR-0119, PROPOSED)
 

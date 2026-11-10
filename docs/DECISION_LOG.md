@@ -12033,8 +12033,10 @@ seeded trials, against 2/210 = 0.95% expected. The pytest suite uses fixed seeds
 
 - **Date:** 2026-11-10
 - **Status:** **PROPOSED.** Drafted on the owner's instruction quoted in s1, for CEO review before any implementation. This
-  review is the evidence-model checkpoint `docs/Q8_CLOSURE_MATRIX.md` s6 requires. The decision points in s4 and the criteria
-  in s5 bind only after a CEO PASS and the owner's acceptance. s2 records a verified merge and decides nothing.
+  review is the evidence-model checkpoint `docs/Q8_CLOSURE_MATRIX.md` s6 requires. At the checkpoint the CEO accepted option
+  A for D1 to D5 and the scope, subject to the corrections recorded in "Revision 1" below and applied in s4 and s5. The
+  decision points and criteria bind only after the CEO's final verification and the owner's acceptance. s2 records a
+  verified merge and decides nothing.
 - **Context:**
   - **Sources, all accepted:** `docs/H4_EVIDENCE_MODEL_SPEC.md` (with s11 controlling), `ADR-0113` s2 A, B and E,
     `ADR-0112` (DP-005), `docs/Q8_CLOSURE_MATRIX.md` s6 and s14, and `specs/PROJECT_CHARTER.md` v1.4.0.
@@ -12095,7 +12097,7 @@ any change to a certified calculation, gate or artifact outside `EVIDENCE_FOUNDA
 
 | # | Question | Options | Recommendation |
 |---|---|---|---|
-| D1 | H4 s3 and s4: evidence must name a registered rule, and only H5 rules produce evidence. `RUL` is accepted but has no issuer. How does WP-E4 get rule identity? | **A.** WP-E4 adds `RUL` governance and a minimal rule-version reference record: rule ID, version, school, content hash, knowledge snapshot hash and source-declared strength. No rule content, no conditions, no application. **B.** Build the H5 registry first, as WP-E4, and move H4 to WP-E5. **C.** Validate rule references by pattern only. | **A.** It is the smallest step that lets evidence name a rule under `ADR-0113`'s pre-first-use rule. C breaks that rule. B delays the hub the checkpoint is for. |
+| D1 | H4 s3 and s4: evidence must name a registered rule, and only H5 rules produce evidence. `RUL` is accepted but has no issuer. How does WP-E4 get rule identity? | **A.** WP-E4 adds `RUL` governance and a minimal rule-version reference record: rule ID, version, school, content hash, knowledge snapshot hash and source-declared strength. No rule content, no conditions, no application. **B.** Build the H5 registry first, as WP-E4, and move H4 to WP-E5. **C.** Validate rule references by pattern only. | **A.** It is the smallest step that lets evidence name a rule under `ADR-0113`'s pre-first-use rule. C breaks that rule. B delays the hub the checkpoint is for. These references are synthetic structural references only: they are not proof of registration or validation in the future H5 registry, and they authorize no real interpretation. |
 | D2 | H4 s3's question linkage: no question model or identifier family exists. | **A.** The field exists and is explicitly absent until a question model exists. **B.** Defer the field. | **A**, the same pattern WP-E3 used for protocol rule references. |
 | D3 | H4 s3 lists Jaimini among producing systems; `ADR-0106` OR-2 keeps Jaimini planned, needing its own specification. Which vocabulary? | **A.** The Charter's systems only (Parashari, DOB-based Pythagorean Numerology, R. G. Rao-style BNN, Umang Taneja-style Nakshatra Nadi, KP with Four-Step refinement, and CIL once its framework is reproducibly specified, as the Charter conditions it), with Jaimini added when its specification is approved. **B.** The Charter's systems plus Jaimini. | **A**, under OR-2 and the Charter, which rank above H4. |
 | D4 | H4 s10 names five classes, but CONFLICTING describes disagreement while the other four describe dependence; one pair can be both. | **A.** Each relationship records a dependency class (INDEPENDENT, DERIVED, SHARED-ORIGIN, or UNKNOWN; CORRELATED reserved) and, separately, whether the pair conflicts. **B.** One class per pair from the five plus UNKNOWN. | **A.** B would force a choice between recording dependence and recording disagreement, losing one. Both are kept, and no class is dropped. |
@@ -12110,7 +12112,7 @@ different choice changes only the criteria it names.
 |---|---|
 | AC1 | **`EVD` governed before first use:** `EVD-\d{10}` registered in `docs/NAMING_STANDARD.md` s2 with its issuer and allocation point; a store-owned durable counter, separate from every other issuer; a committed uniqueness gate, and a CI negative control proving the gate fails on a planted literal and on a missing registration. |
 | AC2 | **`RUL` governed before first use** (D1 A), on the same terms as AC1, with each version identified separately from the rule's ID. |
-| AC3 | **Rule-version reference** (D1 A): ID, version, school (never inferred), content hash, knowledge snapshot hash and source-declared strength are each required; the record is immutable; a new version is a new record; rule text, conditions or application logic are refused. |
+| AC3 | **Rule-version reference** (D1 A): ID, version, school (never inferred), content hash, knowledge snapshot hash and source-declared strength are each required; the record is immutable; a new version is a new record; rule text, conditions or application logic are refused. Every WP-E4 reference is synthetic and marked as such: a structural reference only, not proof of registration or validation in the future H5 registry, and it authorizes no real interpretation. |
 | AC4 | **No evidence without its required fields** (H4 s3, s6): construction is refused, one negative test per field, without an `EVD` identity and schema version, an existing `ENT` entity, a domain of the five, a producing system of D3's vocabulary, a registered rule version, full calculation provenance (at least one complete `Provenance`; a profile name alone refused), an existing chart reference on that entity, structured chart context, structured timing context, a polarity, or the declared strength. |
 | AC5 | **Question linkage** (D2 A): the field exists and is explicitly absent; any other value is refused until a question model exists. |
 | AC6 | **Polarity:** positive, negative, neutral, contradictory and insufficient each round-trip and are counted apart; any other value is refused. |
@@ -12118,11 +12120,11 @@ different choice changes only the criteria it names.
 | AC8 | **Historical performance:** absent is distinguishable from a measured zero; a supplied value requires its sample size; nothing in WP-E4 measures or computes it. |
 | AC9 | **Strength versus reliability** (`ADR-0113` s2 E2): declared strength comes from the rule-version reference, measured reliability is a separate field that is absent in WP-E4, and neither is derived from the other. |
 | AC10 | **Persistence** (`ADR-0113` s2 E1): every evidence table refuses `UPDATE` and `DELETE`, checked on non-empty tables; records round-trip with strict keys at every level; the store is durable across reopening; a recomputation creates a new record linked to the one it recomputes, which is kept. |
-| AC11 | **Provenance-mismatch detection** (Q8 s6): joining items whose calculation provenance differs in ayanamsa, frame, house system, node policy or ephemeris is refused and names the differing field; identical provenance joins. |
-| AC12 | **Relationships** (H4 s10, s11; D4 A): DERIVED exactly when a derivation link exists; SHARED-ORIGIN when items share a calculated input without a derivation link; INDEPENDENT only when systems differ, inputs are disjoint and no link exists; otherwise UNKNOWN. CORRELATED is refused, because nothing in EVIDENCE measures correlation. The conflict flag is recorded separately. A test shows UNKNOWN is never counted as INDEPENDENT. |
+| AC11 | **Provenance-mismatch detection** (Q8 s6): joining items whose calculation provenance differs in any field of the frozen `Provenance` (`profile_name`, `ayanamsa_mode`, `frame`, `house_system`, `node_policy`, `ephemeris_mode` and `time_basis`) is refused and names every differing field, with one negative test per field; items with identical provenance join. |
+| AC12 | **Relationships** (H4 s10, s11; D4 A): DERIVED exactly when a derivation link is recorded; SHARED-ORIGIN when the items' recorded inputs share a calculated input without a derivation link. INDEPENDENT only on positive recorded structural evidence: different producing systems, complete recorded lineage for both items showing disjoint calculated inputs, and a recorded check that no derivation path links them. A missing link, incomplete lineage or an unverified derivation path yields UNKNOWN, with one negative test for each. CORRELATED is refused, because nothing in EVIDENCE measures correlation. The conflict flag is recorded separately. A test shows UNKNOWN is never counted as INDEPENDENT. Classification reads only the items' own recorded provenance and links: no convergence algorithm and no new graph implementation. |
 | AC13 | **Decomposability** (Q8 s6): every aggregate (by producing system, domain, polarity and rule) returns its members, its partitions sum to its total, producing system and domain survive every aggregation, and a structural test shows no division, weight or score. |
 | AC14 | **One direction only** (H4 s4): no evidence module writes to, or imports a writer of, calculation state; every certified calculation artifact is unchanged outside volatile fields. |
-| AC15 | **No invented rules** (H4 s4; Charter "Complete product contract" s7): evidence can reference only a registered rule version; free-text rule content is refused; no LLM path exists. |
+| AC15 | **No invented rules** (H4 s4; Charter "Complete product contract" s7): evidence can reference only a registered rule version; free-text rule content is refused; no LLM path exists. A synthetic rule-version reference (AC3) is never treated as a registered or validated H5 rule, and no real interpretation is produced or authorized. |
 | AC16 | **Existing refusals stand:** analytical content is still refused on entities and events, and gates A to I of `EVIDENCE_FOUNDATIONS_V1` are unchanged. Evidence records refuse keys outside their schema. |
 | AC17 | **Synthetic data only** (`ADR-0113` s2 C3). |
 | AC18 | **Certification:** `EVIDENCE_FOUNDATIONS_V1` gains gates for evidence integrity, refusals and relationships with provenance mismatch, each with negative controls that are wrong by construction (the `ADR-0118` standard); C2, C3 and C4 pass; every other artifact is unchanged outside volatile fields and `modules_scanned`. |
@@ -12145,6 +12147,38 @@ different choice changes only the criteria it names.
 - It authorizes no implementation until the CEO PASS and the owner's acceptance, and no merge.
 - It ratifies no `PROPOSED` specification, including `docs/EVIDENCE_INDEPENDENCE_DESIGN.md`.
 - It does not reopen the product objective (`ADR-0118` s2).
+
+
+#### Revision 1 at the CEO's evidence-model checkpoint (2026-11-10; PROPOSED)
+
+- **The CEO's instruction (exact text):**
+
+  ```text
+  **ACE CEO — WP-E4 CHECKPOINT, BOUNDED HOLD**
+
+  PR #53 at `a5b85c5185ce82e739966ed31c8359cc52377b4b`.
+
+  CEO accepts the recommended options A for D1–D5 and the existing WP-E4 scope, subject to two corrections to the fixed exit criteria:
+
+  1. **AC11:** Require incompatibility detection and negative tests across every field of the frozen calculation `Provenance`, explicitly including `profile_name` and `time_basis`. Preserve successful joins for compatible identical provenance.
+
+  2. **AC12:** Require positive recorded structural evidence before assigning INDEPENDENT. Missing links, incomplete lineage or unverified derivation paths must yield UNKNOWN, not INDEPENDENT. No convergence algorithm or new graph implementation.
+
+  Also clarify D1/AC3/AC15: WP-E4's minimal RUL records are synthetic structural references, not proof of registration or validation in the future full H5 rule registry. They must not authorize real interpretation.
+
+  Preserve AC1–AC20 numbering, all other acceptance criteria, all five accepted decision choices and the original scope.
+
+  Amend only ADR-0119 and necessary state/handoff references in PR #53. Run applicable checks, report exact HEAD and concise diff. No implementation, no new architecture review and no merge.
+
+  Return for final CEO verification.
+  ```
+
+- **Applied, and nothing else:** AC11 now covers every field of the frozen `Provenance`, `profile_name` and `time_basis`
+  included, with a negative test per field; AC12 requires positive recorded structural evidence for INDEPENDENT, with
+  UNKNOWN for missing links, incomplete lineage or unverified derivation paths, and excludes any convergence algorithm or
+  new graph implementation; D1, AC3 and AC15 state that WP-E4's rule-version references are synthetic structural
+  references, not proof of H5 registration or validation, and authorize no real interpretation. The Status line notes the
+  checkpoint. AC1 to AC20 keep their numbers; every other criterion, the five option-A choices and the scope are unchanged.
 
 - **Decision:** as s3 to s5 state, pending the checkpoint.
 - **Consequences:** On a CEO PASS and the owner's acceptance, WP-E4 is implemented against s3 and s5 under the chosen
