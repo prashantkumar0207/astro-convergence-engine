@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.41.0 |
+| Version | 9.42.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-10 (PR #51 merged (`23ce0a9`); the product-objective definition CLOSED (`ADR-0118`). Gate I fix on review branch `evidence-gate-i-deterministic-controls`. Not merged.) |
+| Last updated | 2026-11-10 (PR #52 merged (`686d89d`). WP-E4's exit criteria (`ADR-0119`, PROPOSED) on review branch `evidence-wp-e4-criteria`. Not merged.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,21 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-10 - Gate I fix closed; WP-E4 exit criteria for the evidence-model checkpoint (ADR-0119, PROPOSED)
+
+**Not merged. No code.**
+
+- **PR #52 merged** as `686d89d` (parents `23ce0a9`, `065ed6f`; tree identical to the reviewed head). Post-merge CI
+  `42803387445` passed all four jobs.
+- **WP-E4, the H4 evidence model:** `EVD` governance; the evidence item, its strict record and an append-only store;
+  structural relationship records with UNKNOWN never treated as independence; provenance-mismatch detection; decomposable
+  aggregates; new `EVIDENCE_FOUNDATIONS_V1` gates. No interpretation, scoring, confidence computation, convergence or
+  prediction.
+- **Decision points for the checkpoint:** D1 rule identity (recommended: minimal `RUL` governance and a rule-version
+  reference in WP-E4); D2 question linkage explicitly absent; D3 the Charter's system vocabulary over H4 s3's Jaimini;
+  D4 dependency class and conflict recorded separately; D5 gates in `EVIDENCE_FOUNDATIONS_V1`.
+- **Twenty exit criteria** (`ADR-0119` s5) and a Charter-compliance statement (s6).
 
 ### 2026-11-10 - Product objective CLOSED; gate I control fix on review (ADR-0118)
 
