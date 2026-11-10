@@ -61,9 +61,9 @@ from engine.evidence.events import (  # noqa: E402
 from engine.evidence.identifiers import EntityId, IdentifierError  # noqa: E402
 from engine.evidence.store import EntityStore, StoreError, subject_from_record, subject_to_record  # noqa: E402
 from engine.evidence.ledger import (  # noqa: E402
-    EXCLUDED_FROM_PROTECTED, Elicitation, HistoricalLedger, LedgerError, Outcome, Protocol, Purpose, content_hash,
-    entry_from_record, entry_to_record, holdout_from_record, holdout_to_record, leakage_findings, ordered_selection,
-    protocol_from_record, protocol_to_record,
+    EXCLUDED_FROM_PROTECTED, PROCEDURE, Elicitation, HistoricalLedger, LedgerError, Outcome, Protocol, Purpose,
+    content_hash, entry_from_record, entry_to_record, holdout_from_record, holdout_to_record, leakage_findings,
+    ordered_selection, protocol_from_record, protocol_to_record, selection_hash,
 )
 
 #: A number no certifier store reaches, for the dangling-reference controls.
@@ -796,6 +796,45 @@ def gate_h_ledger_refusals():
     return {"classification": "negative_control", "refusals_verified": len(refused), "refused": sorted(refused)}
 
 
+#: Fixed, ordered candidate seeds for the "another seed" control. The first whose hash order selects a different set
+#: from the real one is used, so the planted record is wrong by construction, whatever seed the store drew.
+OTHER_SEEDS = tuple(f"{index:064x}" for index in range(64))
+
+
+def record_reproduces(holdout):
+    """Gate I's reproduction check on a holdout record alone: the procedure, set hash, selection and its hash."""
+
+    return (holdout.procedure == PROCEDURE and holdout.content_hash == content_hash(holdout.members)
+            and ordered_selection(holdout.seed, holdout.members, holdout.size) == holdout.selected
+            and holdout.selection_hash == selection_hash(holdout.selected))
+
+
+def planted_selections(holdout):
+    """Two holdout records that are wrong by construction, each internally consistent except in its selection.
+
+    - Another seed: the recorded selection is kept, and the seed is replaced by the first fixed candidate whose hash
+      order selects a different set.
+    - A fixed identifier order: the first `size` members by identifier, or the last `size` where the first equal the
+      real selection. With at least twice `size` members the two are disjoint, so one of them always differs. Its
+      selection hash is recomputed, so only the ordering can expose it.
+
+    Built with the real procedure, independently of `record_reproduces`, so a broken check cannot shape its own
+    controls. Fails, rather than plant a correct record, if no wrong one exists.
+    """
+
+    members = tuple(sorted(holdout.members))
+    other = next((seed for seed in OTHER_SEEDS if seed != holdout.seed
+                  and ordered_selection(seed, members, holdout.size) != holdout.selected), None)
+    if other is None:
+        fail("no candidate seed selects a different set, so the another-seed control would prove nothing")
+    if 2 * holdout.size > len(members):
+        fail("the fixed-order control needs at least twice the selection size in members")
+    fixed = members[:holdout.size] if members[:holdout.size] != holdout.selected else members[-holdout.size:]
+    return (("another seed", dataclasses.replace(holdout, seed=other)),
+            ("a fixed identifier order instead of the hash order",
+             dataclasses.replace(holdout, selected=fixed, selection_hash=selection_hash(fixed))))
+
+
 def gate_i_holdout_leakage():
     """The holdout re-derives from its record, and the leakage check flags every planted leak (H2 s5, s8)."""
 
@@ -812,12 +851,10 @@ def gate_i_holdout_leakage():
         holdout = ledger.holdout(number)
         protocol_number = ledger.register_protocol(_protocol(number, 4))
         ledger.read(Purpose.PROTECTED_VALIDATION, protocol_number)
-        if not ledger.reproduces(number) or leakage_findings(path) != []:
+        if not ledger.reproduces(number) or not record_reproduces(holdout) or leakage_findings(path) != []:
             fail("a clean holdout did not reproduce, or a clean log reported leakage")
-        for label, planted in (("another seed", dataclasses.replace(holdout, seed="0" * 64)),
-                               ("first-k instead of the hash order",
-                                dataclasses.replace(holdout, selected=tuple(sorted(holdout.members)[:holdout.size])))):
-            if planted.selected == ordered_selection(planted.seed, planted.members, planted.size):
+        for label, planted in planted_selections(holdout):
+            if record_reproduces(planted):
                 fail(f"the reproduction check accepted a selection from {label}")
             controls[f"selection from {label} rejected"] = True
         outside = sorted(set(members) - set(holdout.selected))[0].value
