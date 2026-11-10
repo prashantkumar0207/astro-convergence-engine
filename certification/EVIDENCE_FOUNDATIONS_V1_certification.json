@@ -1,7 +1,7 @@
 {
  "schema": "evidence_foundations_v1_certification",
  "adr": "ADR-0115 s4; ADR-0116 s4",
- "date": "2026-11-09",
+ "date": "2026-11-10",
  "scope": "Structural certification of the EVIDENCE foundations: the H0 entity model, append-only entity store and ENT issuer (ADR-0114 WP-E1), and the H1 event model, append-only event store, separate confirmation records, EVR issuer and seeded event-class vocabulary (ADR-0115 WP-E2), and the H2 historical ledger, protected holdouts, pre-registered protocols and purpose-declared access log (ADR-0116 WP-E3).",
  "reference": {
   "structure": "the model contracts of ADR-0114 s3, ADR-0115 s5 and ADR-0116 s5, exercised on synthetic records",
@@ -264,8 +264,8 @@
     "planted leak flagged: protected validation before its protocol",
     "planted leak flagged: protected validation outside its holdout",
     "planted leak flagged: protected validation with no protocol",
-    "selection from another seed rejected",
-    "selection from first-k instead of the hash order rejected"
+    "selection from a fixed identifier order instead of the hash order rejected",
+    "selection from another seed rejected"
    ],
    "holdout_members": 10,
    "holdout_selected": 4,

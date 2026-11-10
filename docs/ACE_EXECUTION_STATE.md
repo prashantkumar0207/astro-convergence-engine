@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | **ACCEPTED (`ADR-0062`) - canonical, machine-checkable current-state record.** Regenerate/refresh on every meaningful implementation task, same discipline as `reports/AI_HANDOFF_CURRENT.md`. |
-| Version | 7.40.0 |
+| Version | 7.41.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-10 (**The complete product contract owner-ratified (Charter v1.4.0; `ADR-0117` addendum). PR #51 awaits final verification. Not merged.**) |
+| Last updated | 2026-11-10 (**PR #51 merged (`23ce0a9`); the product-objective definition CLOSED (`ADR-0118`). The gate I control fix is on review branch `evidence-gate-i-deterministic-controls`. Not merged.**) |
 | Review cadence | Refresh at the start of a session if stale; not load-bearing if it isn't. |
 
 # ACE execution state
@@ -43,22 +43,22 @@ independently is in these fields plus the pointers they name.
 | Field | Value |
 |---|---|
 | `CURRENT_PHASE` | **EVIDENCE entered** (`ADR-0114`, owner-authorized 2026-11-07, from `main` `90cd0ca`). JATAKA exited (`ADR-0110`). Mandatory CEO checkpoints remain: the evidence model (H4), and phase exit. |
-| `CURRENT_MILESTONE` | **Product-objective lock on PR #51: the natal and complete product contracts, both owner-ratified (`ADR-0117` and its addendum).** WP-E3 closed: PR #50 merged as `0f50bc8`. |
-| `CURRENT_AUTHORIZED_TASK` | None self-executable beyond the Charter review PR. The owner made it the highest priority, ahead of WP-E4 or any implementation milestone. |
-| `TASK_OWNER` | CHATGPT (final verification of PR #51); USER (merge authorization). |
-| `STATUS` | Charter PR on review, not merged. Documentation only: no code, certification artifact or gate changed. The product contract's canonical text is `specs/PROJECT_CHARTER.md`: section "Natal product contract" (owner-ratified, `ADR-0117`), ACE's binding natal product objective; and section "Complete product contract" (owner-ratified, `ADR-0117` addendum), ACE's binding complete product objective. Neither is restated here. |
-| `LAST_COMPLETED_ACTION` | Applied the owner's ratification of the complete product contract: the two approved replacements in the natal contract, s10 removed, statuses and version history updated. Every other provision verified byte-identical. |
-| `LAST_COMMIT` (main) | `0f50bc84612989e96934694f821d8a64fef0080a` (PR #50 merge; parents `dfdfadb` and `75ddc11`). |
-| `LAST_COMMIT` (charter-natal-product-contract) | This branch's commits, on top of `0f50bc84612989e96934694f821d8a64fef0080a`. |
-| `LAST_CI_RUN` | `42771214588` at `0f50bc8`: push to `main`, success on all four jobs. This branch's results are on its review PR. |
-| `LAST_CEO_DECISION` | Completeness HOLD on PR #51 at `2247e65`, closed at `cafa85b`; the owner then approved the contract at `cafa85b`. |
-| `NEXT_AUTHORIZED_ACTION` | After PR #51 merges: a separate, minimal PR against `main` fixing the stochastic gate I negative controls of `EVIDENCE_FOUNDATIONS_V1` (owner-authorized; CEO review before merge). Then the authorized EVIDENCE roadmap. The retirement of `SUPPORT_PATHS_V1` gates H and I needs separate approval. |
-| `WAITING_FOR` | CHATGPT: final verification of PR #51. USER: merge authorization for PR #51. |
+| `CURRENT_MILESTONE` | **Gate I control fix (`ADR-0118` s3) on a review PR.** The product-objective definition is CLOSED (`ADR-0118` s2): PR #51 merged as `23ce0a9`. |
+| `CURRENT_AUTHORIZED_TASK` | The gate I fix PR, for independent CEO review. Then the authorized EVIDENCE roadmap (`ADR-0114`): its next work package is defined with criteria fixed before coding. |
+| `TASK_OWNER` | CHATGPT (review of the gate I PR); USER (merge authorization). |
+| `STATUS` | Gate I PR on review, not merged. Certifier and tests only; production code unchanged. The product contract's canonical text is `specs/PROJECT_CHARTER.md` v1.4.0, sections "Natal product contract" and "Complete product contract" (owner-ratified, `ADR-0117` and its addendum), ACE's binding product objective. Neither is restated here. |
+| `LAST_COMPLETED_ACTION` | Merged PR #51 and closed the product-objective definition; prepared the gate I fix. |
+| `LAST_COMMIT` (main) | `23ce0a9a49c10f90454ad591ab84adcf712b24c4` (PR #51 merge; parents `0f50bc8` and `3f9e124`). |
+| `LAST_COMMIT` (evidence-gate-i-deterministic-controls) | This branch's commits, on top of `23ce0a9a49c10f90454ad591ab84adcf712b24c4`. |
+| `LAST_CI_RUN` | `42795184067` at `23ce0a9`: push to `main`, success on all four jobs. This branch's results are on its review PR. |
+| `LAST_CEO_DECISION` | Final PASS on PR #51 at `3f9e124`, as the owner states. |
+| `NEXT_AUTHORIZED_ACTION` | Not merging the gate I PR without a CEO PASS. Next EVIDENCE work: the evidence-model work package (H4), its criteria fixed before coding, with the CEO's evidence-model checkpoint (Q8 s6). Before any prediction implementation, an owner-approved roadmap placement (Q8 disposition, `ADR-0117` addendum). The retirement of `SUPPORT_PATHS_V1` gates H and I needs separate approval. |
+| `WAITING_FOR` | CHATGPT: review of the gate I PR. USER: its merge authorization. |
 | `BLOCKER` | None for this delivery. |
-| `CEO_APPROVAL_REQUIRED` | The Charter PR's merge (`ADR-0106` OR-3); the evidence-model checkpoint (Q8 s6); phase exit. |
-| `CLAUDE_ACTION_REQUIRED` | None until directed. Every later relevant specification, milestone and review must carry the Charter-compliance statement. |
-| `CHATGPT_ACTION_REQUIRED` | Final verification of PR #51. |
-| `USER_ACTION_REQUIRED` | Merge authorization for PR #51; before any prediction implementation, an owner-approved roadmap placement for prediction issuance (Q8 disposition); a separate authorization for the bounded retirement of `SUPPORT_PATHS_V1` gates H and I. |
+| `CEO_APPROVAL_REQUIRED` | The gate I PR's merge; the evidence-model checkpoint (Q8 s6); phase exit. |
+| `CLAUDE_ACTION_REQUIRED` | Define the next EVIDENCE work package. Every relevant specification, milestone and review carries the Charter-compliance statement. |
+| `CHATGPT_ACTION_REQUIRED` | Review of the gate I PR. |
+| `USER_ACTION_REQUIRED` | Merge authorization for the gate I PR; a roadmap placement for prediction issuance before its implementation; a separate authorization for the bounded retirement of `SUPPORT_PATHS_V1` gates H and I. |
 | `HANDOFF_REQUIRED` | None beyond this file and the latest entry in `reports/AI_HANDOFF_CURRENT.md`. |
 
 ## How to independently verify every field above
@@ -79,6 +79,7 @@ exactly as `reports/AI_HANDOFF_CURRENT.md` already requires of itself.
 
 | Version | Date | Change |
 |---|---|---|
+| 7.41.0 | 2026-11-10 | **Product-objective definition CLOSED; gate I fix on review** (`ADR-0118`). |
 | 7.40.0 | 2026-11-10 | **Complete product contract owner-ratified** (Charter v1.4.0; `ADR-0117` addendum). |
 | 7.39.0 | 2026-11-10 | **PR #51 completeness HOLD closed** (Charter v1.3.1; `ADR-0117` addendum revision 1). |
 | 7.38.0 | 2026-11-10 | **Complete product contract proposed** (Charter v1.3.0, `ADR-0117` addendum). Referenced, not restated. |
