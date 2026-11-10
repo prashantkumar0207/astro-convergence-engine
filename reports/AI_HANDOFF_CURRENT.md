@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.35.0 |
+| Version | 9.36.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-09 (WP-E3's AC9 HOLD addressed on review branch `evidence-wp-e3-historical-ledger`. Not merged.) |
+| Last updated | 2026-11-10 (WP-E3 merged and closed (`0f50bc8`). The Charter's natal product contract (`ADR-0117`, PROPOSED) is on review branch `charter-natal-product-contract`. Not merged.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,19 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-10 - WP-E3 closed; the Charter's natal product contract on review (ADR-0117, PROPOSED)
+
+**Not merged.** Documentation only.
+
+- **WP-E3 closed:** PR #50 merged as `0f50bc8`, a normal two-parent merge (parents `dfdfadb`, `75ddc11`) with the tree
+  identical to the reviewed head. Post-merge CI `42771214588` passed all four jobs.
+- **The product contract:** canonical in `specs/PROJECT_CHARTER.md`, section "Natal product contract" (v1.2.0). Not
+  restated here. The four adopted Charter sections are byte-identical.
+- **Not changed:** the Constitution stays DRAFT, `Q5` stays OPEN, and no PROPOSED specification is ratified.
+- **Flagged for review:** H6 orders issuance only against the window, which cannot apply to historical predictions;
+  and the ledger cannot yet link an answer to a frozen prediction (`ADR-0117` s6).
+- **Next:** CEO review and the owner's final ratification. No WP-E4 or other implementation before that.
 
 ### 2026-11-09 - WP-E3 AC9 HOLD addressed on PR #50 (ADR-0116 AC9)
 
