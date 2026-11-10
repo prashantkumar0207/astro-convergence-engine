@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.39.0 |
+| Version | 9.40.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-10 (PR #51's completeness HOLD closed (Charter v1.3.1; `ADR-0117` addendum revision 1, PROPOSED). Not merged.) |
+| Last updated | 2026-11-10 (The complete product contract owner-ratified (Charter v1.4.0; `ADR-0117` addendum). PR #51 not merged.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,17 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-10 - The complete product contract owner-ratified (Charter v1.4.0; ADR-0117 addendum)
+
+**Not merged.** Documentation only.
+
+- **Applied, and nothing else:** the two approved replacements now stand in natal step 3 and the historical-prediction
+  bullet; Charter s10 (the proposed-replacement wording) is removed; statuses, headings, version and history updated.
+- **Verified:** the four adopted sections, s1 to s9 and AT1 to AT16 are byte-identical to `cafa85b`; the natal contract
+  differs only by the two replacements. In `ADR-0117`, only the addendum's two Status lines changed, plus the new
+  ratification sub-entry.
+- **Next:** final verification and merge authorization; then the separately authorized gate I fix PR against `main`.
 
 ### 2026-11-10 - PR #51 completeness HOLD closed (ADR-0117 addendum, revision 1, PROPOSED)
 

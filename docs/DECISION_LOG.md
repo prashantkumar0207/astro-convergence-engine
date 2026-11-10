@@ -11731,7 +11731,7 @@ above, not an exhaustive review.
 
 #### Proposed addendum to ADR-0117: the complete product contract (2026-11-10; PROPOSED, pending separate owner approval)
 
-- **Status:** **PROPOSED.** Drafted on the owner's directive quoted below, for one independent CEO completeness audit and
+- **Status:** **ACCEPTED, on the owner's ratifying instruction recorded in the "Ratification of the ADR-0117 addendum" sub-entry below.** Originally drafted `PROPOSED`; only this Status line changed. As drafted: **PROPOSED.** Drafted on the owner's directive quoted below, for one independent CEO completeness audit and
   the owner's separate approval. `ADR-0117`'s ratification covers only the wording reviewed at
   `86dab3e7326977015fd926f9ee8cb769de8bb305`; it does not extend to this addendum, and nothing here is ratified
   retrospectively.
@@ -11862,7 +11862,7 @@ above, not an exhaustive review.
 
 ##### Revision 1 of the addendum, after the CEO completeness HOLD (2026-11-10; PROPOSED)
 
-- **Status:** **PROPOSED**, as part of this addendum, pending the owner's separate approval. The addendum above is left
+- **Status:** **ACCEPTED, on the owner's ratifying instruction recorded in the "Ratification of the ADR-0117 addendum" sub-entry below.** Originally drafted `PROPOSED`; only this Status line changed. As drafted: **PROPOSED**, as part of this addendum, pending the owner's separate approval. The addendum above is left
   as drafted; this block records what changed and why.
 - **The instruction (exact text):**
 
@@ -11905,6 +11905,47 @@ above, not an exhaustive review.
   implementation.
 - **Unchanged:** every other product requirement; AT1 to AT8 and AT11 to AT16; `docs/Q8_CLOSURE_MATRIX.md`; and this
   entry above the addendum.
+
+#### Ratification of the ADR-0117 addendum: THE COMPLETE PRODUCT CONTRACT RATIFIED (2026-11-10)
+
+- **Status:** ACCEPTED. The owner instructed, quoted exactly:
+
+  ```text
+  **ACE OWNER DECISION — FINAL PRODUCT CONTRACT**
+
+  I approve the complete product contract in PR #51 at `cafa85b3e97586c965f0a854852dfb5ef84b3f30`, including ADR-0117 addendum revision 1, AT8–AT16 and both exact replacements proposed in Charter section 10.
+
+  I ratify this as ACE's binding complete product objective.
+
+  Apply only the approved replacements to the original natal contract, update the relevant statuses and version history, and remove the now-redundant proposed-replacement wording. Preserve every other normative provision.
+
+  Run governance and CI, verify the exact resulting diff, and report the final HEAD. No unrelated changes.
+
+  I also authorize preparing a **separate, minimal PR against main** to fix the stochastic Gate I negative controls after PR #51 is merged. Require guaranteed incorrect planted selections, genuine mutation detection, a reproducibility test and unchanged certification coverage. Do not modify the production holdout-selection algorithm or weaken the gate.
+
+  No other scope expansion. Do not merge the separate certification PR without independent CEO review.
+  ```
+
+  That instruction is the ratifying act. It covers the addendum, its revision 1, acceptance tests AT8 to AT16, and both
+  replacements proposed in `specs/PROJECT_CHARTER.md` s10, as reviewed in PR #51 at
+  `cafa85b3e97586c965f0a854852dfb5ef84b3f30`. It does not extend to any other text.
+- **Decision:** the complete product contract is ACE's binding complete product objective.
+- **Applied, and nothing else** (Charter v1.4.0): the two approved replacements, taken verbatim from s10, now stand in
+  natal step 3 and the historical-prediction bullet; s10 itself is removed; the section headings, the status header,
+  the version and the change history record the ratification; and the sentences saying the section was not yet binding
+  are removed. Verified by script against `cafa85b`: the four adopted sections, s1 to s9 and AT1 to AT16 are
+  byte-identical, and the natal contract differs only by the two replacements.
+- **This entry:** above the addendum it still hashes to `d4f9bc5a601f7243aedae3abf01ca65c6bdde0f47b83c333555d6bff69eba56f`. The addendum and revision 1, with their
+  Status lines excluded, hash to `28c60fc8debf5c6ab4403faa010b3b34f984aeb516bcfcac820583fec5ea46dc` before and after; only those two Status lines changed.
+- **The Q8 disposition stands:** prediction issuance requires an owner-approved roadmap placement before its
+  implementation; the EVIDENCE and INTERPRETATION phase boundaries are unchanged.
+- **Separately authorized, outside this entry:** a minimal PR against `main`, after PR #51 merges, to fix the stochastic
+  gate I negative controls in `EVIDENCE_FOUNDATIONS_V1`, under the conditions in the instruction above.
+- **Unchanged:** `docs/PROJECT_CONSTITUTION.md` stays `DRAFT`; `Q5` stays `OPEN`; no `PROPOSED` specification is
+  ratified; no implementation milestone is authorized.
+- **Evidence:** PR #51 at `cafa85b3e97586c965f0a854852dfb5ef84b3f30`, CI `42786854405` (four jobs passed; attempt 1's
+  Python 3.12 failure was the pre-existing gate I defect, disclosed on the PR). The CEO's review and the owner's
+  instruction exist as session input, not as repository files.
 
 ---
 

@@ -3,8 +3,8 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | **ACCEPTED - adopted as the ACE Project Charter, `ADR-0015`/`ADR-0051` (owner-ratified 2026-08-17); its "Natal product contract" section owner-ratified under `ADR-0117` (2026-11-10).** Subordinate to, and does not replace or supersede, `docs/PROJECT_CONSTITUTION.md`, which remains the governing constitution. The four sections adopted in 2026-08 (Product motive, Analytical systems, Isolation protocol, Scientific limitation) are unedited, and the contract's text is unedited by its ratification. **The "Complete product contract" section is PROPOSED under the `ADR-0117` addendum**: pending the owner's separate approval, and not binding until then. |
-| Version | 1.3.1 |
+| Status | **ACCEPTED - adopted as the ACE Project Charter, `ADR-0015`/`ADR-0051` (owner-ratified 2026-08-17); its "Natal product contract" section owner-ratified under `ADR-0117` (2026-11-10).** Subordinate to, and does not replace or supersede, `docs/PROJECT_CONSTITUTION.md`, which remains the governing constitution. The four sections adopted in 2026-08 (Product motive, Analytical systems, Isolation protocol, Scientific limitation) are unedited. **The "Complete product contract" section is owner-ratified under the `ADR-0117` addendum (2026-11-10)**, and the same approval replaced two passages of the natal contract (step 3 and the historical-prediction bullet) in v1.4.0; the natal contract is otherwise unedited. |
+| Version | 1.4.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 | Last updated | 2026-11-10 |
 | Review cadence | TBD |
@@ -27,7 +27,7 @@ Each methodology starts from the same validated raw data but must derive its res
 
 Astrology and numerology are interpretive systems and are not scientifically validated predictive methods. Engineering certification in this repository refers to reproducibility and correctness against a frozen calculation specification, not proof of predictive validity.
 
-## Natal product contract (v1.2.0; ACCEPTED, owner-ratified under `ADR-0117`)
+## Natal product contract (v1.2.0, amended v1.4.0; ACCEPTED, owner-ratified under `ADR-0117` and its addendum)
 
 This section states what the natal (Jataka) product must do. It adds to the sections above and removes or
 narrows none of them.
@@ -39,9 +39,11 @@ narrows none of them.
 2. **Blind historical prediction.** From the birth details alone, each applicable system independently
    predicts events in the user's past, each with an event class, a timing window, and the system and rule
    that produced it. The user is not asked for any historical life event before this, and none is used.
-3. **Issuance before disclosure.** The predictions are frozen and recorded before any of them is shown to
-   the user and before the user discloses any event. An issued prediction is never edited. Regenerating
-   produces a new issuance beside the original, never a replacement.
+3. **Issuance blind to disclosure, before verification.** The predictions are generated without reference to
+   anything the user has disclosed, and are frozen and recorded before any of them is shown to the user and before
+   the user is asked to verify any of them. Historical facts the user disclosed before issuance, including any in
+   the opening question, are recorded as disclosed and never counted as blind successes. An issued prediction is
+   never edited. Regenerating produces a new issuance beside the original, never a replacement.
 4. **User verification.** The user confirms, partially confirms or rejects each prediction, or leaves it
    unanswered. Each answer is linked to the frozen prediction it answers. Events the user volunteers are
    recorded as volunteered, apart from answers.
@@ -59,8 +61,9 @@ narrows none of them.
 ### Two kinds of prediction, two different guarantees
 
 - A **historical prediction** concerns a period that has already happened, so it cannot be issued before
-  its outcome. Its guarantee is that it was issued **before the user disclosed anything** about that
-  period. Agreement with the user's answers is evidence of historical fit only.
+  its outcome. Its guarantee is that it was **generated blind to anything the user disclosed and frozen before the
+  user verified it**. It counts as a blind success only for an event the user had not disclosed before it was
+  issued. Agreement with the user's answers is evidence of historical fit only.
 - A **future prediction** is issued **before its window opens and before its outcome exists**. Only these
   predictions, tracked to their outcomes, can show predictive accuracy.
 
@@ -103,12 +106,12 @@ contract, or name each conflict for the owner to decide. A review without that s
 A reviewer does not resolve a conflict with this Charter; the Charter governs until the owner amends it
 through a decision entry.
 
-## Complete product contract (v1.3.0; PROPOSED under the `ADR-0117` addendum, pending separate owner approval)
+## Complete product contract (v1.3.0; ACCEPTED, owner-ratified under the `ADR-0117` addendum)
 
-This section completes the product contract across the whole user experience and all five domains. It is not binding
-until the owner approves it. It does not edit the ratified "Natal product contract" above: where it adds detail to a
+This section completes the product contract across the whole user experience and all five domains. It does not edit
+the ratified "Natal product contract" above: where it adds detail to a
 natal step, it adds and never narrows, and if the two ever appear to differ, the ratified section governs until the
-owner decides. s10 proposes the two wording changes that reconcile them.
+owner decides.
 
 ### 1. The question comes first, and is kept
 
@@ -202,38 +205,6 @@ frozen predictions. Prospective predictive performance is evaluated and reported
 
 No certified calculation is altered and no certification gate is weakened by this contract.
 
-### 10. Proposed changes to the ratified natal wording (pending separate owner approval)
-
-Starting from a question means the user may disclose historical facts before ACE issues anything, which two ratified
-passages above do not allow for. Until the owner approves the replacements below, the ratified text stands unchanged.
-
-**Natal flow, step 3.** Ratified text:
-
-> 3. **Issuance before disclosure.** The predictions are frozen and recorded before any of them is shown to
->    the user and before the user discloses any event. An issued prediction is never edited. Regenerating
->    produces a new issuance beside the original, never a replacement.
-
-Proposed replacement:
-
-> 3. **Issuance blind to disclosure, before verification.** The predictions are generated without reference to
->    anything the user has disclosed, and are frozen and recorded before any of them is shown to the user and before
->    the user is asked to verify any of them. Historical facts the user disclosed before issuance, including any in
->    the opening question, are recorded as disclosed and never counted as blind successes. An issued prediction is
->    never edited. Regenerating produces a new issuance beside the original, never a replacement.
-
-**Two kinds of prediction, the historical bullet.** Ratified text:
-
-> - A **historical prediction** concerns a period that has already happened, so it cannot be issued before
->   its outcome. Its guarantee is that it was issued **before the user disclosed anything** about that
->   period. Agreement with the user's answers is evidence of historical fit only.
-
-Proposed replacement:
-
-> - A **historical prediction** concerns a period that has already happened, so it cannot be issued before
->   its outcome. Its guarantee is that it was **generated blind to anything the user disclosed and frozen before the
->   user verified it**. It counts as a blind success only for an event the user had not disclosed before it was
->   issued. Agreement with the user's answers is evidence of historical fit only.
-
 ### Further acceptance tests owed by future work
 
 These add to AT1 to AT7 above. None is implemented by this amendment. Any work package that implements part of the
@@ -258,6 +229,7 @@ routing and answering the original question.
 
 | Version | Date | Change |
 |---|---|---|
+| 1.4.0 | 2026-11-10 | `ADR-0117` addendum ratified by the owner: the "Complete product contract" section is ACCEPTED; the two approved replacements are applied to natal step 3 and the historical-prediction bullet; s10, the proposed-replacement wording, is removed. No other text changed. |
 | 1.3.1 | 2026-11-10 | `ADR-0117` addendum, revised after the CEO completeness HOLD (PROPOSED): s3, s4, AT9 and AT10 reconciled; s10 proposes two changes to ratified natal wording, pending separate owner approval. Ratified text unedited. |
 | 1.3.0 | 2026-11-10 | `ADR-0117` addendum (PROPOSED): added the "Complete product contract" section and acceptance tests AT8 to AT16 on the owner's directive. Every earlier section is unedited. |
 | 1.2.1 | 2026-11-10 | `ADR-0117` ratified by the owner: the "Natal product contract" section is ACCEPTED. Status text only; no section's content changed. |
