@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | **ACCEPTED (`ADR-0062`) - canonical, machine-checkable current-state record.** Regenerate/refresh on every meaningful implementation task, same discipline as `reports/AI_HANDOFF_CURRENT.md`. |
-| Version | 7.37.0 |
+| Version | 7.38.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-10 (**`ADR-0117` and the Charter's natal product contract owner-ratified; status updated on review branch `charter-natal-product-contract` for final verification. Not merged.**) |
+| Last updated | 2026-11-10 (**The complete product contract (Charter v1.3.0, `ADR-0117` addendum, PROPOSED) added to PR #51 for one CEO completeness audit and owner approval. Not merged.**) |
 | Review cadence | Refresh at the start of a session if stale; not load-bearing if it isn't. |
 
 # ACE execution state
@@ -43,22 +43,22 @@ independently is in these fields plus the pointers they name.
 | Field | Value |
 |---|---|
 | `CURRENT_PHASE` | **EVIDENCE entered** (`ADR-0114`, owner-authorized 2026-11-07, from `main` `90cd0ca`). JATAKA exited (`ADR-0110`). Mandatory CEO checkpoints remain: the evidence model (H4), and phase exit. |
-| `CURRENT_MILESTONE` | **Charter product-contract amendment (`ADR-0117`, ACCEPTED) on PR #51 for final verification.** WP-E3 closed: PR #50 merged as `0f50bc8`. |
+| `CURRENT_MILESTONE` | **Product-objective lock on PR #51: the ratified natal contract (`ADR-0117`) plus the complete product contract (`ADR-0117` addendum, PROPOSED).** WP-E3 closed: PR #50 merged as `0f50bc8`. |
 | `CURRENT_AUTHORIZED_TASK` | None self-executable beyond the Charter review PR. The owner made it the highest priority, ahead of WP-E4 or any implementation milestone. |
-| `TASK_OWNER` | CHATGPT (final verification of PR #51); USER (merge authorization). |
-| `STATUS` | Charter PR on review, not merged. Documentation only: no code, certification artifact or gate changed. The product contract's canonical text is `specs/PROJECT_CHARTER.md`, section "Natal product contract" (owner-ratified, `ADR-0117`): ACE's binding natal product objective. It is not restated here. |
-| `LAST_COMPLETED_ACTION` | Recorded the owner's ratification of `ADR-0117` and the natal product contract: status text only, normative text hash-verified unchanged. |
+| `TASK_OWNER` | CHATGPT (completeness audit of PR #51); USER (approval of the addendum and merge authorization). |
+| `STATUS` | Charter PR on review, not merged. Documentation only: no code, certification artifact or gate changed. The product contract's canonical text is `specs/PROJECT_CHARTER.md`: section "Natal product contract" (owner-ratified, `ADR-0117`), ACE's binding natal product objective; and section "Complete product contract" (PROPOSED, `ADR-0117` addendum). Neither is restated here. |
+| `LAST_COMPLETED_ACTION` | Drafted the complete product contract and its single-pass audit against the 14 owner-rule sections and accepted governance (`ADR-0117` addendum). Ratified text hash-verified unchanged. |
 | `LAST_COMMIT` (main) | `0f50bc84612989e96934694f821d8a64fef0080a` (PR #50 merge; parents `dfdfadb` and `75ddc11`). |
 | `LAST_COMMIT` (charter-natal-product-contract) | This branch's commits, on top of `0f50bc84612989e96934694f821d8a64fef0080a`. |
 | `LAST_CI_RUN` | `42771214588` at `0f50bc8`: push to `main`, success on all four jobs. This branch's results are on its review PR. |
 | `LAST_CEO_DECISION` | PASS on PR #51 at `86dab3e`, as the owner states. |
-| `NEXT_AUTHORIZED_ACTION` | None self-executable. PR #51's merge needs final verification and the owner's authorization. WP-E4, other implementation, and the retirement of `SUPPORT_PATHS_V1` gates H and I each need separate approval. |
-| `WAITING_FOR` | CHATGPT: final verification of PR #51. USER: merge authorization, then direction on the next work package. |
+| `NEXT_AUTHORIZED_ACTION` | None self-executable. PR #51 needs a CEO completeness audit, the owner's approval of the addendum, and merge authorization. Once merged, the owner directs a return to the authorized EVIDENCE roadmap. The retirement of `SUPPORT_PATHS_V1` gates H and I needs separate approval. |
+| `WAITING_FOR` | CHATGPT: completeness audit of PR #51. USER: approval of the addendum, a decision on where prediction issuance sits in the accepted roadmap (`ADR-0117` addendum, conflict 1), and merge authorization. |
 | `BLOCKER` | None for this delivery. |
 | `CEO_APPROVAL_REQUIRED` | The Charter PR's merge (`ADR-0106` OR-3); the evidence-model checkpoint (Q8 s6); phase exit. |
 | `CLAUDE_ACTION_REQUIRED` | None until directed. Every later relevant specification, milestone and review must carry the Charter-compliance statement. |
-| `CHATGPT_ACTION_REQUIRED` | Final verification of PR #51. |
-| `USER_ACTION_REQUIRED` | Merge authorization for PR #51; a separate authorization for the bounded retirement of `SUPPORT_PATHS_V1` gates H and I. |
+| `CHATGPT_ACTION_REQUIRED` | Completeness audit of PR #51. |
+| `USER_ACTION_REQUIRED` | Approval of the `ADR-0117` addendum; the roadmap placement of prediction issuance; merge authorization for PR #51; a separate authorization for the bounded retirement of `SUPPORT_PATHS_V1` gates H and I. |
 | `HANDOFF_REQUIRED` | None beyond this file and the latest entry in `reports/AI_HANDOFF_CURRENT.md`. |
 
 ## How to independently verify every field above
@@ -79,6 +79,7 @@ exactly as `reports/AI_HANDOFF_CURRENT.md` already requires of itself.
 
 | Version | Date | Change |
 |---|---|---|
+| 7.38.0 | 2026-11-10 | **Complete product contract proposed** (Charter v1.3.0, `ADR-0117` addendum). Referenced, not restated. |
 | 7.37.0 | 2026-11-10 | **`ADR-0117` owner-ratified**; the natal product contract is ACCEPTED. Status text only. |
 | 7.36.0 | 2026-11-10 | **WP-E3 closed; the Charter's natal product contract on review** (`ADR-0117`, PROPOSED). The contract is referenced, not restated. |
 | 7.35.0 | 2026-11-09 | **WP-E3 AC9 HOLD addressed** (`history()` purpose-gated and logged; malformed reads logged as refusals). |

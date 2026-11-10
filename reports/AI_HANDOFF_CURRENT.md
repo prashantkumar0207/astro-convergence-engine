@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.37.0 |
+| Version | 9.38.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-10 (`ADR-0117` and the Charter's natal product contract owner-ratified; status updated on review branch `charter-natal-product-contract`. Not merged.) |
+| Last updated | 2026-11-10 (The complete product contract (Charter v1.3.0, `ADR-0117` addendum, PROPOSED) added to PR #51. Not merged.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,18 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-10 - The complete product contract proposed on PR #51 (ADR-0117 addendum, PROPOSED)
+
+**Not merged.** Documentation only, for one CEO completeness audit and the owner's approval.
+
+- **Charter v1.3.0** adds the "Complete product contract" section and acceptance tests AT8 to AT16. Canonical there; not
+  restated here. The ratified sections are byte-identical (hash in the addendum).
+- **`ADR-0117` addendum:** the owner's directive verbatim; a checklist of every directive item; the audit against all 14
+  owner-rule sections and accepted governance; the conflicts, together.
+- **Material conflict for the owner:** the accepted roadmap (`docs/Q8_CLOSURE_MATRIX.md`) places prediction issuance in
+  no phase. Reconciliation items: H6, H7 Mode A, H3's stale blocker note (all PROPOSED).
+- **Next:** CEO completeness audit, owner approval, merge authorization; then the authorized EVIDENCE roadmap.
 
 ### 2026-11-10 - ADR-0117 and the natal product contract owner-ratified (status only)
 

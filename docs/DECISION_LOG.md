@@ -11729,6 +11729,137 @@ above, not an exhaustive review.
 - **Evidence:** PR #51 at `86dab3e7326977015fd926f9ee8cb769de8bb305`, CI `42773489716`, all four jobs passed. The CEO
   PASS and the owner's instruction exist as session input, not as repository files.
 
+#### Proposed addendum to ADR-0117: the complete product contract (2026-11-10; PROPOSED, pending separate owner approval)
+
+- **Status:** **PROPOSED.** Drafted on the owner's directive quoted below, for one independent CEO completeness audit and
+  the owner's separate approval. `ADR-0117`'s ratification covers only the wording reviewed at
+  `86dab3e7326977015fd926f9ee8cb769de8bb305`; it does not extend to this addendum, and nothing here is ratified
+  retrospectively.
+- **The owner's directive (exact text):**
+
+  ```text
+  **ACE OWNER DIRECTIVE — FINAL PRODUCT OBJECTIVE LOCK**
+
+  Complete ACE's product-objective definition in ONE bounded pass within existing PR #51. This task is documentation only.
+
+  **Sources of authority:** Read all 14 sections of `ACE_OWNER_RULES_FULL.txt`, the accepted Project Charter, ADR-0117, applicable accepted ADRs and Q8. Consult H3, H6 and domain architecture for relevant context without treating their PROPOSED content as ratified.
+
+  **Required complete product contract:**
+
+  1. The user asks a question or requests a general reading. ACE preserves the question, identifies intent, subject, domain, timeframe and required inputs. Ambiguous or unsupported requests are clarified or refused, never answered by invention.
+
+  2. Each domain follows its appropriate workflow: Jataka, Varshaphal, general/personalised Muhurta, Prashna and Mundane. Do not impose natal inputs or natal validation on other domains.
+
+  3. For natal analysis, ACE independently generates relevant, falsifiable historical predictions from birth data and registered rules before requesting historical events. Freeze and version predictions before presentation and verification. The initial question may guide the topic, but disclosed historical facts, prior answers or stored event records cannot contaminate blind generation or be counted as blind successes.
+
+  4. Preserve user confirmations, partial confirmations, rejections, non-events, unanswered predictions, volunteered events and immutable prediction-to-answer linkage.
+
+  5. Evaluate historical fit using protocol-controlled protected data, negative controls, versioned rules and recorded failures. Preserve system isolation, provenance, relationship/dependency classes, disagreement and uncertainty. Never equate agreement with independent evidence or historical fit with proven future accuracy.
+
+  6. Learning must be evidence-controlled, versioned and evaluated on unseen evidence. Never manufacture confidence, tune against protected holdouts or use BTR automatically to explain failures.
+
+  7. ACE must return to the user's ORIGINAL QUESTION and provide the supported answer, timing where justified, explanatory evidence, uncertainty and limitations—or explicitly state why a reliable answer cannot be established.
+
+  8. Freeze future predictions before their outcome windows, subsequently record actual outcomes and separately evaluate prospective predictive performance.
+
+  9. Retain the original calculation-certification requirements, scientific limitations and LLM-as-explainer boundary. Do not alter existing certified calculations or weaken certification gates.
+
+  **Completion requirements:**
+
+  - Make the smallest necessary amendment to the existing canonical Charter. Do not create another vision, architecture or roadmap document.
+  - Define future acceptance tests covering the complete user experience, question routing, disclosure isolation, immutable issuance, system independence, feedback protection, original-question answering, all five domain boundaries and prospective tracking.
+  - Audit the complete contract against the original owner rules and accepted governance IN THIS SAME PASS. Present any genuine conflicts together, not as successive new review cycles.
+  - ADR-0117 already records ratification of earlier wording. Mark any new substantive amendment as pending separate owner approval; do not invent retrospective ratification.
+  - Update only the appropriate existing ADR, execution-state and handoff records.
+  - Run relevant checks and provide the exact PR HEAD, concise diff, remaining genuine conflicts and evidence.
+
+  **Exit condition:** One internally consistent, reviewable product contract covering the entire requested experience, with no open product-definition omission demonstrated by this checklist.
+
+  Do not merge, start implementation, change certification gates, create additional milestones or propose another architecture review.
+
+  Submit for one independent CEO completeness audit and final owner approval. Once merged, resume the authorized EVIDENCE roadmap and actual product implementation. Do not reopen the product objective except for an explicit owner change or a demonstrated material contradiction.
+  ```
+
+- **What it adds.** `specs/PROJECT_CHARTER.md` v1.3.0 gains one section, "Complete product contract", with acceptance
+  tests AT8 to AT16. That section is the canonical text, and it is not restated here. The ratified sections are
+  untouched: SHA-256 of the Charter from "Product motive" up to the new section is `f54115c6c410fe9af0c8f7028bdb8fe15c4fca0557526f4e262e76225364de51` at both
+  `860ff6c` and this commit. This entry above this addendum hashes to `d4f9bc5a601f7243aedae3abf01ca65c6bdde0f47b83c333555d6bff69eba56f` at both.
+
+- **Checklist: each directive item and where the contract meets it.**
+
+  | Directive item | Charter location |
+  |---|---|
+  | 1. Question preserved; intent, subject, domain, timeframe, inputs; clarify or refuse | Complete contract s1; AT8 |
+  | 2. Domain workflows; no natal inputs or validation imposed | s2; AT14 |
+  | 3. Blind generation from birth data and registered rules; freeze and version first; the question guides topic only; no contamination or false blind successes | Natal steps 2 and 3 (ratified); s3; AT1, AT2, AT9 |
+  | 4. Confirmations, partials, rejections, non-events, unanswered, volunteered; immutable linkage | Natal step 4 (ratified); s4; AT4, AT10 |
+  | 5. Protocol-controlled evaluation; isolation, provenance, relationship classes, disagreement, uncertainty; agreement is not independence; fit is not future accuracy | Natal step 5 (ratified); s5; AT6, AT11 |
+  | 6. Evidence-controlled, versioned learning on unseen evidence; no manufactured confidence; no holdout tuning; no automatic BTR | s6; AT5, AT12 |
+  | 7. Return to the original question: answer, justified timing, evidence, uncertainty, limitations, or why none | s7; AT13 |
+  | 8. Future predictions frozen before their windows; outcomes recorded; prospective performance separate | Natal step 8 (ratified); s8; AT7 |
+  | 9. Certification, scientific limitation, LLM-as-explainer retained; nothing certified altered; no gate weakened | s9; AT16 |
+  | Tests: complete experience, routing, disclosure isolation, immutable issuance, independence, feedback protection, original question, five domains, prospective tracking | AT15, AT8, AT9, AT2, AT11, AT5 and AT12, AT13, AT14 (with AT1 to AT7 for Jataka), AT7 |
+
+- **Audit against the owner rules, all 14 sections** (`docs/owner_requirements/ACE_OWNER_RULES_FULL.txt`, unchanged):
+
+  | Section | Result |
+  |---|---|
+  | 1. Product north star | Agrees. PAST, TEST, LEARN, CONFIDENCE, FUTURE is the natal flow and s5 to s8; "explain WHY" is s7; "never manufacture confidence" is natal step 6 and s6. |
+  | 2. Domains | Agrees. s2 follows the rules' own domain descriptions, including Varshaphal deriving from natal data and inheriting its uncertainty, and keeps structurally different domains out of the natal pipeline. |
+  | 3. Astrology systems | Agrees. Independent systems, no silent mixing, provenance on every result, agreement not automatically independent (s5; AT11). The system list stays as `ADR-0106` OR-2 decided. |
+  | 4. Convergence | Agrees. Relationship classes with UNKNOWN never treated as independence, and the upper-bound rule (s5). Convergence design itself stays with its phase. |
+  | 5. Historical validation | Agrees. Pre-registered protocol, protected holdouts, no tuning against them, negative controls (s5, s6; AT6, AT12). Search space and candidate count are carried in Muhurta (s2; AT14). |
+  | 6. BTR | Agrees. Never automatic, alternatives first, never selected solely to improve future prediction, able to conclude the time is consistent (s6). Not applicable to Prashna (s2). |
+  | 7. Vargas and dashas | Unaffected. Certification depth is kept by s9. |
+  | 8. Certification | Agrees. s9 and AT16; no gate is changed by this PR. |
+  | 9. Authority and evidence | Agrees. The Charter stays below the Constitution (`ADR-0042`; `ADR-0106` OR-1). |
+  | 10. Three-party workflow | Process, not product. This addendum follows it: builder draft, CEO audit, owner approval. |
+  | 11. Repository memory | Agrees. The contract is persisted in the Charter and this entry. |
+  | 12. CEO audit mode | Process, not product. Unaffected. |
+  | 13. Current priority | Agrees. The contract authorizes no implementation. See conflict 1 on the prerequisite it exposes. |
+  | 14. Session start rule | Process, not product. Followed. |
+
+- **Audit against accepted governance:**
+
+  | Record | Result |
+  |---|---|
+  | `ADR-0117`, ratified | The new section only adds to the ratified natal contract, and says the ratified text governs if the two ever appear to differ. The question is optional, so "nothing else is required to begin" still holds. |
+  | `docs/Q8_CLOSURE_MATRIX.md` (ACCEPTED, `ADR-0048`) | s2's domain clauses agree with its s9 to s12 gates (Varshaphal derived edges; Muhurta search space and "best of N"; Prashna with no birth data and refused BTR; Mundane competing charts). s14's invariants agree with s5, s6 and s9. **See conflict 1.** |
+  | `ADR-0112` (`DP-005`) | Agrees: rules are data in a pinned registry, which is what "registered, versioned rules" (s3) requires. |
+  | `ADR-0113` | Agrees: the UNKNOWN state, declared strength kept apart from measured reliability, and traceable rule versions. |
+  | `ADR-0106` OR-1 to OR-7 | Agrees. `Q5` stays `OPEN`; the owner rules are unchanged. |
+  | `ADR-0056` | Agrees. Roles are unchanged. |
+  | `docs/PROJECT_CONSTITUTION.md` | Stays `DRAFT`. Not edited. |
+
+- **Genuine conflicts and gaps, all together.**
+  1. **Material: the accepted roadmap places prediction issuance in no phase.** The ratified natal contract requires
+     issuing historical and future predictions. `docs/Q8_CLOSURE_MATRIX.md` (ACCEPTED) scopes INTERPRETATION as
+     "strictly no prediction", gives CONVERGENCE no prediction scope, and does not place H6 or prediction issuance in any
+     phase. Until the owner decides where it belongs, no phase's accepted scope covers it. This addendum names the
+     decision and proposes no milestone.
+  2. **PROPOSED texts to reconcile before they are ratified** (none conflicts with accepted text):
+     - `docs/H6_PREDICTION_LEDGER_SPEC.md` orders issuance only before the window, which cannot apply to historical
+       predictions (`ADR-0117` s6 item 1).
+     - `docs/H7_BTR_SPEC.md` s2 runs Mode A, a consistency assessment, "for every user with a stated birth time". The
+       contract makes rectification optional and never automatic after a failure, so Mode A's automatic run needs
+       reconciling.
+     - `docs/H3_QUESTION_ENGINE_SPEC.md` still says it is blocked on `DP-005`, which `ADR-0112` has since decided. Its
+       boundaries (it never answers; it never invents a domain) agree with s1.
+  3. **Implementation gaps, not contradictions:** no prediction record exists yet to link answers to (`ADR-0117` s6
+     item 2); the `RUL` family is accepted (`ADR-0113`) but issues no identifiers yet; nothing records disclosure state
+     yet. Each is owed by future work through AT1 to AT16.
+  4. **One reading, stated for approval.** "Do not impose natal inputs" is read as "only where a domain does not
+     structurally depend on the natal chart". Varshaphal and personalised Muhurta depend on it by the owner rules' own
+     s2, so they take natal inputs; neither takes the natal verification cycle.
+
+  No other conflict was found. The audit read the 14 owner-rule sections in full and the governance records named
+  above by targeted reading, not an exhaustive review of the register.
+
+- **What it does not do:** it ratifies nothing, merges nothing, starts no implementation or milestone, changes no gate
+  or certified calculation, and ratifies no PROPOSED specification.
+- **Evidence:** PR #51; the checks in this commit's message and the PR. The owner's directive exists as session input,
+  not as a repository file.
+
 ---
 
 ## ADR template (copy, do not edit above the line)
