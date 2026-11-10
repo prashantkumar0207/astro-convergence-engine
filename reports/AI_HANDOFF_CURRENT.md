@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.40.0 |
+| Version | 9.41.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-10 (The complete product contract owner-ratified (Charter v1.4.0; `ADR-0117` addendum). PR #51 not merged.) |
+| Last updated | 2026-11-10 (PR #51 merged (`23ce0a9`); the product-objective definition CLOSED (`ADR-0118`). Gate I fix on review branch `evidence-gate-i-deterministic-controls`. Not merged.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,19 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-10 - Product objective CLOSED; gate I control fix on review (ADR-0118)
+
+**Not merged.**
+
+- **PR #51 merged** as `23ce0a9`, a normal two-parent merge (parents `0f50bc8`, `3f9e124`), the tree identical to the
+  reviewed head. Post-merge CI `42795184067` passed all four jobs. The product-objective definition is CLOSED; the
+  canonical text is the Charter v1.4.0.
+- **Gate I fix:** the "another seed" and fixed-order controls are wrong by construction for every seed the store draws.
+  The two defeating draws fail on `main`'s certifier and pass here; five broken checks each fail the gate. Production
+  selection is unchanged, coverage is unchanged, and the only artifact change is one control label.
+- **Next:** CEO review of the gate I PR; then the next EVIDENCE work package (the H4 evidence model), its criteria fixed
+  before coding.
 
 ### 2026-11-10 - The complete product contract owner-ratified (Charter v1.4.0; ADR-0117 addendum)
 

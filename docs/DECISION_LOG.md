@@ -11949,6 +11949,86 @@ above, not an exhaustive review.
 
 ---
 
+## ADR-0118 - PR #51 merged and the ACE product-objective definition CLOSED; `EVIDENCE_FOUNDATIONS_V1` gate I selection controls made wrong by construction (fix for CEO review)
+
+- **Date:** 2026-11-10
+- **Status:** **ACCEPTED as to s2, on the owner's instruction quoted in s1.** s3 is the separately authorized gate I fix;
+  it takes effect only with an independent CEO PASS and the owner's merge authorization.
+- **Context:**
+  - **PR #51** carried the ratified product contract (`ADR-0117`, its addendum and their ratification sub-entries).
+  - **Gate I** of `EVIDENCE_FOUNDATIONS_V1` (`ADR-0116` s4) failed spuriously on PR #51's CI run `42786854405`,
+    attempt 1, a defect present on `main` since WP-E3. The owner authorized a separate, minimal fix in the instruction
+    quoted in the "Ratification of the ADR-0117 addendum" sub-entry: "Require guaranteed incorrect planted selections,
+    genuine mutation detection, a reproducibility test and unchanged certification coverage. Do not modify the
+    production holdout-selection algorithm or weaken the gate."
+
+### 1. The owner's instruction (exact text)
+
+```text
+**ACE OWNER AUTHORIZATION — MERGE PR #51**
+
+Following final CEO PASS, I authorize merging PR #51 at exact HEAD `3f9e124935ada2bd0bfea25ae8404b3e2bfaf9bf`.
+
+Reverify the HEAD, base, mergeability and successful CI `42791539124` immediately before merging.
+
+Use a normal two-parent merge. No squash, rebase, force push or branch deletion.
+
+Verify the merge SHA, tree, parents and post-merge CI. Once verified, mark the ACE product-objective definition CLOSED.
+
+Then prepare the separately authorized minimal Gate I certification-fix PR against merged `main`, under the previously approved conditions. Submit it for independent CEO review; do not merge it.
+
+After that, resume the authorized EVIDENCE implementation roadmap. No further product-objective review unless an owner-directed change or demonstrated material contradiction requires it.
+
+Report exact SHAs, checks and next authorized action.
+```
+
+### 2. PR #51 merged; the product-objective definition CLOSED
+
+PR #51 merged by a normal two-parent merge as `23ce0a9a49c10f90454ad591ab84adcf712b24c4`, with parents
+`0f50bc84612989e96934694f821d8a64fef0080a` and `3f9e124935ada2bd0bfea25ae8404b3e2bfaf9bf`. The merge tree (`d8bf27f`) is
+identical to the reviewed head's tree, and the head branch is kept. Before the merge, the head, base (`0f50bc8`),
+mergeability (MERGEABLE, CLEAN) and head CI `42791539124` (four jobs passed) were reverified. Post-merge CI `42795184067`
+passed all four jobs.
+
+**The ACE product-objective definition is CLOSED.** Its canonical text is `specs/PROJECT_CHARTER.md` v1.4.0, the
+"Natal product contract" and "Complete product contract" sections. It is reopened only for an owner-directed change or a
+demonstrated material contradiction.
+
+### 3. Gate I: selection controls wrong by construction
+
+**Defect.** Gate I's "another seed" and "first-k instead of the hash order" controls planted fixed records: seed
+`"0" * 64`, and the first four members by identifier. The store draws a fresh random seed for every freeze, and with ten
+members and four selected the real selection equalled one of those records with probability 1/210 each. The planted
+record was then correct, the reproduction check rightly accepted it, and the gate failed. Measured: 0.99% of 100,000
+seeded trials, against 2/210 = 0.95% expected. The pytest suite uses fixed seeds and was unaffected.
+
+**Fix, in `scripts/certify_evidence_foundations.py` only:**
+
+| Condition (owner) | How it is met |
+|---|---|
+| Guaranteed incorrect planted selections | `planted_selections()` builds each wrong record with the real procedure. "Another seed" keeps the recorded selection and uses the first of 64 fixed candidate seeds whose hash order selects a different set. The fixed-order control uses the first four members by identifier, or the last four when the first equal the draw; with at least twice the selection size in members the two are disjoint, so one always differs. Its selection hash is recomputed, so only the ordering exposes it. If no wrong record exists, it fails instead of planting a correct one. |
+| Genuine mutation detection | `record_reproduces()` is the record-level check (procedure, set hash, selection, selection hash). It must now also accept the clean holdout, so a check that rejects everything cannot pass. Five broken checks (accepts everything; selection hash only; membership and size only; also accepts a fixed order; rejects everything) each make the gate fail for its stated reason. |
+| A reproducibility test | The two draws that defeated the old controls are replayed through the real store, by pinning its seed: both fail on `main`'s certifier ("first-k", "another seed") and pass on this one. 25 gate runs give identical results, and 3,000 random draws all yield wrong planted records. |
+| Unchanged certification coverage | C3 reports 24 artifacts, 53 capabilities, 219 members and 164 gates, as before; C4 is unchanged. Gate I still rejects 10 controls. The only artifact change is one control's label, from "first-k instead of the hash order" to "a fixed identifier order instead of the hash order", because the control may now use the last members. |
+| Production selection unchanged | `engine/evidence/ledger.py` is not modified: `ordered_selection` and `freeze_and_select` are as on `main`. |
+| Gate not weakened | Both controls still require rejection of a wrong record, now for every draw rather than 209 in 210. The eight planted-leak controls are unchanged. |
+
+### 4. What this entry does not do
+
+- It merges nothing; the gate I PR needs an independent CEO PASS and the owner's authorization.
+- It changes no production code, certified calculation, other gate or other artifact.
+- It defines no new work package. The next EVIDENCE step is defined separately.
+
+- **Decision:** as s2 and s3 state. s3 takes effect only on approval.
+- **Consequences:** `docs/ACE_EXECUTION_STATE.md` and `reports/AI_HANDOFF_CURRENT.md` record the closure. Once this PR
+  merges, gate I is deterministic in outcome for every seed the store draws.
+- **Evidence:** merge `23ce0a9a49c10f90454ad591ab84adcf712b24c4`; PR #51; head CI `42791539124`; post-merge CI
+  `42795184067`; CI `42786854405` attempt 1 (the spurious failure); `engine/tests/test_evidence_foundations_gate_i.py`;
+  the regeneration and checks reported on this PR. The owner's instruction exists as session input, not as a repository
+  file.
+
+---
+
 ## ADR template (copy, do not edit above the line)
 
 ## ADR-XXXX - <title>
