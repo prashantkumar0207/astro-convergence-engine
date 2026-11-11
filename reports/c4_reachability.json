@@ -1189,9 +1189,10 @@
    "status": "IN_USE_COVERED"
   },
   "engine.evidence.evidence.provenance_differences": {
-   "caller_count": 2,
+   "caller_count": 3,
    "callers": [
     "engine.evidence.evidence.Lineage.__post_init__",
+    "engine.evidence.evidence_store.EvidenceStore._compatible",
     "engine.evidence.evidence_store.EvidenceStore.join"
    ],
    "covered": true,

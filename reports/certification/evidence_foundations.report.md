@@ -24,9 +24,9 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 - **G_ledger_integrity**: classification=structural_integrity, entries_admitted=10, outcomes=3, elicitation_kinds=3, count_axes=3, corrections_checked=1, holdout_members=8, holdout_selected=3, protocols_checked=1, access_rows_checked=5, mismatches=0
 - **H_ledger_refusals**: classification=negative_control, refusals_verified=64
 - **I_holdout_leakage**: classification=negative_control, controls_rejected=10, holdout_members=10, holdout_selected=4
-- **J_evidence_integrity**: classification=structural_integrity, items_persisted=7, polarities=5, confidence_components=8, rule_versions_checked=3, recomputations_checked=1, count_axes=4, mismatches=0
-- **K_evidence_refusals**: classification=negative_control, refusals_verified=46
-- **L_relationships_and_provenance**: classification=negative_control, relationship_cases=8, provenance_fields=7, controls_rejected=11
+- **J_evidence_integrity**: classification=structural_integrity, items_persisted=7, polarities=5, confidence_components=8, rule_versions_checked=3, recomputations_checked=1, count_axes=4, mismatches=0, controls_rejected=2
+- **K_evidence_refusals**: classification=negative_control, refusals_verified=55
+- **L_relationships_and_provenance**: classification=negative_control, relationship_cases=11, provenance_fields=7, controls_rejected=12
 
 ## Capabilities (ADR-0101 s2)
 

@@ -11,7 +11,7 @@ G_ledger_integrity: 0
 H_ledger_refusals: 64
 I_holdout_leakage: 10
 J_evidence_integrity: 0
-K_evidence_refusals: 46
-L_relationships_and_provenance: 11
+K_evidence_refusals: 55
+L_relationships_and_provenance: 12
 archived: certification/EVIDENCE_FOUNDATIONS_V1_certification.json
 RESULT  : PASS

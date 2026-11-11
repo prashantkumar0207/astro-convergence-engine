@@ -282,13 +282,18 @@
    "recomputations_checked": 1,
    "count_axes": 4,
    "mismatches": 0,
+   "controls_rejected": 2,
+   "controls": [
+    "a partition losing a member rejected",
+    "a serializer dropping historical performance rejected"
+   ],
    "exercises": [
     "evidence.evidence_model"
    ]
   },
   "K_evidence_refusals": {
    "classification": "negative_control",
-   "refusals_verified": 46,
+   "refusals_verified": 55,
    "refused": [
     "a chart the entity does not have",
     "a correlated relationship",
@@ -304,6 +309,13 @@
     "a non-synthetic rule",
     "a profile name instead of provenance",
     "a real rule registration",
+    "a relationship differing only in ayanamsa_mode",
+    "a relationship differing only in ephemeris_mode",
+    "a relationship differing only in frame",
+    "a relationship differing only in house_system",
+    "a relationship differing only in node_policy",
+    "a relationship differing only in profile_name",
+    "a relationship differing only in time_basis",
     "a rule content hash that is not SHA-256",
     "a rule from another system",
     "a rule school given as text",
@@ -330,6 +342,8 @@
     "evidence with question linkage",
     "non-synthetic evidence",
     "performance with no sample size",
+    "reading a persisted relationship differing in profile_name",
+    "reading a persisted relationship differing in time_basis",
     "rule apply in a rule-version record",
     "rule condition in a rule-version record",
     "rule statement in a rule-version record",
@@ -343,10 +357,11 @@
   },
   "L_relationships_and_provenance": {
    "classification": "negative_control",
-   "relationship_cases": 8,
+   "relationship_cases": 11,
    "provenance_fields": 7,
-   "controls_rejected": 11,
+   "controls_rejected": 12,
    "controls": [
+    "planted classifier rejected: ancestral lineage ignored",
     "planted classifier rejected: derivation links ignored",
     "planted classifier rejected: every pair independent",
     "planted classifier rejected: shared origin unrecorded",
@@ -1111,6 +1126,7 @@
      "kind": "callable",
      "disposition": "GATED",
      "exercised_by": [
+      "K_evidence_refusals",
       "L_relationships_and_provenance"
      ]
     },
