@@ -635,7 +635,9 @@ def test_ac12_no_new_identifier_family():
     assert not re.search(r'FAMILY\s*=|re\.compile\(r"[A-Z]{2,}-\\d', source)
     naming = (ROOT / "docs" / "NAMING_STANDARD.md").read_text(encoding="utf-8")
     families = re.findall(r"^\| [^|]+\| `([A-Z][A-Z-]*)-", naming, re.MULTILINE)
-    assert sorted(families) == sorted(["HLKG-N", "HLKG-D", "EV-CAR", "OC-CAR", "TC-CAR", "ADR", "DP", "ENT", "EVR"])
+    # EVD and RUL are registered by ADR-0119 (WP-E4), not by the ledger; the ledger still defines no family.
+    assert sorted(families) == sorted(["HLKG-N", "HLKG-D", "EV-CAR", "OC-CAR", "TC-CAR", "ADR", "DP", "ENT", "EVR",
+                                       "EVD", "RUL"])
 
 
 # ------------------------------------------------------------------ AC13 round trip
