@@ -454,7 +454,7 @@ ARTIFACT_DECLARATIONS = {
                  _fn("engine.evidence.evidence_store.rule_to_record", "J_evidence_integrity", "K_evidence_refusals"),
                  _fn("engine.evidence.evidence_store.rule_from_record", "J_evidence_integrity", "K_evidence_refusals"),
                  _fn("engine.evidence.evidence.provenance_differences", "L_relationships_and_provenance"),
-                 _fn(f"{_EVIDENCE_STORE}.relationships", "L_relationships_and_provenance"),
+                 _fn(f"{_EVIDENCE_STORE}.relationships", "K_evidence_refusals", "L_relationships_and_provenance"),
                  _fn("engine.evidence.evidence_store.relationship_to_record", "K_evidence_refusals",
                      "L_relationships_and_provenance"),
                  _fn("engine.evidence.evidence_store.relationship_from_record", "K_evidence_refusals",

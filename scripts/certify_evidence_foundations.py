@@ -79,7 +79,7 @@ from engine.evidence.evidence import (  # noqa: E402
 )
 from engine.evidence.evidence_identifiers import EvidenceId  # noqa: E402
 from engine.evidence.evidence_store import (  # noqa: E402
-    EvidenceStore, item_from_record, item_to_record, rule_from_record, rule_to_record,
+    EvidenceStore, item_from_record, item_to_record, relationship_to_record, rule_from_record, rule_to_record,
 )
 from engine.models.provenance import Provenance  # noqa: E402
 
@@ -950,6 +950,24 @@ class _EvidenceWorld:
         return dataclasses.replace(base, **changes)
 
 
+def evidence_round_trips(evidence_id, item, serialize=None) -> bool:
+    """Gate J's round-trip comparator: the stored form rebuilds exactly the identity and item it was made from."""
+
+    record = (serialize or item_to_record)(evidence_id, item)
+    return item_from_record(json.loads(json.dumps(record))) == (evidence_id, item)
+
+
+def partition_failures(counts, ids) -> list:
+    """Gate J's decomposition comparator: every axis's partitions cover the members exactly once."""
+
+    failures = []
+    for axis in ("producing_system", "domain", "polarity", "rule"):
+        parts = [set(members) for members in counts[axis].values()]
+        if set().union(*parts) != set(ids) or sum(len(part) for part in parts) != len(ids):
+            failures.append(axis)
+    return failures
+
+
 def gate_j_evidence_integrity():
     """H4 structural integrity: every polarity, supplied and absent uncertainty, rule versions, recomputation,
     decomposable counts, a clean join, and durability (ADR-0119 s5)."""
@@ -976,8 +994,7 @@ def gate_j_evidence_integrity():
                 rule_from_record(rule_to_record(second)) != second:
             fail("a new rule version did not append beside the first, or did not round-trip")
         for evidence_id in ids:
-            item = store.load(evidence_id)
-            if item_from_record(item_to_record(evidence_id, item)) != (evidence_id, item):
+            if not evidence_round_trips(evidence_id, store.load(evidence_id)):
                 fail("an evidence item did not round-trip")
         if [store.load(evidence_id).polarity for evidence_id in ids[:5]] != list(Polarity):
             fail("the five polarities were not all kept")
@@ -988,10 +1005,25 @@ def gate_j_evidence_integrity():
         if store.recomputations(ids[0]) != [ids[6]] or store.load(ids[0]).polarity is not Polarity.POSITIVE:
             fail("a recomputation did not append beside its original")
         counts = store.counts()
-        for axis in ("producing_system", "domain", "polarity", "rule"):
-            parts = [set(members) for members in counts[axis].values()]
-            if set().union(*parts) != set(ids) or sum(len(part) for part in parts) != len(ids):
-                fail(f"the {axis} partition does not decompose the total")
+        for axis in partition_failures(counts, ids):
+            fail(f"the {axis} partition does not decompose the total")
+        # Negative controls, invalid by construction (CEO HOLD on PR #54, item 3): each comparator above must
+        # reject a planted violation of exactly the property it checks.
+        controls = {}
+
+        def lossy(evidence_id, item):
+            record = item_to_record(evidence_id, item)
+            record["evidence"]["historical_performance"] = None
+            return record
+
+        if loaded.historical_performance is None or evidence_round_trips(ids[5], loaded, lossy):
+            fail("the round-trip comparator accepted a serializer that drops supplied historical performance")
+        controls["a serializer dropping historical performance rejected"] = True
+        dropped = {**counts, "polarity": {key: tuple(member for member in members if member != ids[0])
+                                          for key, members in counts["polarity"].items()}}
+        if ids[0] not in counts["polarity"][Polarity.POSITIVE.value] or partition_failures(dropped, ids) != ["polarity"]:
+            fail("the decomposition comparator accepted a partition that loses a member")
+        controls["a partition losing a member rejected"] = True
         if set(counts["members"]) != set(ids) or len(store.join(ids)) != len(ids):
             fail("a clean join or the members map lost an item")
         issued = (store.issued_count("EVD"), store.issued_count("RUL"))
@@ -1004,7 +1036,8 @@ def gate_j_evidence_integrity():
             fail("the evidence store or its issuers are not durable and separate")
     return {"classification": "structural_integrity", "items_persisted": len(ids), "polarities": len(Polarity),
             "confidence_components": len(CONFIDENCE_COMPONENTS), "rule_versions_checked": 3,
-            "recomputations_checked": 1, "count_axes": 4, "mismatches": 0}
+            "recomputations_checked": 1, "count_axes": 4, "mismatches": 0, "controls_rejected": len(controls),
+            "controls": sorted(controls)}
 
 
 def gate_k_evidence_refusals():
@@ -1086,6 +1119,27 @@ def gate_k_evidence_refusals():
                                                   lineage=world.lineage((f"{field} probe",), provenance=other)))
             refuses(f"a join differing only in {field}", lambda mismatched=mismatched: store.join([first, mismatched]),
                     reason=f"differs in {field};")
+            # CEO HOLD on PR #54, item 2: relating is a join and goes through the same rule.
+            refuses(f"a relationship differing only in {field}",
+                    lambda mismatched=mismatched: store.relate(first, mismatched),
+                    reason=f"differ in calculation provenance ({field})")
+        # A persisted relationship joining incompatible items is refused when read, however it was written. Each
+        # is planted in its own store, so the refusal names exactly the planted field.
+        for field in ("profile_name", "time_basis"):
+            separate = EvidenceStore(Path(folder) / f"planted_{field}.sqlite")
+            entity = separate.entities.persist(_synthetic_subjects()[0])
+            planted_rules = {system: separate.register_rule(_rule_spec(system))
+                             for system in (ProducingSystem.PARASHARI, ProducingSystem.KP)}
+            planted_world = _EvidenceWorld(entity, separate.entities.load(entity).charts[0].label, planted_rules)
+            left = separate.persist(planted_world.item())
+            right = separate.persist(planted_world.item(ProducingSystem.KP, lineage=planted_world.lineage(
+                ("Sun longitude",), provenance=dataclasses.replace(CALC, **{field: PROVENANCE_VARIANTS[field]}))))
+            planted = relationship_to_record(Relationship(left, right, DependencyClass.INDEPENDENT, False, "planted"))
+            separate._db.execute("INSERT INTO evidence_relationships (first_id, second_id, payload) VALUES (?, ?, ?)",
+                                 (left.value, right.value, json.dumps(planted)))
+            refuses(f"reading a persisted relationship differing in {field}", separate.relationships,
+                    reason=f"differ in calculation provenance ({field})")
+            separate.close()
         record = item_to_record(first, store.load(first))
         for key in ("schema", "id"):
             planted = json.loads(json.dumps(record))
@@ -1136,6 +1190,12 @@ def gate_l_relationships_and_provenance():
             ("Ketu",), derivations_complete=False)))
         unverified = store.persist(world.item(kp, facts=("Jupiter",), derived_from=(unverified_root,)))
         same_system = store.persist(world.item(facts=("Lagna",)))
+        # CEO HOLD on PR #54, item 1: ancestral inputs and their completeness are part of an item's lineage.
+        moon_ancestor = store.persist(world.item(kp, facts=("Moon longitude",)))
+        ancestral_sharer = store.persist(world.item(kp, facts=("Mercury longitude",), derived_from=(moon_ancestor,)))
+        open_ancestor = store.persist(world.item(kp, facts=("Neptune",), lineage=world.lineage(
+            ("Neptune",), inputs_complete=False)))
+        ancestral_incomplete = store.persist(world.item(kp, facts=("Uranus",), derived_from=(open_ancestor,)))
         expected = {
             "a recorded derivation link": ((anchor, child), DependencyClass.DERIVED),
             "a shared input": ((anchor, sharing), DependencyClass.SHARED_ORIGIN),
@@ -1145,6 +1205,10 @@ def gate_l_relationships_and_provenance():
             "incomplete lineage": ((anchor, incomplete), DependencyClass.UNKNOWN),
             "an unverified derivation path": ((anchor, unverified), DependencyClass.UNKNOWN),
             "the same producing system": ((anchor, same_system), DependencyClass.UNKNOWN),
+            "an ancestor sharing an input": ((anchor, ancestral_sharer), DependencyClass.SHARED_ORIGIN),
+            "an ancestor with incomplete inputs": ((anchor, ancestral_incomplete), DependencyClass.UNKNOWN),
+            "a derivation link despite incomplete ancestry": ((open_ancestor, ancestral_incomplete),
+                                                              DependencyClass.DERIVED),
         }
 
         def mismatches(classify):
@@ -1159,12 +1223,15 @@ def gate_l_relationships_and_provenance():
         if set(counts["unknown"]) & set(counts["independent"]) or len(counts["independent"]) != 1 or \
                 counts["correlated"]:
             fail("an UNKNOWN or CORRELATED relationship was counted as INDEPENDENT")
+        ancestral_pairs = {expected["an ancestor sharing an input"][0], expected["an ancestor with incomplete inputs"][0]}
         planted_classifiers = {
             "every pair independent": lambda first, second: DependencyClass.INDEPENDENT,
             "unknown treated as independent": lambda first, second: (
                 DependencyClass.INDEPENDENT if real(first, second) is DependencyClass.UNKNOWN else real(first, second)),
             "derivation links ignored": lambda first, second: (
                 DependencyClass.UNKNOWN if real(first, second) is DependencyClass.DERIVED else real(first, second)),
+            "ancestral lineage ignored": lambda first, second: (
+                DependencyClass.INDEPENDENT if (first, second) in ancestral_pairs else real(first, second)),
             "shared origin unrecorded": lambda first, second: (
                 DependencyClass.INDEPENDENT if real(first, second) is DependencyClass.SHARED_ORIGIN
                 else real(first, second)),

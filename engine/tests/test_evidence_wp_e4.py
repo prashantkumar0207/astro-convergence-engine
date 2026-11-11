@@ -461,6 +461,66 @@ def test_ac12_anything_missing_incomplete_or_unverified_is_unknown(world, case, 
     assert relationship.dependency is DependencyClass.UNKNOWN and message in relationship.basis
 
 
+def test_ac12_an_ancestor_sharing_an_input_is_shared_origin_not_independent(world):
+    """CEO HOLD on PR #54, item 1: an ancestral input is a recorded input."""
+
+    anchor = world.store.persist(world.item(facts=("Moon longitude",)))
+    ancestor = world.store.persist(world.item(ProducingSystem.KP, facts=("Moon longitude",)))
+    descendant = world.store.persist(world.item(ProducingSystem.KP, facts=("Sun longitude",), derived_from=(ancestor,)))
+    relationship = world.store.classify(anchor, descendant)
+    assert relationship.dependency is DependencyClass.SHARED_ORIGIN and "Moon longitude" in relationship.basis
+
+
+def test_ac12_an_ancestor_with_incomplete_inputs_is_unknown(world):
+    """CEO HOLD on PR #54, item 1: completeness holds only if it holds along the whole recorded ancestry."""
+
+    anchor = world.store.persist(world.item(facts=("Moon longitude",)))
+    ancestor = world.store.persist(world.item(ProducingSystem.KP, lineage=world.lineage(("Mars",),
+                                                                                         inputs_complete=False)))
+    descendant = world.store.persist(world.item(ProducingSystem.KP, facts=("Sun longitude",), derived_from=(ancestor,)))
+    relationship = world.store.classify(anchor, descendant)
+    assert relationship.dependency is DependencyClass.UNKNOWN and "incomplete ancestral lineage" in relationship.basis
+
+
+def test_ac12_a_stronger_recorded_relationship_outranks_incomplete_ancestry(world):
+    ancestor = world.store.persist(world.item(ProducingSystem.KP, lineage=world.lineage(("Mars",),
+                                                                                         inputs_complete=False)))
+    descendant = world.store.persist(world.item(ProducingSystem.KP, facts=("Sun longitude",), derived_from=(ancestor,)))
+    assert world.store.classify(ancestor, descendant).dependency is DependencyClass.DERIVED
+    sharing = world.store.persist(world.item(facts=("Mars",)))
+    assert world.store.classify(sharing, descendant).dependency is DependencyClass.SHARED_ORIGIN
+
+
+@pytest.mark.parametrize("field", ["profile_name", "time_basis"])
+def test_ac11_relate_refuses_items_whose_provenance_differs(world, field):
+    """CEO HOLD on PR #54, item 2: relating is a join, and goes through the same compatibility rule."""
+
+    other = dataclasses.replace(CALC, **{field: DIFFERENT[field]})
+    first = world.store.persist(world.item(facts=("Moon longitude",)))
+    second = world.store.persist(world.item(ProducingSystem.KP, facts=("Sun longitude",), provenance=other))
+    for call in (world.store.relate, world.store.classify):
+        with pytest.raises(StoreError, match=rf"differ in calculation provenance \({field}\)"):
+            call(first, second)
+    assert world.store.relationships() == []
+    ancestor = world.store.persist(world.item(ProducingSystem.KP, facts=("Venus",), provenance=other))
+    descendant = world.store.persist(world.item(ProducingSystem.KP, facts=("Rahu",), derived_from=(ancestor,)))
+    with pytest.raises(StoreError, match=field):
+        world.store.relate(first, descendant)
+
+
+@pytest.mark.parametrize("field", ["profile_name", "time_basis"])
+def test_ac11_a_persisted_relationship_across_differing_provenance_is_refused_when_read(world, field):
+    other = dataclasses.replace(CALC, **{field: DIFFERENT[field]})
+    first = world.store.persist(world.item(facts=("Moon longitude",)))
+    second = world.store.persist(world.item(ProducingSystem.KP, facts=("Sun longitude",), provenance=other))
+    planted = relationship_to_record(Relationship(first, second, DependencyClass.INDEPENDENT, False, "planted"))
+    world.store._db.execute("INSERT INTO evidence_relationships (first_id, second_id, payload) VALUES (?, ?, ?)",
+                            (first.value, second.value, json.dumps(planted)))
+    for call in (world.store.relationships, world.store.relationship_counts):
+        with pytest.raises(StoreError, match=field):
+            call()
+
+
 def test_ac12_correlated_is_refused(world):
     first, second = world.store.persist(world.item()), world.store.persist(world.item(ProducingSystem.KP))
     with pytest.raises(EvidenceModelError, match="CORRELATED"):
@@ -554,3 +614,72 @@ def test_ac16_ac17_records_refuse_other_keys_and_real_data(world):
         world.item(data_class="real")
     with pytest.raises(EvidenceModelError, match="synthetic"):
         spec(data_class="real")
+
+
+# ------------------------------------------------------------------ AC18 the gates fail for the intended violation
+
+def _gate_fails(call, capsys, message):
+    """The gate must exit through fail(), with `message`. On Windows the temporary directory's cleanup may raise
+    PermissionError with the SystemExit as its context; the SystemExit must still be in the chain."""
+
+    with pytest.raises(BaseException) as info:
+        call()
+    chain, error = [], info.value
+    while error is not None:
+        chain.append(error)
+        error = error.__context__
+    assert any(isinstance(error, SystemExit) and error.code == 3 for error in chain), chain
+    assert message in capsys.readouterr().out
+
+
+@pytest.fixture()
+def certifier():
+    import certify_evidence_foundations
+    return certify_evidence_foundations
+
+
+def test_ac18_gate_j_fails_on_a_lossy_serializer(certifier, monkeypatch, capsys):
+    real = certifier.item_to_record
+
+    def lossy(evidence_id, item):
+        record = real(evidence_id, item)
+        record["evidence"]["historical_performance"] = None
+        return record
+
+    monkeypatch.setattr(certifier, "item_to_record", lossy)
+    _gate_fails(certifier.gate_j_evidence_integrity, capsys, "an evidence item did not round-trip")
+
+
+def test_ac18_gate_j_fails_on_a_partition_that_loses_a_member(certifier, monkeypatch, capsys):
+    real = EvidenceStore.counts
+
+    def losing(self, evidence_ids=None):
+        counts = real(self, evidence_ids)
+        first = counts["total"][0]
+        return {**counts, "domain": {key: tuple(member for member in members if member != first)
+                                     for key, members in counts["domain"].items()}}
+
+    monkeypatch.setattr(EvidenceStore, "counts", losing)
+    _gate_fails(certifier.gate_j_evidence_integrity, capsys, "the domain partition does not decompose the total")
+
+
+@pytest.mark.parametrize("name,broken,message", [
+    ("evidence_round_trips", lambda *args: True, "accepted a serializer that drops supplied historical performance"),
+    ("partition_failures", lambda *args: [], "accepted a partition that loses a member"),
+])
+def test_ac18_gate_j_fails_when_its_own_comparator_is_broken(certifier, monkeypatch, capsys, name, broken, message):
+    monkeypatch.setattr(certifier, name, broken)
+    _gate_fails(certifier.gate_j_evidence_integrity, capsys, message)
+
+
+def test_ac18_gate_l_detects_the_ancestral_lineage_regression(certifier, monkeypatch, capsys):
+    """The classification before the CEO HOLD on PR #54: ancestors' inputs and input completeness ignored."""
+
+    def pre_fix(self, evidence_id):
+        ancestors, _inputs, derivations, _ancestral_inputs = real(self, evidence_id)
+        own = {(entry.fact, entry.provenance) for entry in self.load(evidence_id).lineage.inputs}
+        return ancestors, own, derivations, True
+
+    real = EvidenceStore._ancestry
+    monkeypatch.setattr(EvidenceStore, "_ancestry", pre_fix)
+    _gate_fails(certifier.gate_l_relationships_and_provenance, capsys, "an ancestor sharing an input")

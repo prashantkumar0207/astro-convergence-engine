@@ -8,9 +8,11 @@ writes the record, so a refused write takes none. Triggers refuse every UPDATE a
   one it recomputes; the original stays.
 - Joins (AC11): items are joined only when every field of their calculation Provenance agrees.
 - Aggregates (AC13): every count returns its members; producing system and domain survive.
-- Relationships (AC12): classified only from the items' own recorded inputs, derivation links and
-  completeness statements. INDEPENDENT needs positive recorded evidence; anything missing, incomplete
-  or unverified is UNKNOWN. CORRELATED is never assigned here. This follows recorded links; it is not
+- Relationships (AC12): classified only from the items' recorded inputs, derivation links and
+  completeness statements, their ancestors' included. INDEPENDENT needs positive recorded evidence;
+  anything missing, incomplete or unverified, in an item or any ancestor, is UNKNOWN. Items whose
+  calculation provenance differs are never related, and a persisted relationship joining them is
+  refused when read (AC11). CORRELATED is never assigned here. This follows recorded links; it is not
   a convergence algorithm and builds no graph.
 
 Nothing here scores, weights, fits or divides, and nothing writes to calculation state.
@@ -439,33 +441,55 @@ class EvidenceStore:
     # ------------------------------------------------------------ structural relationships
 
     def _ancestry(self, evidence_id: EvidenceId) -> tuple:
-        """Every item reachable through recorded derivation and recomputation links, and whether every item on
-        those paths states its derivation links complete."""
+        """What an item's recorded links reach: (ancestors, every calculated input of the item and its ancestors,
+        whether every ancestor states its derivation list complete, whether every ancestor states its input list
+        complete). It follows recorded derivation and recomputation links only."""
 
-        seen, verified, pending = set(), True, [evidence_id]
+        item = self.load(evidence_id)
+        seen, inputs = set(), {(entry.fact, entry.provenance) for entry in item.lineage.inputs}
+        derivations_verified = inputs_verified = True
+        pending = list(item.derived_from + (() if item.recomputes is None else (item.recomputes,)))
+        seen.update(pending)
         while pending:
             current = self.load(pending.pop())
-            verified = verified and current.lineage.derivations_complete
+            derivations_verified = derivations_verified and current.lineage.derivations_complete
+            inputs_verified = inputs_verified and current.lineage.inputs_complete
+            inputs.update((entry.fact, entry.provenance) for entry in current.lineage.inputs)
             for link in current.derived_from + (() if current.recomputes is None else (current.recomputes,)):
                 if link not in seen:
                     seen.add(link)
                     pending.append(link)
-        return seen, verified
+        return seen, inputs, derivations_verified, inputs_verified
+
+    @staticmethod
+    def _compatible(first: EvidenceId, second: EvidenceId, inputs_a, inputs_b) -> None:
+        """Refuse two items whose recorded calculation provenance, their ancestors' included, differs (AC11)."""
+
+        differing = provenance_differences(*(provenance for _fact, provenance in inputs_a | inputs_b))
+        if differing:
+            raise StoreError(f"{first} and {second} differ in calculation provenance ({', '.join(differing)}); "
+                             f"they are not related (H4 s3)")
 
     def classify(self, first: EvidenceId, second: EvidenceId) -> Relationship:
-        """The structural relationship, from recorded links, inputs and completeness statements (ADR-0119 AC12)."""
+        """The structural relationship, from recorded links, inputs and completeness statements (ADR-0119 AC12).
+
+        An item's recorded inputs include its ancestors' inputs, and its lineage is complete only if every
+        ancestor's is. A stronger recorded relationship (DERIVED, then SHARED-ORIGIN) is reported first; otherwise
+        anything missing, incomplete or unverified is UNKNOWN, and INDEPENDENT needs positive recorded evidence.
+        """
 
         a, b = self.load(first), self.load(second)
         conflicting = _conflicting(a, b)
-        ancestors_a, verified_a = self._ancestry(first)
-        ancestors_b, verified_b = self._ancestry(second)
+        ancestors_a, inputs_a, derivations_a, ancestral_inputs_a = self._ancestry(first)
+        ancestors_b, inputs_b, derivations_b, ancestral_inputs_b = self._ancestry(second)
+        self._compatible(first, second, inputs_a, inputs_b)
         if second in ancestors_a or first in ancestors_b:
             return Relationship(first, second, DependencyClass.DERIVED, conflicting, "a recorded derivation link")
-        shared = sorted({(entry.fact, entry.provenance) for entry in a.lineage.inputs} &
-                        {(entry.fact, entry.provenance) for entry in b.lineage.inputs}, key=lambda pair: pair[0])
+        shared = sorted(inputs_a & inputs_b, key=lambda pair: pair[0])
         if shared:
             return Relationship(first, second, DependencyClass.SHARED_ORIGIN, conflicting,
-                                "recorded shared input: " + ", ".join(fact for fact, _provenance in shared))
+                                "recorded shared input, own or ancestral: " +
+                                ", ".join(fact for fact, _provenance in shared))
         if ancestors_a & ancestors_b:
             return Relationship(first, second, DependencyClass.SHARED_ORIGIN, conflicting,
                                 "a shared recorded ancestor: " + ", ".join(sorted(link.value for link in
@@ -474,15 +498,17 @@ class EvidenceStore:
                                  "a derivation link may be missing: not every derivation list is stated complete"),
                                 (not (a.lineage.inputs_complete and b.lineage.inputs_complete),
                                  "incomplete lineage: not every input list is stated complete"),
-                                (not (verified_a and verified_b),
+                                (not (ancestral_inputs_a and ancestral_inputs_b),
+                                 "incomplete ancestral lineage: an ancestor's input list is not stated complete"),
+                                (not (derivations_a and derivations_b),
                                  "an unverified derivation path: an ancestor's derivation list is not stated complete"),
                                 (a.producing_system is b.producing_system,
                                  "the same producing system; independence needs different systems")):
             if missing:
                 return Relationship(first, second, DependencyClass.UNKNOWN, conflicting, reason)
         return Relationship(first, second, DependencyClass.INDEPENDENT, conflicting,
-                            "different systems, complete recorded lineage with disjoint inputs, and no recorded "
-                            "derivation path")
+                            "different systems, complete recorded lineage, ancestors' included, with disjoint "
+                            "inputs, and no recorded derivation path")
 
     def relate(self, first: EvidenceId, second: EvidenceId) -> Relationship:
         """Classify and record. Each call appends a record, so a later classification never rewrites an earlier."""
@@ -497,8 +523,19 @@ class EvidenceStore:
         return self._transaction(work)
 
     def relationships(self) -> list:
-        return [relationship_from_record(json.loads(payload)) for (payload,) in self._db.execute(
-            "SELECT payload FROM evidence_relationships ORDER BY relationship_number")]
+        """Every recorded relationship, oldest first. A persisted relationship joining items whose calculation
+        provenance differs is refused, however it was written (AC11)."""
+
+        out = []
+        for first_id, second_id, payload in self._db.execute(
+                "SELECT first_id, second_id, payload FROM evidence_relationships ORDER BY relationship_number"):
+            relationship = relationship_from_record(json.loads(payload))
+            if (relationship.first.value, relationship.second.value) != (first_id, second_id):
+                raise StoreError(f"a persisted relationship's record does not match its row: {first_id}, {second_id}")
+            self._compatible(relationship.first, relationship.second, self._ancestry(relationship.first)[1],
+                             self._ancestry(relationship.second)[1])
+            out.append(relationship)
+        return out
 
     def relationship_counts(self) -> dict:
         """Recorded relationships by dependency class, each with its pairs. UNKNOWN is its own class."""
