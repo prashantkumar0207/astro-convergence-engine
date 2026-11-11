@@ -137,6 +137,7 @@ _REPOSITORY = "engine.knowledge.repository.KnowledgeRepository"
 _STORE = "engine.evidence.store.EntityStore"
 _EVENT_STORE = "engine.evidence.event_store.EventStore"
 _LEDGER = "engine.evidence.ledger.HistoricalLedger"
+_EVIDENCE_STORE = "engine.evidence.evidence_store.EvidenceStore"
 
 _DASHA_GATES = ("oracle_pratyantar_rows_compared", "oracle_lord_mismatches", "oracle_max_start_delta_days",
                 "independent_validator", "cases", "near_boundary_coverage", "boundary_proximity_indicator")
@@ -430,6 +431,37 @@ ARTIFACT_DECLARATIONS = {
                  _fn("engine.evidence.ledger.protocol_from_record", "G_ledger_integrity", "H_ledger_refusals"),
                  _fn("engine.evidence.ledger.leakage_findings", "G_ledger_integrity", "H_ledger_refusals",
                      "I_holdout_leakage")),
+            # ADR-0119 s3: the H4 evidence model, its store, the EVD and RUL issuers, joins, aggregates and
+            # structural relationships.
+            _cap("evidence.evidence_model",
+                 _fn(f"{_EVIDENCE_STORE}.register_rule", "J_evidence_integrity", "K_evidence_refusals", "L_relationships_and_provenance"),
+                 _fn(f"{_EVIDENCE_STORE}.register_rule_version", "J_evidence_integrity", "K_evidence_refusals"),
+                 _fn(f"{_EVIDENCE_STORE}.rule_versions", "J_evidence_integrity"),
+                 _fn(f"{_EVIDENCE_STORE}.rule_version", "J_evidence_integrity", "K_evidence_refusals"),
+                 _fn(f"{_EVIDENCE_STORE}.persist", "J_evidence_integrity", "K_evidence_refusals", "L_relationships_and_provenance"),
+                 _fn(f"{_EVIDENCE_STORE}.load", "J_evidence_integrity", "K_evidence_refusals"),
+                 _fn(f"{_EVIDENCE_STORE}.evidence_ids", "J_evidence_integrity"),
+                 _fn(f"{_EVIDENCE_STORE}.recomputations", "J_evidence_integrity"),
+                 _fn(f"{_EVIDENCE_STORE}.issued_count", "J_evidence_integrity"),
+                 _fn(f"{_EVIDENCE_STORE}.join", "J_evidence_integrity", "K_evidence_refusals"),
+                 _fn(f"{_EVIDENCE_STORE}.counts", "J_evidence_integrity"),
+                 _fn(f"{_EVIDENCE_STORE}.classify", "L_relationships_and_provenance"),
+                 _fn(f"{_EVIDENCE_STORE}.relate", "K_evidence_refusals", "L_relationships_and_provenance"),
+                 _fn(f"{_EVIDENCE_STORE}.relationship_counts", "L_relationships_and_provenance"),
+                 _fn(f"{_EVIDENCE_STORE}.close", "J_evidence_integrity", "K_evidence_refusals", "L_relationships_and_provenance"),
+                 _fn("engine.evidence.evidence_store.item_to_record", "J_evidence_integrity", "K_evidence_refusals"),
+                 _fn("engine.evidence.evidence_store.item_from_record", "J_evidence_integrity", "K_evidence_refusals"),
+                 _fn("engine.evidence.evidence_store.rule_to_record", "J_evidence_integrity", "K_evidence_refusals"),
+                 _fn("engine.evidence.evidence_store.rule_from_record", "J_evidence_integrity", "K_evidence_refusals"),
+                 _fn("engine.evidence.evidence.provenance_differences", "L_relationships_and_provenance"),
+                 _fn(f"{_EVIDENCE_STORE}.relationships", "L_relationships_and_provenance"),
+                 _fn("engine.evidence.evidence_store.relationship_to_record", "K_evidence_refusals",
+                     "L_relationships_and_provenance"),
+                 _fn("engine.evidence.evidence_store.relationship_from_record", "K_evidence_refusals",
+                     "L_relationships_and_provenance"),
+                 _fn("engine.evidence.evidence_identifiers.RuleId.from_number", "J_evidence_integrity",
+                     "K_evidence_refusals", "L_relationships_and_provenance"),
+                 _fn("engine.evidence.evidence_identifiers.EvidenceId.from_number", "K_evidence_refusals")),
         ],
         "empty_exercises": {
             "F_negative_controls": "runs the other gates' comparators against planted wrong functions, so no "
