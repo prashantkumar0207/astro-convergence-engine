@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | **ACCEPTED (`ADR-0062`) - canonical, machine-checkable current-state record.** Regenerate/refresh on every meaningful implementation task, same discipline as `reports/AI_HANDOFF_CURRENT.md`. |
-| Version | 7.45.0 |
+| Version | 7.46.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-11 (**PR #53 merged (`9baefe6`). WP-E4, the H4 evidence model, implemented on review branch `evidence-wp-e4-evidence-model`. Not merged.**) |
+| Last updated | 2026-11-11 (**PR #54's bounded HOLD closed on review branch `evidence-wp-e4-evidence-model`. Not merged.**) |
 | Review cadence | Refresh at the start of a session if stale; not load-bearing if it isn't. |
 
 # ACE execution state
@@ -47,17 +47,17 @@ independently is in these fields plus the pointers they name.
 | `CURRENT_AUTHORIZED_TASK` | None self-executable beyond the WP-E4 implementation PR, which needs independent CEO review and further owner authorization to merge. |
 | `TASK_OWNER` | CHATGPT (review of the WP-E4 implementation PR); USER (merge authorization). |
 | `STATUS` | WP-E4 review PR, not merged. No certified calculation changed: existing artifacts differ only in volatile fields and `modules_scanned` (214 to 217). `EVIDENCE_FOUNDATIONS_V1` gains gates J, K and L and the `evidence.evidence_model` capability; gates A to I are unchanged. The product contract's canonical text is `specs/PROJECT_CHARTER.md` v1.4.0 (owner-ratified, `ADR-0117` and its addendum); the product-objective definition is CLOSED (`ADR-0118` s2). Neither is restated here. |
-| `LAST_COMPLETED_ACTION` | Merged PR #53; implemented WP-E4 against `ADR-0119` s3 and s5: EVD and RUL governance, the evidence model and store, joins, aggregates, structural relationships, and gates J, K and L. |
+| `LAST_COMPLETED_ACTION` | Closed the CEO's bounded HOLD on PR #54 at `f2ee158`: classification now uses recorded ancestral inputs and their completeness; relating refuses differing provenance, and a persisted relationship joining such items is refused when read; gate J gains invalid-by-construction controls; gate L gains the ancestral cases. |
 | `LAST_COMMIT` (main) | `9baefe65afb56ba89c0f82d83158258072d18c2e` (PR #53 merge; parents `686d89d` and `cc0aae3`). |
 | `LAST_COMMIT` (evidence-wp-e4-evidence-model) | This branch's commits, on top of `9baefe65afb56ba89c0f82d83158258072d18c2e`. |
 | `LAST_CI_RUN` | `43003988781` at `9baefe6`: push to `main`, success on all four jobs. This branch's results are on its review PR. |
-| `LAST_CEO_DECISION` | Final verification of PR #53 at `0dd1238`; the owner then ratified `ADR-0119` and authorized PR #53's merge and WP-E4's implementation. |
+| `LAST_CEO_DECISION` | Bounded HOLD on PR #54 at `f2ee158` (AC11, AC12, AC18). |
 | `NEXT_AUTHORIZED_ACTION` | None self-executable. The WP-E4 PR needs independent CEO review and the owner's merge authorization. Before any prediction implementation, an owner-approved roadmap placement (Q8 disposition). The retirement of `SUPPORT_PATHS_V1` gates H and I needs separate approval. |
-| `WAITING_FOR` | CHATGPT: review of the WP-E4 implementation PR. USER: its merge authorization. |
+| `WAITING_FOR` | CHATGPT: narrow final review of PR #54. USER: its merge authorization. |
 | `BLOCKER` | None for this delivery. |
 | `CEO_APPROVAL_REQUIRED` | The WP-E4 PR's merge; phase exit. |
 | `CLAUDE_ACTION_REQUIRED` | None until directed. Every relevant specification, milestone and review carries the Charter-compliance statement. |
-| `CHATGPT_ACTION_REQUIRED` | Review of the WP-E4 implementation PR. |
+| `CHATGPT_ACTION_REQUIRED` | Narrow final review of PR #54. |
 | `USER_ACTION_REQUIRED` | Merge authorization for the WP-E4 PR, after CEO review; a roadmap placement for prediction issuance before its implementation; a separate authorization for the bounded retirement of `SUPPORT_PATHS_V1` gates H and I. |
 | `HANDOFF_REQUIRED` | None beyond this file and the latest entry in `reports/AI_HANDOFF_CURRENT.md`. |
 
@@ -79,6 +79,7 @@ exactly as `reports/AI_HANDOFF_CURRENT.md` already requires of itself.
 
 | Version | Date | Change |
 |---|---|---|
+| 7.46.0 | 2026-11-11 | **PR #54 HOLD closed** (ancestral lineage in classification; provenance compatibility in relating; gate J controls; gate L cases). |
 | 7.45.0 | 2026-11-11 | **WP-E4 implemented and on review** (`ADR-0119`, owner-ratified). |
 | 7.44.0 | 2026-11-11 | **`ADR-0119` owner-ratified** (D1 to D5 option A; AC1 to AC20). |
 | 7.43.0 | 2026-11-10 | **WP-E4 criteria revised at the evidence-model checkpoint** (`ADR-0119`, revision 1). |
