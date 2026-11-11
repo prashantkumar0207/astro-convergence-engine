@@ -924,15 +924,10 @@ def _rule_spec(school, strength="as declared by the synthetic source"):
 
 
 class _EvidenceWorld:
-    """A synthetic entity, and an evidence store with one Parashari and one KP rule version, in one database."""
+    """Builds synthetic items for one entity and the rule versions a gate registered in its own store."""
 
-    def __init__(self, path):
-        store = EvidenceStore(path)
-        self.store = store
-        self.owner = store.entities.persist(_synthetic_subjects()[0])
-        self.label = store.entities.load(self.owner).charts[0].label
-        self.rules = {ProducingSystem.PARASHARI: store.register_rule(_rule_spec(ProducingSystem.PARASHARI)),
-                      ProducingSystem.KP: store.register_rule(_rule_spec(ProducingSystem.KP))}
+    def __init__(self, owner, label, rules):
+        self.owner, self.label, self.rules = owner, label, rules
 
     def lineage(self, facts, provenance=CALC, inputs_complete=True, derivations_complete=True):
         return Lineage(inputs=tuple(CalculatedInput(fact=fact, provenance=provenance) for fact in facts),
@@ -961,8 +956,11 @@ def gate_j_evidence_integrity():
 
     with tempfile.TemporaryDirectory() as folder:
         path = Path(folder) / "evidence.sqlite"
-        world = _EvidenceWorld(path)
-        store = world.store
+        store = EvidenceStore(path)
+        owner = store.entities.persist(_synthetic_subjects()[0])
+        rules = {ProducingSystem.PARASHARI: store.register_rule(_rule_spec(ProducingSystem.PARASHARI)),
+                 ProducingSystem.KP: store.register_rule(_rule_spec(ProducingSystem.KP))}
+        world = _EvidenceWorld(owner, store.entities.load(owner).charts[0].label, rules)
         supplied = Supplied(value="as supplied by the synthetic source", provenance=PROVENANCE)
         ids = [store.persist(world.item(polarity=polarity)) for polarity in Polarity]
         with_uncertainty = world.item(
@@ -1025,8 +1023,12 @@ def gate_k_evidence_refusals():
         fail(f"not refused: {label}")
 
     with tempfile.TemporaryDirectory() as folder:
-        world = _EvidenceWorld(Path(folder) / "evidence.sqlite")
-        store = world.store
+        path = Path(folder) / "evidence.sqlite"
+        store = EvidenceStore(path)
+        owner = store.entities.persist(_synthetic_subjects()[0])
+        rules = {ProducingSystem.PARASHARI: store.register_rule(_rule_spec(ProducingSystem.PARASHARI)),
+                 ProducingSystem.KP: store.register_rule(_rule_spec(ProducingSystem.KP))}
+        world = _EvidenceWorld(owner, store.entities.load(owner).charts[0].label, rules)
         rule = world.rules[ProducingSystem.PARASHARI]
         for label, change, reason in (
                 ("a rule school given as text", {"school": "parashari"}, "ProducingSystem"),
@@ -1113,8 +1115,12 @@ def gate_l_relationships_and_provenance():
     planted wrong ones that are wrong by construction (ADR-0119 AC11, AC12; the ADR-0118 standard)."""
 
     with tempfile.TemporaryDirectory() as folder:
-        world = _EvidenceWorld(Path(folder) / "evidence.sqlite")
-        store = world.store
+        path = Path(folder) / "evidence.sqlite"
+        store = EvidenceStore(path)
+        owner = store.entities.persist(_synthetic_subjects()[0])
+        rules = {ProducingSystem.PARASHARI: store.register_rule(_rule_spec(ProducingSystem.PARASHARI)),
+                 ProducingSystem.KP: store.register_rule(_rule_spec(ProducingSystem.KP))}
+        world = _EvidenceWorld(owner, store.entities.load(owner).charts[0].label, rules)
         kp = ProducingSystem.KP
         anchor = store.persist(world.item(facts=("Moon longitude",)))
         child = store.persist(world.item(kp, facts=("Sun longitude",), derived_from=(anchor,)))
