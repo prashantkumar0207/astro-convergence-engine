@@ -12032,7 +12032,7 @@ seeded trials, against 2/210 = 0.95% expected. The pytest suite uses fixed seeds
 ## ADR-0119 - PR #52 merged and the gate I fix closed; work package WP-E4 (the H4 evidence model, EVD identifier governance and its rule-identity dependency) defined, with its exit criteria fixed before coding (PROPOSED - for the CEO's evidence-model checkpoint)
 
 - **Date:** 2026-11-10
-- **Status:** **PROPOSED.** Drafted on the owner's instruction quoted in s1, for CEO review before any implementation. This
+- **Status:** **ACCEPTED, on the owner's ratifying instruction recorded in the "Ratification of ADR-0119" sub-entry below.** Originally drafted `PROPOSED`; only this Status line changed. As drafted: **PROPOSED.** Drafted on the owner's instruction quoted in s1, for CEO review before any implementation. This
   review is the evidence-model checkpoint `docs/Q8_CLOSURE_MATRIX.md` s6 requires. At the checkpoint the CEO accepted option
   A for D1 to D5 and the scope, subject to the corrections recorded in "Revision 1" below and applied in s4 and s5. The
   decision points and criteria bind only after the CEO's final verification and the owner's acceptance. s2 records a
@@ -12185,6 +12185,36 @@ different choice changes only the criteria it names.
   options, and submitted for review.
 - **Evidence:** merge `686d89d35efdeb00bc94679e80a8bc0b682ced20`; PR #52; head CI `42798370286`; post-merge CI
   `42803387445`. The owner's instruction exists as session input, not as a repository file.
+
+#### Ratification of ADR-0119: WP-E4 CRITERIA AND DECISION POINTS RATIFIED (2026-11-11)
+
+- **Status:** ACCEPTED. The owner instructed, quoted exactly:
+
+  ```text
+  **ACE — OWNER AUTHORIZATION CONFIRMED**
+
+  The owner explicitly authorizes ratification of ADR-0119 revision 1, merging PR #53 and implementing WP-E4.
+
+  1. Record ratification of ADR-0119 at reviewed HEAD `0dd1238ac0018dbe1c06907d548d4f3c1fd783d0`, approving D1–D5 option A and AC1–AC20. No normative changes.
+  2. Verify the final PR #53 HEAD, base, mergeability and green CI. Merge normally with two parents; no squash, rebase, force push or branch deletion.
+  3. Verify merge SHA, tree, ancestry and post-merge CI.
+  4. Implement WP-E4 against the fixed ADR-0119 criteria on a separate branch. Complete tests, certification, governance checks and self-audit.
+  5. Open a separate implementation PR for independent CEO review. Do not merge it without further authorization.
+
+  Preserve Charter v1.4.0 and all exclusions. No scope expansion, prediction issuance or additional product-definition review.
+
+  Report exact SHAs, results, certification evidence and any demonstrated material blockers. Proceed without routine interruptions.
+  ```
+
+  That instruction is the ratifying act. It covers this entry with its revision 1, as reviewed in PR #53 at
+  `0dd1238ac0018dbe1c06907d548d4f3c1fd783d0`: option A for D1 to D5, the scope in s3 and AC1 to AC20 in s5. It does not
+  extend to any other text.
+- **Decision:** WP-E4 is implemented against s3 and s5 as written, on a separate branch, and submitted for independent CEO
+  review. Its merge needs further authorization.
+- **Text unchanged:** with its Status line and this sub-entry excluded, this entry hashes to SHA-256 `3798f7af7d73bf10d5c6161752a1c2bc5859b042c2e5f25a49871eeb1e7ff976` both
+  before and after the ratification.
+- **Evidence:** PR #53 at `0dd1238ac0018dbe1c06907d548d4f3c1fd783d0`, CI `42814623395` (four jobs passed). The CEO's
+  review and the owner's instruction exist as session input, not as repository files.
 
 ---
 

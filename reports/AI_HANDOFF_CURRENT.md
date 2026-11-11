@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.43.0 |
+| Version | 9.44.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-10 (WP-E4's exit criteria (`ADR-0119`, PROPOSED) revised at the evidence-model checkpoint; on review branch `evidence-wp-e4-criteria`. Not merged.) |
+| Last updated | 2026-11-11 (`ADR-0119` owner-ratified; PR #53 to be merged; WP-E4 implementation to follow on a separate branch.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,13 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-11 - ADR-0119 owner-ratified (WP-E4 criteria)
+
+- The owner ratified `ADR-0119` with revision 1 at `0dd1238`: option A for D1 to D5, the scope, and AC1 to AC20.
+- Only the Status line changed, plus a ratification sub-entry quoting the owner exactly; the normative text is
+  hash-verified unchanged.
+- Next: merge PR #53, then implement WP-E4 on a separate branch for CEO review.
 
 ### 2026-11-10 - WP-E4 criteria revised at the CEO's evidence-model checkpoint (ADR-0119, revision 1)
 
