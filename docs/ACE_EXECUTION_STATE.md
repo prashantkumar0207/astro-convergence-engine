@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | **ACCEPTED (`ADR-0062`) - canonical, machine-checkable current-state record.** Regenerate/refresh on every meaningful implementation task, same discipline as `reports/AI_HANDOFF_CURRENT.md`. |
-| Version | 7.41.0 |
+| Version | 7.44.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-10 (**PR #51 merged (`23ce0a9`); the product-objective definition CLOSED (`ADR-0118`). The gate I control fix is on review branch `evidence-gate-i-deterministic-controls`. Not merged.**) |
+| Last updated | 2026-11-11 (**`ADR-0119` owner-ratified; PR #53 to be merged, then WP-E4 implemented on a separate branch.**) |
 | Review cadence | Refresh at the start of a session if stale; not load-bearing if it isn't. |
 
 # ACE execution state
@@ -43,22 +43,22 @@ independently is in these fields plus the pointers they name.
 | Field | Value |
 |---|---|
 | `CURRENT_PHASE` | **EVIDENCE entered** (`ADR-0114`, owner-authorized 2026-11-07, from `main` `90cd0ca`). JATAKA exited (`ADR-0110`). Mandatory CEO checkpoints remain: the evidence model (H4), and phase exit. |
-| `CURRENT_MILESTONE` | **Gate I control fix (`ADR-0118` s3) on a review PR.** The product-objective definition is CLOSED (`ADR-0118` s2): PR #51 merged as `23ce0a9`. |
-| `CURRENT_AUTHORIZED_TASK` | The gate I fix PR, for independent CEO review. Then the authorized EVIDENCE roadmap (`ADR-0114`): its next work package is defined with criteria fixed before coding. |
-| `TASK_OWNER` | CHATGPT (review of the gate I PR); USER (merge authorization). |
-| `STATUS` | Gate I PR on review, not merged. Certifier and tests only; production code unchanged. The product contract's canonical text is `specs/PROJECT_CHARTER.md` v1.4.0, sections "Natal product contract" and "Complete product contract" (owner-ratified, `ADR-0117` and its addendum), ACE's binding product objective. Neither is restated here. |
-| `LAST_COMPLETED_ACTION` | Merged PR #51 and closed the product-objective definition; prepared the gate I fix. |
-| `LAST_COMMIT` (main) | `23ce0a9a49c10f90454ad591ab84adcf712b24c4` (PR #51 merge; parents `0f50bc8` and `3f9e124`). |
-| `LAST_COMMIT` (evidence-gate-i-deterministic-controls) | This branch's commits, on top of `23ce0a9a49c10f90454ad591ab84adcf712b24c4`. |
-| `LAST_CI_RUN` | `42795184067` at `23ce0a9`: push to `main`, success on all four jobs. This branch's results are on its review PR. |
-| `LAST_CEO_DECISION` | Final PASS on PR #51 at `3f9e124`, as the owner states. |
-| `NEXT_AUTHORIZED_ACTION` | Not merging the gate I PR without a CEO PASS. Next EVIDENCE work: the evidence-model work package (H4), its criteria fixed before coding, with the CEO's evidence-model checkpoint (Q8 s6). Before any prediction implementation, an owner-approved roadmap placement (Q8 disposition, `ADR-0117` addendum). The retirement of `SUPPORT_PATHS_V1` gates H and I needs separate approval. |
-| `WAITING_FOR` | CHATGPT: review of the gate I PR. USER: its merge authorization. |
+| `CURRENT_MILESTONE` | **WP-E4 (the H4 evidence model), criteria owner-ratified (`ADR-0119`).** PR #53 carries the ratification; implementation follows on a separate branch. |
+| `CURRENT_AUTHORIZED_TASK` | Merge PR #53, then implement WP-E4 against `ADR-0119` s3 and s5 and open a separate implementation PR for CEO review. |
+| `TASK_OWNER` | CLAUDE (merge of PR #53 and WP-E4 implementation, as the owner authorized); CHATGPT (review of the implementation PR); USER (its merge authorization). |
+| `STATUS` | WP-E4 criteria on review, not merged. Documentation only. The product contract's canonical text is `specs/PROJECT_CHARTER.md` v1.4.0, sections "Natal product contract" and "Complete product contract" (owner-ratified, `ADR-0117` and its addendum), ACE's binding product objective; the product-objective definition is CLOSED (`ADR-0118` s2). Neither is restated here. |
+| `LAST_COMPLETED_ACTION` | Recorded the owner's ratification of `ADR-0119` (Status line and sub-entry only; normative text hash-verified unchanged). |
+| `LAST_COMMIT` (main) | `686d89d35efdeb00bc94679e80a8bc0b682ced20` (PR #52 merge; parents `23ce0a9` and `065ed6f`). |
+| `LAST_COMMIT` (evidence-wp-e4-criteria) | This branch's commits, on top of `686d89d35efdeb00bc94679e80a8bc0b682ced20`. |
+| `LAST_CI_RUN` | `42803387445` at `686d89d`: push to `main`, success on all four jobs. This branch's results are on its review PR. |
+| `LAST_CEO_DECISION` | Final verification of PR #53 at `0dd1238`, followed by the owner's ratification of `ADR-0119`. |
+| `NEXT_AUTHORIZED_ACTION` | WP-E4 implementation PR, for independent CEO review; no merge without further authorization. Before any prediction implementation, an owner-approved roadmap placement (Q8 disposition). The retirement of `SUPPORT_PATHS_V1` gates H and I needs separate approval. |
+| `WAITING_FOR` | Nothing for PR #53's merge, which the owner authorized. Then CHATGPT: review of the WP-E4 implementation PR. |
 | `BLOCKER` | None for this delivery. |
-| `CEO_APPROVAL_REQUIRED` | The gate I PR's merge; the evidence-model checkpoint (Q8 s6); phase exit. |
-| `CLAUDE_ACTION_REQUIRED` | Define the next EVIDENCE work package. Every relevant specification, milestone and review carries the Charter-compliance statement. |
-| `CHATGPT_ACTION_REQUIRED` | Review of the gate I PR. |
-| `USER_ACTION_REQUIRED` | Merge authorization for the gate I PR; a roadmap placement for prediction issuance before its implementation; a separate authorization for the bounded retirement of `SUPPORT_PATHS_V1` gates H and I. |
+| `CEO_APPROVAL_REQUIRED` | The evidence-model checkpoint (Q8 s6, now); WP-E4's merge; phase exit. |
+| `CLAUDE_ACTION_REQUIRED` | None until the checkpoint. Every relevant specification, milestone and review carries the Charter-compliance statement. |
+| `CHATGPT_ACTION_REQUIRED` | Review of the WP-E4 implementation PR, once opened. |
+| `USER_ACTION_REQUIRED` | Merge authorization for the WP-E4 implementation PR, after CEO review; a roadmap placement for prediction issuance before its implementation; a separate authorization for the bounded retirement of `SUPPORT_PATHS_V1` gates H and I. |
 | `HANDOFF_REQUIRED` | None beyond this file and the latest entry in `reports/AI_HANDOFF_CURRENT.md`. |
 
 ## How to independently verify every field above
@@ -79,6 +79,9 @@ exactly as `reports/AI_HANDOFF_CURRENT.md` already requires of itself.
 
 | Version | Date | Change |
 |---|---|---|
+| 7.44.0 | 2026-11-11 | **`ADR-0119` owner-ratified** (D1 to D5 option A; AC1 to AC20). |
+| 7.43.0 | 2026-11-10 | **WP-E4 criteria revised at the evidence-model checkpoint** (`ADR-0119`, revision 1). |
+| 7.42.0 | 2026-11-10 | **Gate I fix closed; WP-E4 criteria proposed for the evidence-model checkpoint** (`ADR-0119`). |
 | 7.41.0 | 2026-11-10 | **Product-objective definition CLOSED; gate I fix on review** (`ADR-0118`). |
 | 7.40.0 | 2026-11-10 | **Complete product contract owner-ratified** (Charter v1.4.0; `ADR-0117` addendum). |
 | 7.39.0 | 2026-11-10 | **PR #51 completeness HOLD closed** (Charter v1.3.1; `ADR-0117` addendum revision 1). |
