@@ -460,7 +460,7 @@ ARTIFACT_DECLARATIONS = {
                  _fn("engine.evidence.evidence_store.relationship_from_record", "K_evidence_refusals",
                      "L_relationships_and_provenance"),
                  _fn("engine.evidence.evidence_identifiers.RuleId.from_number", "J_evidence_integrity",
-                     "K_evidence_refusals", "L_relationships_and_provenance"),
+                     "K_evidence_refusals"),
                  _fn("engine.evidence.evidence_identifiers.EvidenceId.from_number", "K_evidence_refusals")),
         ],
         "empty_exercises": {
