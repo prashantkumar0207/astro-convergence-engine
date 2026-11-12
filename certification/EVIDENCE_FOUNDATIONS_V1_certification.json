@@ -1,10 +1,10 @@
 {
  "schema": "evidence_foundations_v1_certification",
- "adr": "ADR-0115 s4; ADR-0116 s4",
- "date": "2026-11-10",
- "scope": "Structural certification of the EVIDENCE foundations: the H0 entity model, append-only entity store and ENT issuer (ADR-0114 WP-E1), and the H1 event model, append-only event store, separate confirmation records, EVR issuer and seeded event-class vocabulary (ADR-0115 WP-E2), and the H2 historical ledger, protected holdouts, pre-registered protocols and purpose-declared access log (ADR-0116 WP-E3).",
+ "adr": "ADR-0115 s4; ADR-0116 s4; ADR-0119 s3, s5",
+ "date": "2026-11-11",
+ "scope": "Structural certification of the EVIDENCE foundations: the H0 entity model, append-only entity store and ENT issuer (ADR-0114 WP-E1), and the H1 event model, append-only event store, separate confirmation records, EVR issuer and seeded event-class vocabulary (ADR-0115 WP-E2), and the H2 historical ledger, protected holdouts, pre-registered protocols and purpose-declared access log (ADR-0116 WP-E3), and the H4 evidence model, append-only evidence store, EVD and RUL issuers, provenance-checked joins, decomposable aggregates and structural relationship records (ADR-0119 WP-E4).",
  "reference": {
-  "structure": "the model contracts of ADR-0114 s3, ADR-0115 s5 and ADR-0116 s5, exercised on synthetic records",
+  "structure": "the model contracts of ADR-0114 s3, ADR-0115 s5, ADR-0116 s5 and ADR-0119 s5, exercised on synthetic records",
   "event_classes": "knowledge/hlkg/domains/career/CAREER_EVENT_REGISTRY.md s3, read by this runner independently of the code"
  },
  "gates": {
@@ -272,6 +272,111 @@
    "exercises": [
     "evidence.historical_ledger"
    ]
+  },
+  "J_evidence_integrity": {
+   "classification": "structural_integrity",
+   "items_persisted": 7,
+   "polarities": 5,
+   "confidence_components": 8,
+   "rule_versions_checked": 3,
+   "recomputations_checked": 1,
+   "count_axes": 4,
+   "mismatches": 0,
+   "controls_rejected": 2,
+   "controls": [
+    "a partition losing a member rejected",
+    "a serializer dropping historical performance rejected"
+   ],
+   "exercises": [
+    "evidence.evidence_model"
+   ]
+  },
+  "K_evidence_refusals": {
+   "classification": "negative_control",
+   "refusals_verified": 55,
+   "refused": [
+    "a chart the entity does not have",
+    "a correlated relationship",
+    "a derivation link to no item",
+    "a join differing only in ayanamsa_mode",
+    "a join differing only in ephemeris_mode",
+    "a join differing only in frame",
+    "a join differing only in house_system",
+    "a join differing only in node_policy",
+    "a join differing only in profile_name",
+    "a join differing only in time_basis",
+    "a later-phase confidence component",
+    "a non-synthetic rule",
+    "a profile name instead of provenance",
+    "a real rule registration",
+    "a relationship differing only in ayanamsa_mode",
+    "a relationship differing only in ephemeris_mode",
+    "a relationship differing only in frame",
+    "a relationship differing only in house_system",
+    "a relationship differing only in node_policy",
+    "a relationship differing only in profile_name",
+    "a relationship differing only in time_basis",
+    "a rule content hash that is not SHA-256",
+    "a rule from another system",
+    "a rule school given as text",
+    "a rule version changing its school",
+    "a rule with no declared strength",
+    "a rule with no knowledge snapshot hash",
+    "a strength other than the rule's",
+    "an analytical key in evidence",
+    "an analytical key in evidence.confidence",
+    "an analytical key in evidence.lineage",
+    "an evidence record with no id",
+    "an evidence record with no schema",
+    "an unregistered rule version",
+    "delete evidence_items",
+    "delete evidence_relationships",
+    "delete rule_versions",
+    "evidence with an unknown polarity",
+    "evidence with measured reliability",
+    "evidence with no chart reference",
+    "evidence with no entity",
+    "evidence with no lineage",
+    "evidence with no rule",
+    "evidence with no timing",
+    "evidence with question linkage",
+    "non-synthetic evidence",
+    "performance with no sample size",
+    "reading a persisted relationship differing in profile_name",
+    "reading a persisted relationship differing in time_basis",
+    "rule apply in a rule-version record",
+    "rule condition in a rule-version record",
+    "rule statement in a rule-version record",
+    "update evidence_items",
+    "update evidence_relationships",
+    "update rule_versions"
+   ],
+   "exercises": [
+    "evidence.evidence_model"
+   ]
+  },
+  "L_relationships_and_provenance": {
+   "classification": "negative_control",
+   "relationship_cases": 11,
+   "provenance_fields": 7,
+   "controls_rejected": 12,
+   "controls": [
+    "planted classifier rejected: ancestral lineage ignored",
+    "planted classifier rejected: derivation links ignored",
+    "planted classifier rejected: every pair independent",
+    "planted classifier rejected: shared origin unrecorded",
+    "planted classifier rejected: unknown treated as independent",
+    "planted comparator ignoring ayanamsa_mode rejected",
+    "planted comparator ignoring ephemeris_mode rejected",
+    "planted comparator ignoring frame rejected",
+    "planted comparator ignoring house_system rejected",
+    "planted comparator ignoring node_policy rejected",
+    "planted comparator ignoring profile_name rejected",
+    "planted comparator ignoring time_basis rejected"
+   ],
+   "exercises": [
+    "evidence.evidence_model"
+   ]
   }
  },
  "explicit_non_claims": [
@@ -284,7 +389,12 @@
   "SUPPORT_PATHS_V1 gates H and I still certify the H0 foundations; this artifact does not retire them",
   "the ledger's purpose check and leakage check cover reads through the ledger only: EventStore, EntityStore, the ledger's own database connection and direct SQLite access read protected events without a purpose and without a log entry, and no such read can be detected here",
   "the store draws the holdout seed and forbids refreezing any frozen event, but cannot stop a caller recording near-duplicate events to build a new eligible set",
-  "no TEST record, performance measurement or validation-run result is certified: they need H4 and H5"
+  "no TEST record, performance measurement or validation-run result is certified: they need H5 and rule application",
+  "rule-version references are synthetic structural references: not proof of registration or validation in the future rule registry, and they authorize no interpretation",
+  "no rule is applied and no chart is interpreted: evidence items are synthetic records exercising the model",
+  "confidence components and historical performance are carried as supplied or absent, never computed; measured reliability, cross-method and timing convergence are absent",
+  "relationships are classified only from each item's own recorded inputs, derivation links and completeness statements; no convergence count or bound is computed, and CORRELATED is never assigned",
+  "the store cannot verify that a producer's completeness statements are true; it only refuses to call a pair INDEPENDENT without them"
  ],
  "environment": {
   "python": "3.11.17"
@@ -309,7 +419,7 @@
    "residual_limitation": "coordinated edits to every repository-held trust record cannot be cryptographically prevented by an in-repository trust anchor; only upstream provenance would anchor this, and it is out of M1 scope"
   },
   "anti_fitting": {
-   "modules_scanned": 214,
+   "modules_scanned": 217,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."
@@ -829,6 +939,230 @@
       "G_ledger_integrity",
       "H_ledger_refusals",
       "I_holdout_leakage"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "evidence.evidence_model",
+   "members": [
+    {
+     "callable": "engine.evidence.evidence_store.EvidenceStore.register_rule",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "J_evidence_integrity",
+      "K_evidence_refusals",
+      "L_relationships_and_provenance"
+     ]
+    },
+    {
+     "callable": "engine.evidence.evidence_store.EvidenceStore.register_rule_version",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "J_evidence_integrity",
+      "K_evidence_refusals"
+     ]
+    },
+    {
+     "callable": "engine.evidence.evidence_store.EvidenceStore.rule_versions",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "J_evidence_integrity"
+     ]
+    },
+    {
+     "callable": "engine.evidence.evidence_store.EvidenceStore.rule_version",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "J_evidence_integrity",
+      "K_evidence_refusals"
+     ]
+    },
+    {
+     "callable": "engine.evidence.evidence_store.EvidenceStore.persist",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "J_evidence_integrity",
+      "K_evidence_refusals",
+      "L_relationships_and_provenance"
+     ]
+    },
+    {
+     "callable": "engine.evidence.evidence_store.EvidenceStore.load",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "J_evidence_integrity",
+      "K_evidence_refusals"
+     ]
+    },
+    {
+     "callable": "engine.evidence.evidence_store.EvidenceStore.evidence_ids",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "J_evidence_integrity"
+     ]
+    },
+    {
+     "callable": "engine.evidence.evidence_store.EvidenceStore.recomputations",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "J_evidence_integrity"
+     ]
+    },
+    {
+     "callable": "engine.evidence.evidence_store.EvidenceStore.issued_count",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "J_evidence_integrity"
+     ]
+    },
+    {
+     "callable": "engine.evidence.evidence_store.EvidenceStore.join",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "J_evidence_integrity",
+      "K_evidence_refusals"
+     ]
+    },
+    {
+     "callable": "engine.evidence.evidence_store.EvidenceStore.counts",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "J_evidence_integrity"
+     ]
+    },
+    {
+     "callable": "engine.evidence.evidence_store.EvidenceStore.classify",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "L_relationships_and_provenance"
+     ]
+    },
+    {
+     "callable": "engine.evidence.evidence_store.EvidenceStore.relate",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "K_evidence_refusals",
+      "L_relationships_and_provenance"
+     ]
+    },
+    {
+     "callable": "engine.evidence.evidence_store.EvidenceStore.relationship_counts",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "L_relationships_and_provenance"
+     ]
+    },
+    {
+     "callable": "engine.evidence.evidence_store.EvidenceStore.close",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "J_evidence_integrity",
+      "K_evidence_refusals",
+      "L_relationships_and_provenance"
+     ]
+    },
+    {
+     "callable": "engine.evidence.evidence_store.item_to_record",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "J_evidence_integrity",
+      "K_evidence_refusals"
+     ]
+    },
+    {
+     "callable": "engine.evidence.evidence_store.item_from_record",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "J_evidence_integrity",
+      "K_evidence_refusals"
+     ]
+    },
+    {
+     "callable": "engine.evidence.evidence_store.rule_to_record",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "J_evidence_integrity",
+      "K_evidence_refusals"
+     ]
+    },
+    {
+     "callable": "engine.evidence.evidence_store.rule_from_record",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "J_evidence_integrity",
+      "K_evidence_refusals"
+     ]
+    },
+    {
+     "callable": "engine.evidence.evidence.provenance_differences",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "L_relationships_and_provenance"
+     ]
+    },
+    {
+     "callable": "engine.evidence.evidence_store.EvidenceStore.relationships",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "K_evidence_refusals",
+      "L_relationships_and_provenance"
+     ]
+    },
+    {
+     "callable": "engine.evidence.evidence_store.relationship_to_record",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "K_evidence_refusals",
+      "L_relationships_and_provenance"
+     ]
+    },
+    {
+     "callable": "engine.evidence.evidence_store.relationship_from_record",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "K_evidence_refusals",
+      "L_relationships_and_provenance"
+     ]
+    },
+    {
+     "callable": "engine.evidence.evidence_identifiers.RuleId.from_number",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "J_evidence_integrity",
+      "K_evidence_refusals"
+     ]
+    },
+    {
+     "callable": "engine.evidence.evidence_identifiers.EvidenceId.from_number",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "K_evidence_refusals"
      ]
     }
    ]

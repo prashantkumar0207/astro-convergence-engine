@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.44.0 |
+| Version | 9.46.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-11 (`ADR-0119` owner-ratified; PR #53 to be merged; WP-E4 implementation to follow on a separate branch.) |
+| Last updated | 2026-11-11 (PR #54's bounded HOLD closed on review branch `evidence-wp-e4-evidence-model`. Not merged.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,36 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-11 - PR #54 bounded HOLD closed (ADR-0119 AC11, AC12, AC18)
+
+**Not merged.**
+
+- **AC12:** classification counts an item's ancestors' inputs as its recorded inputs, and its lineage complete only if
+  every ancestor's is. An ancestor sharing an input gives SHARED-ORIGIN; an ancestor with incomplete inputs gives
+  UNKNOWN unless DERIVED or SHARED-ORIGIN is recorded.
+- **AC11:** relating refuses items whose provenance, ancestors' included, differs in any field; a persisted relationship
+  joining such items is refused when read.
+- **AC18:** gate J's comparators each reject an invalid-by-construction control, and tests show the real gate fails for
+  each intended violation. Gate K: 46 to 55 refusals. Gate L: 8 to 11 cases, 11 to 12 controls. Gates A to I unchanged.
+- **Self-audit:** the pre-fix store fails all seven new regressions and gates K and L; twelve mutants are each caught by
+  both the tests and the gates.
+
+### 2026-11-11 - WP-E4, the H4 evidence model, on review (ADR-0119)
+
+**Not merged.** PR #53 merged as `9baefe6` (parents `686d89d`, `cc0aae3`; tree identical to the reviewed head); post-merge CI
+`43003988781` passed all four jobs.
+
+- **`EVD` and `RUL`:** registered in `docs/NAMING_STANDARD.md` s2, issued by the store's own counters, with a uniqueness gate
+  and a CI negative control. `RUL` records are synthetic structural references only.
+- **The evidence model and store:** every H4 field; uncertainty and performance as supplied or absent, never computed;
+  append-only tables; recomputation as a new linked item; joins refused on any difference in the seven `Provenance`
+  fields; decomposable counts; relationships from recorded links and completeness only, INDEPENDENT only on positive
+  recorded evidence, CORRELATED refused, conflict separate.
+- **Certification:** `EVIDENCE_FOUNDATIONS_V1` gates J (0 mismatches), K (46 refusals) and L (8 cases, 11 controls);
+  gates A to I unchanged; C3 at 54 capabilities, 244 members, 167 gates; C4 at 159 in use and covered.
+- **Record correction:** commit `38852ab`'s message says the evidence was regenerated "from 8b5a6e1's tree"; no such commit
+  exists. The regeneration ran from `86d2f0c`'s tree, the commit before it.
 
 ### 2026-11-11 - ADR-0119 owner-ratified (WP-E4 criteria)
 

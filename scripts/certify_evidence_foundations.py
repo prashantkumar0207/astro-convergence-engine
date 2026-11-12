@@ -1,11 +1,12 @@
-"""EVIDENCE_FOUNDATIONS_V1 CERTIFICATION RUNNER (ADR-0115 s4; ADR-0116 s4).
+"""EVIDENCE_FOUNDATIONS_V1 CERTIFICATION RUNNER (ADR-0115 s4; ADR-0116 s4; ADR-0119 s3).
 
 Regenerates certification/EVIDENCE_FOUNDATIONS_V1_certification.json FROM SCRATCH on every run;
 the stored JSON is never accepted as proof.
 
 STRUCTURAL certification of the EVIDENCE foundations: the H0 entity model and store (ADR-0114),
-the H1 event model, event store and EVR issuer (ADR-0115), and the H2 historical ledger and its
-protected holdouts (ADR-0116). It is NOT astrological-calculation certification and certifies no production analytical input. Every record it uses is synthetic, and
+the H1 event model, event store and EVR issuer (ADR-0115), the H2 historical ledger and its
+protected holdouts (ADR-0116), and the H4 evidence model, its store and the EVD and RUL issuers
+(ADR-0119). It is NOT astrological-calculation certification and certifies no production analytical input. Every record it uses is synthetic, and
 nothing it runs scores, weights, fits or computes confidence. It needs no oracle.
 
 Gates:
@@ -24,6 +25,12 @@ Gates:
      decomposable counts, a reproducible holdout, a protocol, and a clean, durable access log.
   H  H2 refusals: each one the WP-E3 contract requires, triggered for real; refused reads are logged.
   I  the holdout's reproduction check and the leakage check each reject planted wrong inputs.
+  J  H4 structural integrity: every polarity, supplied and absent uncertainty and performance, rule
+     versions, recomputation, decomposable counts, a clean join, durable and separate issuers.
+  K  H4 refusals: each one the WP-E4 contract requires, triggered for real, with its reason checked,
+     including a join differing in each field of the calculation Provenance.
+  L  relationships from recorded structure, and provenance comparison on every field; each rejects
+     planted wrong comparators that are wrong by construction.
 
 Exit 0 = PASS, 3 = FAIL.
 """
@@ -65,6 +72,16 @@ from engine.evidence.ledger import (  # noqa: E402
     content_hash, entry_from_record, entry_to_record, holdout_from_record, holdout_to_record, leakage_findings,
     ordered_selection, protocol_from_record, protocol_to_record, selection_hash,
 )
+from engine.evidence.evidence import (  # noqa: E402
+    CONFIDENCE_COMPONENTS, LATER_PHASE_COMPONENTS, CalculatedInput, ChartContext, ChartReference, Confidence,
+    DependencyClass, Domain, EvidenceItem, EvidenceModelError, Lineage, Performance, Polarity, ProducingSystem,
+    Relationship, RuleReference, RuleSpec, Supplied, TimingContext, TimingKind, provenance_differences,
+)
+from engine.evidence.evidence_identifiers import EvidenceId  # noqa: E402
+from engine.evidence.evidence_store import (  # noqa: E402
+    EvidenceStore, item_from_record, item_to_record, relationship_to_record, rule_from_record, rule_to_record,
+)
+from engine.models.provenance import Provenance  # noqa: E402
 
 #: A number no certifier store reaches, for the dangling-reference controls.
 LAST_TEST = 99999999
@@ -891,6 +908,356 @@ def gate_i_holdout_leakage():
             "holdout_members": len(members), "holdout_selected": 4}
 
 
+# ------------------------------------------------------------------ H4 (ADR-0119)
+
+CALC = Provenance(profile_name="parashari_lahiri", ayanamsa_mode=1, frame="sidereal", house_system="W",
+                  node_policy="mean", ephemeris_mode="swieph")
+#: One different value for every field of the frozen Provenance (ADR-0119 AC11).
+PROVENANCE_VARIANTS = {"profile_name": "kp_krishnamurti", "ayanamsa_mode": 5, "frame": "tropical",
+                       "house_system": "P", "node_policy": "true", "ephemeris_mode": "moseph", "time_basis": "TT"}
+CERTIFIER_HASH = "c" * 64
+
+
+def _rule_spec(school, strength="as declared by the synthetic source"):
+    return RuleSpec(school=school, content_hash=CERTIFIER_HASH, knowledge_snapshot_hash="d" * 64,
+                    declared_strength=strength, provenance=PROVENANCE, data_class=DataClass.SYNTHETIC)
+
+
+class _EvidenceWorld:
+    """Builds synthetic items for one entity and the rule versions a gate registered in its own store."""
+
+    def __init__(self, owner, label, rules):
+        self.owner, self.label, self.rules = owner, label, rules
+
+    def lineage(self, facts, provenance=CALC, inputs_complete=True, derivations_complete=True):
+        return Lineage(inputs=tuple(CalculatedInput(fact=fact, provenance=provenance) for fact in facts),
+                       inputs_complete=inputs_complete, derivations_complete=derivations_complete)
+
+    def item(self, system=ProducingSystem.PARASHARI, facts=("Moon longitude",), **changes):
+        rule = self.rules[system]
+        base = EvidenceItem(
+            entity=self.owner, domain=Domain.JATAKA, question=None, producing_system=system,
+            rule=RuleReference(rule=rule.rule, version=rule.version), declared_strength=rule.spec.declared_strength,
+            measured_reliability=None, lineage=self.lineage(facts),
+            chart=ChartReference(entity_revision=1, chart_label=self.label),
+            chart_context=ChartContext(varga="D1", planets=("Moon",), houses=(10,), signs=(4,), significators=()),
+            timing=TimingContext(kind=TimingKind.DASHA, label="synthetic period", start="2010-01-01",
+                                 end="2012-12-31"),
+            polarity=Polarity.POSITIVE,
+            confidence=Confidence(**{name: None for name in CONFIDENCE_COMPONENTS}),
+            historical_performance=None, derived_from=(), recomputes=None, provenance=PROVENANCE,
+            data_class=DataClass.SYNTHETIC)
+        return dataclasses.replace(base, **changes)
+
+
+def evidence_round_trips(evidence_id, item, serialize=None) -> bool:
+    """Gate J's round-trip comparator: the stored form rebuilds exactly the identity and item it was made from."""
+
+    record = (serialize or item_to_record)(evidence_id, item)
+    return item_from_record(json.loads(json.dumps(record))) == (evidence_id, item)
+
+
+def partition_failures(counts, ids) -> list:
+    """Gate J's decomposition comparator: every axis's partitions cover the members exactly once."""
+
+    failures = []
+    for axis in ("producing_system", "domain", "polarity", "rule"):
+        parts = [set(members) for members in counts[axis].values()]
+        if set().union(*parts) != set(ids) or sum(len(part) for part in parts) != len(ids):
+            failures.append(axis)
+    return failures
+
+
+def gate_j_evidence_integrity():
+    """H4 structural integrity: every polarity, supplied and absent uncertainty, rule versions, recomputation,
+    decomposable counts, a clean join, and durability (ADR-0119 s5)."""
+
+    with tempfile.TemporaryDirectory() as folder:
+        path = Path(folder) / "evidence.sqlite"
+        store = EvidenceStore(path)
+        owner = store.entities.persist(_synthetic_subjects()[0])
+        rules = {ProducingSystem.PARASHARI: store.register_rule(_rule_spec(ProducingSystem.PARASHARI)),
+                 ProducingSystem.KP: store.register_rule(_rule_spec(ProducingSystem.KP))}
+        world = _EvidenceWorld(owner, store.entities.load(owner).charts[0].label, rules)
+        supplied = Supplied(value="as supplied by the synthetic source", provenance=PROVENANCE)
+        ids = [store.persist(world.item(polarity=polarity)) for polarity in Polarity]
+        with_uncertainty = world.item(
+            ProducingSystem.KP, facts=("Sun longitude",),
+            confidence=Confidence(**{name: (None if name in LATER_PHASE_COMPONENTS else supplied)
+                                     for name in CONFIDENCE_COMPONENTS}),
+            historical_performance=Performance(value="0", sample_size=12, provenance=PROVENANCE))
+        ids.append(store.persist(with_uncertainty))
+        ids.append(store.persist(world.item(facts=("Mars longitude",), recomputes=ids[0])))
+        second = store.register_rule_version(world.rules[ProducingSystem.PARASHARI].rule,
+                                             _rule_spec(ProducingSystem.PARASHARI, "revised as declared"))
+        if [rule.version for rule in store.rule_versions(second.rule)] != [1, 2] or \
+                rule_from_record(rule_to_record(second)) != second:
+            fail("a new rule version did not append beside the first, or did not round-trip")
+        for evidence_id in ids:
+            if not evidence_round_trips(evidence_id, store.load(evidence_id)):
+                fail("an evidence item did not round-trip")
+        if [store.load(evidence_id).polarity for evidence_id in ids[:5]] != list(Polarity):
+            fail("the five polarities were not all kept")
+        loaded = store.load(ids[5])
+        if loaded.historical_performance.value != "0" or store.load(ids[0]).historical_performance is not None or \
+                loaded.confidence.timing_convergence is not None or loaded.confidence.rule_confidence != supplied:
+            fail("supplied and absent uncertainty or performance were not kept apart")
+        if store.recomputations(ids[0]) != [ids[6]] or store.load(ids[0]).polarity is not Polarity.POSITIVE:
+            fail("a recomputation did not append beside its original")
+        counts = store.counts()
+        for axis in partition_failures(counts, ids):
+            fail(f"the {axis} partition does not decompose the total")
+        # Negative controls, invalid by construction (CEO HOLD on PR #54, item 3): each comparator above must
+        # reject a planted violation of exactly the property it checks.
+        controls = {}
+
+        def lossy(evidence_id, item):
+            record = item_to_record(evidence_id, item)
+            record["evidence"]["historical_performance"] = None
+            return record
+
+        if loaded.historical_performance is None or evidence_round_trips(ids[5], loaded, lossy):
+            fail("the round-trip comparator accepted a serializer that drops supplied historical performance")
+        controls["a serializer dropping historical performance rejected"] = True
+        dropped = {**counts, "polarity": {key: tuple(member for member in members if member != ids[0])
+                                          for key, members in counts["polarity"].items()}}
+        if ids[0] not in counts["polarity"][Polarity.POSITIVE.value] or partition_failures(dropped, ids) != ["polarity"]:
+            fail("the decomposition comparator accepted a partition that loses a member")
+        controls["a partition losing a member rejected"] = True
+        if set(counts["members"]) != set(ids) or len(store.join(ids)) != len(ids):
+            fail("a clean join or the members map lost an item")
+        issued = (store.issued_count("EVD"), store.issued_count("RUL"))
+        store.close()
+        reopened = EvidenceStore(path)
+        durable = reopened.evidence_ids() == ids and (reopened.issued_count("EVD"), reopened.issued_count("RUL")) == \
+            issued and reopened.load(ids[5]) == loaded
+        reopened.close()
+        if not durable or issued != (len(ids), 2):
+            fail("the evidence store or its issuers are not durable and separate")
+    return {"classification": "structural_integrity", "items_persisted": len(ids), "polarities": len(Polarity),
+            "confidence_components": len(CONFIDENCE_COMPONENTS), "rule_versions_checked": 3,
+            "recomputations_checked": 1, "count_axes": 4, "mismatches": 0, "controls_rejected": len(controls),
+            "controls": sorted(controls)}
+
+
+def gate_k_evidence_refusals():
+    """Each refusal the WP-E4 contract requires, triggered for real, with its reason checked (ADR-0119 s5)."""
+
+    refused = {}
+
+    def refuses(label, action, errors=(EvidenceModelError, StoreError), reason=""):
+        try:
+            action()
+        except errors as exc:
+            if reason not in str(exc):
+                fail(f"{label} was refused for another reason: {exc}")
+            refused[label] = True
+            return
+        fail(f"not refused: {label}")
+
+    with tempfile.TemporaryDirectory() as folder:
+        path = Path(folder) / "evidence.sqlite"
+        store = EvidenceStore(path)
+        owner = store.entities.persist(_synthetic_subjects()[0])
+        rules = {ProducingSystem.PARASHARI: store.register_rule(_rule_spec(ProducingSystem.PARASHARI)),
+                 ProducingSystem.KP: store.register_rule(_rule_spec(ProducingSystem.KP))}
+        world = _EvidenceWorld(owner, store.entities.load(owner).charts[0].label, rules)
+        rule = world.rules[ProducingSystem.PARASHARI]
+        for label, change, reason in (
+                ("a rule school given as text", {"school": "parashari"}, "ProducingSystem"),
+                ("a rule content hash that is not SHA-256", {"content_hash": "C" * 64}, "SHA-256"),
+                ("a rule with no knowledge snapshot hash", {"knowledge_snapshot_hash": ""}, "SHA-256"),
+                ("a rule with no declared strength", {"declared_strength": " "}, "declared_strength"),
+                ("a real rule registration", {"synthetic_reference": False}, "synthetic structural references"),
+                ("a non-synthetic rule", {"data_class": "real"}, "synthetic")):
+            refuses(label, lambda change=change: dataclasses.replace(_rule_spec(ProducingSystem.PARASHARI), **change),
+                    reason=reason)
+        for key in ("statement", "condition", "apply"):
+            planted = rule_to_record(rule)
+            planted["rule_version"][key] = "planted"
+            refuses(f"rule {key} in a rule-version record", lambda planted=planted: rule_from_record(planted),
+                    reason="refused")
+        refuses("a rule version changing its school", lambda: store.register_rule_version(
+            rule.rule, _rule_spec(ProducingSystem.KP)), reason="school")
+        for label, change, reason in (
+                ("evidence with no entity", {"entity": None}, "ENT entity"),
+                ("evidence with question linkage", {"question": "planted"}, "question linkage"),
+                ("evidence with no rule", {"rule": None}, "rule cannot be named"),
+                ("evidence with measured reliability", {"measured_reliability": "planted"}, "measured reliability"),
+                ("evidence with no lineage", {"lineage": None}, "lineage"),
+                ("evidence with no chart reference", {"chart": None}, "chart"),
+                ("evidence with no timing", {"timing": None}, "timing"),
+                ("evidence with an unknown polarity", {"polarity": "mixed"}, "Polarity"),
+                ("non-synthetic evidence", {"data_class": "real"}, "synthetic")):
+            refuses(label, lambda change=change: world.item(**change), reason=reason)
+        refuses("a profile name instead of provenance", lambda: CalculatedInput(fact="Moon", provenance="parashari"),
+                reason="profile name alone")
+        refuses("a later-phase confidence component", lambda: Confidence(**{
+            name: (Supplied(value="x", provenance=PROVENANCE) if name == "timing_convergence" else None)
+            for name in CONFIDENCE_COMPONENTS}), reason="later-phase")
+        refuses("performance with no sample size", lambda: Performance(value="0", sample_size=0,
+                                                                         provenance=PROVENANCE), reason="sample size")
+        refuses("a correlated relationship", lambda: Relationship(
+            EvidenceId.from_number(1), EvidenceId.from_number(2), DependencyClass.CORRELATED, False, "planted"),
+            reason="CORRELATED")
+        refuses("an unregistered rule version", lambda: store.persist(world.item(
+            rule=RuleReference(rule=rule.rule, version=9))), reason="not registered")
+        refuses("a rule from another system", lambda: store.persist(world.item(
+            rule=RuleReference(rule=world.rules[ProducingSystem.KP].rule, version=1))), reason="isolated")
+        refuses("a strength other than the rule's", lambda: store.persist(world.item(declared_strength="planted")),
+                reason="declared strength")
+        refuses("a chart the entity does not have", lambda: store.persist(world.item(
+            chart=ChartReference(entity_revision=1, chart_label="planted"))), reason="is not a chart")
+        refuses("a derivation link to no item", lambda: store.persist(world.item(
+            derived_from=(EvidenceId.from_number(LAST_TEST),))), reason="no such evidence")
+        first = store.persist(world.item())
+        second = store.persist(world.item(ProducingSystem.KP, facts=("Sun longitude",)))
+        store.relate(first, second)
+        for field, value in sorted(PROVENANCE_VARIANTS.items()):
+            other = dataclasses.replace(CALC, **{field: value})
+            mismatched = store.persist(world.item(ProducingSystem.KP, facts=(f"{field} probe",),
+                                                  lineage=world.lineage((f"{field} probe",), provenance=other)))
+            refuses(f"a join differing only in {field}", lambda mismatched=mismatched: store.join([first, mismatched]),
+                    reason=f"differs in {field};")
+            # CEO HOLD on PR #54, item 2: relating is a join and goes through the same rule.
+            refuses(f"a relationship differing only in {field}",
+                    lambda mismatched=mismatched: store.relate(first, mismatched),
+                    reason=f"differ in calculation provenance ({field})")
+        # A persisted relationship joining incompatible items is refused when read, however it was written. Each
+        # is planted in its own store, so the refusal names exactly the planted field.
+        for field in ("profile_name", "time_basis"):
+            separate = EvidenceStore(Path(folder) / f"planted_{field}.sqlite")
+            entity = separate.entities.persist(_synthetic_subjects()[0])
+            planted_rules = {system: separate.register_rule(_rule_spec(system))
+                             for system in (ProducingSystem.PARASHARI, ProducingSystem.KP)}
+            planted_world = _EvidenceWorld(entity, separate.entities.load(entity).charts[0].label, planted_rules)
+            left = separate.persist(planted_world.item())
+            right = separate.persist(planted_world.item(ProducingSystem.KP, lineage=planted_world.lineage(
+                ("Sun longitude",), provenance=dataclasses.replace(CALC, **{field: PROVENANCE_VARIANTS[field]}))))
+            planted = relationship_to_record(Relationship(left, right, DependencyClass.INDEPENDENT, False, "planted"))
+            separate._db.execute("INSERT INTO evidence_relationships (first_id, second_id, payload) VALUES (?, ?, ?)",
+                                 (left.value, right.value, json.dumps(planted)))
+            refuses(f"reading a persisted relationship differing in {field}", separate.relationships,
+                    reason=f"differ in calculation provenance ({field})")
+            separate.close()
+        record = item_to_record(first, store.load(first))
+        for key in ("schema", "id"):
+            planted = json.loads(json.dumps(record))
+            planted.pop(key)
+            refuses(f"an evidence record with no {key}", lambda planted=planted: item_from_record(planted),
+                    reason="schema version and EVD identity")
+        for path in (("evidence",), ("evidence", "lineage"), ("evidence", "confidence")):
+            planted = json.loads(json.dumps(record))
+            node = planted
+            for key in path:
+                node = node[key]
+            node["score"] = 1
+            refuses(f"an analytical key in {'.'.join(path)}", lambda planted=planted: item_from_record(planted),
+                    reason="refused")
+        for table in ("rule_versions", "evidence_items", "evidence_relationships"):
+            if not store._db.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]:
+                fail(f"{table} is empty, so a refused update or delete of it would prove nothing")
+            for verb, sql in (("update", f"UPDATE {table} SET payload = payload"), ("delete", f"DELETE FROM {table}")):
+                refuses(f"{verb} {table}", lambda sql=sql: store._db.execute(sql), (sqlite3.DatabaseError,),
+                        reason="append-only")
+        store.close()
+    return {"classification": "negative_control", "refusals_verified": len(refused), "refused": sorted(refused)}
+
+
+def gate_l_relationships_and_provenance():
+    """Relationships from recorded structure, and provenance mismatch on every field; each comparator rejects
+    planted wrong ones that are wrong by construction (ADR-0119 AC11, AC12; the ADR-0118 standard)."""
+
+    with tempfile.TemporaryDirectory() as folder:
+        path = Path(folder) / "evidence.sqlite"
+        store = EvidenceStore(path)
+        owner = store.entities.persist(_synthetic_subjects()[0])
+        rules = {ProducingSystem.PARASHARI: store.register_rule(_rule_spec(ProducingSystem.PARASHARI)),
+                 ProducingSystem.KP: store.register_rule(_rule_spec(ProducingSystem.KP))}
+        world = _EvidenceWorld(owner, store.entities.load(owner).charts[0].label, rules)
+        kp = ProducingSystem.KP
+        anchor = store.persist(world.item(facts=("Moon longitude",)))
+        child = store.persist(world.item(kp, facts=("Sun longitude",), derived_from=(anchor,)))
+        sharing = store.persist(world.item(kp, facts=("Moon longitude",)))
+        left = store.persist(world.item(facts=("Saturn",), derived_from=(anchor,)))
+        right = store.persist(world.item(kp, facts=("Rahu",), derived_from=(anchor,)))
+        independent = store.persist(world.item(kp, facts=("Venus",)))
+        missing = store.persist(world.item(kp, facts=("Mars",), lineage=world.lineage(("Mars",),
+                                                                                     derivations_complete=False)))
+        incomplete = store.persist(world.item(kp, facts=("Mercury",), lineage=world.lineage(("Mercury",),
+                                                                                           inputs_complete=False)))
+        unverified_root = store.persist(world.item(kp, facts=("Ketu",), lineage=world.lineage(
+            ("Ketu",), derivations_complete=False)))
+        unverified = store.persist(world.item(kp, facts=("Jupiter",), derived_from=(unverified_root,)))
+        same_system = store.persist(world.item(facts=("Lagna",)))
+        # CEO HOLD on PR #54, item 1: ancestral inputs and their completeness are part of an item's lineage.
+        moon_ancestor = store.persist(world.item(kp, facts=("Moon longitude",)))
+        ancestral_sharer = store.persist(world.item(kp, facts=("Mercury longitude",), derived_from=(moon_ancestor,)))
+        open_ancestor = store.persist(world.item(kp, facts=("Neptune",), lineage=world.lineage(
+            ("Neptune",), inputs_complete=False)))
+        ancestral_incomplete = store.persist(world.item(kp, facts=("Uranus",), derived_from=(open_ancestor,)))
+        expected = {
+            "a recorded derivation link": ((anchor, child), DependencyClass.DERIVED),
+            "a shared input": ((anchor, sharing), DependencyClass.SHARED_ORIGIN),
+            "a shared ancestor": ((left, right), DependencyClass.SHARED_ORIGIN),
+            "positive recorded evidence": ((anchor, independent), DependencyClass.INDEPENDENT),
+            "a missing link": ((anchor, missing), DependencyClass.UNKNOWN),
+            "incomplete lineage": ((anchor, incomplete), DependencyClass.UNKNOWN),
+            "an unverified derivation path": ((anchor, unverified), DependencyClass.UNKNOWN),
+            "the same producing system": ((anchor, same_system), DependencyClass.UNKNOWN),
+            "an ancestor sharing an input": ((anchor, ancestral_sharer), DependencyClass.SHARED_ORIGIN),
+            "an ancestor with incomplete inputs": ((anchor, ancestral_incomplete), DependencyClass.UNKNOWN),
+            "a derivation link despite incomplete ancestry": ((open_ancestor, ancestral_incomplete),
+                                                              DependencyClass.DERIVED),
+        }
+
+        def mismatches(classify):
+            return [label for label, (pair, wanted) in expected.items() if classify(*pair) is not wanted]
+
+        real = lambda first, second: store.classify(first, second).dependency
+        if mismatches(real):
+            fail(f"the classification disagrees with the recorded structure: {mismatches(real)}")
+        for pair, _wanted in expected.values():
+            store.relate(*pair)
+        counts = store.relationship_counts()
+        if set(counts["unknown"]) & set(counts["independent"]) or len(counts["independent"]) != 1 or \
+                counts["correlated"]:
+            fail("an UNKNOWN or CORRELATED relationship was counted as INDEPENDENT")
+        ancestral_pairs = {expected["an ancestor sharing an input"][0], expected["an ancestor with incomplete inputs"][0]}
+        planted_classifiers = {
+            "every pair independent": lambda first, second: DependencyClass.INDEPENDENT,
+            "unknown treated as independent": lambda first, second: (
+                DependencyClass.INDEPENDENT if real(first, second) is DependencyClass.UNKNOWN else real(first, second)),
+            "derivation links ignored": lambda first, second: (
+                DependencyClass.UNKNOWN if real(first, second) is DependencyClass.DERIVED else real(first, second)),
+            "ancestral lineage ignored": lambda first, second: (
+                DependencyClass.INDEPENDENT if (first, second) in ancestral_pairs else real(first, second)),
+            "shared origin unrecorded": lambda first, second: (
+                DependencyClass.INDEPENDENT if real(first, second) is DependencyClass.SHARED_ORIGIN
+                else real(first, second)),
+        }
+        controls = {}
+        for label, classify in planted_classifiers.items():
+            if not mismatches(classify):
+                fail(f"the relationship check accepted a planted classifier: {label}")
+            controls[f"planted classifier rejected: {label}"] = True
+        for field, value in sorted(PROVENANCE_VARIANTS.items()):
+            other = dataclasses.replace(CALC, **{field: value})
+            if provenance_differences(CALC, other) != (field,):
+                fail(f"the provenance comparison missed or misnamed {field}")
+            ignoring = lambda first, second, field=field: tuple(
+                name for name in provenance_differences(first, second) if name != field)
+            if ignoring(CALC, other) == provenance_differences(CALC, other):
+                fail(f"a comparator ignoring {field} was not distinguishable from the real one")
+            controls[f"planted comparator ignoring {field} rejected"] = True
+        if provenance_differences(CALC, dataclasses.replace(CALC)) != ():
+            fail("identical provenance was reported as different")
+        store.close()
+    return {"classification": "negative_control", "relationship_cases": len(expected),
+            "provenance_fields": len(PROVENANCE_VARIANTS), "controls_rejected": len(controls),
+            "controls": sorted(controls)}
+
+
 def main():
     tee = support.start_transcript()
     preconditions = support.preflight()
@@ -904,19 +1271,24 @@ def main():
         "G_ledger_integrity": gate_g_ledger_integrity(),
         "H_ledger_refusals": gate_h_ledger_refusals(),
         "I_holdout_leakage": gate_i_holdout_leakage(),
+        "J_evidence_integrity": gate_j_evidence_integrity(),
+        "K_evidence_refusals": gate_k_evidence_refusals(),
+        "L_relationships_and_provenance": gate_l_relationships_and_provenance(),
     }
     report = {
         "schema": "evidence_foundations_v1_certification",
-        "adr": "ADR-0115 s4; ADR-0116 s4",
+        "adr": "ADR-0115 s4; ADR-0116 s4; ADR-0119 s3, s5",
         "date": str(date.today()),
         "scope": ("Structural certification of the EVIDENCE foundations: the H0 entity model, append-only entity store "
                   "and ENT issuer (ADR-0114 WP-E1), and the H1 event model, append-only event store, separate "
                   "confirmation records, EVR issuer and seeded event-class vocabulary (ADR-0115 WP-E2), and the H2 "
                   "historical ledger, protected holdouts, pre-registered protocols and purpose-declared access log "
-                  "(ADR-0116 WP-E3)."),
+                  "(ADR-0116 WP-E3), and the H4 evidence model, append-only evidence store, EVD and RUL issuers, "
+                  "provenance-checked joins, decomposable aggregates and structural relationship records "
+                  "(ADR-0119 WP-E4)."),
         "reference": {
-            "structure": "the model contracts of ADR-0114 s3, ADR-0115 s5 and ADR-0116 s5, exercised on synthetic "
-                         "records",
+            "structure": "the model contracts of ADR-0114 s3, ADR-0115 s5, ADR-0116 s5 and ADR-0119 s5, exercised on "
+                         "synthetic records",
             "event_classes": f"{REGISTRY_PATH} s3, read by this runner independently of the code",
         },
         "gates": gates,
@@ -935,7 +1307,17 @@ def main():
             "without a purpose and without a log entry, and no such read can be detected here",
             "the store draws the holdout seed and forbids refreezing any frozen event, but cannot stop a caller "
             "recording near-duplicate events to build a new eligible set",
-            "no TEST record, performance measurement or validation-run result is certified: they need H4 and H5",
+            "no TEST record, performance measurement or validation-run result is certified: they need H5 and rule "
+            "application",
+            "rule-version references are synthetic structural references: not proof of registration or validation "
+            "in the future rule registry, and they authorize no interpretation",
+            "no rule is applied and no chart is interpreted: evidence items are synthetic records exercising the model",
+            "confidence components and historical performance are carried as supplied or absent, never computed; "
+            "measured reliability, cross-method and timing convergence are absent",
+            "relationships are classified only from each item's own recorded inputs, derivation links and completeness "
+            "statements; no convergence count or bound is computed, and CORRELATED is never assigned",
+            "the store cannot verify that a producer's completeness statements are true; it only refuses to call a "
+            "pair INDEPENDENT without them",
         ],
         "environment": {"python": sys.version.split()[0]},
         "preconditions": preconditions,

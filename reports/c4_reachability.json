@@ -1188,6 +1188,237 @@
    "file": "engine/evidence/events.py",
    "status": "IN_USE_COVERED"
   },
+  "engine.evidence.evidence.provenance_differences": {
+   "caller_count": 3,
+   "callers": [
+    "engine.evidence.evidence.Lineage.__post_init__",
+    "engine.evidence.evidence_store.EvidenceStore._compatible",
+    "engine.evidence.evidence_store.EvidenceStore.join"
+   ],
+   "covered": true,
+   "file": "engine/evidence/evidence.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.evidence_identifiers.EvidenceId.from_number": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.evidence_store.EvidenceStore.persist"
+   ],
+   "covered": true,
+   "file": "engine/evidence/evidence_identifiers.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.evidence_identifiers.EvidenceId.number": {
+   "covered": false,
+   "file": "engine/evidence/evidence_identifiers.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.evidence.evidence_identifiers.RuleId.from_number": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.evidence_store.EvidenceStore.register_rule"
+   ],
+   "covered": true,
+   "file": "engine/evidence/evidence_identifiers.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.evidence_identifiers.RuleId.number": {
+   "covered": false,
+   "file": "engine/evidence/evidence_identifiers.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.evidence.evidence_store.EvidenceStore.classify": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.evidence_store.EvidenceStore.relate"
+   ],
+   "covered": true,
+   "file": "engine/evidence/evidence_store.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.evidence_store.EvidenceStore.close": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.evidence_store.EvidenceStore.__exit__"
+   ],
+   "covered": true,
+   "file": "engine/evidence/evidence_store.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.evidence_store.EvidenceStore.counts": {
+   "covered": true,
+   "file": "engine/evidence/evidence_store.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.evidence.evidence_store.EvidenceStore.evidence_ids": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.evidence_store.EvidenceStore.counts"
+   ],
+   "covered": true,
+   "file": "engine/evidence/evidence_store.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.evidence_store.EvidenceStore.issued_count": {
+   "covered": true,
+   "file": "engine/evidence/evidence_store.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.evidence.evidence_store.EvidenceStore.join": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.evidence_store.EvidenceStore.counts"
+   ],
+   "covered": true,
+   "file": "engine/evidence/evidence_store.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.evidence_store.EvidenceStore.load": {
+   "caller_count": 5,
+   "callers": [
+    "engine.evidence.evidence_store.EvidenceStore._ancestry",
+    "engine.evidence.evidence_store.EvidenceStore._check",
+    "engine.evidence.evidence_store.EvidenceStore.classify",
+    "engine.evidence.evidence_store.EvidenceStore.join",
+    "engine.evidence.evidence_store.EvidenceStore.recomputations"
+   ],
+   "covered": true,
+   "file": "engine/evidence/evidence_store.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.evidence_store.EvidenceStore.persist": {
+   "covered": true,
+   "file": "engine/evidence/evidence_store.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.evidence.evidence_store.EvidenceStore.recomputations": {
+   "covered": true,
+   "file": "engine/evidence/evidence_store.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.evidence.evidence_store.EvidenceStore.register_rule": {
+   "covered": true,
+   "file": "engine/evidence/evidence_store.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.evidence.evidence_store.EvidenceStore.register_rule_version": {
+   "covered": true,
+   "file": "engine/evidence/evidence_store.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.evidence.evidence_store.EvidenceStore.relate": {
+   "covered": true,
+   "file": "engine/evidence/evidence_store.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.evidence.evidence_store.EvidenceStore.relationship_counts": {
+   "covered": true,
+   "file": "engine/evidence/evidence_store.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.evidence.evidence_store.EvidenceStore.relationships": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.evidence_store.EvidenceStore.relationship_counts"
+   ],
+   "covered": true,
+   "file": "engine/evidence/evidence_store.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.evidence_store.EvidenceStore.rule_version": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.evidence_store.EvidenceStore._check"
+   ],
+   "covered": true,
+   "file": "engine/evidence/evidence_store.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.evidence_store.EvidenceStore.rule_versions": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.evidence_store.EvidenceStore.register_rule_version"
+   ],
+   "covered": true,
+   "file": "engine/evidence/evidence_store.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.evidence_store.item_from_record": {
+   "caller_count": 2,
+   "callers": [
+    "engine.evidence.evidence_store.EvidenceStore.load",
+    "engine.evidence.evidence_store.EvidenceStore.persist"
+   ],
+   "covered": true,
+   "exported_by": [
+    "engine/evidence/evidence_store.py:__all__"
+   ],
+   "file": "engine/evidence/evidence_store.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.evidence_store.item_to_record": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.evidence_store.EvidenceStore.persist"
+   ],
+   "covered": true,
+   "exported_by": [
+    "engine/evidence/evidence_store.py:__all__"
+   ],
+   "file": "engine/evidence/evidence_store.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.evidence_store.relationship_from_record": {
+   "caller_count": 2,
+   "callers": [
+    "engine.evidence.evidence_store.EvidenceStore.relate",
+    "engine.evidence.evidence_store.EvidenceStore.relationships"
+   ],
+   "covered": true,
+   "exported_by": [
+    "engine/evidence/evidence_store.py:__all__"
+   ],
+   "file": "engine/evidence/evidence_store.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.evidence_store.relationship_to_record": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.evidence_store.EvidenceStore.relate"
+   ],
+   "covered": true,
+   "exported_by": [
+    "engine/evidence/evidence_store.py:__all__"
+   ],
+   "file": "engine/evidence/evidence_store.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.evidence_store.rule_from_record": {
+   "caller_count": 3,
+   "callers": [
+    "engine.evidence.evidence_store.EvidenceStore._insert_rule",
+    "engine.evidence.evidence_store.EvidenceStore.rule_version",
+    "engine.evidence.evidence_store.EvidenceStore.rule_versions"
+   ],
+   "covered": true,
+   "exported_by": [
+    "engine/evidence/evidence_store.py:__all__"
+   ],
+   "file": "engine/evidence/evidence_store.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.evidence_store.rule_to_record": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.evidence_store.EvidenceStore._insert_rule"
+   ],
+   "covered": true,
+   "exported_by": [
+    "engine/evidence/evidence_store.py:__all__"
+   ],
+   "file": "engine/evidence/evidence_store.py",
+   "status": "IN_USE_COVERED"
+  },
   "engine.evidence.identifiers.EntityId.from_number": {
    "caller_count": 1,
    "callers": [
@@ -2044,8 +2275,8 @@
  },
  "schema": "ace-c4-reachability-v1",
  "summary": {
-  "IN_USE_COVERED": 142,
-  "NOT_IN_USE": 128
+  "IN_USE_COVERED": 159,
+  "NOT_IN_USE": 138
  },
  "universe_exclusions": {
   "engine.main.": "API route handlers: callers and exports, not capabilities",

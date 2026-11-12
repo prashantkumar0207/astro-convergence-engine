@@ -42,6 +42,8 @@ of times and written once, so every rule here optimises for the reader, the diff
 | Decision paper | `DP-\d{3}` | 3 | repository-wide | Decision-paper index | docs/decisions/README.md; ADR-0040 |
 | Entity | `ENT-\d{8}` | 8 | repository-wide; persisted entities only | `engine/evidence/store.py` EntityStore durable counter, transactionally at first persistence; fixtures use isolated stores | ADR-0111; ADR-0114; uniqueness gate `scripts/check_entity_identifiers.py` |
 | Event record | `EVR-\d{8}` | 8 | repository-wide; persisted event records only | `engine/evidence/event_store.py` EventStore's own durable counter, separate from the ENT issuer, transactionally at first persistence; fixtures use isolated stores | ADR-0113 s2 B; ADR-0115 s3; uniqueness gate `scripts/check_event_identifiers.py` |
+| Evidence item | `EVD-\d{10}` | 10 | repository-wide; persisted evidence items only | `engine/evidence/evidence_store.py` EvidenceStore's own durable EVD counter, separate from every other issuer, transactionally at first persistence; fixtures use isolated stores | ADR-0113 s2 B; ADR-0119 AC1; uniqueness gate `scripts/check_evidence_identifiers.py` |
+| Rule | `RUL-\d{6}` | 6 | repository-wide; each version is identified by the pair (RUL identifier, version number) | `engine/evidence/evidence_store.py` EvidenceStore's own durable RUL counter, separate from the EVD counter, at registration; WP-E4 records are synthetic structural references, not proof of registration or validation in the future rule registry | ADR-0113 s2 B; ADR-0119 D1, AC2, AC3; uniqueness gate `scripts/check_evidence_identifiers.py` |
 
 Rules:
 - **Zero-padded, monotone, immutable, never reused** - all families, no exceptions. `DP-NNN` uses three digits as its registered width.

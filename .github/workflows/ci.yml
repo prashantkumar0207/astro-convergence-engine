@@ -473,6 +473,42 @@ jobs:
           fi
           echo "negative controls passed: literal exit $literal, registration exit $naming, seed exit $seed"
 
+      - name: EVD and RUL identifier-family uniqueness (ADR-0113, ADR-0119)
+        run: python scripts/check_evidence_identifiers.py
+
+      - name: Negative control, the EVD and RUL gate must actually fail
+        run: |
+          set +e
+          # Assembled at run time, for the same reason as the identifier probes above.
+          python -c "open('_evd_probe.py','w').write('# planted: ' + 'EVD-' + '0000000001' + chr(10))"
+          git add -N _evd_probe.py
+          python scripts/check_evidence_identifiers.py > /tmp/evd_literal.txt 2>&1
+          evd_literal=$?
+          grep -q 'V2 _evd_probe.py' /tmp/evd_literal.txt || evd_literal=0
+          git rm -q --cached --force _evd_probe.py 2>/dev/null
+          rm -f _evd_probe.py
+          python -c "open('_rul_probe.py','w').write('# planted: ' + 'RUL-' + '000001' + chr(10))"
+          git add -N _rul_probe.py
+          python scripts/check_evidence_identifiers.py > /tmp/rul_literal.txt 2>&1
+          rul_literal=$?
+          grep -q 'V2 _rul_probe.py' /tmp/rul_literal.txt || rul_literal=0
+          git rm -q --cached --force _rul_probe.py 2>/dev/null
+          rm -f _rul_probe.py
+          python -c "t=open('docs/NAMING_STANDARD.md',encoding='utf-8').read(); b=chr(92); old='EVD-'+b+'d{10}'; assert old in t; open('/tmp/evd_naming_probe.md','w',encoding='utf-8').write(t.replace(old, 'EVD-'+b+'d{8}', 1))"
+          python scripts/check_evidence_identifiers.py --naming /tmp/evd_naming_probe.md > /tmp/evd_naming.txt 2>&1
+          evd_naming=$?
+          grep -q 'V1 registered EVD pattern' /tmp/evd_naming.txt || evd_naming=0
+          python -c "t=open('docs/NAMING_STANDARD.md',encoding='utf-8').read(); b=chr(92); old='RUL-'+b+'d{6}'; assert old in t; open('/tmp/rul_naming_probe.md','w',encoding='utf-8').write(t.replace(old, 'RUL-'+b+'d{5}', 1))"
+          python scripts/check_evidence_identifiers.py --naming /tmp/rul_naming_probe.md > /tmp/rul_naming.txt 2>&1
+          rul_naming=$?
+          grep -q 'V1 registered RUL pattern' /tmp/rul_naming.txt || rul_naming=0
+          set -e
+          if [ "$evd_literal" -eq 0 ] || [ "$rul_literal" -eq 0 ] || [ "$evd_naming" -eq 0 ] || [ "$rul_naming" -eq 0 ]; then
+            echo "the EVD and RUL gate did NOT flag a planted violation: $evd_literal $rul_literal $evd_naming $rul_naming"
+            exit 1
+          fi
+          echo "negative controls passed: EVD literal exit $evd_literal, RUL literal exit $rul_literal, EVD registration exit $evd_naming, RUL registration exit $rul_naming"
+
       - name: ADR numbering is unique and monotonic
         run: python scripts/check_adr_numbering.py
 
