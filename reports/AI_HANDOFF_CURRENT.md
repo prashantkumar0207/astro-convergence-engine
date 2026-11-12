@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.46.0 |
+| Version | 9.47.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-11 (PR #54's bounded HOLD closed on review branch `evidence-wp-e4-evidence-model`. Not merged.) |
+| Last updated | 2026-11-12 (WP-E4 merged and CLOSED (`9bf782d`). WP-E5's exit criteria (`ADR-0120`, PROPOSED) on review branch `evidence-wp-e5-criteria`. Not merged.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,18 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-12 - WP-E4 CLOSED; WP-E5 exit criteria proposed (ADR-0120)
+
+**Not merged. No code.**
+
+- **PR #54 merged** as `9bf782d` (parents `9baefe6`, `56df31a`; tree identical to the reviewed head). Post-merge CI
+  `43213469895` passed all four jobs. WP-E4 is CLOSED against `ADR-0119` AC1 to AC20.
+- **The EVIDENCE roadmap** (Q8 s6): entity, event, ledger and evidence models are built; the rule registry and
+  provenance-graph recording remain. EVIDENCE exit is not declared.
+- **WP-E5, the H5 rule registry:** rule records as data in an immutable, hash-pinned, schema-validated snapshot inside
+  `engine/`, failing closed; evidence bound to registered rule versions; no rule applied, no real rules, no LLM path.
+  Five decision points and sixteen exit criteria (`ADR-0120` s5, s6).
 
 ### 2026-11-11 - PR #54 bounded HOLD closed (ADR-0119 AC11, AC12, AC18)
 

@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | **ACCEPTED (`ADR-0062`) - canonical, machine-checkable current-state record.** Regenerate/refresh on every meaningful implementation task, same discipline as `reports/AI_HANDOFF_CURRENT.md`. |
-| Version | 7.46.0 |
+| Version | 7.47.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-11 (**PR #54's bounded HOLD closed on review branch `evidence-wp-e4-evidence-model`. Not merged.**) |
+| Last updated | 2026-11-12 (**WP-E4 merged and CLOSED (`9bf782d`). WP-E5's exit criteria (`ADR-0120`, PROPOSED) on review branch `evidence-wp-e5-criteria`. Not merged.**) |
 | Review cadence | Refresh at the start of a session if stale; not load-bearing if it isn't. |
 
 # ACE execution state
@@ -43,22 +43,22 @@ independently is in these fields plus the pointers they name.
 | Field | Value |
 |---|---|
 | `CURRENT_PHASE` | **EVIDENCE entered** (`ADR-0114`, owner-authorized 2026-11-07, from `main` `90cd0ca`). JATAKA exited (`ADR-0110`). Mandatory CEO checkpoints remain: the evidence model (H4), and phase exit. |
-| `CURRENT_MILESTONE` | **WP-E4 (the H4 evidence model) on a review PR.** Criteria owner-ratified (`ADR-0119`); PR #53 merged as `9baefe6`. |
-| `CURRENT_AUTHORIZED_TASK` | None self-executable beyond the WP-E4 implementation PR, which needs independent CEO review and further owner authorization to merge. |
-| `TASK_OWNER` | CHATGPT (review of the WP-E4 implementation PR); USER (merge authorization). |
-| `STATUS` | WP-E4 review PR, not merged. No certified calculation changed: existing artifacts differ only in volatile fields and `modules_scanned` (214 to 217). `EVIDENCE_FOUNDATIONS_V1` gains gates J, K and L and the `evidence.evidence_model` capability; gates A to I are unchanged. The product contract's canonical text is `specs/PROJECT_CHARTER.md` v1.4.0 (owner-ratified, `ADR-0117` and its addendum); the product-objective definition is CLOSED (`ADR-0118` s2). Neither is restated here. |
-| `LAST_COMPLETED_ACTION` | Closed the CEO's bounded HOLD on PR #54 at `f2ee158`: classification now uses recorded ancestral inputs and their completeness; relating refuses differing provenance, and a persisted relationship joining such items is refused when read; gate J gains invalid-by-construction controls; gate L gains the ancestral cases. |
-| `LAST_COMMIT` (main) | `9baefe65afb56ba89c0f82d83158258072d18c2e` (PR #53 merge; parents `686d89d` and `cc0aae3`). |
-| `LAST_COMMIT` (evidence-wp-e4-evidence-model) | This branch's commits, on top of `9baefe65afb56ba89c0f82d83158258072d18c2e`. |
-| `LAST_CI_RUN` | `43003988781` at `9baefe6`: push to `main`, success on all four jobs. This branch's results are on its review PR. |
-| `LAST_CEO_DECISION` | Bounded HOLD on PR #54 at `f2ee158` (AC11, AC12, AC18). |
-| `NEXT_AUTHORIZED_ACTION` | None self-executable. The WP-E4 PR needs independent CEO review and the owner's merge authorization. Before any prediction implementation, an owner-approved roadmap placement (Q8 disposition). The retirement of `SUPPORT_PATHS_V1` gates H and I needs separate approval. |
-| `WAITING_FOR` | CHATGPT: narrow final review of PR #54. USER: its merge authorization. |
+| `CURRENT_MILESTONE` | **WP-E5 (the H5 interpretation rule registry and its pinned knowledge snapshot) exit criteria on a review PR (`ADR-0120`, PROPOSED).** No implementation yet. WP-E4 CLOSED: PR #54 merged as `9bf782d`. |
+| `CURRENT_AUTHORIZED_TASK` | None self-executable beyond the WP-E5 criteria PR. Implementation starts only after the CEO PASS and the owner's acceptance of `ADR-0120` s4 to s6. |
+| `TASK_OWNER` | CHATGPT (review of the WP-E5 criteria); USER (acceptance of the criteria and decision points). |
+| `STATUS` | WP-E5 criteria on review, not merged. Documentation only. EVIDENCE exit is not declared: the rule registry and provenance-graph recording remain (`ADR-0120` s3). The product contract's canonical text is `specs/PROJECT_CHARTER.md` v1.4.0 (owner-ratified, `ADR-0117` and its addendum); the product-objective definition is CLOSED (`ADR-0118` s2). Neither is restated here. |
+| `LAST_COMPLETED_ACTION` | Merged PR #54 and closed WP-E4 against `ADR-0119` AC1 to AC20 (`ADR-0120` s2); drafted WP-E5's scope, five decision points and sixteen exit criteria. |
+| `LAST_COMMIT` (main) | `9bf782da1955572aff6fd9ca1589ebcec92fc646` (PR #54 merge; parents `9baefe6` and `56df31a`). |
+| `LAST_COMMIT` (evidence-wp-e5-criteria) | This branch's commits, on top of `9bf782da1955572aff6fd9ca1589ebcec92fc646`. |
+| `LAST_CI_RUN` | `43213469895` at `9bf782d`: push to `main`, success on all four jobs. This branch's results are on its review PR. |
+| `LAST_CEO_DECISION` | PASS on PR #54 at `56df31a`, as the owner states. |
+| `NEXT_AUTHORIZED_ACTION` | None self-executable. After the CEO review and the owner's acceptance: WP-E5 implementation against `ADR-0120` s4 and s6. Then provenance-graph recording, and the EVIDENCE exit checkpoint. Before any prediction implementation, an owner-approved roadmap placement. The retirement of `SUPPORT_PATHS_V1` gates H and I needs separate approval. |
+| `WAITING_FOR` | CHATGPT: review of `ADR-0120`'s WP-E5 criteria. USER: acceptance of the criteria and decision points D1 to D5. |
 | `BLOCKER` | None for this delivery. |
-| `CEO_APPROVAL_REQUIRED` | The WP-E4 PR's merge; phase exit. |
-| `CLAUDE_ACTION_REQUIRED` | None until directed. Every relevant specification, milestone and review carries the Charter-compliance statement. |
-| `CHATGPT_ACTION_REQUIRED` | Narrow final review of PR #54. |
-| `USER_ACTION_REQUIRED` | Merge authorization for the WP-E4 PR, after CEO review; a roadmap placement for prediction issuance before its implementation; a separate authorization for the bounded retirement of `SUPPORT_PATHS_V1` gates H and I. |
+| `CEO_APPROVAL_REQUIRED` | The WP-E5 criteria and, later, its merge; the EVIDENCE phase exit checkpoint. |
+| `CLAUDE_ACTION_REQUIRED` | None until the review. Every relevant specification, milestone and review carries the Charter-compliance statement. |
+| `CHATGPT_ACTION_REQUIRED` | Review of the WP-E5 criteria PR. |
+| `USER_ACTION_REQUIRED` | Acceptance of `ADR-0120`'s criteria and decision points; a roadmap placement for prediction issuance before its implementation; a separate authorization for the bounded retirement of `SUPPORT_PATHS_V1` gates H and I. |
 | `HANDOFF_REQUIRED` | None beyond this file and the latest entry in `reports/AI_HANDOFF_CURRENT.md`. |
 
 ## How to independently verify every field above
@@ -79,6 +79,7 @@ exactly as `reports/AI_HANDOFF_CURRENT.md` already requires of itself.
 
 | Version | Date | Change |
 |---|---|---|
+| 7.47.0 | 2026-11-12 | **WP-E4 CLOSED; WP-E5 (the H5 rule registry) criteria proposed** (`ADR-0120`). |
 | 7.46.0 | 2026-11-11 | **PR #54 HOLD closed** (ancestral lineage in classification; provenance compatibility in relating; gate J controls; gate L cases). |
 | 7.45.0 | 2026-11-11 | **WP-E4 implemented and on review** (`ADR-0119`, owner-ratified). |
 | 7.44.0 | 2026-11-11 | **`ADR-0119` owner-ratified** (D1 to D5 option A; AC1 to AC20). |
