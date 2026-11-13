@@ -12221,7 +12221,7 @@ different choice changes only the criteria it names.
 ## ADR-0120 - WP-E4 closed at its merge; work package WP-E5 (the H5 interpretation rule registry and its pinned knowledge snapshot) defined, with its exit criteria fixed before coding (PROPOSED as to s4 to s6)
 
 - **Date:** 2026-11-12
-- **Status:** **ACCEPTED as to s2, on the owner's instruction quoted in s1. PROPOSED as to s4 to s6**, which define WP-E5 for
+- **Status:** **ACCEPTED as to s2, on the owner's instruction quoted in s1, and as to s4 to s6, on the owner's ratifying instruction recorded in the "Ratification of ADR-0120 s4 to s6" sub-entry below.** Only this Status line changed. As drafted: **ACCEPTED as to s2, on the owner's instruction quoted in s1. PROPOSED as to s4 to s6**, which define WP-E5 for
   CEO review before any implementation, and bind only after a CEO PASS and the owner's acceptance. s3 records the roadmap's
   state and decides nothing.
 - **Context:**
@@ -12343,6 +12343,38 @@ choice changes only the criteria it names.
   options, on its own branch, and submitted for review.
 - **Evidence:** merge `9bf782da1955572aff6fd9ca1589ebcec92fc646`; PR #54; head CI `43021834747`; post-merge CI `43213469895`.
   The owner's instruction exists as session input, not as a repository file.
+
+#### Ratification of ADR-0120 s4 to s6: WP-E5 CRITERIA AND DECISION POINTS RATIFIED (2026-11-13)
+
+- **Status:** ACCEPTED. The owner instructed, quoted exactly:
+
+  ```text
+  **ACE OWNER AUTHORIZATION — WP-E5**
+
+  Following independent CEO PASS, I ratify ADR-0120 sections 4–6 at `141ad0693f7ea5641e365c07c177c8170ea93112`, approving D1–D5 option A and fixing AC1–AC16.
+
+  Record ratification without changing the approved normative requirements.
+
+  I authorize merging PR #55 after rechecking HEAD, base, mergeability and successful CI `43216651004`. Use a normal two-parent merge; no squash, rebase, force push or branch deletion.
+
+  Verify the merge SHA, tree, ancestry and post-merge CI.
+
+  Once verified, Claude is authorized to implement WP-E5 against the ratified criteria on a separate branch. Preserve Charter v1.4.0, synthetic-only scope, certified calculations and all exclusions.
+
+  Complete testing, certification and self-audit, then open an implementation PR for independent CEO review. Do not merge that implementation PR without further authorization.
+
+  Report exact SHAs, tests, certification results and demonstrated blockers. No further criteria-review cycle unless a material contradiction emerges.
+  ```
+
+  That instruction is the ratifying act. It covers s4 to s6 as reviewed in PR #55 at
+  `141ad0693f7ea5641e365c07c177c8170ea93112`: option A for D1 to D5, the scope in s4 and AC1 to AC16 in s6. It does not
+  extend to any other text.
+- **Decision:** WP-E5 is implemented against s4 and s6 as written, on a separate branch, and submitted for independent CEO
+  review. Its merge needs further authorization.
+- **Text unchanged:** with its Status line and this sub-entry excluded, this entry hashes to SHA-256 `93549d2a74418a438b300410caba12eb52c62c9ddc7ef8a1317ed96374dc121c` both
+  before and after the ratification.
+- **Evidence:** PR #55 at `141ad0693f7ea5641e365c07c177c8170ea93112`, CI `43216651004` (four jobs passed). The CEO's
+  review and the owner's instruction exist as session input, not as repository files.
 
 ---
 
