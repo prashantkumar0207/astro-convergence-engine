@@ -105,7 +105,8 @@ def test_c3_reads_it_with_its_own_certifier():
     capabilities = [capability["id"] for capability in declarations.ARTIFACT_DECLARATIONS[FILE]["capabilities"]]
     assert capabilities == ["evidence.entity_foundations", "evidence.event_records", "evidence.event_class_seed",
                             "evidence.historical_ledger",  # added by ADR-0116 s4 (WP-E3)
-                            "evidence.evidence_model"]  # added by ADR-0119 s3 (WP-E4)
+                            "evidence.evidence_model",  # added by ADR-0119 s3 (WP-E4)
+                            "evidence.rule_registry"]  # added by ADR-0120 s4 and ADR-0121 (WP-E5)
 
 
 def test_c3_rejects_a_withdrawn_enumeration(corpus, graph):
