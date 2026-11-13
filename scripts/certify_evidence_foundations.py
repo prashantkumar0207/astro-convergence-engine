@@ -1,12 +1,12 @@
-"""EVIDENCE_FOUNDATIONS_V1 CERTIFICATION RUNNER (ADR-0115 s4; ADR-0116 s4; ADR-0119 s3).
+"""EVIDENCE_FOUNDATIONS_V1 CERTIFICATION RUNNER (ADR-0115 s4; ADR-0116 s4; ADR-0119 s3; ADR-0120 s4; ADR-0121).
 
 Regenerates certification/EVIDENCE_FOUNDATIONS_V1_certification.json FROM SCRATCH on every run;
 the stored JSON is never accepted as proof.
 
 STRUCTURAL certification of the EVIDENCE foundations: the H0 entity model and store (ADR-0114),
 the H1 event model, event store and EVR issuer (ADR-0115), the H2 historical ledger and its
-protected holdouts (ADR-0116), and the H4 evidence model, its store and the EVD and RUL issuers
-(ADR-0119). It is NOT astrological-calculation certification and certifies no production analytical input. Every record it uses is synthetic, and
+protected holdouts (ADR-0116), the H4 evidence model, its store and the EVD issuer (ADR-0119), and
+the H5 rule registry, its pinned snapshot and the governed RUL authoring process (ADR-0120, ADR-0121). It is NOT astrological-calculation certification and certifies no production analytical input. Every record it uses is synthetic, and
 nothing it runs scores, weights, fits or computes confidence. It needs no oracle.
 
 Gates:
@@ -31,13 +31,21 @@ Gates:
      including a join differing in each field of the calculation Provenance.
   L  relationships from recorded structure, and provenance comparison on every field; each rejects
      planted wrong comparators that are wrong by construction.
+  M  H5 registry integrity: every published rule verifies, round-trips and is bound to its issued
+     RUL; versions are 1..n; two variants are kept; the authoring process produced the files.
+  N  H5 and RUL refusals: unregistered lookups, malformed or free-text records, non-synthetic rules,
+     and every way the evidence store could issue, reuse, rebind or bypass a RUL identity.
+  O  the snapshot fails closed on each planted violation, even where the pin is made to match.
 
 Exit 0 = PASS, 3 = FAIL.
 """
 
+import ast
 import dataclasses
+import hashlib
 import json
 import re
+import shutil
 import sqlite3
 import sys
 import tempfile
@@ -48,6 +56,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 sys.path.insert(0, str(ROOT / "scripts"))
+import author_rule_registry  # noqa: E402
 import certification_support as support  # noqa: E402
 
 from engine.evidence.entity import (  # noqa: E402
@@ -77,7 +86,8 @@ from engine.evidence.evidence import (  # noqa: E402
     DependencyClass, Domain, EvidenceItem, EvidenceModelError, Lineage, Performance, Polarity, ProducingSystem,
     Relationship, RuleReference, RuleSpec, Supplied, TimingContext, TimingKind, provenance_differences,
 )
-from engine.evidence.evidence_identifiers import EvidenceId  # noqa: E402
+from engine.evidence import rule_registry  # noqa: E402
+from engine.evidence.evidence_identifiers import EvidenceId, RuleId  # noqa: E402
 from engine.evidence.evidence_store import (  # noqa: E402
     EvidenceStore, item_from_record, item_to_record, relationship_to_record, rule_from_record, rule_to_record,
 )
@@ -918,9 +928,15 @@ PROVENANCE_VARIANTS = {"profile_name": "kp_krishnamurti", "ayanamsa_mode": 5, "f
 CERTIFIER_HASH = "c" * 64
 
 
+#: The registry's synthetic fixture rules the H4 gates register (ADR-0121: rules come only from the pinned registry).
+PARASHARI_KEY, KP_KEY = "synthetic.parashari.tenth-lord-in-tenth", "synthetic.kp.tenth-cusp-sublord"
+
+
 def _rule_spec(school, strength="as declared by the synthetic source"):
+    """A RuleSpec for model-level refusals only; it is never registered."""
+
     return RuleSpec(school=school, content_hash=CERTIFIER_HASH, knowledge_snapshot_hash="d" * 64,
-                    declared_strength=strength, provenance=PROVENANCE, data_class=DataClass.SYNTHETIC)
+                    declared_strength=strength, variant="base", provenance=PROVENANCE, data_class=DataClass.SYNTHETIC)
 
 
 class _EvidenceWorld:
@@ -937,7 +953,8 @@ class _EvidenceWorld:
         rule = self.rules[system]
         base = EvidenceItem(
             entity=self.owner, domain=Domain.JATAKA, question=None, producing_system=system,
-            rule=RuleReference(rule=rule.rule, version=rule.version), declared_strength=rule.spec.declared_strength,
+            rule=RuleReference(rule=rule.rule, version=rule.version, variant=rule.spec.variant),
+            declared_strength=rule.spec.declared_strength,
             measured_reliability=None, lineage=self.lineage(facts),
             chart=ChartReference(entity_revision=1, chart_label=self.label),
             chart_context=ChartContext(varga="D1", planets=("Moon",), houses=(10,), signs=(4,), significators=()),
@@ -976,8 +993,10 @@ def gate_j_evidence_integrity():
         path = Path(folder) / "evidence.sqlite"
         store = EvidenceStore(path)
         owner = store.entities.persist(_synthetic_subjects()[0])
-        rules = {ProducingSystem.PARASHARI: store.register_rule(_rule_spec(ProducingSystem.PARASHARI)),
-                 ProducingSystem.KP: store.register_rule(_rule_spec(ProducingSystem.KP))}
+        registry = rule_registry.pinned()
+        rules = {ProducingSystem.PARASHARI: store.register_rule(registry.rule_version(
+                     registry.by_key(PARASHARI_KEY), 1, "base")),
+                 ProducingSystem.KP: store.register_rule(registry.rule_version(registry.by_key(KP_KEY), 1, "base"))}
         world = _EvidenceWorld(owner, store.entities.load(owner).charts[0].label, rules)
         supplied = Supplied(value="as supplied by the synthetic source", provenance=PROVENANCE)
         ids = [store.persist(world.item(polarity=polarity)) for polarity in Polarity]
@@ -988,8 +1007,7 @@ def gate_j_evidence_integrity():
             historical_performance=Performance(value="0", sample_size=12, provenance=PROVENANCE))
         ids.append(store.persist(with_uncertainty))
         ids.append(store.persist(world.item(facts=("Mars longitude",), recomputes=ids[0])))
-        second = store.register_rule_version(world.rules[ProducingSystem.PARASHARI].rule,
-                                             _rule_spec(ProducingSystem.PARASHARI, "revised as declared"))
+        second = store.register_rule(registry.rule_version(world.rules[ProducingSystem.PARASHARI].rule, 2, "base"))
         if [rule.version for rule in store.rule_versions(second.rule)] != [1, 2] or \
                 rule_from_record(rule_to_record(second)) != second:
             fail("a new rule version did not append beside the first, or did not round-trip")
@@ -1026,14 +1044,20 @@ def gate_j_evidence_integrity():
         controls["a partition losing a member rejected"] = True
         if set(counts["members"]) != set(ids) or len(store.join(ids)) != len(ids):
             fail("a clean join or the members map lost an item")
-        issued = (store.issued_count("EVD"), store.issued_count("RUL"))
+        issued = store.issued_count("EVD")
+        recorded = store.rule_versions(second.rule)
+        try:
+            store.issued_count("RUL")
+            fail("the evidence store reported a RUL counter; RUL is issued only by the registry (ADR-0121)")
+        except StoreError:
+            pass
         store.close()
         reopened = EvidenceStore(path)
-        durable = reopened.evidence_ids() == ids and (reopened.issued_count("EVD"), reopened.issued_count("RUL")) == \
-            issued and reopened.load(ids[5]) == loaded
+        durable = reopened.evidence_ids() == ids and reopened.issued_count("EVD") == issued and \
+            reopened.load(ids[5]) == loaded and reopened.rule_versions(second.rule) == recorded
         reopened.close()
-        if not durable or issued != (len(ids), 2):
-            fail("the evidence store or its issuers are not durable and separate")
+        if not durable or issued != len(ids):
+            fail("the evidence store, its EVD issuer or its recorded rule versions are not durable")
     return {"classification": "structural_integrity", "items_persisted": len(ids), "polarities": len(Polarity),
             "confidence_components": len(CONFIDENCE_COMPONENTS), "rule_versions_checked": 3,
             "recomputations_checked": 1, "count_axes": 4, "mismatches": 0, "controls_rejected": len(controls),
@@ -1059,8 +1083,10 @@ def gate_k_evidence_refusals():
         path = Path(folder) / "evidence.sqlite"
         store = EvidenceStore(path)
         owner = store.entities.persist(_synthetic_subjects()[0])
-        rules = {ProducingSystem.PARASHARI: store.register_rule(_rule_spec(ProducingSystem.PARASHARI)),
-                 ProducingSystem.KP: store.register_rule(_rule_spec(ProducingSystem.KP))}
+        registry = rule_registry.pinned()
+        rules = {ProducingSystem.PARASHARI: store.register_rule(registry.rule_version(
+                     registry.by_key(PARASHARI_KEY), 1, "base")),
+                 ProducingSystem.KP: store.register_rule(registry.rule_version(registry.by_key(KP_KEY), 1, "base"))}
         world = _EvidenceWorld(owner, store.entities.load(owner).charts[0].label, rules)
         rule = world.rules[ProducingSystem.PARASHARI]
         for label, change, reason in (
@@ -1077,8 +1103,8 @@ def gate_k_evidence_refusals():
             planted["rule_version"][key] = "planted"
             refuses(f"rule {key} in a rule-version record", lambda planted=planted: rule_from_record(planted),
                     reason="refused")
-        refuses("a rule version changing its school", lambda: store.register_rule_version(
-            rule.rule, _rule_spec(ProducingSystem.KP)), reason="school")
+        refuses("a rule version claiming another school", lambda: store.register_rule(dataclasses.replace(
+            rule, spec=dataclasses.replace(rule.spec, school=ProducingSystem.KP))), reason="school differs")
         for label, change, reason in (
                 ("evidence with no entity", {"entity": None}, "ENT entity"),
                 ("evidence with question linkage", {"question": "planted"}, "question linkage"),
@@ -1101,9 +1127,10 @@ def gate_k_evidence_refusals():
             EvidenceId.from_number(1), EvidenceId.from_number(2), DependencyClass.CORRELATED, False, "planted"),
             reason="CORRELATED")
         refuses("an unregistered rule version", lambda: store.persist(world.item(
-            rule=RuleReference(rule=rule.rule, version=9))), reason="not registered")
+            rule=RuleReference(rule=rule.rule, version=9, variant="base"))), reason="not registered")
         refuses("a rule from another system", lambda: store.persist(world.item(
-            rule=RuleReference(rule=world.rules[ProducingSystem.KP].rule, version=1))), reason="isolated")
+            rule=RuleReference(rule=world.rules[ProducingSystem.KP].rule, version=1, variant="base"))),
+                reason="isolated")
         refuses("a strength other than the rule's", lambda: store.persist(world.item(declared_strength="planted")),
                 reason="declared strength")
         refuses("a chart the entity does not have", lambda: store.persist(world.item(
@@ -1128,8 +1155,10 @@ def gate_k_evidence_refusals():
         for field in ("profile_name", "time_basis"):
             separate = EvidenceStore(Path(folder) / f"planted_{field}.sqlite")
             entity = separate.entities.persist(_synthetic_subjects()[0])
-            planted_rules = {system: separate.register_rule(_rule_spec(system))
-                             for system in (ProducingSystem.PARASHARI, ProducingSystem.KP)}
+            planted_rules = {ProducingSystem.PARASHARI: separate.register_rule(registry.rule_version(
+                                 registry.by_key(PARASHARI_KEY), 1, "base")),
+                             ProducingSystem.KP: separate.register_rule(registry.rule_version(
+                                 registry.by_key(KP_KEY), 1, "base"))}
             planted_world = _EvidenceWorld(entity, separate.entities.load(entity).charts[0].label, planted_rules)
             left = separate.persist(planted_world.item())
             right = separate.persist(planted_world.item(ProducingSystem.KP, lineage=planted_world.lineage(
@@ -1154,7 +1183,7 @@ def gate_k_evidence_refusals():
             node["score"] = 1
             refuses(f"an analytical key in {'.'.join(path)}", lambda planted=planted: item_from_record(planted),
                     reason="refused")
-        for table in ("rule_versions", "evidence_items", "evidence_relationships"):
+        for table in ("registered_rule_versions", "evidence_items", "evidence_relationships"):
             if not store._db.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]:
                 fail(f"{table} is empty, so a refused update or delete of it would prove nothing")
             for verb, sql in (("update", f"UPDATE {table} SET payload = payload"), ("delete", f"DELETE FROM {table}")):
@@ -1172,8 +1201,10 @@ def gate_l_relationships_and_provenance():
         path = Path(folder) / "evidence.sqlite"
         store = EvidenceStore(path)
         owner = store.entities.persist(_synthetic_subjects()[0])
-        rules = {ProducingSystem.PARASHARI: store.register_rule(_rule_spec(ProducingSystem.PARASHARI)),
-                 ProducingSystem.KP: store.register_rule(_rule_spec(ProducingSystem.KP))}
+        registry = rule_registry.pinned()
+        rules = {ProducingSystem.PARASHARI: store.register_rule(registry.rule_version(
+                     registry.by_key(PARASHARI_KEY), 1, "base")),
+                 ProducingSystem.KP: store.register_rule(registry.rule_version(registry.by_key(KP_KEY), 1, "base"))}
         world = _EvidenceWorld(owner, store.entities.load(owner).charts[0].label, rules)
         kp = ProducingSystem.KP
         anchor = store.persist(world.item(facts=("Moon longitude",)))
@@ -1258,6 +1289,240 @@ def gate_l_relationships_and_provenance():
             "controls": sorted(controls)}
 
 
+# ------------------------------------------------------------------ H5 (ADR-0120; ADR-0121)
+
+def gate_m_registry_integrity():
+    """The pinned registry: every published rule verifies, round-trips and is bound to its issued RUL; versions are
+    1..n; variants are named and both kept; the four certification claims are separate; the authoring process
+    produced exactly the committed files (ADR-0120 AC1 to AC5, AC10, AC11; ADR-0121)."""
+
+    registry = rule_registry.pinned()
+    rules = registry.rules()
+    issued = rule_registry.read_history(rule_registry.DATA_DIR / rule_registry.HISTORY_NAME)
+    for item in rules:
+        if rule_registry.rule_from_record({**rule_registry.content_record(item), "content_hash": item.content_hash}) \
+                != item or rule_registry.content_hash(item) != item.content_hash:
+            fail(f"{item.rule} v{item.version} {item.variant!r} does not round-trip or its content hash disagrees")
+        if issued[item.rule.number] != (item.key, item.school):
+            fail(f"{item.rule} is not bound to the identity the allocation history issued")
+        if registry.lookup(item.rule, item.version, item.variant) != item or not item.synthetic or \
+                item.certification.measured_performance is not None:
+            fail(f"{item.rule} v{item.version} {item.variant!r} is not retrievable as published, or is not synthetic")
+        claimed = registry.rule_version(item.rule, item.version, item.variant)
+        if (claimed.spec.content_hash, claimed.spec.knowledge_snapshot_hash, claimed.spec.variant,
+                claimed.spec.school) != (item.content_hash, registry.snapshot_sha256, item.variant, item.school):
+            fail("the evidence store's view of a published rule disagrees with the rule")
+    rule_ids = sorted({item.rule for item in rules})
+    for rule in rule_ids:
+        if list(registry.versions(rule)) != list(range(1, len(registry.versions(rule)) + 1)):
+            fail(f"{rule}'s versions are not 1..n")
+    with_variants = [(rule, version) for rule in rule_ids for version in registry.versions(rule)
+                     if len(registry.variants(rule, version)) > 1]
+    if not with_variants:
+        fail("no published rule carries two named variants, so variant handling is unexercised")
+    if sorted(issued) != list(range(1, len(issued) + 1)) or sorted(item.number for item in rule_ids) != sorted(issued):
+        fail("the published rules and the allocation history disagree")
+    try:
+        history, snapshot, manifest = author_rule_registry.build(rule_registry.DATA_DIR)
+    except SystemExit as exc:
+        fail(f"the authoring process refuses the committed source: {exc}")
+    for name, expected in ((rule_registry.HISTORY_NAME, history), ("snapshot.json", snapshot),
+                           (rule_registry.MANIFEST_NAME, manifest)):
+        if (rule_registry.DATA_DIR / name).read_bytes() != expected:
+            fail(f"{name} is not exactly what the governed authoring process produces")
+    return {"classification": "structural_integrity", "rules_published": len(rule_ids),
+            "rule_versions_published": len({(item.rule, item.version) for item in rules}),
+            "variant_records": len(rules), "rules_with_two_variants": len(with_variants),
+            "schools": len({item.school for item in rules}), "rul_numbers_issued": len(issued),
+            "snapshot_sha256": registry.snapshot_sha256, "mismatches": 0}
+
+
+def gate_n_registry_refusals():
+    """Each refusal WP-E5 and ADR-0121 require, triggered for real, with its reason checked: unregistered lookups,
+    malformed or free-text records, non-synthetic rules, and every way the evidence store could be made to issue,
+    reuse, rebind or bypass a RUL identity (ADR-0120 AC1 to AC4, AC7 to AC11; ADR-0121)."""
+
+    refused = {}
+
+    def refuses(label, action, errors=(rule_registry.RegistryError, StoreError, EvidenceModelError), reason=""):
+        try:
+            action()
+        except errors as exc:
+            if reason not in str(exc):
+                fail(f"{label} was refused for another reason: {exc}")
+            refused[label] = True
+            return
+        fail(f"not refused: {label}")
+
+    registry = rule_registry.pinned()
+    published = registry.rules()[0]
+    first = registry.by_key(PARASHARI_KEY)
+    refuses("a lookup of a RUL number never issued", lambda: registry.lookup(RuleId.from_number(LAST_TEST // 1000), 1,
+                                                                             "base"), reason="is not registered")
+    refuses("a lookup of an unpublished version", lambda: registry.lookup(first, 99, "base"), reason="is not registered")
+    refuses("a lookup with no explicit variant", lambda: registry.lookup(first, 1, None), reason="explicit variant")
+    refuses("a lookup of an unnamed variant", lambda: registry.lookup(first, 1, "default"), reason="is not registered")
+    record = {**rule_registry.content_record(published), "content_hash": published.content_hash}
+    for field in rule_registry.RECORD_FIELDS:
+        planted = {key: value for key, value in record.items() if key != field}
+        refuses(f"a published record missing {field}", lambda planted=planted: rule_registry.rule_from_record(planted),
+                reason="refused")
+    for key in ("rule_text", "llm_output", "code"):
+        refuses(f"free text or code as {key}", lambda key=key: rule_registry.rule_from_record({**record, key: "x"}),
+                reason="refused")
+    for label, change, reason in (
+            ("a rule not marked synthetic", {"synthetic": False}, "synthetic rules only"),
+            ("a rule with an empty citation locator", {"citation": {"source": "s", "locator": " "}}, "citation locator"),
+            ("a condition outside the declared schema", {"condition": {"kind": "eval", "parameters": {}}},
+             "not in the declared schema"),
+            ("a condition parameter of the wrong type",
+             {"condition": {"kind": "planet_in_house", "parameters": {"planet": "Moon", "house": "lambda: 4"}}},
+             "number from 1 to 12"),
+            ("measured performance supplied",
+             {"certification": {**record["certification"], "measured_performance": "0.9"}}, "measured performance"),
+            ("an inferred school", {"school": "inferred"}, "unknown value"),
+            ("a variant not among the known variants", {"variant": "unlisted"}, "known variants")):
+        planted = {**record, **change}
+        refuses(label, lambda planted=planted: rule_registry.rule_from_record(planted), reason=reason)
+    refuses("a content change under an unchanged hash", lambda: rule_registry.rule_from_record(
+        {**record, "statement": "planted"}), reason="content hash does not match")
+    with tempfile.TemporaryDirectory() as folder:
+        store = EvidenceStore(Path(folder) / "evidence.sqlite")
+        good = registry.rule_version(first, 1, "base")
+        store.register_rule(good)
+        for label, change, reason in (("school", {"school": ProducingSystem.KP}, "school differs"),
+                                      ("content hash", {"content_hash": "e" * 64}, "content hash differs"),
+                                      ("snapshot hash", {"knowledge_snapshot_hash": "f" * 64}, "snapshot hash differs"),
+                                      ("declared strength", {"declared_strength": "planted"}, "declared strength"),
+                                      ("variant", {"variant": "reading-a"}, "is not registered")):
+            refuses(f"a rule version claiming another {label}", lambda change=change: store.register_rule(
+                dataclasses.replace(good, spec=dataclasses.replace(good.spec, **change))), reason=reason)
+        refuses("a RUL number the registry never issued", lambda: store.register_rule(dataclasses.replace(
+            good, rule=RuleId.from_number(LAST_TEST // 1000))), reason="is not registered")
+        refuses("a version the registry never published", lambda: store.register_rule(dataclasses.replace(
+            good, version=99)), reason="is not registered")
+        refuses("a RUL identity rebound to another rule", lambda: store.register_rule(dataclasses.replace(
+            registry.rule_version(registry.by_key(KP_KEY), 1, "base"), rule=first)), reason="differs")
+        refuses("a duplicate registration", lambda: store.register_rule(good), reason="already registered")
+        refuses("a free-standing rule spec", lambda: store.register_rule(_rule_spec(ProducingSystem.PARASHARI)),
+                reason="registry's RuleVersion")
+        refuses("the store issuing a RUL number", lambda: store.issued_count("RUL"), reason="issues EVD only")
+        store._db.execute("INSERT INTO registered_rule_versions (rule_id, version, variant, payload) VALUES (?, ?, ?, ?)",
+                          (first.value, 1, "planted", json.dumps(rule_to_record(dataclasses.replace(
+                              good, spec=dataclasses.replace(good.spec, variant="planted", knowledge_snapshot_hash="f" * 64))))))
+        owner = store.entities.persist(_synthetic_subjects()[0])
+        world = _EvidenceWorld(owner, store.entities.load(owner).charts[0].label, {ProducingSystem.PARASHARI: good})
+        refuses("evidence naming a rule from another snapshot", lambda: store.persist(world.item(
+            rule=RuleReference(rule=first, version=1, variant="planted"))), reason="another snapshot")
+        refuses("evidence naming an unrecorded variant", lambda: store.persist(world.item(
+            rule=RuleReference(rule=first, version=1, variant="reading-b"))), reason="is not registered")
+        store.close()
+    return {"classification": "negative_control", "refusals_verified": len(refused), "refused": sorted(refused)}
+
+
+def _rehash(record, **changes):
+    """Apply changes to a published record and recompute its content hash, so only the intended check can fail."""
+
+    record.update(changes)
+    record["content_hash"] = hashlib.sha256(rule_registry.canonical(
+        {key: value for key, value in record.items() if key != "content_hash"})).hexdigest()
+
+
+def gate_o_snapshot_fails_closed():
+    """The loader against planted copies of the pinned snapshot: each violation is wrong by construction and must
+    fail closed for its stated reason (ADR-0120 AC5, AC6; ADR-0121)."""
+
+    controls = {}
+    with tempfile.TemporaryDirectory() as folder:
+        root = Path(folder)
+        pin = rule_registry.PINNED_SNAPSHOT_SHA256
+
+        def planted(name, mutate):
+            target = root / name
+            shutil.copytree(rule_registry.DATA_DIR, target)
+            mutate(target)
+            return target
+
+        def rewrite_json(path, change):
+            data = json.loads(path.read_bytes())
+            change(data)
+            path.write_bytes((json.dumps(data, sort_keys=True, indent=1) + "\n").encode("ascii"))
+
+        def snapshot_change(change):
+            def mutate(target):
+                rewrite_json(target / "snapshot.json", change)
+                digest = hashlib.sha256((target / "snapshot.json").read_bytes()).hexdigest()
+                rewrite_json(target / rule_registry.MANIFEST_NAME, lambda data: data.update(sha256=digest))
+            return mutate
+
+        cases = [
+            ("a changed byte", planted("byte", lambda target: (target / "snapshot.json").write_bytes(
+                (target / "snapshot.json").read_bytes().replace(b"Synthetic fixture", b"Planted fixture", 1))), pin,
+             "do not match the pinned hash"),
+            ("a changed pin", rule_registry.DATA_DIR, "0" * 64, "differs from the pinned hash"),
+            ("a missing snapshot", planted("nosnap", lambda target: (target / "snapshot.json").unlink()), pin,
+             "cannot be read"),
+            ("a missing manifest", planted("noman", lambda target: (target / rule_registry.MANIFEST_NAME).unlink()),
+             pin, "cannot be read"),
+            ("a missing allocation history", planted("nohist", lambda target: (
+                target / rule_registry.HISTORY_NAME).unlink()), pin, "cannot be read"),
+            ("a manifest naming a path outside the snapshot", planted("escape", lambda target: rewrite_json(
+                target / rule_registry.MANIFEST_NAME, lambda data: data.update(snapshot="../knowledge.json"))), pin,
+             "not a snapshot manifest"),
+        ]
+        for label, directory, use_pin, reason in cases:
+            try:
+                rule_registry.load_registry(directory, use_pin)
+            except rule_registry.RegistryError as exc:
+                if reason not in str(exc):
+                    fail(f"{label} failed closed for another reason: {exc}")
+                controls[f"{label} fails closed"] = True
+                continue
+            fail(f"the loader accepted {label}")
+        repinned = [
+            ("a schema violation", snapshot_change(lambda data: data.update(extra=1)), "only its schema's fields"),
+            ("a number never issued", snapshot_change(lambda data: _rehash(data["rules"][0], rule=LAST_TEST // 1000)),
+             "never issued by the authoring process"),
+            ("a version published twice", snapshot_change(lambda data: data["rules"].append(data["rules"][0])),
+             "published twice"),
+            ("versions not 1..n", snapshot_change(lambda data: data.update(rules=data["rules"][1:])),
+             "not 1..n"),
+            ("an identity rebound in the history", lambda target: rewrite_json(
+                target / rule_registry.HISTORY_NAME, lambda data: data["allocations"][2].update(key="planted")),
+             "rebinds it"),
+            ("a number reused in the history", lambda target: rewrite_json(
+                target / rule_registry.HISTORY_NAME, lambda data: data["allocations"][1].update(number=1)),
+             "issued once, in order"),
+        ]
+        for label, mutate, reason in repinned:
+            directory = planted(label.replace(" ", "_"), mutate)
+            digest = json.loads((directory / rule_registry.MANIFEST_NAME).read_bytes())["sha256"]
+            try:
+                rule_registry.load_registry(directory, digest)
+            except rule_registry.RegistryError as exc:
+                if reason not in str(exc):
+                    fail(f"{label} failed closed for another reason: {exc}")
+                controls[f"{label} fails closed, even with a matching pin"] = True
+                continue
+            fail(f"the loader accepted {label}")
+    tree = ast.parse((ROOT / "engine" / "evidence" / "rule_registry.py").read_text(encoding="utf-8"))
+    docstrings = {id(node.body[0].value) for node in ast.walk(tree)
+                  if isinstance(node, (ast.Module, ast.ClassDef, ast.FunctionDef)) and node.body
+                  and isinstance(node.body[0], ast.Expr) and isinstance(node.body[0].value, ast.Constant)}
+    imported = {alias.name for node in ast.walk(tree) if isinstance(node, ast.Import) for alias in node.names} |         {node.module for node in ast.walk(tree) if isinstance(node, ast.ImportFrom) and node.module}
+    reaches = [name for name in imported if name.startswith("engine.knowledge")
+               or name.split(".")[0] in {"openai", "anthropic", "requests", "urllib"}]
+    evaluates = [node.func.id for node in ast.walk(tree) if isinstance(node, ast.Call)
+                 and isinstance(node.func, ast.Name) and node.func.id in {"eval", "exec", "compile", "__import__"}]
+    paths = [node.value for node in ast.walk(tree) if isinstance(node, ast.Constant) and isinstance(node.value, str)
+             and id(node) not in docstrings and re.search(r"knowledge/|knowledge\\|hlkg", node.value)]
+    if reaches or evaluates or paths:
+        fail(f"the registry reaches top-level knowledge, an LLM client or dynamic evaluation: "
+             f"{reaches + evaluates + paths}")
+    controls["no uncontrolled knowledge dependency, LLM client or evaluation in the registry"] = True
+    return {"classification": "negative_control", "controls_rejected": len(controls), "controls": sorted(controls)}
+
+
 def main():
     tee = support.start_transcript()
     preconditions = support.preflight()
@@ -1274,10 +1539,13 @@ def main():
         "J_evidence_integrity": gate_j_evidence_integrity(),
         "K_evidence_refusals": gate_k_evidence_refusals(),
         "L_relationships_and_provenance": gate_l_relationships_and_provenance(),
+        "M_registry_integrity": gate_m_registry_integrity(),
+        "N_registry_refusals": gate_n_registry_refusals(),
+        "O_snapshot_fails_closed": gate_o_snapshot_fails_closed(),
     }
     report = {
         "schema": "evidence_foundations_v1_certification",
-        "adr": "ADR-0115 s4; ADR-0116 s4; ADR-0119 s3, s5",
+        "adr": "ADR-0115 s4; ADR-0116 s4; ADR-0119 s3, s5; ADR-0120 s4, s6; ADR-0121",
         "date": str(date.today()),
         "scope": ("Structural certification of the EVIDENCE foundations: the H0 entity model, append-only entity store "
                   "and ENT issuer (ADR-0114 WP-E1), and the H1 event model, append-only event store, separate "
@@ -1285,10 +1553,11 @@ def main():
                   "historical ledger, protected holdouts, pre-registered protocols and purpose-declared access log "
                   "(ADR-0116 WP-E3), and the H4 evidence model, append-only evidence store, EVD and RUL issuers, "
                   "provenance-checked joins, decomposable aggregates and structural relationship records "
-                  "(ADR-0119 WP-E4)."),
+                  "(ADR-0119 WP-E4), and the H5 interpretation rule registry, its hash-pinned fail-closed snapshot "
+                  "and the governed RUL authoring process (ADR-0120 WP-E5; ADR-0121)."),
         "reference": {
-            "structure": "the model contracts of ADR-0114 s3, ADR-0115 s5, ADR-0116 s5 and ADR-0119 s5, exercised on "
-                         "synthetic records",
+            "structure": "the model contracts of ADR-0114 s3, ADR-0115 s5, ADR-0116 s5, ADR-0119 s5 and ADR-0120 "
+                         "s6, exercised on synthetic records",
             "event_classes": f"{REGISTRY_PATH} s3, read by this runner independently of the code",
         },
         "gates": gates,
@@ -1310,7 +1579,12 @@ def main():
             "no TEST record, performance measurement or validation-run result is certified: they need H5 and rule "
             "application",
             "rule-version references are synthetic structural references: not proof of registration or validation "
-            "in the future rule registry, and they authorize no interpretation",
+            "in a future real-rule registry, and they authorize no interpretation",
+            "every published rule is a synthetic fixture rule: no real rule is transcribed, sourced or attributed, and "
+            "the registry's certification claims are all not_assessed",
+            "no rule condition is evaluated against a chart and no rule is applied; that belongs to INTERPRETATION",
+            "RUL issuance is append-only against the base commit in CI; the gate cannot see allocations made in an "
+            "unreviewed fork that was never merged",
             "no rule is applied and no chart is interpreted: evidence items are synthetic records exercising the model",
             "confidence components and historical performance are carried as supplied or absent, never computed; "
             "measured reliability, cross-method and timing convergence are absent",
