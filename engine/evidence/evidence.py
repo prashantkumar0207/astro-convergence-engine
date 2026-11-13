@@ -2,10 +2,12 @@
 
 - Separation (H4 s2): an evidence item names the rule that produced it, the system it belongs to and
   the full provenance of every calculated input. It never carries a conclusion without its rule.
-- Rule identity (ADR-0119 D1, AC3): a rule-version reference with its school, content hash,
-  knowledge snapshot hash and source-declared strength. WP-E4 references are synthetic structural
-  references only, never proof of registration or validation in the future rule registry, and they
-  authorize no interpretation. No rule text, condition or application logic exists here.
+- Rule identity (ADR-0119 D1, AC3; ADR-0120 D3; ADR-0121): a rule-version reference with its school,
+  explicit variant, content hash, knowledge snapshot hash and source-declared strength. It is the
+  evidence store's view of a rule the pinned registry publishes, and the store admits it only if it
+  matches that published rule exactly. These are synthetic structural references only, never proof
+  of registration or validation in a future real-rule registry, and they authorize no interpretation.
+  No rule text, condition or application logic exists here.
 - Systems (D3): the Charter's systems. Jaimini is added only with its approved specification, and
   CIL only once its framework is reproducibly specified, as the Charter conditions it.
 - Uncertainty (AC7, AC8): the eight confidence components and historical performance are recorded as
@@ -115,12 +117,14 @@ class RuleSpec:
     content_hash: str
     knowledge_snapshot_hash: str
     declared_strength: str
+    variant: str
     provenance: RecordProvenance
     data_class: DataClass
     synthetic_reference: bool = True
 
     def __post_init__(self):
         _member("school", self.school, ProducingSystem)
+        _text("variant", self.variant)
         for name in ("content_hash", "knowledge_snapshot_hash"):
             value = self.__getattribute__(name)
             if not isinstance(value, str) or _HASH.fullmatch(value) is None:
@@ -130,8 +134,8 @@ class RuleSpec:
             raise EvidenceModelError("a rule version records its provenance")
         _synthetic(self.data_class)
         if self.synthetic_reference is not True:
-            raise EvidenceModelError("WP-E4 rule versions are synthetic structural references only; registering a real "
-                                     "rule belongs to the rule registry (ADR-0119 D1, AC3)")
+            raise EvidenceModelError("rule versions are synthetic structural references only; real rules need their own "
+                                     "authorization (ADR-0119 D1, AC3; ADR-0120 D1)")
 
 
 @dataclass(frozen=True, slots=True)
@@ -153,16 +157,18 @@ class RuleVersion:
 
 @dataclass(frozen=True, slots=True)
 class RuleReference:
-    """Which registered rule version an evidence item names."""
+    """Which registered rule version, under which explicit variant, an evidence item names (ADR-0120 D4)."""
 
     rule: RuleId
     version: int
+    variant: str
 
     def __post_init__(self):
         if not isinstance(self.rule, RuleId):
             raise EvidenceModelError("evidence names its rule by its RUL identifier")
         if isinstance(self.version, bool) or not isinstance(self.version, int) or self.version < 1:
             raise EvidenceModelError("evidence names a rule version number from 1")
+        _text("variant", self.variant)
 
 
 @dataclass(frozen=True, slots=True)

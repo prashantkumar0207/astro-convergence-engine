@@ -1,8 +1,13 @@
-"""The append-only evidence store, its rule-version references, and the EVD and RUL issuers (ADR-0119).
+"""The append-only evidence store, its registered rule versions, and the EVD issuer (ADR-0119; ADR-0121).
 
 The store shares one SQLite database with the entity, event and ledger stores, and keeps its own
-tables and its own two counters, one per family. A number is taken in the same transaction that
-writes the record, so a refused write takes none. Triggers refuse every UPDATE and DELETE.
+tables and its own EVD counter. An EVD number is taken in the same transaction that writes the item,
+so a refused write takes none. Triggers refuse every UPDATE and DELETE.
+
+- Rule identity (ADR-0121): the store issues no RUL number. The governed registry authoring process
+  is the only RUL issuer, and the store records a rule version only if it matches, exactly, a rule
+  the pinned registry publishes: RUL identifier, version, school, explicit variant, content hash and
+  snapshot hash. Evidence names only such a registered version, from the pinned snapshot in force.
 
 - Persistence (ADR-0113 s2 E1): an item is immutable. A recomputation is a new item that names the
   one it recomputes; the original stays.
@@ -30,21 +35,25 @@ from engine.evidence.evidence import (
     EvidenceItem, EvidenceModelError, Lineage, Performance, Polarity, ProducingSystem, Relationship, RuleReference,
     RuleSpec, RuleVersion, Supplied, TimingContext, TimingKind, provenance_differences,
 )
-from engine.evidence.evidence_identifiers import EVD_FAMILY, EVD_LAST, RUL_FAMILY, RUL_LAST, EvidenceId, RuleId
+from engine.evidence.evidence_identifiers import EVD_FAMILY, EVD_LAST, EvidenceId, RuleId
+import engine.evidence.rule_registry as rule_registry
 from engine.evidence.identifiers import EntityId
 from engine.evidence.store import EntityStore, StoreError
 from engine.models.provenance import Provenance
 
-SCHEMA_VERSION = "ace-evidence-store-v1"
+#: v2 (ADR-0121): rule versions carry an explicit variant and are recorded, never issued; evidence names a variant.
+#: No v1 store exists outside temporary test databases; a v1 database's tables are left as they are and not read.
+SCHEMA_VERSION = "ace-evidence-store-v2"
 
-_APPEND_ONLY = ("rule_versions", "evidence_items", "evidence_relationships")
+_APPEND_ONLY = ("registered_rule_versions", "evidence_items", "evidence_relationships")
 _SCHEMA = """
 CREATE TABLE IF NOT EXISTS evidence_issuers (family TEXT PRIMARY KEY, last_number INTEGER NOT NULL CHECK (last_number >= 0));
-CREATE TABLE IF NOT EXISTS rule_versions (
+CREATE TABLE IF NOT EXISTS registered_rule_versions (
     rule_id TEXT NOT NULL CHECK (rule_id GLOB 'RUL-[0-9][0-9][0-9][0-9][0-9][0-9]'),
     version INTEGER NOT NULL CHECK (version >= 1),
+    variant TEXT NOT NULL,
     payload TEXT NOT NULL,
-    PRIMARY KEY (rule_id, version)
+    PRIMARY KEY (rule_id, version, variant)
 );
 CREATE TABLE IF NOT EXISTS evidence_items (
     evidence_id TEXT PRIMARY KEY CHECK (evidence_id GLOB 'EVD-[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]'),
@@ -74,7 +83,7 @@ CREATE TRIGGER IF NOT EXISTS evidence_issuers_no_delete BEFORE DELETE ON evidenc
 ITEM_FIELDS = ("entity", "domain", "question", "producing_system", "rule", "declared_strength", "measured_reliability",
                "lineage", "chart", "chart_context", "timing", "polarity", "confidence", "historical_performance",
                "derived_from", "recomputes", "provenance", "data_class")
-RULE_FIELDS = ("rule", "version", "school", "content_hash", "knowledge_snapshot_hash", "declared_strength",
+RULE_FIELDS = ("rule", "version", "school", "content_hash", "knowledge_snapshot_hash", "declared_strength", "variant",
                "synthetic_reference", "provenance", "data_class")
 PROVENANCE_FIELDS = tuple(field for field in Provenance.__dataclass_fields__)
 RELATIONSHIP_FIELDS = ("first", "second", "dependency", "conflicting", "basis")
@@ -122,7 +131,8 @@ def rule_to_record(rule: RuleVersion) -> dict:
     return {"schema": SCHEMA_VERSION, "rule_version": {
         "rule": rule.rule.value, "version": rule.version, "school": spec.school.value,
         "content_hash": spec.content_hash, "knowledge_snapshot_hash": spec.knowledge_snapshot_hash,
-        "declared_strength": spec.declared_strength, "synthetic_reference": spec.synthetic_reference,
+        "declared_strength": spec.declared_strength, "variant": spec.variant,
+        "synthetic_reference": spec.synthetic_reference,
         "provenance": _record_provenance(spec.provenance), "data_class": spec.data_class.value}}
 
 
@@ -132,7 +142,8 @@ def rule_from_record(record: dict) -> RuleVersion:
     data = _exact("a rule version", record["rule_version"], RULE_FIELDS)
     spec = RuleSpec(school=ProducingSystem(data["school"]), content_hash=data["content_hash"],
                     knowledge_snapshot_hash=data["knowledge_snapshot_hash"],
-                    declared_strength=data["declared_strength"], provenance=_record_provenance_from(data["provenance"]),
+                    declared_strength=data["declared_strength"], variant=data["variant"],
+                    provenance=_record_provenance_from(data["provenance"]),
                     data_class=DataClass(data["data_class"]), synthetic_reference=data["synthetic_reference"])
     return RuleVersion(rule=RuleId(data["rule"]), version=data["version"], spec=spec)
 
@@ -148,7 +159,7 @@ def item_to_record(evidence_id: EvidenceId, item: EvidenceItem) -> dict:
         "domain": item.domain.value,
         "question": None,
         "producing_system": item.producing_system.value,
-        "rule": {"rule": item.rule.rule.value, "version": item.rule.version},
+        "rule": {"rule": item.rule.rule.value, "version": item.rule.version, "variant": item.rule.variant},
         "declared_strength": item.declared_strength,
         "measured_reliability": None,
         "lineage": {"inputs": [{"fact": entry.fact, "provenance": _calculation(entry.provenance)}
@@ -184,7 +195,7 @@ def item_from_record(record: dict) -> tuple:
     chart = _exact("chart", data["chart"], ("entity_revision", "chart_label"))
     context = _exact("chart context", data["chart_context"], ("varga", "planets", "houses", "signs", "significators"))
     timing = _exact("timing", data["timing"], ("kind", "label", "start", "end"))
-    rule = _exact("rule reference", data["rule"], ("rule", "version"))
+    rule = _exact("rule reference", data["rule"], ("rule", "version", "variant"))
     confidence = _exact("confidence", data["confidence"], CONFIDENCE_COMPONENTS)
     performance = data["historical_performance"]
     if performance is not None:
@@ -194,7 +205,7 @@ def item_from_record(record: dict) -> tuple:
     item = EvidenceItem(
         entity=EntityId(data["entity"]), domain=Domain(data["domain"]), question=data["question"],
         producing_system=ProducingSystem(data["producing_system"]),
-        rule=RuleReference(rule=RuleId(rule["rule"]), version=rule["version"]),
+        rule=RuleReference(rule=RuleId(rule["rule"]), version=rule["version"], variant=rule["variant"]),
         declared_strength=data["declared_strength"], measured_reliability=data["measured_reliability"],
         lineage=Lineage(inputs=inputs, inputs_complete=lineage["inputs_complete"],
                         derivations_complete=lineage["derivations_complete"]),
@@ -243,15 +254,14 @@ def _conflicting(first: EvidenceItem, second: EvidenceItem) -> bool:
 
 
 class EvidenceStore:
-    """An append-only evidence store over the entity database at `path`, with its own EVD and RUL issuers."""
+    """An append-only evidence store over the entity database at `path`, with its own EVD issuer. It issues no RUL."""
 
     def __init__(self, path: Path | str):
         self.path = Path(path)
         self.entities = EntityStore(self.path)
         self._db = sqlite3.connect(str(self.path), isolation_level=None, timeout=10.0)
         self._db.executescript(_SCHEMA)
-        for family in (EVD_FAMILY, RUL_FAMILY):
-            self._db.execute("INSERT OR IGNORE INTO evidence_issuers (family, last_number) VALUES (?, 0)", (family,))
+        self._db.execute("INSERT OR IGNORE INTO evidence_issuers (family, last_number) VALUES (?, 0)", (EVD_FAMILY,))
 
     def close(self) -> None:
         self._db.close()
@@ -280,46 +290,49 @@ class EvidenceStore:
             raise
         return result
 
-    # ------------------------------------------------------------ rule-version references (synthetic)
+    # ------------------------------------------------------------ registered rule versions (ADR-0121)
 
-    def register_rule(self, spec: RuleSpec) -> RuleVersion:
-        """Issue a RUL number and record version 1. A synthetic structural reference only (ADR-0119 AC3)."""
+    def register_rule(self, claimed: RuleVersion) -> RuleVersion:
+        """Record a rule version the pinned registry publishes. Every field must match the published rule exactly:
+        RUL identifier, version, school, explicit variant, content hash, snapshot hash, declared strength and the
+        synthetic marking. The store issues nothing, and a version is recorded once."""
 
-        if not isinstance(spec, RuleSpec):
-            raise StoreError("a rule version is registered from a RuleSpec")
+        if not isinstance(claimed, RuleVersion):
+            raise StoreError("a rule version is registered from the registry's RuleVersion")
+        try:
+            published = rule_registry.pinned().rule_version(claimed.rule, claimed.version, claimed.spec.variant)
+        except rule_registry.RegistryError as exc:
+            raise StoreError(f"{exc}; the store records only rules the pinned registry publishes (ADR-0121)") from exc
+        for name, mine, theirs in (("school", claimed.spec.school, published.spec.school),
+                                   ("content hash", claimed.spec.content_hash, published.spec.content_hash),
+                                   ("snapshot hash", claimed.spec.knowledge_snapshot_hash,
+                                    published.spec.knowledge_snapshot_hash),
+                                   ("declared strength", claimed.spec.declared_strength,
+                                    published.spec.declared_strength),
+                                   ("synthetic marking", claimed.spec.synthetic_reference,
+                                    published.spec.synthetic_reference)):
+            if mine != theirs:
+                raise StoreError(f"{claimed.rule} v{claimed.version} {claimed.spec.variant!r}: the {name} differs "
+                                 f"from the pinned registry's; the store records only the published rule")
 
         def work():
-            rule = RuleVersion(rule=RuleId.from_number(self._issue(RUL_FAMILY, RUL_LAST)), version=1, spec=spec)
-            self._insert_rule(rule)
-            return rule
+            payload = _encode(rule_to_record(published))
+            rule_from_record(json.loads(payload))
+            try:
+                self._db.execute("INSERT INTO registered_rule_versions (rule_id, version, variant, payload) "
+                                 "VALUES (?, ?, ?, ?)", (published.rule.value, published.version,
+                                                         published.spec.variant, payload))
+            except sqlite3.IntegrityError as exc:
+                raise StoreError(f"{published.rule} v{published.version} {published.spec.variant!r} is already "
+                                 f"registered; a rule version is recorded once") from exc
+            return published
         return self._transaction(work)
-
-    def register_rule_version(self, rule: RuleId, spec: RuleSpec) -> RuleVersion:
-        """Record the next version of an existing rule. Earlier versions stay; the school never changes."""
-
-        if not isinstance(spec, RuleSpec):
-            raise StoreError("a rule version is registered from a RuleSpec")
-
-        def work():
-            versions = self.rule_versions(rule)
-            if spec.school is not versions[-1].spec.school:
-                raise StoreError("a rule's school is never changed by a new version")
-            new = RuleVersion(rule=rule, version=versions[-1].version + 1, spec=spec)
-            self._insert_rule(new)
-            return new
-        return self._transaction(work)
-
-    def _insert_rule(self, rule: RuleVersion) -> None:
-        payload = _encode(rule_to_record(rule))
-        rule_from_record(json.loads(payload))
-        self._db.execute("INSERT INTO rule_versions (rule_id, version, payload) VALUES (?, ?, ?)",
-                         (rule.rule.value, rule.version, payload))
 
     def rule_versions(self, rule: RuleId) -> list:
         if not isinstance(rule, RuleId):
             raise StoreError("rules are addressed by their RUL identifier")
-        rows = self._db.execute("SELECT payload FROM rule_versions WHERE rule_id = ? ORDER BY version",
-                                (rule.value,)).fetchall()
+        rows = self._db.execute("SELECT payload FROM registered_rule_versions WHERE rule_id = ? "
+                                "ORDER BY version, variant", (rule.value,)).fetchall()
         if not rows:
             raise StoreError(f"no such rule: {rule}")
         return [rule_from_record(json.loads(payload)) for (payload,) in rows]
@@ -327,11 +340,12 @@ class EvidenceStore:
     def rule_version(self, reference: RuleReference) -> RuleVersion:
         if not isinstance(reference, RuleReference):
             raise StoreError("a rule version is addressed by a RuleReference")
-        row = self._db.execute("SELECT payload FROM rule_versions WHERE rule_id = ? AND version = ?",
-                               (reference.rule.value, reference.version)).fetchone()
+        row = self._db.execute("SELECT payload FROM registered_rule_versions WHERE rule_id = ? AND version = ? "
+                               "AND variant = ?", (reference.rule.value, reference.version,
+                                                   reference.variant)).fetchone()
         if row is None:
-            raise StoreError(f"{reference.rule} version {reference.version} is not registered; evidence names only "
-                             f"a registered rule version (H4 s4)")
+            raise StoreError(f"{reference.rule} version {reference.version} variant {reference.variant!r} is not "
+                             f"registered; evidence names only a registered rule version (H4 s4)")
         return rule_from_record(json.loads(row[0]))
 
     # ------------------------------------------------------------ evidence items
@@ -356,6 +370,9 @@ class EvidenceStore:
 
     def _check(self, item: EvidenceItem) -> None:
         rule = self.rule_version(item.rule)
+        if rule.spec.knowledge_snapshot_hash != rule_registry.pinned().snapshot_sha256:
+            raise StoreError(f"{item.rule.rule} v{item.rule.version} was registered from another snapshot; new evidence "
+                             f"names only rules of the pinned snapshot in force (ADR-0120 AC8)")
         if item.producing_system is not rule.spec.school:
             raise StoreError(f"a {item.producing_system.value} item cannot name a {rule.spec.school.value} rule; "
                              f"systems stay isolated")
@@ -401,10 +418,10 @@ class EvidenceStore:
             "SELECT evidence_id FROM evidence_items WHERE recomputes = ? ORDER BY evidence_id", (evidence_id.value,))]
 
     def issued_count(self, family: str) -> int:
-        row = self._db.execute("SELECT last_number FROM evidence_issuers WHERE family = ?", (family,)).fetchone()
-        if row is None:
-            raise StoreError(f"this store issues {EVD_FAMILY} and {RUL_FAMILY} only")
-        return row[0]
+        if family != EVD_FAMILY:
+            raise StoreError(f"this store issues {EVD_FAMILY} only; RUL is issued by the rule registry's authoring "
+                             f"process (ADR-0121)")
+        return self._db.execute("SELECT last_number FROM evidence_issuers WHERE family = ?", (family,)).fetchone()[0]
 
     # ------------------------------------------------------------ joins and decomposable aggregates
 

@@ -6,9 +6,10 @@ Part of the identifier conformance sweep. It fails when:
       width that engine/evidence/evidence_identifiers.py uses, and a scope, issuer and source of law;
   V2  a tracked production file outside the test and governance surface contains a literal EVD or
       RUL identifier, because identifiers come only from a store's issuer;
-  V3  a store given with --store has an identifier outside its pattern, issued numbers that are not
-      unique, not contiguous from 1 or above their issuer's counter, a rule whose versions are not
-      1..n, or an evidence item naming a rule version that does not exist.
+  V3  a store given with --store has an identifier outside its pattern, EVD numbers that are not
+      unique, not contiguous from 1 or above the store's counter, a recorded rule version the pinned
+      registry does not publish (RUL is issued by the registry's authoring process, never by a store,
+      ADR-0121), or an evidence item naming a rule version the store has not recorded.
 
 Exit 0 = PASS, 1 = FAIL. Paths are injectable so the negative controls run the real checks.
 """
@@ -25,8 +26,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+from engine.evidence import rule_registry  # noqa: E402
 from engine.evidence.evidence_identifiers import (  # noqa: E402
-    EVD_FAMILY, EVD_PATTERN, EVD_WIDTH, RUL_FAMILY, RUL_PATTERN, RUL_WIDTH,
+    EVD_FAMILY, EVD_PATTERN, EVD_WIDTH, RUL_FAMILY, RUL_PATTERN, RUL_WIDTH, RuleId,
 )
 
 NAMING = ROOT / "docs" / "NAMING_STANDARD.md"
@@ -84,21 +86,23 @@ def check_store(path: Path) -> list[str]:
     db = sqlite3.connect(f"file:{path}?mode=ro", uri=True)
     try:
         issuers = dict(db.execute("SELECT family, last_number FROM evidence_issuers"))
-        rules = db.execute("SELECT rule_id, version FROM rule_versions ORDER BY rule_id, version").fetchall()
+        rules = db.execute("SELECT rule_id, version, variant FROM registered_rule_versions "
+                           "ORDER BY rule_id, version, variant").fetchall()
         items = db.execute("SELECT evidence_id, payload FROM evidence_items ORDER BY evidence_id").fetchall()
     finally:
         db.close()
-    versions: dict[str, list[int]] = {}
-    for rule_id, version in rules:
+    published = rule_registry.pinned()
+    recorded = set()
+    for rule_id, version, variant in rules:
         if RUL_PATTERN.fullmatch(rule_id) is None:
             errors.append(f"V3 {rule_id!r} is not a RUL identifier")
             continue
-        versions.setdefault(rule_id, []).append(version)
-    for rule_id, seen in versions.items():
-        if seen != list(range(1, len(seen) + 1)):
-            errors.append(f"V3 {rule_id} versions are not 1..n: {seen}")
-    errors += _contiguous(RUL_FAMILY, sorted(int(rule_id[len(RUL_FAMILY) + 1:]) for rule_id in versions),
-                          issuers[RUL_FAMILY])
+        try:
+            published.lookup(RuleId(rule_id), version, variant)
+        except rule_registry.RegistryError:
+            errors.append(f"V3 {rule_id} v{version} {variant!r} is recorded but the pinned registry does not publish "
+                          f"it; a store never issues RUL")
+        recorded.add((rule_id, version, variant))
     numbers = []
     for evidence_id, payload in items:
         if EVD_PATTERN.fullmatch(evidence_id) is None:
@@ -106,8 +110,9 @@ def check_store(path: Path) -> list[str]:
             continue
         numbers.append(int(evidence_id[len(EVD_FAMILY) + 1:]))
         rule = json.loads(payload)["evidence"]["rule"]
-        if rule["version"] not in versions.setdefault(rule["rule"], []):
-            errors.append(f"V3 {evidence_id} names {rule['rule']} version {rule['version']}, which does not exist")
+        if (rule["rule"], rule["version"], rule["variant"]) not in recorded:
+            errors.append(f"V3 {evidence_id} names {rule['rule']} version {rule['version']} {rule['variant']!r}, "
+                          f"which this store has not recorded")
     errors += _contiguous(EVD_FAMILY, sorted(numbers), issuers[EVD_FAMILY])
     return errors
 
