@@ -12218,6 +12218,166 @@ different choice changes only the criteria it names.
 
 ---
 
+## ADR-0120 - WP-E4 closed at its merge; work package WP-E5 (the H5 interpretation rule registry and its pinned knowledge snapshot) defined, with its exit criteria fixed before coding (PROPOSED as to s4 to s6)
+
+- **Date:** 2026-11-12
+- **Status:** **ACCEPTED as to s2, on the owner's instruction quoted in s1, and as to s4 to s6, on the owner's ratifying instruction recorded in the "Ratification of ADR-0120 s4 to s6" sub-entry below.** Only this Status line changed. As drafted: **ACCEPTED as to s2, on the owner's instruction quoted in s1. PROPOSED as to s4 to s6**, which define WP-E5 for
+  CEO review before any implementation, and bind only after a CEO PASS and the owner's acceptance. s3 records the roadmap's
+  state and decides nothing.
+- **Context:**
+  - **Sources, all accepted:** `docs/H5_INTERPRETATION_RULE_REGISTRY_SPEC.md` (s7 controlling), `ADR-0112` (DP-005 D-1 to
+    D-3), `ADR-0113` s2 B and E, `ADR-0030` clause 1, `docs/Q8_CLOSURE_MATRIX.md` s6, s7 and s14, `docs/H4_EVIDENCE_MODEL_SPEC.md`
+    s4, and `specs/PROJECT_CHARTER.md` v1.4.0.
+  - **Built so far:** WP-E1 to WP-E4, all certified in `EVIDENCE_FOUNDATIONS_V1`. WP-E4's `RUL` records are synthetic
+    structural references with no rule content (`ADR-0119` D1, AC3).
+
+### 1. The owner's instruction (exact text)
+
+```text
+**ACE OWNER AUTHORIZATION — MERGE PR #54**
+
+Following independent CEO PASS, I authorize merging PR #54 at exact HEAD `56df31ae0b8b42eb40ed27183966c1cd738d07f7`.
+
+Reverify HEAD, base, mergeability and successful CI `43021834747` immediately before merging.
+
+Use a normal two-parent merge. No squash, rebase, force push or branch deletion.
+
+Verify the merge SHA, tree, ancestry and post-merge CI. If successful, record WP-E4 as CLOSED against ADR-0119 AC1–AC20.
+
+Preserve Charter v1.4.0, certified calculation lineage and all existing scope restrictions.
+
+Then return to the accepted EVIDENCE roadmap. Do not declare EVIDENCE phase exit without its separate CEO checkpoint. Do not implement prediction issuance without the owner's approved roadmap placement.
+
+Report exact SHAs, post-merge checks and the next authorized work package. No additional WP-E4 review cycle unless a demonstrated material defect appears.
+```
+
+### 2. WP-E4 closed
+
+WP-E4 is **CLOSED** against `ADR-0119` AC1 to AC20. PR #54 merged by a normal two-parent merge as
+`9bf782da1955572aff6fd9ca1589ebcec92fc646`, with parents `9baefe65afb56ba89c0f82d83158258072d18c2e` and
+`56df31ae0b8b42eb40ed27183966c1cd738d07f7`. The merge tree (`8895af9`) is identical to the reviewed head's tree, and the
+head branch is kept. Before the merge, the head, base (`9baefe6`), mergeability (MERGEABLE, CLEAN) and head CI
+`43021834747` (four jobs passed) were reverified. Post-merge CI `43213469895` passed all four jobs. The CEO's bounded HOLD at
+`f2ee158` (AC11, AC12, AC18) was closed at `56df31a` before the PASS.
+
+### 3. Where the EVIDENCE roadmap stands (`docs/Q8_CLOSURE_MATRIX.md` s6)
+
+| s6 implementation item | State |
+|---|---|
+| Entity model with specialised subject types | Built: WP-E1 (`ADR-0114`) |
+| Event model | Built: WP-E2 (`ADR-0115`) |
+| Historical event ledger with protected holdout support | Built: WP-E3 (`ADR-0116`) |
+| Evidence model with the relationship classes | Built: WP-E4 (`ADR-0119`) |
+| Interpretation rule registry | **Not built.** WP-E5, below |
+| Provenance graph recording | **Not built.** It needs registered rule nodes first, so it follows WP-E5 |
+
+EVIDENCE exit is **not** declared. It needs both remaining items, the s6 exit criteria and its separate CEO checkpoint.
+Prediction issuance stays without a roadmap placement (`ADR-0117` addendum, revision 1).
+
+### 4. WP-E5 scope
+
+**In scope:**
+1. **The rule record** (H5 s2): `RUL` identity and separately identified versions; school, mandatory and never inferred;
+   a source citation precise enough to check; the rule statement in the source's terms, kept apart from its
+   machine-applicable condition, which is data; activation conditions; claimed effect, polarity and domain; named variants
+   and disagreements; and a certification level that keeps the four H5 s4 claims apart (transcription fidelity, source
+   attribution, applicability conditions, measured performance).
+2. **The pinned knowledge snapshot** (`ADR-0112` D-1): an immutable, archived snapshot holding the registry's rules as data
+   (D-3), inside `engine/` (D-2), with its content hash pinned, its schema validated, any mismatch failing closed, its
+   certification effect stated, and no uncontrolled dependency on top-level `knowledge/` (`ADR-0030` clause 1).
+3. **The registry's API:** load the pinned snapshot, look up a rule version, list variants, and refuse anything
+   unregistered.
+4. **Binding evidence to the registry** (decision point D3).
+5. **Certification:** new gates in `EVIDENCE_FOUNDATIONS_V1`, with C2, C3 and C4 registration.
+
+**Out of scope:** evaluating a condition against a chart or applying a rule (INTERPRETATION, Q8 s7); populating the
+registry with real transcribed rules (D1); measuring performance or computing confidence, scores or weights; provenance
+graph recording (the next package); convergence; prediction; any LLM path; the API; real personal data; any change to a
+certified calculation or its rule tables (`ADR-0112` D-3); and retiring `SUPPORT_PATHS_V1` gates H and I.
+
+### 5. Decision points
+
+| # | Question | Options | Recommendation |
+|---|---|---|---|
+| D1 | What does the first registry contain? | **A.** Synthetic fixture rules only, marked synthetic. **B.** A first real, source-cited school set. | **A.** Real rules need sources, transcription and attribution decisions of their own; Q8 s7 makes "at least one school's rules, each source-cited" an INTERPRETATION prerequisite, so it can be its own package. |
+| D2 | Where and in what form is the snapshot? | **A.** A committed, versioned snapshot file and manifest under `engine/`, loaded only through the registry, its SHA-256 pinned in code and checked on every load. **B.** Read top-level `knowledge/` through a loader. | **A.** B is the uncontrolled dependency `ADR-0030` clause 1 forbids. |
+| D3 | How does WP-E4's evidence relate to the registry? | **A.** `EvidenceStore` registers a rule version only from the pinned registry: its content hash and snapshot hash must match the registry's, so no rule version exists without registered content. **B.** Keep WP-E4's free-standing references beside the registry. | **A.** It meets H4 s4 ("only registered rules from H5 produce evidence") and closes the gap `ADR-0119` D1 left open. WP-E4's references stay valid for existing tests as fixtures. |
+| D4 | How are variants handled? | **A.** Variants are named records; selection is an explicit field, never a default; two variants of one rule are both kept. **B.** One canonical form per rule. | **A**, under `ADR-0113` s2 E6 and H5 s2. No variant is applied in WP-E5. |
+| D5 | Where is the certification? | **A.** New gates in `EVIDENCE_FOUNDATIONS_V1`. **B.** A new artifact. | **A**, as in WP-E3 and WP-E4. |
+
+### 6. Exit criteria (fixed before coding)
+
+Each must be met, with evidence, before WP-E5 is proposed for merge. They assume the recommended options; a different
+choice changes only the criteria it names.
+
+| # | Criterion |
+|---|---|
+| AC1 | **The rule record:** every H5 s2 field is required; school is never inferred; the statement and the machine-applicable condition are separate fields, and the condition is data with a declared schema, never code; a missing or malformed field is refused, one negative test per field. |
+| AC2 | **Versions:** a rule's versions share its `RUL` number and are told apart by version; a new version never rewrites an earlier one; the school never changes between versions. |
+| AC3 | **Certification level:** transcription fidelity, source attribution, applicability conditions and measured performance are four separate fields; none implies another; measured performance is absent in WP-E5. |
+| AC4 | **Variants** (D4 A): named, each a record of its own; selection is explicit; no default variant exists; two variants of one rule are both retrievable. |
+| AC5 | **The snapshot** (D2 A): stored under `engine/` with a manifest; its SHA-256 is pinned in code; loading checks the hash and the schema, and a changed byte, a changed pin, a missing file or a schema violation each fails closed, one negative test each. |
+| AC6 | **No uncontrolled knowledge dependency** (`ADR-0030` clause 1): a structural test shows no module of WP-E5 reads top-level `knowledge/` or any path outside the pinned snapshot. |
+| AC7 | **Refusal of unregistered rules** (H5 s6): a lookup of an unregistered rule or version is refused; nothing outside the registry can be registered. |
+| AC8 | **Evidence bound to the registry** (D3 A): `EvidenceStore` admits a rule version only if its content hash and snapshot hash match the pinned registry; a mismatch, or a rule absent from the registry, is refused. The evidence item's knowledge snapshot hash equals the pinned one. |
+| AC9 | **The LLM boundary** (H5 s3; Q8 s7): generated text cannot introduce a rule: free text is never registrable, and a structural test shows no LLM client or text-to-rule path exists. |
+| AC10 | **Source citation completeness:** every registered rule carries a checkable citation; one without is refused. |
+| AC11 | **Synthetic only** (D1 A): every rule in the WP-E5 snapshot is marked synthetic; a rule not so marked is refused until real population is separately authorized. |
+| AC12 | **Nothing applied** (Q8 s7 belongs to INTERPRETATION): no condition is evaluated against a chart; a structural test shows the registry imports no calculation module. |
+| AC13 | **Certified calculation unchanged** (`ADR-0112` D-3): every certified calculation artifact and rule table is unchanged outside volatile fields and `modules_scanned`. |
+| AC14 | **Certification:** `EVIDENCE_FOUNDATIONS_V1` gains gates for registry integrity, registry refusals and snapshot fail-closed behaviour, each with negative controls that are wrong by construction; gates A to L are unchanged; C2, C3 and C4 pass. |
+| AC15 | **Scope held:** nothing in s4's out-of-scope list is implemented, and no prediction is issued. |
+| AC16 | **Records:** the execution state and handoff are updated, and the merge record states WP-E5's Charter compliance. |
+
+### 7. Charter compliance (`specs/PROJECT_CHARTER.md` v1.4.0)
+
+- **"Complete product contract" s7** (the LLM as explainer): AC9 keeps rules out of generated text.
+- **s5** (provenance): AC1, AC8 and AC10 make every rule named, cited and pinned before evidence can use it.
+- **s6** (learning): a new rule is a new version; nothing learns in WP-E5.
+- **s9** (what stays fixed): AC13 leaves certified calculations and their tables unchanged.
+- **The Q8 disposition:** WP-E5 issues no prediction.
+- No conflict with the Charter was found.
+
+- **Decision:** as s2, and, pending the checkpoint, s4 to s6.
+- **Consequences:** On a CEO PASS and the owner's acceptance, WP-E5 is implemented against s4 and s6 under the chosen
+  options, on its own branch, and submitted for review.
+- **Evidence:** merge `9bf782da1955572aff6fd9ca1589ebcec92fc646`; PR #54; head CI `43021834747`; post-merge CI `43213469895`.
+  The owner's instruction exists as session input, not as a repository file.
+
+#### Ratification of ADR-0120 s4 to s6: WP-E5 CRITERIA AND DECISION POINTS RATIFIED (2026-11-13)
+
+- **Status:** ACCEPTED. The owner instructed, quoted exactly:
+
+  ```text
+  **ACE OWNER AUTHORIZATION — WP-E5**
+
+  Following independent CEO PASS, I ratify ADR-0120 sections 4–6 at `141ad0693f7ea5641e365c07c177c8170ea93112`, approving D1–D5 option A and fixing AC1–AC16.
+
+  Record ratification without changing the approved normative requirements.
+
+  I authorize merging PR #55 after rechecking HEAD, base, mergeability and successful CI `43216651004`. Use a normal two-parent merge; no squash, rebase, force push or branch deletion.
+
+  Verify the merge SHA, tree, ancestry and post-merge CI.
+
+  Once verified, Claude is authorized to implement WP-E5 against the ratified criteria on a separate branch. Preserve Charter v1.4.0, synthetic-only scope, certified calculations and all exclusions.
+
+  Complete testing, certification and self-audit, then open an implementation PR for independent CEO review. Do not merge that implementation PR without further authorization.
+
+  Report exact SHAs, tests, certification results and demonstrated blockers. No further criteria-review cycle unless a material contradiction emerges.
+  ```
+
+  That instruction is the ratifying act. It covers s4 to s6 as reviewed in PR #55 at
+  `141ad0693f7ea5641e365c07c177c8170ea93112`: option A for D1 to D5, the scope in s4 and AC1 to AC16 in s6. It does not
+  extend to any other text.
+- **Decision:** WP-E5 is implemented against s4 and s6 as written, on a separate branch, and submitted for independent CEO
+  review. Its merge needs further authorization.
+- **Text unchanged:** with its Status line and this sub-entry excluded, this entry hashes to SHA-256 `93549d2a74418a438b300410caba12eb52c62c9ddc7ef8a1317ed96374dc121c` both
+  before and after the ratification.
+- **Evidence:** PR #55 at `141ad0693f7ea5641e365c07c177c8170ea93112`, CI `43216651004` (four jobs passed). The CEO's
+  review and the owner's instruction exist as session input, not as repository files.
+
+---
+
 ## ADR template (copy, do not edit above the line)
 
 ## ADR-XXXX - <title>
