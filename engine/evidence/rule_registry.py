@@ -201,7 +201,8 @@ def content_record(rule) -> dict:
     """The published content of a rule version: every field except its content hash, in canonical form."""
 
     certification = rule.certification
-    return {"rule": rule.rule.number, "key": rule.key, "version": rule.version, "variant": rule.variant,
+    identity: RuleId = rule.rule
+    return {"rule": identity.number, "key": rule.key, "version": rule.version, "variant": rule.variant,
             "school": rule.school.value, "citation": {"source": rule.citation.source, "locator": rule.citation.locator},
             "statement": rule.statement, "condition": _condition_record(rule.condition),
             "activation_conditions": [_condition_record(item) for item in rule.activation_conditions],
@@ -368,9 +369,10 @@ def load_registry(directory: Path, pinned_sha256: str) -> RuleRegistry:
     issued = read_history(directory / HISTORY_NAME)
     identities = set()
     for item in rules:
-        if item.rule.number not in issued:
+        rule_id: RuleId = item.rule
+        if rule_id.number not in issued:
             raise RegistryError(f"{item.rule} was never issued by the authoring process; a snapshot never allocates")
-        binding = issued[item.rule.number]
+        binding = issued[rule_id.number]
         if binding != (item.key, item.school):
             raise RegistryError(f"{item.rule} is bound to {binding[0]!r} ({binding[1].value}) in the allocation "
                                 f"history; the snapshot rebinds it to {item.key!r} ({item.school.value})")
