@@ -1216,16 +1216,21 @@
   "engine.evidence.evidence_identifiers.RuleId.from_number": {
    "caller_count": 1,
    "callers": [
-    "engine.evidence.evidence_store.EvidenceStore.register_rule"
+    "engine.evidence.rule_registry.rule_from_record"
    ],
    "covered": true,
    "file": "engine/evidence/evidence_identifiers.py",
    "status": "IN_USE_COVERED"
   },
   "engine.evidence.evidence_identifiers.RuleId.number": {
-   "covered": false,
+   "caller_count": 2,
+   "callers": [
+    "engine.evidence.rule_registry.content_record",
+    "engine.evidence.rule_registry.load_registry"
+   ],
+   "covered": true,
    "file": "engine/evidence/evidence_identifiers.py",
-   "status": "NOT_IN_USE"
+   "status": "IN_USE_COVERED"
   },
   "engine.evidence.evidence_store.EvidenceStore.classify": {
    "caller_count": 1,
@@ -1301,11 +1306,6 @@
    "file": "engine/evidence/evidence_store.py",
    "status": "NOT_IN_USE"
   },
-  "engine.evidence.evidence_store.EvidenceStore.register_rule_version": {
-   "covered": true,
-   "file": "engine/evidence/evidence_store.py",
-   "status": "NOT_IN_USE"
-  },
   "engine.evidence.evidence_store.EvidenceStore.relate": {
    "covered": true,
    "file": "engine/evidence/evidence_store.py",
@@ -1335,13 +1335,9 @@
    "status": "IN_USE_COVERED"
   },
   "engine.evidence.evidence_store.EvidenceStore.rule_versions": {
-   "caller_count": 1,
-   "callers": [
-    "engine.evidence.evidence_store.EvidenceStore.register_rule_version"
-   ],
    "covered": true,
    "file": "engine/evidence/evidence_store.py",
-   "status": "IN_USE_COVERED"
+   "status": "NOT_IN_USE"
   },
   "engine.evidence.evidence_store.item_from_record": {
    "caller_count": 2,
@@ -1396,7 +1392,7 @@
   "engine.evidence.evidence_store.rule_from_record": {
    "caller_count": 3,
    "callers": [
-    "engine.evidence.evidence_store.EvidenceStore._insert_rule",
+    "engine.evidence.evidence_store.EvidenceStore.register_rule",
     "engine.evidence.evidence_store.EvidenceStore.rule_version",
     "engine.evidence.evidence_store.EvidenceStore.rule_versions"
    ],
@@ -1410,7 +1406,7 @@
   "engine.evidence.evidence_store.rule_to_record": {
    "caller_count": 1,
    "callers": [
-    "engine.evidence.evidence_store.EvidenceStore._insert_rule"
+    "engine.evidence.evidence_store.EvidenceStore.register_rule"
    ],
    "covered": true,
    "exported_by": [
@@ -1603,6 +1599,134 @@
    ],
    "covered": true,
    "file": "engine/evidence/ledger.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.rule_registry.RuleRegistry.by_key": {
+   "covered": true,
+   "file": "engine/evidence/rule_registry.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.evidence.rule_registry.RuleRegistry.lookup": {
+   "caller_count": 2,
+   "callers": [
+    "engine.evidence.rule_registry.RuleRegistry.rule_version",
+    "scripts.check_evidence_identifiers.check_store"
+   ],
+   "covered": true,
+   "file": "engine/evidence/rule_registry.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.rule_registry.RuleRegistry.rule_version": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.evidence_store.EvidenceStore.register_rule"
+   ],
+   "covered": true,
+   "file": "engine/evidence/rule_registry.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.rule_registry.RuleRegistry.rules": {
+   "covered": true,
+   "file": "engine/evidence/rule_registry.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.evidence.rule_registry.RuleRegistry.variants": {
+   "covered": true,
+   "file": "engine/evidence/rule_registry.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.evidence.rule_registry.RuleRegistry.versions": {
+   "covered": true,
+   "file": "engine/evidence/rule_registry.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.evidence.rule_registry.canonical": {
+   "caller_count": 2,
+   "callers": [
+    "engine.evidence.rule_registry.content_hash",
+    "scripts.author_rule_registry.publish"
+   ],
+   "covered": true,
+   "exported_by": [
+    "engine/evidence/rule_registry.py:__all__"
+   ],
+   "file": "engine/evidence/rule_registry.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.rule_registry.content_hash": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.rule_registry.RegistryRule.__post_init__"
+   ],
+   "covered": true,
+   "exported_by": [
+    "engine/evidence/rule_registry.py:__all__"
+   ],
+   "file": "engine/evidence/rule_registry.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.rule_registry.content_record": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.rule_registry.content_hash"
+   ],
+   "covered": true,
+   "exported_by": [
+    "engine/evidence/rule_registry.py:__all__"
+   ],
+   "file": "engine/evidence/rule_registry.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.rule_registry.load_registry": {
+   "caller_count": 2,
+   "callers": [
+    "engine.evidence.rule_registry.pinned",
+    "scripts.check_rule_registry.check_load"
+   ],
+   "covered": true,
+   "exported_by": [
+    "engine/evidence/rule_registry.py:__all__"
+   ],
+   "file": "engine/evidence/rule_registry.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.rule_registry.pinned": {
+   "caller_count": 3,
+   "callers": [
+    "engine.evidence.evidence_store.EvidenceStore._check",
+    "engine.evidence.evidence_store.EvidenceStore.register_rule",
+    "scripts.check_evidence_identifiers.check_store"
+   ],
+   "covered": true,
+   "exported_by": [
+    "engine/evidence/rule_registry.py:__all__"
+   ],
+   "file": "engine/evidence/rule_registry.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.rule_registry.read_history": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.rule_registry.load_registry"
+   ],
+   "covered": true,
+   "exported_by": [
+    "engine/evidence/rule_registry.py:__all__"
+   ],
+   "file": "engine/evidence/rule_registry.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.rule_registry.rule_from_record": {
+   "caller_count": 2,
+   "callers": [
+    "engine.evidence.rule_registry.load_registry",
+    "scripts.author_rule_registry.publish"
+   ],
+   "covered": true,
+   "exported_by": [
+    "engine/evidence/rule_registry.py:__all__"
+   ],
+   "file": "engine/evidence/rule_registry.py",
    "status": "IN_USE_COVERED"
   },
   "engine.evidence.store.EntityStore.add_link": {
@@ -2275,8 +2399,8 @@
  },
  "schema": "ace-c4-reachability-v1",
  "summary": {
-  "IN_USE_COVERED": 159,
-  "NOT_IN_USE": 138
+  "IN_USE_COVERED": 168,
+  "NOT_IN_USE": 141
  },
  "universe_exclusions": {
   "engine.main.": "API route handlers: callers and exports, not capabilities",

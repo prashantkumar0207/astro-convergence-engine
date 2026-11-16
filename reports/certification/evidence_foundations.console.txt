@@ -13,5 +13,8 @@ I_holdout_leakage: 10
 J_evidence_integrity: 0
 K_evidence_refusals: 55
 L_relationships_and_provenance: 12
+M_registry_integrity: 0
+N_registry_refusals: 45
+O_snapshot_fails_closed: 13
 archived: certification/EVIDENCE_FOUNDATIONS_V1_certification.json
 RESULT  : PASS
