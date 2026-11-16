@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | **ACCEPTED (`ADR-0062`) - canonical, machine-checkable current-state record.** Regenerate/refresh on every meaningful implementation task, same discipline as `reports/AI_HANDOFF_CURRENT.md`. |
-| Version | 7.49.0 |
+| Version | 7.50.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-16 (**PR #55 merged (`e7aba66`). `ADR-0121` (RUL issuer) recorded; WP-E5, the H5 rule registry, implemented on review branch `evidence-wp-e5-rule-registry`. Not merged.**) |
+| Last updated | 2026-11-16 (**PR #57 merged (`74c75c1`): CI runners pinned to `ubuntu-24.04`. Repaired `main` merged into WP-E5's review branch `evidence-wp-e5-rule-registry`. Not merged.**) |
 | Review cadence | Refresh at the start of a session if stale; not load-bearing if it isn't. |
 
 # ACE execution state
@@ -47,13 +47,13 @@ independently is in these fields plus the pointers they name.
 | `CURRENT_AUTHORIZED_TASK` | None self-executable beyond the WP-E5 implementation PR, which needs independent CEO review and further owner authorization to merge. |
 | `TASK_OWNER` | CHATGPT (review of the WP-E5 implementation PR); USER (merge authorization). |
 | `STATUS` | WP-E5 review PR, not merged. No certified calculation changed: existing artifacts differ only in volatile fields and `modules_scanned` (217 to 218). `EVIDENCE_FOUNDATIONS_V1` gains gates M, N and O and the `evidence.rule_registry` capability; gates A to J and L are unchanged, and K keeps its refusals with three labels renamed. The product contract's canonical text is `specs/PROJECT_CHARTER.md` v1.4.0 (owner-ratified, `ADR-0117` and its addendum); the product-objective definition is CLOSED (`ADR-0118` s2). Neither is restated here. |
-| `LAST_COMPLETED_ACTION` | Merged PR #55; recorded `ADR-0121`; implemented WP-E5 against `ADR-0120` s4 and s6 with `ADR-0121`'s RUL issuance: registry, pinned snapshot, authoring process, issuance gate, store binding, and gates M, N and O. |
-| `LAST_COMMIT` (main) | `e7aba66e8d13d6251fb44495d6a2469b2f7da179` (PR #55 merge; parents `9bf782d` and `e2f0183`). |
-| `LAST_COMMIT` (evidence-wp-e5-rule-registry) | This branch's commits, on top of `e7aba66e8d13d6251fb44495d6a2469b2f7da179`. |
-| `LAST_CI_RUN` | `43394831168` at `e7aba66`: push to `main`, success on all four jobs. This branch's results are on its review PR. |
-| `LAST_CEO_DECISION` | PASS on PR #55; the owner then approved Option A for RUL issuance, with the CEO's five safeguards (`ADR-0121`). |
+| `LAST_COMPLETED_ACTION` | Merged PR #57, pinning CI's three `runs-on` declarations to `ubuntu-24.04` after `ubuntu-latest` moved to `ubuntu-26.04` and the source-built `pyswisseph` drifted on Python 3.12; merged the repaired `main` into the WP-E5 branch with a normal merge commit. |
+| `LAST_COMMIT` (main) | `74c75c143c429cca3b8d81d40620e7446cec2cca` (PR #57 merge, the `ubuntu-24.04` runner pin; parents `e7aba66` and `2ea70e5`). |
+| `LAST_COMMIT` (evidence-wp-e5-rule-registry) | This branch's commits, with `main` `74c75c1` merged in. |
+| `LAST_CI_RUN` | `43912547889` at `74c75c1`: push to `main`, success on all four jobs on `ubuntu-24.04`. This branch's results are on its review PR. |
+| `LAST_CEO_DECISION` | PASS on PR #57 (the CI runner pin); the owner authorized its merge and the integration into PR #56. |
 | `NEXT_AUTHORIZED_ACTION` | None self-executable. The WP-E5 PR needs independent CEO review and the owner's merge authorization. Then provenance-graph recording and the EVIDENCE exit checkpoint. Before any prediction implementation, an owner-approved roadmap placement. The retirement of `SUPPORT_PATHS_V1` gates H and I needs separate approval. |
-| `WAITING_FOR` | CHATGPT: review of the WP-E5 implementation PR. USER: its merge authorization. |
+| `WAITING_FOR` | CHATGPT: review of the WP-E5 implementation PR (#56) at its new HEAD. USER: its merge authorization. |
 | `BLOCKER` | None for this delivery. |
 | `CEO_APPROVAL_REQUIRED` | The WP-E5 PR's merge; the EVIDENCE phase exit checkpoint. |
 | `CLAUDE_ACTION_REQUIRED` | None until directed. Every relevant specification, milestone and review carries the Charter-compliance statement. |
@@ -79,6 +79,7 @@ exactly as `reports/AI_HANDOFF_CURRENT.md` already requires of itself.
 
 | Version | Date | Change |
 |---|---|---|
+| 7.50.0 | 2026-11-16 | **CI runner pin merged (PR #57); WP-E5 branch updated from the repaired `main`.** |
 | 7.49.0 | 2026-11-16 | **WP-E5 implemented and on review; `ADR-0121` recorded** (the registry authoring process is the sole RUL issuer). |
 | 7.48.0 | 2026-11-13 | **`ADR-0120` s4 to s6 owner-ratified** (D1 to D5 option A; AC1 to AC16). |
 | 7.47.0 | 2026-11-12 | **WP-E4 CLOSED; WP-E5 (the H5 rule registry) criteria proposed** (`ADR-0120`). |

@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.49.0 |
+| Version | 9.50.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-16 (PR #55 merged (`e7aba66`). `ADR-0121` recorded; WP-E5, the H5 rule registry, on review branch `evidence-wp-e5-rule-registry`. Not merged.) |
+| Last updated | 2026-11-16 (PR #57 merged (`74c75c1`), pinning CI runners to `ubuntu-24.04`. WP-E5 (PR #56) updated from the repaired `main`. Not merged.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,16 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-16 - CI runners pinned to ubuntu-24.04 (PR #57); WP-E5 branch updated
+
+- **Cause:** GitHub's `ubuntu-latest` moved from `ubuntu-24.04` to `ubuntu-26.04`. The source-built `pyswisseph`
+  2.10.3.2 produced Python 3.12 engine-versus-oracle error values differing at about 1e-6 arcsec, so the drift gate
+  failed on `main` itself (run `43394831168`, attempt 2, at `e7aba66`) and on PR #56 (run `43896938113`).
+- **Fix:** PR #57 changes only the three `runs-on` declarations to `ubuntu-24.04`. No dependency, value, exclusion,
+  tolerance or gate changed. PR CI `43907018755` and post-merge CI `43912547889` passed all four jobs; drift clean.
+- **Merge:** `74c75c1` (parents `e7aba66`, `2ea70e5`; tree identical to the reviewed head).
+- **PR #56:** the repaired `main` merged in with a normal merge commit; history preserved.
 
 ### 2026-11-16 - ADR-0121 recorded; WP-E5, the H5 rule registry, on review (ADR-0120)
 
