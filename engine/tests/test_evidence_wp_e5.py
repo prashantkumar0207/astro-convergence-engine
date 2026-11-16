@@ -333,3 +333,50 @@ def test_ac13_no_certified_rule_table_is_touched():
                               "engine/astrology", "engine/astronomy", "engine/knowledge/data"],
                              capture_output=True, text=True)
     assert changed.returncode != 0 or changed.stdout.strip() == ""
+
+
+def test_ac8_new_evidence_names_only_a_rule_of_the_pinned_snapshot_in_force(store):
+    """A rule version recorded under another snapshot stays historical: new evidence cannot name it (AC8)."""
+
+    from engine.evidence.entity import (ChartCandidate, DataClass, EntityKind, OriginCertainty, OriginMoment, Person,
+                                        RecordProvenance, Shape)
+    from engine.evidence.evidence import (CONFIDENCE_COMPONENTS, CalculatedInput, ChartContext, ChartReference,
+                                          Confidence, Domain, EvidenceItem, Lineage, Polarity, RuleReference,
+                                          TimingContext, TimingKind)
+    from engine.evidence.evidence_store import rule_to_record
+    from engine.models.provenance import Provenance
+
+    prov = RecordProvenance(source="synthetic fixture", method="hand-written test data", schema_version="h5-v1")
+    chart = ChartCandidate(label="natal", origin=OriginMoment(local_datetime="2000-01-01T12:00:00", timezone="UTC",
+                                                              timezone_source="fixture", latitude=10.0, longitude=20.0,
+                                                              precision="minute"),
+                           origin_certainty=OriginCertainty.REPORTED, provenance=prov)
+    entity = store.entities.persist(Person(kind=EntityKind.PERSON, shape=Shape.ORIGIN, charts=(chart,),
+                                           applicable_domains=("career",), applicable_systems=("parashari",),
+                                           provenance=prov, data_class=DataClass.SYNTHETIC))
+    good = PINNED.rule_version(FIRST, 1, "base")
+    store.register_rule(good)
+    stale = dataclasses.replace(good, spec=dataclasses.replace(good.spec, variant="stale",
+                                                               knowledge_snapshot_hash="f" * 64))
+    store._db.execute("INSERT INTO registered_rule_versions (rule_id, version, variant, payload) VALUES (?, ?, ?, ?)",
+                      (FIRST.value, 1, "stale", json.dumps(rule_to_record(stale))))
+    calc = Provenance(profile_name="parashari_lahiri", ayanamsa_mode=1, frame="sidereal", house_system="W",
+                      node_policy="mean", ephemeris_mode="swieph")
+
+    def item(variant):
+        return EvidenceItem(
+            entity=entity, domain=Domain.JATAKA, question=None, producing_system=ProducingSystem.PARASHARI,
+            rule=RuleReference(rule=FIRST, version=1, variant=variant), declared_strength=good.spec.declared_strength,
+            measured_reliability=None,
+            lineage=Lineage(inputs=(CalculatedInput(fact="Moon longitude", provenance=calc),), inputs_complete=True,
+                            derivations_complete=True),
+            chart=ChartReference(entity_revision=1, chart_label="natal"),
+            chart_context=ChartContext(varga="D1", planets=("Moon",), houses=(10,), signs=(4,), significators=()),
+            timing=TimingContext(kind=TimingKind.DASHA, label="synthetic", start="2010-01-01", end="2011-01-01"),
+            polarity=Polarity.POSITIVE, confidence=Confidence(**{name: None for name in CONFIDENCE_COMPONENTS}),
+            historical_performance=None, derived_from=(), recomputes=None, provenance=prov,
+            data_class=DataClass.SYNTHETIC)
+
+    assert store.persist(item("base")).number == 1
+    with pytest.raises(StoreError, match="another snapshot"):
+        store.persist(item("stale"))
