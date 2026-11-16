@@ -47,7 +47,7 @@ on:
 jobs:
   hermetic:
     name: no-oracle gate (network guard on a subset, see header)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
@@ -255,7 +255,7 @@ jobs:
 
   oracle:
     name: oracle gate (PyJHora, hash-pinned)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     # Python 3.11 only: requirements-oracle.lock carries CPython 3.11 linux
     # x86_64 wheel hashes, matching certification/ORACLE_ENVIRONMENT.json
     # exactly. Another interpreter or platform needs its own lock and its own
@@ -383,7 +383,7 @@ jobs:
 
   governance:
     name: governance gate (identifier families, document structure)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
 
