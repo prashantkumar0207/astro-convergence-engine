@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.48.0 |
+| Version | 9.49.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-13 (`ADR-0120` s4 to s6 owner-ratified; PR #55 to be merged; WP-E5 implementation to follow on a separate branch.) |
+| Last updated | 2026-11-16 (PR #55 merged (`e7aba66`). `ADR-0121` recorded; WP-E5, the H5 rule registry, on review branch `evidence-wp-e5-rule-registry`. Not merged.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,19 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-16 - ADR-0121 recorded; WP-E5, the H5 rule registry, on review (ADR-0120)
+
+**Not merged.** PR #55 merged as `e7aba66` (parents `9bf782d`, `e2f0183`); post-merge CI `43394831168` passed.
+
+- **`ADR-0121` (ACCEPTED):** the governed authoring process `scripts/author_rule_registry.py` is the sole RUL issuer,
+  with an append-only allocation history; snapshots publish, never allocate; the store issues EVD only and records a
+  rule version only if it matches the pinned registry exactly. It narrowly supersedes `ADR-0119` AC2's issuer.
+- **WP-E5:** `engine/evidence/rule_registry.py` and its data; the hash-pinned, fail-closed snapshot; the issuance gate
+  `scripts/check_rule_registry.py` against `HEAD^1`, with eight negative controls; gates M (integrity), N (45
+  refusals) and O (13 controls). Four synthetic rules; no real rule, no rule applied, no LLM path.
+- **Self-audit:** thirteen mutants are each caught; one was caught only by the gates, and a test was added for it.
+  C4's static reading exposed ambiguous `.number` receivers, fixed so `coverage_established` stays true.
 
 ### 2026-11-13 - ADR-0120 s4 to s6 owner-ratified (WP-E5 criteria)
 
