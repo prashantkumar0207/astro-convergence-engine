@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.48.0 |
+| Version | 9.51.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-13 (`ADR-0120` s4 to s6 owner-ratified; PR #55 to be merged; WP-E5 implementation to follow on a separate branch.) |
+| Last updated | 2026-11-17 (CEO bounded HOLD on PR #56 closed on the branch: AC7/AC8 exact publication on persist; AC14 Gate M controls. Not merged.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,46 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-17 - PR #56 bounded HOLD corrections (AC7/AC8; AC14)
+
+- **AC7/AC8:** `EvidenceStore._check` (called by `persist()`) now compares the whole recorded rule-version row with
+  what the pinned registry publishes under the identity the evidence names; a matching snapshot hash alone no longer
+  admits a row. The snapshot-in-force refusal stays first, so rows from another snapshot stay readable as history.
+  Regressions in `engine/tests/test_evidence_wp_e5.py`: forged variant, unissued RUL identity, payload naming another
+  published identity than its key, forged content, forged declared strength - all with the pinned snapshot hash;
+  refused writes take no EVD number. Gate N: 45 to 50 refusals.
+- **AC14:** Gate M's checks are now `registry_integrity_failures()`, run against 12 planted violations built around
+  the constructors (each must yield exactly its intended check) and two deliberately broken comparators (14 controls).
+  Gate M also checks that no rule is filed under another rule's identity, a gap the planted misfiling exposed.
+- **Self-audit:** 17 mutants (4 of the persist check, 13 of Gate M's checks and comparators) each caught by the new
+  tests or gates; the unmutated tree passes.
+- **Regenerated:** `EVIDENCE_FOUNDATIONS_V1` (Gates M and N only) and `reports/c4_reachability.json` (two call edges).
+- **Clean Linux verification at `6ebe4c8`:** 24/24 certifiers, drift clean (76 files), all governance steps, 2,004
+  tests passed, 0 skipped. CI results are on PR #56.
+
+### 2026-11-16 - CI runners pinned to ubuntu-24.04 (PR #57); WP-E5 branch updated
+
+- **Cause:** GitHub's `ubuntu-latest` moved from `ubuntu-24.04` to `ubuntu-26.04`. The source-built `pyswisseph`
+  2.10.3.2 produced Python 3.12 engine-versus-oracle error values differing at about 1e-6 arcsec, so the drift gate
+  failed on `main` itself (run `43394831168`, attempt 2, at `e7aba66`) and on PR #56 (run `43896938113`).
+- **Fix:** PR #57 changes only the three `runs-on` declarations to `ubuntu-24.04`. No dependency, value, exclusion,
+  tolerance or gate changed. PR CI `43907018755` and post-merge CI `43912547889` passed all four jobs; drift clean.
+- **Merge:** `74c75c1` (parents `e7aba66`, `2ea70e5`; tree identical to the reviewed head).
+- **PR #56:** the repaired `main` merged in with a normal merge commit; history preserved.
+
+### 2026-11-16 - ADR-0121 recorded; WP-E5, the H5 rule registry, on review (ADR-0120)
+
+**Not merged.** PR #55 merged as `e7aba66` (parents `9bf782d`, `e2f0183`); post-merge CI `43394831168` passed.
+
+- **`ADR-0121` (ACCEPTED):** the governed authoring process `scripts/author_rule_registry.py` is the sole RUL issuer,
+  with an append-only allocation history; snapshots publish, never allocate; the store issues EVD only and records a
+  rule version only if it matches the pinned registry exactly. It narrowly supersedes `ADR-0119` AC2's issuer.
+- **WP-E5:** `engine/evidence/rule_registry.py` and its data; the hash-pinned, fail-closed snapshot; the issuance gate
+  `scripts/check_rule_registry.py` against `HEAD^1`, with eight negative controls; gates M (integrity), N (45
+  refusals) and O (13 controls). Four synthetic rules; no real rule, no rule applied, no LLM path.
+- **Self-audit:** thirteen mutants are each caught; one was caught only by the gates, and a test was added for it.
+  C4's static reading exposed ambiguous `.number` receivers, fixed so `coverage_established` stays true.
 
 ### 2026-11-13 - ADR-0120 s4 to s6 owner-ratified (WP-E5 criteria)
 

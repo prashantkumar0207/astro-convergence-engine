@@ -12378,6 +12378,82 @@ choice changes only the criteria it names.
 
 ---
 
+## ADR-0121 - RUL issuance moves to the governed rule-registry authoring process (Option A), narrowly superseding ADR-0119 AC2's issuer requirement; WP-E5 implemented under ADR-0120
+
+- **Date:** 2026-11-13
+- **Status:** **ACCEPTED, on the owner's instruction quoted in s1.** It supersedes `ADR-0119` AC2 only as to who issues `RUL`
+  numbers, and `ADR-0120` AC14's "gates A to L are unchanged" only as far as gates J, K and L register rules. Every other
+  ratified decision, including the rest of `ADR-0119` and `ADR-0120`, stands. s3 describes the implementation, which is
+  submitted for independent CEO review and merges only on further authorization.
+- **Context:** Before implementing WP-E5, the builder reported a contradiction between two ratified texts. `ADR-0119`
+  AC1 and AC2 make `RUL`'s issuer "a store-owned durable counter", and `docs/NAMING_STANDARD.md` named the
+  `EvidenceStore`'s counter. `ADR-0120` AC1, AC2 and D3 A, with H5 s7, require every registry rule record to carry a stable
+  `RUL` identity and the store to register a rule version "only from the pinned registry". A committed, hash-pinned
+  snapshot cannot take numbers from a store's runtime counter, and two issuers could give two different rules one number.
+  The builder recommended Option A: the registry becomes `RUL`'s only allocation point.
+
+### 1. The owner's instruction (exact text)
+
+```text
+**ACE — OWNER-RATIFIED RUL ARCHITECTURE AND WP-E5 EXECUTION**
+
+The owner has approved **Option A with all five CEO safeguards**.
+
+From verified `main` at `e7aba66e8d13d6251fb44495d6a2469b2f7da179` (recheck before work):
+
+1. Record the owner's decision in a new ACCEPTED ADR narrowly superseding ADR-0119 AC2's RUL issuer requirement. Preserve all other ratified decisions.
+2. Make the governed rule-registry authoring process the sole RUL issuer. Maintain persistent, monotonic, never-reused allocation history. Immutable pinned snapshots publish issued identities; they do not allocate dynamically.
+3. Remove RUL allocation authority from `EvidenceStore`. Validate exact registry-issued ID, version, school, explicit variant, content hash and snapshot hash. Keep EVD allocation unchanged. Preserve historical records and isolate WP-E4 synthetic fixtures.
+4. Update the naming standard, affected code, tests and certification gates. Prove duplicate issuance, reuse, identity rebinding, mismatched versions and registry bypasses are refused.
+5. Implement WP-E5 under ratified ADR-0120 D1–D5 option A and AC1–AC16. Preserve Charter v1.4.0, all exclusions and certified calculations.
+6. Complete tests, negative controls, certification, governance and self-audit. Open an implementation PR for independent CEO review. **Do not merge without further authorization.**
+
+Report exact branch, HEAD, diffs, test and CI results, certification evidence and any demonstrated material blockers.
+
+No additional architecture-review cycle or scope expansion.
+```
+
+The CEO's five safeguards are not a repository file; items 2 to 4 of the instruction above are recorded here as the
+operative requirements.
+
+### 2. Decision
+
+1. **Sole issuer.** The governed authoring process, `scripts/author_rule_registry.py`, is the only `RUL` issuer. It
+   allocates the next number to each newly authored rule key and records it in the persistent, append-only
+   `engine/evidence/rule_registry_data/allocation_history.json`: contiguous from 1, never reused, never rebound to another
+   key or school. An allocation for a key the source never authored is refused.
+2. **Snapshots publish, never allocate.** The pinned snapshot lists issued identities only. A snapshot naming a number the
+   history never issued, or binding a number to another key or school, fails closed.
+3. **No allocation in the store.** `EvidenceStore` issues `EVD` only, unchanged. It records a rule version only if the
+   `RUL` identifier, version, school, explicit variant, content hash, snapshot hash, declared strength and synthetic
+   marking all match the rule the pinned registry publishes; a version is recorded once.
+4. **Records and fixtures.** The store's schema becomes `ace-evidence-store-v2`: rule versions carry an explicit variant
+   in a new `registered_rule_versions` table, and evidence names a variant. No v1 store exists outside temporary test
+   databases; a v1 database's tables are left as they are and are not read. WP-E4's synthetic fixtures now draw their rules
+   from the registry's synthetic fixture rules, so no test mints a `RUL` number.
+5. **Proof.** Duplicate issuance, reuse, identity rebinding, mismatched versions and registry bypasses are each refused by
+   a test, by `EVIDENCE_FOUNDATIONS_V1` gate N or O, and by the CI issuance gate's negative controls.
+
+### 3. Implementation (WP-E5, `ADR-0120` s4 to s6)
+
+- `engine/evidence/rule_registry.py`: the H5 rule record, the declared condition schema (data, never code), the four
+  separate certification claims, named variants with no default, and `load_registry`, which checks the manifest, the code
+  pin, the bytes, the schema and the allocation history, failing closed on any mismatch.
+- `engine/evidence/rule_registry_data/`: the authored synthetic `source.json`, the allocation history, the snapshot and its
+  manifest. Four synthetic rules across Parashari, KP and Nakshatra Nadi; one with two versions, one with two variants.
+- `scripts/author_rule_registry.py`, `scripts/check_rule_registry.py` (G1 load, G2 authoring output, G3 append-only
+  against `HEAD^1`), and `scripts/rule_registry_negative_controls.py` (eight planted violations), all run in CI.
+- `EVIDENCE_FOUNDATIONS_V1` gains gates M (registry integrity), N (registry and `RUL` refusals) and O (the snapshot failing
+  closed); gates J, K and L register rules from the registry, and their checks are otherwise unchanged.
+
+- **Consequences:** `docs/NAMING_STANDARD.md`'s `RUL` row names the authoring process and its history. Changing the
+  registry is an authoring run plus a reviewed change to `PINNED_SNAPSHOT_SHA256`. Real rules still need their own
+  authorization (`ADR-0120` D1).
+- **Evidence:** the owner's instruction (session input, not a repository file); the WP-E5 implementation PR, its tests,
+  regenerated evidence and CI.
+
+---
+
 ## ADR template (copy, do not edit above the line)
 
 ## ADR-XXXX - <title>

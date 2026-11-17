@@ -35,6 +35,7 @@ from engine.evidence.evidence_store import (  # noqa: E402
     EvidenceStore, item_from_record, item_to_record, relationship_from_record, relationship_to_record,
     rule_from_record, rule_to_record,
 )
+from engine.evidence import rule_registry  # noqa: E402
 from engine.evidence.store import StoreError  # noqa: E402
 from engine.models.provenance import Provenance  # noqa: E402
 
@@ -56,8 +57,14 @@ def person():
 
 def spec(school=ProducingSystem.PARASHARI, **changes):
     base = RuleSpec(school=school, content_hash=HASH_A, knowledge_snapshot_hash=HASH_B, declared_strength="strong",
-                    provenance=PROV, data_class=DataClass.SYNTHETIC)
+                    variant="base", provenance=PROV, data_class=DataClass.SYNTHETIC)
     return dataclasses.replace(base, **changes)
+
+
+#: Rules come only from the pinned registry (ADR-0121): these are its synthetic fixture rules.
+REGISTRY = rule_registry.pinned()
+PARASHARI_RULE = REGISTRY.by_key("synthetic.parashari.tenth-lord-in-tenth")
+KP_RULE = REGISTRY.by_key("synthetic.kp.tenth-cusp-sublord")
 
 
 def absent_confidence(**supplied):
@@ -65,19 +72,25 @@ def absent_confidence(**supplied):
 
 
 class World:
-    """An evidence store over one synthetic entity, with a Parashari and a KP rule registered."""
+    """An evidence store over one synthetic entity, with a Parashari and a KP rule recorded from the registry."""
 
-    def __init__(self, path):
+    def __init__(self, path, register=True):
         self.store = EvidenceStore(path)
-        self.entity = self.store.entities.persist(person())
-        self.parashari = self.store.register_rule(spec())
-        self.kp = self.store.register_rule(spec(ProducingSystem.KP))
+        if register:
+            self.entity = self.store.entities.persist(person())
+            self.parashari = self.store.register_rule(REGISTRY.rule_version(PARASHARI_RULE, 1, "base"))
+            self.kp = self.store.register_rule(REGISTRY.rule_version(KP_RULE, 1, "base"))
+        else:
+            self.entity = self.store.entities.entity_ids()[0]
+            self.parashari = self.store.rule_versions(PARASHARI_RULE)[0]
+            self.kp = self.store.rule_versions(KP_RULE)[0]
 
     def item(self, system=ProducingSystem.PARASHARI, facts=("Moon longitude",), provenance=CALC, **changes):
         rule = self.parashari if system is ProducingSystem.PARASHARI else self.kp
         base = EvidenceItem(
             entity=self.entity, domain=Domain.JATAKA, question=None, producing_system=system,
-            rule=RuleReference(rule=rule.rule, version=rule.version), declared_strength=rule.spec.declared_strength,
+            rule=RuleReference(rule=rule.rule, version=rule.version, variant=rule.spec.variant),
+            declared_strength=rule.spec.declared_strength,
             measured_reliability=None,
             lineage=Lineage(inputs=tuple(CalculatedInput(fact=fact, provenance=provenance) for fact in facts),
                             inputs_complete=True, derivations_complete=True),
@@ -115,16 +128,20 @@ def test_ac1_ac2_identifiers_are_exact_and_zero_padded(kind, family, width):
 
 
 def test_ac1_ac2_each_family_has_its_own_durable_issuer(tmp_path):
+    """EVD: the store's own durable counter. RUL: the registry's authoring process only (ADR-0121)."""
+
     path = tmp_path / "evidence.sqlite"
     world = World(path)
     first = world.store.persist(world.item())
-    assert (world.store.issued_count(EVD_FAMILY), world.store.issued_count(RUL_FAMILY)) == (1, 2)
+    assert world.store.issued_count(EVD_FAMILY) == 1
+    assert (world.parashari.rule, world.kp.rule) == (PARASHARI_RULE, KP_RULE)  # registry-issued, recorded as is
     world.store.close()
-    again = World(path)  # reopens the same database and registers two more rules
+    again = World(path, register=False)  # reopens the same database
     second = again.store.persist(again.item())
-    assert (first.number, second.number, again.parashari.rule.number) == (1, 2, 3)
-    with pytest.raises(StoreError):
-        again.store.issued_count("EVR")
+    assert (first.number, second.number, again.parashari.rule) == (1, 2, PARASHARI_RULE)
+    for family in ("EVR", RUL_FAMILY):
+        with pytest.raises(StoreError, match="issues EVD only"):
+            again.store.issued_count(family)
     for sql in ("UPDATE evidence_issuers SET last_number = 0", "DELETE FROM evidence_issuers"):
         with pytest.raises(sqlite3.DatabaseError):
             again.store._db.execute(sql)
@@ -134,7 +151,7 @@ def test_ac1_ac2_each_family_has_its_own_durable_issuer(tmp_path):
 def test_ac1_ac2_a_refused_write_takes_no_number(world):
     before = world.store.issued_count(EVD_FAMILY)
     with pytest.raises(StoreError):
-        world.store.persist(world.item(rule=RuleReference(rule=world.parashari.rule, version=9)))
+        world.store.persist(world.item(rule=RuleReference(rule=world.parashari.rule, version=9, variant="base")))
     assert world.store.issued_count(EVD_FAMILY) == before
 
 
@@ -165,15 +182,15 @@ def test_ac1_ac2_the_gate_rejects_a_planted_literal(tmp_path):
 def test_ac1_ac2_the_store_check_passes_a_real_store_and_flags_a_planted_one(world):
     world.store.persist(world.item())
     assert gate.check_store(world.store.path) == []
-    world.store._db.execute("INSERT INTO rule_versions (rule_id, version, payload) VALUES (?, 3, '{}')",
-                            (world.kp.rule.value,))
-    assert any("versions are not 1..n" in error for error in gate.check_store(world.store.path))
+    world.store._db.execute("INSERT INTO registered_rule_versions (rule_id, version, variant, payload) "
+                            "VALUES (?, 3, 'base', '{}')", (world.kp.rule.value,))
+    assert any("the pinned registry does not publish it" in error for error in gate.check_store(world.store.path))
 
 
 # ------------------------------------------------------------------ AC3 the rule-version reference
 
 @pytest.mark.parametrize("change", [{"school": "parashari"}, {"content_hash": "A" * 64}, {"content_hash": "a" * 63},
-                                    {"knowledge_snapshot_hash": ""}, {"declared_strength": " "},
+                                    {"knowledge_snapshot_hash": ""}, {"declared_strength": " "}, {"variant": ""},
                                     {"provenance": None}, {"data_class": "real"}, {"synthetic_reference": False}])
 def test_ac3_every_rule_field_is_required(change):
     with pytest.raises(EvidenceModelError):
@@ -181,13 +198,16 @@ def test_ac3_every_rule_field_is_required(change):
 
 
 def test_ac3_a_new_version_is_a_new_record_and_the_school_never_changes(world):
-    second = world.store.register_rule_version(world.parashari.rule, spec(declared_strength="moderate"))
+    second = world.store.register_rule(REGISTRY.rule_version(PARASHARI_RULE, 2, "base"))
     assert (second.rule, second.version) == (world.parashari.rule, 2)
     assert [rule.spec.declared_strength for rule in world.store.rule_versions(world.parashari.rule)] == \
-        ["strong", "moderate"]
-    with pytest.raises(StoreError, match="school"):
-        world.store.register_rule_version(world.parashari.rule, spec(ProducingSystem.KP))
-    for sql in ("UPDATE rule_versions SET payload = payload", "DELETE FROM rule_versions"):
+        [REGISTRY.lookup(PARASHARI_RULE, 1, "base").declared_strength,
+         REGISTRY.lookup(PARASHARI_RULE, 2, "base").declared_strength]
+    claimed = REGISTRY.rule_version(PARASHARI_RULE, 2, "base")
+    with pytest.raises(StoreError, match="school differs"):
+        world.store.register_rule(dataclasses.replace(claimed, spec=dataclasses.replace(
+            claimed.spec, school=ProducingSystem.KP)))
+    for sql in ("UPDATE registered_rule_versions SET payload = payload", "DELETE FROM registered_rule_versions"):
         with pytest.raises(sqlite3.DatabaseError):
             world.store._db.execute(sql)
 
@@ -242,8 +262,9 @@ def test_ac4_the_store_refuses_unknown_entities_charts_rules_and_mismatches(worl
     cases = [(world.item(entity=EntityId.from_number(99)), "not in this store"),
              (world.item(chart=ChartReference(entity_revision=2, chart_label="natal")), "no revision 2"),
              (world.item(chart=ChartReference(entity_revision=1, chart_label="d9")), "is not a chart"),
-             (world.item(rule=RuleReference(rule=RuleId.from_number(99), version=1)), "not registered"),
-             (world.item(rule=RuleReference(rule=world.kp.rule, version=1)), "systems stay isolated"),
+             (world.item(rule=RuleReference(rule=RuleId.from_number(99), version=1, variant="base")),
+              "not registered"),
+             (world.item(rule=RuleReference(rule=world.kp.rule, version=1, variant="base")), "systems stay isolated"),
              (world.item(declared_strength="weak"), "declared strength"),
              (world.item(derived_from=(EvidenceId.from_number(42),)), "no such evidence")]
     for item, message in cases:
@@ -320,7 +341,7 @@ def test_ac9_strength_is_declared_and_reliability_is_absent(world):
 
 # ------------------------------------------------------------------ AC10 persistence
 
-@pytest.mark.parametrize("table", ["rule_versions", "evidence_items", "evidence_relationships"])
+@pytest.mark.parametrize("table", ["registered_rule_versions", "evidence_items", "evidence_relationships"])
 def test_ac10_every_table_is_append_only(world, table):
     first, second = world.store.persist(world.item()), world.store.persist(world.item(ProducingSystem.KP))
     world.store.relate(first, second)
@@ -594,12 +615,13 @@ def test_ac14_ac15_evidence_imports_no_calculation_writer_and_no_llm(name):
                 if module.split(".")[0] in {"anthropic", "openai", "requests", "networkx", "graphlib"}]
     assert {module for module in imports if module.startswith("engine.")} <= {
         "engine.evidence.entity", "engine.evidence.evidence", "engine.evidence.evidence_identifiers",
-        "engine.evidence.identifiers", "engine.evidence.store", "engine.models.provenance"}
+        "engine.evidence.identifiers", "engine.evidence.store", "engine.models.provenance",
+        "engine.evidence.rule_registry"}  # the store reads rules only from the pinned registry (ADR-0121)
 
 
 def test_ac15_evidence_names_only_a_registered_rule_version(world):
     with pytest.raises(StoreError, match="not registered"):
-        world.store.persist(world.item(rule=RuleReference(rule=world.parashari.rule, version=2)))
+        world.store.persist(world.item(rule=RuleReference(rule=world.parashari.rule, version=2, variant="base")))
     assert not {"rule_text", "statement", "condition"} & {field.name for field in dataclasses.fields(EvidenceItem)}
 
 

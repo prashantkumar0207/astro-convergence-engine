@@ -386,6 +386,10 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
+        with:
+          # HEAD^1 is the base main (a pull request's merge commit) or the previous main (a push): the rule
+          # registry gate compares RUL issuance against it (ADR-0121).
+          fetch-depth: 2
 
       - uses: actions/setup-python@v5
         with:
@@ -508,6 +512,12 @@ jobs:
             exit 1
           fi
           echo "negative controls passed: EVD literal exit $evd_literal, RUL literal exit $rul_literal, EVD registration exit $evd_naming, RUL registration exit $rul_naming"
+
+      - name: Rule registry and RUL issuance (ADR-0120, ADR-0121)
+        run: python scripts/check_rule_registry.py --base HEAD^1
+
+      - name: Negative control, the rule-registry gate must actually fail
+        run: python scripts/rule_registry_negative_controls.py
 
       - name: ADR numbering is unique and monotonic
         run: python scripts/check_adr_numbering.py

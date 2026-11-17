@@ -434,8 +434,8 @@ ARTIFACT_DECLARATIONS = {
             # ADR-0119 s3: the H4 evidence model, its store, the EVD and RUL issuers, joins, aggregates and
             # structural relationships.
             _cap("evidence.evidence_model",
-                 _fn(f"{_EVIDENCE_STORE}.register_rule", "J_evidence_integrity", "K_evidence_refusals", "L_relationships_and_provenance"),
-                 _fn(f"{_EVIDENCE_STORE}.register_rule_version", "J_evidence_integrity", "K_evidence_refusals"),
+                 _fn(f"{_EVIDENCE_STORE}.register_rule", "J_evidence_integrity", "K_evidence_refusals",
+                     "L_relationships_and_provenance", "N_registry_refusals"),
                  _fn(f"{_EVIDENCE_STORE}.rule_versions", "J_evidence_integrity"),
                  _fn(f"{_EVIDENCE_STORE}.rule_version", "J_evidence_integrity", "K_evidence_refusals"),
                  _fn(f"{_EVIDENCE_STORE}.persist", "J_evidence_integrity", "K_evidence_refusals", "L_relationships_and_provenance"),
@@ -459,9 +459,24 @@ ARTIFACT_DECLARATIONS = {
                      "L_relationships_and_provenance"),
                  _fn("engine.evidence.evidence_store.relationship_from_record", "K_evidence_refusals",
                      "L_relationships_and_provenance"),
-                 _fn("engine.evidence.evidence_identifiers.RuleId.from_number", "J_evidence_integrity",
-                     "K_evidence_refusals"),
+                 _fn("engine.evidence.evidence_identifiers.RuleId.from_number", "N_registry_refusals"),
                  _fn("engine.evidence.evidence_identifiers.EvidenceId.from_number", "K_evidence_refusals")),
+            # ADR-0120 s4 and ADR-0121: the H5 rule registry, its pinned snapshot and RUL issuance.
+            _cap("evidence.rule_registry",
+                 _fn("engine.evidence.rule_registry.pinned", "M_registry_integrity", "N_registry_refusals"),
+                 _fn("engine.evidence.rule_registry.load_registry", "O_snapshot_fails_closed"),
+                 _fn("engine.evidence.rule_registry.read_history", "M_registry_integrity"),
+                 _fn("engine.evidence.rule_registry.rule_from_record", "M_registry_integrity", "N_registry_refusals"),
+                 _fn("engine.evidence.rule_registry.content_record", "M_registry_integrity", "N_registry_refusals"),
+                 _fn("engine.evidence.rule_registry.content_hash", "M_registry_integrity"),
+                 _fn("engine.evidence.rule_registry.canonical", "O_snapshot_fails_closed"),
+                 _fn("engine.evidence.rule_registry.RuleRegistry.rules", "M_registry_integrity"),
+                 _fn("engine.evidence.rule_registry.RuleRegistry.lookup", "M_registry_integrity", "N_registry_refusals"),
+                 _fn("engine.evidence.rule_registry.RuleRegistry.versions", "M_registry_integrity"),
+                 _fn("engine.evidence.rule_registry.RuleRegistry.variants", "M_registry_integrity"),
+                 _fn("engine.evidence.rule_registry.RuleRegistry.by_key", "N_registry_refusals"),
+                 _fn("engine.evidence.rule_registry.RuleRegistry.rule_version", "M_registry_integrity",
+                     "N_registry_refusals")),
         ],
         "empty_exercises": {
             "F_negative_controls": "runs the other gates' comparators against planted wrong functions, so no "

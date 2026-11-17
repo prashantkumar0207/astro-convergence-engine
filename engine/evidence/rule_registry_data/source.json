@@ -1,0 +1,144 @@
+{
+ "schema": "ace-rule-source-v1",
+ "rules": [
+  {
+   "key": "synthetic.parashari.tenth-lord-in-tenth",
+   "school": "parashari",
+   "versions": [
+    {
+     "version": 1,
+     "variants": [
+      {
+       "variant": "base",
+       "citation": {"source": "Synthetic fixture source (not a real text)", "locator": "fixture rule 1, version 1"},
+       "statement": "Synthetic fixture statement: the tenth lord placed in the tenth house.",
+       "condition": {"kind": "house_lord_in_house", "parameters": {"lord_of": 10, "house": 10}},
+       "activation_conditions": [],
+       "effect": "synthetic fixture effect: career prominence",
+       "polarity": "positive",
+       "domain": "jataka",
+       "known_variants": ["base"],
+       "certification": {"transcription_fidelity": "not_assessed", "source_attribution": "not_assessed",
+                         "applicability_conditions": "not_assessed", "measured_performance": null},
+       "declared_strength": "as declared by the synthetic source",
+       "synthetic": true
+      }
+     ]
+    },
+    {
+     "version": 2,
+     "variants": [
+      {
+       "variant": "base",
+       "citation": {"source": "Synthetic fixture source (not a real text)", "locator": "fixture rule 1, version 2"},
+       "statement": "Synthetic fixture statement, revised: the tenth lord placed in the tenth house.",
+       "condition": {"kind": "house_lord_in_house", "parameters": {"lord_of": 10, "house": 10}},
+       "activation_conditions": [{"kind": "planet_in_sign", "parameters": {"planet": "Sun", "sign": 10}}],
+       "effect": "synthetic fixture effect: career prominence",
+       "polarity": "positive",
+       "domain": "jataka",
+       "known_variants": ["base"],
+       "certification": {"transcription_fidelity": "not_assessed", "source_attribution": "not_assessed",
+                         "applicability_conditions": "not_assessed", "measured_performance": null},
+       "declared_strength": "revised as declared by the synthetic source",
+       "synthetic": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "synthetic.kp.tenth-cusp-sublord",
+   "school": "kp",
+   "versions": [
+    {
+     "version": 1,
+     "variants": [
+      {
+       "variant": "base",
+       "citation": {"source": "Synthetic fixture source (not a real text)", "locator": "fixture rule 2, version 1"},
+       "statement": "Synthetic fixture statement: the tenth cusp sub-lord signifies the second, sixth and tenth.",
+       "condition": {"kind": "cusp_sublord_signifies", "parameters": {"cusp": 10, "houses": [2, 6, 10]}},
+       "activation_conditions": [],
+       "effect": "synthetic fixture effect: employment",
+       "polarity": "positive",
+       "domain": "jataka",
+       "known_variants": ["base"],
+       "certification": {"transcription_fidelity": "not_assessed", "source_attribution": "not_assessed",
+                         "applicability_conditions": "not_assessed", "measured_performance": null},
+       "declared_strength": "as declared by the synthetic source",
+       "synthetic": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "synthetic.parashari.moon-in-fourth",
+   "school": "parashari",
+   "versions": [
+    {
+     "version": 1,
+     "variants": [
+      {
+       "variant": "reading-a",
+       "citation": {"source": "Synthetic fixture source (not a real text)", "locator": "fixture rule 3, reading A"},
+       "statement": "Synthetic fixture statement, reading A: the Moon in the fourth house.",
+       "condition": {"kind": "planet_in_house", "parameters": {"planet": "Moon", "house": 4}},
+       "activation_conditions": [],
+       "effect": "synthetic fixture effect: domestic settlement",
+       "polarity": "positive",
+       "domain": "jataka",
+       "known_variants": ["reading-a", "reading-b"],
+       "certification": {"transcription_fidelity": "not_assessed", "source_attribution": "not_assessed",
+                         "applicability_conditions": "not_assessed", "measured_performance": null},
+       "declared_strength": "as declared by the synthetic source",
+       "synthetic": true
+      },
+      {
+       "variant": "reading-b",
+       "citation": {"source": "Synthetic fixture source (not a real text)", "locator": "fixture rule 3, reading B"},
+       "statement": "Synthetic fixture statement, reading B: the Moon in the fourth house, when waning.",
+       "condition": {"kind": "planet_in_house", "parameters": {"planet": "Moon", "house": 4}},
+       "activation_conditions": [{"kind": "planet_in_sign", "parameters": {"planet": "Moon", "sign": 4}}],
+       "effect": "synthetic fixture effect: domestic unsettlement",
+       "polarity": "negative",
+       "domain": "jataka",
+       "known_variants": ["reading-a", "reading-b"],
+       "certification": {"transcription_fidelity": "not_assessed", "source_attribution": "not_assessed",
+                         "applicability_conditions": "not_assessed", "measured_performance": null},
+       "declared_strength": "as declared by the synthetic source",
+       "synthetic": true
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "key": "synthetic.nakshatra-nadi.star-lord-in-tenth",
+   "school": "nakshatra_nadi",
+   "versions": [
+    {
+     "version": 1,
+     "variants": [
+      {
+       "variant": "base",
+       "citation": {"source": "Synthetic fixture source (not a real text)", "locator": "fixture rule 4, version 1"},
+       "statement": "Synthetic fixture statement: the star lord of the tenth lord placed in the tenth house.",
+       "condition": {"kind": "planet_in_house", "parameters": {"planet": "Saturn", "house": 10}},
+       "activation_conditions": [],
+       "effect": "synthetic fixture effect: responsibility",
+       "polarity": "neutral",
+       "domain": "jataka",
+       "known_variants": ["base"],
+       "certification": {"transcription_fidelity": "not_assessed", "source_attribution": "not_assessed",
+                         "applicability_conditions": "not_assessed", "measured_performance": null},
+       "declared_strength": "as declared by the synthetic source",
+       "synthetic": true
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

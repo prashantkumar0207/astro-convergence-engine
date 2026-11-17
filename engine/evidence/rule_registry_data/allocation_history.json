@@ -1,0 +1,25 @@
+{
+ "allocations": [
+  {
+   "key": "synthetic.parashari.tenth-lord-in-tenth",
+   "number": 1,
+   "school": "parashari"
+  },
+  {
+   "key": "synthetic.kp.tenth-cusp-sublord",
+   "number": 2,
+   "school": "kp"
+  },
+  {
+   "key": "synthetic.parashari.moon-in-fourth",
+   "number": 3,
+   "school": "parashari"
+  },
+  {
+   "key": "synthetic.nakshatra-nadi.star-lord-in-tenth",
+   "number": 4,
+   "school": "nakshatra_nadi"
+  }
+ ],
+ "schema": "ace-rul-allocation-history-v1"
+}

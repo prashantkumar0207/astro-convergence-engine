@@ -1,0 +1,237 @@
+{
+ "rules": [
+  {
+   "activation_conditions": [],
+   "certification": {
+    "applicability_conditions": "not_assessed",
+    "measured_performance": null,
+    "source_attribution": "not_assessed",
+    "transcription_fidelity": "not_assessed"
+   },
+   "citation": {
+    "locator": "fixture rule 1, version 1",
+    "source": "Synthetic fixture source (not a real text)"
+   },
+   "condition": {
+    "kind": "house_lord_in_house",
+    "parameters": {
+     "house": 10,
+     "lord_of": 10
+    }
+   },
+   "content_hash": "50cd5b72bd2c1fd3329ed79e1594fc4ee4245cd6f2b1bb1bcd5d1e08f1cd9b85",
+   "declared_strength": "as declared by the synthetic source",
+   "domain": "jataka",
+   "effect": "synthetic fixture effect: career prominence",
+   "key": "synthetic.parashari.tenth-lord-in-tenth",
+   "known_variants": [
+    "base"
+   ],
+   "polarity": "positive",
+   "rule": 1,
+   "school": "parashari",
+   "statement": "Synthetic fixture statement: the tenth lord placed in the tenth house.",
+   "synthetic": true,
+   "variant": "base",
+   "version": 1
+  },
+  {
+   "activation_conditions": [
+    {
+     "kind": "planet_in_sign",
+     "parameters": {
+      "planet": "Sun",
+      "sign": 10
+     }
+    }
+   ],
+   "certification": {
+    "applicability_conditions": "not_assessed",
+    "measured_performance": null,
+    "source_attribution": "not_assessed",
+    "transcription_fidelity": "not_assessed"
+   },
+   "citation": {
+    "locator": "fixture rule 1, version 2",
+    "source": "Synthetic fixture source (not a real text)"
+   },
+   "condition": {
+    "kind": "house_lord_in_house",
+    "parameters": {
+     "house": 10,
+     "lord_of": 10
+    }
+   },
+   "content_hash": "7809598c711d12e2c282fac665e9d0c7b0de88ca7014db622d797b8f92b6d986",
+   "declared_strength": "revised as declared by the synthetic source",
+   "domain": "jataka",
+   "effect": "synthetic fixture effect: career prominence",
+   "key": "synthetic.parashari.tenth-lord-in-tenth",
+   "known_variants": [
+    "base"
+   ],
+   "polarity": "positive",
+   "rule": 1,
+   "school": "parashari",
+   "statement": "Synthetic fixture statement, revised: the tenth lord placed in the tenth house.",
+   "synthetic": true,
+   "variant": "base",
+   "version": 2
+  },
+  {
+   "activation_conditions": [],
+   "certification": {
+    "applicability_conditions": "not_assessed",
+    "measured_performance": null,
+    "source_attribution": "not_assessed",
+    "transcription_fidelity": "not_assessed"
+   },
+   "citation": {
+    "locator": "fixture rule 2, version 1",
+    "source": "Synthetic fixture source (not a real text)"
+   },
+   "condition": {
+    "kind": "cusp_sublord_signifies",
+    "parameters": {
+     "cusp": 10,
+     "houses": [
+      2,
+      6,
+      10
+     ]
+    }
+   },
+   "content_hash": "a1dd79be40398e022835e67a62d99f721e43671e30d6835a0e661cf033a2418f",
+   "declared_strength": "as declared by the synthetic source",
+   "domain": "jataka",
+   "effect": "synthetic fixture effect: employment",
+   "key": "synthetic.kp.tenth-cusp-sublord",
+   "known_variants": [
+    "base"
+   ],
+   "polarity": "positive",
+   "rule": 2,
+   "school": "kp",
+   "statement": "Synthetic fixture statement: the tenth cusp sub-lord signifies the second, sixth and tenth.",
+   "synthetic": true,
+   "variant": "base",
+   "version": 1
+  },
+  {
+   "activation_conditions": [],
+   "certification": {
+    "applicability_conditions": "not_assessed",
+    "measured_performance": null,
+    "source_attribution": "not_assessed",
+    "transcription_fidelity": "not_assessed"
+   },
+   "citation": {
+    "locator": "fixture rule 3, reading A",
+    "source": "Synthetic fixture source (not a real text)"
+   },
+   "condition": {
+    "kind": "planet_in_house",
+    "parameters": {
+     "house": 4,
+     "planet": "Moon"
+    }
+   },
+   "content_hash": "216042f8619a8561849cbcb606ad5c4fe678abb10f7ac4ade5a04c092735e786",
+   "declared_strength": "as declared by the synthetic source",
+   "domain": "jataka",
+   "effect": "synthetic fixture effect: domestic settlement",
+   "key": "synthetic.parashari.moon-in-fourth",
+   "known_variants": [
+    "reading-a",
+    "reading-b"
+   ],
+   "polarity": "positive",
+   "rule": 3,
+   "school": "parashari",
+   "statement": "Synthetic fixture statement, reading A: the Moon in the fourth house.",
+   "synthetic": true,
+   "variant": "reading-a",
+   "version": 1
+  },
+  {
+   "activation_conditions": [
+    {
+     "kind": "planet_in_sign",
+     "parameters": {
+      "planet": "Moon",
+      "sign": 4
+     }
+    }
+   ],
+   "certification": {
+    "applicability_conditions": "not_assessed",
+    "measured_performance": null,
+    "source_attribution": "not_assessed",
+    "transcription_fidelity": "not_assessed"
+   },
+   "citation": {
+    "locator": "fixture rule 3, reading B",
+    "source": "Synthetic fixture source (not a real text)"
+   },
+   "condition": {
+    "kind": "planet_in_house",
+    "parameters": {
+     "house": 4,
+     "planet": "Moon"
+    }
+   },
+   "content_hash": "16ccd3e45ea76585bff94ff64fd9ce25b4cfe81efc01df932e6e3b8fdf740be3",
+   "declared_strength": "as declared by the synthetic source",
+   "domain": "jataka",
+   "effect": "synthetic fixture effect: domestic unsettlement",
+   "key": "synthetic.parashari.moon-in-fourth",
+   "known_variants": [
+    "reading-a",
+    "reading-b"
+   ],
+   "polarity": "negative",
+   "rule": 3,
+   "school": "parashari",
+   "statement": "Synthetic fixture statement, reading B: the Moon in the fourth house, when waning.",
+   "synthetic": true,
+   "variant": "reading-b",
+   "version": 1
+  },
+  {
+   "activation_conditions": [],
+   "certification": {
+    "applicability_conditions": "not_assessed",
+    "measured_performance": null,
+    "source_attribution": "not_assessed",
+    "transcription_fidelity": "not_assessed"
+   },
+   "citation": {
+    "locator": "fixture rule 4, version 1",
+    "source": "Synthetic fixture source (not a real text)"
+   },
+   "condition": {
+    "kind": "planet_in_house",
+    "parameters": {
+     "house": 10,
+     "planet": "Saturn"
+    }
+   },
+   "content_hash": "4e376b088a57a521fa0b516502380d749308b3ae987b1bd6b535357c8cfc24da",
+   "declared_strength": "as declared by the synthetic source",
+   "domain": "jataka",
+   "effect": "synthetic fixture effect: responsibility",
+   "key": "synthetic.nakshatra-nadi.star-lord-in-tenth",
+   "known_variants": [
+    "base"
+   ],
+   "polarity": "neutral",
+   "rule": 4,
+   "school": "nakshatra_nadi",
+   "statement": "Synthetic fixture statement: the star lord of the tenth lord placed in the tenth house.",
+   "synthetic": true,
+   "variant": "base",
+   "version": 1
+  }
+ ],
+ "schema": "ace-rule-snapshot-v1"
+}
