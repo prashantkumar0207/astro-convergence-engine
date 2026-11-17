@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.51.0 |
+| Version | 9.52.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-17 (CEO bounded HOLD on PR #56 closed on the branch: AC7/AC8 exact publication on persist; AC14 Gate M controls. Not merged.) |
+| Last updated | 2026-11-17 (WP-E5 merged and CLOSED (`69730bf`). WP-E6 (provenance-graph recording) criteria proposed in `ADR-0122` for CEO review. Not merged.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,18 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-17 - WP-E5 CLOSED (PR #56, `69730bf`); WP-E6 criteria proposed (`ADR-0122`)
+
+- **Merge:** `69730bfdf3e5ce1b9f01b166ef5877fa1908f50b`, parents `74c75c1` and `63dd9a8`; tree `4325eca` identical to the
+  reviewed head; branch kept. Pre-merge: head, base, MERGEABLE/CLEAN and head CI `44041867000` reverified.
+- **Post-merge CI `44047429370`:** four jobs passed on `ubuntu-24.04`; 2,004 tests on 3.11 and 3.12; drift clean; gates J to O
+  at 0, 55, 12, 0, 50, 13.
+- **`ADR-0122`:** s2 (ACCEPTED, on the owner's instruction) closes WP-E5 against `ADR-0120` AC1 to AC16 and `ADR-0121`, with
+  its Charter-compliance statement. s4 to s6 (PROPOSED) define WP-E6: the graph recorded at evidence-creation time;
+  decision points D1 to D5; exit criteria AC1 to AC17.
+- **For the CEO:** D1 relies on `docs/EVIDENCE_INDEPENDENCE_DESIGN.md` s3, which is `PROPOSED, C0 RESEARCH`; accepting D1 A
+  would adopt its recording schema only. EVIDENCE exit and prediction issuance are untouched.
 
 ### 2026-11-17 - PR #56 bounded HOLD corrections (AC7/AC8; AC14)
 
