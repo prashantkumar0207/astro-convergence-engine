@@ -14,7 +14,6 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
-sys.path.insert(0, str(ROOT / "tests"))
 sys.path.insert(0, str(ROOT / "engine" / "tests"))
 
 from test_evidence_wp_e4 import CALC, PROV, World, person  # noqa: E402
@@ -107,6 +106,8 @@ def test_ac2_six_kinds_each_declare_identity_fields_and_keys_are_content_hashes(
     assert node.key == hashlib.sha256(graph.canonical({"kind": "rule", "identity": node.fields()}).encode()).hexdigest()
     with pytest.raises(GraphError, match="exactly its identity fields"):
         graph.make_node(NodeKind.RULE, rule="RUL-000001", version=1)
+    with pytest.raises(GraphError, match="exactly its identity fields"):
+        graph.make_node(NodeKind.RULE, **node.fields(), weight=1)
     with pytest.raises(GraphError, match="undeclared node kind"):
         graph.Node(kind="rule", identity=node.identity)
 
@@ -128,7 +129,7 @@ def test_ac2_the_same_fact_under_provenance_differing_in_one_field_is_two_nodes(
 
 def test_ac2_identical_identity_fields_across_items_give_one_node(world):
     first = world.store.persist(world.item())
-    second = world.store.persist(world.item(polarity=world.item().polarity))
+    second = world.store.persist(world.item())
     shared = {node.key for node in world.store.item_graph(first).nodes} & \
         {node.key for node in world.store.item_graph(second).nodes}
     kinds = {node.kind for node in world.store.recorded_graph().nodes if node.key in shared}
