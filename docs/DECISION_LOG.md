@@ -12454,6 +12454,179 @@ operative requirements.
 
 ---
 
+## ADR-0122 - WP-E5 closed at its merge; work package WP-E6 (provenance-graph recording) defined, with its exit criteria fixed before coding (PROPOSED as to s4 to s6)
+
+- **Date:** 2026-11-17
+- **Status:** **ACCEPTED as to s2, on the owner's instruction quoted in s1. PROPOSED as to s4 to s6**, which define WP-E6 for
+  CEO review before any implementation, and bind only after a CEO PASS and the owner's acceptance. s3 records the roadmap's
+  state and decides nothing.
+- **Context:**
+  - **Sources, all accepted:** `docs/Q8_CLOSURE_MATRIX.md` s6 (its implementation scope names "Provenance graph
+    recording", and its exit criteria require "provenance sufficient to build the graph in the independence design");
+    `ADR-0021` D5, the independence principle, and `ADR-0020` D4, the five relationship classes, both ratified by
+    `ADR-0113`; `docs/H4_EVIDENCE_MODEL_SPEC.md` (four of the five relationship classes are "derivable at evidence-creation time
+    from provenance, chart references and derivation links"; evidence persisted "fully provenance-linked"); `docs/H5_INTERPRETATION_RULE_REGISTRY_SPEC.md`;
+    `docs/H0_ENTITY_MODEL_SPEC.md` (the derived subject's parent link); `ADR-0119`, `ADR-0120` and `ADR-0121`; and
+    `specs/PROJECT_CHARTER.md` v1.4.0.
+  - **Not accepted, and relied on only through D1:** `docs/EVIDENCE_INDEPENDENCE_DESIGN.md` is `PROPOSED, C0 RESEARCH`.
+    Its s3 defines the graph's node and edge kinds. Q8 s6 names that graph, so the dependency is stated here rather than
+    assumed. Accepting D1 option A would adopt s3's recording schema and nothing else of that document: not its path
+    definition, independent count, cut or reporting (s4 onward), and not its `CORRELATED_WITH` edge.
+  - **Built so far:** WP-E1 to WP-E5, all certified in `EVIDENCE_FOUNDATIONS_V1`. Each evidence item already records its
+    calculated inputs with full calculation provenance, a chart reference and chart context, a timing context, a rule
+    reference the pinned registry publishes exactly, its derivation and recomputation links, and its completeness
+    statements (`ADR-0119`; `ADR-0121`). These are fields of separate items. Nothing yet records them as one graph, so the
+    nodes two items share are not recorded as shared.
+
+### 1. The owner's instruction (exact text)
+
+```text
+**ACE OWNER AUTHORIZATION — MERGE WP-E5 PR #56**
+
+Following independent CEO PASS, I authorize the normal two-parent merge of PR #56 at exact HEAD `63dd9a8d54efc5e5baf93cdc8af0883de9468a1f`.
+
+Before merging, reverify HEAD, base, mergeability and all four successful jobs in CI `44041867000`.
+
+No squash, rebase, force push or branch deletion.
+
+Verify the merge SHA, parents, tree and post-merge CI. If successful, record WP-E5 as CLOSED against ADR-0120 AC1–AC16 and ADR-0121.
+
+Preserve all certified calculations, protected holdouts, governed rule provenance and existing exclusions.
+
+Then prepare the fixed exit criteria for the remaining EVIDENCE work package: provenance-graph recording. Submit the criteria for independent CEO review before implementation.
+
+Do not declare EVIDENCE phase exit or begin prediction issuance. Report exact Git SHAs, verification results and the next authorized step.
+```
+
+### 2. WP-E5 closed
+
+WP-E5 is **CLOSED** against `ADR-0120` AC1 to AC16 and `ADR-0121`. PR #56 merged by a normal two-parent merge as
+`69730bfdf3e5ce1b9f01b166ef5877fa1908f50b`, with parents `74c75c143c429cca3b8d81d40620e7446cec2cca` and
+`63dd9a8d54efc5e5baf93cdc8af0883de9468a1f`. The merge tree (`4325eca`) is identical to the reviewed head's tree, and the
+head branch is kept. Before the merge, the head, base (`74c75c1`), mergeability (MERGEABLE, CLEAN) and head CI
+`44041867000` (four jobs passed) were reverified. Post-merge CI `44047429370` (push to `main`) passed all four jobs on `ubuntu-24.04`: 2,004 tests on 3.11
+and 3.12, drift clean, gates J to O at 0, 55, 12, 0, 50 and 13. The CEO's bounded HOLD at `9600031` (AC7
+and AC8 exact publication on persist; AC14 Gate M negative controls) was closed at `63dd9a8` before the PASS.
+
+**What the merge preserves:**
+- **Certified calculations:** every artifact is identical to its committed version outside volatile fields (76 files, drift
+  clean in the 3.11, 3.12 and oracle jobs of `44041867000`).
+- **Protected holdouts:** `EVIDENCE_FOUNDATIONS_V1` gates G to I are unchanged.
+- **Governed rule provenance:** `RUL` is issued only by the governed authoring process (`ADR-0121`), and the snapshot pin is
+  `ea8d185ff0786e1c2d68b8010b45b9721367e8e55efca49a4c1a4b8402643d0d`.
+- **Existing exclusions:** no rule is applied, no real rule is populated, nothing is scored, weighted, fitted or measured,
+  and no prediction is issued.
+
+**WP-E5's Charter compliance** (`ADR-0120` AC16; `specs/PROJECT_CHARTER.md` v1.4.0):
+- **"Complete product contract" s7** (the LLM as explainer): no LLM client or text-to-rule path exists, and free text is
+  never registrable (AC9).
+- **s5** (provenance): every rule is identified, cited, pinned and published before evidence can name it (AC1, AC8, AC10).
+- **s6** (learning): a changed rule is a new version, and nothing learns.
+- **s9** (what stays fixed): certified calculations and their rule tables are unchanged (AC13).
+- **The Q8 disposition:** no prediction is issued.
+
+### 3. Where the EVIDENCE roadmap stands (`docs/Q8_CLOSURE_MATRIX.md` s6)
+
+| s6 implementation item | State |
+|---|---|
+| Entity model with specialised subject types | Built: WP-E1 (`ADR-0114`) |
+| Event model | Built: WP-E2 (`ADR-0115`) |
+| Historical event ledger with protected holdout support | Built: WP-E3 (`ADR-0116`) |
+| Evidence model with the relationship classes | Built: WP-E4 (`ADR-0119`) |
+| Interpretation rule registry | Built: WP-E5 (`ADR-0120`, `ADR-0121`) |
+| Provenance graph recording | **Not built.** WP-E6, below |
+
+EVIDENCE exit is **not** declared. WP-E6 is the last s6 implementation item. Meeting its criteria is necessary for exit,
+not sufficient: exit also needs the s6 exit criteria shown together and its separate CEO checkpoint. Prediction issuance
+stays without a roadmap placement (`ADR-0117` addendum, revision 1).
+
+### 4. WP-E6 scope
+
+**In scope:**
+1. **Recording at evidence-creation time** (D2): persisting an evidence item writes its graph in the same transaction.
+2. **The node kinds** (D1, from the independence design's s3):
+   - *input*: the origin moment, place and timezone resolution of the chart the item names, read from the entity revision;
+   - *astronomical*: a calculated input, with its full calculation provenance part of its identity;
+   - *derived chart*: the chart, by entity revision, chart label and varga;
+   - *timing*: the item's timing context;
+   - *rule*: the registered rule version the item names;
+   - *evidence*: the item itself.
+3. **The edge kinds:** `DERIVES_FROM` for computation and `APPLIES_TO` for a rule consuming a fact. For a derived subject, a
+   `DERIVES_FROM` edge from the parent chart, taken from the H0 parent link.
+4. **Node identity and storage** (D3, D4).
+5. **A read API:** an item's subgraph, the graph of a set of items, and a node's incident edges. Each read returns its
+   members and decomposes to its records.
+6. **Certification** (D5): new gates in `EVIDENCE_FOUNDATIONS_V1`, with C2, C3 and C4 registration.
+
+**Out of scope:**
+- the independence design's s4 onward: paths, the independent count, vertex-disjointness, the minimum cut and reporting,
+  all of which belong to CONVERGENCE;
+- `CORRELATED_WITH` edges, and any measurement of correlation;
+- any change to relationship classification or its classes, and the UNKNOWN state;
+- question, Prashna and Muhurta input nodes (no question engine is built);
+- applying a rule, or populating the registry with real rules;
+- scoring, weighting, fitting or confidence computation;
+- prediction, any LLM path, the API and real personal data;
+- any change to a certified calculation, its rule tables or the pinned registry snapshot;
+- retiring `SUPPORT_PATHS_V1` gates H and I;
+- declaring EVIDENCE exit.
+
+### 5. Decision points
+
+| # | Question | Options | Recommendation |
+|---|---|---|---|
+| D1 | What schema does the graph record? | **A.** The independence design's s3 node kinds and its `DERIVES_FROM` and `APPLIES_TO` edges, as a recording schema only. This adopts nothing of its s4 onward, and no `CORRELATED_WITH` edge. **B.** A minimal schema of evidence-to-input links only. | **A.** Q8 s6's exit criterion asks for "provenance sufficient to build the graph in the independence design". B leaves rule, chart and timing nodes unrecorded, and its gap could not be recovered later. |
+| D2 | When is the graph recorded? | **A.** At evidence-creation time, in the same transaction as the item, from the item's own fields and records the store already holds. An item whose graph cannot be written is not persisted. **B.** A later builder that reconstructs the graph from stored items. | **A.** The design's s3 calls the graph "not inferred" and says recording later is "unrecoverable"; H4 makes four of the five classes derivable at creation time from what is recorded. B is reconstruction. |
+| D3 | How is a node identified? | **A.** Content-addressed: SHA-256 over the node's canonical identity record. Two items share a node exactly when every identity field agrees, full calculation provenance included. Evidence and rule nodes carry their `EVD` and `RUL` identity. No new identifier family. **B.** A new issued identifier family for graph nodes. | **A.** A shared node must be found from what it is, not assigned. B adds an issuer, a `docs/NAMING_STANDARD.md` family and a registration gate, with nothing to issue that identity does not already fix. |
+| D4 | Where is the graph stored? | **A.** Append-only node and edge tables in the evidence store's database, with UPDATE and DELETE refused by triggers, under a new store schema version. **B.** The graph serialised inside each evidence payload. | **A.** A node two items share is then stored once, which is what makes shared origin recordable. B copies it into each payload and hides the sharing. |
+| D5 | Where is the certification? | **A.** New gates in `EVIDENCE_FOUNDATIONS_V1`. **B.** A new artifact. | **A**, as in WP-E3 to WP-E5. |
+
+### 6. Exit criteria (fixed before coding)
+
+Each must be met, with evidence, before WP-E6 is proposed for merge. They assume the recommended options; a different
+choice changes only the criteria it names.
+
+| # | Criterion |
+|---|---|
+| AC1 | **Recorded at creation** (D2 A): `persist()` writes the item, every node and every edge in one transaction. A failure to write any of them persists nothing and takes no `EVD` number. No API adds a node or edge to an item after it is persisted. |
+| AC2 | **Node kinds and identity** (D1 A, D3 A): the six node kinds each declare their identity fields, and identity is content-addressed. The same fact under calculation provenances differing in any one field is two nodes, with one negative test per provenance field. Identical identity fields across items give one node. |
+| AC3 | **Edges:** only `DERIVES_FROM` and `APPLIES_TO` exist, between declared node-kind pairs, each naming existing nodes. An undeclared kind, a disallowed pair, a dangling edge or a `CORRELATED_WITH` edge is refused, one negative test each. |
+| AC4 | **Acyclic:** the graph is a directed acyclic graph. An edge that would close a cycle is refused, and a cycle or a dangling edge planted by direct SQL is refused when read. |
+| AC5 | **Not inferred** (D2 A): every node and edge comes from a field of the item or a record the store already holds: the entity revision's chart, its parent link, the registered rule version and the linked items. No node is created for a field the item does not carry. A structural test shows the graph code reads no other source. |
+| AC6 | **Completeness recorded, never filled** (`ADR-0021` D5): an item whose lineage states that its inputs or derivations are incomplete has that statement on its evidence node, and every read reports it. The graph adds no node or edge to make an item look complete. |
+| AC7 | **Agreement with the evidence:** from its graph alone, each item's calculated inputs, chart reference, varga, timing, rule reference, `derived_from` links and `recomputes` link are reproduced exactly. The graph holds no node or edge that the items' records do not account for. Nodes and edges round-trip through storage. |
+| AC8 | **Derived subjects:** an item on a derived subject's chart has a `DERIVES_FROM` edge from its parent chart's node, taken only from the H0 parent link. |
+| AC9 | **Rule nodes from the registry** (`ADR-0121`): a rule node is created only from the registered rule version that `persist()` has verified against the pinned registry. Its identity includes the `RUL` identifier, version, variant, content hash and snapshot hash. Rows from another snapshot stay as recorded. |
+| AC10 | **Immutability:** the node and edge tables are append-only, and UPDATE and DELETE are refused at the database layer, tested by direct SQL. A recomputation adds its own evidence node and edges and leaves the original's untouched. |
+| AC11 | **Nothing computed over the graph:** every read returns its members and decomposes to its records. A structural test shows no path count, independent count, cut, score, weight or ratio is computed. |
+| AC12 | **Classification unchanged:** relationship classification, its five classes and the UNKNOWN state behave exactly as under `ADR-0119`. CORRELATED is never assigned. |
+| AC13 | **Protected holdouts untouched:** the graph code imports no ledger read path, and gates G to I are unchanged. |
+| AC14 | **Fixed artifacts unchanged:** every certified calculation artifact is unchanged outside volatile fields and `modules_scanned`, and the pinned registry snapshot is unchanged. |
+| AC15 | **Certification:** `EVIDENCE_FOUNDATIONS_V1` gains gates for graph integrity, graph refusals and the graph's agreement with the evidence. Each carries negative controls that are wrong by construction, including a deliberately broken comparator. Gates A to O are unchanged, and C2, C3 and C4 pass. |
+| AC16 | **Scope held:** nothing in s4's out-of-scope list is implemented, all data is synthetic, no prediction is issued, and EVIDENCE exit is not declared. |
+| AC17 | **Records:** the execution state and handoff are updated, and the merge record states WP-E6's Charter compliance. |
+
+### 7. Charter compliance (`specs/PROJECT_CHARTER.md` v1.4.0)
+
+- **s5** (provenance): AC1, AC5, AC7 and AC9 record each item's provenance as a graph at the moment it is produced.
+- **s6** (learning): nothing in WP-E6 learns or measures. `CORRELATED_WITH` stays unwritten until a measurement exists.
+- **s9** (what stays fixed): AC14 leaves certified calculations and the pinned registry unchanged.
+- **"Complete product contract" s7** (the LLM as explainer): there is no LLM path.
+- **The Q8 disposition:** WP-E6 issues no prediction.
+- **`ADR-0021` D5:** AC6 and AC12 keep unknown and incomplete apart from independent.
+- No conflict with the Charter was found.
+
+- **Decision:** as s2, and, pending the checkpoint, s4 to s6.
+- **Consequences:**
+  - On a CEO PASS and the owner's acceptance, WP-E6 is implemented against s4 and s6 under the chosen options, on its
+    own branch, and submitted for review.
+  - Accepting D1 option A adopts the independence design's s3 recording schema only. It leaves that document
+    `PROPOSED` in every other respect.
+- **Evidence:** merge `69730bfdf3e5ce1b9f01b166ef5877fa1908f50b`; PR #56; head CI `44041867000`; post-merge CI
+  `44047429370`. The owner's instruction exists as session input, not as a repository file.
+
+---
+
 ## ADR template (copy, do not edit above the line)
 
 ## ADR-XXXX - <title>
