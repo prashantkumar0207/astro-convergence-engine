@@ -930,6 +930,8 @@ CERTIFIER_HASH = "c" * 64
 
 #: The registry's synthetic fixture rules the H4 gates register (ADR-0121: rules come only from the pinned registry).
 PARASHARI_KEY, KP_KEY = "synthetic.parashari.tenth-lord-in-tenth", "synthetic.kp.tenth-cusp-sublord"
+#: The fixture rule published under two named variants.
+VARIANTS_KEY = "synthetic.parashari.moon-in-fourth"
 
 
 def _rule_spec(school, strength="as declared by the synthetic source"):
@@ -1291,50 +1293,198 @@ def gate_l_relationships_and_provenance():
 
 # ------------------------------------------------------------------ H5 (ADR-0120; ADR-0121)
 
+def registry_round_trips(item) -> bool:
+    """Gate M's round-trip comparator: the published record rebuilds exactly the rule, under its own content hash."""
+
+    try:
+        rebuilt = rule_registry.rule_from_record({**rule_registry.content_record(item),
+                                                  "content_hash": item.content_hash})
+    except rule_registry.RegistryError:
+        return False
+    return rebuilt == item and rule_registry.content_hash(item) == item.content_hash
+
+
+def files_match(committed: bytes, produced: bytes) -> bool:
+    """Gate M's authoring comparator: a committed file is byte for byte what the authoring process produces."""
+
+    return committed == produced
+
+
+def registry_integrity_failures(registry: rule_registry.RuleRegistry, issued: dict, directory: Path,
+                                round_trips=registry_round_trips, same_file=files_match) -> list:
+    """Gate M's checks, as a function of what they inspect, so each can be shown to fail on a planted violation
+    (CEO HOLD on PR #56, item 2). Returns (check, message) for every failure; an empty list is an intact registry."""
+
+    failures = []
+    rules = registry.rules()
+    for item in rules:
+        label = f"{item.rule} v{item.version} {item.variant!r}"
+        if not round_trips(item):
+            failures.append(("round_trip", f"{label} does not round-trip or its content hash disagrees"))
+        if issued.get(item.rule.number) != (item.key, item.school):
+            failures.append(("binding", f"{label} is not bound to the identity the allocation history issued"))
+        try:
+            retrieved = registry.lookup(item.rule, item.version, item.variant)
+            claimed = registry.rule_version(item.rule, item.version, item.variant)
+        except rule_registry.RegistryError as exc:
+            failures.append(("published", f"{label} is not retrievable as published: {exc}"))
+            continue
+        if retrieved != item or item.synthetic is not True or item.certification.measured_performance is not None:
+            failures.append(("published", f"{label} is not retrievable as published, or is not synthetic"))
+        if (claimed.rule, claimed.version, claimed.spec.content_hash, claimed.spec.knowledge_snapshot_hash,
+                claimed.spec.variant, claimed.spec.school) != (item.rule, item.version, item.content_hash,
+                                                               registry.snapshot_sha256, item.variant, item.school):
+            failures.append(("store_view", f"the evidence store's view of {label} disagrees with the rule"))
+    identities = [(item.rule, item.version, item.variant) for item in rules]
+    if len(set(identities)) != len(identities):
+        failures.append(("published", "a rule is published under another rule's identity"))
+    rule_ids = sorted({item.rule for item in rules})
+    for rule in rule_ids:
+        versions = list(registry.versions(rule))
+        if versions != list(range(1, len(versions) + 1)):
+            failures.append(("versions", f"{rule}'s versions are not 1..n"))
+    if not [(rule, version) for rule in rule_ids for version in registry.versions(rule)
+            if len(registry.variants(rule, version)) > 1]:
+        failures.append(("variants", "no published rule carries two named variants, so variant handling is "
+                                     "unexercised"))
+    if sorted(issued) != list(range(1, len(issued) + 1)) or sorted(item.number for item in rule_ids) != sorted(issued):
+        failures.append(("allocation", "the published rules and the allocation history disagree"))
+    try:
+        history, snapshot, manifest = author_rule_registry.build(directory)
+    except SystemExit as exc:
+        failures.append(("authoring", f"the authoring process refuses the committed source: {exc}"))
+        return failures
+    for name, expected in ((rule_registry.HISTORY_NAME, history), ("snapshot.json", snapshot),
+                           (rule_registry.MANIFEST_NAME, manifest)):
+        if not same_file((directory / name).read_bytes(), expected):
+            failures.append(("authoring", f"{name} is not exactly what the governed authoring process produces"))
+    return failures
+
+
+def _forged_rule(item, **fields):
+    """A RegistryRule carrying fields its constructor refuses, built around the constructor on purpose: only Gate M's
+    own check can then reject it."""
+
+    planted = object.__new__(type(item))
+    for field in dataclasses.fields(item):
+        object.__setattr__(planted, field.name, fields[field.name] if field.name in fields else
+                           item.__getattribute__(field.name))
+    return planted
+
+
+class _MisreportingRegistry(rule_registry.RuleRegistry):
+    """A registry whose evidence-store view names another snapshot than the one it was loaded from."""
+
+    def rule_version(self, rule, version, variant):
+        honest = super().rule_version(rule, version, variant)
+        return dataclasses.replace(honest, spec=dataclasses.replace(honest.spec, knowledge_snapshot_hash="f" * 64))
+
+
 def gate_m_registry_integrity():
     """The pinned registry: every published rule verifies, round-trips and is bound to its issued RUL; versions are
     1..n; variants are named and both kept; the four certification claims are separate; the authoring process
-    produced exactly the committed files (ADR-0120 AC1 to AC5, AC10, AC11; ADR-0121)."""
+    produced exactly the committed files (ADR-0120 AC1 to AC5, AC10, AC11; ADR-0121). Each check then rejects a
+    planted violation, wrong by construction, and each comparator is distinguishable from a broken one (CEO HOLD on
+    PR #56, item 2)."""
 
     registry = rule_registry.pinned()
     rules = registry.rules()
     issued = rule_registry.read_history(rule_registry.DATA_DIR / rule_registry.HISTORY_NAME)
-    for item in rules:
-        if rule_registry.rule_from_record({**rule_registry.content_record(item), "content_hash": item.content_hash}) \
-                != item or rule_registry.content_hash(item) != item.content_hash:
-            fail(f"{item.rule} v{item.version} {item.variant!r} does not round-trip or its content hash disagrees")
-        if issued[item.rule.number] != (item.key, item.school):
-            fail(f"{item.rule} is not bound to the identity the allocation history issued")
-        if registry.lookup(item.rule, item.version, item.variant) != item or not item.synthetic or \
-                item.certification.measured_performance is not None:
-            fail(f"{item.rule} v{item.version} {item.variant!r} is not retrievable as published, or is not synthetic")
-        claimed = registry.rule_version(item.rule, item.version, item.variant)
-        if (claimed.spec.content_hash, claimed.spec.knowledge_snapshot_hash, claimed.spec.variant,
-                claimed.spec.school) != (item.content_hash, registry.snapshot_sha256, item.variant, item.school):
-            fail("the evidence store's view of a published rule disagrees with the rule")
+    for _check, message in registry_integrity_failures(registry, issued, rule_registry.DATA_DIR):
+        fail(message)
     rule_ids = sorted({item.rule for item in rules})
-    for rule in rule_ids:
-        if list(registry.versions(rule)) != list(range(1, len(registry.versions(rule)) + 1)):
-            fail(f"{rule}'s versions are not 1..n")
     with_variants = [(rule, version) for rule in rule_ids for version in registry.versions(rule)
                      if len(registry.variants(rule, version)) > 1]
-    if not with_variants:
-        fail("no published rule carries two named variants, so variant handling is unexercised")
-    if sorted(issued) != list(range(1, len(issued) + 1)) or sorted(item.number for item in rule_ids) != sorted(issued):
-        fail("the published rules and the allocation history disagree")
-    try:
-        history, snapshot, manifest = author_rule_registry.build(rule_registry.DATA_DIR)
-    except SystemExit as exc:
-        fail(f"the authoring process refuses the committed source: {exc}")
-    for name, expected in ((rule_registry.HISTORY_NAME, history), ("snapshot.json", snapshot),
-                           (rule_registry.MANIFEST_NAME, manifest)):
-        if (rule_registry.DATA_DIR / name).read_bytes() != expected:
-            fail(f"{name} is not exactly what the governed authoring process produces")
+
+    controls = {}
+    snapshot = registry.snapshot_sha256
+    first, variants = registry.by_key(PARASHARI_KEY), registry.by_key(VARIANTS_KEY)
+    target = registry.lookup(first, 1, "base")
+    non_synthetic = _forged_rule(target, synthetic=False)
+    non_synthetic = _forged_rule(non_synthetic, content_hash=rule_registry.content_hash(non_synthetic))
+
+    def replacing(old, new):
+        return rule_registry.RuleRegistry(tuple(new if item == old else item for item in rules), snapshot)
+
+    def without(predicate):
+        return rule_registry.RuleRegistry(tuple(item for item in rules if not predicate(item)), snapshot)
+
+    misfiled = rule_registry.RuleRegistry(rules, snapshot)
+    misfiled._rules[(variants, 1, "reading-a")] = registry.lookup(variants, 1, "reading-b")
+    hash_disagrees = replacing(target, _forged_rule(target, content_hash="e" * 64))
+    with tempfile.TemporaryDirectory() as folder:
+        root = Path(folder)
+
+        def planted_directory(name, mutate):
+            directory = root / name
+            shutil.copytree(rule_registry.DATA_DIR, directory)
+            mutate(directory)
+            return directory
+
+        def reformat_manifest(directory):
+            data = json.loads((directory / rule_registry.MANIFEST_NAME).read_bytes())
+            (directory / rule_registry.MANIFEST_NAME).write_bytes((json.dumps(data, indent=4) + "\n").encode("ascii"))
+
+        def move_school(directory):
+            source = json.loads((directory / author_rule_registry.SOURCE_NAME).read_bytes())
+            source["rules"][0]["school"] = ProducingSystem.KP.value if source["rules"][0]["school"] != \
+                ProducingSystem.KP.value else ProducingSystem.PARASHARI.value
+            (directory / author_rule_registry.SOURCE_NAME).write_bytes(
+                (json.dumps(source, sort_keys=True, indent=1) + "\n").encode("ascii"))
+
+        reformatted = planted_directory("reformatted", reformat_manifest)
+        cases = [
+            ("a content hash that disagrees with the content", hash_disagrees, issued, rule_registry.DATA_DIR,
+             {"round_trip"}),
+            ("content changed under an unchanged hash", replacing(target, _forged_rule(target, statement="planted")),
+             issued, rule_registry.DATA_DIR, {"round_trip"}),
+            ("a rule bound to another identity than the history issued", registry,
+             {**issued, first.number: ("synthetic.planted", target.school)}, rule_registry.DATA_DIR, {"binding"}),
+            ("a rule not marked synthetic", replacing(target, non_synthetic), issued, rule_registry.DATA_DIR,
+             {"round_trip", "published"}),
+            ("measured performance supplied", replacing(target, _forged_rule(target, certification=_forged_rule(
+                target.certification, measured_performance="0.9"))), issued, rule_registry.DATA_DIR,
+             {"round_trip", "published"}),
+            ("a rule filed under another variant's identity", misfiled, issued, rule_registry.DATA_DIR,
+             {"published"}),
+            ("an evidence-store view naming another snapshot", _MisreportingRegistry(rules, snapshot), issued,
+             rule_registry.DATA_DIR, {"store_view"}),
+            ("versions not 1..n", without(lambda item: (item.rule, item.version) == (first, 1)), issued,
+             rule_registry.DATA_DIR, {"versions"}),
+            ("no rule with two named variants", without(lambda item: item.variant == "reading-b"), issued,
+             rule_registry.DATA_DIR, {"variants"}),
+            ("an issued number no rule publishes", registry,
+             {**issued, len(issued) + 1: ("synthetic.planted", target.school)}, rule_registry.DATA_DIR,
+             {"allocation"}),
+            ("a committed file the authoring process did not produce", registry, issued, reformatted, {"authoring"}),
+            ("a source the authoring process refuses", registry, issued,
+             planted_directory("school", move_school), {"authoring"}),
+        ]
+        for label, planted, history, directory, expected in cases:
+            found = {check for check, _message in registry_integrity_failures(planted, history, directory)}
+            if found != expected:
+                fail(f"Gate M did not reject {label} for its intended check: expected {sorted(expected)}, "
+                     f"found {sorted(found)}")
+            controls[f"{label} rejected"] = True
+        # Deliberately broken comparators: each must be distinguishable from the real one on a planted violation.
+        for label, planted, directory, broken, check in (
+                ("a round-trip comparator comparing a record with itself", hash_disagrees, rule_registry.DATA_DIR,
+                 {"round_trips": lambda item: rule_registry.content_record(item) ==
+                  rule_registry.content_record(item)}, "round_trip"),
+                ("an authoring comparator comparing parsed JSON, not bytes", registry, reformatted,
+                 {"same_file": lambda committed, produced: json.loads(committed) == json.loads(produced)},
+                 "authoring")):
+            real = {found for found, _message in registry_integrity_failures(planted, issued, directory)}
+            weak = {found for found, _message in registry_integrity_failures(planted, issued, directory, **broken)}
+            if check not in real or check in weak:
+                fail(f"{label} was not distinguishable from the real one")
+            controls[f"{label} rejected"] = True
     return {"classification": "structural_integrity", "rules_published": len(rule_ids),
             "rule_versions_published": len({(item.rule, item.version) for item in rules}),
             "variant_records": len(rules), "rules_with_two_variants": len(with_variants),
             "schools": len({item.school for item in rules}), "rul_numbers_issued": len(issued),
-            "snapshot_sha256": registry.snapshot_sha256, "mismatches": 0}
+            "snapshot_sha256": registry.snapshot_sha256, "mismatches": 0, "controls_rejected": len(controls),
+            "controls": sorted(controls)}
 
 
 def gate_n_registry_refusals():
@@ -1416,6 +1566,37 @@ def gate_n_registry_refusals():
             rule=RuleReference(rule=first, version=1, variant="planted"))), reason="another snapshot")
         refuses("evidence naming an unrecorded variant", lambda: store.persist(world.item(
             rule=RuleReference(rule=first, version=1, variant="reading-b"))), reason="is not registered")
+        # CEO HOLD on PR #56, item 1: rows written around register_rule that carry the pinned snapshot hash but are
+        # not exactly what the pinned registry publishes under the identity the evidence names.
+        variants = registry.by_key(VARIANTS_KEY)
+        second = registry.rule_version(first, 2, "base")
+        reading_b = registry.rule_version(variants, 1, "reading-b")
+        unissued = RuleId.from_number(LAST_TEST // 1000)
+        unpublished, mismatched = "not published by the pinned registry", "differs from the pinned registry's"
+        for label, (rule, version, variant), row, reason in (
+                ("a forged variant", (first, 1, "forged"),
+                 dataclasses.replace(good, spec=dataclasses.replace(good.spec, variant="forged")), unpublished),
+                ("an unissued RUL identity", (unissued, 1, "base"), dataclasses.replace(good, rule=unissued),
+                 unpublished),
+                ("a payload naming another published identity than its key", (variants, 1, "reading-a"), good,
+                 mismatched),
+                ("a published identity with forged content", (first, 2, "base"), dataclasses.replace(
+                    second, spec=dataclasses.replace(second.spec, content_hash="e" * 64)), mismatched),
+                ("a published identity with forged declared strength", (variants, 1, "reading-b"),
+                 dataclasses.replace(reading_b, spec=dataclasses.replace(reading_b.spec, declared_strength="planted")),
+                 mismatched)):
+            if row.spec.knowledge_snapshot_hash != registry.snapshot_sha256:
+                fail(f"the {label} control does not carry the pinned snapshot hash, so it tests nothing new")
+            store._db.execute("INSERT INTO registered_rule_versions (rule_id, version, variant, payload) "
+                              "VALUES (?, ?, ?, ?)", (rule.value, version, variant, json.dumps(rule_to_record(row))))
+            refuses(f"evidence naming {label} under the pinned snapshot hash", lambda reference=RuleReference(
+                rule=rule, version=version, variant=variant): store.persist(world.item(rule=reference)),
+                reason=reason)
+        if store.issued_count("EVD") != 0 or store.evidence_ids() != []:
+            fail("a refused write took an EVD number or left an item")
+        if store.rule_version(RuleReference(rule=first, version=1, variant="planted")).spec.knowledge_snapshot_hash \
+                != "f" * 64 or store.persist(world.item()) != EvidenceId.from_number(1):
+            fail("a historical snapshot record was not kept readable, or the published rule no longer admits evidence")
         store.close()
     return {"classification": "negative_control", "refusals_verified": len(refused), "refused": sorted(refused)}
 

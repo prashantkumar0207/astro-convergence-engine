@@ -7,7 +7,8 @@ so a refused write takes none. Triggers refuse every UPDATE and DELETE.
 - Rule identity (ADR-0121): the store issues no RUL number. The governed registry authoring process
   is the only RUL issuer, and the store records a rule version only if it matches, exactly, a rule
   the pinned registry publishes: RUL identifier, version, school, explicit variant, content hash and
-  snapshot hash. Evidence names only such a registered version, from the pinned snapshot in force.
+  snapshot hash. Evidence names only such a registered version, from the pinned snapshot in force, and only if
+  the recorded row is, field for field, the rule the pinned registry publishes under that identity.
 
 - Persistence (ADR-0113 s2 E1): an item is immutable. A recomputation is a new item that names the
   one it recomputes; the original stays.
@@ -370,9 +371,23 @@ class EvidenceStore:
 
     def _check(self, item: EvidenceItem) -> None:
         rule = self.rule_version(item.rule)
-        if rule.spec.knowledge_snapshot_hash != rule_registry.pinned().snapshot_sha256:
+        registry = rule_registry.pinned()
+        if rule.spec.knowledge_snapshot_hash != registry.snapshot_sha256:
             raise StoreError(f"{item.rule.rule} v{item.rule.version} was registered from another snapshot; new evidence "
                              f"names only rules of the pinned snapshot in force (ADR-0120 AC8)")
+        # A recorded row is trusted only as far as the pinned registry publishes it, exactly, under the identity the
+        # evidence names: a matching snapshot hash alone does not admit a forged variant, an unissued RUL identity, a
+        # row whose payload names another identity than its key, or changed content (CEO HOLD on PR #56, item 1).
+        # Rows recorded under another snapshot stay where they are, readable as history; only new evidence is refused.
+        try:
+            published = registry.rule_version(item.rule.rule, item.rule.version, item.rule.variant)
+        except rule_registry.RegistryError as exc:
+            raise StoreError(f"{exc}: the recorded rule version is not published by the pinned registry; new evidence "
+                             f"names only a published rule (ADR-0120 AC7, AC8; ADR-0121)") from exc
+        if rule_to_record(rule) != rule_to_record(published):
+            raise StoreError(f"{item.rule.rule} v{item.rule.version} {item.rule.variant!r}: the recorded rule version "
+                             f"differs from the pinned registry's publication; new evidence names only the published "
+                             f"rule (ADR-0120 AC7, AC8; ADR-0121)")
         if item.producing_system is not rule.spec.school:
             raise StoreError(f"a {item.producing_system.value} item cannot name a {rule.spec.school.value} rule; "
                              f"systems stay isolated")

@@ -335,15 +335,15 @@ def test_ac13_no_certified_rule_table_is_touched():
     assert changed.returncode != 0 or changed.stdout.strip() == ""
 
 
-def test_ac8_new_evidence_names_only_a_rule_of_the_pinned_snapshot_in_force(store):
-    """A rule version recorded under another snapshot stays historical: new evidence cannot name it (AC8)."""
+def _evidence_world(store):
+    """A synthetic entity in `store`, the published RUL-1 v1 base rule registered, and an item builder naming a rule
+    reference of the caller's choosing."""
 
     from engine.evidence.entity import (ChartCandidate, DataClass, EntityKind, OriginCertainty, OriginMoment, Person,
                                         RecordProvenance, Shape)
     from engine.evidence.evidence import (CONFIDENCE_COMPONENTS, CalculatedInput, ChartContext, ChartReference,
                                           Confidence, Domain, EvidenceItem, Lineage, Polarity, RuleReference,
                                           TimingContext, TimingKind)
-    from engine.evidence.evidence_store import rule_to_record
     from engine.models.provenance import Provenance
 
     prov = RecordProvenance(source="synthetic fixture", method="hand-written test data", schema_version="h5-v1")
@@ -356,18 +356,14 @@ def test_ac8_new_evidence_names_only_a_rule_of_the_pinned_snapshot_in_force(stor
                                            provenance=prov, data_class=DataClass.SYNTHETIC))
     good = PINNED.rule_version(FIRST, 1, "base")
     store.register_rule(good)
-    stale = dataclasses.replace(good, spec=dataclasses.replace(good.spec, variant="stale",
-                                                               knowledge_snapshot_hash="f" * 64))
-    store._db.execute("INSERT INTO registered_rule_versions (rule_id, version, variant, payload) VALUES (?, ?, ?, ?)",
-                      (FIRST.value, 1, "stale", json.dumps(rule_to_record(stale))))
     calc = Provenance(profile_name="parashari_lahiri", ayanamsa_mode=1, frame="sidereal", house_system="W",
                       node_policy="mean", ephemeris_mode="swieph")
 
-    def item(variant):
+    def item(variant, rule=FIRST, version=1):
         return EvidenceItem(
             entity=entity, domain=Domain.JATAKA, question=None, producing_system=ProducingSystem.PARASHARI,
-            rule=RuleReference(rule=FIRST, version=1, variant=variant), declared_strength=good.spec.declared_strength,
-            measured_reliability=None,
+            rule=RuleReference(rule=rule, version=version, variant=variant),
+            declared_strength=good.spec.declared_strength, measured_reliability=None,
             lineage=Lineage(inputs=(CalculatedInput(fact="Moon longitude", provenance=calc),), inputs_complete=True,
                             derivations_complete=True),
             chart=ChartReference(entity_revision=1, chart_label="natal"),
@@ -376,7 +372,88 @@ def test_ac8_new_evidence_names_only_a_rule_of_the_pinned_snapshot_in_force(stor
             polarity=Polarity.POSITIVE, confidence=Confidence(**{name: None for name in CONFIDENCE_COMPONENTS}),
             historical_performance=None, derived_from=(), recomputes=None, provenance=prov,
             data_class=DataClass.SYNTHETIC)
+    return good, item
 
+
+def _plant_row(store, key, rule_version):
+    """A row written straight into the table, bypassing register_rule: what a forged or corrupted store holds."""
+
+    from engine.evidence.evidence_store import rule_to_record
+
+    store._db.execute("INSERT INTO registered_rule_versions (rule_id, version, variant, payload) VALUES (?, ?, ?, ?)",
+                      (*key, json.dumps(rule_to_record(rule_version))))
+
+
+def test_ac8_new_evidence_names_only_a_rule_of_the_pinned_snapshot_in_force(store):
+    """A rule version recorded under another snapshot stays historical: new evidence cannot name it (AC8)."""
+
+    good, item = _evidence_world(store)
+    stale = dataclasses.replace(good, spec=dataclasses.replace(good.spec, variant="stale",
+                                                               knowledge_snapshot_hash="f" * 64))
+    _plant_row(store, (FIRST.value, 1, "stale"), stale)
     assert store.persist(item("base")).number == 1
     with pytest.raises(StoreError, match="another snapshot"):
         store.persist(item("stale"))
+
+
+UNISSUED = RuleId.from_number(999999)
+
+
+def _forged_rows(good):
+    """Rows the pinned registry does not publish, each carrying the pinned snapshot hash (CEO HOLD on PR #56,
+    item 1): the reference the evidence names, the row's key, its payload, and the refusal expected."""
+
+    def spec(**changes):
+        return dataclasses.replace(good, spec=dataclasses.replace(good.spec, **changes))
+
+    second = PINNED.rule_version(FIRST, 2, "base")
+    return {
+        "a forged variant": ((FIRST, 1, "forged"), (FIRST.value, 1, "forged"), spec(variant="forged"),
+                             "not published by the pinned registry"),
+        "an unissued RUL identity": ((UNISSUED, 1, "base"), (UNISSUED.value, 1, "base"),
+                                     dataclasses.replace(good, rule=UNISSUED), "not published by the pinned registry"),
+        "a payload naming another published identity than its key": (
+            (FIRST, 2, "base"), (FIRST.value, 2, "base"), good, "differs from the pinned registry's publication"),
+        "a published identity with forged content": (
+            (FIRST, 2, "base"), (FIRST.value, 2, "base"),
+            dataclasses.replace(second, spec=dataclasses.replace(second.spec, content_hash="e" * 64)),
+            "differs from the pinned registry's publication"),
+        "a published identity with forged declared strength": (
+            (FIRST, 2, "base"), (FIRST.value, 2, "base"),
+            dataclasses.replace(second, spec=dataclasses.replace(second.spec, declared_strength="planted")),
+            "differs from the pinned registry's publication"),
+    }
+
+
+@pytest.mark.parametrize("case", ["a forged variant", "an unissued RUL identity",
+                                  "a payload naming another published identity than its key",
+                                  "a published identity with forged content",
+                                  "a published identity with forged declared strength"])
+def test_ac7_ac8_persist_refuses_a_recorded_row_the_pinned_registry_does_not_publish(store, case):
+    """A row carrying the pinned snapshot hash is still refused unless it is exactly the published rule under the
+    identity the evidence names. The refusal takes no EVD number, and every recorded row stays in place."""
+
+    good, item = _evidence_world(store)
+    reference, key, row, reason = _forged_rows(good)[case]
+    assert row.spec.knowledge_snapshot_hash == PINNED.snapshot_sha256
+    _plant_row(store, key, row)
+    with pytest.raises(StoreError, match=reason):
+        store.persist(item(reference[2], rule=reference[0], version=reference[1]))
+    assert store.issued_count("EVD") == 0 and store.evidence_ids() == []
+    assert store.persist(item("base")).number == 1
+    assert row in store.rule_versions(reference[0])
+
+
+def test_ac8_historical_snapshot_records_are_preserved_beside_the_published_rule(store):
+    """The exact-publication check refuses new evidence only: a row from another snapshot stays readable, keeps its
+    AC8 refusal, and evidence already persisted against the published rule still loads."""
+
+    good, item = _evidence_world(store)
+    stale = dataclasses.replace(good, spec=dataclasses.replace(good.spec, variant="stale",
+                                                               knowledge_snapshot_hash="f" * 64))
+    _plant_row(store, (FIRST.value, 1, "stale"), stale)
+    first = store.persist(item("base"))
+    assert store.rule_versions(FIRST) == [good, stale]
+    with pytest.raises(StoreError, match="another snapshot"):
+        store.persist(item("stale"))
+    assert store.load(first) == item("base") and store.evidence_ids() == [first]

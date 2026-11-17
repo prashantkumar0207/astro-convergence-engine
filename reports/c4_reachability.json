@@ -1404,8 +1404,9 @@
    "status": "IN_USE_COVERED"
   },
   "engine.evidence.evidence_store.rule_to_record": {
-   "caller_count": 1,
+   "caller_count": 2,
    "callers": [
+    "engine.evidence.evidence_store.EvidenceStore._check",
     "engine.evidence.evidence_store.EvidenceStore.register_rule"
    ],
    "covered": true,
@@ -1617,8 +1618,9 @@
    "status": "IN_USE_COVERED"
   },
   "engine.evidence.rule_registry.RuleRegistry.rule_version": {
-   "caller_count": 1,
+   "caller_count": 2,
    "callers": [
+    "engine.evidence.evidence_store.EvidenceStore._check",
     "engine.evidence.evidence_store.EvidenceStore.register_rule"
    ],
    "covered": true,

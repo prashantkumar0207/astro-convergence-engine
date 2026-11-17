@@ -1,7 +1,7 @@
 {
  "schema": "evidence_foundations_v1_certification",
  "adr": "ADR-0115 s4; ADR-0116 s4; ADR-0119 s3, s5; ADR-0120 s4, s6; ADR-0121",
- "date": "2026-11-16",
+ "date": "2026-11-17",
  "scope": "Structural certification of the EVIDENCE foundations: the H0 entity model, append-only entity store and ENT issuer (ADR-0114 WP-E1), and the H1 event model, append-only event store, separate confirmation records, EVR issuer and seeded event-class vocabulary (ADR-0115 WP-E2), and the H2 historical ledger, protected holdouts, pre-registered protocols and purpose-declared access log (ADR-0116 WP-E3), and the H4 evidence model, append-only evidence store, EVD and RUL issuers, provenance-checked joins, decomposable aggregates and structural relationship records (ADR-0119 WP-E4), and the H5 interpretation rule registry, its hash-pinned fail-closed snapshot and the governed RUL authoring process (ADR-0120 WP-E5; ADR-0121).",
  "reference": {
   "structure": "the model contracts of ADR-0114 s3, ADR-0115 s5, ADR-0116 s5, ADR-0119 s5 and ADR-0120 s6, exercised on synthetic records",
@@ -388,13 +388,30 @@
    "rul_numbers_issued": 4,
    "snapshot_sha256": "ea8d185ff0786e1c2d68b8010b45b9721367e8e55efca49a4c1a4b8402643d0d",
    "mismatches": 0,
+   "controls_rejected": 14,
+   "controls": [
+    "a committed file the authoring process did not produce rejected",
+    "a content hash that disagrees with the content rejected",
+    "a round-trip comparator comparing a record with itself rejected",
+    "a rule bound to another identity than the history issued rejected",
+    "a rule filed under another variant's identity rejected",
+    "a rule not marked synthetic rejected",
+    "a source the authoring process refuses rejected",
+    "an authoring comparator comparing parsed JSON, not bytes rejected",
+    "an evidence-store view naming another snapshot rejected",
+    "an issued number no rule publishes rejected",
+    "content changed under an unchanged hash rejected",
+    "measured performance supplied rejected",
+    "no rule with two named variants rejected",
+    "versions not 1..n rejected"
+   ],
    "exercises": [
     "evidence.rule_registry"
    ]
   },
   "N_registry_refusals": {
    "classification": "negative_control",
-   "refusals_verified": 45,
+   "refusals_verified": 50,
    "refused": [
     "a RUL identity rebound to another rule",
     "a RUL number the registry never issued",
@@ -434,7 +451,12 @@
     "a variant not among the known variants",
     "a version the registry never published",
     "an inferred school",
+    "evidence naming a forged variant under the pinned snapshot hash",
+    "evidence naming a payload naming another published identity than its key under the pinned snapshot hash",
+    "evidence naming a published identity with forged content under the pinned snapshot hash",
+    "evidence naming a published identity with forged declared strength under the pinned snapshot hash",
     "evidence naming a rule from another snapshot",
+    "evidence naming an unissued RUL identity under the pinned snapshot hash",
     "evidence naming an unrecorded variant",
     "free text or code as code",
     "free text or code as llm_output",
