@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.50.0 |
+| Version | 9.51.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-16 (PR #57 merged (`74c75c1`), pinning CI runners to `ubuntu-24.04`. WP-E5 (PR #56) updated from the repaired `main`. Not merged.) |
+| Last updated | 2026-11-17 (CEO bounded HOLD on PR #56 closed on the branch: AC7/AC8 exact publication on persist; AC14 Gate M controls. Not merged.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,23 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-17 - PR #56 bounded HOLD corrections (AC7/AC8; AC14)
+
+- **AC7/AC8:** `EvidenceStore._check` (called by `persist()`) now compares the whole recorded rule-version row with
+  what the pinned registry publishes under the identity the evidence names; a matching snapshot hash alone no longer
+  admits a row. The snapshot-in-force refusal stays first, so rows from another snapshot stay readable as history.
+  Regressions in `engine/tests/test_evidence_wp_e5.py`: forged variant, unissued RUL identity, payload naming another
+  published identity than its key, forged content, forged declared strength - all with the pinned snapshot hash;
+  refused writes take no EVD number. Gate N: 45 to 50 refusals.
+- **AC14:** Gate M's checks are now `registry_integrity_failures()`, run against 12 planted violations built around
+  the constructors (each must yield exactly its intended check) and two deliberately broken comparators (14 controls).
+  Gate M also checks that no rule is filed under another rule's identity, a gap the planted misfiling exposed.
+- **Self-audit:** 17 mutants (4 of the persist check, 13 of Gate M's checks and comparators) each caught by the new
+  tests or gates; the unmutated tree passes.
+- **Regenerated:** `EVIDENCE_FOUNDATIONS_V1` (Gates M and N only) and `reports/c4_reachability.json` (two call edges).
+- **Clean Linux verification at `6ebe4c8`:** 24/24 certifiers, drift clean (76 files), all governance steps, 2,004
+  tests passed, 0 skipped. CI results are on PR #56.
 
 ### 2026-11-16 - CI runners pinned to ubuntu-24.04 (PR #57); WP-E5 branch updated
 
