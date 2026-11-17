@@ -1,4 +1,5 @@
-"""The append-only evidence store, its registered rule versions, and the EVD issuer (ADR-0119; ADR-0121).
+"""The append-only evidence store, its registered rule versions, its provenance graph, and the EVD issuer (ADR-0119;
+ADR-0121; ADR-0122).
 
 The store shares one SQLite database with the entity, event and ledger stores, and keeps its own
 tables and its own EVD counter. An EVD number is taken in the same transaction that writes the item,
@@ -21,6 +22,12 @@ so a refused write takes none. Triggers refuse every UPDATE and DELETE.
   refused when read (AC11). CORRELATED is never assigned here. This follows recorded links; it is not
   a convergence algorithm and builds no graph.
 
+- Provenance graph (ADR-0122, WP-E6): persisting an item writes the nodes and edges it consumed, in the same
+  transaction as the item and its EVD number, from the item and the records already checked for it
+  (engine/evidence/provenance_graph.py). A node is stored once, under the hash of what it is, so a node two items
+  share is recorded as shared. No API adds a node or edge afterwards, and every read refuses a node whose key is not
+  its hash, a dangling or undeclared edge, and a cycle, however the rows were written.
+
 Nothing here scores, weights, fits or divides, and nothing writes to calculation state.
 """
 
@@ -30,23 +37,26 @@ import json
 import sqlite3
 from pathlib import Path
 
-from engine.evidence.entity import DataClass, RecordProvenance
+from engine.evidence.entity import ChartCandidate, DataClass, ParentLink, RecordProvenance
 from engine.evidence.evidence import (
     CONFIDENCE_COMPONENTS, CalculatedInput, ChartContext, ChartReference, Confidence, DependencyClass, Domain,
     EvidenceItem, EvidenceModelError, Lineage, Performance, Polarity, ProducingSystem, Relationship, RuleReference,
     RuleSpec, RuleVersion, Supplied, TimingContext, TimingKind, provenance_differences,
 )
 from engine.evidence.evidence_identifiers import EVD_FAMILY, EVD_LAST, EvidenceId, RuleId
+import engine.evidence.provenance_graph as provenance_graph
 import engine.evidence.rule_registry as rule_registry
 from engine.evidence.identifiers import EntityId
 from engine.evidence.store import EntityStore, StoreError
 from engine.models.provenance import Provenance
 
 #: v2 (ADR-0121): rule versions carry an explicit variant and are recorded, never issued; evidence names a variant.
-#: No v1 store exists outside temporary test databases; a v1 database's tables are left as they are and not read.
-SCHEMA_VERSION = "ace-evidence-store-v2"
+#: v3 (ADR-0122 D4): the provenance graph's node and edge tables. No v1 or v2 store exists outside temporary test
+#: databases; an earlier database's records carry their own schema version and are refused when read.
+SCHEMA_VERSION = "ace-evidence-store-v3"
 
-_APPEND_ONLY = ("registered_rule_versions", "evidence_items", "evidence_relationships")
+_APPEND_ONLY = ("registered_rule_versions", "evidence_items", "evidence_relationships", "graph_nodes",
+                "graph_edges")
 _SCHEMA = """
 CREATE TABLE IF NOT EXISTS evidence_issuers (family TEXT PRIMARY KEY, last_number INTEGER NOT NULL CHECK (last_number >= 0));
 CREATE TABLE IF NOT EXISTS registered_rule_versions (
@@ -67,6 +77,19 @@ CREATE TABLE IF NOT EXISTS evidence_relationships (
     first_id TEXT NOT NULL REFERENCES evidence_items (evidence_id),
     second_id TEXT NOT NULL REFERENCES evidence_items (evidence_id),
     payload TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS graph_nodes (
+    node_key TEXT PRIMARY KEY CHECK (length(node_key) = 64),
+    kind TEXT NOT NULL,
+    payload TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS graph_edges (
+    edge_number INTEGER PRIMARY KEY AUTOINCREMENT,
+    source_key TEXT NOT NULL REFERENCES graph_nodes (node_key),
+    kind TEXT NOT NULL,
+    target_key TEXT NOT NULL REFERENCES graph_nodes (node_key),
+    position INTEGER NOT NULL CHECK (position >= 0),
+    UNIQUE (source_key, kind, target_key)
 );
 CREATE TRIGGER IF NOT EXISTS evidence_issuers_never_decrease BEFORE UPDATE ON evidence_issuers
     WHEN NEW.last_number < OLD.last_number
@@ -352,13 +375,14 @@ class EvidenceStore:
     # ------------------------------------------------------------ evidence items
 
     def persist(self, item: EvidenceItem) -> EvidenceId:
-        """Write a new item and issue its EVD number, in one transaction."""
+        """Write a new item, issue its EVD number and record its provenance graph, in one transaction: if any part
+        fails, nothing is written and no number is taken (ADR-0122 AC1)."""
 
         if not isinstance(item, EvidenceItem):
             raise StoreError("only an EvidenceItem can be stored as evidence")
 
         def work():
-            self._check(item)
+            rule, candidate, parent = self._check(item)
             evidence_id = EvidenceId.from_number(self._issue(EVD_FAMILY, EVD_LAST))
             payload = _encode(item_to_record(evidence_id, item))
             item_from_record(json.loads(payload))
@@ -366,10 +390,60 @@ class EvidenceStore:
                              "VALUES (?, ?, ?, ?)", (evidence_id.value, item.entity.value,
                                                      None if item.recomputes is None else item.recomputes.value,
                                                      payload))
+            links = item.derived_from + (() if item.recomputes is None else (item.recomputes,))
+            try:
+                graph = provenance_graph.record_graph(evidence_id, item, candidate, parent, rule,
+                                                      {link: self.load(link) for link in links})
+            except provenance_graph.GraphError as exc:
+                raise StoreError(f"the provenance graph cannot be recorded: {exc}") from exc
+            self._write_graph(graph)
             return evidence_id
         return self._transaction(work)
 
-    def _check(self, item: EvidenceItem) -> None:
+    def _write_graph(self, graph: provenance_graph.Graph) -> None:
+        """Record a new item's nodes and edges. Called only by persist(), inside its transaction (ADR-0122 AC1). A
+        node already recorded must be the same node; a shared edge must be the same edge; an edge that would close
+        a cycle is refused (AC4)."""
+
+        for node in graph.nodes:
+            key, kind, payload = provenance_graph.node_to_row(node)
+            row = self._db.execute("SELECT kind, payload FROM graph_nodes WHERE node_key = ?", (key,)).fetchone()
+            if row is None:
+                self._db.execute("INSERT INTO graph_nodes (node_key, kind, payload) VALUES (?, ?, ?)",
+                                 (key, kind, payload))
+            elif self._node_from(key, row) != node:
+                raise StoreError(f"node {key} is recorded with another identity")
+        for edge in graph.edges:
+            row = self._db.execute("SELECT position FROM graph_edges WHERE source_key = ? AND kind = ? AND "
+                                   "target_key = ?", (edge.source.key, edge.kind.value, edge.target.key)).fetchone()
+            if row is not None:
+                if row[0] != edge.position:
+                    raise StoreError("an edge is recorded with another position")
+                continue
+            if self._reaches(edge.target.key, edge.source.key):
+                raise StoreError(f"an edge {edge.source.key} -> {edge.target.key} would close a cycle (ADR-0122 AC4)")
+            self._db.execute("INSERT INTO graph_edges (source_key, kind, target_key, position) VALUES (?, ?, ?, ?)",
+                             (edge.source.key, edge.kind.value, edge.target.key, edge.position))
+
+    def _reaches(self, start: str, goal: str) -> bool:
+        """Whether recorded edges lead from start to goal. A traversal; nothing is counted."""
+
+        seen, pending = {start}, [start]
+        while pending:
+            current = pending.pop()
+            if current == goal:
+                return True
+            for (successor,) in self._db.execute("SELECT target_key FROM graph_edges WHERE source_key = ?",
+                                                 (current,)).fetchall():
+                if successor not in seen:
+                    seen.add(successor)
+                    pending.append(successor)
+        return False
+
+    def _check(self, item: EvidenceItem) -> tuple:
+        """Every refusal before an item is written. Returns the records its graph is recorded from: the registered
+        rule version, the chart it names at its entity revision, and that revision's parent link."""
+
         rule = self.rule_version(item.rule)
         registry = rule_registry.pinned()
         if rule.spec.knowledge_snapshot_hash != registry.snapshot_sha256:
@@ -399,7 +473,8 @@ class EvidenceStore:
         if item.chart.entity_revision > len(history):
             raise StoreError(f"{item.entity} has no revision {item.chart.entity_revision}")
         _number, subject, _reason = history[item.chart.entity_revision - 1]
-        if item.chart.chart_label not in {chart.label for chart in subject.charts}:
+        candidates = [chart for chart in subject.charts if chart.label == item.chart.chart_label]
+        if not candidates:
             raise StoreError(f"{item.chart.chart_label!r} is not a chart of {item.entity} at revision "
                              f"{item.chart.entity_revision}")
         for link in item.derived_from:
@@ -411,6 +486,89 @@ class EvidenceStore:
                 raise StoreError("a recomputation keeps the entity, rule and system of the item it recomputes")
             if item.recomputes in item.derived_from:
                 raise StoreError("a recomputation names its original once, as recomputes")
+        candidate: ChartCandidate = candidates[0]
+        parent: ParentLink | None = subject.parent
+        return rule, candidate, parent
+
+    # ------------------------------------------------------------ the provenance graph (ADR-0122)
+
+    @staticmethod
+    def _node_from(key: str, row) -> provenance_graph.Node:
+        try:
+            return provenance_graph.node_from_row(key, row[0], row[1])
+        except provenance_graph.GraphError as exc:
+            raise StoreError(f"a recorded node is refused: {exc}") from exc
+
+    def _stored_node(self, key: str) -> provenance_graph.Node:
+        row = self._db.execute("SELECT kind, payload FROM graph_nodes WHERE node_key = ?", (key,)).fetchone()
+        if row is None:
+            raise StoreError(f"a dangling edge or a missing graph: node {key} is not recorded")
+        return self._node_from(key, row)
+
+    @staticmethod
+    def _graph_of(nodes: dict, rows) -> provenance_graph.Graph:
+        try:
+            edges = [provenance_graph.edge_from_row(nodes, *row) for row in rows]
+            return provenance_graph.Graph(nodes=tuple(nodes[key] for key in sorted(nodes)), edges=tuple(sorted(
+                edges, key=lambda edge: (edge.target.key, edge.kind.value, edge.source.key))))
+        except provenance_graph.GraphError as exc:
+            raise StoreError(f"the recorded provenance graph is refused: {exc}") from exc
+
+    def graph(self, evidence_ids) -> provenance_graph.Graph:
+        """The recorded graph the items consumed: their evidence nodes and everything recorded upstream of them,
+        ancestors' included. It returns its members; nothing is computed over it (ADR-0122 AC11)."""
+
+        ids = tuple(evidence_ids)
+        if not ids or len(set(ids)) != len(ids) or not all(isinstance(value, EvidenceId) for value in ids):
+            raise StoreError("a graph read takes one or more distinct EVD identifiers")
+        pending = [provenance_graph.evidence_node(evidence_id, self.load(evidence_id)).key for evidence_id in ids]
+        nodes, rows = {}, []
+        for key in pending:
+            nodes[key] = self._stored_node(key)
+        while pending:
+            current = pending.pop()
+            for row in self._db.execute("SELECT source_key, kind, target_key, position FROM graph_edges WHERE "
+                                        "target_key = ? ORDER BY edge_number", (current,)).fetchall():
+                rows.append(row)
+                if row[0] not in nodes:
+                    nodes[row[0]] = self._stored_node(row[0])
+                    pending.append(row[0])
+        return self._graph_of(nodes, rows)
+
+    def item_graph(self, evidence_id: EvidenceId) -> provenance_graph.Graph:
+        return self.graph((evidence_id,))
+
+    def incident(self, node_key: str) -> tuple:
+        """A node's recorded edges, as (incoming, outgoing)."""
+
+        node = self._stored_node(node_key)
+        rows = self._db.execute("SELECT source_key, kind, target_key, position FROM graph_edges WHERE source_key = ? "
+                                "OR target_key = ? ORDER BY edge_number", (node_key, node_key)).fetchall()
+        nodes = {node_key: node}
+        for source, _kind, target, _position in rows:
+            for key in (source, target):
+                if key not in nodes:
+                    nodes[key] = self._stored_node(key)
+        graph = self._graph_of(nodes, rows)
+        return (tuple(edge for edge in graph.edges if edge.target.key == node_key),
+                tuple(edge for edge in graph.edges if edge.source.key == node_key))
+
+    def recorded_graph(self) -> provenance_graph.Graph:
+        """Every recorded node and edge, each validated as it is read."""
+
+        nodes = {key: self._node_from(key, (kind, payload)) for key, kind, payload in
+                 self._db.execute("SELECT node_key, kind, payload FROM graph_nodes ORDER BY node_key").fetchall()}
+        rows = self._db.execute("SELECT source_key, kind, target_key, position FROM graph_edges "
+                                "ORDER BY edge_number").fetchall()
+        return self._graph_of(nodes, rows)
+
+    def reproduce(self, evidence_id: EvidenceId) -> dict:
+        """What the item's recorded graph alone says of it (ADR-0122 AC7)."""
+
+        try:
+            return provenance_graph.reproduce(self.item_graph(evidence_id), evidence_id)
+        except provenance_graph.GraphError as exc:
+            raise StoreError(f"{evidence_id}'s recorded graph does not reproduce it: {exc}") from exc
 
     def load(self, evidence_id: EvidenceId) -> EvidenceItem:
         if not isinstance(evidence_id, EvidenceId):
