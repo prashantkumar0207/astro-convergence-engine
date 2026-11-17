@@ -12457,7 +12457,7 @@ operative requirements.
 ## ADR-0122 - WP-E5 closed at its merge; work package WP-E6 (provenance-graph recording) defined, with its exit criteria fixed before coding (PROPOSED as to s4 to s6)
 
 - **Date:** 2026-11-17
-- **Status:** **ACCEPTED as to s2, on the owner's instruction quoted in s1. PROPOSED as to s4 to s6**, which define WP-E6 for
+- **Status:** **ACCEPTED as to s2, on the owner's instruction quoted in s1, and as to s4 to s6, on the owner's ratifying instruction recorded in the "Ratification of ADR-0122 s4 to s6" sub-entry below.** Only this Status line changed. As drafted: **ACCEPTED as to s2, on the owner's instruction quoted in s1. PROPOSED as to s4 to s6**, which define WP-E6 for
   CEO review before any implementation, and bind only after a CEO PASS and the owner's acceptance. s3 records the roadmap's
   state and decides nothing.
 - **Context:**
@@ -12624,6 +12624,45 @@ choice changes only the criteria it names.
     `PROPOSED` in every other respect.
 - **Evidence:** merge `69730bfdf3e5ce1b9f01b166ef5877fa1908f50b`; PR #56; head CI `44041867000`; post-merge CI
   `44047429370`. The owner's instruction exists as session input, not as a repository file.
+
+#### Ratification of ADR-0122 s4 to s6: WP-E6 CRITERIA AND DECISION POINTS RATIFIED (2026-11-17)
+
+- **Status:** ACCEPTED. The owner instructed, quoted exactly:
+
+  ```text
+  **ACE OWNER AUTHORIZATION — WP-E6**
+
+  Following independent CEO PASS, I ratify ADR-0122 sections 4–6 at `eb9551b73f58c133c38057c0df622650490fe5fd`, approving D1–D5 option A and fixing AC1–AC17.
+
+  Record ratification without changing the approved normative requirements.
+
+  I authorize merging PR #58 after rechecking its exact HEAD, base, mergeability and successful CI `44051309329`. Use a normal two-parent merge. No squash, rebase, force push or branch deletion.
+
+  Verify the merge SHA, tree, ancestry and post-merge CI.
+
+  Once verified, Claude is authorized to implement WP-E6 against the ratified criteria on a separate branch, complete tests and certification, self-audit, and open an implementation PR for independent CEO review.
+
+  Preserve Charter v1.4.0, certified calculation lineage, protected holdouts, the pinned rule registry and every existing scope restriction. No independence computation, correlation measurement, scoring, rule application, prediction issuance or LLM path.
+
+  Do not merge the WP-E6 implementation PR without further owner authorization.
+
+  Report exact SHAs, tests, certification evidence and demonstrated blockers. Do not reopen approved criteria without a material contradiction.
+  ```
+
+  That instruction is the ratifying act. It covers s4 to s6 as reviewed in PR #58 at
+  `eb9551b73f58c133c38057c0df622650490fe5fd`: option A for D1 to D5, the scope in s4 and AC1 to AC17 in s6. It does not
+  extend to any other text. In particular, D1 option A adopts `docs/EVIDENCE_INDEPENDENCE_DESIGN.md` s3's recording
+  schema only, as s5 states; that document stays `PROPOSED` in every other respect.
+- **Recorded after the merge:** the owner authorized merging PR #58 at its exact HEAD with CI `44051309329`, so this
+  sub-entry is not part of PR #58. PR #58 merged as `e63f93edd4aacf3e692abb5a899ecbc7e10d8103` (parents `69730bf` and
+  `eb9551b`; tree `6b2e26b`, identical to the reviewed head; branch kept). Post-merge CI `44057120528` passed all four
+  jobs on `ubuntu-24.04`. This sub-entry is the first commit of the WP-E6 implementation branch.
+- **Decision:** WP-E6 is implemented against s4 and s6 as written, on a separate branch, and submitted for independent CEO
+  review. Its merge needs further authorization.
+- **Text unchanged:** with its Status line and this sub-entry excluded, this entry hashes to SHA-256 `278dc2a8d753876901382e5b042d42a010dc36249f6711abc5878df4350b3126` both
+  before and after the ratification.
+- **Evidence:** PR #58 at `eb9551b73f58c133c38057c0df622650490fe5fd`, CI `44051309329` (four jobs passed). The CEO's
+  review and the owner's instruction exist as session input, not as repository files.
 
 ---
 
