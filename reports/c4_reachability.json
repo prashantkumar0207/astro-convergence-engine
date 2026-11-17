@@ -1264,10 +1264,33 @@
    "file": "engine/evidence/evidence_store.py",
    "status": "IN_USE_COVERED"
   },
+  "engine.evidence.evidence_store.EvidenceStore.graph": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.evidence_store.EvidenceStore.item_graph"
+   ],
+   "covered": true,
+   "file": "engine/evidence/evidence_store.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.evidence_store.EvidenceStore.incident": {
+   "covered": true,
+   "file": "engine/evidence/evidence_store.py",
+   "status": "NOT_IN_USE"
+  },
   "engine.evidence.evidence_store.EvidenceStore.issued_count": {
    "covered": true,
    "file": "engine/evidence/evidence_store.py",
    "status": "NOT_IN_USE"
+  },
+  "engine.evidence.evidence_store.EvidenceStore.item_graph": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.evidence_store.EvidenceStore.reproduce"
+   ],
+   "covered": true,
+   "file": "engine/evidence/evidence_store.py",
+   "status": "IN_USE_COVERED"
   },
   "engine.evidence.evidence_store.EvidenceStore.join": {
    "caller_count": 1,
@@ -1279,13 +1302,13 @@
    "status": "IN_USE_COVERED"
   },
   "engine.evidence.evidence_store.EvidenceStore.load": {
-   "caller_count": 5,
+   "caller_count": 7,
    "callers": [
     "engine.evidence.evidence_store.EvidenceStore._ancestry",
     "engine.evidence.evidence_store.EvidenceStore._check",
     "engine.evidence.evidence_store.EvidenceStore.classify",
-    "engine.evidence.evidence_store.EvidenceStore.join",
-    "engine.evidence.evidence_store.EvidenceStore.recomputations"
+    "engine.evidence.evidence_store.EvidenceStore.graph",
+    "engine.evidence.evidence_store.EvidenceStore.join"
    ],
    "covered": true,
    "file": "engine/evidence/evidence_store.py",
@@ -1297,6 +1320,11 @@
    "status": "NOT_IN_USE"
   },
   "engine.evidence.evidence_store.EvidenceStore.recomputations": {
+   "covered": true,
+   "file": "engine/evidence/evidence_store.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.evidence.evidence_store.EvidenceStore.recorded_graph": {
    "covered": true,
    "file": "engine/evidence/evidence_store.py",
    "status": "NOT_IN_USE"
@@ -1324,6 +1352,11 @@
    "covered": true,
    "file": "engine/evidence/evidence_store.py",
    "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.evidence_store.EvidenceStore.reproduce": {
+   "covered": true,
+   "file": "engine/evidence/evidence_store.py",
+   "status": "NOT_IN_USE"
   },
   "engine.evidence.evidence_store.EvidenceStore.rule_version": {
    "caller_count": 1,
@@ -1600,6 +1633,199 @@
    ],
    "covered": true,
    "file": "engine/evidence/ledger.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.provenance_graph.Node.fields": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.provenance_graph.node_to_row"
+   ],
+   "covered": true,
+   "file": "engine/evidence/provenance_graph.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.provenance_graph.astronomical_node": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.provenance_graph.record_graph"
+   ],
+   "covered": true,
+   "exported_by": [
+    "engine/evidence/provenance_graph.py:__all__"
+   ],
+   "file": "engine/evidence/provenance_graph.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.provenance_graph.canonical": {
+   "caller_count": 4,
+   "callers": [
+    "engine.evidence.provenance_graph.Node.__post_init__",
+    "engine.evidence.provenance_graph.make_node",
+    "engine.evidence.provenance_graph.node_from_row",
+    "engine.evidence.provenance_graph.node_to_row"
+   ],
+   "covered": true,
+   "exported_by": [
+    "engine/evidence/provenance_graph.py:__all__"
+   ],
+   "file": "engine/evidence/provenance_graph.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.provenance_graph.chart_node": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.provenance_graph.record_graph"
+   ],
+   "covered": true,
+   "exported_by": [
+    "engine/evidence/provenance_graph.py:__all__"
+   ],
+   "file": "engine/evidence/provenance_graph.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.provenance_graph.edge_from_row": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.evidence_store.EvidenceStore._graph_of"
+   ],
+   "covered": true,
+   "exported_by": [
+    "engine/evidence/provenance_graph.py:__all__"
+   ],
+   "file": "engine/evidence/provenance_graph.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.provenance_graph.evidence_node": {
+   "caller_count": 2,
+   "callers": [
+    "engine.evidence.evidence_store.EvidenceStore.graph",
+    "engine.evidence.provenance_graph.record_graph"
+   ],
+   "covered": true,
+   "exported_by": [
+    "engine/evidence/provenance_graph.py:__all__"
+   ],
+   "file": "engine/evidence/provenance_graph.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.provenance_graph.input_node": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.provenance_graph.record_graph"
+   ],
+   "covered": true,
+   "exported_by": [
+    "engine/evidence/provenance_graph.py:__all__"
+   ],
+   "file": "engine/evidence/provenance_graph.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.provenance_graph.make_node": {
+   "caller_count": 7,
+   "callers": [
+    "engine.evidence.provenance_graph.astronomical_node",
+    "engine.evidence.provenance_graph.chart_node",
+    "engine.evidence.provenance_graph.evidence_node",
+    "engine.evidence.provenance_graph.input_node",
+    "engine.evidence.provenance_graph.parent_chart_node"
+   ],
+   "covered": true,
+   "exported_by": [
+    "engine/evidence/provenance_graph.py:__all__"
+   ],
+   "file": "engine/evidence/provenance_graph.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.provenance_graph.node_from_row": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.evidence_store.EvidenceStore._node_from"
+   ],
+   "covered": true,
+   "exported_by": [
+    "engine/evidence/provenance_graph.py:__all__"
+   ],
+   "file": "engine/evidence/provenance_graph.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.provenance_graph.node_to_row": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.evidence_store.EvidenceStore._write_graph"
+   ],
+   "covered": true,
+   "exported_by": [
+    "engine/evidence/provenance_graph.py:__all__"
+   ],
+   "file": "engine/evidence/provenance_graph.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.provenance_graph.parent_chart_node": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.provenance_graph.record_graph"
+   ],
+   "covered": true,
+   "exported_by": [
+    "engine/evidence/provenance_graph.py:__all__"
+   ],
+   "file": "engine/evidence/provenance_graph.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.provenance_graph.record_graph": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.evidence_store.EvidenceStore.persist"
+   ],
+   "covered": true,
+   "exported_by": [
+    "engine/evidence/provenance_graph.py:__all__"
+   ],
+   "file": "engine/evidence/provenance_graph.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.provenance_graph.recorded_fields": {
+   "covered": true,
+   "exported_by": [
+    "engine/evidence/provenance_graph.py:__all__"
+   ],
+   "file": "engine/evidence/provenance_graph.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.provenance_graph.reproduce": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.evidence_store.EvidenceStore.reproduce"
+   ],
+   "covered": true,
+   "exported_by": [
+    "engine/evidence/provenance_graph.py:__all__"
+   ],
+   "file": "engine/evidence/provenance_graph.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.provenance_graph.rule_node": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.provenance_graph.record_graph"
+   ],
+   "covered": true,
+   "exported_by": [
+    "engine/evidence/provenance_graph.py:__all__"
+   ],
+   "file": "engine/evidence/provenance_graph.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.provenance_graph.timing_node": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.provenance_graph.record_graph"
+   ],
+   "covered": true,
+   "exported_by": [
+    "engine/evidence/provenance_graph.py:__all__"
+   ],
+   "file": "engine/evidence/provenance_graph.py",
    "status": "IN_USE_COVERED"
   },
   "engine.evidence.rule_registry.RuleRegistry.by_key": {
@@ -2401,8 +2627,8 @@
  },
  "schema": "ace-c4-reachability-v1",
  "summary": {
-  "IN_USE_COVERED": 168,
-  "NOT_IN_USE": 141
+  "IN_USE_COVERED": 186,
+  "NOT_IN_USE": 144
  },
  "universe_exclusions": {
   "engine.main.": "API route handlers: callers and exports, not capabilities",
