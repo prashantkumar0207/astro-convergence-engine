@@ -1,4 +1,5 @@
-"""EVIDENCE_FOUNDATIONS_V1 CERTIFICATION RUNNER (ADR-0115 s4; ADR-0116 s4; ADR-0119 s3; ADR-0120 s4; ADR-0121).
+"""EVIDENCE_FOUNDATIONS_V1 CERTIFICATION RUNNER (ADR-0115 s4; ADR-0116 s4; ADR-0119 s3; ADR-0120 s4; ADR-0121;
+ADR-0122 s6).
 
 Regenerates certification/EVIDENCE_FOUNDATIONS_V1_certification.json FROM SCRATCH on every run;
 the stored JSON is never accepted as proof.
@@ -6,7 +7,8 @@ the stored JSON is never accepted as proof.
 STRUCTURAL certification of the EVIDENCE foundations: the H0 entity model and store (ADR-0114),
 the H1 event model, event store and EVR issuer (ADR-0115), the H2 historical ledger and its
 protected holdouts (ADR-0116), the H4 evidence model, its store and the EVD issuer (ADR-0119), and
-the H5 rule registry, its pinned snapshot and the governed RUL authoring process (ADR-0120, ADR-0121). It is NOT astrological-calculation certification and certifies no production analytical input. Every record it uses is synthetic, and
+the H5 rule registry, its pinned snapshot and the governed RUL authoring process (ADR-0120, ADR-0121),
+and the provenance graph recorded at evidence-creation time (ADR-0122). It is NOT astrological-calculation certification and certifies no production analytical input. Every record it uses is synthetic, and
 nothing it runs scores, weights, fits or computes confidence. It needs no oracle.
 
 Gates:
@@ -36,6 +38,12 @@ Gates:
   N  H5 and RUL refusals: unregistered lookups, malformed or free-text records, non-synthetic rules,
      and every way the evidence store could issue, reuse, rebind or bypass a RUL identity.
   O  the snapshot fails closed on each planted violation, even where the pin is made to match.
+  P  the provenance graph: every node kind, content-addressed identity separating every provenance
+     field, shared nodes recorded once, the parent chart, registry rule nodes, durability.
+  Q  provenance-graph refusals: undeclared and correlated edges, disallowed pairs, dangling edges,
+     cycles, forged or malformed nodes, rows planted by direct SQL, and UPDATE or DELETE.
+  R  the graph's agreement with the evidence: each item reproduced exactly from its graph alone, and
+     the graph exactly what the items' records give; broken comparators are distinguishable.
 
 Exit 0 = PASS, 3 = FAIL.
 """
@@ -86,6 +94,7 @@ from engine.evidence.evidence import (  # noqa: E402
     DependencyClass, Domain, EvidenceItem, EvidenceModelError, Lineage, Performance, Polarity, ProducingSystem,
     Relationship, RuleReference, RuleSpec, Supplied, TimingContext, TimingKind, provenance_differences,
 )
+from engine.evidence import provenance_graph  # noqa: E402
 from engine.evidence import rule_registry  # noqa: E402
 from engine.evidence.evidence_identifiers import EvidenceId, RuleId  # noqa: E402
 from engine.evidence.evidence_store import (  # noqa: E402
@@ -1704,6 +1713,421 @@ def gate_o_snapshot_fails_closed():
     return {"classification": "negative_control", "controls_rejected": len(controls), "controls": sorted(controls)}
 
 
+# ------------------------------------------------------------------ H4 provenance graph (ADR-0122, WP-E6)
+
+class _GraphWorld:
+    """A store over one synthetic subject and a derived subject of it, with registry rules recorded, and a set of
+    items that between them reach every node kind, ordered inputs, derivation and recomputation links, incomplete
+    lineage and a parent chart."""
+
+    def __init__(self, path):
+        self.store = EvidenceStore(path)
+        subjects = _synthetic_subjects()
+        self.owner = self.store.entities.persist(subjects[0])
+        self.label = self.store.entities.load(self.owner).charts[0].label
+        annual = dataclasses.replace(subjects[0].charts[0], label="annual")
+        self.derived = self.store.entities.persist(_derived(subjects, self.owner, self.label, (annual,)))
+        registry = rule_registry.pinned()
+        self.rules = {ProducingSystem.PARASHARI: self.store.register_rule(registry.rule_version(
+                          registry.by_key(PARASHARI_KEY), 1, "base")),
+                      ProducingSystem.KP: self.store.register_rule(registry.rule_version(
+                          registry.by_key(KP_KEY), 1, "base"))}
+        self.world = _EvidenceWorld(self.owner, self.label, self.rules)
+
+    def populate(self) -> list:
+        store, world = self.store, self.world
+        ids = [store.persist(world.item(facts=("Sun longitude", "Moon longitude", "Mars longitude")))]
+        ids.append(store.persist(world.item(ProducingSystem.KP, facts=("Moon longitude",))))
+        ids.append(store.persist(world.item(facts=("Jupiter longitude",), derived_from=(ids[0], ids[1]))))
+        ids.append(store.persist(world.item(facts=("Moon longitude",), recomputes=ids[0], derived_from=(ids[2],))))
+        ids.append(store.persist(world.item(lineage=world.lineage(("Venus longitude",), inputs_complete=False,
+                                                                  derivations_complete=False))))
+        ids.append(store.persist(world.item(entity=self.derived, chart=ChartReference(1, "annual"))))
+        return ids
+
+
+def expected_graph(store: EvidenceStore, evidence_id: EvidenceId) -> provenance_graph.Graph:
+    """What persist must have recorded for one item, rebuilt by this runner from the store's records: a check of the
+    recording, never a recording path (ADR-0122 D2)."""
+
+    item = store.load(evidence_id)
+    _number, subject, _reason = store.entities.history(item.entity)[item.chart.entity_revision - 1]
+    candidate = [chart for chart in subject.charts if chart.label == item.chart.chart_label][0]
+    links = item.derived_from + (() if item.recomputes is None else (item.recomputes,))
+    return provenance_graph.record_graph(evidence_id, item, candidate, subject.parent, store.rule_version(item.rule),
+                                         {link: store.load(link) for link in links})
+
+
+def recorded_ancestry(store: EvidenceStore, evidence_id: EvidenceId) -> set:
+    """The item and every item its recorded derivation and recomputation links reach."""
+
+    seen, pending = {evidence_id}, [evidence_id]
+    while pending:
+        item = store.load(pending.pop())
+        for link in item.derived_from + (() if item.recomputes is None else (item.recomputes,)):
+            if link not in seen:
+                seen.add(link)
+                pending.append(link)
+    return seen
+
+
+def edge_keys(edges) -> set:
+    return {(edge.source.key, edge.kind, edge.target.key, edge.position) for edge in edges}
+
+
+def graph_reproduces(recorded: provenance_graph.Graph, evidence_id: EvidenceId, item: EvidenceItem,
+                     rebuild=provenance_graph.reproduce) -> bool:
+    """Gate R's reproduction comparator: the graph alone gives back exactly the item's recorded fields (AC7)."""
+
+    try:
+        return rebuild(recorded, evidence_id) == provenance_graph.recorded_fields(item)
+    except provenance_graph.GraphError:
+        return False
+
+
+def graph_accounts_for(recorded: provenance_graph.Graph, expected: list, keys=edge_keys) -> bool:
+    """Gate R's agreement comparator: the recorded graph is exactly the union of what the items' records give."""
+
+    nodes = {node.key for graph in expected for node in graph.nodes}
+    edges = set().union(*(keys(graph.edges) for graph in expected))
+    return {node.key for node in recorded.nodes} == nodes and keys(recorded.edges) == edges
+
+
+def node_round_trips(node: provenance_graph.Node, serialize=provenance_graph.node_to_row) -> bool:
+    """Gate P's round-trip comparator: a stored node row rebuilds exactly the node."""
+
+    try:
+        return provenance_graph.node_from_row(*serialize(node)) == node
+    except provenance_graph.GraphError:
+        return False
+
+
+def gate_p_graph_integrity():
+    """The provenance graph recorded at evidence-creation time: every node kind, content-addressed identity that
+    shares exactly what agrees and separates every provenance field, the parent chart, the registry's rule version,
+    acyclicity, a recomputation leaving the original untouched, round trips and durability (ADR-0122 AC1, AC2, AC5,
+    AC8 to AC10). Each comparator rejects a planted violation, wrong by construction."""
+
+    controls = {}
+    with tempfile.TemporaryDirectory() as folder:
+        path = Path(folder) / "evidence.sqlite"
+        setting = _GraphWorld(path)
+        store: EvidenceStore = setting.store
+        first = store.persist(setting.world.item())
+        before = store.item_graph(first)
+        ids = [first] + setting.populate()
+        recorded = store.recorded_graph()
+        if {node.kind for node in recorded.nodes} != set(provenance_graph.NodeKind):
+            fail("not every node kind was recorded")
+        for evidence_id in ids:
+            upstream = recorded_ancestry(store, evidence_id)
+            if {node.key for node in store.item_graph(evidence_id).nodes} != \
+                    {node.key for member in upstream for node in expected_graph(store, member).nodes}:
+                fail(f"{evidence_id}'s recorded graph is not what its own and its ancestors' records give")
+        inputs = [node for node in recorded.nodes if node.kind is provenance_graph.NodeKind.INPUT]
+        rows = store._db.execute("SELECT COUNT(*) FROM graph_nodes WHERE kind = 'input'").fetchone()[0]
+        if len(inputs) != 2 or rows != 2:
+            fail("the owner's and the derived subject's origins were not each recorded once")
+        moon = [node for node in recorded.nodes if node.kind is provenance_graph.NodeKind.ASTRONOMICAL and
+                node.fields()["fact"] == "Moon longitude" and node.fields()["chart_label"] == setting.label]
+        if len(moon) != 1:
+            fail("one fact, on one chart under one provenance, was not recorded as one shared node")
+        item = setting.world.item()
+        base = provenance_graph.astronomical_node(item.entity, item.chart, item.lineage.inputs[0])
+        for name in provenance_graph.PROVENANCE_FIELDS:
+            value = CALC.__getattribute__(name)
+            other = dataclasses.replace(CALC, **{name: value + 1 if isinstance(value, int) else f"{value}-other"})
+            if provenance_graph.astronomical_node(item.entity, item.chart, CalculatedInput(
+                    fact=item.lineage.inputs[0].fact, provenance=other)).key == base.key:
+                fail(f"facts differing in calculation provenance field {name} were unified")
+        parent = provenance_graph.parent_chart_node(store.entities.load(setting.derived).parent)
+        child = provenance_graph.chart_node(setting.derived, ChartReference(1, "annual"), "D1")
+        if (parent.key, provenance_graph.EdgeKind.DERIVES_FROM, child.key) not in \
+                {(edge.source.key, edge.kind, edge.target.key) for edge in recorded.edges}:
+            fail("the derived subject's chart does not derive from its parent chart")
+        registry = rule_registry.pinned()
+        for node in recorded.nodes:
+            if node.kind is provenance_graph.NodeKind.RULE:
+                identity = node.fields()
+                published = registry.rule_version(RuleId(identity["rule"]), identity["version"], identity["variant"])
+                if (identity["content_hash"], identity["knowledge_snapshot_hash"]) != \
+                        (published.spec.content_hash, registry.snapshot_sha256):
+                    fail("a rule node is not the pinned registry's published rule version")
+        if store.item_graph(first) != before:
+            fail("later items, a recomputation among them, changed an earlier item's recorded graph")
+        for node in recorded.nodes:
+            if not node_round_trips(node):
+                fail("a node did not round-trip through storage")
+
+        def lossy(node):
+            key, kind, payload = provenance_graph.node_to_row(node)
+            data = json.loads(payload)
+            data["identity"].pop(sorted(data["identity"])[0])
+            return key, kind, json.dumps(data)
+
+        if node_round_trips(moon[0], lossy):
+            fail("the round-trip comparator accepted a serializer that drops an identity field")
+        controls["a serializer dropping an identity field rejected"] = True
+        first_fact, second_fact = (provenance_graph.astronomical_node(item.entity, item.chart, CalculatedInput(
+            fact=fact, provenance=CALC)) for fact in ("Sun longitude", "Moon longitude"))
+        kind_only = lambda node: hashlib.sha256(node.kind.value.encode("ascii")).hexdigest()
+        if first_fact.key == second_fact.key or kind_only(first_fact) != kind_only(second_fact):
+            fail("a key ignoring identity was not distinguishable from the content address")
+        controls["a node key ignoring identity rejected"] = True
+        counts = (len(recorded.nodes), len(recorded.edges))
+        store.close()
+        reopened = EvidenceStore(path)
+        durable = reopened.recorded_graph() == recorded and reopened.evidence_ids() == ids
+        reopened.close()
+        if not durable:
+            fail("the recorded graph is not durable")
+    return {"classification": "structural_integrity", "items_recorded": len(ids), "node_kinds": len(
+        provenance_graph.NodeKind), "nodes_recorded": counts[0], "edges_recorded": counts[1],
+            "provenance_fields_separated": len(provenance_graph.PROVENANCE_FIELDS), "mismatches": 0,
+            "controls_rejected": len(controls), "controls": sorted(controls)}
+
+
+def gate_q_graph_refusals():
+    """Each refusal WP-E6 requires, triggered for real, with its reason checked: undeclared and correlated edges,
+    disallowed pairs, dangling edges, cycles, malformed or forged nodes, rows planted by direct SQL, a graph that
+    cannot be written, records the item does not name, and UPDATE or DELETE on the graph tables (ADR-0122 AC1 to
+    AC5, AC10)."""
+
+    refused = {}
+
+    def refuses(label, action, errors=(provenance_graph.GraphError, StoreError, sqlite3.DatabaseError), reason=""):
+        try:
+            action()
+        except errors as exc:
+            if reason not in str(exc):
+                fail(f"{label} was refused for another reason: {exc}")
+            refused[label] = True
+            return
+        fail(f"not refused: {label}")
+
+    with tempfile.TemporaryDirectory() as folder:
+        setting = _GraphWorld(Path(folder) / "evidence.sqlite")
+        store: EvidenceStore = setting.store
+        world = setting.world
+        item = world.item()
+        candidate = store.entities.load(setting.owner).charts[0]
+        kinds = provenance_graph.NodeKind
+        origin = provenance_graph.input_node(item.entity, item.chart, candidate)
+        chart = provenance_graph.chart_node(item.entity, item.chart, "D1")
+        fact = provenance_graph.astronomical_node(item.entity, item.chart, item.lineage.inputs[0])
+        timing = provenance_graph.timing_node(item.entity, item.chart, item.timing)
+        rule = provenance_graph.rule_node(setting.rules[ProducingSystem.PARASHARI])
+        one, two = (provenance_graph.evidence_node(EvidenceId.from_number(n), item) for n in (1, 2))
+        derives, applies = provenance_graph.EdgeKind.DERIVES_FROM, provenance_graph.EdgeKind.APPLIES_TO
+        Edge = provenance_graph.Edge
+        for label, kind in (("a CORRELATED_WITH edge", "correlated_with"), ("an edge kind given as text", "derives_from"),
+                            ("an undeclared edge kind", None)):
+            refuses(label, lambda kind=kind: Edge(source=origin, kind=kind, target=chart), reason="undeclared edge kind")
+        refuses("a CORRELATED_WITH edge read from a row", lambda: provenance_graph.edge_from_row(
+            {origin.key: origin, chart.key: chart}, origin.key, "correlated_with", chart.key, 0),
+            reason="undeclared edge kind")
+        for label, source, kind, target in (
+                ("an evidence node deriving an input", one, derives, origin),
+                ("a rule deriving evidence", rule, derives, one),
+                ("an input applied to evidence", origin, applies, one),
+                ("a timing context deriving a chart", timing, derives, chart),
+                ("a fact deriving a fact", fact, derives, fact),
+                ("a chart applied to a fact", chart, applies, fact)):
+            refuses(label, lambda source=source, kind=kind, target=target: Edge(source=source, kind=kind,
+                                                                               target=target),
+                    reason="not a declared pair")
+        refuses("a self-loop", lambda: Edge(source=one, kind=derives, target=one), reason="cycle")
+        refuses("a negative position", lambda: Edge(source=origin, kind=derives, target=chart, position=-1),
+                reason="position")
+        refuses("a dangling edge in a graph", lambda: provenance_graph.Graph(
+            nodes=(chart,), edges=(Edge(source=origin, kind=derives, target=chart),)), reason="dangling")
+        refuses("a dangling edge read from a row", lambda: provenance_graph.edge_from_row(
+            {chart.key: chart}, origin.key, "derives_from", chart.key, 0), reason="dangling")
+        refuses("a cycle in a graph", lambda: provenance_graph.Graph(nodes=(one, two), edges=(
+            Edge(source=one, kind=derives, target=two), Edge(source=two, kind=derives, target=one))),
+                reason="not acyclic")
+        refuses("a node of an undeclared kind", lambda: provenance_graph.Node(kind="input", identity=origin.identity),
+                reason="undeclared node kind")
+        refuses("a node missing an identity field", lambda: provenance_graph.make_node(kinds.RULE, rule=RuleId.from_number(1).value),
+                reason="exactly its identity fields")
+        refuses("a node with an extra identity field", lambda: provenance_graph.make_node(
+            kinds.EVIDENCE, **{**one.fields(), "score": 1}), reason="exactly its identity fields")
+        refuses("a node whose identity is not canonical", lambda: provenance_graph.Node(
+            kind=kinds.RULE, identity=json.dumps(rule.fields(), indent=1)), reason="canonical")
+        refuses("a structured value in a node identity", lambda: provenance_graph.make_node(
+            kinds.EVIDENCE, **{**one.fields(), "recomputes": [EvidenceId.from_number(1).value]}), reason="plain value")
+        refuses("a fact without its full provenance", lambda: provenance_graph.make_node(
+            kinds.ASTRONOMICAL, **{**fact.fields(), "provenance": {"profile_name": "parashari_lahiri"}}),
+                reason="every field of its calculation Provenance")
+        refuses("a chart with a revision but no varga", lambda: provenance_graph.make_node(
+            kinds.DERIVED_CHART, **{**chart.fields(), "varga": None}), reason="parent chart")
+        refuses("a stored node under another kind", lambda: provenance_graph.node_from_row(
+            origin.key, "timing", provenance_graph.node_to_row(origin)[2]), reason="not a node record")
+        refuses("a stored node of another schema", lambda: provenance_graph.node_from_row(
+            origin.key, "input", json.dumps({"schema": "v0", "kind": "input", "identity": origin.fields()})),
+                reason="not a node record")
+        refuses("a stored node whose key is not its hash", lambda: provenance_graph.node_from_row(
+            "e" * 64, "input", provenance_graph.node_to_row(origin)[2]), reason="not the hash of its identity")
+        refuses("a chart the item does not name", lambda: provenance_graph.record_graph(
+            EvidenceId.from_number(1), item, dataclasses.replace(candidate, label="other"), None,
+            setting.rules[ProducingSystem.PARASHARI], {}), reason="not the ones the item names")
+        refuses("a rule the item does not name", lambda: provenance_graph.record_graph(
+            EvidenceId.from_number(1), item, candidate, None, setting.rules[ProducingSystem.KP], {}),
+                reason="not the ones the item names")
+        refuses("linked items the item does not name", lambda: provenance_graph.record_graph(
+            EvidenceId.from_number(1), item, candidate, None, setting.rules[ProducingSystem.PARASHARI],
+            {EvidenceId.from_number(LAST_TEST): item}), reason="exactly the ones the item names")
+        refuses("a graph read of no items", lambda: store.graph(()), reason="one or more distinct")
+        refuses("a graph read naming an item twice", lambda: store.graph((EvidenceId.from_number(1),) * 2),
+                reason="one or more distinct")
+        # A graph that cannot be written persists nothing and takes no number (AC1).
+        store._db.execute("INSERT INTO graph_nodes (node_key, kind, payload) VALUES (?, ?, ?)",
+                          (timing.key, "timing", json.dumps({"schema": provenance_graph.GRAPH_SCHEMA,
+                                                             "kind": "timing", "identity": {"planted": True}})))
+        refuses("a persist whose graph meets a forged node", lambda: store.persist(item),
+                reason="recorded node is refused")
+        if store.issued_count("EVD") != 0 or store.evidence_ids() != []:
+            fail("a refused graph write took an EVD number or left an item")
+        store.close()
+    with tempfile.TemporaryDirectory() as folder:
+        setting = _GraphWorld(Path(folder) / "evidence.sqlite")
+        store: EvidenceStore = setting.store
+        world = setting.world
+        item = world.item(facts=("Mercury longitude",))
+        candidate = store.entities.load(setting.owner).charts[0]
+        origin = provenance_graph.input_node(item.entity, item.chart, candidate)
+        fact = provenance_graph.astronomical_node(item.entity, item.chart, item.lineage.inputs[0])
+        for node in (origin, fact):
+            store._db.execute("INSERT INTO graph_nodes (node_key, kind, payload) VALUES (?, ?, ?)",
+                              provenance_graph.node_to_row(node))
+        store._db.execute("INSERT INTO graph_edges (source_key, kind, target_key, position) VALUES (?, ?, ?, 0)",
+                          (fact.key, "derives_from", origin.key))
+        refuses("an edge that would close a cycle on write", lambda: store.persist(item), reason="would close a cycle")
+        if store.issued_count("EVD") != 0:
+            fail("a write refused for a cycle took an EVD number")
+        store.close()
+    with tempfile.TemporaryDirectory() as folder:
+        setting = _GraphWorld(Path(folder) / "evidence.sqlite")
+        store: EvidenceStore = setting.store
+        world = setting.world
+        first = store.persist(world.item())
+        second = store.persist(world.item(derived_from=(first,)))
+        for statement in ("UPDATE graph_nodes SET payload = 'x'", "DELETE FROM graph_nodes",
+                          "UPDATE graph_edges SET position = 9", "DELETE FROM graph_edges"):
+            refuses(f"direct SQL: {statement}", lambda statement=statement: store._db.execute(statement),
+                    reason="append-only")
+        keys = [provenance_graph.evidence_node(evidence_id, store.load(evidence_id)).key for evidence_id in
+                (first, second)]
+        store._db.execute("INSERT INTO graph_edges (source_key, kind, target_key, position) VALUES (?, ?, ?, 0)",
+                          ("f" * 64, "derives_from", keys[0]))
+        refuses("a dangling edge planted by direct SQL, read", lambda: store.item_graph(first), reason="dangling")
+        refuses("a dangling edge planted by direct SQL, read whole", lambda: store.recorded_graph(),
+                reason="dangling")
+        store.close()
+    with tempfile.TemporaryDirectory() as folder:
+        setting = _GraphWorld(Path(folder) / "evidence.sqlite")
+        store: EvidenceStore = setting.store
+        world = setting.world
+        first = store.persist(world.item())
+        second = store.persist(world.item(derived_from=(first,)))
+        keys = [provenance_graph.evidence_node(evidence_id, store.load(evidence_id)).key for evidence_id in
+                (first, second)]
+        store._db.execute("INSERT INTO graph_edges (source_key, kind, target_key, position) VALUES (?, ?, ?, 0)",
+                          (keys[1], "derives_from", keys[0]))
+        refuses("a cycle planted by direct SQL, read", lambda: store.item_graph(second), reason="not acyclic")
+        refuses("a cycle planted by direct SQL, read whole", lambda: store.recorded_graph(), reason="not acyclic")
+        refuses("an incident read across a planted cycle", lambda: store.incident(keys[0]), reason="not acyclic")
+        store.close()
+    return {"classification": "negative_control", "refusals_verified": len(refused), "refused": sorted(refused)}
+
+
+def gate_r_graph_agreement():
+    """The graph's agreement with the evidence: from its graph alone each item's inputs, chart, varga, timing, rule
+    and links are reproduced exactly; completeness statements sit on its node; the recorded graph is exactly what the
+    items' records give; incident reads agree with it (ADR-0122 AC6, AC7, AC11). Each comparator rejects planted
+    violations, and a deliberately broken comparator is distinguishable from the real one."""
+
+    controls = {}
+    with tempfile.TemporaryDirectory() as folder:
+        setting = _GraphWorld(Path(folder) / "evidence.sqlite")
+        store: EvidenceStore = setting.store
+        ids = setting.populate()
+        for evidence_id in ids:
+            item = store.load(evidence_id)
+            if not graph_reproduces(store.item_graph(evidence_id), evidence_id, item) or \
+                    store.reproduce(evidence_id) != provenance_graph.recorded_fields(item):
+                fail(f"{evidence_id} is not reproduced exactly from its recorded graph")
+            node = provenance_graph.evidence_node(evidence_id, item).fields()
+            if (node["inputs_complete"], node["derivations_complete"]) != (item.lineage.inputs_complete,
+                                                                          item.lineage.derivations_complete):
+                fail("an item's completeness statements are not on its evidence node")
+        recorded = store.recorded_graph()
+        expected = [expected_graph(store, evidence_id) for evidence_id in ids]
+        if not graph_accounts_for(recorded, expected) or store.graph(ids) != recorded:
+            fail("the recorded graph is not exactly what the items' records give")
+        for node in recorded.nodes:
+            incoming, outgoing = store.incident(node.key)
+            if edge_keys(incoming) != edge_keys(edge for edge in recorded.edges if edge.target.key == node.key) or \
+                    edge_keys(outgoing) != edge_keys(edge for edge in recorded.edges if edge.source.key == node.key):
+                fail("an incident read disagrees with the recorded graph")
+        # Negative controls, invalid by construction: each planted graph loses or bends exactly one recorded fact.
+        first, linked, recomputed = ids[0], ids[2], ids[3]
+        for label, evidence_id, drop in (
+                ("a graph losing one input", first, lambda edge: edge.source.kind is
+                 provenance_graph.NodeKind.ASTRONOMICAL and edge.position == 2),
+                ("a graph losing a derivation link", linked, lambda edge: edge.source.kind is
+                 provenance_graph.NodeKind.EVIDENCE and edge.position == 1),
+                ("a graph losing the recomputation link", recomputed, lambda edge: edge.source.kind is
+                 provenance_graph.NodeKind.EVIDENCE and edge.source.fields()["evidence"] == first.value),
+                ("a graph losing its rule", first, lambda edge: edge.source.kind is provenance_graph.NodeKind.RULE)):
+            full = store.item_graph(evidence_id)
+            target = provenance_graph.evidence_node(evidence_id, store.load(evidence_id)).key
+            planted = provenance_graph.Graph(nodes=full.nodes, edges=tuple(
+                edge for edge in full.edges if not (edge.target.key == target and drop(edge))))
+            if len(planted.edges) != len(full.edges) - 1 or graph_reproduces(planted, evidence_id,
+                                                                             store.load(evidence_id)):
+                fail(f"the reproduction comparator accepted {label}")
+            controls[f"{label} rejected"] = True
+        full = store.item_graph(first)
+        swapped = provenance_graph.Graph(nodes=full.nodes, edges=tuple(
+            dataclasses.replace(edge, position={0: 1, 1: 0}[edge.position])
+            if edge.source.kind is provenance_graph.NodeKind.ASTRONOMICAL and edge.position in (0, 1) else edge
+            for edge in full.edges))
+        if graph_reproduces(swapped, first, store.load(first)):
+            fail("the reproduction comparator accepted inputs out of their recorded order")
+        controls["inputs out of their recorded order rejected"] = True
+        itself = lambda graph, evidence_id: provenance_graph.recorded_fields(store.load(evidence_id))
+        lossy = provenance_graph.Graph(nodes=full.nodes, edges=tuple(
+            edge for edge in full.edges if edge.source.kind is not provenance_graph.NodeKind.TIMING))
+        if graph_reproduces(lossy, first, store.load(first)) or not graph_reproduces(lossy, first, store.load(first),
+                                                                                     itself):
+            fail("a reproduction comparator reading the item instead of the graph was not distinguishable")
+        controls["a reproduction comparator reading the item, not the graph, rejected"] = True
+        extra_edge = provenance_graph.Edge(
+            source=[node for node in recorded.nodes if node.kind is provenance_graph.NodeKind.TIMING and
+                    node.fields()["chart_label"] == "annual"][0],
+            kind=provenance_graph.EdgeKind.DERIVES_FROM,
+            target=provenance_graph.evidence_node(ids[1], store.load(ids[1])), position=0)
+        if edge_keys([extra_edge]) <= edge_keys(recorded.edges):
+            fail("the planted extra edge is already recorded, so it tests nothing")
+        padded = provenance_graph.Graph(nodes=recorded.nodes, edges=recorded.edges + (extra_edge,))
+        nodes_only = lambda edges: set()
+        if graph_accounts_for(padded, expected) or not graph_accounts_for(padded, expected, nodes_only):
+            fail("an agreement comparator ignoring edges was not distinguishable from the real one")
+        controls["an edge the records do not account for rejected"] = True
+        controls["an agreement comparator ignoring edges rejected"] = True
+        unexpected = provenance_graph.make_node(provenance_graph.NodeKind.TIMING, **{
+            **[node for node in recorded.nodes if node.kind is provenance_graph.NodeKind.TIMING][0].fields(),
+            "label": "planted"})
+        if graph_accounts_for(provenance_graph.Graph(nodes=recorded.nodes + (unexpected,), edges=recorded.edges),
+                              expected):
+            fail("the agreement comparator accepted a node the records do not account for")
+        controls["a node the records do not account for rejected"] = True
+        store.close()
+    return {"classification": "structural_integrity", "items_reproduced": len(ids), "mismatches": 0,
+            "controls_rejected": len(controls), "controls": sorted(controls)}
+
+
 def main():
     tee = support.start_transcript()
     preconditions = support.preflight()
@@ -1723,10 +2147,13 @@ def main():
         "M_registry_integrity": gate_m_registry_integrity(),
         "N_registry_refusals": gate_n_registry_refusals(),
         "O_snapshot_fails_closed": gate_o_snapshot_fails_closed(),
+        "P_graph_integrity": gate_p_graph_integrity(),
+        "Q_graph_refusals": gate_q_graph_refusals(),
+        "R_graph_agreement": gate_r_graph_agreement(),
     }
     report = {
         "schema": "evidence_foundations_v1_certification",
-        "adr": "ADR-0115 s4; ADR-0116 s4; ADR-0119 s3, s5; ADR-0120 s4, s6; ADR-0121",
+        "adr": "ADR-0115 s4; ADR-0116 s4; ADR-0119 s3, s5; ADR-0120 s4, s6; ADR-0121; ADR-0122 s4, s6",
         "date": str(date.today()),
         "scope": ("Structural certification of the EVIDENCE foundations: the H0 entity model, append-only entity store "
                   "and ENT issuer (ADR-0114 WP-E1), and the H1 event model, append-only event store, separate "
@@ -1735,10 +2162,11 @@ def main():
                   "(ADR-0116 WP-E3), and the H4 evidence model, append-only evidence store, EVD and RUL issuers, "
                   "provenance-checked joins, decomposable aggregates and structural relationship records "
                   "(ADR-0119 WP-E4), and the H5 interpretation rule registry, its hash-pinned fail-closed snapshot "
-                  "and the governed RUL authoring process (ADR-0120 WP-E5; ADR-0121)."),
+                  "and the governed RUL authoring process (ADR-0120 WP-E5; ADR-0121), and the provenance graph "
+                  "recorded at evidence-creation time (ADR-0122 WP-E6)."),
         "reference": {
-            "structure": "the model contracts of ADR-0114 s3, ADR-0115 s5, ADR-0116 s5, ADR-0119 s5 and ADR-0120 "
-                         "s6, exercised on synthetic records",
+            "structure": "the model contracts of ADR-0114 s3, ADR-0115 s5, ADR-0116 s5, ADR-0119 s5, ADR-0120 s6 "
+                         "and ADR-0122 s6, exercised on synthetic records",
             "event_classes": f"{REGISTRY_PATH} s3, read by this runner independently of the code",
         },
         "gates": gates,
@@ -1773,6 +2201,13 @@ def main():
             "statements; no convergence count or bound is computed, and CORRELATED is never assigned",
             "the store cannot verify that a producer's completeness statements are true; it only refuses to call a "
             "pair INDEPENDENT without them",
+            "the provenance graph is recorded, not computed over: no path, independent count, cut, score, weight or "
+            "ratio is computed, and relationship classification does not read it",
+            "the graph records only what each item and the store's records state; it cannot show that a producer's "
+            "recorded inputs are all it consumed, and records incompleteness where the producer states it",
+            "no CORRELATED_WITH edge is recorded: correlation is measured, and nothing in EVIDENCE measures",
+            "the graph's node and edge kinds adopt the recording schema of docs/EVIDENCE_INDEPENDENCE_DESIGN.md s3 "
+            "only (ADR-0122 D1); that document stays PROPOSED in every other respect",
         ],
         "environment": {"python": sys.version.split()[0]},
         "preconditions": preconditions,
