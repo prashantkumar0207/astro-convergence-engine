@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | **ACCEPTED (`ADR-0062`) - canonical, machine-checkable current-state record.** Regenerate/refresh on every meaningful implementation task, same discipline as `reports/AI_HANDOFF_CURRENT.md`. |
-| Version | 7.54.0 |
+| Version | 7.55.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-18 (**CEO bounded HOLD on PR #59 closed on the branch: persisted graph reads refuse rows the items' records do not account for (AC5, AC7). Not merged.**) |
+| Last updated | 2026-11-18 (**WP-E6 merged and CLOSED (`689fd36`). EVIDENCE phase-exit evidence and checklist on review branch `evidence-phase-exit-checklist`. EVIDENCE exit not declared. Not merged.**) |
 | Review cadence | Refresh at the start of a session if stale; not load-bearing if it isn't. |
 
 # ACE execution state
@@ -43,22 +43,22 @@ independently is in these fields plus the pointers they name.
 | Field | Value |
 |---|---|
 | `CURRENT_PHASE` | **EVIDENCE entered** (`ADR-0114`, owner-authorized 2026-11-07, from `main` `90cd0ca`). JATAKA exited (`ADR-0110`). Mandatory CEO checkpoints remain: the evidence model (H4), and phase exit. |
-| `CURRENT_MILESTONE` | **WP-E6 (provenance-graph recording) on a review PR; `ADR-0122` s4 to s6 ACCEPTED.** PR #58 merged as `e63f93e`. |
-| `CURRENT_AUTHORIZED_TASK` | None self-executable beyond the WP-E6 implementation PR, which needs independent CEO review and further owner authorization to merge. |
-| `TASK_OWNER` | CHATGPT (review of the WP-E6 implementation PR); USER (merge authorization). |
-| `STATUS` | WP-E6 review PR, not merged. No certified calculation changed: existing artifacts differ only in volatile fields and `modules_scanned` (218 to 219). `EVIDENCE_FOUNDATIONS_V1` gains gates P, Q and R and the `evidence.provenance_graph` capability; gates A to O are identical. EVIDENCE exit is not declared. The product contract's canonical text is `specs/PROJECT_CHARTER.md` v1.4.0 (owner-ratified, `ADR-0117` and its addendum); the product-objective definition is CLOSED (`ADR-0118` s2). Neither is restated here. |
-| `LAST_COMPLETED_ACTION` | Closed the CEO's bounded HOLD on PR #59: reproduced a structurally valid false `INPUT` to `DERIVED_CHART` edge accepted by the graph reads at `309af10`; persisted reads now refuse any node or edge the items' stored records do not account for, and never supply a missing row (AC5, AC7). |
-| `LAST_COMMIT` (main) | `e63f93edd4aacf3e692abb5a899ecbc7e10d8103` (PR #58 merge, the WP-E6 criteria; parents `69730bf` and `eb9551b`). |
-| `LAST_COMMIT` (evidence-wp-e6-provenance-graph) | This branch's commits, on top of `e63f93edd4aacf3e692abb5a899ecbc7e10d8103`. |
-| `LAST_CI_RUN` | `44057120528` at `e63f93e`: push to `main`, success on all four jobs on `ubuntu-24.04`. This branch's results are on its review PR. |
-| `LAST_CEO_DECISION` | Bounded HOLD on PR #59 at `309af10`: one AC5/AC7 integrity defect (unaccounted-for graph edges on the read path). No new ADR or scope expansion. |
-| `NEXT_AUTHORIZED_ACTION` | None self-executable. The WP-E6 PR needs independent CEO review and the owner's merge authorization. Then the EVIDENCE exit checkpoint, which needs its own CEO review. Before any prediction implementation, an owner-approved roadmap placement. The retirement of `SUPPORT_PATHS_V1` gates H and I needs separate approval. |
-| `WAITING_FOR` | CHATGPT: narrow final review of the WP-E6 implementation PR (#59). USER: its merge authorization. |
-| `BLOCKER` | None for this delivery. |
-| `CEO_APPROVAL_REQUIRED` | The WP-E6 PR's merge; the EVIDENCE phase exit checkpoint. |
+| `CURRENT_MILESTONE` | **EVIDENCE phase-exit evidence and checklist on a review PR (`reports/EVIDENCE_PHASE_EXIT_RECORD.md`, PROPOSED).** WP-E1 to WP-E6 CLOSED; PR #59 merged as `689fd36`. EVIDENCE exit is not declared. |
+| `CURRENT_AUTHORIZED_TASK` | None self-executable beyond the phase-exit review PR. Any correction for finding F1 and any exit decision need separate authorization. |
+| `TASK_OWNER` | CHATGPT (review of the phase-exit evidence and determination of finding F1); USER (the decisions that follow). |
+| `STATUS` | Phase-exit evidence on review, not merged. Documentation only. All six `Q8_CLOSURE_MATRIX.md` s6 implementation items are built. Of the record's 33 rows, 28 are met, 3 are met with a stated qualification, 1 is pending (the exit approval) and 1 carries open finding F1. EVIDENCE exit is not declared. The product contract's canonical text is `specs/PROJECT_CHARTER.md` v1.4.0 (owner-ratified, `ADR-0117` and its addendum); the product-objective definition is CLOSED (`ADR-0118` s2). Neither is restated here. |
+| `LAST_COMPLETED_ACTION` | Merged PR #59 and closed WP-E6 against `ADR-0122` AC1 to AC17 (`ADR-0123` s2); regenerated all evidence at `689fd36`; prepared the phase-exit evidence and checklist against the accepted Q8 s6 and s14 requirements. |
+| `LAST_COMMIT` (main) | `689fd369e6f871a2e21b1afa20911ed305c973e7` (PR #59 merge, WP-E6; parents `e63f93e` and `b4e5f51`). |
+| `LAST_COMMIT` (evidence-phase-exit-checklist) | This branch's commits, on top of `689fd369e6f871a2e21b1afa20911ed305c973e7`. |
+| `LAST_CI_RUN` | `44273894275` at `689fd36`: push to `main`, success on all four jobs on `ubuntu-24.04`. This branch's results are on its review PR. |
+| `LAST_CEO_DECISION` | PASS on PR #59 at `b4e5f51`, as the owner states. |
+| `NEXT_AUTHORIZED_ACTION` | None self-executable. The CEO reviews the phase-exit record and determines finding F1. Any correction, and the EVIDENCE exit decision, need separate authorization. Before any prediction implementation, an owner-approved roadmap placement. The retirement of `SUPPORT_PATHS_V1` gates H and I needs separate approval. |
+| `WAITING_FOR` | CHATGPT: review of the EVIDENCE phase-exit evidence and a determination on finding F1. USER: the decisions that follow. |
+| `BLOCKER` | Finding F1 needs the CEO's determination before any exit decision (`reports/EVIDENCE_PHASE_EXIT_RECORD.md` s5). |
+| `CEO_APPROVAL_REQUIRED` | The EVIDENCE phase exit, including the determination of finding F1. |
 | `CLAUDE_ACTION_REQUIRED` | None until directed. Every relevant specification, milestone and review carries the Charter-compliance statement. |
-| `CHATGPT_ACTION_REQUIRED` | Narrow final review of PR #59. |
-| `USER_ACTION_REQUIRED` | Merge authorization for the WP-E6 PR, after CEO review; a roadmap placement for prediction issuance before its implementation; a separate authorization for the bounded retirement of `SUPPORT_PATHS_V1` gates H and I. |
+| `CHATGPT_ACTION_REQUIRED` | Review of the EVIDENCE phase-exit evidence PR, and a determination on finding F1. |
+| `USER_ACTION_REQUIRED` | Decisions following the CEO's review of the phase-exit record; a roadmap placement for prediction issuance before its implementation; a separate authorization for the bounded retirement of `SUPPORT_PATHS_V1` gates H and I. |
 | `HANDOFF_REQUIRED` | None beyond this file and the latest entry in `reports/AI_HANDOFF_CURRENT.md`. |
 
 ## How to independently verify every field above
@@ -79,6 +79,7 @@ exactly as `reports/AI_HANDOFF_CURRENT.md` already requires of itself.
 
 | Version | Date | Change |
 |---|---|---|
+| 7.55.0 | 2026-11-18 | **WP-E6 CLOSED; EVIDENCE phase-exit evidence and checklist submitted for CEO review** (`ADR-0123`; one open finding, F1). |
 | 7.54.0 | 2026-11-18 | **PR #59 HOLD correction: graph reads refuse unaccounted-for rows; Gate Q 41 to 71 refusals; Gate R 9 to 16 controls.** |
 | 7.53.0 | 2026-11-17 | **`ADR-0122` s4 to s6 ratified; WP-E6 implemented and on review** (gates P, Q and R). |
 | 7.52.0 | 2026-11-17 | **WP-E5 CLOSED; WP-E6 (provenance-graph recording) criteria proposed** (`ADR-0122`). |

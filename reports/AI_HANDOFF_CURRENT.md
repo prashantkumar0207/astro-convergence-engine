@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.54.0 |
+| Version | 9.55.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-18 (CEO bounded HOLD on PR #59 closed on the branch: graph reads refuse unaccounted-for rows. Not merged.) |
+| Last updated | 2026-11-18 (WP-E6 merged and CLOSED (`689fd36`). EVIDENCE phase-exit evidence on review; one open finding, F1. Exit not declared.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,17 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-18 - WP-E6 CLOSED (PR #59, `689fd36`); EVIDENCE phase-exit evidence submitted (`ADR-0123`)
+
+- **Merge:** `689fd369e6f871a2e21b1afa20911ed305c973e7`, parents `e63f93e` and `b4e5f51`; tree `b10309a` identical to the reviewed head;
+  branch kept. Post-merge CI `44273894275`: four jobs passed on `ubuntu-24.04`; 2,084 tests on 3.11 and 3.12; drift clean.
+- **Regenerated at `689fd36` on clean Linux:** 24/24 certifiers, drift clean, all governance steps, 2,084 passed, 0 skipped.
+- **Phase-exit record:** `reports/EVIDENCE_PHASE_EXIT_RECORD.md` 0.1.0 (PROPOSED), against Q8 s6 and s14 only. 33 rows: 28 met, 3 met
+  with a qualification, 1 pending (the exit approval), 1 open finding.
+- **Finding F1, for the CEO:** an `evidence_items` row written by direct SQL can name a rule never registered; `load`, `evidence_ids`,
+  `join`, `counts`, `classify` and `relate` accept it, while the graph reads refuse it. Options are in s5. No correction made.
+- **Not done:** EVIDENCE exit is not declared, and prediction issuance has not begun.
 
 ### 2026-11-18 - PR #59 bounded HOLD correction (AC5, AC7)
 

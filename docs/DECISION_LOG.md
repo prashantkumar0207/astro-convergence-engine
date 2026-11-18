@@ -12666,6 +12666,77 @@ choice changes only the criteria it names.
 
 ---
 
+## ADR-0123 - WP-E6 closed at its merge; the EVIDENCE phase-exit evidence and checklist submitted for CEO review; EVIDENCE exit not declared
+
+- **Date:** 2026-11-18
+- **Status:** **ACCEPTED as to s2, on the owner's instruction quoted in s1.** s3 and s4 record the roadmap's state and the
+  submission, and decide nothing.
+- **Context:** WP-E6 was the last implementation item in `docs/Q8_CLOSURE_MATRIX.md` s6. The owner instructed that, once it
+  closes, the phase-exit evidence and checklist be prepared against the accepted Q8 requirements.
+
+### 1. The owner's instruction (exact text)
+
+```text
+**ACE OWNER AUTHORIZATION — MERGE PR #59**
+
+Following independent CEO PASS, I authorize merging PR #59 at exact HEAD `b4e5f516f64ee8b5db2d7dbb007639d8670ad3aa`.
+
+Reverify HEAD, base, mergeability and all four CI jobs in run `44271689048`. Use a normal two-parent merge. No squash, rebase, force push or branch deletion.
+
+Verify merge SHA, parents, tree and post-merge CI. If successful, record WP-E6 CLOSED against ADR-0122 AC1–AC17.
+
+Preserve Charter v1.4.0, certified calculations, protected holdouts, rule provenance and scope exclusions.
+
+Then prepare the **EVIDENCE phase-exit evidence and checklist** against the already accepted Q8 requirements for independent CEO review. Do not add new exit criteria, declare EVIDENCE exit, begin prediction issuance or merge unrelated work without authorization.
+
+Report exact SHAs, checks, certification status and any demonstrated blockers.
+```
+
+### 2. WP-E6 closed
+
+WP-E6 is **CLOSED** against `ADR-0122` AC1 to AC17. PR #59 merged by a normal two-parent merge as
+`689fd369e6f871a2e21b1afa20911ed305c973e7`, with parents `e63f93edd4aacf3e692abb5a899ecbc7e10d8103` and
+`b4e5f516f64ee8b5db2d7dbb007639d8670ad3aa`. The merge tree (`b10309a`) is identical to the reviewed head's tree, and the head
+branch is kept. Before the merge, the head, base (`e63f93e`), mergeability (MERGEABLE, CLEAN) and head CI `44271689048` (four
+jobs passed) were reverified. Post-merge CI `44273894275` passed all four jobs on `ubuntu-24.04`: 2,084 tests on 3.11 and 3.12,
+drift clean, and gates P, Q and R at 0, 71 and 0. The CEO's bounded HOLD at `309af10` (AC5 and AC7, unaccounted-for graph
+rows on the read path) was closed at `b4e5f51` before the PASS.
+
+**What the merge preserves:**
+- **Certified calculations:** `engine/` outside `engine/evidence/` and the tests has no diff since EVIDENCE entry.
+- **Protected holdouts:** `EVIDENCE_FOUNDATIONS_V1` gates G to I are unchanged.
+- **Rule provenance:** the registry snapshot pin stays `ea8d185ff0786e1c2d68b8010b45b9721367e8e55efca49a4c1a4b8402643d0d`.
+- **Scope exclusions:** no independence computation, correlation measurement, scoring, rule application, prediction or LLM path.
+
+**WP-E6's Charter compliance** (`ADR-0122` AC17; `specs/PROJECT_CHARTER.md` v1.4.0):
+- **s5** (provenance): each item's provenance is recorded as a graph when the item is persisted.
+- **s6** (learning): nothing learns or measures, and no `CORRELATED_WITH` edge is written.
+- **s9** (what stays fixed): certified calculations and the pinned registry are unchanged.
+- **"Complete product contract" s7** (the LLM as explainer): there is no LLM path.
+- **The Q8 disposition:** no prediction is issued.
+- **`ADR-0021` D5:** incomplete lineage stays recorded as incomplete and is never treated as independence.
+
+### 3. Where the EVIDENCE roadmap stands (`docs/Q8_CLOSURE_MATRIX.md` s6)
+
+All six s6 implementation items are built: WP-E1 to WP-E6. **EVIDENCE exit is not declared.** It needs the CEO's exit approval
+under s6 and the owner's decision. Prediction issuance stays without a roadmap placement (`ADR-0117` addendum, revision 1).
+
+### 4. The phase-exit evidence, submitted for review
+
+`reports/EVIDENCE_PHASE_EXIT_RECORD.md` 0.1.0 (`PROPOSED`) tests the phase at `689fd36` against Q8 s6 and s14, and adds no
+criterion. Of its 33 rows, 28 are met, 3 are met with a stated qualification, 1 is pending (the exit approval itself), and
+**1 carries an open finding**. Finding F1: an evidence row written by direct SQL can name a rule that was never registered,
+and six store reads accept it. The record presents the options and a labelled recommendation. It decides nothing, and no
+correction has been made.
+
+- **Decision:** as s2.
+- **Consequences:** The CEO reviews the record and determines F1. Any correction, and any exit decision, needs its own
+  authorization.
+- **Evidence:** merge `689fd369e6f871a2e21b1afa20911ed305c973e7`; PR #59; head CI `44271689048`; post-merge CI `44273894275`. The owner's
+  instruction exists as session input, not as a repository file.
+
+---
+
 ## ADR template (copy, do not edit above the line)
 
 ## ADR-XXXX - <title>
