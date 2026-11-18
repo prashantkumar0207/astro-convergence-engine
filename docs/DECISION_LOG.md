@@ -12867,6 +12867,50 @@ UNKNOWN class, certified calculations and protected holdouts. New gate T carries
 
 ---
 
+## ADR-0126 - PR #62 merged and finding F2 closed; the EVIDENCE phase-exit record refreshed at `f24771f` for the final CEO checkpoint; EVIDENCE exit not declared
+
+- **Date:** 2026-11-18
+- **Status:** **ACCEPTED as to s2, on the owner's instruction quoted in s1.** s3 records the refreshed submission and decides nothing.
+- **Context:** `ADR-0125` authorized the F2 correction, and required PR #60's evidence to be refreshed against the final verified `main`
+  after that correction was independently approved and merged.
+
+### 1. The owner's instruction (exact text)
+
+```text
+Authorize PR #62 merge and PR #60 refresh
+```
+
+No CEO review of PR #62 was on record, so the owner was asked whether the independent CEO had given a PASS on PR #62 at exact HEAD
+`952fd6143cf9e5f61fbda4e631fb8198f13b5f8e`. The owner answered, exactly:
+
+```text
+CEO PASS given
+```
+
+### 2. PR #62 merged; findings F1 and F2 closed
+
+PR #62 merged by a normal two-parent merge as `f24771fb7405bfd4adfb0a44ce13c322f0319d76`, with parents `16e3e7f0793c48191b61b488470a176a9c24ca19` and
+`952fd6143cf9e5f61fbda4e631fb8198f13b5f8e`. The merge tree (`d57fc85`) is identical to the reviewed head's tree, and the head branch is kept. Before the merge, the
+head, base (`16e3e7f`), mergeability (MERGEABLE, CLEAN) and head CI `44298701642` (four jobs passed) were reverified. Post-merge CI `44302736571` passed all four
+jobs on `ubuntu-24.04`: 2,273 tests on 3.11 and 3.12, drift clean, and gates S and T at 101 and 89 refusals.
+
+Finding F1 (`ADR-0124`, PR #61, merge `16e3e7f`) and finding F2 (`ADR-0125`, PR #62) are **closed**.
+
+### 3. The refreshed phase-exit record
+
+`reports/EVIDENCE_PHASE_EXIT_RECORD.md` 0.2.0 (`PROPOSED`) tests the phase at `f24771f` against `docs/Q8_CLOSURE_MATRIX.md` s6 and s14, and adds no
+criterion. Of its 33 rows, 28 are met, 4 are met with a stated qualification, 1 is pending (the exit approval itself), and none carries an open finding.
+
+Two residual limits on the exit clause are demonstrated and stated there. Someone with direct write access to the database can forge a set of rows that agree with
+one another: one claiming another snapshot (L1), and one identical to what `persist()` would write (L2). The record gives a labelled recommendation and decides nothing.
+
+- **Decision:** as s2.
+- **Consequences:** **EVIDENCE exit is not declared**, and prediction issuance has not begun. The exit needs the CEO's approval under s6 and the owner's decision.
+- **Evidence:** merge `f24771fb7405bfd4adfb0a44ce13c322f0319d76`; PR #62; head CI `44298701642`; post-merge CI `44302736571`. The owner's instruction and answer
+  exist as session input, not as repository files.
+
+---
+
 ## ADR template (copy, do not edit above the line)
 
 ## ADR-XXXX - <title>

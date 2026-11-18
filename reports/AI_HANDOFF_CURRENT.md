@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.57.0 |
+| Version | 9.58.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-18 (PR #61 merged (`16e3e7f`). F2 correction on review (`ADR-0125`). EVIDENCE exit not declared.) |
+| Last updated | 2026-11-18 (PR #62 merged (`f24771f`). EVIDENCE phase-exit record refreshed on PR #60 for the final CEO checkpoint. Exit not declared.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,16 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-18 - PR #62 merged; EVIDENCE phase-exit record refreshed (`ADR-0126`)
+
+- **Merge:** `f24771fb7405bfd4adfb0a44ce13c322f0319d76`, parents `16e3e7f` and `952fd61`; tree `d57fc85` identical to the reviewed head; branch kept.
+  Post-merge CI `44302736571`: four jobs passed on `ubuntu-24.04`; 2,273 tests on 3.11 and 3.12; drift clean.
+- **Regenerated at `f24771f` on clean Linux:** 24/24 certifiers, drift clean, all governance steps, 2,273 passed, 0 skipped.
+- **Phase-exit record 0.2.0 (PROPOSED):** 33 rows: 28 met, 4 met with a qualification, 1 pending (the exit approval), 0 open findings.
+- **For the CEO:** residual limits L1 and L2 on the exit clause: rows forged to agree with one another, by someone with database
+  write access, are not detected. The record gives a labelled recommendation and decides nothing.
+- **Not done:** EVIDENCE exit is not declared, and prediction issuance has not begun.
 
 ### 2026-11-18 - PR #61 merged; finding F2 correction (`ADR-0125`)
 
