@@ -17,7 +17,7 @@ M_registry_integrity: 0
 N_registry_refusals: 50
 O_snapshot_fails_closed: 13
 P_graph_integrity: 0
-Q_graph_refusals: 41
+Q_graph_refusals: 71
 R_graph_agreement: 0
 archived: certification/EVIDENCE_FOUNDATIONS_V1_certification.json
 RESULT  : PASS

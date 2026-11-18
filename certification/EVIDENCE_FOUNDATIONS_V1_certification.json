@@ -1,7 +1,7 @@
 {
  "schema": "evidence_foundations_v1_certification",
  "adr": "ADR-0115 s4; ADR-0116 s4; ADR-0119 s3, s5; ADR-0120 s4, s6; ADR-0121; ADR-0122 s4, s6",
- "date": "2026-11-17",
+ "date": "2026-11-18",
  "scope": "Structural certification of the EVIDENCE foundations: the H0 entity model, append-only entity store and ENT issuer (ADR-0114 WP-E1), and the H1 event model, append-only event store, separate confirmation records, EVR issuer and seeded event-class vocabulary (ADR-0115 WP-E2), and the H2 historical ledger, protected holdouts, pre-registered protocols and purpose-declared access log (ADR-0116 WP-E3), and the H4 evidence model, append-only evidence store, EVD and RUL issuers, provenance-checked joins, decomposable aggregates and structural relationship records (ADR-0119 WP-E4), and the H5 interpretation rule registry, its hash-pinned fail-closed snapshot and the governed RUL authoring process (ADR-0120 WP-E5; ADR-0121), and the provenance graph recorded at evidence-creation time (ADR-0122 WP-E6).",
  "reference": {
   "structure": "the model contracts of ADR-0114 s3, ADR-0115 s5, ADR-0116 s5, ADR-0119 s5, ADR-0120 s6 and ADR-0122 s6, exercised on synthetic records",
@@ -510,7 +510,7 @@
   },
   "Q_graph_refusals": {
    "classification": "negative_control",
-   "refusals_verified": 41,
+   "refusals_verified": 71,
    "refused": [
     "a CORRELATED_WITH edge",
     "a CORRELATED_WITH edge read from a row",
@@ -552,7 +552,37 @@
     "direct SQL: DELETE FROM graph_nodes",
     "direct SQL: UPDATE graph_edges SET position = 9",
     "direct SQL: UPDATE graph_nodes SET payload = 'x'",
-    "linked items the item does not name"
+    "graph of an unaccounted edge from other chart to natal chart",
+    "graph of an unaccounted edge from other fact to first item",
+    "graph of an unaccounted edge from other input to natal chart",
+    "graph of an unaccounted edge from other input to natal fact",
+    "graph of an unaccounted edge from other timing to first item",
+    "graph of an unaccounted edge from second item to first item",
+    "incident of an unaccounted edge from other chart to natal chart",
+    "incident of an unaccounted edge from other fact to first item",
+    "incident of an unaccounted edge from other input to natal chart",
+    "incident of an unaccounted edge from other input to natal fact",
+    "incident of an unaccounted edge from other timing to first item",
+    "incident of an unaccounted edge from second item to first item",
+    "item_graph of an unaccounted edge from other chart to natal chart",
+    "item_graph of an unaccounted edge from other fact to first item",
+    "item_graph of an unaccounted edge from other input to natal chart",
+    "item_graph of an unaccounted edge from other input to natal fact",
+    "item_graph of an unaccounted edge from other timing to first item",
+    "item_graph of an unaccounted edge from second item to first item",
+    "linked items the item does not name",
+    "recorded_graph of an unaccounted edge from other chart to natal chart",
+    "recorded_graph of an unaccounted edge from other fact to first item",
+    "recorded_graph of an unaccounted edge from other input to natal chart",
+    "recorded_graph of an unaccounted edge from other input to natal fact",
+    "recorded_graph of an unaccounted edge from other timing to first item",
+    "recorded_graph of an unaccounted edge from second item to first item",
+    "reproduce of an unaccounted edge from other chart to natal chart",
+    "reproduce of an unaccounted edge from other fact to first item",
+    "reproduce of an unaccounted edge from other input to natal chart",
+    "reproduce of an unaccounted edge from other input to natal fact",
+    "reproduce of an unaccounted edge from other timing to first item",
+    "reproduce of an unaccounted edge from second item to first item"
    ],
    "exercises": [
     "evidence.provenance_graph"
@@ -562,17 +592,24 @@
    "classification": "structural_integrity",
    "items_reproduced": 6,
    "mismatches": 0,
-   "controls_rejected": 9,
+   "controls_rejected": 16,
    "controls": [
     "a graph losing a derivation link rejected",
     "a graph losing its rule rejected",
     "a graph losing one input rejected",
     "a graph losing the recomputation link rejected",
     "a node the records do not account for rejected",
+    "a read comparator checking only edges into evidence nodes rejected",
+    "a read comparator reporting only missing rows rejected",
     "a reproduction comparator reading the item, not the graph, rejected",
     "an agreement comparator ignoring edges rejected",
     "an edge the records do not account for rejected",
-    "inputs out of their recorded order rejected"
+    "inputs out of their recorded order rejected",
+    "the read comparator rejects a node no record justifies",
+    "the read comparator rejects a recorded edge gone missing",
+    "the read comparator rejects an edge at another position",
+    "the read comparator rejects an edge no record justifies",
+    "the read comparator rejects every recorded node gone missing"
    ],
    "exercises": [
     "evidence.provenance_graph"
@@ -601,6 +638,7 @@
   "the provenance graph is recorded, not computed over: no path, independent count, cut, score, weight or ratio is computed, and relationship classification does not read it",
   "the graph records only what each item and the store's records state; it cannot show that a producer's recorded inputs are all it consumed, and records incompleteness where the producer states it",
   "no CORRELATED_WITH edge is recorded: correlation is measured, and nothing in EVIDENCE measures",
+  "a persisted graph read refuses rows the items' stored records do not account for; it cannot detect a forged evidence record whose own graph rows were forged to agree with it",
   "the graph's node and edge kinds adopt the recording schema of docs/EVIDENCE_INDEPENDENCE_DESIGN.md s3 only (ADR-0122 D1); that document stays PROPOSED in every other respect"
  ],
  "environment": {
@@ -1502,6 +1540,14 @@
     },
     {
      "callable": "engine.evidence.provenance_graph.recorded_fields",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "R_graph_agreement"
+     ]
+    },
+    {
+     "callable": "engine.evidence.provenance_graph.unjustified_rows",
      "kind": "callable",
      "disposition": "GATED",
      "exercised_by": [

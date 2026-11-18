@@ -1256,9 +1256,10 @@
    "status": "NOT_IN_USE"
   },
   "engine.evidence.evidence_store.EvidenceStore.evidence_ids": {
-   "caller_count": 1,
+   "caller_count": 2,
    "callers": [
-    "engine.evidence.evidence_store.EvidenceStore.counts"
+    "engine.evidence.evidence_store.EvidenceStore.counts",
+    "engine.evidence.evidence_store.EvidenceStore.recorded_graph"
    ],
    "covered": true,
    "file": "engine/evidence/evidence_store.py",
@@ -1302,13 +1303,13 @@
    "status": "IN_USE_COVERED"
   },
   "engine.evidence.evidence_store.EvidenceStore.load": {
-   "caller_count": 7,
+   "caller_count": 9,
    "callers": [
     "engine.evidence.evidence_store.EvidenceStore._ancestry",
     "engine.evidence.evidence_store.EvidenceStore._check",
-    "engine.evidence.evidence_store.EvidenceStore.classify",
-    "engine.evidence.evidence_store.EvidenceStore.graph",
-    "engine.evidence.evidence_store.EvidenceStore.join"
+    "engine.evidence.evidence_store.EvidenceStore._checked_against_records",
+    "engine.evidence.evidence_store.EvidenceStore._justified_by",
+    "engine.evidence.evidence_store.EvidenceStore.classify"
    ],
    "covered": true,
    "file": "engine/evidence/evidence_store.py",
@@ -1325,9 +1326,13 @@
    "status": "NOT_IN_USE"
   },
   "engine.evidence.evidence_store.EvidenceStore.recorded_graph": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.evidence_store.EvidenceStore.incident"
+   ],
    "covered": true,
    "file": "engine/evidence/evidence_store.py",
-   "status": "NOT_IN_USE"
+   "status": "IN_USE_COVERED"
   },
   "engine.evidence.evidence_store.EvidenceStore.register_rule": {
    "covered": true,
@@ -1359,9 +1364,10 @@
    "status": "NOT_IN_USE"
   },
   "engine.evidence.evidence_store.EvidenceStore.rule_version": {
-   "caller_count": 1,
+   "caller_count": 2,
    "callers": [
-    "engine.evidence.evidence_store.EvidenceStore._check"
+    "engine.evidence.evidence_store.EvidenceStore._check",
+    "engine.evidence.evidence_store.EvidenceStore._justified_by"
    ],
    "covered": true,
    "file": "engine/evidence/evidence_store.py",
@@ -1773,8 +1779,9 @@
    "status": "IN_USE_COVERED"
   },
   "engine.evidence.provenance_graph.record_graph": {
-   "caller_count": 1,
+   "caller_count": 2,
    "callers": [
+    "engine.evidence.evidence_store.EvidenceStore._justified_by",
     "engine.evidence.evidence_store.EvidenceStore.persist"
    ],
    "covered": true,
@@ -1820,6 +1827,18 @@
    "caller_count": 1,
    "callers": [
     "engine.evidence.provenance_graph.record_graph"
+   ],
+   "covered": true,
+   "exported_by": [
+    "engine/evidence/provenance_graph.py:__all__"
+   ],
+   "file": "engine/evidence/provenance_graph.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.provenance_graph.unjustified_rows": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.evidence_store.EvidenceStore._unjustified"
    ],
    "covered": true,
    "exported_by": [
@@ -2627,8 +2646,8 @@
  },
  "schema": "ace-c4-reachability-v1",
  "summary": {
-  "IN_USE_COVERED": 186,
-  "NOT_IN_USE": 144
+  "IN_USE_COVERED": 188,
+  "NOT_IN_USE": 143
  },
  "universe_exclusions": {
   "engine.main.": "API route handlers: callers and exports, not capabilities",
