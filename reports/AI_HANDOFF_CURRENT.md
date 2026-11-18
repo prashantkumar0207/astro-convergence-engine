@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.54.0 |
+| Version | 9.56.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-18 (CEO bounded HOLD on PR #59 closed on the branch: graph reads refuse unaccounted-for rows. Not merged.) |
+| Last updated | 2026-11-18 (F1 correction on review (`ADR-0124`); finding F2 reported, not corrected. EVIDENCE exit not declared.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,20 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-18 - Finding F1 correction (`ADR-0124`); finding F2 reported
+
+- **Owner's decision:** F1 blocks EVIDENCE exit; one bounded correction authorized (`ADR-0124`, quoted exactly).
+- **Correction:** every evidence read refuses a row, however written, that disagrees with its own key or columns, names an
+  unregistered rule version or one that does not fit the item, claims the pinned snapshot without matching its publication, or
+  has no accounted-for graph. Rule versions recorded under an earlier snapshot stay readable.
+- **Certification:** new gate S: 10 forgeries, 101 refusals, 12 legitimate read paths preserved, 6 real-gate controls. Gates A to R
+  are identical.
+- **Self-audit:** 53 mutants (20 of the read checks, 33 earlier), each caught; the unmutated tree passes.
+- **Stated limit:** a forged row claiming another snapshot, with matching forged graph rows, is not detected.
+- **Finding F2, not corrected:** a forged `evidence_relationships` row between two legitimate items can state a class `classify()`
+  contradicts, and `relationships()` and `relationship_counts()` return it. It is outside `ADR-0124`'s scope.
+- **Next:** CEO review; after the merge, refresh PR #60's exit record against the new `main` SHA.
 
 ### 2026-11-18 - PR #59 bounded HOLD correction (AC5, AC7)
 
