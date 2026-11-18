@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.53.0 |
+| Version | 9.54.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-17 (`ADR-0122` s4 to s6 ratified; PR #58 merged (`e63f93e`). WP-E6 implemented on review branch `evidence-wp-e6-provenance-graph`. Not merged.) |
+| Last updated | 2026-11-18 (CEO bounded HOLD on PR #59 closed on the branch: graph reads refuse unaccounted-for rows. Not merged.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,19 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-18 - PR #59 bounded HOLD correction (AC5, AC7)
+
+- **Reproduced at `309af10`:** with two synthetic items on distinct charts, an `INPUT` to `DERIVED_CHART` edge inserted by
+  direct SQL was accepted by `item_graph`, `recorded_graph` and `incident`, and `reproduce()` still agreed.
+- **Correction (`ca9edf3`):** `graph`, `item_graph`, `recorded_graph`, `incident` and `reproduce` compare the recorded rows with
+  what the items' and their recorded ancestors' stored records justify, and refuse any unaccounted-for or missing node
+  or edge. Reads return only rows recorded at creation; the comparison never supplies a row.
+- **Certification:** Gate Q 41 to 71 refusals (six false-ancestry edges on five real read paths); Gate R 9 to 16 controls,
+  including two weakened comparators on the real read path. Gates A to P are identical.
+- **Self-audit:** 33 mutants (the 22 earlier and 11 of the read check), each caught; the unmutated tree passes.
+- **Stated limit:** a forged evidence record whose own graph rows were forged to agree with it is not detectable here
+  (recorded as a non-claim in `EVIDENCE_FOUNDATIONS_V1`).
 
 ### 2026-11-17 - ADR-0122 ratified; PR #58 merged; WP-E6 implemented and on review
 

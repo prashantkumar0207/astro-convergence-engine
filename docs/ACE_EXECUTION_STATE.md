@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | **ACCEPTED (`ADR-0062`) - canonical, machine-checkable current-state record.** Regenerate/refresh on every meaningful implementation task, same discipline as `reports/AI_HANDOFF_CURRENT.md`. |
-| Version | 7.53.0 |
+| Version | 7.54.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-17 (**`ADR-0122` s4 to s6 ratified; PR #58 merged (`e63f93e`). WP-E6 (provenance-graph recording) implemented on review branch `evidence-wp-e6-provenance-graph`. Not merged.**) |
+| Last updated | 2026-11-18 (**CEO bounded HOLD on PR #59 closed on the branch: persisted graph reads refuse rows the items' records do not account for (AC5, AC7). Not merged.**) |
 | Review cadence | Refresh at the start of a session if stale; not load-bearing if it isn't. |
 
 # ACE execution state
@@ -47,17 +47,17 @@ independently is in these fields plus the pointers they name.
 | `CURRENT_AUTHORIZED_TASK` | None self-executable beyond the WP-E6 implementation PR, which needs independent CEO review and further owner authorization to merge. |
 | `TASK_OWNER` | CHATGPT (review of the WP-E6 implementation PR); USER (merge authorization). |
 | `STATUS` | WP-E6 review PR, not merged. No certified calculation changed: existing artifacts differ only in volatile fields and `modules_scanned` (218 to 219). `EVIDENCE_FOUNDATIONS_V1` gains gates P, Q and R and the `evidence.provenance_graph` capability; gates A to O are identical. EVIDENCE exit is not declared. The product contract's canonical text is `specs/PROJECT_CHARTER.md` v1.4.0 (owner-ratified, `ADR-0117` and its addendum); the product-objective definition is CLOSED (`ADR-0118` s2). Neither is restated here. |
-| `LAST_COMPLETED_ACTION` | Recorded the ratification of `ADR-0122` s4 to s6 after PR #58's exact-HEAD merge, and implemented WP-E6: the provenance graph recorded with each evidence item in one transaction, content-addressed nodes, declared edge pairs, reads refusing forged, dangling or cyclic rows, and gates P, Q and R. |
+| `LAST_COMPLETED_ACTION` | Closed the CEO's bounded HOLD on PR #59: reproduced a structurally valid false `INPUT` to `DERIVED_CHART` edge accepted by the graph reads at `309af10`; persisted reads now refuse any node or edge the items' stored records do not account for, and never supply a missing row (AC5, AC7). |
 | `LAST_COMMIT` (main) | `e63f93edd4aacf3e692abb5a899ecbc7e10d8103` (PR #58 merge, the WP-E6 criteria; parents `69730bf` and `eb9551b`). |
 | `LAST_COMMIT` (evidence-wp-e6-provenance-graph) | This branch's commits, on top of `e63f93edd4aacf3e692abb5a899ecbc7e10d8103`. |
 | `LAST_CI_RUN` | `44057120528` at `e63f93e`: push to `main`, success on all four jobs on `ubuntu-24.04`. This branch's results are on its review PR. |
-| `LAST_CEO_DECISION` | PASS on the WP-E6 criteria (PR #58 at `eb9551b`), as the owner states. |
+| `LAST_CEO_DECISION` | Bounded HOLD on PR #59 at `309af10`: one AC5/AC7 integrity defect (unaccounted-for graph edges on the read path). No new ADR or scope expansion. |
 | `NEXT_AUTHORIZED_ACTION` | None self-executable. The WP-E6 PR needs independent CEO review and the owner's merge authorization. Then the EVIDENCE exit checkpoint, which needs its own CEO review. Before any prediction implementation, an owner-approved roadmap placement. The retirement of `SUPPORT_PATHS_V1` gates H and I needs separate approval. |
-| `WAITING_FOR` | CHATGPT: review of the WP-E6 implementation PR. USER: its merge authorization. |
+| `WAITING_FOR` | CHATGPT: narrow final review of the WP-E6 implementation PR (#59). USER: its merge authorization. |
 | `BLOCKER` | None for this delivery. |
 | `CEO_APPROVAL_REQUIRED` | The WP-E6 PR's merge; the EVIDENCE phase exit checkpoint. |
 | `CLAUDE_ACTION_REQUIRED` | None until directed. Every relevant specification, milestone and review carries the Charter-compliance statement. |
-| `CHATGPT_ACTION_REQUIRED` | Review of the WP-E6 implementation PR. |
+| `CHATGPT_ACTION_REQUIRED` | Narrow final review of PR #59. |
 | `USER_ACTION_REQUIRED` | Merge authorization for the WP-E6 PR, after CEO review; a roadmap placement for prediction issuance before its implementation; a separate authorization for the bounded retirement of `SUPPORT_PATHS_V1` gates H and I. |
 | `HANDOFF_REQUIRED` | None beyond this file and the latest entry in `reports/AI_HANDOFF_CURRENT.md`. |
 
@@ -79,6 +79,7 @@ exactly as `reports/AI_HANDOFF_CURRENT.md` already requires of itself.
 
 | Version | Date | Change |
 |---|---|---|
+| 7.54.0 | 2026-11-18 | **PR #59 HOLD correction: graph reads refuse unaccounted-for rows; Gate Q 41 to 71 refusals; Gate R 9 to 16 controls.** |
 | 7.53.0 | 2026-11-17 | **`ADR-0122` s4 to s6 ratified; WP-E6 implemented and on review** (gates P, Q and R). |
 | 7.52.0 | 2026-11-17 | **WP-E5 CLOSED; WP-E6 (provenance-graph recording) criteria proposed** (`ADR-0122`). |
 | 7.51.0 | 2026-11-17 | **PR #56 HOLD corrections: persist() admits only the exactly published rule; Gate M gains 14 controls; Gate N 45 to 50 refusals.** |
