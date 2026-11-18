@@ -1,5 +1,5 @@
 """EVIDENCE_FOUNDATIONS_V1 CERTIFICATION RUNNER (ADR-0115 s4; ADR-0116 s4; ADR-0119 s3; ADR-0120 s4; ADR-0121;
-ADR-0122 s6).
+ADR-0122 s6; ADR-0124).
 
 Regenerates certification/EVIDENCE_FOUNDATIONS_V1_certification.json FROM SCRATCH on every run;
 the stored JSON is never accepted as proof.
@@ -44,6 +44,8 @@ Gates:
      cycles, forged or malformed nodes, rows planted by direct SQL, and UPDATE or DELETE.
   R  the graph's agreement with the evidence: each item reproduced exactly from its graph alone, and
      the graph exactly what the items' records give; broken comparators are distinguishable.
+  S  evidence read integrity: rows written around persist() are refused by every read; legitimate records,
+     those under an earlier snapshot included, stay readable; each real check, weakened, admits the forgery.
 
 Exit 0 = PASS, 3 = FAIL.
 """
@@ -2226,6 +2228,247 @@ def gate_r_graph_agreement():
             "controls_rejected": len(controls), "controls": sorted(controls)}
 
 
+# ------------------------------------------------------------------ evidence read integrity (ADR-0124, finding F1)
+
+FORGED_ID, FORGED_PARENT_ID = EvidenceId.from_number(500), EvidenceId.from_number(499)
+
+
+class _Forgery:
+    """Writes rows straight into the tables, around persist(), as a forger with database access would."""
+
+    def __init__(self, setting: _GraphWorld):
+        self.setting, self.store, self.world = setting, setting.store, setting.world
+        self.parashari, self.kp = setting.rules[ProducingSystem.PARASHARI], setting.rules[ProducingSystem.KP]
+        self.candidate = setting.store.entities.load(setting.owner).charts[0]
+        self.unissued = RuleId.from_number(LAST_TEST // 1000)
+        self.good = setting.store.persist(setting.world.item())
+
+    def row(self, item, evidence_id=FORGED_ID, payload_id=None, entity=None, recomputes=None) -> None:
+        recorded = None if item.recomputes is None else item.recomputes.value
+        self.store._db.execute(
+            "INSERT INTO evidence_items (evidence_id, entity_id, recomputes, payload) VALUES (?, ?, ?, ?)",
+            (evidence_id.value, entity or item.entity.value, recorded if recomputes is None else recomputes,
+             json.dumps(item_to_record(payload_id or evidence_id, item))))
+
+    def graph(self, item, rule, evidence_id=FORGED_ID, linked=None) -> None:
+        built = provenance_graph.record_graph(evidence_id, item, self.candidate, None, rule, linked or {})
+        for node in built.nodes:
+            self.store._db.execute("INSERT OR IGNORE INTO graph_nodes (node_key, kind, payload) VALUES (?, ?, ?)",
+                                   provenance_graph.node_to_row(node))
+        for edge in built.edges:
+            self.store._db.execute("INSERT OR IGNORE INTO graph_edges (source_key, kind, target_key, position) "
+                                   "VALUES (?, ?, ?, ?)", (edge.source.key, edge.kind.value, edge.target.key,
+                                                           edge.position))
+
+    def reference(self, rule=None, variant="base"):
+        return RuleReference(rule=rule or self.unissued, version=1, variant=variant)
+
+    def unregistered(self, evidence_id=FORGED_ID):
+        rule = dataclasses.replace(self.parashari, rule=self.unissued)
+        item = self.world.item(rule=self.reference())
+        self.row(item, evidence_id)
+        self.graph(item, rule, evidence_id)
+        return item
+
+
+def _forge_unregistered_no_graph(forgery: _Forgery) -> str:
+    forgery.row(forgery.world.item(rule=forgery.reference()))
+    return "missing graph"
+
+
+def _forge_unregistered_with_graph(forgery: _Forgery) -> str:
+    forgery.unregistered()
+    return "is not registered"
+
+
+def _forge_registered_no_graph(forgery: _Forgery) -> str:
+    forgery.row(forgery.world.item(facts=("Saturn longitude",)))
+    return "missing graph"
+
+
+def _forge_other_school(forgery: _Forgery) -> str:
+    kp = forgery.kp
+    item = forgery.world.item(rule=RuleReference(rule=kp.rule, version=kp.version, variant=kp.spec.variant),
+                              declared_strength=kp.spec.declared_strength)
+    forgery.row(item)
+    forgery.graph(item, kp)
+    return "systems stay isolated"
+
+
+def _forge_other_strength(forgery: _Forgery) -> str:
+    item = forgery.world.item(declared_strength="planted")
+    forgery.row(item)
+    forgery.graph(item, forgery.parashari)
+    return "declared strength"
+
+
+def _forge_unpublished_variant(forgery: _Forgery) -> str:
+    base = forgery.parashari
+    rule = dataclasses.replace(base, spec=dataclasses.replace(base.spec, variant="forged"))
+    forgery.store._db.execute("INSERT INTO registered_rule_versions (rule_id, version, variant, payload) VALUES "
+                              "(?, ?, ?, ?)", (rule.rule.value, 1, "forged", json.dumps(rule_to_record(rule))))
+    item = forgery.world.item(rule=forgery.reference(rule.rule, "forged"))
+    forgery.row(item)
+    forgery.graph(item, rule)
+    return "not published by the pinned registry"
+
+
+def _forge_payload_of_another_item(forgery: _Forgery) -> str:
+    forgery.row(forgery.world.item(), payload_id=forgery.good)
+    return "does not match its row"
+
+
+def _forge_entity_column(forgery: _Forgery) -> str:
+    item = forgery.world.item(facts=("Venus longitude",))
+    forgery.row(item, entity=forgery.setting.derived.value)
+    forgery.graph(item, forgery.parashari)
+    return "does not match its row"
+
+
+def _forge_recomputes_column(forgery: _Forgery) -> str:
+    item = forgery.world.item(facts=("Venus longitude",))
+    forgery.row(item, recomputes=forgery.good.value)
+    forgery.graph(item, forgery.parashari)
+    return "does not match its row"
+
+
+def _forge_ancestor(forgery: _Forgery) -> str:
+    parent = forgery.unregistered(FORGED_PARENT_ID)
+    item = forgery.world.item(facts=("Mercury longitude",), derived_from=(FORGED_PARENT_ID,))
+    forgery.row(item)
+    forgery.graph(item, forgery.parashari, linked={FORGED_PARENT_ID: parent})
+    return "is not registered"
+
+
+FORGERIES = (("a rule never registered, with no graph", _forge_unregistered_no_graph),
+             ("a rule never registered, with a matching forged graph", _forge_unregistered_with_graph),
+             ("a registered rule, with no graph", _forge_registered_no_graph),
+             ("another school's rule", _forge_other_school),
+             ("another declared strength", _forge_other_strength),
+             ("an unpublished variant at the pinned snapshot", _forge_unpublished_variant),
+             ("a payload naming another item", _forge_payload_of_another_item),
+             ("an entity column that disagrees", _forge_entity_column),
+             ("a recomputes column that disagrees", _forge_recomputes_column),
+             ("a forged ancestor", _forge_ancestor))
+
+
+def gate_s_evidence_read_integrity():
+    """Every evidence read refuses a row written around persist() that breaks the registered-rule or graph-integrity
+    requirements, and still serves legitimate records, those under an earlier snapshot included. Each real check is then
+    weakened in turn, and the same read accepts the forgery (ADR-0124; H4 s4; ADR-0122 AC5, AC7)."""
+
+    refused, controls, preserved = {}, {}, {}
+
+    def refuses(label, action, reason=""):
+        try:
+            action()
+        except StoreError as exc:
+            if reason not in str(exc):
+                fail(f"{label} was refused for another reason: {exc}")
+            refused[label] = True
+            return
+        fail(f"not refused: {label}")
+
+    for label, plant in FORGERIES:
+        with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as folder:
+            setting = _GraphWorld(Path(folder) / "evidence.sqlite")
+            store: EvidenceStore = setting.store
+            forgery = _Forgery(setting)
+            good, reason = forgery.good, plant(forgery)
+            refuses(f"load of {label}", lambda: store.load(FORGED_ID), reason)
+            for read, action in (("evidence_ids", lambda: store.evidence_ids()),
+                                 ("join", lambda: store.join((good, FORGED_ID))),
+                                 ("counts", lambda: store.counts()),
+                                 ("classify", lambda: store.classify(good, FORGED_ID)),
+                                 ("relate", lambda: store.relate(good, FORGED_ID)),
+                                 ("item_graph", lambda: store.item_graph(FORGED_ID)),
+                                 ("reproduce", lambda: store.reproduce(FORGED_ID)),
+                                 ("recorded_graph", lambda: store.recorded_graph())):
+                refuses(f"{read} with {label}", action)
+            if store.load(good) != setting.world.item() or store.item_graph(good).nodes == ():
+                fail(f"{label} took a legitimate item down with it")
+            preserved[f"a legitimate item beside {label}"] = True
+            store.close()
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as folder:
+        setting = _GraphWorld(Path(folder) / "evidence.sqlite")
+        store: EvidenceStore = setting.store
+        forgery = _Forgery(setting)
+        forgery.unregistered(FORGED_PARENT_ID)
+        refuses("persist naming a forged parent", lambda: store.persist(setting.world.item(
+            derived_from=(FORGED_PARENT_ID,))), "is not registered")
+        if store.issued_count("EVD") != 1:
+            fail("a refused persist took an EVD number")
+        forgery.row(setting.world.item(rule=forgery.reference(), recomputes=forgery.good))
+        refuses("recomputations listing a forged recomputation", lambda: store.recomputations(forgery.good))
+        record = relationship_to_record(Relationship(forgery.good, FORGED_ID, DependencyClass.UNKNOWN, False, "planted"))
+        store._db.execute("INSERT INTO evidence_relationships (first_id, second_id, payload) VALUES (?, ?, ?)",
+                          (forgery.good.value, FORGED_ID.value, json.dumps(record)))
+        refuses("relationships naming a forged item", lambda: store.relationships())
+        refuses("relationship_counts naming a forged item", lambda: store.relationship_counts())
+        store.close()
+    # Legitimate records stay readable, those recorded under an earlier snapshot included.
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as folder:
+        setting = _GraphWorld(Path(folder) / "evidence.sqlite")
+        store: EvidenceStore = setting.store
+        ids = setting.populate()
+        items = [store.load(evidence_id) for evidence_id in ids]
+        store.relate(ids[0], ids[1])
+        if store.evidence_ids() != ids or store.join(ids) != items or store.recomputations(ids[0]) != [ids[3]] or \
+                len(store.relationships()) != 1 or set(store.counts()["total"]) != set(ids):
+            fail("a legitimate record was not served by every read")
+        preserved["legitimate items through every read"] = True
+        in_force = rule_registry.pinned
+        later = rule_registry.RuleRegistry(in_force().rules(), "0" * 64)
+        rule_registry.pinned = lambda: later
+        try:
+            if [store.load(evidence_id) for evidence_id in ids] != items or store.evidence_ids() != ids or \
+                    not store.recorded_graph().nodes:
+                fail("evidence recorded under an earlier snapshot is no longer readable")
+            preserved["evidence recorded under an earlier snapshot"] = True
+            refuses("new evidence under an earlier snapshot", lambda: store.persist(setting.world.item()),
+                    "another snapshot")
+
+            def too_strict(item):
+                rule = store.rule_version(item.rule)
+                if rule.spec.knowledge_snapshot_hash != later.snapshot_sha256:
+                    raise StoreError("another snapshot")
+                return rule
+
+            store._admitted_rule = too_strict
+            refuses("a planted check demanding the snapshot in force, on legitimate history",
+                    lambda: store.load(ids[0]), "another snapshot")
+            del store._admitted_rule
+            controls["a read check demanding the snapshot in force rejected: it refuses legitimate history"] = True
+        finally:
+            rule_registry.pinned = in_force
+        store.close()
+    # Each real check does the refusing: weakened in turn, the same read accepts the forgery.
+    for label, plant, check, weak in (
+            ("the registered-rule lookup", _forge_unregistered_with_graph, "_admitted_rule",
+             lambda forgery: lambda item: dataclasses.replace(forgery.parashari, rule=forgery.unissued)),
+            ("the rule's fit to the item", _forge_other_strength, "_require_fit",
+             lambda forgery: lambda item, rule: None),
+            ("the exact-publication check", _forge_unpublished_variant, "_require_published",
+             lambda forgery: lambda item, rule, registry: None),
+            ("the row identity check", _forge_entity_column, "_require_row_identity",
+             lambda forgery: lambda *row: None),
+            ("the graph check", _forge_registered_no_graph, "graph", lambda forgery: lambda evidence_ids: None)):
+        with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as folder:
+            setting = _GraphWorld(Path(folder) / "evidence.sqlite")
+            store: EvidenceStore = setting.store
+            forgery = _Forgery(setting)
+            reason = plant(forgery)
+            refuses(f"the real read, before weakening {label}", lambda: store.load(FORGED_ID), reason)
+            store.__setattr__(check, weak(forgery))
+            if store.load(FORGED_ID) is None:
+                fail(f"weakening {label} did not change the read")
+            controls[f"{label}, weakened, admits the forgery on the real read path"] = True
+            store.close()
+    return {"classification": "negative_control", "forgeries": len(FORGERIES), "refusals_verified": len(refused),
+            "legitimate_reads_preserved": len(preserved), "controls_rejected": len(controls),
+            "refused": sorted(refused), "preserved": sorted(preserved), "controls": sorted(controls)}
+
+
 def main():
     tee = support.start_transcript()
     preconditions = support.preflight()
@@ -2248,10 +2491,11 @@ def main():
         "P_graph_integrity": gate_p_graph_integrity(),
         "Q_graph_refusals": gate_q_graph_refusals(),
         "R_graph_agreement": gate_r_graph_agreement(),
+        "S_evidence_read_integrity": gate_s_evidence_read_integrity(),
     }
     report = {
         "schema": "evidence_foundations_v1_certification",
-        "adr": "ADR-0115 s4; ADR-0116 s4; ADR-0119 s3, s5; ADR-0120 s4, s6; ADR-0121; ADR-0122 s4, s6",
+        "adr": "ADR-0115 s4; ADR-0116 s4; ADR-0119 s3, s5; ADR-0120 s4, s6; ADR-0121; ADR-0122 s4, s6; ADR-0124",
         "date": str(date.today()),
         "scope": ("Structural certification of the EVIDENCE foundations: the H0 entity model, append-only entity store "
                   "and ENT issuer (ADR-0114 WP-E1), and the H1 event model, append-only event store, separate "
@@ -2306,6 +2550,8 @@ def main():
             "no CORRELATED_WITH edge is recorded: correlation is measured, and nothing in EVIDENCE measures",
             "a persisted graph read refuses rows the items' stored records do not account for; it cannot detect a "
             "forged evidence record whose own graph rows were forged to agree with it",
+            "a rule version recorded under another snapshot is read as history, because no earlier snapshot is archived "
+            "to check it against: a forged row claiming another snapshot, with matching forged graph rows, is not detected",
             "the graph's node and edge kinds adopt the recording schema of docs/EVIDENCE_INDEPENDENCE_DESIGN.md s3 "
             "only (ADR-0122 D1); that document stays PROPOSED in every other respect",
         ],
