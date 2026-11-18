@@ -19,5 +19,6 @@ O_snapshot_fails_closed: 13
 P_graph_integrity: 0
 Q_graph_refusals: 71
 R_graph_agreement: 0
+S_evidence_read_integrity: 101
 archived: certification/EVIDENCE_FOUNDATIONS_V1_certification.json
 RESULT  : PASS

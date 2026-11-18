@@ -1,6 +1,6 @@
 {
  "schema": "evidence_foundations_v1_certification",
- "adr": "ADR-0115 s4; ADR-0116 s4; ADR-0119 s3, s5; ADR-0120 s4, s6; ADR-0121; ADR-0122 s4, s6",
+ "adr": "ADR-0115 s4; ADR-0116 s4; ADR-0119 s3, s5; ADR-0120 s4, s6; ADR-0121; ADR-0122 s4, s6; ADR-0124",
  "date": "2026-11-18",
  "scope": "Structural certification of the EVIDENCE foundations: the H0 entity model, append-only entity store and ENT issuer (ADR-0114 WP-E1), and the H1 event model, append-only event store, separate confirmation records, EVR issuer and seeded event-class vocabulary (ADR-0115 WP-E2), and the H2 historical ledger, protected holdouts, pre-registered protocols and purpose-declared access log (ADR-0116 WP-E3), and the H4 evidence model, append-only evidence store, EVD and RUL issuers, provenance-checked joins, decomposable aggregates and structural relationship records (ADR-0119 WP-E4), and the H5 interpretation rule registry, its hash-pinned fail-closed snapshot and the governed RUL authoring process (ADR-0120 WP-E5; ADR-0121), and the provenance graph recorded at evidence-creation time (ADR-0122 WP-E6).",
  "reference": {
@@ -614,6 +614,142 @@
    "exercises": [
     "evidence.provenance_graph"
    ]
+  },
+  "S_evidence_read_integrity": {
+   "classification": "negative_control",
+   "forgeries": 10,
+   "refusals_verified": 101,
+   "legitimate_reads_preserved": 12,
+   "controls_rejected": 6,
+   "refused": [
+    "a planted check demanding the snapshot in force, on legitimate history",
+    "classify with a forged ancestor",
+    "classify with a payload naming another item",
+    "classify with a recomputes column that disagrees",
+    "classify with a registered rule, with no graph",
+    "classify with a rule never registered, with a matching forged graph",
+    "classify with a rule never registered, with no graph",
+    "classify with an entity column that disagrees",
+    "classify with an unpublished variant at the pinned snapshot",
+    "classify with another declared strength",
+    "classify with another school's rule",
+    "counts with a forged ancestor",
+    "counts with a payload naming another item",
+    "counts with a recomputes column that disagrees",
+    "counts with a registered rule, with no graph",
+    "counts with a rule never registered, with a matching forged graph",
+    "counts with a rule never registered, with no graph",
+    "counts with an entity column that disagrees",
+    "counts with an unpublished variant at the pinned snapshot",
+    "counts with another declared strength",
+    "counts with another school's rule",
+    "evidence_ids with a forged ancestor",
+    "evidence_ids with a payload naming another item",
+    "evidence_ids with a recomputes column that disagrees",
+    "evidence_ids with a registered rule, with no graph",
+    "evidence_ids with a rule never registered, with a matching forged graph",
+    "evidence_ids with a rule never registered, with no graph",
+    "evidence_ids with an entity column that disagrees",
+    "evidence_ids with an unpublished variant at the pinned snapshot",
+    "evidence_ids with another declared strength",
+    "evidence_ids with another school's rule",
+    "item_graph with a forged ancestor",
+    "item_graph with a payload naming another item",
+    "item_graph with a recomputes column that disagrees",
+    "item_graph with a registered rule, with no graph",
+    "item_graph with a rule never registered, with a matching forged graph",
+    "item_graph with a rule never registered, with no graph",
+    "item_graph with an entity column that disagrees",
+    "item_graph with an unpublished variant at the pinned snapshot",
+    "item_graph with another declared strength",
+    "item_graph with another school's rule",
+    "join with a forged ancestor",
+    "join with a payload naming another item",
+    "join with a recomputes column that disagrees",
+    "join with a registered rule, with no graph",
+    "join with a rule never registered, with a matching forged graph",
+    "join with a rule never registered, with no graph",
+    "join with an entity column that disagrees",
+    "join with an unpublished variant at the pinned snapshot",
+    "join with another declared strength",
+    "join with another school's rule",
+    "load of a forged ancestor",
+    "load of a payload naming another item",
+    "load of a recomputes column that disagrees",
+    "load of a registered rule, with no graph",
+    "load of a rule never registered, with a matching forged graph",
+    "load of a rule never registered, with no graph",
+    "load of an entity column that disagrees",
+    "load of an unpublished variant at the pinned snapshot",
+    "load of another declared strength",
+    "load of another school's rule",
+    "new evidence under an earlier snapshot",
+    "persist naming a forged parent",
+    "recomputations listing a forged recomputation",
+    "recorded_graph with a forged ancestor",
+    "recorded_graph with a payload naming another item",
+    "recorded_graph with a recomputes column that disagrees",
+    "recorded_graph with a registered rule, with no graph",
+    "recorded_graph with a rule never registered, with a matching forged graph",
+    "recorded_graph with a rule never registered, with no graph",
+    "recorded_graph with an entity column that disagrees",
+    "recorded_graph with an unpublished variant at the pinned snapshot",
+    "recorded_graph with another declared strength",
+    "recorded_graph with another school's rule",
+    "relate with a forged ancestor",
+    "relate with a payload naming another item",
+    "relate with a recomputes column that disagrees",
+    "relate with a registered rule, with no graph",
+    "relate with a rule never registered, with a matching forged graph",
+    "relate with a rule never registered, with no graph",
+    "relate with an entity column that disagrees",
+    "relate with an unpublished variant at the pinned snapshot",
+    "relate with another declared strength",
+    "relate with another school's rule",
+    "relationship_counts naming a forged item",
+    "relationships naming a forged item",
+    "reproduce with a forged ancestor",
+    "reproduce with a payload naming another item",
+    "reproduce with a recomputes column that disagrees",
+    "reproduce with a registered rule, with no graph",
+    "reproduce with a rule never registered, with a matching forged graph",
+    "reproduce with a rule never registered, with no graph",
+    "reproduce with an entity column that disagrees",
+    "reproduce with an unpublished variant at the pinned snapshot",
+    "reproduce with another declared strength",
+    "reproduce with another school's rule",
+    "the real read, before weakening the exact-publication check",
+    "the real read, before weakening the graph check",
+    "the real read, before weakening the registered-rule lookup",
+    "the real read, before weakening the row identity check",
+    "the real read, before weakening the rule's fit to the item"
+   ],
+   "preserved": [
+    "a legitimate item beside a forged ancestor",
+    "a legitimate item beside a payload naming another item",
+    "a legitimate item beside a recomputes column that disagrees",
+    "a legitimate item beside a registered rule, with no graph",
+    "a legitimate item beside a rule never registered, with a matching forged graph",
+    "a legitimate item beside a rule never registered, with no graph",
+    "a legitimate item beside an entity column that disagrees",
+    "a legitimate item beside an unpublished variant at the pinned snapshot",
+    "a legitimate item beside another declared strength",
+    "a legitimate item beside another school's rule",
+    "evidence recorded under an earlier snapshot",
+    "legitimate items through every read"
+   ],
+   "controls": [
+    "a read check demanding the snapshot in force rejected: it refuses legitimate history",
+    "the exact-publication check, weakened, admits the forgery on the real read path",
+    "the graph check, weakened, admits the forgery on the real read path",
+    "the registered-rule lookup, weakened, admits the forgery on the real read path",
+    "the row identity check, weakened, admits the forgery on the real read path",
+    "the rule's fit to the item, weakened, admits the forgery on the real read path"
+   ],
+   "exercises": [
+    "evidence.evidence_model",
+    "evidence.provenance_graph"
+   ]
   }
  },
  "explicit_non_claims": [
@@ -639,6 +775,7 @@
   "the graph records only what each item and the store's records state; it cannot show that a producer's recorded inputs are all it consumed, and records incompleteness where the producer states it",
   "no CORRELATED_WITH edge is recorded: correlation is measured, and nothing in EVIDENCE measures",
   "a persisted graph read refuses rows the items' stored records do not account for; it cannot detect a forged evidence record whose own graph rows were forged to agree with it",
+  "a rule version recorded under another snapshot is read as history, because no earlier snapshot is archived to check it against: a forged row claiming another snapshot, with matching forged graph rows, is not detected",
   "the graph's node and edge kinds adopt the recording schema of docs/EVIDENCE_INDEPENDENCE_DESIGN.md s3 only (ADR-0122 D1); that document stays PROPOSED in every other respect"
  ],
  "environment": {
@@ -1224,6 +1361,7 @@
      "kind": "callable",
      "disposition": "GATED",
      "exercised_by": [
+      "S_evidence_read_integrity",
       "J_evidence_integrity",
       "K_evidence_refusals",
       "L_relationships_and_provenance"
@@ -1234,6 +1372,7 @@
      "kind": "callable",
      "disposition": "GATED",
      "exercised_by": [
+      "S_evidence_read_integrity",
       "J_evidence_integrity",
       "K_evidence_refusals"
      ]
@@ -1243,6 +1382,7 @@
      "kind": "callable",
      "disposition": "GATED",
      "exercised_by": [
+      "S_evidence_read_integrity",
       "J_evidence_integrity"
      ]
     },
@@ -1251,6 +1391,7 @@
      "kind": "callable",
      "disposition": "GATED",
      "exercised_by": [
+      "S_evidence_read_integrity",
       "J_evidence_integrity"
      ]
     },
@@ -1267,6 +1408,7 @@
      "kind": "callable",
      "disposition": "GATED",
      "exercised_by": [
+      "S_evidence_read_integrity",
       "J_evidence_integrity",
       "K_evidence_refusals"
      ]
@@ -1276,6 +1418,7 @@
      "kind": "callable",
      "disposition": "GATED",
      "exercised_by": [
+      "S_evidence_read_integrity",
       "J_evidence_integrity"
      ]
     },
@@ -1284,6 +1427,7 @@
      "kind": "callable",
      "disposition": "GATED",
      "exercised_by": [
+      "S_evidence_read_integrity",
       "L_relationships_and_provenance"
      ]
     },
@@ -1292,6 +1436,7 @@
      "kind": "callable",
      "disposition": "GATED",
      "exercised_by": [
+      "S_evidence_read_integrity",
       "K_evidence_refusals",
       "L_relationships_and_provenance"
      ]
@@ -1301,6 +1446,7 @@
      "kind": "callable",
      "disposition": "GATED",
      "exercised_by": [
+      "S_evidence_read_integrity",
       "L_relationships_and_provenance"
      ]
     },
@@ -1363,6 +1509,7 @@
      "kind": "callable",
      "disposition": "GATED",
      "exercised_by": [
+      "S_evidence_read_integrity",
       "K_evidence_refusals",
       "L_relationships_and_provenance"
      ]
@@ -1662,6 +1809,7 @@
      "kind": "callable",
      "disposition": "GATED",
      "exercised_by": [
+      "S_evidence_read_integrity",
       "P_graph_integrity",
       "Q_graph_refusals",
       "R_graph_agreement"
@@ -1681,6 +1829,7 @@
      "kind": "callable",
      "disposition": "GATED",
      "exercised_by": [
+      "S_evidence_read_integrity",
       "P_graph_integrity",
       "Q_graph_refusals",
       "R_graph_agreement"
@@ -1691,6 +1840,7 @@
      "kind": "callable",
      "disposition": "GATED",
      "exercised_by": [
+      "S_evidence_read_integrity",
       "R_graph_agreement"
      ]
     }
