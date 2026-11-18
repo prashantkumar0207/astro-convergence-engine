@@ -330,6 +330,127 @@ def test_ac7_a_graph_losing_an_input_does_not_reproduce_the_item(world):
     assert graph.reproduce(lossy, first) != graph.recorded_fields(world.store.load(first))
 
 
+# ------------------------------------------------------------------ AC5, AC7 unaccounted-for rows (CEO HOLD, PR #59)
+
+class TwoCharts:
+    """Two synthetic items on distinct charts of one entity, and the nodes each item's records justify."""
+
+    def __init__(self, world):
+        self.store = world.store
+        natal = person().charts[0]
+        other = dataclasses.replace(natal, label="other", origin=dataclasses.replace(
+            natal.origin, local_datetime="1990-06-15T06:30:00", latitude=-5.0, longitude=70.0))
+        owner = world.store.entities.persist(dataclasses.replace(person(), charts=(natal, other)))
+        here, there = ChartReference(1, "natal"), ChartReference(1, "other")
+        self.first = world.store.persist(world.item(entity=owner, chart=here))
+        self.second = world.store.persist(world.item(entity=owner, chart=there))
+        first, second = world.store.load(self.first), world.store.load(self.second)
+        self.nodes = {"other input": graph.input_node(owner, there, other),
+                      "natal chart": graph.chart_node(owner, here, "D1"),
+                      "other chart": graph.chart_node(owner, there, "D1"),
+                      "natal fact": graph.astronomical_node(owner, here, first.lineage.inputs[0]),
+                      "other fact": graph.astronomical_node(owner, there, second.lineage.inputs[0]),
+                      "other timing": graph.timing_node(owner, there, second.timing),
+                      "first item": graph.evidence_node(self.first, first),
+                      "second item": graph.evidence_node(self.second, second)}
+
+    def plant(self, source, kind, target, position=0):
+        self.store._db.execute("INSERT INTO graph_edges (source_key, kind, target_key, position) VALUES (?, ?, ?, ?)",
+                               (self.nodes[source].key, kind, self.nodes[target].key, position))
+
+
+FALSE_ANCESTRY = [("other input", "derives_from", "natal chart", 0), ("other input", "derives_from", "natal fact", 0),
+                  ("other chart", "derives_from", "natal chart", 0), ("other timing", "derives_from", "first item", 0),
+                  ("other fact", "applies_to", "first item", 1), ("second item", "derives_from", "first item", 0)]
+READS = {"item_graph": lambda two, target: two.store.item_graph(two.first),
+         "graph": lambda two, target: two.store.graph((two.first,)),
+         "recorded_graph": lambda two, target: two.store.recorded_graph(),
+         "incident": lambda two, target: two.store.incident(two.nodes[target].key),
+         "reproduce": lambda two, target: two.store.reproduce(two.first)}
+
+
+@pytest.mark.parametrize("planted", FALSE_ANCESTRY, ids=lambda case: f"{case[0]} to {case[2]}")
+@pytest.mark.parametrize("read", READS)
+def test_ac5_ac7_a_structurally_valid_unjustified_edge_is_refused_by_every_read(world, planted, read):
+    two = TwoCharts(world)
+    assert READS[read](two, planted[2]) is not None
+    two.plant(*planted)
+    with pytest.raises(StoreError, match="do not account for it"):
+        READS[read](two, planted[2])
+
+
+def test_ac5_ac7_an_item_the_planted_edge_does_not_reach_still_reads(world):
+    two = TwoCharts(world)
+    clean = two.store.item_graph(two.second)
+    two.plant("other input", "derives_from", "natal chart")
+    assert two.store.item_graph(two.second) == clean
+    assert two.store.reproduce(two.second) == graph.recorded_fields(two.store.load(two.second))
+
+
+def test_ac5_a_node_no_items_records_account_for_is_refused(world):
+    two = TwoCharts(world)
+    orphan = graph.make_node(NodeKind.TIMING, **{**two.nodes["other timing"].fields(), "label": "planted"})
+    two.store._db.execute("INSERT INTO graph_nodes (node_key, kind, payload) VALUES (?, ?, ?)",
+                          graph.node_to_row(orphan))
+    with pytest.raises(StoreError, match="unaccounted node"):
+        two.store.recorded_graph()
+
+
+def test_ac7_a_missing_recorded_edge_is_refused_and_never_filled_in(world):
+    two = TwoCharts(world)
+    key = two.nodes["first item"].key
+    two.store._db.execute("DROP TRIGGER graph_edges_no_delete")
+    two.store._db.execute("DELETE FROM graph_edges WHERE target_key = ? AND source_key = ?",
+                          (key, two.nodes["natal chart"].key))
+    before = _counts(two.store)
+    with pytest.raises(StoreError, match="missing (node|edge)"):
+        two.store.item_graph(two.first)
+    assert _counts(two.store) == before
+
+
+def test_ac1_accounting_on_read_writes_nothing(world):
+    two = TwoCharts(world)
+    before = _counts(two.store)
+    two.store.recorded_graph(), two.store.item_graph(two.first), two.store.incident(two.nodes["natal chart"].key)
+    assert _counts(two.store) == before
+
+
+def test_ac7_the_accounting_comparator_sees_each_kind_of_difference(world):
+    two = TwoCharts(world)
+    recorded = two.store.recorded_graph()
+    expected = [_expected(two.store, two.first), _expected(two.store, two.second)]
+    assert graph.unjustified_rows(recorded, expected) == ()
+    assert any("missing node" in difference for difference in graph.unjustified_rows(Graph(nodes=(), edges=()), expected))
+    false = Edge(source=two.nodes["other input"], kind=EdgeKind.DERIVES_FROM, target=two.nodes["natal chart"])
+    moved = next(edge for edge in recorded.edges if edge.position == 0)
+    for planted, reason in ((Graph(nodes=recorded.nodes, edges=recorded.edges + (false,)), "unaccounted edge"),
+                            (Graph(nodes=recorded.nodes, edges=recorded.edges[1:]), "missing edge"),
+                            (Graph(nodes=recorded.nodes, edges=tuple(
+                                dataclasses.replace(edge, position=9) if edge is moved else edge
+                                for edge in recorded.edges)), "unaccounted edge")):
+        assert any(reason in difference for difference in graph.unjustified_rows(planted, expected))
+
+
+def test_ac5_ac7_a_weakened_comparator_on_the_real_read_path_admits_the_false_ancestry(world):
+    """The refusal comes from the comparator: weakened to check only edges into evidence nodes, which is all that
+    reproduce() reads, the same real read accepts the planted false ancestry."""
+
+    def direct_edges_only(recorded, expected):
+        direct = lambda edges: {(edge.source.key, edge.kind, edge.target.key, edge.position) for edge in edges
+                                if edge.target.kind is NodeKind.EVIDENCE}
+        return tuple(direct(recorded.edges) ^ direct(edge for each in expected for edge in each.edges))
+
+    two = TwoCharts(world)
+    two.plant("other input", "derives_from", "natal chart")
+    with pytest.raises(StoreError, match="do not account for it"):
+        two.store.item_graph(two.first)
+    two.store._unjustified = direct_edges_only
+    accepted = two.store.item_graph(two.first)
+    assert (two.nodes["other input"].key, two.nodes["natal chart"].key) in {
+        (edge.source.key, edge.target.key) for edge in accepted.edges}
+    assert two.store.reproduce(two.first) == graph.recorded_fields(two.store.load(two.first))
+
+
 # ------------------------------------------------------------------ AC8 derived subjects
 
 def test_ac8_a_derived_subjects_chart_derives_from_its_parent_chart(world):

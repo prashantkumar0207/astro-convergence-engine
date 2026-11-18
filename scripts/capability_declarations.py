@@ -483,6 +483,7 @@ ARTIFACT_DECLARATIONS = {
                      "R_graph_agreement"),
                  _fn("engine.evidence.provenance_graph.reproduce", "R_graph_agreement"),
                  _fn("engine.evidence.provenance_graph.recorded_fields", "R_graph_agreement"),
+                 _fn("engine.evidence.provenance_graph.unjustified_rows", "R_graph_agreement"),
                  _fn("engine.evidence.provenance_graph.node_to_row", "P_graph_integrity", "Q_graph_refusals"),
                  _fn("engine.evidence.provenance_graph.node_from_row", "P_graph_integrity", "Q_graph_refusals"),
                  _fn("engine.evidence.provenance_graph.edge_from_row", "Q_graph_refusals"),

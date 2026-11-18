@@ -26,7 +26,8 @@ so a refused write takes none. Triggers refuse every UPDATE and DELETE.
   transaction as the item and its EVD number, from the item and the records already checked for it
   (engine/evidence/provenance_graph.py). A node is stored once, under the hash of what it is, so a node two items
   share is recorded as shared. No API adds a node or edge afterwards, and every read refuses a node whose key is not
-  its hash, a dangling or undeclared edge, and a cycle, however the rows were written.
+  its hash, a dangling or undeclared edge, a cycle, and any row the items' stored records do not account for, however
+  the rows were written. A read returns only recorded rows: the comparison never fills in a missing one.
 
 Nothing here scores, weights, fits or divides, and nothing writes to calculation state.
 """
@@ -514,9 +515,51 @@ class EvidenceStore:
         except provenance_graph.GraphError as exc:
             raise StoreError(f"the recorded provenance graph is refused: {exc}") from exc
 
+    @staticmethod
+    def _unjustified(recorded: provenance_graph.Graph, expected) -> tuple:
+        return provenance_graph.unjustified_rows(recorded, expected)
+
+    def _justified_by(self, evidence_id: EvidenceId) -> provenance_graph.Graph:
+        """What one item's stored records justify. Used only to check recorded rows, never returned by a read."""
+
+        item = self.load(evidence_id)
+        history = self.entities.history(item.entity)
+        if item.chart.entity_revision > len(history):
+            raise StoreError(f"{item.entity} has no revision {item.chart.entity_revision}")
+        _number, subject, _reason = history[item.chart.entity_revision - 1]
+        candidates = [chart for chart in subject.charts if chart.label == item.chart.chart_label]
+        if not candidates:
+            raise StoreError(f"{item.chart.chart_label!r} is not a chart of {item.entity}")
+        links = item.derived_from + (() if item.recomputes is None else (item.recomputes,))
+        return provenance_graph.record_graph(evidence_id, item, candidates[0], subject.parent,
+                                             self.rule_version(item.rule), {link: self.load(link) for link in links})
+
+    def _checked_against_records(self, recorded: provenance_graph.Graph, evidence_ids) -> provenance_graph.Graph:
+        """`recorded`, only if it is exactly what these items and their recorded ancestors justify (CEO HOLD on PR
+        #59): a structurally valid row that no item's records account for is not provenance."""
+
+        seen, pending, expected = set(evidence_ids), list(evidence_ids), []
+        try:
+            while pending:
+                current = pending.pop()
+                expected.append(self._justified_by(current))
+                item = self.load(current)
+                for link in item.derived_from + (() if item.recomputes is None else (item.recomputes,)):
+                    if link not in seen:
+                        seen.add(link)
+                        pending.append(link)
+        except provenance_graph.GraphError as exc:
+            raise StoreError(f"the recorded provenance graph is refused: {exc}") from exc
+        differences = self._unjustified(recorded, expected)
+        if differences:
+            raise StoreError(f"the recorded provenance graph is refused: the items' records do not account for it "
+                             f"({differences[0]}; {len(differences)} in all)")
+        return recorded
+
     def graph(self, evidence_ids) -> provenance_graph.Graph:
         """The recorded graph the items consumed: their evidence nodes and everything recorded upstream of them,
-        ancestors' included. It returns its members; nothing is computed over it (ADR-0122 AC11)."""
+        ancestors' included, refused unless the items' records account for every row. It returns its members; nothing
+        is computed over it (ADR-0122 AC5, AC7, AC11)."""
 
         ids = tuple(evidence_ids)
         if not ids or len(set(ids)) != len(ids) or not all(isinstance(value, EvidenceId) for value in ids):
@@ -533,34 +576,28 @@ class EvidenceStore:
                 if row[0] not in nodes:
                     nodes[row[0]] = self._stored_node(row[0])
                     pending.append(row[0])
-        return self._graph_of(nodes, rows)
+        return self._checked_against_records(self._graph_of(nodes, rows), ids)
 
     def item_graph(self, evidence_id: EvidenceId) -> provenance_graph.Graph:
         return self.graph((evidence_id,))
 
     def incident(self, node_key: str) -> tuple:
-        """A node's recorded edges, as (incoming, outgoing)."""
+        """A node's recorded edges, as (incoming, outgoing), read from the whole recorded graph so that every row is
+        accounted for."""
 
-        node = self._stored_node(node_key)
-        rows = self._db.execute("SELECT source_key, kind, target_key, position FROM graph_edges WHERE source_key = ? "
-                                "OR target_key = ? ORDER BY edge_number", (node_key, node_key)).fetchall()
-        nodes = {node_key: node}
-        for source, _kind, target, _position in rows:
-            for key in (source, target):
-                if key not in nodes:
-                    nodes[key] = self._stored_node(key)
-        graph = self._graph_of(nodes, rows)
+        self._stored_node(node_key)
+        graph = self.recorded_graph()
         return (tuple(edge for edge in graph.edges if edge.target.key == node_key),
                 tuple(edge for edge in graph.edges if edge.source.key == node_key))
 
     def recorded_graph(self) -> provenance_graph.Graph:
-        """Every recorded node and edge, each validated as it is read."""
+        """Every recorded node and edge, each validated as it is read and accounted for by the items' records."""
 
         nodes = {key: self._node_from(key, (kind, payload)) for key, kind, payload in
                  self._db.execute("SELECT node_key, kind, payload FROM graph_nodes ORDER BY node_key").fetchall()}
         rows = self._db.execute("SELECT source_key, kind, target_key, position FROM graph_edges "
                                 "ORDER BY edge_number").fetchall()
-        return self._graph_of(nodes, rows)
+        return self._checked_against_records(self._graph_of(nodes, rows), self.evidence_ids())
 
     def reproduce(self, evidence_id: EvidenceId) -> dict:
         """What the item's recorded graph alone says of it (ADR-0122 AC7)."""

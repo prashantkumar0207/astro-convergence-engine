@@ -385,6 +385,26 @@ def recorded_fields(item: EvidenceItem) -> dict:
             "recomputes": item.recomputes}
 
 
+# ------------------------------------------------------------------ recorded rows against the items' records
+
+def unjustified_rows(recorded: Graph, expected) -> tuple:
+    """Every way `recorded` differs from what the items' stored records justify: a node or edge they do not account
+    for, or one they require that is not recorded. An edge is its source, kind, target and position. This compares;
+    it never supplies a missing row, so it is no substitute for recording at creation (ADR-0122 D2, AC5, AC7)."""
+
+    def identity(edge: Edge) -> tuple:
+        return edge.source.key, edge.kind.value, edge.target.key, edge.position
+
+    graphs = tuple(expected)
+    held_nodes, held_edges = {node.key for node in recorded.nodes}, {identity(edge) for edge in recorded.edges}
+    nodes = {node.key for graph in graphs for node in graph.nodes}
+    edges = {identity(edge) for graph in graphs for edge in graph.edges}
+    return tuple([f"unaccounted node {key}" for key in sorted(held_nodes - nodes)] +
+                 [f"unaccounted edge {edge}" for edge in sorted(held_edges - edges)] +
+                 [f"missing node {key}" for key in sorted(nodes - held_nodes)] +
+                 [f"missing edge {edge}" for edge in sorted(edges - held_edges)])
+
+
 # ------------------------------------------------------------------ the stored form
 
 def node_to_row(node: Node) -> tuple:
@@ -425,6 +445,6 @@ def edge_from_row(nodes: dict, source: str, kind: str, target: str, position: in
 
 
 __all__ = ["GRAPH_SCHEMA", "ALLOWED_PAIRS", "IDENTITY_FIELDS", "Edge", "EdgeKind", "Graph", "GraphError", "Node",
-           "NodeKind", "astronomical_node", "canonical", "chart_node", "edge_from_row", "evidence_node",
+           "NodeKind", "unjustified_rows", "astronomical_node", "canonical", "chart_node", "edge_from_row", "evidence_node",
            "input_node", "make_node", "node_from_row", "node_to_row", "parent_chart_node", "record_graph",
            "recorded_fields", "reproduce", "rule_node", "timing_node"]

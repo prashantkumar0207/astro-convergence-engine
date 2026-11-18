@@ -1887,6 +1887,38 @@ def gate_p_graph_integrity():
             "controls_rejected": len(controls), "controls": sorted(controls)}
 
 
+#: Structurally valid edges between real nodes that no item's records justify: (source, kind, target, position).
+FALSE_ANCESTRY = (("other input", "derives_from", "natal chart", 0), ("other input", "derives_from", "natal fact", 0),
+                  ("other chart", "derives_from", "natal chart", 0), ("other timing", "derives_from", "first item", 0),
+                  ("other fact", "applies_to", "first item", 1), ("second item", "derives_from", "first item", 0))
+
+
+def _two_chart_items(setting: _GraphWorld) -> tuple:
+    """Two items on distinct charts of one synthetic entity, and the real nodes their records justify."""
+
+    store: EvidenceStore = setting.store
+    natal_chart, other_chart = store.entities.load(setting.owner).charts[:2]
+    here, there = ChartReference(1, natal_chart.label), ChartReference(1, other_chart.label)
+    first_id = store.persist(setting.world.item(chart=here))
+    second_id = store.persist(setting.world.item(chart=there))
+    first, second = store.load(first_id), store.load(second_id)
+    owner = setting.owner
+    return first_id, second_id, {
+        "other input": provenance_graph.input_node(owner, there, other_chart),
+        "natal chart": provenance_graph.chart_node(owner, here, "D1"),
+        "other chart": provenance_graph.chart_node(owner, there, "D1"),
+        "natal fact": provenance_graph.astronomical_node(owner, here, first.lineage.inputs[0]),
+        "other fact": provenance_graph.astronomical_node(owner, there, second.lineage.inputs[0]),
+        "other timing": provenance_graph.timing_node(owner, there, second.timing),
+        "first item": provenance_graph.evidence_node(first_id, first),
+        "second item": provenance_graph.evidence_node(second_id, second)}
+
+
+def _plant_edge(store: EvidenceStore, nodes: dict, source: str, kind: str, target: str, position: int) -> None:
+    store._db.execute("INSERT INTO graph_edges (source_key, kind, target_key, position) VALUES (?, ?, ?, ?)",
+                      (nodes[source].key, kind, nodes[target].key, position))
+
+
 def gate_q_graph_refusals():
     """Each refusal WP-E6 requires, triggered for real, with its reason checked: undeclared and correlated edges,
     disallowed pairs, dangling edges, cycles, malformed or forged nodes, rows planted by direct SQL, a graph that
@@ -2038,6 +2070,22 @@ def gate_q_graph_refusals():
         refuses("a cycle planted by direct SQL, read whole", lambda: store.recorded_graph(), reason="not acyclic")
         refuses("an incident read across a planted cycle", lambda: store.incident(keys[0]), reason="not acyclic")
         store.close()
+    # CEO HOLD on PR #59: a structurally valid, acyclic row no item's records justify is refused by every real read.
+    for source, kind, target, position in FALSE_ANCESTRY:
+        with tempfile.TemporaryDirectory() as folder:
+            setting = _GraphWorld(Path(folder) / "evidence.sqlite")
+            store: EvidenceStore = setting.store
+            first, _second, nodes = _two_chart_items(setting)
+            store.item_graph(first)
+            _plant_edge(store, nodes, source, kind, target, position)
+            for read, action in (("item_graph", lambda: store.item_graph(first)),
+                                 ("graph", lambda: store.graph((first,))),
+                                 ("recorded_graph", lambda: store.recorded_graph()),
+                                 ("incident", lambda: store.incident(nodes[target].key)),
+                                 ("reproduce", lambda: store.reproduce(first))):
+                refuses(f"{read} of an unaccounted edge from {source} to {target}", action,
+                        reason="do not account for it")
+            store.close()
     return {"classification": "negative_control", "refusals_verified": len(refused), "refused": sorted(refused)}
 
 
@@ -2123,6 +2171,56 @@ def gate_r_graph_agreement():
                               expected):
             fail("the agreement comparator accepted a node the records do not account for")
         controls["a node the records do not account for rejected"] = True
+        # The comparator every persisted read uses (CEO HOLD on PR #59), against planted graphs.
+        moved = next(edge for edge in recorded.edges if edge.position == 0)
+        if provenance_graph.unjustified_rows(recorded, expected) != ():
+            fail("the read comparator rejected a graph the items' records justify")
+        for label, planted, reason in (
+                ("an edge no record justifies", padded, "unaccounted edge"),
+                ("a node no record justifies", provenance_graph.Graph(nodes=recorded.nodes + (unexpected,),
+                                                                      edges=recorded.edges), "unaccounted node"),
+                ("every recorded node gone missing", provenance_graph.Graph(nodes=(), edges=()), "missing node"),
+                ("a recorded edge gone missing", provenance_graph.Graph(nodes=recorded.nodes, edges=recorded.edges[1:]),
+                 "missing edge"),
+                ("an edge at another position", provenance_graph.Graph(nodes=recorded.nodes, edges=tuple(
+                    dataclasses.replace(edge, position=9) if edge is moved else edge for edge in recorded.edges)),
+                 "unaccounted edge")):
+            if not any(reason in row for row in provenance_graph.unjustified_rows(planted, expected)):
+                fail(f"the read comparator accepted {label}")
+            controls[f"the read comparator rejects {label}"] = True
+        store.close()
+    # The real read path: the planted false ancestry is refused, and each deliberately weakened comparator, put in the
+    # real comparator's place, lets the same read accept it. The refusal is therefore the comparator's doing.
+    with tempfile.TemporaryDirectory() as folder:
+        setting = _GraphWorld(Path(folder) / "evidence.sqlite")
+        store: EvidenceStore = setting.store
+        first, _second, nodes = _two_chart_items(setting)
+        _plant_edge(store, nodes, "other input", "derives_from", "natal chart", 0)
+        false_edge = (nodes["other input"].key, nodes["natal chart"].key)
+
+        def direct_edges_only(recorded_rows, justified):
+            direct = lambda edges: {(edge.source.key, edge.kind, edge.target.key, edge.position) for edge in edges
+                                    if edge.target.kind is provenance_graph.NodeKind.EVIDENCE}
+            return tuple(direct(recorded_rows.edges) ^ direct(edge for each in justified for edge in each.edges))
+
+        def missing_rows_only(recorded_rows, justified):
+            return tuple(row for row in provenance_graph.unjustified_rows(recorded_rows, justified)
+                         if row.startswith("missing"))
+
+        for label, weak in (("checking only edges into evidence nodes", direct_edges_only),
+                            ("reporting only missing rows", missing_rows_only)):
+            try:
+                store.item_graph(first)
+                fail("the real read accepted an edge no item's records justify")
+            except StoreError as exc:
+                if "do not account for it" not in str(exc):
+                    fail(f"the real read refused the planted edge for another reason: {exc}")
+            store._unjustified = weak
+            accepted = store.item_graph(first)
+            del store._unjustified
+            if false_edge not in {(edge.source.key, edge.target.key) for edge in accepted.edges}:
+                fail(f"a comparator {label} was not distinguishable from the real one on the real read path")
+            controls[f"a read comparator {label} rejected"] = True
         store.close()
     return {"classification": "structural_integrity", "items_reproduced": len(ids), "mismatches": 0,
             "controls_rejected": len(controls), "controls": sorted(controls)}
@@ -2206,6 +2304,8 @@ def main():
             "the graph records only what each item and the store's records state; it cannot show that a producer's "
             "recorded inputs are all it consumed, and records incompleteness where the producer states it",
             "no CORRELATED_WITH edge is recorded: correlation is measured, and nothing in EVIDENCE measures",
+            "a persisted graph read refuses rows the items' stored records do not account for; it cannot detect a "
+            "forged evidence record whose own graph rows were forged to agree with it",
             "the graph's node and edge kinds adopt the recording schema of docs/EVIDENCE_INDEPENDENCE_DESIGN.md s3 "
             "only (ADR-0122 D1); that document stays PROPOSED in every other respect",
         ],
