@@ -12724,6 +12724,78 @@ non-claim in `EVIDENCE_FOUNDATIONS_V1`.
 
 ---
 
+## ADR-0125 - PR #61 merged; one bounded correction of finding F2: a persisted relationship is returned only if its immutable source evidence supports it
+
+- **Date:** 2026-11-18
+- **Status:** **ACCEPTED, on the owner's instruction quoted in s1.** It records the owner's instruction and the correction it
+  authorizes. The correction merges only on separate review and authorization.
+- **Context:** While correcting F1 (`ADR-0124`), a probe showed that a forged `evidence_relationships` row between two legitimate
+  items could state a class that `classify()` contradicted, and that `relationships()` and `relationship_counts()` returned it.
+
+### 1. The owner's instruction (exact text)
+
+```text
+**ACE — EXECUTE OWNER AUTHORIZATION**
+
+**1. Merge PR #61**
+
+Verify HEAD `a1582c2fc4b2a1f8ff2c6e11f9041d0e2c0b8417`, base `689fd369e6f871a2e21b1afa20911ed305c973e7`, mergeability and four successful jobs in CI `44282497041`.
+
+Merge normally with two parents. No squash, rebase, force push or branch deletion. Verify merge SHA, parents, tree and post-merge CI. Stop if verification fails.
+
+**2. Implement bounded F2 correction**
+
+From verified post-merge `main`, create a separate branch.
+
+Under accepted H4 and ADR-0021 D5, ensure persisted relationships cannot report an unsupported dependency, conflict flag or basis. Validate relationship identities and calculation provenance against immutable source evidence.
+
+Cover forged `INDEPENDENT`, `DERIVED`, `SHARED_ORIGIN`, `UNKNOWN`, `CORRELATED`, conflict flags and explanations through direct-SQL regressions. Ensure `relationships()` and `relationship_counts()` refuse invalid records.
+
+Add meaningful certification and real-gate negative controls. Preserve Gates A–S, append-only history, legitimate relationships, UNKNOWN semantics, certified calculations and protected holdouts.
+
+No independence computation, scoring, prediction issuance, new exit criteria or unrelated changes.
+
+Run full tests, certification, drift and governance. Self-audit and open a separate F2 implementation PR.
+
+**Do not merge the F2 PR.**
+
+**3. Phase exit**
+
+Keep PR #60 open. Refresh its evidence against the final verified `main` only after the F2 correction is independently approved and merged.
+
+Do not declare EVIDENCE exit or initiate prediction issuance.
+
+Report exact SHAs, test results, CI runs, certification evidence and any material blockers.
+```
+
+### 2. PR #61 merged
+
+PR #61 merged by a normal two-parent merge as `16e3e7f0793c48191b61b488470a176a9c24ca19`, with parents `689fd369e6f871a2e21b1afa20911ed305c973e7` and
+`a1582c2fc4b2a1f8ff2c6e11f9041d0e2c0b8417`. The merge tree (`9961fd5`) is identical to the reviewed head's tree, and the head branch is kept. Post-merge CI
+`44292709114` passed all four jobs on `ubuntu-24.04`.
+
+### 3. What the correction does
+
+A persisted relationship is returned only if:
+1. its record's identities match its row;
+2. both items pass the evidence read checks (`ADR-0124`);
+3. their calculation provenance agrees; and
+4. classifying the same immutable items gives exactly the recorded dependency, conflict flag and basis.
+
+An item and its recorded ancestors never change, so a legitimate record always agrees. The existing classifier is reused: nothing
+new is computed, and no independence count or score exists.
+
+**What stays as it was:** `EVIDENCE_FOUNDATIONS_V1` gates A to S, append-only relationship history, legitimate relationships, the
+UNKNOWN class, certified calculations and protected holdouts. New gate T carries the regressions and negative controls.
+
+- **Decision:** as s3.
+- **Consequences:** EVIDENCE exit is not declared, and prediction issuance has not begun. PR #60 stays open, and is refreshed against
+  the final verified `main` only after this correction is independently approved and merged.
+- **Evidence:** PR #61, post-merge CI `44292709114`; the correction's PR, its tests, regenerated evidence and CI. The owner's instruction
+  exists as session input, not as a repository file.
+
+---
+
 ## ADR template (copy, do not edit above the line)
 
 ## ADR-XXXX - <title>
