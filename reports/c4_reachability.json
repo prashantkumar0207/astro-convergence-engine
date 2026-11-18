@@ -1233,8 +1233,9 @@
    "status": "IN_USE_COVERED"
   },
   "engine.evidence.evidence_store.EvidenceStore.classify": {
-   "caller_count": 1,
+   "caller_count": 2,
    "callers": [
+    "engine.evidence.evidence_store.EvidenceStore._supported_relationship",
     "engine.evidence.evidence_store.EvidenceStore.relate"
    ],
    "covered": true,
@@ -1256,19 +1257,20 @@
    "status": "NOT_IN_USE"
   },
   "engine.evidence.evidence_store.EvidenceStore.evidence_ids": {
-   "caller_count": 2,
+   "caller_count": 1,
    "callers": [
-    "engine.evidence.evidence_store.EvidenceStore.counts",
-    "engine.evidence.evidence_store.EvidenceStore.recorded_graph"
+    "engine.evidence.evidence_store.EvidenceStore.counts"
    ],
    "covered": true,
    "file": "engine/evidence/evidence_store.py",
    "status": "IN_USE_COVERED"
   },
   "engine.evidence.evidence_store.EvidenceStore.graph": {
-   "caller_count": 1,
+   "caller_count": 3,
    "callers": [
-    "engine.evidence.evidence_store.EvidenceStore.item_graph"
+    "engine.evidence.evidence_store.EvidenceStore.evidence_ids",
+    "engine.evidence.evidence_store.EvidenceStore.item_graph",
+    "engine.evidence.evidence_store.EvidenceStore.load"
    ],
    "covered": true,
    "file": "engine/evidence/evidence_store.py",
@@ -1303,13 +1305,13 @@
    "status": "IN_USE_COVERED"
   },
   "engine.evidence.evidence_store.EvidenceStore.load": {
-   "caller_count": 9,
+   "caller_count": 6,
    "callers": [
     "engine.evidence.evidence_store.EvidenceStore._ancestry",
     "engine.evidence.evidence_store.EvidenceStore._check",
-    "engine.evidence.evidence_store.EvidenceStore._checked_against_records",
-    "engine.evidence.evidence_store.EvidenceStore._justified_by",
-    "engine.evidence.evidence_store.EvidenceStore.classify"
+    "engine.evidence.evidence_store.EvidenceStore.classify",
+    "engine.evidence.evidence_store.EvidenceStore.join",
+    "engine.evidence.evidence_store.EvidenceStore.persist"
    ],
    "covered": true,
    "file": "engine/evidence/evidence_store.py",
@@ -1366,8 +1368,8 @@
   "engine.evidence.evidence_store.EvidenceStore.rule_version": {
    "caller_count": 2,
    "callers": [
-    "engine.evidence.evidence_store.EvidenceStore._check",
-    "engine.evidence.evidence_store.EvidenceStore._justified_by"
+    "engine.evidence.evidence_store.EvidenceStore._admitted_rule",
+    "engine.evidence.evidence_store.EvidenceStore._check"
    ],
    "covered": true,
    "file": "engine/evidence/evidence_store.py",
@@ -1381,7 +1383,7 @@
   "engine.evidence.evidence_store.item_from_record": {
    "caller_count": 2,
    "callers": [
-    "engine.evidence.evidence_store.EvidenceStore.load",
+    "engine.evidence.evidence_store.EvidenceStore._stored_item",
     "engine.evidence.evidence_store.EvidenceStore.persist"
    ],
    "covered": true,
@@ -1406,8 +1408,8 @@
   "engine.evidence.evidence_store.relationship_from_record": {
    "caller_count": 2,
    "callers": [
-    "engine.evidence.evidence_store.EvidenceStore.relate",
-    "engine.evidence.evidence_store.EvidenceStore.relationships"
+    "engine.evidence.evidence_store.EvidenceStore._supported_relationship",
+    "engine.evidence.evidence_store.EvidenceStore.relate"
    ],
    "covered": true,
    "exported_by": [
@@ -1445,7 +1447,7 @@
   "engine.evidence.evidence_store.rule_to_record": {
    "caller_count": 2,
    "callers": [
-    "engine.evidence.evidence_store.EvidenceStore._check",
+    "engine.evidence.evidence_store.EvidenceStore._require_published",
     "engine.evidence.evidence_store.EvidenceStore.register_rule"
    ],
    "covered": true,
@@ -1865,7 +1867,7 @@
   "engine.evidence.rule_registry.RuleRegistry.rule_version": {
    "caller_count": 2,
    "callers": [
-    "engine.evidence.evidence_store.EvidenceStore._check",
+    "engine.evidence.evidence_store.EvidenceStore._require_published",
     "engine.evidence.evidence_store.EvidenceStore.register_rule"
    ],
    "covered": true,
@@ -1938,8 +1940,9 @@
    "status": "IN_USE_COVERED"
   },
   "engine.evidence.rule_registry.pinned": {
-   "caller_count": 3,
+   "caller_count": 4,
    "callers": [
+    "engine.evidence.evidence_store.EvidenceStore._admitted_rule",
     "engine.evidence.evidence_store.EvidenceStore._check",
     "engine.evidence.evidence_store.EvidenceStore.register_rule",
     "scripts.check_evidence_identifiers.check_store"

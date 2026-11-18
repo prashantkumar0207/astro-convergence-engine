@@ -20,7 +20,8 @@ so a refused write takes none. Triggers refuse every UPDATE and DELETE.
   anything missing, incomplete or unverified, in an item or any ancestor, is UNKNOWN. Items whose
   calculation provenance differs are never related, and a persisted relationship joining them is
   refused when read (AC11). CORRELATED is never assigned here. This follows recorded links; it is not
-  a convergence algorithm and builds no graph.
+  a convergence algorithm and builds no graph. A persisted relationship is returned only if classifying the same
+  immutable items gives exactly its dependency, conflict flag and basis, however the row was written (ADR-0125).
 
 - Provenance graph (ADR-0122, WP-E6): persisting an item writes the nodes and edges it consumed, in the same
   transaction as the item and its EVD number, from the item and the records already checked for it
@@ -28,6 +29,9 @@ so a refused write takes none. Triggers refuse every UPDATE and DELETE.
   share is recorded as shared. No API adds a node or edge afterwards, and every read refuses a node whose key is not
   its hash, a dangling or undeclared edge, a cycle, and any row the items' stored records do not account for, however
   the rows were written. A read returns only recorded rows: the comparison never fills in a missing one.
+- Read integrity (ADR-0124): every read of an evidence item, however the row was written, refuses a row that disagrees
+  with its own key, names a rule version that is not registered or does not fit the item, or has no accounted-for
+  graph. A rule version recorded under an earlier snapshot stays readable: only new evidence needs the snapshot in force.
 
 Nothing here scores, weights, fits or divides, and nothing writes to calculation state.
 """
@@ -441,6 +445,42 @@ class EvidenceStore:
                     pending.append(successor)
         return False
 
+    @staticmethod
+    def _require_published(item: EvidenceItem, rule: RuleVersion, registry: rule_registry.RuleRegistry) -> None:
+        """A recorded row is trusted only as far as the pinned registry publishes it, exactly, under the identity the
+        evidence names: a matching snapshot hash alone does not admit a forged variant, an unissued RUL identity, a row
+        whose payload names another identity than its key, or changed content (CEO HOLD on PR #56, item 1)."""
+
+        try:
+            published = registry.rule_version(item.rule.rule, item.rule.version, item.rule.variant)
+        except rule_registry.RegistryError as exc:
+            raise StoreError(f"{exc}: the recorded rule version is not published by the pinned registry; evidence "
+                             f"names only a published rule (ADR-0120 AC7, AC8; ADR-0121)") from exc
+        if rule_to_record(rule) != rule_to_record(published):
+            raise StoreError(f"{item.rule.rule} v{item.rule.version} {item.rule.variant!r}: the recorded rule version "
+                             f"differs from the pinned registry's publication; evidence names only the published "
+                             f"rule (ADR-0120 AC7, AC8; ADR-0121)")
+
+    @staticmethod
+    def _require_fit(item: EvidenceItem, rule: RuleVersion) -> None:
+        if item.producing_system is not rule.spec.school:
+            raise StoreError(f"a {item.producing_system.value} item cannot name a {rule.spec.school.value} rule; "
+                             f"systems stay isolated")
+        if item.declared_strength != rule.spec.declared_strength:
+            raise StoreError("declared strength is the rule version's, recorded as declared (ADR-0113 s2 E2)")
+
+    def _admitted_rule(self, item: EvidenceItem) -> RuleVersion:
+        """The registered rule version a stored item names, refused unless it fits the item (H4 s4; ADR-0124). A row
+        claiming the snapshot in force must be exactly what that snapshot publishes. A row recorded under an earlier
+        snapshot is legitimate history, and stays readable."""
+
+        rule = self.rule_version(item.rule)
+        registry = rule_registry.pinned()
+        if rule.spec.knowledge_snapshot_hash == registry.snapshot_sha256:
+            self._require_published(item, rule, registry)
+        self._require_fit(item, rule)
+        return rule
+
     def _check(self, item: EvidenceItem) -> tuple:
         """Every refusal before an item is written. Returns the records its graph is recorded from: the registered
         rule version, the chart it names at its entity revision, and that revision's parent link."""
@@ -450,24 +490,8 @@ class EvidenceStore:
         if rule.spec.knowledge_snapshot_hash != registry.snapshot_sha256:
             raise StoreError(f"{item.rule.rule} v{item.rule.version} was registered from another snapshot; new evidence "
                              f"names only rules of the pinned snapshot in force (ADR-0120 AC8)")
-        # A recorded row is trusted only as far as the pinned registry publishes it, exactly, under the identity the
-        # evidence names: a matching snapshot hash alone does not admit a forged variant, an unissued RUL identity, a
-        # row whose payload names another identity than its key, or changed content (CEO HOLD on PR #56, item 1).
-        # Rows recorded under another snapshot stay where they are, readable as history; only new evidence is refused.
-        try:
-            published = registry.rule_version(item.rule.rule, item.rule.version, item.rule.variant)
-        except rule_registry.RegistryError as exc:
-            raise StoreError(f"{exc}: the recorded rule version is not published by the pinned registry; new evidence "
-                             f"names only a published rule (ADR-0120 AC7, AC8; ADR-0121)") from exc
-        if rule_to_record(rule) != rule_to_record(published):
-            raise StoreError(f"{item.rule.rule} v{item.rule.version} {item.rule.variant!r}: the recorded rule version "
-                             f"differs from the pinned registry's publication; new evidence names only the published "
-                             f"rule (ADR-0120 AC7, AC8; ADR-0121)")
-        if item.producing_system is not rule.spec.school:
-            raise StoreError(f"a {item.producing_system.value} item cannot name a {rule.spec.school.value} rule; "
-                             f"systems stay isolated")
-        if item.declared_strength != rule.spec.declared_strength:
-            raise StoreError("declared strength is the rule version's, recorded as declared (ADR-0113 s2 E2)")
+        self._require_published(item, rule, registry)
+        self._require_fit(item, rule)
         if item.entity not in self.entities.entity_ids():
             raise StoreError(f"entity {item.entity} is not in this store")
         history = self.entities.history(item.entity)
@@ -522,7 +546,8 @@ class EvidenceStore:
     def _justified_by(self, evidence_id: EvidenceId) -> provenance_graph.Graph:
         """What one item's stored records justify. Used only to check recorded rows, never returned by a read."""
 
-        item = self.load(evidence_id)
+        item = self._stored_item(evidence_id)
+        rule = self._admitted_rule(item)
         history = self.entities.history(item.entity)
         if item.chart.entity_revision > len(history):
             raise StoreError(f"{item.entity} has no revision {item.chart.entity_revision}")
@@ -531,8 +556,8 @@ class EvidenceStore:
         if not candidates:
             raise StoreError(f"{item.chart.chart_label!r} is not a chart of {item.entity}")
         links = item.derived_from + (() if item.recomputes is None else (item.recomputes,))
-        return provenance_graph.record_graph(evidence_id, item, candidates[0], subject.parent,
-                                             self.rule_version(item.rule), {link: self.load(link) for link in links})
+        return provenance_graph.record_graph(evidence_id, item, candidates[0], subject.parent, rule,
+                                             {link: self._stored_item(link) for link in links})
 
     def _checked_against_records(self, recorded: provenance_graph.Graph, evidence_ids) -> provenance_graph.Graph:
         """`recorded`, only if it is exactly what these items and their recorded ancestors justify (CEO HOLD on PR
@@ -543,7 +568,7 @@ class EvidenceStore:
             while pending:
                 current = pending.pop()
                 expected.append(self._justified_by(current))
-                item = self.load(current)
+                item = self._stored_item(current)
                 for link in item.derived_from + (() if item.recomputes is None else (item.recomputes,)):
                     if link not in seen:
                         seen.add(link)
@@ -564,7 +589,8 @@ class EvidenceStore:
         ids = tuple(evidence_ids)
         if not ids or len(set(ids)) != len(ids) or not all(isinstance(value, EvidenceId) for value in ids):
             raise StoreError("a graph read takes one or more distinct EVD identifiers")
-        pending = [provenance_graph.evidence_node(evidence_id, self.load(evidence_id)).key for evidence_id in ids]
+        pending = [provenance_graph.evidence_node(evidence_id, self._stored_item(evidence_id)).key
+                   for evidence_id in ids]
         nodes, rows = {}, []
         for key in pending:
             nodes[key] = self._stored_node(key)
@@ -597,7 +623,7 @@ class EvidenceStore:
                  self._db.execute("SELECT node_key, kind, payload FROM graph_nodes ORDER BY node_key").fetchall()}
         rows = self._db.execute("SELECT source_key, kind, target_key, position FROM graph_edges "
                                 "ORDER BY edge_number").fetchall()
-        return self._checked_against_records(self._graph_of(nodes, rows), self.evidence_ids())
+        return self._checked_against_records(self._graph_of(nodes, rows), self._stored_ids())
 
     def reproduce(self, evidence_id: EvidenceId) -> dict:
         """What the item's recorded graph alone says of it (ADR-0122 AC7)."""
@@ -607,25 +633,58 @@ class EvidenceStore:
         except provenance_graph.GraphError as exc:
             raise StoreError(f"{evidence_id}'s recorded graph does not reproduce it: {exc}") from exc
 
-    def load(self, evidence_id: EvidenceId) -> EvidenceItem:
+    @staticmethod
+    def _require_row_identity(evidence_id: EvidenceId, stored_id: EvidenceId, item: EvidenceItem, entity_id: str,
+                              recomputes) -> None:
+        """A stored row's key and indexed columns are the ones its own record states."""
+
+        if stored_id != evidence_id or item.entity.value != entity_id or \
+                (None if item.recomputes is None else item.recomputes.value) != recomputes:
+            raise StoreError(f"the stored record of {evidence_id} does not match its row (ADR-0124)")
+
+    def _stored_item(self, evidence_id: EvidenceId) -> EvidenceItem:
+        """The item a row records, with its identity checked. Only the read checks use this directly."""
+
         if not isinstance(evidence_id, EvidenceId):
             raise StoreError("evidence is addressed by its EVD identifier")
-        row = self._db.execute("SELECT payload FROM evidence_items WHERE evidence_id = ?",
+        row = self._db.execute("SELECT entity_id, recomputes, payload FROM evidence_items WHERE evidence_id = ?",
                                (evidence_id.value,)).fetchone()
         if row is None:
             raise StoreError(f"no such evidence item: {evidence_id}")
-        return item_from_record(json.loads(row[0]))[1]
+        stored_id, item = item_from_record(json.loads(row[2]))
+        self._require_row_identity(evidence_id, stored_id, item, row[0], row[1])
+        return item
+
+    def load(self, evidence_id: EvidenceId) -> EvidenceItem:
+        """A stored item, only if its row is intact, it names a registered rule version that fits it, and its recorded
+        graph is accounted for, ancestors' included, however the row was written (H4 s4; ADR-0122; ADR-0124)."""
+
+        item = self._stored_item(evidence_id)
+        self.graph((evidence_id,))
+        return item
+
+    def _stored_ids(self) -> list:
+        return [EvidenceId(value) for (value,) in self._db.execute(
+            "SELECT evidence_id FROM evidence_items ORDER BY evidence_id").fetchall()]
 
     def evidence_ids(self) -> list:
-        return [EvidenceId(value) for (value,) in self._db.execute(
-            "SELECT evidence_id FROM evidence_items ORDER BY evidence_id")]
+        """Every item's identifier. One row that fails the read checks refuses the listing: it is never hidden."""
+
+        ids = self._stored_ids()
+        if ids:
+            self.graph(ids)
+        return ids
 
     def recomputations(self, evidence_id: EvidenceId) -> list:
         """The items that recompute this one, oldest first. The original is never replaced."""
 
         self.load(evidence_id)
-        return [EvidenceId(value) for (value,) in self._db.execute(
-            "SELECT evidence_id FROM evidence_items WHERE recomputes = ? ORDER BY evidence_id", (evidence_id.value,))]
+        found = [EvidenceId(value) for (value,) in self._db.execute(
+            "SELECT evidence_id FROM evidence_items WHERE recomputes = ? ORDER BY evidence_id",
+            (evidence_id.value,)).fetchall()]
+        for link in found:
+            self.load(link)
+        return found
 
     def issued_count(self, family: str) -> int:
         if family != EVD_FAMILY:
@@ -749,20 +808,45 @@ class EvidenceStore:
             return relationship
         return self._transaction(work)
 
-    def relationships(self) -> list:
-        """Every recorded relationship, oldest first. A persisted relationship joining items whose calculation
-        provenance differs is refused, however it was written (AC11)."""
+    @staticmethod
+    def _require_relationship_row(relationship: Relationship, first_id: str, second_id: str) -> None:
+        if (relationship.first.value, relationship.second.value) != (first_id, second_id):
+            raise StoreError(f"a persisted relationship's record does not match its row: {first_id}, {second_id}")
 
-        out = []
-        for first_id, second_id, payload in self._db.execute(
-                "SELECT first_id, second_id, payload FROM evidence_relationships ORDER BY relationship_number"):
+    @staticmethod
+    def _unsupported_fields(recorded: Relationship, supported: Relationship) -> tuple:
+        """The fields of a recorded relationship that its source evidence does not support."""
+
+        return tuple(name for name, mine, theirs in (("dependency", recorded.dependency, supported.dependency),
+                                                     ("conflict flag", recorded.conflicting, supported.conflicting),
+                                                     ("basis", recorded.basis, supported.basis)) if mine != theirs)
+
+    def _supported_relationship(self, first_id: str, second_id: str, payload: str) -> Relationship:
+        """A persisted relationship, only if its identities match its row, both items pass the evidence read checks,
+        their calculation provenance agrees, and classifying them again gives exactly what is recorded. The items and
+        their recorded ancestors are immutable, so a legitimate record always agrees (H4 s10; ADR-0021 D5; ADR-0125)."""
+
+        try:
             relationship = relationship_from_record(json.loads(payload))
-            if (relationship.first.value, relationship.second.value) != (first_id, second_id):
-                raise StoreError(f"a persisted relationship's record does not match its row: {first_id}, {second_id}")
-            self._compatible(relationship.first, relationship.second, self._ancestry(relationship.first)[1],
-                             self._ancestry(relationship.second)[1])
-            out.append(relationship)
-        return out
+        except (ValueError, TypeError, KeyError) as exc:
+            raise StoreError(f"a persisted relationship record is refused: {exc}") from exc
+        self._require_relationship_row(relationship, first_id, second_id)
+        self._compatible(relationship.first, relationship.second, self._ancestry(relationship.first)[1],
+                         self._ancestry(relationship.second)[1])
+        unsupported = self._unsupported_fields(relationship, self.classify(relationship.first, relationship.second))
+        if unsupported:
+            raise StoreError(f"the persisted relationship of {first_id} and {second_id} is not supported by its source "
+                             f"evidence: {', '.join(unsupported)} (ADR-0125)")
+        return relationship
+
+    def relationships(self) -> list:
+        """Every recorded relationship, oldest first. A persisted relationship its immutable source evidence does not
+        support is refused, however it was written (AC11; ADR-0125)."""
+
+        return [self._supported_relationship(first_id, second_id, payload)
+                for first_id, second_id, payload in self._db.execute(
+                    "SELECT first_id, second_id, payload FROM evidence_relationships "
+                    "ORDER BY relationship_number").fetchall()]
 
     def relationship_counts(self) -> dict:
         """Recorded relationships by dependency class, each with its pairs. UNKNOWN is its own class."""
