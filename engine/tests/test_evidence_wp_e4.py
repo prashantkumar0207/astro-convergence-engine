@@ -43,7 +43,8 @@ PROV = RecordProvenance(source="synthetic fixture", method="hand-written test da
 CALC = Provenance(profile_name="parashari_lahiri", ayanamsa_mode=1, frame="sidereal", house_system="W",
                   node_policy="mean", ephemeris_mode="swieph")
 HASH_A, HASH_B = "a" * 64, "b" * 64
-EVIDENCE_MODULES = ("evidence.py", "evidence_store.py", "evidence_identifiers.py")
+EVIDENCE_MODULES = ("evidence.py", "evidence_store.py", "evidence_identifiers.py",
+                    "provenance_graph.py")  # added by ADR-0122 (WP-E6)
 
 
 def person():
@@ -616,7 +617,8 @@ def test_ac14_ac15_evidence_imports_no_calculation_writer_and_no_llm(name):
     assert {module for module in imports if module.startswith("engine.")} <= {
         "engine.evidence.entity", "engine.evidence.evidence", "engine.evidence.evidence_identifiers",
         "engine.evidence.identifiers", "engine.evidence.store", "engine.models.provenance",
-        "engine.evidence.rule_registry"}  # the store reads rules only from the pinned registry (ADR-0121)
+        "engine.evidence.rule_registry",  # the store reads rules only from the pinned registry (ADR-0121)
+        "engine.evidence.provenance_graph"}  # the store records each item's provenance graph (ADR-0122)
 
 
 def test_ac15_evidence_names_only_a_registered_rule_version(world):

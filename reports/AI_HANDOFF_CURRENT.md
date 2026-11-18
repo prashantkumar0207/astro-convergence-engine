@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.52.0 |
+| Version | 9.54.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-17 (WP-E5 merged and CLOSED (`69730bf`). WP-E6 (provenance-graph recording) criteria proposed in `ADR-0122` for CEO review. Not merged.) |
+| Last updated | 2026-11-18 (CEO bounded HOLD on PR #59 closed on the branch: graph reads refuse unaccounted-for rows. Not merged.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,33 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-18 - PR #59 bounded HOLD correction (AC5, AC7)
+
+- **Reproduced at `309af10`:** with two synthetic items on distinct charts, an `INPUT` to `DERIVED_CHART` edge inserted by
+  direct SQL was accepted by `item_graph`, `recorded_graph` and `incident`, and `reproduce()` still agreed.
+- **Correction (`ca9edf3`):** `graph`, `item_graph`, `recorded_graph`, `incident` and `reproduce` compare the recorded rows with
+  what the items' and their recorded ancestors' stored records justify, and refuse any unaccounted-for or missing node
+  or edge. Reads return only rows recorded at creation; the comparison never supplies a row.
+- **Certification:** Gate Q 41 to 71 refusals (six false-ancestry edges on five real read paths); Gate R 9 to 16 controls,
+  including two weakened comparators on the real read path. Gates A to P are identical.
+- **Self-audit:** 33 mutants (the 22 earlier and 11 of the read check), each caught; the unmutated tree passes.
+- **Stated limit:** a forged evidence record whose own graph rows were forged to agree with it is not detectable here
+  (recorded as a non-claim in `EVIDENCE_FOUNDATIONS_V1`).
+
+### 2026-11-17 - ADR-0122 ratified; PR #58 merged; WP-E6 implemented and on review
+
+- **PR #58:** merged at its exact HEAD `eb9551b` as `e63f93e` (parents `69730bf`, `eb9551b`; tree identical; branch kept).
+  Post-merge CI `44057120528`: four jobs passed on `ubuntu-24.04`.
+- **Ratification:** recorded as the first commit of the implementation branch (`e728174`), because the owner pinned
+  PR #58's exact HEAD. Status line plus a sub-entry; the normative text hashes to `278dc2a8...` at `eb9551b` and after.
+- **Implementation:** `engine/evidence/provenance_graph.py` (D1 to D5 option A) and `EvidenceStore` schema v3. The graph
+  is written with the item and its EVD number in one transaction; nodes are content-addressed; reads refuse forged,
+  dangling, undeclared or cyclic rows. Nothing counts paths, computes independence, measures correlation or classifies.
+- **Certification:** `EVIDENCE_FOUNDATIONS_V1` gates P (integrity, 2 controls), Q (41 refusals) and R (agreement,
+  9 controls); gates A to O identical; certified calculations differ only in volatile fields and `modules_scanned`.
+- **Self-audit:** 22 mutants (13 of the graph module, 6 of the store, 3 of the gates' comparators), each caught by the
+  WP-E6 tests or gates P, Q and R; the unmutated tree passes.
 
 ### 2026-11-17 - WP-E5 CLOSED (PR #56, `69730bf`); WP-E6 criteria proposed (`ADR-0122`)
 
