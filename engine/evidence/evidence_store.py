@@ -20,7 +20,8 @@ so a refused write takes none. Triggers refuse every UPDATE and DELETE.
   anything missing, incomplete or unverified, in an item or any ancestor, is UNKNOWN. Items whose
   calculation provenance differs are never related, and a persisted relationship joining them is
   refused when read (AC11). CORRELATED is never assigned here. This follows recorded links; it is not
-  a convergence algorithm and builds no graph.
+  a convergence algorithm and builds no graph. A persisted relationship is returned only if classifying the same
+  immutable items gives exactly its dependency, conflict flag and basis, however the row was written (ADR-0125).
 
 - Provenance graph (ADR-0122, WP-E6): persisting an item writes the nodes and edges it consumed, in the same
   transaction as the item and its EVD number, from the item and the records already checked for it
@@ -807,20 +808,45 @@ class EvidenceStore:
             return relationship
         return self._transaction(work)
 
-    def relationships(self) -> list:
-        """Every recorded relationship, oldest first. A persisted relationship joining items whose calculation
-        provenance differs is refused, however it was written (AC11)."""
+    @staticmethod
+    def _require_relationship_row(relationship: Relationship, first_id: str, second_id: str) -> None:
+        if (relationship.first.value, relationship.second.value) != (first_id, second_id):
+            raise StoreError(f"a persisted relationship's record does not match its row: {first_id}, {second_id}")
 
-        out = []
-        for first_id, second_id, payload in self._db.execute(
-                "SELECT first_id, second_id, payload FROM evidence_relationships ORDER BY relationship_number"):
+    @staticmethod
+    def _unsupported_fields(recorded: Relationship, supported: Relationship) -> tuple:
+        """The fields of a recorded relationship that its source evidence does not support."""
+
+        return tuple(name for name, mine, theirs in (("dependency", recorded.dependency, supported.dependency),
+                                                     ("conflict flag", recorded.conflicting, supported.conflicting),
+                                                     ("basis", recorded.basis, supported.basis)) if mine != theirs)
+
+    def _supported_relationship(self, first_id: str, second_id: str, payload: str) -> Relationship:
+        """A persisted relationship, only if its identities match its row, both items pass the evidence read checks,
+        their calculation provenance agrees, and classifying them again gives exactly what is recorded. The items and
+        their recorded ancestors are immutable, so a legitimate record always agrees (H4 s10; ADR-0021 D5; ADR-0125)."""
+
+        try:
             relationship = relationship_from_record(json.loads(payload))
-            if (relationship.first.value, relationship.second.value) != (first_id, second_id):
-                raise StoreError(f"a persisted relationship's record does not match its row: {first_id}, {second_id}")
-            self._compatible(relationship.first, relationship.second, self._ancestry(relationship.first)[1],
-                             self._ancestry(relationship.second)[1])
-            out.append(relationship)
-        return out
+        except (ValueError, TypeError, KeyError) as exc:
+            raise StoreError(f"a persisted relationship record is refused: {exc}") from exc
+        self._require_relationship_row(relationship, first_id, second_id)
+        self._compatible(relationship.first, relationship.second, self._ancestry(relationship.first)[1],
+                         self._ancestry(relationship.second)[1])
+        unsupported = self._unsupported_fields(relationship, self.classify(relationship.first, relationship.second))
+        if unsupported:
+            raise StoreError(f"the persisted relationship of {first_id} and {second_id} is not supported by its source "
+                             f"evidence: {', '.join(unsupported)} (ADR-0125)")
+        return relationship
+
+    def relationships(self) -> list:
+        """Every recorded relationship, oldest first. A persisted relationship its immutable source evidence does not
+        support is refused, however it was written (AC11; ADR-0125)."""
+
+        return [self._supported_relationship(first_id, second_id, payload)
+                for first_id, second_id, payload in self._db.execute(
+                    "SELECT first_id, second_id, payload FROM evidence_relationships "
+                    "ORDER BY relationship_number").fetchall()]
 
     def relationship_counts(self) -> dict:
         """Recorded relationships by dependency class, each with its pairs. UNKNOWN is its own class."""
