@@ -14,6 +14,9 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / "engine" / "tests"))
 
+sys.path.insert(0, str(ROOT / "scripts"))
+
+import certify_evidence_foundations as certifier  # noqa: E402
 from test_evidence_wp_e4 import World, person  # noqa: E402
 
 from engine.evidence import provenance_graph as graph  # noqa: E402
@@ -280,3 +283,38 @@ def test_a_check_demanding_the_snapshot_in_force_would_refuse_legitimate_history
     world.store._admitted_rule = too_strict
     with pytest.raises(StoreError, match="another snapshot"):
         world.store.load(first)
+
+
+# ------------------------------------------------------------------ the real gate fails on a weakened store
+
+def _too_strict(self, item):
+    rule = self.rule_version(item.rule)
+    if rule.spec.knowledge_snapshot_hash != rule_registry.pinned().snapshot_sha256:
+        raise StoreError("another snapshot")
+    return rule
+
+
+REAL_GATE_CONTROLS = {
+    "no row identity check": ("_require_row_identity", staticmethod(lambda *row: None)),
+    "no fit check": ("_require_fit", staticmethod(lambda item, rule: None)),
+    "no publication check": ("_require_published", staticmethod(lambda item, rule, registry: None)),
+    "no registered-rule check": ("_admitted_rule", lambda self, item: self.rule_version(item.rule) if any(
+        row[0] == item.rule.rule.value for row in self._db.execute("SELECT rule_id FROM registered_rule_versions")
+    ) else dataclasses.replace(self.rule_versions(RuleId.from_number(1))[0], rule=item.rule.rule)),
+    "no graph check on load": ("load", lambda self, evidence_id: self._stored_item(evidence_id)),
+    "a listing that hides nothing and checks nothing": ("evidence_ids", lambda self: self._stored_ids()),
+    "a check that refuses legitimate history": ("_admitted_rule", _too_strict),
+}
+
+
+@pytest.mark.parametrize("control", REAL_GATE_CONTROLS)
+def test_the_real_gate_s_fails_when_a_store_check_is_weakened(monkeypatch, control):
+    name, weakened = REAL_GATE_CONTROLS[control]
+    monkeypatch.setattr(certifier.EvidenceStore, name, weakened)
+    with pytest.raises((SystemExit, StoreError)):
+        certifier.gate_s_evidence_read_integrity()
+
+
+def test_the_real_gate_s_passes_on_the_real_store():
+    result = certifier.gate_s_evidence_read_integrity()
+    assert result["forgeries"] == len(FORGERIES) and result["refusals_verified"] >= 100 and result["controls_rejected"] == 6
