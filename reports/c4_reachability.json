@@ -1233,8 +1233,9 @@
    "status": "IN_USE_COVERED"
   },
   "engine.evidence.evidence_store.EvidenceStore.classify": {
-   "caller_count": 1,
+   "caller_count": 2,
    "callers": [
+    "engine.evidence.evidence_store.EvidenceStore._supported_relationship",
     "engine.evidence.evidence_store.EvidenceStore.relate"
    ],
    "covered": true,
@@ -1407,8 +1408,8 @@
   "engine.evidence.evidence_store.relationship_from_record": {
    "caller_count": 2,
    "callers": [
-    "engine.evidence.evidence_store.EvidenceStore.relate",
-    "engine.evidence.evidence_store.EvidenceStore.relationships"
+    "engine.evidence.evidence_store.EvidenceStore._supported_relationship",
+    "engine.evidence.evidence_store.EvidenceStore.relate"
    ],
    "covered": true,
    "exported_by": [

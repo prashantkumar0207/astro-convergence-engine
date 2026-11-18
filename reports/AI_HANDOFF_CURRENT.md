@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.56.0 |
+| Version | 9.57.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-18 (F1 correction on review (`ADR-0124`); finding F2 reported, not corrected. EVIDENCE exit not declared.) |
+| Last updated | 2026-11-18 (PR #61 merged (`16e3e7f`). F2 correction on review (`ADR-0125`). EVIDENCE exit not declared.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,17 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-18 - PR #61 merged; finding F2 correction (`ADR-0125`)
+
+- **PR #61:** merged as `16e3e7f0793c48191b61b488470a176a9c24ca19` (parents `689fd36`, `a1582c2`; tree identical; branch kept). Post-merge CI
+  `44292709114`: four jobs passed on `ubuntu-24.04`; 2,214 tests.
+- **F2 correction:** a persisted relationship is returned only if its identities match its row, both items pass the read checks,
+  their calculation provenance agrees, and classifying the same immutable items gives exactly its dependency, conflict flag
+  and basis. The existing classifier is reused; nothing new is computed.
+- **Certification:** new gate T: 42 forgeries, 89 refusals, 6 legitimate read paths preserved, 6 controls. Gates A to S are identical.
+- **Self-audit:** 67 mutants (14 of the relationship checks, 53 earlier), each caught; the unmutated tree passes.
+- **Next:** CEO review. PR #60 stays open until this correction is approved and merged.
 
 ### 2026-11-18 - Finding F1 correction (`ADR-0124`); finding F2 reported
 

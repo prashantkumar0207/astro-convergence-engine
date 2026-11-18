@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | **ACCEPTED (`ADR-0062`) - canonical, machine-checkable current-state record.** Regenerate/refresh on every meaningful implementation task, same discipline as `reports/AI_HANDOFF_CURRENT.md`. |
-| Version | 7.56.0 |
+| Version | 7.57.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-18 (**Finding F1 correction on review branch `evidence-f1-registered-rule-reads` (`ADR-0124`). EVIDENCE exit not declared. Not merged.**) |
+| Last updated | 2026-11-18 (**PR #61 merged (`16e3e7f`). Finding F2 correction on review branch `evidence-f2-relationship-integrity` (`ADR-0125`). EVIDENCE exit not declared. Not merged.**) |
 | Review cadence | Refresh at the start of a session if stale; not load-bearing if it isn't. |
 
 # ACE execution state
@@ -43,22 +43,22 @@ independently is in these fields plus the pointers they name.
 | Field | Value |
 |---|---|
 | `CURRENT_PHASE` | **EVIDENCE entered** (`ADR-0114`, owner-authorized 2026-11-07, from `main` `90cd0ca`). JATAKA exited (`ADR-0110`). Mandatory CEO checkpoints remain: the evidence model (H4), and phase exit. |
-| `CURRENT_MILESTONE` | **Finding F1 correction on a review PR (`ADR-0124`).** F1 blocks EVIDENCE exit by the owner's decision. The exit record (PR #60) is refreshed after this correction merges. WP-E1 to WP-E6 CLOSED; `main` is `689fd36`. |
-| `CURRENT_AUTHORIZED_TASK` | None self-executable beyond the F1 correction PR, which needs an independent CEO PASS and separate owner authorization to merge. After it merges, refresh PR #60's exit record against the new `main` SHA. |
-| `TASK_OWNER` | CHATGPT (review of the F1 correction PR); USER (merge authorization, and a disposition of finding F2). |
-| `STATUS` | F1 correction on review, not merged. No certified calculation changed: existing artifacts differ only in volatile fields. `EVIDENCE_FOUNDATIONS_V1` gains gate S; gates A to R are identical. A separate finding, F2, is reported on the PR and not corrected. EVIDENCE exit is not declared. The product contract's canonical text is `specs/PROJECT_CHARTER.md` v1.4.0 (owner-ratified, `ADR-0117` and its addendum); the product-objective definition is CLOSED (`ADR-0118` s2). Neither is restated here. |
-| `LAST_COMPLETED_ACTION` | Recorded the owner's F1 decision (`ADR-0124`) and implemented the bounded correction: every evidence read refuses a row that fails the registered-rule or graph-integrity requirements, while legitimate history stays readable; added gate S, direct-SQL regressions and real-gate negative controls. |
-| `LAST_COMMIT` (main) | `689fd369e6f871a2e21b1afa20911ed305c973e7` (PR #59 merge, WP-E6; parents `e63f93e` and `b4e5f51`). |
-| `LAST_COMMIT` (evidence-f1-registered-rule-reads) | This branch's commits, on top of `689fd369e6f871a2e21b1afa20911ed305c973e7`. |
-| `LAST_CI_RUN` | `44273894275` at `689fd36`: push to `main`, success on all four jobs on `ubuntu-24.04`. This branch's results are on its review PR. |
-| `LAST_CEO_DECISION` | Option A on finding F1 (F1 blocks EVIDENCE exit), ratified by the owner in `ADR-0124`. |
-| `NEXT_AUTHORIZED_ACTION` | None self-executable. After the CEO PASS and the owner's merge authorization: merge the F1 correction, verify it, and refresh PR #60's exit record against the new `main` SHA for the final EVIDENCE exit checkpoint. Before any prediction implementation, an owner-approved roadmap placement. The retirement of `SUPPORT_PATHS_V1` gates H and I needs separate approval. |
-| `WAITING_FOR` | CHATGPT: review of the F1 correction PR. USER: its merge authorization, and a disposition of finding F2. |
-| `BLOCKER` | EVIDENCE exit is blocked until the F1 correction merges and is verified (`ADR-0124`). Finding F2 (a forged relationship record is returned by the relationship reads) awaits a CEO and owner disposition. |
-| `CEO_APPROVAL_REQUIRED` | The F1 correction PR's merge; the EVIDENCE phase exit checkpoint. |
+| `CURRENT_MILESTONE` | **Finding F2 correction on a review PR (`ADR-0125`).** PR #61 (F1) merged as `16e3e7f`. PR #60 stays open, and is refreshed against the final verified `main` only after this correction is independently approved and merged. |
+| `CURRENT_AUTHORIZED_TASK` | None self-executable beyond the F2 correction PR, which needs independent CEO review and further owner authorization to merge. |
+| `TASK_OWNER` | CHATGPT (review of the F2 correction PR); USER (merge authorization). |
+| `STATUS` | F2 correction on review, not merged. No certified calculation changed: existing artifacts differ only in volatile fields. `EVIDENCE_FOUNDATIONS_V1` gains gate T; gates A to S are identical. EVIDENCE exit is not declared. The product contract's canonical text is `specs/PROJECT_CHARTER.md` v1.4.0 (owner-ratified, `ADR-0117` and its addendum); the product-objective definition is CLOSED (`ADR-0118` s2). Neither is restated here. |
+| `LAST_COMPLETED_ACTION` | Merged PR #61 (F1) and implemented the bounded F2 correction: a persisted relationship is returned only if its identities match its row, its items pass the read checks, their provenance agrees, and classifying the same immutable items gives exactly its dependency, conflict flag and basis; added gate T. |
+| `LAST_COMMIT` (main) | `16e3e7f0793c48191b61b488470a176a9c24ca19` (PR #61 merge, the F1 correction; parents `689fd36` and `a1582c2`). |
+| `LAST_COMMIT` (evidence-f2-relationship-integrity) | This branch's commits, on top of `16e3e7f0793c48191b61b488470a176a9c24ca19`. |
+| `LAST_CI_RUN` | `44292709114` at `16e3e7f`: push to `main`, success on all four jobs on `ubuntu-24.04`. This branch's results are on its review PR. |
+| `LAST_CEO_DECISION` | PASS on PR #61 at `a1582c2`, as the owner states. |
+| `NEXT_AUTHORIZED_ACTION` | None self-executable. After the CEO's review and the owner's merge authorization: merge the F2 correction, verify it, and refresh PR #60's exit record against the final verified `main` for the EVIDENCE exit checkpoint. Before any prediction implementation, an owner-approved roadmap placement. The retirement of `SUPPORT_PATHS_V1` gates H and I needs separate approval. |
+| `WAITING_FOR` | CHATGPT: review of the F2 correction PR. USER: its merge authorization. |
+| `BLOCKER` | EVIDENCE exit stays blocked until the F2 correction is independently approved and merged, and PR #60's exit record is refreshed. |
+| `CEO_APPROVAL_REQUIRED` | The F2 correction PR's merge; the EVIDENCE phase exit checkpoint. |
 | `CLAUDE_ACTION_REQUIRED` | None until directed. Every relevant specification, milestone and review carries the Charter-compliance statement. |
-| `CHATGPT_ACTION_REQUIRED` | Review of the F1 correction PR, and a determination on finding F2. |
-| `USER_ACTION_REQUIRED` | Merge authorization for the F1 correction, after CEO review; a disposition of finding F2; a roadmap placement for prediction issuance before its implementation; a separate authorization for the bounded retirement of `SUPPORT_PATHS_V1` gates H and I. |
+| `CHATGPT_ACTION_REQUIRED` | Review of the F2 correction PR. |
+| `USER_ACTION_REQUIRED` | Merge authorization for the F2 correction, after CEO review; a roadmap placement for prediction issuance before its implementation; a separate authorization for the bounded retirement of `SUPPORT_PATHS_V1` gates H and I. |
 | `HANDOFF_REQUIRED` | None beyond this file and the latest entry in `reports/AI_HANDOFF_CURRENT.md`. |
 
 ## How to independently verify every field above
@@ -79,6 +79,7 @@ exactly as `reports/AI_HANDOFF_CURRENT.md` already requires of itself.
 
 | Version | Date | Change |
 |---|---|---|
+| 7.57.0 | 2026-11-18 | **PR #61 merged; F2 correction: persisted relationships are returned only if their source evidence supports them; gate T added** (`ADR-0125`). |
 | 7.56.0 | 2026-11-18 | **F1 correction: every evidence read enforces the registered-rule and graph-integrity requirements; gate S added** (`ADR-0124`). |
 | 7.54.0 | 2026-11-18 | **PR #59 HOLD correction: graph reads refuse unaccounted-for rows; Gate Q 41 to 71 refusals; Gate R 9 to 16 controls.** |
 | 7.53.0 | 2026-11-17 | **`ADR-0122` s4 to s6 ratified; WP-E6 implemented and on review** (gates P, Q and R). |
