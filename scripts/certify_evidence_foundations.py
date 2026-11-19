@@ -3176,6 +3176,16 @@ def gate_w_explanation_boundary():
             use = options["registry"] if "registry" in options else registry
             refuses(f"{label}", lambda candidate=candidate, use=use: explanation_boundary.render(candidate, store, use),
                     reason)
+        # An intact row whose recorded graph is missing: only the store's full read refuses it.
+        planted_id = EvidenceId.from_number(991)
+        store._db.execute("INSERT INTO evidence_items (evidence_id, entity_id, recomputes, payload) VALUES "
+                          "(?, ?, NULL, ?)", (planted_id.value, item.entity.value,
+                                              json.dumps(item_to_record(planted_id, item))))
+        if store._stored_item(planted_id) != item:
+            fail("the planted row does not read cleanly on its own")
+        refuses("an intact row whose recorded graph is missing", lambda: explanation_boundary.render(
+            _candidate((planted_id,), [{"kind": "polarity", "evidence": planted_id.value}]), store, registry),
+            "fails the evidence read")
         # Controls: each check, weakened, admits what it refuses; no planted text ever reaches the output.
         planted = "PLANTED: an invented rule"
         exact = explanation_boundary._exact

@@ -23,7 +23,8 @@ from test_evidence_wp_e4 import World  # noqa: E402
 
 from engine.evidence import explanation_boundary as boundary  # noqa: E402
 from engine.evidence import rule_registry  # noqa: E402
-from engine.evidence.evidence_store import EvidenceStore  # noqa: E402
+from engine.evidence.evidence_identifiers import EvidenceId  # noqa: E402
+from engine.evidence.evidence_store import EvidenceStore, item_to_record  # noqa: E402
 from engine.evidence.store import StoreError  # noqa: E402
 
 PINNED = rule_registry.pinned()
@@ -239,6 +240,19 @@ def test_l4_an_item_failing_the_evidence_read_checks_is_refused(items):
             "scope": ["EVD-0000000900"], "segments": [{"kind": "polarity", "evidence": "EVD-0000000900"}]}, store, PINNED)
 
 
+def test_l4_an_intact_row_whose_recorded_graph_is_missing_is_refused(items):
+    """The row itself reads cleanly; only the store's full read, with its graph accounting, refuses it."""
+
+    store, first, _second = items
+    planted = EvidenceId.from_number(900)
+    item = store.load(first)
+    store._db.execute("INSERT INTO evidence_items (evidence_id, entity_id, recomputes, payload) VALUES (?, ?, NULL, ?)",
+                      (planted.value, item.entity.value, json.dumps(item_to_record(planted, item))))
+    assert store._stored_item(planted) == item
+    with pytest.raises(boundary.BoundaryError, match="fails the evidence read checks"):
+        boundary.render(candidate((planted,), [{"kind": "polarity", "evidence": planted.value}]), store, PINNED)
+
+
 def test_l5_a_rule_the_pinned_registry_does_not_publish_is_refused(items):
     store, first, _second = items
     item = store.load(first)
@@ -293,15 +307,27 @@ def test_the_real_gate_v_fails_when_a_publication_check_is_weakened(monkeypatch,
         certifier.gate_v_genuine_rule_publication()
 
 
+_STRICT_EXACT = boundary._exact
+
+
+def _admit_without_scope(explanation, store, registry):
+    named = tuple(explanation.scope) + tuple(item.evidence for item in explanation.segments if item.evidence is not None)
+    return {evidence_id: store.load(evidence_id) for evidence_id in named}
+
+
 @pytest.mark.parametrize("name,weakened", [
-    ("_exact", lambda name, data, keys: data),
-    ("_evidence_id", lambda value: value),
-    ("admit", lambda explanation, store, registry: {}),
-], ids=["no structural parse", "no identifier check", "no trusted resolution"])
-def test_the_real_gate_w_fails_when_a_boundary_check_is_weakened(monkeypatch, name, weakened):
+    ("_exact", lambda name, data, keys: data if isinstance(data, dict) and set(keys) <= set(data) else
+     _STRICT_EXACT(name, data, keys)),
+    ("admit", _admit_without_scope),
+    ("_published", lambda item, registry: PINNED.lookup(item.rule.rule, item.rule.version, item.rule.variant)),
+], ids=["extra keys admitted", "no scope check", "a registry other than the one given"])
+def test_the_real_gate_w_fails_when_a_boundary_check_is_weakened(monkeypatch, capsys, name, weakened):
+    """Each weakening still renders; the gate itself must find the candidate it did not refuse."""
+
     monkeypatch.setattr(boundary, name, weakened)
-    with pytest.raises((SystemExit, Exception)):
+    with pytest.raises(SystemExit):
         certifier.gate_w_explanation_boundary()
+    assert "CERTIFICATION FAIL: not refused:" in capsys.readouterr().out
 
 
 def test_the_real_gates_v_and_w_pass_on_the_real_code():
