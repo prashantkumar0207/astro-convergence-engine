@@ -12796,6 +12796,72 @@ UNKNOWN class, certified calculations and protected holdouts. New gate T carries
 
 ---
 
+## ADR-0127 - The never-issued subcase of limit L1 blocks EVIDENCE exit; one bounded correction makes historical rule reads match the governed records
+
+- **Date:** 2026-11-19
+- **Status:** **ACCEPTED, on the owner's authorization quoted in s1.** It records the CEO's bounded HOLD and the owner's decision. The correction
+  merges only on a CEO PASS and the owner's authorization.
+- **Context:** The refreshed phase-exit record on PR #60 (`reports/EVIDENCE_PHASE_EXIT_RECORD.md` 0.2.0) demonstrated limit L1 at `main`
+  `f24771fb7405bfd4adfb0a44ce13c322f0319d76`: a forged rule row claiming another snapshot, an evidence row naming it and matching graph rows were accepted, even
+  for a `RUL` number never issued. `ADR-0123` and `ADR-0126` are PR #60's entries, and their numbers stay reserved for it.
+
+### 1. The CEO's bounded HOLD and the owner's decision (exact text)
+
+The CEO's HOLD:
+
+```text
+**ACE CEO — FINAL EVIDENCE EXIT: BOUNDED HOLD ON L1**
+
+Reviewed `main`: `f24771fb7405bfd4adfb0a44ce13c322f0319d76`.
+Reviewed PR #60: `bd4cd70c856f4725ea9b4d1a1e6a351ed69945d4`.
+
+L2 is accepted as a documented external-tampering limitation.
+
+L1's never-issued RUL subcase blocks exit under accepted H4 s4 and ADR-0121. The committed allocation history and immutable publication records are available; no historical snapshot archive is needed to reject an identity they prove invalid.
+
+**Proposed bounded correction, requiring owner authorization:**
+
+1. Make evidence reads refuse a purported historical rule whose RUL was never issued, or whose rule/version/variant and immutable published metadata contradict existing governed records.
+2. Preserve genuinely issued historical rule versions and evidence from earlier snapshots. Do not demand the current snapshot hash for historical reads.
+3. Add direct-SQL regressions, legitimate-history cases and real-gate negative controls.
+4. Preserve Gates A–T, certified calculations, protected holdouts, and all accepted ADRs.
+5. Submit one correction PR with full CI, certification, drift and governance evidence. Do not merge without CEO PASS and owner authorization.
+
+No signing system, historical snapshot archive, new exit criterion or unrelated work.
+
+After its verified merge, refresh PR #60 and return it for the final exit decision.
+
+Do not declare EVIDENCE exit or begin prediction issuance.
+```
+
+The owner was asked whether they authorized that correction. They answered, exactly:
+
+```text
+Authorize as proposed (Recommended)
+```
+
+### 2. What the correction does
+
+A rule version recorded under an earlier snapshot stays readable, without the current snapshot hash, but only as what the governed records
+prove:
+1. the allocation history issued its `RUL` number;
+2. that history binds the number to the recorded school; and
+3. the pinned registry still publishes that rule, version and variant with every field but the snapshot hash unchanged.
+
+The third condition needs no archive. A published version is never withdrawn or rewritten (`ADR-0120` AC2), and the registry gate's G3
+enforces that against the base commit in CI. So any genuine historical version is still published.
+
+**What stays as it was:** `EVIDENCE_FOUNDATIONS_V1` gates A to T, certified calculations, protected holdouts and every accepted ADR. New gate
+U carries the regressions and negative controls. L2 stays a documented external-tampering limitation, as the CEO accepted.
+
+- **Decision:** L1's never-issued subcase blocks EVIDENCE exit until this correction is merged and verified. PR #60 is then refreshed and
+  returned for the final exit decision.
+- **Consequences:** EVIDENCE exit is not declared, and prediction issuance has not begun.
+- **Evidence:** the correction's PR, its tests, regenerated evidence and CI. The CEO's HOLD and the owner's answer exist as session input,
+  not as repository files.
+
+---
+
 ## ADR template (copy, do not edit above the line)
 
 ## ADR-XXXX - <title>

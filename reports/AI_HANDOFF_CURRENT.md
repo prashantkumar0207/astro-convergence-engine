@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.57.0 |
+| Version | 9.59.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-18 (PR #61 merged (`16e3e7f`). F2 correction on review (`ADR-0125`). EVIDENCE exit not declared.) |
+| Last updated | 2026-11-19 (L1 correction on review (`ADR-0127`). EVIDENCE exit not declared.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,17 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-19 - L1 correction (`ADR-0127`)
+
+- **CEO's bounded HOLD at the final exit checkpoint:** L2 accepted as a documented external-tampering limit; L1's never-issued RUL
+  subcase blocks exit. The owner authorized the proposed correction (`ADR-0127`, both quoted exactly).
+- **Correction:** a rule version recorded under an earlier snapshot is read only if the allocation history issued its RUL under the
+  recorded school, and the pinned registry still publishes that rule, version and variant with every field but the snapshot hash
+  unchanged. A published version is never withdrawn or rewritten (`ADR-0120` AC2, gate G3), so no archive is needed.
+- **Certification:** new gate U: 6 forgeries, 60 refusals, 7 legitimate read paths preserved, 5 controls. Gates A to T are identical.
+- **Self-audit:** 76 mutants (9 of the historical checks, 67 earlier), each caught; the unmutated tree passes.
+- **Next:** CEO review; after the merge, refresh PR #60 for the final exit decision.
 
 ### 2026-11-18 - PR #61 merged; finding F2 correction (`ADR-0125`)
 

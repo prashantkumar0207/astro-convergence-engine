@@ -32,6 +32,8 @@ so a refused write takes none. Triggers refuse every UPDATE and DELETE.
 - Read integrity (ADR-0124): every read of an evidence item, however the row was written, refuses a row that disagrees
   with its own key, names a rule version that is not registered or does not fit the item, or has no accounted-for
   graph. A rule version recorded under an earlier snapshot stays readable: only new evidence needs the snapshot in force.
+  It must still be what the governed records prove (ADR-0127): its RUL issued by the allocation history, under that
+  school, and the version published, unchanged, because a published version is never withdrawn or rewritten.
 
 Nothing here scores, weights, fits or divides, and nothing writes to calculation state.
 """
@@ -469,15 +471,48 @@ class EvidenceStore:
         if item.declared_strength != rule.spec.declared_strength:
             raise StoreError("declared strength is the rule version's, recorded as declared (ADR-0113 s2 E2)")
 
+    @staticmethod
+    def _require_issued(rule: RuleVersion, issued: dict) -> None:
+        """The allocation history issued this RUL number, bound to this school (ADR-0121)."""
+
+        identity: RuleId = rule.rule
+        if identity.number not in issued:
+            raise StoreError(f"{identity} was never issued by the governed authoring process; a recorded rule version "
+                             f"names only an issued RUL (H4 s4; ADR-0121; ADR-0127)")
+        _key, school = issued[identity.number]
+        if school is not rule.spec.school:
+            raise StoreError(f"{identity} is bound to {school.value} by the allocation history; a recorded "
+                             f"{rule.spec.school.value} version contradicts it (ADR-0121; ADR-0127)")
+
+    @staticmethod
+    def _require_unchanged_publication(rule: RuleVersion, registry: rule_registry.RuleRegistry) -> None:
+        """A published version is never withdrawn or rewritten (ADR-0120 AC2; the registry gate's G3), so a genuine
+        historical version is still published, with everything but its snapshot hash unchanged."""
+
+        identity: RuleId = rule.rule
+        try:
+            published = registry.rule_version(identity, rule.version, rule.spec.variant)
+        except rule_registry.RegistryError as exc:
+            raise StoreError(f"{exc}: a published version is never withdrawn, so this recorded version was never "
+                             f"published (ADR-0120 AC2; ADR-0127)") from exc
+        mine, theirs = rule_to_record(rule)["rule_version"], rule_to_record(published)["rule_version"]
+        if {**mine, "knowledge_snapshot_hash": None} != {**theirs, "knowledge_snapshot_hash": None}:
+            raise StoreError(f"{identity} v{rule.version} {rule.spec.variant!r}: the recorded version contradicts its "
+                             f"immutable publication (ADR-0120 AC2; ADR-0127)")
+
     def _admitted_rule(self, item: EvidenceItem) -> RuleVersion:
         """The registered rule version a stored item names, refused unless it fits the item (H4 s4; ADR-0124). A row
         claiming the snapshot in force must be exactly what that snapshot publishes. A row recorded under an earlier
-        snapshot is legitimate history, and stays readable."""
+        snapshot is legitimate history, and stays readable, but only as what the governed records prove: an issued
+        RUL, under its school, and a version still published unchanged (ADR-0127)."""
 
         rule = self.rule_version(item.rule)
         registry = rule_registry.pinned()
         if rule.spec.knowledge_snapshot_hash == registry.snapshot_sha256:
             self._require_published(item, rule, registry)
+        else:
+            self._require_issued(rule, rule_registry.read_history(rule_registry.DATA_DIR.joinpath(rule_registry.HISTORY_NAME)))
+            self._require_unchanged_publication(rule, registry)
         self._require_fit(item, rule)
         return rule
 

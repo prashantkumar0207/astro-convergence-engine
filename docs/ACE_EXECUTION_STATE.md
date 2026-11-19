@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | **ACCEPTED (`ADR-0062`) - canonical, machine-checkable current-state record.** Regenerate/refresh on every meaningful implementation task, same discipline as `reports/AI_HANDOFF_CURRENT.md`. |
-| Version | 7.57.0 |
+| Version | 7.59.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-18 (**PR #61 merged (`16e3e7f`). Finding F2 correction on review branch `evidence-f2-relationship-integrity` (`ADR-0125`). EVIDENCE exit not declared. Not merged.**) |
+| Last updated | 2026-11-19 (**L1 correction on review branch `evidence-l1-issued-rule-history` (`ADR-0127`). EVIDENCE exit not declared. Not merged.**) |
 | Review cadence | Refresh at the start of a session if stale; not load-bearing if it isn't. |
 
 # ACE execution state
@@ -43,22 +43,22 @@ independently is in these fields plus the pointers they name.
 | Field | Value |
 |---|---|
 | `CURRENT_PHASE` | **EVIDENCE entered** (`ADR-0114`, owner-authorized 2026-11-07, from `main` `90cd0ca`). JATAKA exited (`ADR-0110`). Mandatory CEO checkpoints remain: the evidence model (H4), and phase exit. |
-| `CURRENT_MILESTONE` | **Finding F2 correction on a review PR (`ADR-0125`).** PR #61 (F1) merged as `16e3e7f`. PR #60 stays open, and is refreshed against the final verified `main` only after this correction is independently approved and merged. |
-| `CURRENT_AUTHORIZED_TASK` | None self-executable beyond the F2 correction PR, which needs independent CEO review and further owner authorization to merge. |
-| `TASK_OWNER` | CHATGPT (review of the F2 correction PR); USER (merge authorization). |
-| `STATUS` | F2 correction on review, not merged. No certified calculation changed: existing artifacts differ only in volatile fields. `EVIDENCE_FOUNDATIONS_V1` gains gate T; gates A to S are identical. EVIDENCE exit is not declared. The product contract's canonical text is `specs/PROJECT_CHARTER.md` v1.4.0 (owner-ratified, `ADR-0117` and its addendum); the product-objective definition is CLOSED (`ADR-0118` s2). Neither is restated here. |
-| `LAST_COMPLETED_ACTION` | Merged PR #61 (F1) and implemented the bounded F2 correction: a persisted relationship is returned only if its identities match its row, its items pass the read checks, their provenance agrees, and classifying the same immutable items gives exactly its dependency, conflict flag and basis; added gate T. |
-| `LAST_COMMIT` (main) | `16e3e7f0793c48191b61b488470a176a9c24ca19` (PR #61 merge, the F1 correction; parents `689fd36` and `a1582c2`). |
-| `LAST_COMMIT` (evidence-f2-relationship-integrity) | This branch's commits, on top of `16e3e7f0793c48191b61b488470a176a9c24ca19`. |
-| `LAST_CI_RUN` | `44292709114` at `16e3e7f`: push to `main`, success on all four jobs on `ubuntu-24.04`. This branch's results are on its review PR. |
-| `LAST_CEO_DECISION` | PASS on PR #61 at `a1582c2`, as the owner states. |
-| `NEXT_AUTHORIZED_ACTION` | None self-executable. After the CEO's review and the owner's merge authorization: merge the F2 correction, verify it, and refresh PR #60's exit record against the final verified `main` for the EVIDENCE exit checkpoint. Before any prediction implementation, an owner-approved roadmap placement. The retirement of `SUPPORT_PATHS_V1` gates H and I needs separate approval. |
-| `WAITING_FOR` | CHATGPT: review of the F2 correction PR. USER: its merge authorization. |
-| `BLOCKER` | EVIDENCE exit stays blocked until the F2 correction is independently approved and merged, and PR #60's exit record is refreshed. |
-| `CEO_APPROVAL_REQUIRED` | The F2 correction PR's merge; the EVIDENCE phase exit checkpoint. |
+| `CURRENT_MILESTONE` | **L1 correction on a review PR (`ADR-0127`).** The CEO's bounded HOLD at the final exit checkpoint: L1's never-issued subcase blocks exit, and L2 is accepted. PR #60 is refreshed after this correction merges. `main` is `f24771f`. |
+| `CURRENT_AUTHORIZED_TASK` | None self-executable beyond the L1 correction PR, which needs a CEO PASS and the owner's authorization to merge. After its verified merge, refresh PR #60 for the final exit decision. |
+| `TASK_OWNER` | CHATGPT (review of the L1 correction PR); USER (merge authorization). |
+| `STATUS` | L1 correction on review, not merged. No certified calculation changed: existing artifacts differ only in volatile fields. `EVIDENCE_FOUNDATIONS_V1` gains gate U; gates A to T are identical. EVIDENCE exit is not declared. The product contract's canonical text is `specs/PROJECT_CHARTER.md` v1.4.0 (owner-ratified, `ADR-0117` and its addendum); the product-objective definition is CLOSED (`ADR-0118` s2). Neither is restated here. |
+| `LAST_COMPLETED_ACTION` | Recorded the CEO's L1 HOLD and the owner's authorization (`ADR-0127`) and implemented the bounded correction: a rule version recorded under an earlier snapshot is read only as an issued RUL, under its school, and a version still published unchanged; genuine history stays readable without the current snapshot hash; added gate U. |
+| `LAST_COMMIT` (main) | `f24771fb7405bfd4adfb0a44ce13c322f0319d76` (PR #62 merge, the F2 correction; parents `16e3e7f` and `952fd61`). |
+| `LAST_COMMIT` (evidence-l1-issued-rule-history) | This branch's commits, on top of `f24771fb7405bfd4adfb0a44ce13c322f0319d76`. |
+| `LAST_CI_RUN` | `44302736571` at `f24771f`: push to `main`, success on all four jobs on `ubuntu-24.04`. This branch's results are on its review PR. |
+| `LAST_CEO_DECISION` | Bounded HOLD at the final EVIDENCE exit checkpoint: L2 accepted; L1's never-issued subcase blocks exit (`ADR-0127`). |
+| `NEXT_AUTHORIZED_ACTION` | None self-executable. After the CEO PASS and the owner's authorization: merge the L1 correction, verify it, and refresh PR #60 for the final exit decision. Before any prediction implementation, an owner-approved roadmap placement. The retirement of `SUPPORT_PATHS_V1` gates H and I needs separate approval. |
+| `WAITING_FOR` | CHATGPT: review of the L1 correction PR. USER: its merge authorization. |
+| `BLOCKER` | EVIDENCE exit is blocked until the L1 correction merges and is verified (`ADR-0127`). |
+| `CEO_APPROVAL_REQUIRED` | The L1 correction PR's merge; the EVIDENCE phase exit decision. |
 | `CLAUDE_ACTION_REQUIRED` | None until directed. Every relevant specification, milestone and review carries the Charter-compliance statement. |
-| `CHATGPT_ACTION_REQUIRED` | Review of the F2 correction PR. |
-| `USER_ACTION_REQUIRED` | Merge authorization for the F2 correction, after CEO review; a roadmap placement for prediction issuance before its implementation; a separate authorization for the bounded retirement of `SUPPORT_PATHS_V1` gates H and I. |
+| `CHATGPT_ACTION_REQUIRED` | Review of the L1 correction PR. |
+| `USER_ACTION_REQUIRED` | Merge authorization for the L1 correction, after the CEO PASS; a roadmap placement for prediction issuance before its implementation; a separate authorization for the bounded retirement of `SUPPORT_PATHS_V1` gates H and I. |
 | `HANDOFF_REQUIRED` | None beyond this file and the latest entry in `reports/AI_HANDOFF_CURRENT.md`. |
 
 ## How to independently verify every field above
@@ -79,6 +79,7 @@ exactly as `reports/AI_HANDOFF_CURRENT.md` already requires of itself.
 
 | Version | Date | Change |
 |---|---|---|
+| 7.59.0 | 2026-11-19 | **L1 correction: historical rule reads match the governed allocation history and publications; gate U added** (`ADR-0127`). |
 | 7.57.0 | 2026-11-18 | **PR #61 merged; F2 correction: persisted relationships are returned only if their source evidence supports them; gate T added** (`ADR-0125`). |
 | 7.56.0 | 2026-11-18 | **F1 correction: every evidence read enforces the registered-rule and graph-integrity requirements; gate S added** (`ADR-0124`). |
 | 7.54.0 | 2026-11-18 | **PR #59 HOLD correction: graph reads refuse unaccounted-for rows; Gate Q 41 to 71 refusals; Gate R 9 to 16 controls.** |
