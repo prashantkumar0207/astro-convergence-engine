@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.59.0 |
+| Version | 9.61.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-19 (L1 correction on review (`ADR-0127`). EVIDENCE exit not declared.) |
+| Last updated | 2026-11-19 (EVIDENCE phase exited, owner-ratified (`ADR-0129`). No further phase entered.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -68,6 +68,22 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
 
+### 2026-11-19 - EVIDENCE phase exit ratified (`ADR-0129`)
+
+- **Owner's ratification,** after the CEO's final exit audit of PR #60 at `2693488` (PASS, as the owner states): EVIDENCE is exited,
+  evaluated at `main` `ad4d5f7`. `reports/EVIDENCE_PHASE_EXIT_RECORD.md` 0.3.0 is accepted; only its status header changed.
+- **Carried limitations:** L2; the qualifications X1, X2, X3 and I4; every certification non-claim; the three `TRANSIT_V1` overclaims;
+  prediction issuance without a roadmap placement; the retirement of `SUPPORT_PATHS_V1` gates H and I.
+- **Not done:** no phase entered, no prediction issuance, no engineering change.
+
+### 2026-11-19 - PR #63 merged; EVIDENCE phase-exit record refreshed (`ADR-0128`)
+
+- **Merge:** `ad4d5f7383ba2a0c4f53464132198831b77be72a`, parents `f24771f` and `584fcb0`; tree `a6780f4` identical to the reviewed head; branch kept.
+  Post-merge CI `44498742069`: four jobs passed on `ubuntu-24.04`; 2,348 tests on 3.11 and 3.12; drift clean.
+- **Probes at `ad4d5f7`:** F1, F2 and L1 forgeries are all refused; L2 (a complete, consistent forgery) is accepted, as the CEO accepted.
+- **Phase-exit record 0.3.0 (PROPOSED):** 33 rows: 28 met, 4 met with a qualification, 1 pending (the exit approval), 0 open findings.
+- **Not done:** EVIDENCE exit is not declared, and prediction issuance and the next phase have not begun.
+
 ### 2026-11-19 - L1 correction (`ADR-0127`)
 
 - **CEO's bounded HOLD at the final exit checkpoint:** L2 accepted as a documented external-tampering limit; L1's never-issued RUL
@@ -78,6 +94,16 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - **Certification:** new gate U: 6 forgeries, 60 refusals, 7 legitimate read paths preserved, 5 controls. Gates A to T are identical.
 - **Self-audit:** 76 mutants (9 of the historical checks, 67 earlier), each caught; the unmutated tree passes.
 - **Next:** CEO review; after the merge, refresh PR #60 for the final exit decision.
+
+### 2026-11-18 - PR #62 merged; EVIDENCE phase-exit record refreshed (`ADR-0126`)
+
+- **Merge:** `f24771fb7405bfd4adfb0a44ce13c322f0319d76`, parents `16e3e7f` and `952fd61`; tree `d57fc85` identical to the reviewed head; branch kept.
+  Post-merge CI `44302736571`: four jobs passed on `ubuntu-24.04`; 2,273 tests on 3.11 and 3.12; drift clean.
+- **Regenerated at `f24771f` on clean Linux:** 24/24 certifiers, drift clean, all governance steps, 2,273 passed, 0 skipped.
+- **Phase-exit record 0.2.0 (PROPOSED):** 33 rows: 28 met, 4 met with a qualification, 1 pending (the exit approval), 0 open findings.
+- **For the CEO:** residual limits L1 and L2 on the exit clause: rows forged to agree with one another, by someone with database
+  write access, are not detected. The record gives a labelled recommendation and decides nothing.
+- **Not done:** EVIDENCE exit is not declared, and prediction issuance has not begun.
 
 ### 2026-11-18 - PR #61 merged; finding F2 correction (`ADR-0125`)
 
@@ -103,6 +129,17 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - **Finding F2, not corrected:** a forged `evidence_relationships` row between two legitimate items can state a class `classify()`
   contradicts, and `relationships()` and `relationship_counts()` return it. It is outside `ADR-0124`'s scope.
 - **Next:** CEO review; after the merge, refresh PR #60's exit record against the new `main` SHA.
+
+### 2026-11-18 - WP-E6 CLOSED (PR #59, `689fd36`); EVIDENCE phase-exit evidence submitted (`ADR-0123`)
+
+- **Merge:** `689fd369e6f871a2e21b1afa20911ed305c973e7`, parents `e63f93e` and `b4e5f51`; tree `b10309a` identical to the reviewed head;
+  branch kept. Post-merge CI `44273894275`: four jobs passed on `ubuntu-24.04`; 2,084 tests on 3.11 and 3.12; drift clean.
+- **Regenerated at `689fd36` on clean Linux:** 24/24 certifiers, drift clean, all governance steps, 2,084 passed, 0 skipped.
+- **Phase-exit record:** `reports/EVIDENCE_PHASE_EXIT_RECORD.md` 0.1.0 (PROPOSED), against Q8 s6 and s14 only. 33 rows: 28 met, 3 met
+  with a qualification, 1 pending (the exit approval), 1 open finding.
+- **Finding F1, for the CEO:** an `evidence_items` row written by direct SQL can name a rule never registered; `load`, `evidence_ids`,
+  `join`, `counts`, `classify` and `relate` accept it, while the graph reads refuse it. Options are in s5. No correction made.
+- **Not done:** EVIDENCE exit is not declared, and prediction issuance has not begun.
 
 ### 2026-11-18 - PR #59 bounded HOLD correction (AC5, AC7)
 

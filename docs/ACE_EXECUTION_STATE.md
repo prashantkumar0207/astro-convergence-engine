@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | **ACCEPTED (`ADR-0062`) - canonical, machine-checkable current-state record.** Regenerate/refresh on every meaningful implementation task, same discipline as `reports/AI_HANDOFF_CURRENT.md`. |
-| Version | 7.59.0 |
+| Version | 7.61.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-19 (**L1 correction on review branch `evidence-l1-issued-rule-history` (`ADR-0127`). EVIDENCE exit not declared. Not merged.**) |
+| Last updated | 2026-11-19 (**EVIDENCE phase exited, owner-ratified (`ADR-0129`), at evaluated `main` `ad4d5f7`. No further phase entered.**) |
 | Review cadence | Refresh at the start of a session if stale; not load-bearing if it isn't. |
 
 # ACE execution state
@@ -42,23 +42,23 @@ independently is in these fields plus the pointers they name.
 
 | Field | Value |
 |---|---|
-| `CURRENT_PHASE` | **EVIDENCE entered** (`ADR-0114`, owner-authorized 2026-11-07, from `main` `90cd0ca`). JATAKA exited (`ADR-0110`). Mandatory CEO checkpoints remain: the evidence model (H4), and phase exit. |
-| `CURRENT_MILESTONE` | **L1 correction on a review PR (`ADR-0127`).** The CEO's bounded HOLD at the final exit checkpoint: L1's never-issued subcase blocks exit, and L2 is accepted. PR #60 is refreshed after this correction merges. `main` is `f24771f`. |
-| `CURRENT_AUTHORIZED_TASK` | None self-executable beyond the L1 correction PR, which needs a CEO PASS and the owner's authorization to merge. After its verified merge, refresh PR #60 for the final exit decision. |
-| `TASK_OWNER` | CHATGPT (review of the L1 correction PR); USER (merge authorization). |
-| `STATUS` | L1 correction on review, not merged. No certified calculation changed: existing artifacts differ only in volatile fields. `EVIDENCE_FOUNDATIONS_V1` gains gate U; gates A to T are identical. EVIDENCE exit is not declared. The product contract's canonical text is `specs/PROJECT_CHARTER.md` v1.4.0 (owner-ratified, `ADR-0117` and its addendum); the product-objective definition is CLOSED (`ADR-0118` s2). Neither is restated here. |
-| `LAST_COMPLETED_ACTION` | Recorded the CEO's L1 HOLD and the owner's authorization (`ADR-0127`) and implemented the bounded correction: a rule version recorded under an earlier snapshot is read only as an issued RUL, under its school, and a version still published unchanged; genuine history stays readable without the current snapshot hash; added gate U. |
-| `LAST_COMMIT` (main) | `f24771fb7405bfd4adfb0a44ce13c322f0319d76` (PR #62 merge, the F2 correction; parents `16e3e7f` and `952fd61`). |
-| `LAST_COMMIT` (evidence-l1-issued-rule-history) | This branch's commits, on top of `f24771fb7405bfd4adfb0a44ce13c322f0319d76`. |
-| `LAST_CI_RUN` | `44302736571` at `f24771f`: push to `main`, success on all four jobs on `ubuntu-24.04`. This branch's results are on its review PR. |
-| `LAST_CEO_DECISION` | Bounded HOLD at the final EVIDENCE exit checkpoint: L2 accepted; L1's never-issued subcase blocks exit (`ADR-0127`). |
-| `NEXT_AUTHORIZED_ACTION` | None self-executable. After the CEO PASS and the owner's authorization: merge the L1 correction, verify it, and refresh PR #60 for the final exit decision. Before any prediction implementation, an owner-approved roadmap placement. The retirement of `SUPPORT_PATHS_V1` gates H and I needs separate approval. |
-| `WAITING_FOR` | CHATGPT: review of the L1 correction PR. USER: its merge authorization. |
-| `BLOCKER` | EVIDENCE exit is blocked until the L1 correction merges and is verified (`ADR-0127`). |
-| `CEO_APPROVAL_REQUIRED` | The L1 correction PR's merge; the EVIDENCE phase exit decision. |
+| `CURRENT_PHASE` | **EVIDENCE exited** (`ADR-0129`, owner-ratified 2026-11-19, evaluated `main` `ad4d5f7`). No further phase is entered: INTERPRETATION or any other phase needs a separate decision under `Q8_CLOSURE_MATRIX.md`. |
+| `CURRENT_MILESTONE` | **EVIDENCE milestone CLOSED.** WP-E1 to WP-E6 closed; findings F1, F2 and L1 closed; `reports/EVIDENCE_PHASE_EXIT_RECORD.md` 0.3.0 accepted. L2 and the stated qualifications carry forward as limitations. |
+| `CURRENT_AUTHORIZED_TASK` | None. No phase implementation is authorized. |
+| `TASK_OWNER` | USER (the next phase decision, if any). |
+| `STATUS` | EVIDENCE exited. `EVIDENCE_FOUNDATIONS_V1` passes gates A to U. Certified calculations are unchanged since EVIDENCE entry. Limitations carried: L2, the qualifications X1, X2, X3 and I4, every certification non-claim, the three `TRANSIT_V1` overclaims, and prediction issuance without a roadmap placement. The product contract's canonical text is `specs/PROJECT_CHARTER.md` v1.4.0 (owner-ratified, `ADR-0117` and its addendum); the product-objective definition is CLOSED (`ADR-0118` s2). Neither is restated here. |
+| `LAST_COMPLETED_ACTION` | Recorded the owner's EVIDENCE exit ratification (`ADR-0129`), marked the exit record accepted, and closed the EVIDENCE milestone; PR #60 is merged on the owner's authorization. |
+| `LAST_COMMIT` (main) | `ad4d5f7383ba2a0c4f53464132198831b77be72a` (PR #63 merge, the L1 correction; parents `f24771f` and `584fcb0`). |
+| `LAST_COMMIT` (evidence-phase-exit-checklist) | This branch's commits, with `main` `ad4d5f7383ba2a0c4f53464132198831b77be72a` merged in. |
+| `LAST_CI_RUN` | `44498742069` at `ad4d5f7`: push to `main`, success on all four jobs on `ubuntu-24.04`. This branch's results are on its review PR. |
+| `LAST_CEO_DECISION` | PASS at the final EVIDENCE exit audit of PR #60 at `2693488`, as the owner states (`ADR-0129` s1). |
+| `NEXT_AUTHORIZED_ACTION` | None. Entry into INTERPRETATION or any other phase needs a separate owner decision under `Q8_CLOSURE_MATRIX.md`. Before any prediction implementation, an owner-approved roadmap placement. The retirement of `SUPPORT_PATHS_V1` gates H and I needs separate approval. |
+| `WAITING_FOR` | USER: a decision on the next phase, if any. |
+| `BLOCKER` | None. |
+| `CEO_APPROVAL_REQUIRED` | Entry into any next phase. |
 | `CLAUDE_ACTION_REQUIRED` | None until directed. Every relevant specification, milestone and review carries the Charter-compliance statement. |
-| `CHATGPT_ACTION_REQUIRED` | Review of the L1 correction PR. |
-| `USER_ACTION_REQUIRED` | Merge authorization for the L1 correction, after the CEO PASS; a roadmap placement for prediction issuance before its implementation; a separate authorization for the bounded retirement of `SUPPORT_PATHS_V1` gates H and I. |
+| `CHATGPT_ACTION_REQUIRED` | None until a next-phase proposal exists. |
+| `USER_ACTION_REQUIRED` | A decision on the next phase, if any; a roadmap placement for prediction issuance before its implementation; a separate authorization for the bounded retirement of `SUPPORT_PATHS_V1` gates H and I. |
 | `HANDOFF_REQUIRED` | None beyond this file and the latest entry in `reports/AI_HANDOFF_CURRENT.md`. |
 
 ## How to independently verify every field above
@@ -79,9 +79,13 @@ exactly as `reports/AI_HANDOFF_CURRENT.md` already requires of itself.
 
 | Version | Date | Change |
 |---|---|---|
+| 7.61.0 | 2026-11-19 | **`ADR-0129`: EVIDENCE phase exit ratified by the owner.** The exit record is accepted as evidence within its stated scope. |
+| 7.60.0 | 2026-11-19 | **PR #63 merged; EVIDENCE phase-exit record refreshed at `ad4d5f7`** (`ADR-0128`; no open finding; L2 accepted by the CEO). |
 | 7.59.0 | 2026-11-19 | **L1 correction: historical rule reads match the governed allocation history and publications; gate U added** (`ADR-0127`). |
+| 7.58.0 | 2026-11-18 | **PR #62 merged; EVIDENCE phase-exit record refreshed at `f24771f`** (`ADR-0126`; no open finding, two stated residual limits). |
 | 7.57.0 | 2026-11-18 | **PR #61 merged; F2 correction: persisted relationships are returned only if their source evidence supports them; gate T added** (`ADR-0125`). |
 | 7.56.0 | 2026-11-18 | **F1 correction: every evidence read enforces the registered-rule and graph-integrity requirements; gate S added** (`ADR-0124`). |
+| 7.55.0 | 2026-11-18 | **WP-E6 CLOSED; EVIDENCE phase-exit evidence and checklist submitted for CEO review** (`ADR-0123`; one open finding, F1). |
 | 7.54.0 | 2026-11-18 | **PR #59 HOLD correction: graph reads refuse unaccounted-for rows; Gate Q 41 to 71 refusals; Gate R 9 to 16 controls.** |
 | 7.53.0 | 2026-11-17 | **`ADR-0122` s4 to s6 ratified; WP-E6 implemented and on review** (gates P, Q and R). |
 | 7.52.0 | 2026-11-17 | **WP-E5 CLOSED; WP-E6 (provenance-graph recording) criteria proposed** (`ADR-0122`). |
