@@ -3,8 +3,8 @@ Document status header - keep current on every edit.
 -->
 | Field | Value |
 |---|---|
-| Status | **PROPOSED, for the final independent CEO exit checkpoint.** This record presents evidence and declares nothing. EVIDENCE exit is **not** declared. |
-| Version | 0.3.0 |
+| Status | **ACCEPTED by the owner as evidence within its stated scope (`ADR-0129`).** This record declares nothing: `ADR-0129` records the exit decision. |
+| Version | 0.4.0 |
 | Owner | Project Owner (`ADR-0051` D4; `ADR-0107` Q-C) |
 | Last updated | 2026-11-19 |
 | Review cadence | Regenerate at the exact `main` SHA of any exit decision |

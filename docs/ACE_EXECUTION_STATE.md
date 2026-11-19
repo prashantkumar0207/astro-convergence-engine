@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | **ACCEPTED (`ADR-0062`) - canonical, machine-checkable current-state record.** Regenerate/refresh on every meaningful implementation task, same discipline as `reports/AI_HANDOFF_CURRENT.md`. |
-| Version | 7.60.0 |
+| Version | 7.61.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-19 (**PR #63 merged (`ad4d5f7`); L1 closed. EVIDENCE phase-exit record 0.3.0 on PR #60 for the final CEO exit audit. EVIDENCE exit not declared. Not merged.**) |
+| Last updated | 2026-11-19 (**EVIDENCE phase exited, owner-ratified (`ADR-0129`), at evaluated `main` `ad4d5f7`. No further phase entered.**) |
 | Review cadence | Refresh at the start of a session if stale; not load-bearing if it isn't. |
 
 # ACE execution state
@@ -42,23 +42,23 @@ independently is in these fields plus the pointers they name.
 
 | Field | Value |
 |---|---|
-| `CURRENT_PHASE` | **EVIDENCE entered** (`ADR-0114`, owner-authorized 2026-11-07, from `main` `90cd0ca`). JATAKA exited (`ADR-0110`). Mandatory CEO checkpoints remain: the evidence model (H4), and phase exit. |
-| `CURRENT_MILESTONE` | **EVIDENCE phase-exit record 0.3.0 on PR #60, refreshed at `ad4d5f7` for the final independent CEO exit audit.** WP-E1 to WP-E6 CLOSED; F1, F2 and L1 closed; L2 accepted by the CEO. EVIDENCE exit is not declared. |
-| `CURRENT_AUTHORIZED_TASK` | None self-executable beyond PR #60's final exit audit. Its merge and the EVIDENCE exit decision need separate approval. |
-| `TASK_OWNER` | CHATGPT (the final EVIDENCE exit audit); USER (the exit decision and PR #60's merge). |
-| `STATUS` | Phase-exit record on review, not merged. Documentation only. Of its 33 rows, 28 are met, 4 are met with a stated qualification, 1 is pending (the exit approval) and none carries an open finding. The only residual limit is L2, accepted by the CEO. EVIDENCE exit is not declared. The product contract's canonical text is `specs/PROJECT_CHARTER.md` v1.4.0 (owner-ratified, `ADR-0117` and its addendum); the product-objective definition is CLOSED (`ADR-0118` s2). Neither is restated here. |
-| `LAST_COMPLETED_ACTION` | Merged PR #63 and closed limit L1 (`ADR-0128` s2); regenerated all evidence at `ad4d5f7`; refreshed the phase-exit record against the accepted Q8 s6 and s14 requirements. |
+| `CURRENT_PHASE` | **EVIDENCE exited** (`ADR-0129`, owner-ratified 2026-11-19, evaluated `main` `ad4d5f7`). No further phase is entered: INTERPRETATION or any other phase needs a separate decision under `Q8_CLOSURE_MATRIX.md`. |
+| `CURRENT_MILESTONE` | **EVIDENCE milestone CLOSED.** WP-E1 to WP-E6 closed; findings F1, F2 and L1 closed; `reports/EVIDENCE_PHASE_EXIT_RECORD.md` 0.3.0 accepted. L2 and the stated qualifications carry forward as limitations. |
+| `CURRENT_AUTHORIZED_TASK` | None. No phase implementation is authorized. |
+| `TASK_OWNER` | USER (the next phase decision, if any). |
+| `STATUS` | EVIDENCE exited. `EVIDENCE_FOUNDATIONS_V1` passes gates A to U. Certified calculations are unchanged since EVIDENCE entry. Limitations carried: L2, the qualifications X1, X2, X3 and I4, every certification non-claim, the three `TRANSIT_V1` overclaims, and prediction issuance without a roadmap placement. The product contract's canonical text is `specs/PROJECT_CHARTER.md` v1.4.0 (owner-ratified, `ADR-0117` and its addendum); the product-objective definition is CLOSED (`ADR-0118` s2). Neither is restated here. |
+| `LAST_COMPLETED_ACTION` | Recorded the owner's EVIDENCE exit ratification (`ADR-0129`), marked the exit record accepted, and closed the EVIDENCE milestone; PR #60 is merged on the owner's authorization. |
 | `LAST_COMMIT` (main) | `ad4d5f7383ba2a0c4f53464132198831b77be72a` (PR #63 merge, the L1 correction; parents `f24771f` and `584fcb0`). |
 | `LAST_COMMIT` (evidence-phase-exit-checklist) | This branch's commits, with `main` `ad4d5f7383ba2a0c4f53464132198831b77be72a` merged in. |
 | `LAST_CI_RUN` | `44498742069` at `ad4d5f7`: push to `main`, success on all four jobs on `ubuntu-24.04`. This branch's results are on its review PR. |
-| `LAST_CEO_DECISION` | PASS on PR #63 at `584fcb0`, as the owner states (`ADR-0128` s1). |
-| `NEXT_AUTHORIZED_ACTION` | None self-executable. The CEO performs the final EVIDENCE exit audit on PR #60. The exit decision and PR #60's merge need the owner's separate approval. Before any prediction implementation, an owner-approved roadmap placement. The retirement of `SUPPORT_PATHS_V1` gates H and I needs separate approval. |
-| `WAITING_FOR` | CHATGPT: the final EVIDENCE exit audit on PR #60. USER: the exit decision and PR #60's merge approval. |
-| `BLOCKER` | None demonstrated. EVIDENCE exit needs the CEO's exit approval and the owner's decision. |
-| `CEO_APPROVAL_REQUIRED` | The EVIDENCE phase exit. |
+| `LAST_CEO_DECISION` | PASS at the final EVIDENCE exit audit of PR #60 at `2693488`, as the owner states (`ADR-0129` s1). |
+| `NEXT_AUTHORIZED_ACTION` | None. Entry into INTERPRETATION or any other phase needs a separate owner decision under `Q8_CLOSURE_MATRIX.md`. Before any prediction implementation, an owner-approved roadmap placement. The retirement of `SUPPORT_PATHS_V1` gates H and I needs separate approval. |
+| `WAITING_FOR` | USER: a decision on the next phase, if any. |
+| `BLOCKER` | None. |
+| `CEO_APPROVAL_REQUIRED` | Entry into any next phase. |
 | `CLAUDE_ACTION_REQUIRED` | None until directed. Every relevant specification, milestone and review carries the Charter-compliance statement. |
-| `CHATGPT_ACTION_REQUIRED` | The final EVIDENCE exit audit on PR #60. |
-| `USER_ACTION_REQUIRED` | The EVIDENCE exit decision and PR #60's merge approval, after the CEO's audit; a roadmap placement for prediction issuance before its implementation; a separate authorization for the bounded retirement of `SUPPORT_PATHS_V1` gates H and I. |
+| `CHATGPT_ACTION_REQUIRED` | None until a next-phase proposal exists. |
+| `USER_ACTION_REQUIRED` | A decision on the next phase, if any; a roadmap placement for prediction issuance before its implementation; a separate authorization for the bounded retirement of `SUPPORT_PATHS_V1` gates H and I. |
 | `HANDOFF_REQUIRED` | None beyond this file and the latest entry in `reports/AI_HANDOFF_CURRENT.md`. |
 
 ## How to independently verify every field above
@@ -79,6 +79,7 @@ exactly as `reports/AI_HANDOFF_CURRENT.md` already requires of itself.
 
 | Version | Date | Change |
 |---|---|---|
+| 7.61.0 | 2026-11-19 | **`ADR-0129`: EVIDENCE phase exit ratified by the owner.** The exit record is accepted as evidence within its stated scope. |
 | 7.60.0 | 2026-11-19 | **PR #63 merged; EVIDENCE phase-exit record refreshed at `ad4d5f7`** (`ADR-0128`; no open finding; L2 accepted by the CEO). |
 | 7.59.0 | 2026-11-19 | **L1 correction: historical rule reads match the governed allocation history and publications; gate U added** (`ADR-0127`). |
 | 7.58.0 | 2026-11-18 | **PR #62 merged; EVIDENCE phase-exit record refreshed at `f24771f`** (`ADR-0126`; no open finding, two stated residual limits). |

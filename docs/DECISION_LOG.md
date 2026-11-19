@@ -13029,6 +13029,72 @@ residual limit is L2, which the CEO accepted as a documented external-tampering 
 
 ---
 
+## ADR-0129 - EVIDENCE phase exit ratified by the owner, at evaluated `main` `ad4d5f7`; no further phase entered
+
+- **Date:** 2026-11-19
+- **Status:** **ACCEPTED, on the owner's ratifying instruction quoted in s1.** It records the owner's decision, and adds none of its own.
+- **Context:** `docs/Q8_CLOSURE_MATRIX.md` s6 (`ADR-0048`) sets EVIDENCE's exit criteria and requires CEO approval at exit.
+  `reports/EVIDENCE_PHASE_EXIT_RECORD.md` 0.3.0 tested the phase at `main` `ad4d5f7383ba2a0c4f53464132198831b77be72a` against s6 and s14 and added no criterion
+  (`ADR-0128` s3). The owner states that the independent CEO's final exit audit came first and passed. Its text is not a repository file.
+
+### 1. The owner's instruction (exact text)
+
+```text
+## ACE — EVIDENCE Exit: CEO PASS
+
+The independent CEO has completed the final audit of PR #60 at `26934881b6bfe1b86b019b2c4ecf1bb0b9592216`, against verified `main` `ad4d5f7383ba2a0c4f53464132198831b77be72a`.
+
+**CEO verdict: PASS.** All accepted Q8 EVIDENCE exit criteria are satisfied. L2 and the documented qualifications remain explicit limitations, not blockers.
+
+**I, as owner, ratify EVIDENCE phase exit and authorize the narrowly scoped completion-record updates and PR #60 merge.**
+
+1. Record the owner's EVIDENCE exit ratification in the canonical Git decision record and mark the exit record accepted.
+2. Preserve the accepted criteria, qualifications, limitations, certification results and non-claims unchanged.
+3. Reverify the final PR diff and required CI. Merge PR #60 without force-pushing.
+4. Verify the resulting `main` SHA and post-merge CI.
+5. Close the EVIDENCE milestone in the canonical execution state and report the final evidence.
+6. Do not begin INTERPRETATION, prediction issuance, or other phase implementation without separate authorization.
+
+Return only the exact merge SHA, final CI results, certification status, remaining limitations and next approval required.
+```
+
+Per `docs/PROJECT_CONSTITUTION.md` s11, that instruction is the ratifying act.
+
+### 2. What is decided
+
+1. **The EVIDENCE phase is complete and exited.** The evaluated `main` is `ad4d5f7383ba2a0c4f53464132198831b77be72a`.
+2. **Every accepted Q8 s6 exit criterion is satisfied,** as the CEO's final audit found.
+3. **`reports/EVIDENCE_PHASE_EXIT_RECORD.md` 0.3.0** is accepted as evidence within its stated scope. Only its status header changes.
+
+### 3. What stays as recorded
+
+None of these is closed or weakened by this entry.
+
+- **L2:** a complete forgery, identical to what `persist()` would write, is not detectable inside the store. It is a documented external-tampering
+  limitation (`ADR-0127` s1).
+- **The stated qualifications:** X1, X2, X3 and I4 in the record's s4, and its s6 and s7.
+- **Certification non-claims:** every non-claim in `EVIDENCE_FOUNDATIONS_V1` and the other artifacts.
+- **Carried items:** the three `TRANSIT_V1` scope overclaims; prediction issuance without a roadmap placement (`ADR-0117` addendum); the
+  retirement of `SUPPORT_PATHS_V1` gates H and I; and `docs/EVIDENCE_INDEPENDENCE_DESIGN.md`, which stays `PROPOSED` except for its s3 recording
+  schema (`ADR-0122` D1).
+
+### 4. What this entry does not do
+
+- **It enters no phase.** INTERPRETATION, or any other phase, needs a separate decision under the phase matrix. `Q8_CLOSURE_MATRIX.md` s7 lists
+  INTERPRETATION's prerequisites beyond EVIDENCE exit: the rule registry populated with at least one school's rules, each source-cited.
+- **It changes no engineering artifact:** no production code, certification artifact, calculation, holdout, threshold or gate.
+- **It begins no prediction issuance.**
+- **It edits no earlier entry**, and does not amend `Q8_CLOSURE_MATRIX.md`.
+- **It does not declare anything "Locked"** in `PROJECT_CONSTITUTION.md` s12's sense.
+
+- **Decision:** as s2 states.
+- **Consequences:** EVIDENCE is closed as a phase. Its limitations carry forward as recorded in s3, so a future claim relying on them still needs
+  its own evidence.
+- **Evidence:** `main` `ad4d5f7383ba2a0c4f53464132198831b77be72a`, post-merge CI `44498742069` (four jobs passed); PR #60 at
+  `26934881b6bfe1b86b019b2c4ecf1bb0b9592216`, CI `44506175094` (four jobs passed). The owner's instruction exists as session input, not as a repository file.
+
+---
+
 ## ADR template (copy, do not edit above the line)
 
 ## ADR-XXXX - <title>

@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.60.0 |
+| Version | 9.61.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-19 (PR #63 merged (`ad4d5f7`); L1 closed. EVIDENCE phase-exit record 0.3.0 on PR #60 for the final CEO exit audit. Exit not declared.) |
+| Last updated | 2026-11-19 (EVIDENCE phase exited, owner-ratified (`ADR-0129`). No further phase entered.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,14 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-19 - EVIDENCE phase exit ratified (`ADR-0129`)
+
+- **Owner's ratification,** after the CEO's final exit audit of PR #60 at `2693488` (PASS, as the owner states): EVIDENCE is exited,
+  evaluated at `main` `ad4d5f7`. `reports/EVIDENCE_PHASE_EXIT_RECORD.md` 0.3.0 is accepted; only its status header changed.
+- **Carried limitations:** L2; the qualifications X1, X2, X3 and I4; every certification non-claim; the three `TRANSIT_V1` overclaims;
+  prediction issuance without a roadmap placement; the retirement of `SUPPORT_PATHS_V1` gates H and I.
+- **Not done:** no phase entered, no prediction issuance, no engineering change.
 
 ### 2026-11-19 - PR #63 merged; EVIDENCE phase-exit record refreshed (`ADR-0128`)
 
