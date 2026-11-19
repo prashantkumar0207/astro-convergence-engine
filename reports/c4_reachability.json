@@ -6,12 +6,17 @@
   ]
  },
  "exit_clause_2": {
-  "coverage_established": true,
+  "coverage_established": false,
   "dead_path_uncovered": [],
-  "live_path_uncovered": [],
+  "live_path_uncovered": [
+   "engine.evidence.explanation_boundary.admit",
+   "engine.evidence.explanation_boundary.parse",
+   "engine.evidence.explanation_boundary.render",
+   "engine.evidence.explanation_boundary.render_segment"
+  ],
   "material_unknown": [],
-  "no_confirmed_violations": true,
-  "satisfied": true,
+  "no_confirmed_violations": false,
+  "satisfied": false,
   "unknown_not_established_either_way": []
  },
  "rows": {
@@ -1214,9 +1219,10 @@
    "status": "NOT_IN_USE"
   },
   "engine.evidence.evidence_identifiers.RuleId.from_number": {
-   "caller_count": 1,
+   "caller_count": 2,
    "callers": [
-    "engine.evidence.rule_registry.rule_from_record"
+    "engine.evidence.rule_registry.rule_from_record",
+    "engine.evidence.rule_registry.verification_from_record"
    ],
    "covered": true,
    "file": "engine/evidence/evidence_identifiers.py",
@@ -1306,7 +1312,7 @@
    "status": "IN_USE_COVERED"
   },
   "engine.evidence.evidence_store.EvidenceStore.load": {
-   "caller_count": 6,
+   "caller_count": 7,
    "callers": [
     "engine.evidence.evidence_store.EvidenceStore._ancestry",
     "engine.evidence.evidence_store.EvidenceStore._check",
@@ -1458,6 +1464,50 @@
    ],
    "file": "engine/evidence/evidence_store.py",
    "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.explanation_boundary.admit": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.explanation_boundary.render"
+   ],
+   "covered": false,
+   "exported_by": [
+    "engine/evidence/explanation_boundary.py:__all__"
+   ],
+   "file": "engine/evidence/explanation_boundary.py",
+   "status": "IN_USE_UNCOVERED"
+  },
+  "engine.evidence.explanation_boundary.parse": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.explanation_boundary.render"
+   ],
+   "covered": false,
+   "exported_by": [
+    "engine/evidence/explanation_boundary.py:__all__"
+   ],
+   "file": "engine/evidence/explanation_boundary.py",
+   "status": "IN_USE_UNCOVERED"
+  },
+  "engine.evidence.explanation_boundary.render": {
+   "covered": false,
+   "exported_by": [
+    "engine/evidence/explanation_boundary.py:__all__"
+   ],
+   "file": "engine/evidence/explanation_boundary.py",
+   "status": "IN_USE_UNCOVERED"
+  },
+  "engine.evidence.explanation_boundary.render_segment": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.explanation_boundary.render"
+   ],
+   "covered": false,
+   "exported_by": [
+    "engine/evidence/explanation_boundary.py:__all__"
+   ],
+   "file": "engine/evidence/explanation_boundary.py",
+   "status": "IN_USE_UNCOVERED"
   },
   "engine.evidence.identifiers.EntityId.from_number": {
    "caller_count": 1,
@@ -1857,8 +1907,9 @@
    "status": "NOT_IN_USE"
   },
   "engine.evidence.rule_registry.RuleRegistry.lookup": {
-   "caller_count": 2,
+   "caller_count": 3,
    "callers": [
+    "engine.evidence.explanation_boundary._published",
     "engine.evidence.rule_registry.RuleRegistry.rule_version",
     "scripts.check_evidence_identifiers.check_store"
    ],
@@ -1882,8 +1933,18 @@
    "file": "engine/evidence/rule_registry.py",
    "status": "NOT_IN_USE"
   },
+  "engine.evidence.rule_registry.RuleRegistry.sources": {
+   "covered": false,
+   "file": "engine/evidence/rule_registry.py",
+   "status": "NOT_IN_USE"
+  },
   "engine.evidence.rule_registry.RuleRegistry.variants": {
    "covered": true,
+   "file": "engine/evidence/rule_registry.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.evidence.rule_registry.RuleRegistry.verifications": {
+   "covered": false,
    "file": "engine/evidence/rule_registry.py",
    "status": "NOT_IN_USE"
   },
@@ -1975,6 +2036,42 @@
    "callers": [
     "engine.evidence.rule_registry.load_registry",
     "scripts.author_rule_registry.publish"
+   ],
+   "covered": true,
+   "exported_by": [
+    "engine/evidence/rule_registry.py:__all__"
+   ],
+   "file": "engine/evidence/rule_registry.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.rule_registry.source_from_record": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.rule_registry.load_registry"
+   ],
+   "covered": true,
+   "exported_by": [
+    "engine/evidence/rule_registry.py:__all__"
+   ],
+   "file": "engine/evidence/rule_registry.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.rule_registry.statement_digest": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.rule_registry._require_verified"
+   ],
+   "covered": true,
+   "exported_by": [
+    "engine/evidence/rule_registry.py:__all__"
+   ],
+   "file": "engine/evidence/rule_registry.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.rule_registry.verification_from_record": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.rule_registry.load_registry"
    ],
    "covered": true,
    "exported_by": [
@@ -2653,8 +2750,9 @@
  },
  "schema": "ace-c4-reachability-v1",
  "summary": {
-  "IN_USE_COVERED": 188,
-  "NOT_IN_USE": 143
+  "IN_USE_COVERED": 191,
+  "IN_USE_UNCOVERED": 4,
+  "NOT_IN_USE": 145
  },
  "universe_exclusions": {
   "engine.main.": "API route handlers: callers and exports, not capabilities",
