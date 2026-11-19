@@ -1223,8 +1223,9 @@
    "status": "IN_USE_COVERED"
   },
   "engine.evidence.evidence_identifiers.RuleId.number": {
-   "caller_count": 2,
+   "caller_count": 3,
    "callers": [
+    "engine.evidence.evidence_store.EvidenceStore._require_issued",
     "engine.evidence.rule_registry.content_record",
     "engine.evidence.rule_registry.load_registry"
    ],
@@ -1445,9 +1446,10 @@
    "status": "IN_USE_COVERED"
   },
   "engine.evidence.evidence_store.rule_to_record": {
-   "caller_count": 2,
+   "caller_count": 3,
    "callers": [
     "engine.evidence.evidence_store.EvidenceStore._require_published",
+    "engine.evidence.evidence_store.EvidenceStore._require_unchanged_publication",
     "engine.evidence.evidence_store.EvidenceStore.register_rule"
    ],
    "covered": true,
@@ -1865,9 +1867,10 @@
    "status": "IN_USE_COVERED"
   },
   "engine.evidence.rule_registry.RuleRegistry.rule_version": {
-   "caller_count": 2,
+   "caller_count": 3,
    "callers": [
     "engine.evidence.evidence_store.EvidenceStore._require_published",
+    "engine.evidence.evidence_store.EvidenceStore._require_unchanged_publication",
     "engine.evidence.evidence_store.EvidenceStore.register_rule"
    ],
    "covered": true,
@@ -1955,8 +1958,9 @@
    "status": "IN_USE_COVERED"
   },
   "engine.evidence.rule_registry.read_history": {
-   "caller_count": 1,
+   "caller_count": 2,
    "callers": [
+    "engine.evidence.evidence_store.EvidenceStore._admitted_rule",
     "engine.evidence.rule_registry.load_registry"
    ],
    "covered": true,

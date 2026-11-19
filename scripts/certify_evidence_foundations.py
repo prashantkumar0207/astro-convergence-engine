@@ -1,5 +1,5 @@
 """EVIDENCE_FOUNDATIONS_V1 CERTIFICATION RUNNER (ADR-0115 s4; ADR-0116 s4; ADR-0119 s3; ADR-0120 s4; ADR-0121;
-ADR-0122 s6; ADR-0124; ADR-0125).
+ADR-0122 s6; ADR-0124; ADR-0125; ADR-0127).
 
 Regenerates certification/EVIDENCE_FOUNDATIONS_V1_certification.json FROM SCRATCH on every run;
 the stored JSON is never accepted as proof.
@@ -48,6 +48,8 @@ Gates:
      those under an earlier snapshot included, stay readable; each real check, weakened, admits the forgery.
   T  relationship integrity: a persisted relationship is returned only if classifying the same immutable items gives
      exactly its dependency, conflict flag and basis; each real check, weakened, admits the forgery.
+  U  historical rule integrity: a rule version recorded under an earlier snapshot is read only as an issued RUL,
+     under its school, and a version still published unchanged; genuine history stays readable.
 
 Exit 0 = PASS, 3 = FAIL.
 """
@@ -96,7 +98,7 @@ from engine.evidence.ledger import (  # noqa: E402
 from engine.evidence.evidence import (  # noqa: E402
     CONFIDENCE_COMPONENTS, LATER_PHASE_COMPONENTS, CalculatedInput, ChartContext, ChartReference, Confidence,
     DependencyClass, Domain, EvidenceItem, EvidenceModelError, Lineage, Performance, Polarity, ProducingSystem,
-    Relationship, RuleReference, RuleSpec, Supplied, TimingContext, TimingKind, provenance_differences,
+    Relationship, RuleReference, RuleSpec, RuleVersion, Supplied, TimingContext, TimingKind, provenance_differences,
 )
 from engine.evidence import provenance_graph  # noqa: E402
 from engine.evidence import rule_registry  # noqa: E402
@@ -2680,6 +2682,147 @@ def gate_t_relationship_integrity():
             "refused": sorted(refused), "preserved": sorted(preserved), "controls": sorted(controls)}
 
 
+# ------------------------------------------------------------------ historical rule integrity (ADR-0127, limit L1)
+
+EARLIER_SNAPSHOT = "f" * 64
+
+
+def _earlier(rule: RuleVersion, **spec) -> RuleVersion:
+    """A rule version as recorded under an earlier snapshot, with any planted change."""
+
+    return dataclasses.replace(rule, spec=dataclasses.replace(rule.spec, **{"knowledge_snapshot_hash": EARLIER_SNAPSHOT,
+                                                                          **spec}))
+
+
+def _plant_historical(forgery: _Forgery, rule: RuleVersion, system=ProducingSystem.PARASHARI):
+    forgery.store._db.execute("INSERT INTO registered_rule_versions (rule_id, version, variant, payload) VALUES "
+                              "(?, ?, ?, ?)", (rule.rule.value, rule.version, rule.spec.variant,
+                                               json.dumps(rule_to_record(rule))))
+    item = forgery.world.item(system, rule=RuleReference(rule=rule.rule, version=rule.version, variant=rule.spec.variant),
+                              declared_strength=rule.spec.declared_strength)
+    forgery.row(item)
+    forgery.graph(item, rule)
+    return item
+
+
+def _published(key: str, version: int, variant: str) -> RuleVersion:
+    registry = rule_registry.pinned()
+    return registry.rule_version(registry.by_key(key), version, variant)
+
+
+HISTORICAL_FORGERIES = (
+    ("a RUL never issued", lambda forgery: _plant_historical(forgery, dataclasses.replace(
+        _earlier(_published(PARASHARI_KEY, 2, "base")), rule=forgery.unissued)), "never issued"),
+    ("a school the allocation history contradicts", lambda forgery: _plant_historical(
+        forgery, _earlier(_published(VARIANTS_KEY, 1, "reading-a"), school=ProducingSystem.KP), ProducingSystem.KP),
+     "by the allocation history"),
+    ("a version never published", lambda forgery: _plant_historical(forgery, dataclasses.replace(
+        _earlier(_published(PARASHARI_KEY, 2, "base")), version=99)), "never withdrawn"),
+    ("a variant never published", lambda forgery: _plant_historical(
+        forgery, _earlier(_published(PARASHARI_KEY, 1, "base"), variant="forged")), "never withdrawn"),
+    ("rewritten content", lambda forgery: _plant_historical(
+        forgery, _earlier(_published(PARASHARI_KEY, 2, "base"), content_hash="e" * 64)),
+     "contradicts its immutable publication"),
+    ("a rewritten declared strength", lambda forgery: _plant_historical(
+        forgery, _earlier(_published(VARIANTS_KEY, 1, "reading-b"), declared_strength="planted")),
+     "contradicts its immutable publication"),
+)
+
+
+def gate_u_historical_rule_integrity():
+    """A rule version recorded under an earlier snapshot is read only as what the governed records prove: an RUL the
+    allocation history issued, under its school, and a version still published unchanged, because a published version is
+    never withdrawn or rewritten. Genuine history stays readable without the current snapshot hash. Each real check is
+    then weakened in turn (ADR-0127; H4 s4; ADR-0121; ADR-0120 AC2)."""
+
+    refused, controls, preserved = {}, {}, {}
+
+    def refuses(label, action, reason=""):
+        try:
+            action()
+        except StoreError as exc:
+            if reason not in str(exc):
+                fail(f"{label} was refused for another reason: {exc}")
+            refused[label] = True
+            return
+        fail(f"not refused: {label}")
+
+    for label, plant, reason in HISTORICAL_FORGERIES:
+        with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as folder:
+            setting = _GraphWorld(Path(folder) / "evidence.sqlite")
+            store: EvidenceStore = setting.store
+            forgery = _Forgery(setting)
+            good = forgery.good
+            plant(forgery)
+            refuses(f"load of {label}", lambda: store.load(FORGED_ID), reason)
+            for read, action in (("evidence_ids", lambda: store.evidence_ids()),
+                                 ("join", lambda: store.join((good, FORGED_ID))),
+                                 ("counts", lambda: store.counts()),
+                                 ("classify", lambda: store.classify(good, FORGED_ID)),
+                                 ("relate", lambda: store.relate(good, FORGED_ID)),
+                                 ("item_graph", lambda: store.item_graph(FORGED_ID)),
+                                 ("reproduce", lambda: store.reproduce(FORGED_ID)),
+                                 ("recorded_graph", lambda: store.recorded_graph())):
+                refuses(f"{read} with {label}", action, reason)
+            if store.load(good) != setting.world.item():
+                fail(f"{label} took a legitimate item down with it")
+            preserved[f"a legitimate item beside {label}"] = True
+            store.close()
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as folder:
+        setting = _GraphWorld(Path(folder) / "evidence.sqlite")
+        store: EvidenceStore = setting.store
+        forgery = _Forgery(setting)
+        item = _plant_historical(forgery, _earlier(_published(PARASHARI_KEY, 2, "base")))
+        if store.load(FORGED_ID) != item or FORGED_ID not in store.evidence_ids() or \
+                store.reproduce(FORGED_ID) != provenance_graph.recorded_fields(item) or \
+                len(store.join((forgery.good, FORGED_ID))) != 2 or not store.recorded_graph().nodes:
+            fail("a genuinely issued version recorded under an earlier snapshot was not readable")
+        preserved["a genuinely issued version recorded under an earlier snapshot"] = True
+
+        def too_strict(entry):
+            rule = store.rule_version(entry.rule)
+            if rule.spec.knowledge_snapshot_hash != rule_registry.pinned().snapshot_sha256:
+                raise StoreError("another snapshot")
+            return rule
+
+        store._admitted_rule = too_strict
+        refuses("a planted check demanding the current snapshot, on genuine history", lambda: store.load(FORGED_ID),
+                "another snapshot")
+        del store._admitted_rule
+        controls["a check demanding the current snapshot rejected: it refuses genuine history"] = True
+        store.close()
+    # Each real check does the refusing: weakened, the same read accepts the forgery, or another check takes over.
+    for label, index, weakened, outcome in (
+            ("the publication check", 2, {"_require_unchanged_publication": lambda rule, registry: None}, "admitted"),
+            ("the publication check, on rewritten content", 4,
+             {"_require_unchanged_publication": lambda rule, registry: None}, "admitted"),
+            ("both the history and publication checks", 0, {"_require_issued": lambda rule, issued: None,
+                                                            "_require_unchanged_publication": lambda rule, registry: None},
+             "admitted"),
+            ("the history check alone", 0, {"_require_issued": lambda rule, issued: None}, "never withdrawn")):
+        with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as folder:
+            setting = _GraphWorld(Path(folder) / "evidence.sqlite")
+            store: EvidenceStore = setting.store
+            forgery = _Forgery(setting)
+            _name, plant, reason = HISTORICAL_FORGERIES[index]
+            plant(forgery)
+            refuses(f"the real read, before weakening {label}", lambda: store.load(FORGED_ID), reason)
+            for check, weak in weakened.items():
+                store.__setattr__(check, weak)
+            if outcome == "admitted":
+                if store.load(FORGED_ID) is None:
+                    fail(f"weakening {label} did not change the read")
+                controls[f"{label}, weakened, admits the forgery on the real read path"] = True
+            else:
+                refuses(f"the read with {label} weakened", lambda: store.load(FORGED_ID), outcome)
+                controls[f"{label}, weakened, leaves the publication check refusing: the checks are layered"] = True
+            store.close()
+    return {"classification": "negative_control", "forgeries": len(HISTORICAL_FORGERIES),
+            "refusals_verified": len(refused), "legitimate_reads_preserved": len(preserved),
+            "controls_rejected": len(controls), "refused": sorted(refused), "preserved": sorted(preserved),
+            "controls": sorted(controls)}
+
+
 def main():
     tee = support.start_transcript()
     preconditions = support.preflight()
@@ -2704,10 +2847,11 @@ def main():
         "R_graph_agreement": gate_r_graph_agreement(),
         "S_evidence_read_integrity": gate_s_evidence_read_integrity(),
         "T_relationship_integrity": gate_t_relationship_integrity(),
+        "U_historical_rule_integrity": gate_u_historical_rule_integrity(),
     }
     report = {
         "schema": "evidence_foundations_v1_certification",
-        "adr": "ADR-0115 s4; ADR-0116 s4; ADR-0119 s3, s5; ADR-0120 s4, s6; ADR-0121; ADR-0122 s4, s6; ADR-0124; ADR-0125",
+        "adr": "ADR-0115 s4; ADR-0116 s4; ADR-0119 s3, s5; ADR-0120 s4, s6; ADR-0121; ADR-0122 s4, s6; ADR-0124; ADR-0125; ADR-0127",
         "date": str(date.today()),
         "scope": ("Structural certification of the EVIDENCE foundations: the H0 entity model, append-only entity store "
                   "and ENT issuer (ADR-0114 WP-E1), and the H1 event model, append-only event store, separate "
