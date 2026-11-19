@@ -12977,6 +12977,58 @@ U carries the regressions and negative controls. L2 stays a documented external-
 
 ---
 
+## ADR-0128 - PR #63 merged and limit L1 closed; the EVIDENCE phase-exit record refreshed at `ad4d5f7` for the final CEO exit audit; EVIDENCE exit not declared
+
+- **Date:** 2026-11-19
+- **Status:** **ACCEPTED as to s2, on the owner's instruction quoted in s1.** s3 records the refreshed submission and decides nothing.
+- **Context:** `ADR-0127` authorized the L1 correction and required PR #60 to be refreshed after its verified merge.
+
+### 1. The owner's instruction (exact text)
+
+```text
+## ACE — CEO PASS and Owner Merge Authorization
+
+The independent CEO audit has issued **PASS** for PR #63 at exact SHA `584fcb097c8ad8c746f9d24873cfd7d029586de4`.
+
+**I authorize merging PR #63**, subject to these conditions:
+
+1. Reverify PR HEAD, base SHA, mergeability and all required CI checks. Stop if the reviewed code has changed.
+2. Merge PR #63 into `main` without force-pushing or modifying the approved implementation.
+3. Verify the exact merge SHA, resulting tree and post-merge CI. Report any failure.
+4. After successful verification, refresh PR #60's EVIDENCE phase-exit record against the new verified `main`.
+5. Preserve existing acceptance criteria, Gates A–U, certified calculations, protected holdouts and documented limitations.
+6. Submit the refreshed PR #60 for the final independent CEO exit audit. Do not merge PR #60 without separate approval.
+
+**Restrictions:**
+- Do not declare EVIDENCE phase complete.
+- Do not begin prediction issuance or the next phase.
+- Do not introduce new scope, architecture, or certification criteria.
+
+Return a concise evidence-backed report: exact SHAs, changes, CI results, certification status, remaining blockers and next approval required.
+
+Prioritize milestone closure over additional documentation or unnecessary audit cycles.
+```
+
+### 2. PR #63 merged; limit L1 closed
+
+PR #63 merged by a normal two-parent merge as `ad4d5f7383ba2a0c4f53464132198831b77be72a`, with parents `f24771fb7405bfd4adfb0a44ce13c322f0319d76` and
+`584fcb097c8ad8c746f9d24873cfd7d029586de4`. The merge tree (`a6780f4`) is identical to the reviewed head's tree, and the head branch is kept. Before the merge, the
+head, base (`f24771f`), mergeability (MERGEABLE, CLEAN) and head CI `44491017600` (four jobs passed) were reverified. Post-merge CI `44498742069` passed all four
+jobs on `ubuntu-24.04`: 2,348 tests on 3.11 and 3.12, drift clean, and gate U at 60 refusals. Limit L1 is **closed**.
+
+### 3. The refreshed phase-exit record
+
+`reports/EVIDENCE_PHASE_EXIT_RECORD.md` 0.3.0 (`PROPOSED`) tests the phase at `ad4d5f7` against `docs/Q8_CLOSURE_MATRIX.md` s6 and s14, and adds no
+criterion. Of its 33 rows, 28 are met, 4 are met with a stated qualification, 1 is pending (the exit approval itself), and none carries an open finding. The only
+residual limit is L2, which the CEO accepted as a documented external-tampering limit.
+
+- **Decision:** as s2.
+- **Consequences:** **EVIDENCE exit is not declared**, and prediction issuance and the next phase have not begun. PR #60 merges only with separate approval.
+- **Evidence:** merge `ad4d5f7383ba2a0c4f53464132198831b77be72a`; PR #63; head CI `44491017600`; post-merge CI `44498742069`. The owner's instruction exists as session
+  input, not as a repository file.
+
+---
+
 ## ADR template (copy, do not edit above the line)
 
 ## ADR-XXXX - <title>

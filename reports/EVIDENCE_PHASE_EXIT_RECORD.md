@@ -4,16 +4,17 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | **PROPOSED, for the final independent CEO exit checkpoint.** This record presents evidence and declares nothing. EVIDENCE exit is **not** declared. |
-| Version | 0.2.0 |
+| Version | 0.3.0 |
 | Owner | Project Owner (`ADR-0051` D4; `ADR-0107` Q-C) |
-| Last updated | 2026-11-18 |
+| Last updated | 2026-11-19 |
 | Review cadence | Regenerate at the exact `main` SHA of any exit decision |
 
 # EVIDENCE phase-exit evidence and checklist
 
 This record tests the EVIDENCE phase against the requirements already accepted in `docs/Q8_CLOSURE_MATRIX.md` s6, and the
 cross-phase invariants in s14 (`ADR-0048`). It adds no criterion. A stored artifact is history, not proof, so the runs are
-listed in s3. Version 0.2.0 replaces the evaluation at `689fd36` with one at `f24771f`, after findings F1 and F2 were corrected.
+listed in s3. Version 0.3.0 evaluates `ad4d5f7`, after findings F1 and F2 and limit L1 were corrected. Version 0.1.0 evaluated
+`689fd36`, and 0.2.0 evaluated `f24771f`.
 
 ## 1. Result for the reviewer
 
@@ -21,30 +22,31 @@ listed in s3. Version 0.2.0 replaces the evaluation at `689fd36` with one at `f2
 |---|---|---|
 | Met | 28 | Prerequisites, entry, scope, certification gates, two approvals, six invariants |
 | Met with a stated qualification | 4 | X1, X2, X3, I4 |
-| Open finding | 0 | F1 and F2 are corrected and merged (s5) |
+| Open finding | 0 | F1, F2 and L1 are corrected and merged (s5) |
 | Pending | 1 | A3, the exit approval this checkpoint would give |
 
-**The decision needed is whether the residual limits on X3 are acceptable for exit.** Someone with direct write access to the
-database can still forge a set of rows that agree with one another (L1 and L2, s5). Every inconsistent forgery tried is refused.
+**The decision needed is the exit itself.** The only residual limit is L2: a complete forgery, identical to what `persist()`
+would write, by someone with direct write access to the database. The CEO accepted L2 as a documented external-tampering limit
+(`ADR-0127` s1). Every inconsistent forgery tried is refused.
 
 ## 2. What was evaluated
 
-- **Evaluated `main` SHA:** `f24771fb7405bfd4adfb0a44ce13c322f0319d76`, the merge of PR #62. Parents
-  `16e3e7f0793c48191b61b488470a176a9c24ca19` and `952fd6143cf9e5f61fbda4e631fb8198f13b5f8e`. Tree `d57fc852f7e684946f995411fe50326f10050b0f`, identical to the PR head.
+- **Evaluated `main` SHA:** `ad4d5f7383ba2a0c4f53464132198831b77be72a`, the merge of PR #63. Parents
+  `f24771fb7405bfd4adfb0a44ce13c322f0319d76` and `584fcb097c8ad8c746f9d24873cfd7d029586de4`. Tree `a6780f489f22b23fcebf361f9b68cd79f496735c`, identical to the PR head.
 - **EVIDENCE entry baseline:** `90cd0cae777f6e7e67b78b109be68b714fa8cf91` (`ADR-0114`).
 - **Later commits:** the commits that carry this record are later SHAs, and are not the one evaluated here. They change
   documentation only.
 
-## 3. Regenerated evidence at `f24771f`
+## 3. Regenerated evidence at `ad4d5f7`
 
 | Run | Result |
 |---|---|
-| Post-merge CI `44302736571` (push to `main`, `ubuntu-24.04`) | Success on all four jobs. 2,273 tests on Python 3.11 and 3.12. Drift clean on 76 files in the 3.11, 3.12 and oracle jobs. |
-| Clean native Linux regeneration from an archive of the tree | 24 of 24 certifiers pass. Drift clean on 76 files. All governance steps pass. 2,273 tests passed, 0 skipped. No tree changes. |
-| C3 scope coverage | 24 artifacts, 56 capabilities, 276 members, 175 gates; 3 open tracked overclaims, 2 `scope_not_gated`. |
+| Post-merge CI `44498742069` (push to `main`, `ubuntu-24.04`) | Success on all four jobs. 2,348 tests on Python 3.11 and 3.12. Drift clean on 76 files in the 3.11, 3.12 and oracle jobs. |
+| Clean native Linux regeneration from an archive of the tree | 24 of 24 certifiers pass. Drift clean on 76 files. All governance steps pass. 2,348 tests passed, 0 skipped. No tree changes. |
+| C3 scope coverage | 24 artifacts, 56 capabilities, 276 members, 176 gates; 3 open tracked overclaims, 2 `scope_not_gated`. |
 | C4 reachability | 188 in use and covered, 143 not in use; 0 uncovered, 0 material `UNKNOWN`. |
 
-`EVIDENCE_FOUNDATIONS_V1` (result PASS; committed SHA-256 `52969eaf6be231d4f93f3e4c9f96fcdde4dd6299b2ffb7066bd2497ca33fb763`):
+`EVIDENCE_FOUNDATIONS_V1` (result PASS; committed SHA-256 `c287b5358430c95ce66348496a710bcd5f4928cf00573020bd16bf8698a0209a`):
 
 | Gate | Classification | Result |
 |---|---|---|
@@ -68,6 +70,7 @@ database can still forge a set of rows that agree with one another (L1 and L2, s
 | R graph agreement | structural | 0 mismatches, 16 controls |
 | S evidence read integrity | negative control | 10 forgeries, 101 refusals, 12 legitimate read paths preserved, 6 controls |
 | T relationship integrity | negative control | 42 forgeries, 89 refusals, 6 legitimate read paths preserved, 6 controls |
+| U historical rule integrity | negative control | 6 forgeries, 60 refusals, 7 legitimate read paths preserved, 5 controls |
 
 ## 4. Checklist against `Q8_CLOSURE_MATRIX.md`
 
@@ -96,7 +99,7 @@ database can still forge a set of rows that agree with one another (L1 and L2, s
 | S2 | Event model | Met | WP-E2 (`ADR-0115`), PR #49 | `dfdfadb` | `42589414966` |
 | S3 | Historical event ledger with protected holdout support | Met | WP-E3 (`ADR-0116`), PR #50 | `0f50bc8` | `42771214588` |
 | S4 | Evidence model with the five relationship classes | Met | WP-E4 (`ADR-0119`), PR #54; corrected by PR #62 (`ADR-0125`) | `9bf782d`; `f24771f` | `43213469895`; `44302736571` |
-| S5 | Interpretation rule registry | Met | WP-E5 (`ADR-0120`, `ADR-0121`), PR #56 | `69730bf` | `44047429370` |
+| S5 | Interpretation rule registry | Met | WP-E5 (`ADR-0120`, `ADR-0121`), PR #56; historical reads corrected by PR #63 (`ADR-0127`) | `69730bf`; `ad4d5f7` | `44047429370`; `44498742069` |
 | S6 | Provenance graph recording | Met | WP-E6 (`ADR-0122`), PR #59; reads corrected by PR #61 (`ADR-0124`) | `689fd36`; `16e3e7f` | `44273894275`; `44292709114` |
 | S7 | No scoring, no weighting, no fitting | Met | A scan of `engine/evidence/` finds two names containing "fit". `historical_fit` is a confidence component carried as supplied or absent and never computed (`ADR-0119` AC7). `_require_fit` checks that a rule's school and strength match an item. Neither fits anything. Structural tests refuse division and multiplication in the evidence model, store, identifier and graph modules. | | |
 
@@ -115,9 +118,9 @@ database can still forge a set of rows that agree with one another (L1 and L2, s
 
 | # | Requirement | Status | Evidence and qualification |
 |---|---|---|---|
-| X1 | Evidence can be produced, stored, retrieved and decomposed | **Met, qualified** | Gates J, K, R and S. **Qualification:** items are synthetic records built by a caller. No rule is applied to a chart, because rule application belongs to INTERPRETATION (s7) |
+| X1 | Evidence can be produced, stored, retrieved and decomposed | **Met, qualified** | Gates J, K, R, S and U. **Qualification:** items are synthetic records built by a caller. No rule is applied to a chart, because rule application belongs to INTERPRETATION (s7) |
 | X2 | Provenance sufficient to build the graph in the independence design | **Met, qualified** | Gates P, Q and R: all six node kinds of the design's s3, recorded at creation, each item reproduced from its graph alone. **Qualifications** are in s6 |
-| X3 | No claim can exist without a rule identifier and full provenance | **Met, qualified** | Through the API, every attempt is refused (gates K and N). Rows written by direct SQL that break the requirements are refused by every evidence read (gate S) and every relationship read (gate T). **Qualification:** the residual limits L1 and L2 in s5 |
+| X3 | No claim can exist without a rule identifier and full provenance | **Met, qualified** | Through the API, every attempt is refused (gates K and N). Rows written by direct SQL that break the requirements are refused by every evidence read (gates S and U) and every relationship read (gate T). **Qualification:** the residual limit L2 in s5, which the CEO accepted |
 
 ### 4.6 CEO approval (s6)
 
@@ -125,7 +128,7 @@ database can still forge a set of rows that agree with one another (L1 and L2, s
 |---|---|---|---|
 | A1 | Entry | Met | `ADR-0114`. The owner states the CEO PASS came first |
 | A2 | Checkpoint at the evidence model | Met | `ADR-0119`, revision 1 and its ratification. The CEO's bounded HOLD is quoted there; the owner states the PASS |
-| A3 | Exit | **Pending** | This checkpoint |
+| A3 | Exit | **Pending** | The final exit audit of this record |
 
 ### 4.7 Cross-phase invariants (s14)
 
@@ -141,25 +144,22 @@ database can still forge a set of rows that agree with one another (L1 and L2, s
 
 ## 5. Findings and residual limits
 
-### 5.1 Findings corrected since version 0.1.0
+### 5.1 Findings and limits corrected since version 0.1.0
 
-| Finding | What was demonstrated | Correction | Merge | Post-merge CI | Result at `f24771f` |
+| Finding | What was demonstrated | Correction | Merge | Post-merge CI | Result at `ad4d5f7` |
 |---|---|---|---|---|---|
 | **F1** | A row written by direct SQL, naming a rule never registered, was accepted by `load`, `evidence_ids`, `join`, `counts`, `classify` and `relate` | PR #61 (`ADR-0124`), gate S | `16e3e7f` | `44292709114` | Refused by every read |
 | **F2** | A forged relationship record claiming `independent`, where `classify()` said `shared_origin`, was returned by `relationships()` and `relationship_counts()` | PR #62 (`ADR-0125`), gate T | `f24771f` | `44302736571` | Refused by both reads |
+| **L1** | A forged rule row claiming another snapshot, naming a `RUL` number never issued, with an evidence row and matching graph rows, was accepted by `load` and `evidence_ids` | PR #63 (`ADR-0127`), gate U | `ad4d5f7` | `44498742069` | Refused: a historical rule version must be an issued `RUL`, under its school, and a version still published unchanged |
 
-### 5.2 Residual limits on X3, demonstrated at `f24771f`
+### 5.2 The residual limit on X3, demonstrated at `ad4d5f7`
 
-Both limits need direct write access to the database, and several tables forged so that they agree with one another.
+| Limit | What is accepted | Why it remains | Disposition |
+|---|---|---|---|
+| **L2** | A complete forgery of a published rule's evidence: exactly the rows `persist()` would have written | Such rows cannot be told apart from real ones by any check inside the store | Accepted by the CEO as a documented external-tampering limit (`ADR-0127` s1) |
 
-| Limit | What is accepted | Why it remains |
-|---|---|---|
-| **L1** | A forged rule row claiming **another snapshot**, an evidence row naming it, and matching graph rows. `load` and `evidence_ids` accept them, even for a `RUL` number never issued | No earlier snapshot is archived to check it against, and legitimate history must stay readable (`ADR-0124` s2, s3) |
-| **L2** | A complete forgery of a published rule's evidence: exactly the rows `persist()` would have written | Such rows cannot be told apart from real ones by any check inside the store |
-
-**Labelled recommendation, which decides nothing:** accept L1 and L2 as stated limits for exit. Both are already certificate non-claims or
-s7 items. Closing them needs controls outside the store, such as signed records or an archive of retired snapshots, which would be new
-architecture.
+A historical rule version now has to be what the governed records prove, so a forged row claiming another snapshot is refused unless it
+copies a genuine publication exactly. Such a copy is an L2 forgery.
 
 ## 6. Qualifications carried forward
 
@@ -182,7 +182,7 @@ architecture.
 - **The CEO's PASS decisions.** Their text is not in the repository. A1, A2 and the merges rest on the owner's statements.
 - **Producer honesty.** The store cannot show that a producer's inputs or completeness statements are true.
 - **Reads outside the APIs.** Direct database access to protected events cannot be detected.
-- **Forged but consistent records.** See L1 and L2 in s5.
+- **Forged but consistent records.** See L2 in s5.
 - **Independence in fact.** A relationship record is checked against the recorded items. That shows agreement with the recorded
   structure, not that two items are independent in fact.
 - **Future classifier changes.** Stored relationships are checked by re-classifying them, so a later change to the classifier would make
@@ -192,7 +192,7 @@ architecture.
 
 ## 8. Charter compliance (`specs/PROJECT_CHARTER.md` v1.4.0)
 
-- **s5 (provenance):** each item records its provenance when produced, and reads refuse rows that break it, subject to L1 and L2.
+- **s5 (provenance):** each item records its provenance when produced, and reads refuse rows that break it, subject to L2.
 - **s6 (learning):** nothing in EVIDENCE learns, measures or fits.
 - **s7 (the LLM as explainer):** no LLM path exists, and generated text cannot introduce a rule.
 - **s9 (what stays fixed):** certified calculations are unchanged since entry (I2).
