@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.63.0 |
+| Version | 9.64.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-20 (Stage 1 (`ADR-0130`): the Gate W HOLD on PR #64 corrected; awaiting final CEO review.) |
+| Last updated | 2026-11-20 (Stage 1 (`ADR-0130`) merged at `main` `0873bba`. Stage 2 awaits its own authorization.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,14 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-20 - Stage 1 (`ADR-0130`) merged
+
+- **Merge:** PR #64 at `0873bbaed251dbddb1997eba163339dc871272b0`, a normal merge with parents `8595021` and `60f1e58` (the CEO-passed head);
+  its tree equals `60f1e58`. The branch is kept.
+- **Post-merge CI:** `44712659878`, push to `main`, success on all four jobs. `EVIDENCE_FOUNDATIONS_V1` records gates A to W, result PASS.
+- **Not done:** no genuine rule, no INTERPRETATION entry, no prediction issuance, no Stage 2 work, no gate retired.
+- **Next:** the owner's Stage 2 decisions (B1 to B5) and authorization.
 
 ### 2026-11-20 - PR #64 Gate W HOLD corrected
 
