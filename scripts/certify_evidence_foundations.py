@@ -3110,15 +3110,22 @@ def gate_w_explanation_boundary():
                     {"kind": "calculated_input", "evidence": first.value, "index": 0},
                     {"kind": "timing", "evidence": second.value}, {"kind": "polarity", "evidence": second.value},
                     {"kind": "uncertainty", "evidence": first.value, "field": "historical_performance"},
-                    {"kind": "no_answer", "reason": "incomplete_lineage"}]
+                    {"kind": "no_answer"}]
         lines = explanation_boundary.render(_candidate((first, second), segments), store, registry)
         published = registry.lookup(item.rule.rule, item.rule.version, item.rule.variant)
         if not (published.statement in lines[0] and published.citation.locator in lines[1] and
                 all(planet in lines[2] for planet in item.chart_context.planets) and
                 item.lineage.inputs[0].fact in lines[3] and store.load(second).timing.label in lines[4] and
-                lines[7] == explanation_boundary.REASON_TEXT[explanation_boundary.NoAnswerReason.INCOMPLETE_LINEAGE]):
+                lines[7] == explanation_boundary.ABSTENTION_TEXT):
             fail("a rendered sentence does not come from the evidence and the registry")
         preserved["every kind renders from the evidence and the pinned registry"] = True
+        # A no-answer segment over valid, non-conflicting evidence renders the neutral abstention and nothing else.
+        if item.polarity is Polarity.CONTRADICTORY or store.relationships():
+            fail("the no-answer cases need evidence that records no conflict")
+        if explanation_boundary.render(_candidate((first,), [{"kind": "no_answer"}]), store, registry) != (
+                explanation_boundary.ABSTENTION_TEXT,):
+            fail("a no-answer segment rendered more than the neutral abstention")
+        preserved["a no-answer segment renders only the neutral abstention"] = True
         good = segments[:1]
         cases = [
             ("a candidate that is text", "the tenth lord in the first house gives fame", {}, "carries exactly"),
@@ -3159,9 +3166,13 @@ def gate_w_explanation_boundary():
             ("an evidence reference that is not text", _candidate((first,), [
                 {"kind": "polarity", "evidence": {"id": first.value}}]), {}, "an EVD identifier"),
             ("a no-answer segment with its own words", _candidate((first,), [
-                {"kind": "no_answer", "reason": "the stars are unclear"}]), {}, "names one of"),
+                {"kind": "no_answer", "reason": "the stars are unclear"}]), {}, "carries exactly"),
             ("a no-answer segment naming evidence", _candidate((first,), [
-                {"kind": "no_answer", "reason": "no_evidence", "evidence": first.value}]), {}, "carries exactly"),
+                {"kind": "no_answer", "evidence": first.value}]), {}, "carries exactly"),
+            *((f"a candidate-selected reason, {reason}, over valid non-conflicting evidence", _candidate((first,), [
+                {"kind": "polarity", "evidence": first.value}, {"kind": "no_answer", "reason": reason}]), {},
+               "carries exactly")
+              for reason in ("no_evidence", "incomplete_lineage", "conflicting_evidence", "outside_scope")),
             ("evidence outside the scope", _candidate((first,), [{"kind": "polarity", "evidence": second.value}]), {},
              "not in the explanation's scope"),
             ("an input the item does not record", _candidate((first,), [
@@ -3200,6 +3211,21 @@ def gate_w_explanation_boundary():
         if any(planted in line for line in rendered):
             fail("the renderer echoed text from a candidate")
         controls["even then, the renderer never echoes a candidate's text"] = True
+        # Control: a parse that drops a candidate's reason instead of refusing it admits the reason; even then, no reason
+        # reaches the output, so the evidence is never said to conflict.
+        strict = explanation_boundary._exact
+        explanation_boundary._exact = lambda name, data, keys: strict(name, {
+            key: value for key, value in data.items() if key != "reason"} if name == "a no_answer segment" and
+            isinstance(data, dict) else data, keys)
+        try:
+            rendered = explanation_boundary.render(_candidate((first,), [
+                {"kind": "no_answer", "reason": "conflicting_evidence"}]), store, registry)
+        finally:
+            explanation_boundary._exact = strict
+        controls["a parse that ignores a candidate's reason, weakened, admits it"] = True
+        if rendered != (explanation_boundary.ABSTENTION_TEXT,):
+            fail("a candidate-selected reason reached the rendered output")
+        controls["even then, no candidate-selected reason reaches the output"] = True
         published_check = explanation_boundary._published
         explanation_boundary._published = lambda entry, registry_: _forged_rule(
             published_check(entry, registry_), statement=planted)

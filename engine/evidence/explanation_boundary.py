@@ -1,9 +1,13 @@
 """The explanation boundary (ADR-0130; H5 s3; the Charter's "Complete product contract" s7; Q8 s7 entry criterion).
 
 An explanation is never accepted as text. It is a structured candidate that only names references: the evidence items
-in scope, and for each segment a closed kind and, where the kind needs one, a closed field, an input index or a closed
-no-answer reason. There is no free-text field anywhere in the contract, so generated text has nowhere to state a rule,
-apply one, or override a calculated value.
+in scope, and for each segment a closed kind and, where the kind needs one, a closed field or an input index. There is
+no free-text field anywhere in the contract, so generated text has nowhere to state a rule, apply one, or override a
+calculated value.
+
+A no-answer segment names its kind and nothing else, and renders one neutral abstention. A candidate never selects a
+reason for not answering: every such reason would be a claim about the evidence or the question that the candidate
+chose and the boundary cannot verify, so a candidate that offers one is refused.
 
 - parse() reads a candidate strictly and fails closed: any key, kind, field or type the contract does not define is
   refused, as is any string where a reference is required.
@@ -45,20 +49,8 @@ class SegmentKind(Enum):
     NO_ANSWER = "no_answer"
 
 
-class NoAnswerReason(Enum):
-    NO_EVIDENCE = "no_evidence"
-    INCOMPLETE_LINEAGE = "incomplete_lineage"
-    CONFLICTING_EVIDENCE = "conflicting_evidence"
-    OUTSIDE_SCOPE = "outside_scope"
-
-
-#: The fixed sentence for each reason. A candidate chooses a reason; it never supplies the words.
-REASON_TEXT = {
-    NoAnswerReason.NO_EVIDENCE: "No recorded evidence supports an answer.",
-    NoAnswerReason.INCOMPLETE_LINEAGE: "The evidence's recorded lineage is incomplete, so no reliable answer is given.",
-    NoAnswerReason.CONFLICTING_EVIDENCE: "The recorded evidence conflicts, so no single answer is given.",
-    NoAnswerReason.OUTSIDE_SCOPE: "The question is outside the scope of the recorded evidence.",
-}
+#: The one sentence a no-answer segment renders. It asserts nothing about the evidence, the rules or the question.
+ABSTENTION_TEXT = "No answer is given."
 CHART_FIELDS = ("varga", "planets", "houses", "signs", "significators")
 UNCERTAINTY_FIELDS = CONFIDENCE_COMPONENTS + ("historical_performance",)
 #: Each kind's keys, exactly. Nothing else may appear in a segment.
@@ -70,7 +62,7 @@ SEGMENT_KEYS = {
     SegmentKind.TIMING: ("kind", "evidence"),
     SegmentKind.POLARITY: ("kind", "evidence"),
     SegmentKind.UNCERTAINTY: ("kind", "evidence", "field"),
-    SegmentKind.NO_ANSWER: ("kind", "reason"),
+    SegmentKind.NO_ANSWER: ("kind",),
 }
 FIELDS = {SegmentKind.CHART_FACT: CHART_FIELDS, SegmentKind.UNCERTAINTY: UNCERTAINTY_FIELDS}
 CANDIDATE_KEYS = ("schema", "scope", "segments")
@@ -84,7 +76,6 @@ class Segment:
     evidence: EvidenceId | None = None
     field: str | None = None
     index: int | None = None
-    reason: NoAnswerReason | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -133,13 +124,7 @@ def parse(candidate) -> Explanation:
             raise BoundaryError(f"an undeclared segment kind: {raw['kind']!r}") from exc
         raw = _exact(f"a {kind.value} segment", raw, SEGMENT_KEYS[kind])
         if kind is SegmentKind.NO_ANSWER:
-            try:
-                reason = NoAnswerReason(raw["reason"]) if isinstance(raw["reason"], str) else None
-            except ValueError:
-                reason = None
-            if reason is None:
-                raise BoundaryError(f"a no-answer segment names one of {[item.value for item in NoAnswerReason]}")
-            segments.append(Segment(kind=kind, reason=reason))
+            segments.append(Segment(kind=kind))
             continue
         evidence = _evidence_id(raw["evidence"])
         field = index = None
@@ -196,7 +181,7 @@ def render_segment(segment: Segment, item: EvidenceItem | None, registry: rule_r
     """One sentence, built only from the evidence item and the pinned registry."""
 
     if segment.kind is SegmentKind.NO_ANSWER:
-        return REASON_TEXT[segment.reason]
+        return ABSTENTION_TEXT
     reference = item.rule
     if segment.kind is SegmentKind.RULE_STATEMENT:
         published = _published(item, registry)
@@ -234,5 +219,5 @@ def render(candidate, store: EvidenceStore, registry: rule_registry.RuleRegistry
                  for segment in explanation.segments)
 
 
-__all__ = ["EXPLANATION_SCHEMA", "BoundaryError", "Explanation", "NoAnswerReason", "Segment", "SegmentKind", "admit",
+__all__ = ["ABSTENTION_TEXT", "EXPLANATION_SCHEMA", "BoundaryError", "Explanation", "Segment", "SegmentKind", "admit",
            "parse", "render", "render_segment"]

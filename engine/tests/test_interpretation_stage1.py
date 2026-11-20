@@ -23,6 +23,7 @@ from test_evidence_wp_e4 import World  # noqa: E402
 
 from engine.evidence import explanation_boundary as boundary  # noqa: E402
 from engine.evidence import rule_registry  # noqa: E402
+from engine.evidence.evidence import Polarity  # noqa: E402
 from engine.evidence.evidence_identifiers import EvidenceId  # noqa: E402
 from engine.evidence.evidence_store import EvidenceStore, item_to_record  # noqa: E402
 from engine.evidence.store import StoreError  # noqa: E402
@@ -184,11 +185,35 @@ def test_l1_every_kind_renders_only_from_trusted_data(items):
         {"kind": "calculated_input", "evidence": first.value, "index": 1},
         {"kind": "timing", "evidence": second.value}, {"kind": "polarity", "evidence": second.value},
         {"kind": "uncertainty", "evidence": first.value, "field": "rule_confidence"},
-        {"kind": "no_answer", "reason": "no_evidence"}]), store, PINNED)
+        {"kind": "no_answer"}]), store, PINNED)
     published = PINNED.lookup(item.rule.rule, item.rule.version, item.rule.variant)
     assert published.statement in lines[0] and published.citation.source in lines[1]
     assert "Moon longitude" in lines[3] and item.timing.label in lines[4] and "absent" in lines[6]
-    assert lines[7] == boundary.REASON_TEXT[boundary.NoAnswerReason.NO_EVIDENCE]
+    assert lines[7] == boundary.ABSTENTION_TEXT
+
+
+# The words each reason a candidate could once select would have asserted about the evidence or the question.
+FORMER_REASON_CLAIMS = {"no_evidence": "no recorded evidence", "incomplete_lineage": "incomplete",
+                        "conflicting_evidence": "conflict", "outside_scope": "outside the scope"}
+
+
+def test_l6_a_no_answer_segment_renders_a_neutral_abstention_that_asserts_nothing(items):
+    store, first, _second = items
+    assert boundary.render(candidate((first,), [{"kind": "no_answer"}]), store, PINNED) == (boundary.ABSTENTION_TEXT,)
+    assert not any(claim in boundary.ABSTENTION_TEXT.lower() for claim in FORMER_REASON_CLAIMS.values())
+    assert boundary.SEGMENT_KEYS[boundary.SegmentKind.NO_ANSWER] == ("kind",)
+
+
+@pytest.mark.parametrize("reason", sorted(FORMER_REASON_CLAIMS))
+def test_l6_a_candidate_selected_reason_is_refused_over_valid_non_conflicting_evidence(items, reason):
+    """The CEO's example: a valid, non-conflicting item must never yield the statement that evidence conflicts."""
+
+    store, first, _second = items
+    # The item passes every read check, is not recorded as contradictory, and no relationship is recorded at all.
+    assert store.load(first).polarity is not Polarity.CONTRADICTORY and store.relationships() == []
+    with pytest.raises(boundary.BoundaryError, match="carries exactly"):
+        boundary.render(candidate((first,), [{"kind": "polarity", "evidence": first.value},
+                                             {"kind": "no_answer", "reason": reason}]), store, PINNED)
 
 
 @pytest.mark.parametrize("label,make,reason", [
@@ -213,14 +238,14 @@ def test_l1_every_kind_renders_only_from_trusted_data(items):
     ("a boolean index", lambda f, s: candidate((f,), [{"kind": "calculated_input", "evidence": f.value, "index": True}]),
      "by its index"),
     ("a reason in its own words", lambda f, s: candidate((f,), [{"kind": "no_answer", "reason": "unclear"}]),
-     "names one of"),
+     "carries exactly"),
     ("a malformed identifier", lambda f, s: candidate((f,), [{"kind": "polarity", "evidence": "first"}]),
      "not an EVD identifier"),
     ("evidence outside the scope", lambda f, s: candidate((f,), [{"kind": "polarity", "evidence": s.value}]),
      "not in the explanation's scope"),
     ("an input not recorded", lambda f, s: candidate((f,), [{"kind": "calculated_input", "evidence": f.value, "index": 9}]),
      "records no calculated input"),
-    ("an empty scope", lambda f, s: candidate((), [{"kind": "no_answer", "reason": "no_evidence"}]),
+    ("an empty scope", lambda f, s: candidate((), [{"kind": "no_answer"}]),
      "names the evidence in its scope"),
     ("another schema", lambda f, s: {**candidate((f,), [{"kind": "polarity", "evidence": f.value}]), "schema": "v0"},
      "this schema"),
@@ -277,8 +302,7 @@ def test_l8_the_contract_has_no_free_text_field_and_no_llm_or_network_path():
     assert not {name.split(".")[0] for name in imported} & {"openai", "anthropic", "requests", "urllib", "http",
                                                               "socket", "httpx"}
     assert [field.name for field in dataclasses.fields(boundary.Explanation)] == ["scope", "segments"]
-    assert [field.name for field in dataclasses.fields(boundary.Segment)] == ["kind", "evidence", "field", "index",
-                                                                             "reason"]
+    assert [field.name for field in dataclasses.fields(boundary.Segment)] == ["kind", "evidence", "field", "index"]
     assert set(boundary.SEGMENT_KEYS[kind] for kind in boundary.SegmentKind) and all(
         "text" not in keys and "statement" not in keys for keys in boundary.SEGMENT_KEYS.values())
 
@@ -320,7 +344,10 @@ def _admit_without_scope(explanation, store, registry):
      _STRICT_EXACT(name, data, keys)),
     ("admit", _admit_without_scope),
     ("_published", lambda item, registry: PINNED.lookup(item.rule.rule, item.rule.version, item.rule.variant)),
-], ids=["extra keys admitted", "no scope check", "a registry other than the one given"])
+    ("_exact", lambda name, data, keys: _STRICT_EXACT(name, {key: value for key, value in data.items() if key != "reason"}
+                                                      if name == "a no_answer segment" else data, keys)),
+], ids=["extra keys admitted", "no scope check", "a registry other than the one given",
+        "a candidate-selected reason admitted"])
 def test_the_real_gate_w_fails_when_a_boundary_check_is_weakened(monkeypatch, capsys, name, weakened):
     """Each weakening still renders; the gate itself must find the candidate it did not refuse."""
 
@@ -328,6 +355,18 @@ def test_the_real_gate_w_fails_when_a_boundary_check_is_weakened(monkeypatch, ca
     with pytest.raises(SystemExit):
         certifier.gate_w_explanation_boundary()
     assert "CERTIFICATION FAIL: not refused:" in capsys.readouterr().out
+
+
+def test_the_real_gate_w_fails_when_a_no_answer_segment_asserts_a_reason(monkeypatch, capsys):
+    """The defect the CEO found, reinstated in the renderer: an abstention that says the evidence conflicts."""
+
+    strict = boundary.render_segment
+    monkeypatch.setattr(boundary, "render_segment", lambda segment, item, registry: (
+        "The recorded evidence conflicts, so no single answer is given." if segment.kind is boundary.SegmentKind.NO_ANSWER
+        else strict(segment, item, registry)))
+    with pytest.raises(SystemExit):
+        certifier.gate_w_explanation_boundary()
+    assert "CERTIFICATION FAIL: a rendered sentence does not come from the evidence" in capsys.readouterr().out
 
 
 def test_the_real_gates_v_and_w_pass_on_the_real_code():
