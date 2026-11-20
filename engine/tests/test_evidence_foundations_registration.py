@@ -107,6 +107,7 @@ def test_c3_reads_it_with_its_own_certifier():
                             "evidence.historical_ledger",  # added by ADR-0116 s4 (WP-E3)
                             "evidence.evidence_model",  # added by ADR-0119 s3 (WP-E4)
                             "evidence.rule_registry",  # added by ADR-0120 s4 and ADR-0121 (WP-E5)
+                            "evidence.explanation_boundary",  # added by ADR-0130 (Stage 1)
                             "evidence.provenance_graph"]  # added by ADR-0122 s4 (WP-E6)
 
 

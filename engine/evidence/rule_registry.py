@@ -11,7 +11,11 @@
   under a declared schema and never code; activation conditions; effect, polarity and domain; named
   variants, selected explicitly, with no default (ADR-0120 D4); and a certification level whose four
   claims are separate (H5 s4).
-- Synthetic only (ADR-0120 D1): every published rule is a synthetic fixture rule.
+- Publication only (ADR-0130, narrowly superseding ADR-0120 D1 and AC11): a rule not marked synthetic is published
+  only if its citation names an authorized source of its own school, listed in a sourced snapshot, with a locator
+  naming chapter, verse and page. It is published for citation and never projected into evidence: rule_version()
+  refuses it, so no evidence can name it before INTERPRETATION is entered. The pinned snapshot lists no source, so
+  every rule it publishes is a synthetic fixture rule.
 
 Nothing here evaluates a condition, applies a rule, reads a chart, scores or divides.
 """
@@ -20,6 +24,8 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
+import unicodedata
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
@@ -28,7 +34,16 @@ from engine.evidence.entity import DataClass, RecordProvenance
 from engine.evidence.evidence import Domain, Polarity, ProducingSystem, RuleSpec, RuleVersion
 from engine.evidence.evidence_identifiers import RUL_LAST, RuleId
 
+#: A snapshot of rules alone. Its name is also the provenance schema of every projection rule_version() makes, so
+#: it never changes: stored rule versions keep matching their publication (ADR-0124; ADR-0127).
 SNAPSHOT_SCHEMA = "ace-rule-snapshot-v1"
+#: A snapshot that also lists its authorized sources and independent verifications (ADR-0130).
+SOURCED_SNAPSHOT_SCHEMA = "ace-rule-snapshot-v2"
+#: What an independent verifier reviews before a genuine rule's claims may be marked independently checked.
+VERIFIED_ASPECTS = ("statement", "locator", "condition", "domain", "polarity")
+#: A genuine rule's locator, in its edition: "chapter 24, verse 109, page 325" or "chapter 24, verses 109-110, page 325".
+LOCATOR_PATTERN = re.compile(r"chapter [1-9][0-9]*, verses? [1-9][0-9]*(-[1-9][0-9]*)?, pages? [1-9][0-9]*(-[1-9][0-9]*)?")
+_SHA256 = re.compile(r"[0-9a-f]{64}")
 MANIFEST_SCHEMA = "ace-rule-snapshot-manifest-v1"
 HISTORY_SCHEMA = "ace-rul-allocation-history-v1"
 DATA_DIR = Path(__file__).resolve().parent / "rule_registry_data"
@@ -175,9 +190,9 @@ class RegistryRule:
         if not isinstance(self.certification, CertificationLevel):
             raise RegistryError("a rule carries its certification level")
         _text("declared_strength", self.declared_strength)
-        if self.synthetic is not True:
-            raise RegistryError("WP-E5 publishes synthetic rules only; real population needs its own authorization "
-                                "(ADR-0120 D1, AC11)")
+        if not isinstance(self.synthetic, bool):
+            raise RegistryError("a rule is marked synthetic, true or false; a genuine rule is published only from an "
+                                "authorized source (ADR-0130)")
         if self.content_hash != content_hash(self):
             raise RegistryError(f"{self.rule} v{self.version} {self.variant}: the content hash does not match the "
                                 f"published content")
@@ -230,10 +245,104 @@ def _exact(name: str, data, expected) -> dict:
     return data
 
 
-def rule_from_record(data) -> RegistryRule:
-    """Rebuild a published rule, refusing any key the schema does not define (no free text, no code)."""
+@dataclass(frozen=True, slots=True)
+class AuthorizedSource:
+    """A source genuine rules may cite: one edition of one work, for one school, with its witness and rights basis."""
+
+    id: str
+    school: ProducingSystem
+    work: str
+    edition: str
+    language: str
+    witness_url: str
+    witness_sha256: str
+    rights_basis: str
+
+    def __post_init__(self):
+        for name in ("id", "work", "edition", "language", "witness_url", "rights_basis"):
+            _text(f"source {name}", self.__getattribute__(name))
+        if not isinstance(self.school, ProducingSystem):
+            raise RegistryError("an authorized source names its school")
+        if not isinstance(self.witness_sha256, str) or _SHA256.fullmatch(self.witness_sha256) is None:
+            raise RegistryError("an authorized source pins its witness by SHA-256")
+
+
+@dataclass(frozen=True, slots=True)
+class Verification:
+    """An independent verifier's review of one genuine rule version and variant (H5 s4; ADR-0130)."""
+
+    rule: RuleId
+    version: int
+    variant: str
+    verifier: str
+    transcription_sha256: str
+    reviewed: tuple
+
+    def __post_init__(self):
+        if not isinstance(self.rule, RuleId) or isinstance(self.version, bool) or not isinstance(self.version, int):
+            raise RegistryError("a verification names a rule version")
+        _text("verification variant", self.variant)
+        _text("verifier", self.verifier)
+        if not isinstance(self.transcription_sha256, str) or _SHA256.fullmatch(self.transcription_sha256) is None:
+            raise RegistryError("a verification pins the verifier's transcription by SHA-256")
+        if self.reviewed != VERIFIED_ASPECTS:
+            raise RegistryError(f"a verification reviews exactly {list(VERIFIED_ASPECTS)}")
+
+
+def statement_digest(statement: str) -> str:
+    """The SHA-256 of a statement after the declared normalisation: Unicode NFC, whitespace collapsed."""
+
+    return hashlib.sha256(unicodedata.normalize("NFC", " ".join(statement.split())).encode("utf-8")).hexdigest()
+
+
+def source_from_record(data) -> AuthorizedSource:
+    data = _exact("an authorized source", data, ("id", "school", "work", "edition", "language", "witness_url",
+                                                 "witness_sha256", "rights_basis"))
+    try:
+        school = ProducingSystem(data["school"])
+    except ValueError as exc:
+        raise RegistryError(f"an authorized source names an unknown school: {exc}") from exc
+    return AuthorizedSource(id=data["id"], school=school, work=data["work"], edition=data["edition"],
+                            language=data["language"], witness_url=data["witness_url"],
+                            witness_sha256=data["witness_sha256"], rights_basis=data["rights_basis"])
+
+
+def verification_from_record(data) -> Verification:
+    data = _exact("a verification", data, ("rule", "version", "variant", "verifier", "transcription_sha256", "reviewed"))
+    number = data["rule"]
+    if isinstance(number, bool) or not isinstance(number, int) or not 1 <= number <= RUL_LAST:
+        raise RegistryError(f"a verification names an issued rule number: {number!r}")
+    if not isinstance(data["reviewed"], list):
+        raise RegistryError("a verification lists what it reviewed")
+    return Verification(rule=RuleId.from_number(number), version=data["version"], variant=data["variant"],
+                        verifier=data["verifier"], transcription_sha256=data["transcription_sha256"],
+                        reviewed=tuple(data["reviewed"]))
+
+
+def _require_authorized(data: dict, sources: tuple) -> None:
+    """A rule not marked synthetic is published only if it cites an authorized source of its own school, at a locator
+    naming chapter, verse and page. Checked before the rule is built, so an unauthorized one is refused for this."""
+
+    if data["synthetic"] is not False:
+        return
+    citation = data["citation"]
+    source = citation["source"] if isinstance(citation, dict) and "source" in citation else None
+    listed = [item for item in sources if item.id == source]
+    if not listed or listed[0].school.value != data["school"]:
+        raise RegistryError("the registry publishes synthetic rules only, unless a rule cites an authorized source of "
+                            "its own school (ADR-0120 D1, AC11; ADR-0130)")
+    locator = citation["locator"] if "locator" in citation else None
+    if not isinstance(locator, str) or LOCATOR_PATTERN.fullmatch(locator) is None:
+        raise RegistryError(f"a genuine rule's locator names chapter, verse and page in its edition: {locator!r} "
+                            f"(ADR-0130)")
+
+
+def rule_from_record(data, sources: tuple = ()) -> RegistryRule:
+    """Rebuild a published rule, refusing any key the schema does not define (no free text, no code). A rule not
+    marked synthetic needs an authorized source among `sources`; with none, only synthetic rules are accepted."""
 
     data = _exact("a rule record", data, RECORD_FIELDS)
+    _require_authorized(data, sources)
     citation = _exact("citation", data["citation"], ("source", "locator"))
     certification = _exact("certification", data["certification"],
                            ("transcription_fidelity", "source_attribution", "applicability_conditions",
@@ -292,9 +401,17 @@ def read_history(path: Path) -> dict:
 class RuleRegistry:
     """The published rules of one verified snapshot. Construct only through load_registry or pinned()."""
 
-    def __init__(self, rules: tuple, snapshot_sha256: str):
+    def __init__(self, rules: tuple, snapshot_sha256: str, sources: tuple = (), verifications: tuple = ()):
         self._rules = {(item.rule, item.version, item.variant): item for item in rules}
         self.snapshot_sha256 = snapshot_sha256
+        self._sources = tuple(sources)
+        self._verifications = tuple(verifications)
+
+    def sources(self) -> tuple:
+        return self._sources
+
+    def verifications(self) -> tuple:
+        return self._verifications
 
     def lookup(self, rule: RuleId, version: int, variant: str) -> RegistryRule:
         """The published rule for this exact identity, version and explicit variant; anything else is refused."""
@@ -327,9 +444,14 @@ class RuleRegistry:
         return found.pop()
 
     def rule_version(self, rule: RuleId, version: int, variant: str) -> RuleVersion:
-        """The evidence store's view of one published rule: what it must match exactly to register it."""
+        """The evidence store's view of one published synthetic rule: what it must match exactly to register it. A genuine
+        rule is published for citation only and is never projected, so no evidence can name it (ADR-0130). Every path
+        into evidence, registration and every evidence read alike, goes through here and fails closed."""
 
         item = self.lookup(rule, version, variant)
+        if item.synthetic is not True:
+            raise RegistryError(f"{rule} version {version} variant {variant!r} is a genuine rule: published for citation "
+                                f"and never projected into evidence until INTERPRETATION is entered (ADR-0130)")
         return RuleVersion(rule=item.rule, version=item.version, spec=RuleSpec(
             school=item.school, content_hash=item.content_hash, knowledge_snapshot_hash=self.snapshot_sha256,
             declared_strength=item.declared_strength, variant=item.variant,
@@ -362,10 +484,21 @@ def load_registry(directory: Path, pinned_sha256: str) -> RuleRegistry:
         data = json.loads(raw)
     except ValueError as exc:
         raise RegistryError(f"the snapshot is not valid JSON: {exc}") from exc
-    data = _exact("the snapshot", data, ("schema", "rules"))
-    if data["schema"] != SNAPSHOT_SCHEMA or not isinstance(data["rules"], list) or not data["rules"]:
+    sourced = isinstance(data, dict) and "sources" in data
+    data = _exact("the snapshot", data, ("schema", "rules", "sources", "verifications") if sourced else ("schema", "rules"))
+    if data["schema"] != (SOURCED_SNAPSHOT_SCHEMA if sourced else SNAPSHOT_SCHEMA) or \
+            not isinstance(data["rules"], list) or not data["rules"]:
         raise RegistryError("not a rule snapshot of this schema")
-    rules = tuple(rule_from_record(record) for record in data["rules"])
+    sources, verifications = (), ()
+    if sourced:
+        if not isinstance(data["sources"], list) or not isinstance(data["verifications"], list):
+            raise RegistryError("a sourced snapshot lists its sources and verifications")
+        sources = tuple(source_from_record(record) for record in data["sources"])
+        verifications = tuple(verification_from_record(record) for record in data["verifications"])
+        if len({item.id for item in sources}) != len(sources):
+            raise RegistryError("an authorized source is listed once")
+    rules = tuple(rule_from_record(record, sources) for record in data["rules"])
+    _require_verified(rules, verifications)
     issued = read_history(directory / HISTORY_NAME)
     identities = set()
     for item in rules:
@@ -384,7 +517,33 @@ def load_registry(directory: Path, pinned_sha256: str) -> RuleRegistry:
         versions = sorted({item.version for item in rules if item.rule == rule})
         if versions != list(range(1, len(versions) + 1)):
             raise RegistryError(f"{rule}'s published versions are not 1..n: {versions}")
-    return RuleRegistry(rules, pinned_sha256)
+    return RuleRegistry(rules, pinned_sha256, sources, verifications)
+
+
+def _require_verified(rules: tuple, verifications: tuple) -> None:
+    """A genuine rule's claim marked independently checked needs a verification of that exact version and variant,
+    whose transcription matches the published statement; a verification names a published genuine rule (H5 s4)."""
+
+    genuine = {(item.rule, item.version, item.variant): item for item in rules if item.synthetic is not True}
+    checked = {}
+    for entry in verifications:
+        identity = (entry.rule, entry.version, entry.variant)
+        if identity not in genuine or identity in checked:
+            raise RegistryError(f"{entry.rule} v{entry.version} {entry.variant!r}: a verification names one published "
+                                f"genuine rule, once")
+        checked[identity] = entry
+    for identity, item in genuine.items():
+        certification = item.certification
+        claims = (certification.transcription_fidelity, certification.source_attribution,
+                  certification.applicability_conditions)
+        if ClaimState.INDEPENDENTLY_CHECKED not in claims:
+            continue
+        if identity not in checked:
+            raise RegistryError(f"{item.rule} v{item.version} {item.variant!r} is marked independently checked with no "
+                                f"independent verification (H5 s4; ADR-0130)")
+        if checked[identity].transcription_sha256 != statement_digest(item.statement):
+            raise RegistryError(f"{item.rule} v{item.version} {item.variant!r}: the independent transcription does not "
+                                f"match the published statement (ADR-0130)")
 
 
 _PINNED: list = []
@@ -400,4 +559,6 @@ def pinned() -> RuleRegistry:
 
 __all__ = ["CONDITION_SCHEMA", "Citation", "ClaimState", "CertificationLevel", "Condition", "RegistryError",
            "RegistryRule", "RuleRegistry", "content_hash", "content_record", "canonical", "load_registry", "pinned",
-           "read_history", "rule_from_record", "PINNED_SNAPSHOT_SHA256", "DATA_DIR"]
+           "read_history", "rule_from_record", "PINNED_SNAPSHOT_SHA256", "DATA_DIR", "AuthorizedSource", "Verification",
+           "LOCATOR_PATTERN", "SOURCED_SNAPSHOT_SCHEMA", "VERIFIED_ASPECTS", "source_from_record", "statement_digest",
+           "verification_from_record"]

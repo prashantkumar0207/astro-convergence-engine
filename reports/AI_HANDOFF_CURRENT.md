@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.61.0 |
+| Version | 9.63.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-19 (EVIDENCE phase exited, owner-ratified (`ADR-0129`). No further phase entered.) |
+| Last updated | 2026-11-20 (Stage 1 (`ADR-0130`): the Gate W HOLD on PR #64 corrected; awaiting final CEO review.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,40 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-20 - PR #64 Gate W HOLD corrected
+
+- **Finding (CEO, at `bf81f62`):** a candidate could select a no-answer reason the evidence does not support, so a valid, non-conflicting
+  item could yield "The recorded evidence conflicts, so no single answer is given."
+- **Correction (`8c7963f`):** `NoAnswerReason` and `REASON_TEXT` are removed. A `no_answer` segment carries exactly `("kind",)`; any
+  candidate-supplied reason is refused by the strict parse. It renders `ABSTENTION_TEXT`, "No answer is given.", which asserts nothing
+  about the evidence, the rules or the question. No reason is derived: each former reason was a claim that admitted evidence either
+  contradicts (no evidence, incomplete lineage) or the boundary cannot establish (conflict, out of scope). Every other check, the
+  reference-only rendering and the no-LLM boundary are unchanged.
+- **Gate W:** 31 refusals, 2 preserved, 7 controls (was 27, 1, 5). New: the abstention over evidence recording no conflict; each
+  former reason over that evidence refused; a parse that drops a reason admits it, and even then no reason reaches the output.
+- **Detection:** two real-gate tests (a reason admitted fails gate W as "not refused"; a renderer asserting a conflict fails it as an
+  unsupported sentence). Mutation audit: 25 mutants, all caught, including the pre-fix boundary of `bf81f62`.
+- **Certification:** all 24 certifiers pass in CI's two Linux tiers; gates A to V byte-identical; certified calculations unchanged.
+- **Not done:** no merge, no genuine rule, no INTERPRETATION entry, no prediction issuance.
+
+### 2026-11-19 - INTERPRETATION prerequisites, Stage 1 (`ADR-0130`), for CEO review
+
+- **Authorization:** the CEO's continuation and the owner's answer, quoted exactly in `ADR-0130` s1. Branch
+  `interpretation-stage1-prerequisites`, from `main` `8595021`.
+- **Mechanism (`engine/evidence/rule_registry.py`):** a sourced snapshot (`ace-rule-snapshot-v2`) may publish a non-synthetic rule only
+  when it cites an authorized source of its own school, at a chapter, verse and page locator. A claim marked independently checked needs
+  a verification whose transcription digest matches the statement. `rule_version()` refuses every genuine rule, so no evidence can name
+  one. The pinned snapshot, its pin and every published rule are unchanged.
+- **Boundary (`engine/evidence/explanation_boundary.py`, new):** a candidate is references only, under a closed schema with no free-text
+  field. Every sentence is rendered from the store's checked reads and the pinned registry. It imports no LLM, network or calculation code.
+- **Gates:** V (27 refusals, 3 preserved, 3 controls) and W (27 refusals, 1 preserved, 5 controls). Gates A to U are byte-identical to
+  `main`. All 24 certifiers pass in CI's two Linux tiers; other artifacts change only in the modules count (219 to 220).
+- **Self-audit:** 23 mutants of the publication checks, boundary checks and gate helpers. Two survived the first run (`admit` reading
+  without the graph checks; gate W's refusal helper); both are now caught by new regressions.
+- **Source witnesses:** `docs/INTERPRETATION_SOURCE_WITNESSES.md` (PROPOSED) records the Sharma edition as a candidate witness. Claude could
+  not read it: the Drive connected to this session is another account. Blockers B1 to B5 are recorded there. No source text is copied.
+- **Not done:** no merge, no genuine rule, no INTERPRETATION entry, no prediction issuance.
 
 ### 2026-11-19 - EVIDENCE phase exit ratified (`ADR-0129`)
 

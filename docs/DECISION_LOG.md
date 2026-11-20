@@ -13095,6 +13095,67 @@ None of these is closed or weakened by this entry.
 
 ---
 
+## ADR-0130 - INTERPRETATION prerequisites, Stage 1: a publication-only rule mechanism and a fail-closed explanation boundary, authorized as a pre-entry work package; no genuine rule published
+
+- **Date:** 2026-11-19
+- **Status:** **ACCEPTED, on the owner's authorization quoted in s1.** The work merges only on an independent CEO PASS and the owner's
+  separate authorization.
+- **Context:** `docs/Q8_CLOSURE_MATRIX.md` s7 makes INTERPRETATION depend on a rule registry populated with at least one school's
+  source-cited rules, and on the LLM boundary implemented as a refusal. EVIDENCE is closed (`ADR-0129`). The CEO's reviews of the
+  prerequisite packet fixed the design and the criteria below before any implementation.
+
+### 1. The CEO's continuation and the owner's authorization (exact text)
+
+```text
+ACE continuation — EVIDENCE remains CLOSED at `8595021`.
+
+The CEO has located BPHS Volume I, Girish Chand Sharma, Sagar Publications, 1994/1998, in the owner's Google Drive Books folder. Its printed pages 325–329 contain the tenth-lord placement sequence, verses 109–120 (PDF pages 333–337).
+
+Proceed with the previously scoped Stage 1 prerequisite infrastructure **only upon the owner's explicit implementation authorization**: publication-only registry mechanism and deterministic, fail-closed explanation boundary, with the agreed R1–R9/L1–L8 tests and preservation of certified gates.
+
+Do not publish genuine BPHS rules yet. Treat the located edition as a candidate witness; record source provenance, verse locators and rights/independent-verification blockers separately.
+
+Preserve `Domain.JATAKA`, `ProducingSystem.PARASHARI`, immutable historical evidence and all existing calculation certifications.
+
+Submit one focused PR with exact SHA, tests and certification evidence for CEO review. No merge, prediction issuance or INTERPRETATION entry.
+```
+
+The owner was asked whether they authorized Stage 1 as scoped, and whether the session might read the Sharma PDF's pages 333–337. They
+answered, exactly:
+
+```text
+Authorize, and read the Drive PDF (Recommended)
+```
+
+### 2. What is decided
+
+1. **A narrow exception to `ADR-0120` D1 and AC11.** The registry may publish a rule not marked synthetic only from a sourced snapshot
+   that lists the rule's source as an authorized source of the rule's own school, at a locator naming chapter, verse and page. A claim
+   marked independently checked needs a verification whose transcription matches the published statement.
+2. **Publication only.** `RuleRegistry.rule_version()` refuses a genuine rule, so no evidence can name one: registration, new evidence and
+   every evidence read all go through it. `ADR-0113` s2 C3 and `ADR-0119` D1, AC3 and AC17 are unchanged, and every evidence, entity,
+   event and ledger record stays synthetic.
+3. **The explanation contract.** A candidate explanation holds references only, under a closed schema with no free-text field. Every
+   sentence is rendered from the evidence store's checked reads and the pinned registry, never from the candidate. No LLM client exists.
+4. **The criteria R1 to R9 and L1 to L8** are fixed as reviewed. Gates A to U stay unchanged. New gates V (genuine-rule publication) and W
+   (the explanation boundary) carry their regressions and controls.
+5. **This is a pre-entry work package**, following the `ADR-0112` precedent. It enters no phase.
+
+### 3. What is not decided
+
+- **No genuine rule is published.** The pinned snapshot, its pin, and every published rule are unchanged.
+- **Open owner decisions:** the source edition and its rights basis; the rule count; and a named independent verifier who is not Claude.
+  `docs/INTERPRETATION_SOURCE_WITNESSES.md` records the candidate witness and these blockers.
+- **Stage 2,** the publication of genuine rules, needs its own authorization. It would also extend the governed authoring process to
+  produce sourced snapshots, and adjust gate M for genuine rules.
+
+- **Decision:** as s2.
+- **Consequences:** INTERPRETATION is not entered, and prediction issuance has not begun.
+- **Evidence:** the Stage 1 PR, its tests, regenerated evidence and CI. The CEO's text and the owner's answer exist as session input, not
+  as repository files.
+
+---
+
 ## ADR template (copy, do not edit above the line)
 
 ## ADR-XXXX - <title>

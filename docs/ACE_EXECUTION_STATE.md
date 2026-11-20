@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | **ACCEPTED (`ADR-0062`) - canonical, machine-checkable current-state record.** Regenerate/refresh on every meaningful implementation task, same discipline as `reports/AI_HANDOFF_CURRENT.md`. |
-| Version | 7.61.0 |
+| Version | 7.63.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-19 (**EVIDENCE phase exited, owner-ratified (`ADR-0129`), at evaluated `main` `ad4d5f7`. No further phase entered.**) |
+| Last updated | 2026-11-20 (**Stage 1 (`ADR-0130`): the CEO's Gate W HOLD on PR #64 corrected; back in CEO review. No genuine rule published; INTERPRETATION not entered.**) |
 | Review cadence | Refresh at the start of a session if stale; not load-bearing if it isn't. |
 
 # ACE execution state
@@ -42,23 +42,23 @@ independently is in these fields plus the pointers they name.
 
 | Field | Value |
 |---|---|
-| `CURRENT_PHASE` | **EVIDENCE exited** (`ADR-0129`, owner-ratified 2026-11-19, evaluated `main` `ad4d5f7`). No further phase is entered: INTERPRETATION or any other phase needs a separate decision under `Q8_CLOSURE_MATRIX.md`. |
-| `CURRENT_MILESTONE` | **EVIDENCE milestone CLOSED.** WP-E1 to WP-E6 closed; findings F1, F2 and L1 closed; `reports/EVIDENCE_PHASE_EXIT_RECORD.md` 0.3.0 accepted. L2 and the stated qualifications carry forward as limitations. |
-| `CURRENT_AUTHORIZED_TASK` | None. No phase implementation is authorized. |
-| `TASK_OWNER` | USER (the next phase decision, if any). |
-| `STATUS` | EVIDENCE exited. `EVIDENCE_FOUNDATIONS_V1` passes gates A to U. Certified calculations are unchanged since EVIDENCE entry. Limitations carried: L2, the qualifications X1, X2, X3 and I4, every certification non-claim, the three `TRANSIT_V1` overclaims, and prediction issuance without a roadmap placement. The product contract's canonical text is `specs/PROJECT_CHARTER.md` v1.4.0 (owner-ratified, `ADR-0117` and its addendum); the product-objective definition is CLOSED (`ADR-0118` s2). Neither is restated here. |
-| `LAST_COMPLETED_ACTION` | Recorded the owner's EVIDENCE exit ratification (`ADR-0129`), marked the exit record accepted, and closed the EVIDENCE milestone; PR #60 is merged on the owner's authorization. |
-| `LAST_COMMIT` (main) | `ad4d5f7383ba2a0c4f53464132198831b77be72a` (PR #63 merge, the L1 correction; parents `f24771f` and `584fcb0`). |
-| `LAST_COMMIT` (evidence-phase-exit-checklist) | This branch's commits, with `main` `ad4d5f7383ba2a0c4f53464132198831b77be72a` merged in. |
-| `LAST_CI_RUN` | `44498742069` at `ad4d5f7`: push to `main`, success on all four jobs on `ubuntu-24.04`. This branch's results are on its review PR. |
-| `LAST_CEO_DECISION` | PASS at the final EVIDENCE exit audit of PR #60 at `2693488`, as the owner states (`ADR-0129` s1). |
-| `NEXT_AUTHORIZED_ACTION` | None. Entry into INTERPRETATION or any other phase needs a separate owner decision under `Q8_CLOSURE_MATRIX.md`. Before any prediction implementation, an owner-approved roadmap placement. The retirement of `SUPPORT_PATHS_V1` gates H and I needs separate approval. |
-| `WAITING_FOR` | USER: a decision on the next phase, if any. |
-| `BLOCKER` | None. |
-| `CEO_APPROVAL_REQUIRED` | Entry into any next phase. |
-| `CLAUDE_ACTION_REQUIRED` | None until directed. Every relevant specification, milestone and review carries the Charter-compliance statement. |
-| `CHATGPT_ACTION_REQUIRED` | None until a next-phase proposal exists. |
-| `USER_ACTION_REQUIRED` | A decision on the next phase, if any; a roadmap placement for prediction issuance before its implementation; a separate authorization for the bounded retirement of `SUPPORT_PATHS_V1` gates H and I. |
+| `CURRENT_PHASE` | **EVIDENCE exited** (`ADR-0129`, owner-ratified 2026-11-19, evaluated `main` `ad4d5f7`). No further phase is entered. The Stage 1 work below is a pre-entry work package (`ADR-0130` s2.5, after the `ADR-0112` precedent). |
+| `CURRENT_MILESTONE` | **EVIDENCE milestone CLOSED.** INTERPRETATION prerequisites, Stage 1 (`ADR-0130`): implemented on branch `interpretation-stage1-prerequisites`, in CEO review. |
+| `CURRENT_AUTHORIZED_TASK` | `ADR-0130` Stage 1, submitted as one PR for CEO review. Not authorized: merging it, publishing any genuine rule (Stage 2), entering INTERPRETATION, prediction issuance. |
+| `TASK_OWNER` | CHATGPT (the CEO review of the Stage 1 PR), then USER (merge authorization). |
+| `STATUS` | EVIDENCE exited. On the Stage 1 branch, `EVIDENCE_FOUNDATIONS_V1` passes gates A to W; gates A to U are byte-identical to `main`, and V is unchanged by the Gate W correction. Every certified calculation is unchanged: its artifacts differ only in the anti-fitting modules count (219 to 220). The pinned rule snapshot and its pin are unchanged, and every published rule is still synthetic. Limitations carried: L2, the qualifications X1, X2, X3 and I4, every certification non-claim, the three `TRANSIT_V1` overclaims, and prediction issuance without a roadmap placement. The product contract's canonical text is `specs/PROJECT_CHARTER.md` v1.4.0 (owner-ratified, `ADR-0117` and its addendum); the product-objective definition is CLOSED (`ADR-0118` s2). Neither is restated here. |
+| `LAST_COMPLETED_ACTION` | Corrected the CEO's Gate W HOLD on PR #64: the explanation boundary no longer accepts a candidate-selected no-answer reason; a no-answer segment renders the neutral abstention "No answer is given." Gate W gains a legitimate case, four adversarial cases and two controls; 25 mutants, all caught; Linux regeneration and verification rerun. |
+| `LAST_COMMIT` (main) | `8595021457660a29a4bfc1658b942ffe69570611` (PR #60 merge, the EVIDENCE exit; parents `ad4d5f7` and `3b08207`). |
+| `LAST_COMMIT` (interpretation-stage1-prerequisites) | This branch's commits, from `main` `8595021457660a29a4bfc1658b942ffe69570611`. |
+| `LAST_CI_RUN` | `44513086384` at `8595021`: push to `main`, success on all four jobs. This branch's results are on its review PR. |
+| `LAST_CEO_DECISION` | HOLD on PR #64 at `bf81f62`: one demonstrated Gate W defect (candidate-selected no-answer reasons unsupported by the evidence). Corrected on the branch; awaiting final review. |
+| `NEXT_AUTHORIZED_ACTION` | The CEO's review of the Stage 1 PR. Nothing merges without a CEO PASS and the owner's separate authorization. Stage 2 (genuine rule publication) needs its own authorization. Entry into INTERPRETATION needs a separate owner decision under `Q8_CLOSURE_MATRIX.md`. Before any prediction implementation, an owner-approved roadmap placement. The retirement of `SUPPORT_PATHS_V1` gates H and I needs separate approval. |
+| `WAITING_FOR` | CHATGPT: the final CEO review of PR #64 after the Gate W correction. |
+| `BLOCKER` | None for Stage 1. For Stage 2: blockers B1 to B5 in `docs/INTERPRETATION_SOURCE_WITNESSES.md` s3 (rights basis, a pinned witness scan, locators read in the edition, a named independent verifier, the rule count). |
+| `CEO_APPROVAL_REQUIRED` | The Stage 1 PR; later, any Stage 2 proposal and entry into any next phase. |
+| `CLAUDE_ACTION_REQUIRED` | None until the CEO's final review of PR #64. Every relevant specification, milestone and review carries the Charter-compliance statement. |
+| `CHATGPT_ACTION_REQUIRED` | Final review of PR #64 at its stated head SHA: the Gate W correction, against the HOLD's four points. |
+| `USER_ACTION_REQUIRED` | After a CEO PASS, a merge decision on the Stage 1 PR. For Stage 2: the source edition and its rights basis, a pinned witness scan, a named independent verifier who is not Claude, and the rule count. A roadmap placement for prediction issuance before its implementation; a separate authorization for the bounded retirement of `SUPPORT_PATHS_V1` gates H and I. |
 | `HANDOFF_REQUIRED` | None beyond this file and the latest entry in `reports/AI_HANDOFF_CURRENT.md`. |
 
 ## How to independently verify every field above
@@ -79,6 +79,8 @@ exactly as `reports/AI_HANDOFF_CURRENT.md` already requires of itself.
 
 | Version | Date | Change |
 |---|---|---|
+| 7.63.0 | 2026-11-20 | **PR #64 Gate W HOLD corrected.** A no-answer segment renders a neutral abstention; a candidate-selected reason is refused. |
+| 7.62.0 | 2026-11-19 | **`ADR-0130`: Stage 1 prerequisite work package, owner-authorized.** A publication-only genuine-rule mechanism and a fail-closed explanation boundary, with gates V and W; no genuine rule published. |
 | 7.61.0 | 2026-11-19 | **`ADR-0129`: EVIDENCE phase exit ratified by the owner.** The exit record is accepted as evidence within its stated scope. |
 | 7.60.0 | 2026-11-19 | **PR #63 merged; EVIDENCE phase-exit record refreshed at `ad4d5f7`** (`ADR-0128`; no open finding; L2 accepted by the CEO). |
 | 7.59.0 | 2026-11-19 | **L1 correction: historical rule reads match the governed allocation history and publications; gate U added** (`ADR-0127`). |

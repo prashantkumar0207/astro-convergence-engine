@@ -1,5 +1,5 @@
 """EVIDENCE_FOUNDATIONS_V1 CERTIFICATION RUNNER (ADR-0115 s4; ADR-0116 s4; ADR-0119 s3; ADR-0120 s4; ADR-0121;
-ADR-0122 s6; ADR-0124; ADR-0125; ADR-0127).
+ADR-0122 s6; ADR-0124; ADR-0125; ADR-0127; ADR-0130).
 
 Regenerates certification/EVIDENCE_FOUNDATIONS_V1_certification.json FROM SCRATCH on every run;
 the stored JSON is never accepted as proof.
@@ -50,6 +50,10 @@ Gates:
      exactly its dependency, conflict flag and basis; each real check, weakened, admits the forgery.
   U  historical rule integrity: a rule version recorded under an earlier snapshot is read only as an issued RUL,
      under its school, and a version still published unchanged; genuine history stays readable.
+  V  genuine-rule publication: only from an authorized source of the rule's own school, at a precise locator, with
+     checked claims verified; published for citation and never projected into evidence, however a row is written.
+  W  the explanation boundary: a candidate is references only, refused fail closed otherwise; every sentence is
+     rendered from the evidence store's checked reads and the pinned registry, never from the candidate.
 
 Exit 0 = PASS, 3 = FAIL.
 """
@@ -71,6 +75,7 @@ sys.path.insert(0, str(ROOT))
 
 sys.path.insert(0, str(ROOT / "scripts"))
 import author_rule_registry  # noqa: E402
+import check_rule_registry  # noqa: E402
 import certification_support as support  # noqa: E402
 
 from engine.evidence.entity import (  # noqa: E402
@@ -100,6 +105,7 @@ from engine.evidence.evidence import (  # noqa: E402
     DependencyClass, Domain, EvidenceItem, EvidenceModelError, Lineage, Performance, Polarity, ProducingSystem,
     Relationship, RuleReference, RuleSpec, RuleVersion, Supplied, TimingContext, TimingKind, provenance_differences,
 )
+from engine.evidence import explanation_boundary  # noqa: E402
 from engine.evidence import provenance_graph  # noqa: E402
 from engine.evidence import rule_registry  # noqa: E402
 from engine.evidence.evidence_identifiers import EvidenceId, RuleId  # noqa: E402
@@ -2823,6 +2829,438 @@ def gate_u_historical_rule_integrity():
             "controls": sorted(controls)}
 
 
+# ------------------------------------------------------------------ INTERPRETATION prerequisites, Stage 1 (ADR-0130)
+
+GENUINE_KEY = "genuine.test.parashari.tenth-lord-in-first"
+#: A test source for the publication mechanism. It is not a real edition and the genuine test rule quotes nothing.
+TEST_SOURCE = {"id": "SRC-TEST-0001", "school": "parashari", "work": "Test work, written for these checks",
+               "edition": "Test edition", "language": "test", "witness_url": "https://example.invalid/witness",
+               "witness_sha256": "0" * 64, "rights_basis": "test fixture; contains no source text"}
+TEST_LOCATOR = "chapter 24, verse 109, page 325"
+
+
+def _write_json(path: Path, data) -> None:
+    path.write_bytes((json.dumps(data, sort_keys=True, indent=1) + "\n").encode("ascii"))
+
+
+def sourced_copy(root: Path, name: str, change=None, history_change=None) -> tuple:
+    """A copy of the pinned registry, rewritten as a sourced snapshot that publishes one genuine test rule from the test
+    source, then changed by `change`. Returns the directory and the digest that loads it."""
+
+    target = root / name
+    shutil.copytree(rule_registry.DATA_DIR, target)
+    history = json.loads((target / rule_registry.HISTORY_NAME).read_bytes())
+    number = len(history["allocations"]) + 1
+    history["allocations"].append({"key": GENUINE_KEY, "number": number, "school": "parashari"})
+    if history_change:
+        history_change(history)
+    _write_json(target / rule_registry.HISTORY_NAME, history)
+    snapshot = json.loads((target / "snapshot.json").read_bytes())
+    base = rule_registry.pinned().lookup(rule_registry.pinned().by_key(PARASHARI_KEY), 1, "base")
+    record = {**rule_registry.content_record(base), "rule": number, "key": GENUINE_KEY, "known_variants": ["base"],
+              "citation": {"source": TEST_SOURCE["id"], "locator": TEST_LOCATOR},
+              "statement": "Test statement written for these checks; it quotes no source.",
+              "declared_strength": "not stated", "synthetic": False}
+    _rehash(record)
+    document = {"schema": rule_registry.SOURCED_SNAPSHOT_SCHEMA, "rules": snapshot["rules"] + [record],
+                "sources": [dict(TEST_SOURCE)], "verifications": []}
+    if change:
+        change(document)
+    _write_json(target / "snapshot.json", document)
+    digest = hashlib.sha256((target / "snapshot.json").read_bytes()).hexdigest()
+    manifest = json.loads((target / rule_registry.MANIFEST_NAME).read_bytes())
+    manifest["sha256"] = digest
+    _write_json(target / rule_registry.MANIFEST_NAME, manifest)
+    return target, digest
+
+
+def _genuine(document) -> dict:
+    return document["rules"][-1]
+
+
+def _claim_checked(document) -> None:
+    _rehash(_genuine(document), certification={**_genuine(document)["certification"],
+                                               "transcription_fidelity": "independently_checked"})
+
+
+def _verification(document, **changes) -> dict:
+    rule = _genuine(document)
+    entry = {"rule": rule["rule"], "version": rule["version"], "variant": rule["variant"], "verifier": "test verifier",
+             "transcription_sha256": rule_registry.statement_digest(rule["statement"]),
+             "reviewed": list(rule_registry.VERIFIED_ASPECTS)}
+    entry.update(changes)
+    return entry
+
+
+def _genuine_projection(registry: rule_registry.RuleRegistry, key: str = GENUINE_KEY) -> RuleVersion:
+    """What a forger would write for a genuine rule: the shape of a projection, built around rule_version()."""
+
+    item = registry.lookup(registry.by_key(key), 1, "base")
+    return RuleVersion(rule=item.rule, version=1, spec=RuleSpec(
+        school=item.school, content_hash=item.content_hash, knowledge_snapshot_hash=registry.snapshot_sha256,
+        declared_strength=item.declared_strength, variant="base",
+        provenance=RecordProvenance(source="the pinned rule registry", method="published snapshot",
+                                    schema_version=rule_registry.SNAPSHOT_SCHEMA), data_class=DataClass.SYNTHETIC))
+
+
+def gate_v_genuine_rule_publication():
+    """The publication-only mechanism: a genuine rule is published only from an authorized source of its own school, at
+    a precise locator, with any independent-checked claim backed by a matching verification; it is published for
+    citation and never projected into evidence, by registration or by a row forged directly into the database. The
+    pinned snapshot and its pin are unchanged, and a sourced snapshot keeps every earlier publication intact under G3
+    (ADR-0130; ADR-0120 D1, AC11 as narrowed)."""
+
+    refused, controls, preserved = {}, {}, {}
+
+    def refuses(label, action, reason=""):
+        try:
+            action()
+        except (rule_registry.RegistryError, StoreError) as exc:
+            if reason not in str(exc):
+                fail(f"{label} was refused for another reason: {exc}")
+            refused[label] = True
+            return
+        fail(f"not refused: {label}")
+
+    pinned = rule_registry.pinned()
+    if pinned.sources() or [item for item in pinned.rules() if item.synthetic is not True] or \
+            pinned.snapshot_sha256 != rule_registry.PINNED_SNAPSHOT_SHA256:
+        fail("the pinned snapshot lists a source or a genuine rule; Stage 1 publishes none")
+    preserved["the pinned snapshot lists no source and publishes synthetic rules only"] = True
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as folder:
+        root = Path(folder)
+        directory, digest = sourced_copy(root, "clean")
+        registry = rule_registry.load_registry(directory, digest)
+        genuine = registry.lookup(registry.by_key(GENUINE_KEY), 1, "base")
+        if genuine.synthetic or genuine.citation.source != TEST_SOURCE["id"] or len(registry.sources()) != 1:
+            fail("a genuine rule from an authorized source was not published for citation")
+        preserved["a genuine rule from an authorized source is published for citation"] = True
+        refuses("projecting a genuine rule into evidence", lambda: registry.rule_version(genuine.rule, 1, "base"),
+                "never projected into evidence")
+        previous = (json.loads((rule_registry.DATA_DIR / rule_registry.HISTORY_NAME).read_bytes()),
+                    json.loads((rule_registry.DATA_DIR / "snapshot.json").read_bytes()))
+        if check_rule_registry.check_against(*previous, directory) != []:
+            fail("a sourced snapshot rewrote or withdrew an earlier publication (G3)")
+        preserved["every earlier publication is unchanged under G3"] = True
+        for label, change, reason in (
+                ("a genuine rule citing an unlisted source",
+                 lambda d: _rehash(_genuine(d), citation={"source": "SRC-OTHER", "locator": TEST_LOCATOR}),
+                 "synthetic rules only"),
+                ("a genuine rule citing a source of another school",
+                 lambda d: d["sources"][0].update(school="kp"), "synthetic rules only"),
+                ("a locator with no chapter or page", lambda d: _rehash(_genuine(d), citation={
+                    "source": TEST_SOURCE["id"], "locator": "BPHS 24.109"}), "names chapter, verse and page"),
+                ("a locator with a chapter only", lambda d: _rehash(_genuine(d), citation={
+                    "source": TEST_SOURCE["id"], "locator": "chapter 24"}), "names chapter, verse and page"),
+                ("a locator with no chapter", lambda d: _rehash(_genuine(d), citation={
+                    "source": TEST_SOURCE["id"], "locator": "verse 109, page 325"}), "names chapter, verse and page"),
+                ("an independently checked claim with no verification", _claim_checked, "no independent verification"),
+                ("a verification whose transcription does not match", lambda d: (_claim_checked(d), d["verifications"].append(
+                    _verification(d, transcription_sha256="1" * 64))), "does not match the published statement"),
+                ("a verification that does not review every aspect", lambda d: (_claim_checked(d), d["verifications"].append(
+                    _verification(d, reviewed=["statement"]))), "reviews exactly"),
+                ("a verification naming a synthetic rule", lambda d: d["verifications"].append(
+                    {**_verification(d), "rule": 1, "version": 1, "variant": "base"}), "one published genuine rule"),
+                ("an authorized source listed twice", lambda d: d["sources"].append(dict(TEST_SOURCE)), "listed once"),
+                ("a source whose witness is not pinned", lambda d: d["sources"][0].update(witness_sha256="unpinned"),
+                 "pins its witness"),
+                ("a source missing its rights basis", lambda d: d["sources"][0].pop("rights_basis"),
+                 "only its schema's fields"),
+                ("a sourced snapshot under the plain schema name",
+                 lambda d: d.update(schema=rule_registry.SNAPSHOT_SCHEMA), "not a rule snapshot of this schema")):
+            planted, planted_digest = sourced_copy(root, f"planted{len(refused)}", change)
+            refuses(f"a sourced snapshot with {label}", lambda: rule_registry.load_registry(planted, planted_digest),
+                    reason)
+        unissued, unissued_digest = sourced_copy(root, "unissued", history_change=lambda h: h["allocations"].pop())
+        refuses("a genuine rule whose number the allocation history never issued",
+                lambda: rule_registry.load_registry(unissued, unissued_digest), "never issued")
+        record = {**rule_registry.content_record(genuine), "content_hash": genuine.content_hash}
+        refuses("a genuine rule read with no authorized source", lambda: rule_registry.rule_from_record(record),
+                "synthetic rules only")
+        # Evidence: a genuine rule cannot be registered, and a row forged for one is refused by every read, whether the
+        # row claims the snapshot in force or an earlier one.
+        in_force = rule_registry.pinned
+        rule_registry.pinned = lambda: registry
+        try:
+            projection = _genuine_projection(registry)
+            for index, (hash_, label, reasons) in enumerate((
+                    (registry.snapshot_sha256, "the pinned snapshot hash", ("never projected into evidence",)),
+                    ("f" * 64, "an earlier snapshot hash", ("never issued", "never projected into evidence")))):
+                store: EvidenceStore = EvidenceStore(root / f"evidence{index}.sqlite")
+                owner = store.entities.persist(_synthetic_subjects()[0])
+                candidate = store.entities.load(owner).charts[0]
+                if index == 0:
+                    refuses("registering a genuine rule as evidence", lambda: store.register_rule(projection),
+                            "never projected into evidence")
+                parashari = store.register_rule(registry.rule_version(registry.by_key(PARASHARI_KEY), 1, "base"))
+                world = _EvidenceWorld(owner, candidate.label, {ProducingSystem.PARASHARI: parashari})
+                good = store.persist(world.item())
+                forged_rule = dataclasses.replace(projection, spec=dataclasses.replace(
+                    projection.spec, knowledge_snapshot_hash=hash_))
+                evidence_id = EvidenceId.from_number(800 + index)
+                item = world.item(facts=("Forged longitude",),
+                                  rule=RuleReference(rule=forged_rule.rule, version=1, variant="base"),
+                                  declared_strength=forged_rule.spec.declared_strength)
+                store._db.execute("INSERT INTO registered_rule_versions (rule_id, version, variant, payload) VALUES "
+                                  "(?, ?, ?, ?)", (forged_rule.rule.value, 1, "base",
+                                                   json.dumps(rule_to_record(forged_rule))))
+                store._db.execute("INSERT INTO evidence_items (evidence_id, entity_id, recomputes, payload) VALUES "
+                                  "(?, ?, NULL, ?)", (evidence_id.value, item.entity.value,
+                                                      json.dumps(item_to_record(evidence_id, item))))
+                built = provenance_graph.record_graph(evidence_id, item, candidate, None, forged_rule, {})
+                for node in built.nodes:
+                    store._db.execute("INSERT OR IGNORE INTO graph_nodes (node_key, kind, payload) VALUES (?, ?, ?)",
+                                      provenance_graph.node_to_row(node))
+                for edge in built.edges:
+                    store._db.execute("INSERT OR IGNORE INTO graph_edges (source_key, kind, target_key, position) "
+                                      "VALUES (?, ?, ?, ?)", (edge.source.key, edge.kind.value, edge.target.key,
+                                                              edge.position))
+                for read, action in (("load", lambda: store.load(evidence_id)),
+                                     ("evidence_ids", lambda: store.evidence_ids()),
+                                     ("join", lambda: store.join((good, evidence_id))),
+                                     ("classify", lambda: store.classify(good, evidence_id)),
+                                     ("reproduce", lambda: store.reproduce(evidence_id))):
+                    reason = next((text for text in reasons if _refusal(action, text)), None)
+                    if reason is None:
+                        fail(f"{read} of a row forged for a genuine rule at {label} was not refused for its reason")
+                    refused[f"{read} of a row forged for a genuine rule at {label}"] = True
+                if index == 0:
+                    # Control: a projection that lets a genuine rule through is what this refusal rests on.
+                    weak = rule_registry.RuleRegistry(registry.rules(), registry.snapshot_sha256)
+                    weak.rule_version = lambda rule, version, variant: projection if rule == projection.rule else \
+                        registry.rule_version(rule, version, variant)
+                    rule_registry.pinned = lambda: weak
+                    if store.load(evidence_id).rule.rule != projection.rule:
+                        fail("a projection admitting genuine rules was not distinguishable from the real one")
+                    controls["a rule_version() that projects genuine rules admits the forged evidence"] = True
+                    rule_registry.pinned = lambda: registry
+                store.close()
+        finally:
+            rule_registry.pinned = in_force
+        # Controls: each publication check, weakened, admits what it refuses.
+        unlisted, unlisted_digest = sourced_copy(root, "control-unlisted", lambda d: _rehash(_genuine(d), citation={
+            "source": "SRC-OTHER", "locator": TEST_LOCATOR}))
+        authorize = rule_registry._require_authorized
+        rule_registry._require_authorized = lambda data, sources: None
+        try:
+            rule_registry.load_registry(unlisted, unlisted_digest)
+            controls["the source check, weakened, publishes a rule from an unlisted source"] = True
+        except rule_registry.RegistryError as exc:
+            fail(f"weakening the source check did not change the load: {exc}")
+        finally:
+            rule_registry._require_authorized = authorize
+        unverified, unverified_digest = sourced_copy(root, "control-unverified", _claim_checked)
+        verify = rule_registry._require_verified
+        rule_registry._require_verified = lambda rules, verifications: None
+        try:
+            rule_registry.load_registry(unverified, unverified_digest)
+            controls["the verification check, weakened, publishes an unverified checked claim"] = True
+        except rule_registry.RegistryError as exc:
+            fail(f"weakening the verification check did not change the load: {exc}")
+        finally:
+            rule_registry._require_verified = verify
+    return {"classification": "negative_control", "refusals_verified": len(refused),
+            "legitimate_reads_preserved": len(preserved), "controls_rejected": len(controls),
+            "refused": sorted(refused), "preserved": sorted(preserved), "controls": sorted(controls)}
+
+
+def _refusal(action, reason: str) -> bool:
+    """Whether `action` is refused by the store or the registry with `reason` in its message."""
+
+    try:
+        action()
+    except (rule_registry.RegistryError, StoreError) as exc:
+        return reason in str(exc)
+    return False
+
+
+def _candidate(scope, segments) -> dict:
+    return {"schema": explanation_boundary.EXPLANATION_SCHEMA, "scope": [value.value for value in scope],
+            "segments": segments}
+
+
+def gate_w_explanation_boundary():
+    """The explanation boundary refuses, fail closed, any candidate that is not made of references alone, and renders
+    every sentence from the evidence store's checked reads and the pinned registry. Each check, weakened, admits what it
+    refuses, and no planted text ever reaches the rendered output (ADR-0130; H5 s3; Q8 s7)."""
+
+    refused, controls, preserved = {}, {}, {}
+    BoundaryError = explanation_boundary.BoundaryError
+
+    def refuses(label, action, reason=""):
+        try:
+            action()
+        except BoundaryError as exc:
+            if reason not in str(exc):
+                fail(f"{label} was refused for another reason: {exc}")
+            refused[label] = True
+            return
+        fail(f"not refused: {label}")
+
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as folder:
+        setting = _GraphWorld(Path(folder) / "evidence.sqlite")
+        store: EvidenceStore = setting.store
+        ids = setting.populate()
+        registry = rule_registry.pinned()
+        first, second = ids[0], ids[1]
+        item = store.load(first)
+        segments = [{"kind": "rule_statement", "evidence": first.value},
+                    {"kind": "rule_citation", "evidence": first.value},
+                    {"kind": "chart_fact", "evidence": first.value, "field": "planets"},
+                    {"kind": "calculated_input", "evidence": first.value, "index": 0},
+                    {"kind": "timing", "evidence": second.value}, {"kind": "polarity", "evidence": second.value},
+                    {"kind": "uncertainty", "evidence": first.value, "field": "historical_performance"},
+                    {"kind": "no_answer"}]
+        lines = explanation_boundary.render(_candidate((first, second), segments), store, registry)
+        published = registry.lookup(item.rule.rule, item.rule.version, item.rule.variant)
+        if not (published.statement in lines[0] and published.citation.locator in lines[1] and
+                all(planet in lines[2] for planet in item.chart_context.planets) and
+                item.lineage.inputs[0].fact in lines[3] and store.load(second).timing.label in lines[4] and
+                lines[7] == explanation_boundary.ABSTENTION_TEXT):
+            fail("a rendered sentence does not come from the evidence and the registry")
+        preserved["every kind renders from the evidence and the pinned registry"] = True
+        # A no-answer segment over valid, non-conflicting evidence renders the neutral abstention and nothing else.
+        if item.polarity is Polarity.CONTRADICTORY or store.relationships():
+            fail("the no-answer cases need evidence that records no conflict")
+        if explanation_boundary.render(_candidate((first,), [{"kind": "no_answer"}]), store, registry) != (
+                explanation_boundary.ABSTENTION_TEXT,):
+            fail("a no-answer segment rendered more than the neutral abstention")
+        preserved["a no-answer segment renders only the neutral abstention"] = True
+        good = segments[:1]
+        cases = [
+            ("a candidate that is text", "the tenth lord in the first house gives fame", {}, "carries exactly"),
+            ("a candidate with a free-text field", {**_candidate((first,), good), "text": "a new rule"}, {},
+             "carries exactly"),
+            ("a candidate missing its scope", {"schema": explanation_boundary.EXPLANATION_SCHEMA, "segments": good}, {},
+             "carries exactly"),
+            ("another schema", {**_candidate((first,), good), "schema": "v0"}, {}, "this schema"),
+            ("an empty scope", _candidate((), good), {}, "names the evidence in its scope"),
+            ("an item in scope twice", _candidate((first, first), good), {}, "in scope once"),
+            ("no segments", _candidate((first,), []), {}, "at least one segment"),
+            ("a segment that is text", _candidate((first,), ["Saturn in the tenth brings delay"]), {}, "names its kind"),
+            ("an undeclared kind", _candidate((first,), [{"kind": "rule_application", "evidence": first.value}]), {},
+             "undeclared segment kind"),
+            ("a rule statement given in the candidate", _candidate((first,), [
+                {"kind": "rule_statement", "evidence": first.value, "statement": "an invented rule"}]), {},
+             "carries exactly"),
+            ("a rule identifier given in the candidate", _candidate((first,), [
+                {"kind": "rule_citation", "evidence": first.value, "rule": RuleId.from_number(2).value}]), {},
+             "carries exactly"),
+            ("a polarity given in the candidate", _candidate((first,), [
+                {"kind": "polarity", "evidence": first.value, "value": "negative"}]), {}, "carries exactly"),
+            ("an overridden calculated value", _candidate((first,), [
+                {"kind": "calculated_input", "evidence": first.value, "index": 0, "value": "Moon 12 Aries"}]), {},
+             "carries exactly"),
+            ("a chart field the contract does not define", _candidate((first,), [
+                {"kind": "chart_fact", "evidence": first.value, "field": "effect"}]), {}, "names one of"),
+            ("an uncertainty field the contract does not define", _candidate((first,), [
+                {"kind": "uncertainty", "evidence": first.value, "field": "score"}]), {}, "names one of"),
+            ("an input index that is not a number", _candidate((first,), [
+                {"kind": "calculated_input", "evidence": first.value, "index": "first"}]), {}, "by its index"),
+            ("an input index that is a boolean", _candidate((first,), [
+                {"kind": "calculated_input", "evidence": first.value, "index": True}]), {}, "by its index"),
+            ("a negative input index", _candidate((first,), [
+                {"kind": "calculated_input", "evidence": first.value, "index": -1}]), {}, "by its index"),
+            ("an evidence reference that is not an identifier", _candidate((first,), [
+                {"kind": "polarity", "evidence": "the first item"}]), {}, "not an EVD identifier"),
+            ("an evidence reference that is not text", _candidate((first,), [
+                {"kind": "polarity", "evidence": {"id": first.value}}]), {}, "an EVD identifier"),
+            ("a no-answer segment with its own words", _candidate((first,), [
+                {"kind": "no_answer", "reason": "the stars are unclear"}]), {}, "carries exactly"),
+            ("a no-answer segment naming evidence", _candidate((first,), [
+                {"kind": "no_answer", "evidence": first.value}]), {}, "carries exactly"),
+            *((f"a candidate-selected reason, {reason}, over valid non-conflicting evidence", _candidate((first,), [
+                {"kind": "polarity", "evidence": first.value}, {"kind": "no_answer", "reason": reason}]), {},
+               "carries exactly")
+              for reason in ("no_evidence", "incomplete_lineage", "conflicting_evidence", "outside_scope")),
+            ("evidence outside the scope", _candidate((first,), [{"kind": "polarity", "evidence": second.value}]), {},
+             "not in the explanation's scope"),
+            ("an input the item does not record", _candidate((first,), [
+                {"kind": "calculated_input", "evidence": first.value, "index": 99}]), {}, "records no calculated input"),
+            ("an item that does not exist", _candidate((EvidenceId.from_number(990),), [
+                {"kind": "polarity", "evidence": EvidenceId.from_number(990).value}]), {}, "fails the evidence read"),
+            ("a rule the pinned registry does not publish", _candidate((first,), good),
+             {"registry": rule_registry.RuleRegistry(tuple(rule for rule in registry.rules() if rule.rule != item.rule.rule),
+                                                     registry.snapshot_sha256)}, "is not registered"),
+        ]
+        for label, candidate, options, reason in cases:
+            use = options["registry"] if "registry" in options else registry
+            refuses(f"{label}", lambda candidate=candidate, use=use: explanation_boundary.render(candidate, store, use),
+                    reason)
+        # An intact row whose recorded graph is missing: only the store's full read refuses it.
+        planted_id = EvidenceId.from_number(991)
+        store._db.execute("INSERT INTO evidence_items (evidence_id, entity_id, recomputes, payload) VALUES "
+                          "(?, ?, NULL, ?)", (planted_id.value, item.entity.value,
+                                              json.dumps(item_to_record(planted_id, item))))
+        if store._stored_item(planted_id) != item:
+            fail("the planted row does not read cleanly on its own")
+        refuses("an intact row whose recorded graph is missing", lambda: explanation_boundary.render(
+            _candidate((planted_id,), [{"kind": "polarity", "evidence": planted_id.value}]), store, registry),
+            "fails the evidence read")
+        # Controls: each check, weakened, admits what it refuses; no planted text ever reaches the output.
+        planted = "PLANTED: an invented rule"
+        exact = explanation_boundary._exact
+        explanation_boundary._exact = lambda name, data, keys: data
+        try:
+            rendered = explanation_boundary.render({**_candidate((first,), [
+                {"kind": "rule_statement", "evidence": first.value, "statement": planted}]), "text": planted},
+                store, registry)
+        finally:
+            explanation_boundary._exact = exact
+        controls["the structural parse, weakened, admits a candidate carrying free text"] = True
+        if any(planted in line for line in rendered):
+            fail("the renderer echoed text from a candidate")
+        controls["even then, the renderer never echoes a candidate's text"] = True
+        # Control: a parse that drops a candidate's reason instead of refusing it admits the reason; even then, no reason
+        # reaches the output, so the evidence is never said to conflict.
+        strict = explanation_boundary._exact
+        explanation_boundary._exact = lambda name, data, keys: strict(name, {
+            key: value for key, value in data.items() if key != "reason"} if name == "a no_answer segment" and
+            isinstance(data, dict) else data, keys)
+        try:
+            rendered = explanation_boundary.render(_candidate((first,), [
+                {"kind": "no_answer", "reason": "conflicting_evidence"}]), store, registry)
+        finally:
+            explanation_boundary._exact = strict
+        controls["a parse that ignores a candidate's reason, weakened, admits it"] = True
+        if rendered != (explanation_boundary.ABSTENTION_TEXT,):
+            fail("a candidate-selected reason reached the rendered output")
+        controls["even then, no candidate-selected reason reaches the output"] = True
+        published_check = explanation_boundary._published
+        explanation_boundary._published = lambda entry, registry_: _forged_rule(
+            published_check(entry, registry_), statement=planted)
+        try:
+            weak_lines = explanation_boundary.render(_candidate((first,), good), store, registry)
+        finally:
+            explanation_boundary._published = published_check
+        if planted not in weak_lines[0]:
+            fail("rule statements did not come through the registry lookup")
+        controls["rule statements come only through the registry lookup"] = True
+        scope_check = explanation_boundary.admit
+        explanation_boundary.admit = lambda explanation, store_, registry_: {
+            value: store_.load(value) for value in (first, second)}
+        try:
+            explanation_boundary.render(_candidate((first,), [{"kind": "polarity", "evidence": second.value}]), store,
+                                        registry)
+            controls["the scope check, weakened, admits evidence outside the scope"] = True
+        except BoundaryError as exc:
+            fail(f"weakening the scope check did not change the render: {exc}")
+        finally:
+            explanation_boundary.admit = scope_check
+        store.close()
+    tree = ast.parse((ROOT / "engine" / "evidence" / "explanation_boundary.py").read_text(encoding="utf-8"))
+    imported = {node.module for node in ast.walk(tree) if isinstance(node, ast.ImportFrom) and node.module} | \
+        {alias.name for node in ast.walk(tree) if isinstance(node, ast.Import) for alias in node.names}
+    if not imported <= {"__future__", "dataclasses", "enum", "engine.evidence.rule_registry", "engine.evidence.evidence",
+                        "engine.evidence.evidence_identifiers", "engine.evidence.evidence_store",
+                        "engine.evidence.store"}:
+        fail(f"the explanation boundary imports beyond the evidence layer: {sorted(imported)}")
+    controls["no LLM client, network or calculation module is imported by the boundary"] = True
+    return {"classification": "negative_control", "refusals_verified": len(refused),
+            "legitimate_reads_preserved": len(preserved), "controls_rejected": len(controls),
+            "refused": sorted(refused), "preserved": sorted(preserved), "controls": sorted(controls)}
+
+
 def main():
     tee = support.start_transcript()
     preconditions = support.preflight()
@@ -2848,10 +3286,12 @@ def main():
         "S_evidence_read_integrity": gate_s_evidence_read_integrity(),
         "T_relationship_integrity": gate_t_relationship_integrity(),
         "U_historical_rule_integrity": gate_u_historical_rule_integrity(),
+        "V_genuine_rule_publication": gate_v_genuine_rule_publication(),
+        "W_explanation_boundary": gate_w_explanation_boundary(),
     }
     report = {
         "schema": "evidence_foundations_v1_certification",
-        "adr": "ADR-0115 s4; ADR-0116 s4; ADR-0119 s3, s5; ADR-0120 s4, s6; ADR-0121; ADR-0122 s4, s6; ADR-0124; ADR-0125; ADR-0127",
+        "adr": "ADR-0115 s4; ADR-0116 s4; ADR-0119 s3, s5; ADR-0120 s4, s6; ADR-0121; ADR-0122 s4, s6; ADR-0124; ADR-0125; ADR-0127; ADR-0130",
         "date": str(date.today()),
         "scope": ("Structural certification of the EVIDENCE foundations: the H0 entity model, append-only entity store "
                   "and ENT issuer (ADR-0114 WP-E1), and the H1 event model, append-only event store, separate "
@@ -2887,8 +3327,11 @@ def main():
             "application",
             "rule-version references are synthetic structural references: not proof of registration or validation "
             "in a future real-rule registry, and they authorize no interpretation",
-            "every published rule is a synthetic fixture rule: no real rule is transcribed, sourced or attributed, and "
-            "the registry's certification claims are all not_assessed",
+            "every rule the pinned snapshot publishes is a synthetic fixture rule: no real rule is transcribed, sourced "
+            "or attributed, and the registry's certification claims are all not_assessed. The publication mechanism for "
+            "genuine rules is exercised only on test snapshots with a test source (ADR-0130)",
+            "a genuine rule, once published, is never projected into evidence; the explanation boundary renders only "
+            "trusted data and contains no LLM client, so no generated text is evaluated here",
             "no rule condition is evaluated against a chart and no rule is applied; that belongs to INTERPRETATION",
             "RUL issuance is append-only against the base commit in CI; the gate cannot see allocations made in an "
             "unreviewed fork that was never merged",
