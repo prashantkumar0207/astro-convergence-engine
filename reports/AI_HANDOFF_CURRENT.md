@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.62.0 |
+| Version | 9.63.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-19 (INTERPRETATION prerequisites, Stage 1 (`ADR-0130`): implemented, in CEO review. No genuine rule published; INTERPRETATION not entered.) |
+| Last updated | 2026-11-20 (Stage 1 (`ADR-0130`): the Gate W HOLD on PR #64 corrected; awaiting final CEO review.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,22 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-20 - PR #64 Gate W HOLD corrected
+
+- **Finding (CEO, at `bf81f62`):** a candidate could select a no-answer reason the evidence does not support, so a valid, non-conflicting
+  item could yield "The recorded evidence conflicts, so no single answer is given."
+- **Correction (`8c7963f`):** `NoAnswerReason` and `REASON_TEXT` are removed. A `no_answer` segment carries exactly `("kind",)`; any
+  candidate-supplied reason is refused by the strict parse. It renders `ABSTENTION_TEXT`, "No answer is given.", which asserts nothing
+  about the evidence, the rules or the question. No reason is derived: each former reason was a claim that admitted evidence either
+  contradicts (no evidence, incomplete lineage) or the boundary cannot establish (conflict, out of scope). Every other check, the
+  reference-only rendering and the no-LLM boundary are unchanged.
+- **Gate W:** 31 refusals, 2 preserved, 7 controls (was 27, 1, 5). New: the abstention over evidence recording no conflict; each
+  former reason over that evidence refused; a parse that drops a reason admits it, and even then no reason reaches the output.
+- **Detection:** two real-gate tests (a reason admitted fails gate W as "not refused"; a renderer asserting a conflict fails it as an
+  unsupported sentence). Mutation audit: 25 mutants, all caught, including the pre-fix boundary of `bf81f62`.
+- **Certification:** all 24 certifiers pass in CI's two Linux tiers; gates A to V byte-identical; certified calculations unchanged.
+- **Not done:** no merge, no genuine rule, no INTERPRETATION entry, no prediction issuance.
 
 ### 2026-11-19 - INTERPRETATION prerequisites, Stage 1 (`ADR-0130`), for CEO review
 
