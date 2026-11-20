@@ -13156,6 +13156,80 @@ Authorize, and read the Drive PDF (Recommended)
 
 ---
 
+## ADR-0131 - INTERPRETATION prerequisites, Stage 2: source-verification preparation only, for five Parashari rules; no rule published
+
+- **Date:** 2026-11-20
+- **Status:** **ACCEPTED, on the owner's authorization quoted in s1.** It authorizes preparation only; publication needs a further
+  authorization.
+- **Context:** `ADR-0130` s3 left Stage 2, the publication of genuine rules, to its own authorization, and recorded the candidate witness
+  and blockers B1 to B5 in `docs/INTERPRETATION_SOURCE_WITNESSES.md`. Stage 1 is merged (`main` `0873bba`, records `287a2fc`).
+
+### 1. The owner's authorization and access directive (exact text)
+
+```text
+ACE — Stage 2 Source Verification Authorization
+
+Stage 1 is CLOSED at `main` `287a2fccd0a807583f8ebc0f47dc004b24a82201`.
+
+I authorize **Stage 2 source-verification preparation only**, initially targeting five Parashari rules for the tenth-house lord in houses 1–5.
+
+Use `docs/INTERPRETATION_SOURCE_WITNESSES.md`, ADR-0130 and the accepted roadmap. Verify the Sharma BPHS edition, exact passage locators, witness SHA-256 and rights basis. Distinguish original Sanskrit from copyrighted translation.
+
+Prepare a concise source-and-verification packet identifying the required independent verifier and checking the proposed rules against S2-1 through S2-3.
+
+Do not invent source evidence, treat Claude's own transcription as independent verification, publish genuine rules, enter INTERPRETATION or begin prediction issuance.
+
+Return the verified evidence, unresolved decisions and the precise implementation authorization needed. Avoid unrelated research or new documentation cycles.
+```
+
+```text
+ACE — Google Drive Source Access Directive
+
+The owner has already provided the classical astrology books in Google Drive.
+
+[Three Google Drive links, to the Books folder and to BPHS Volumes I and II, are omitted here, and only here: this repository is
+public, and the Volume I link opens a copyrighted book. Volume I is identified by its SHA-256 in
+`docs/INTERPRETATION_SOURCE_WITNESSES.md` s1.]
+
+For Stage 2:
+
+1. Attempt direct access to the supplied Drive files through your available browser or Google Drive connection.
+2. If denied, identify whether the failure is an account-permission issue, a missing connector, or an unsupported access method. Do not claim the sources are unavailable merely because your default Drive search returned nothing.
+3. If necessary, request access using the Google account connected to your session or ask the owner for the specific relevant PDF pages.
+4. Inspect BPHS Volume I's actual title/publication pages and printed pages 325–329 (reported PDF pages 333–337). Verify the edition-specific chapter and verse numbering directly.
+5. Use the available books for source verification and cross-referencing. Keep classical originals, modern translations and commentaries distinct.
+6. Record exact citations, witness hashes, rights restrictions and unresolved issues in the existing source-witness record.
+
+Do not fabricate source verification, reproduce copyrighted material in the public repository, or count your own transcription as independent verification.
+
+Do not publish genuine rules or begin Stage 2 implementation without separate owner authorization.
+
+Report concisely whether access succeeded, what you verified directly, and any exact access blocker.
+```
+
+### 2. What is decided
+
+1. **Preparation only.** Source verification for five Parashari rules: the lord of the 10th house in houses 1 to 5, `Domain.JATAKA`.
+   The rule count for preparation is five (blocker B5).
+2. **The record.** `docs/INTERPRETATION_SOURCE_WITNESSES.md` 0.2.0 records the witness, its SHA-256, the locators Claude read, the rights
+   layers and the open blockers. It copies no source text.
+
+### 3. What is not decided
+
+- **No genuine rule is published,** the pinned snapshot is unchanged, INTERPRETATION is not entered, and prediction issuance has not
+  begun.
+- **Open:** the rights basis (B1); the owner's confirmation of the pinned witness (B2); a named independent verifier who is not Claude
+  (B4); how verse 109's mixed effects take a polarity (B6); and the text of the criteria S2-1 to S2-3, which the repository does not
+  define (B7).
+- **Stage 2 implementation,** the publication of the five rules, needs its own authorization once those are settled.
+
+- **Decision:** as s2.
+- **Consequences:** Stage 2 publication stays blocked on B1, B2, B4, B6 and B7.
+- **Evidence:** `docs/INTERPRETATION_SOURCE_WITNESSES.md` 0.2.0, whose hashes can be recomputed from the owner's Drive file and the
+  Internet Archive item it names. The owner's text exists as session input, not as a repository file.
+
+---
+
 ## ADR template (copy, do not edit above the line)
 
 ## ADR-XXXX - <title>

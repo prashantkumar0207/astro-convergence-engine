@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.64.0 |
+| Version | 9.65.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-20 (Stage 1 (`ADR-0130`) merged at `main` `0873bba`. Stage 2 awaits its own authorization.) |
+| Last updated | 2026-11-20 (Stage 2 source-verification preparation (`ADR-0131`): witness pinned, verses 109 to 113 located; in CEO review.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -67,6 +67,21 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-20 - Stage 2 source-verification preparation (`ADR-0131`)
+
+- **Access:** BPHS Volume I was read directly from the owner's Drive (shared by link). Volume II and the Books folder are restricted to
+  the owner's account: they redirect to sign-in, and the connected Drive is another account. Volume II is not needed for verses 109 to 113.
+- **Witness W1:** Sharma, Sagar Publications, Vol. I; first published 1994, reprinted 1995, reprint 1999 (the imprint, read directly).
+  SHA-256 `3c63c1a22d5fec46624dd0f865e4cf35c2ac63e61b84485622f81b4a8175c3af`. The owner's copy is byte-identical to an Internet Archive
+  (Digital Library of India) item; that item's CC0 label is the uploader's and is not a rights basis.
+- **Locators, read by Claude:** chapter 26, "Effects of the Bhava Lords" (not 24, as the web cross-witness numbers it). Verses 109 and
+  110 on printed page 325; 111 to 113 on page 326; PDF page = printed page + 8. Claude's reading is not independent verification.
+- **Rights layers:** the Sanskrit verse; Sharma's translation and notes ("© Publishers", never reproduced). No source text is in the
+  repository, and the Drive links are kept out because the repository is public.
+- **Open:** B1 rights basis, B2 witness confirmation, B4 independent verifier, B6 verse 109's mixed polarity, B7 the undefined S2-1 to
+  S2-3.
+- **Not done:** no rule published, no Stage 2 implementation, no INTERPRETATION entry, no prediction issuance.
 
 ### 2026-11-20 - Stage 1 (`ADR-0130`) merged
 

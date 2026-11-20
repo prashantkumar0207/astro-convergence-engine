@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | **ACCEPTED (`ADR-0062`) - canonical, machine-checkable current-state record.** Regenerate/refresh on every meaningful implementation task, same discipline as `reports/AI_HANDOFF_CURRENT.md`. |
-| Version | 7.64.0 |
+| Version | 7.65.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-20 (**Stage 1 (`ADR-0130`) merged to `main` `0873bba` on a CEO PASS and the owner's authorization. No genuine rule published; INTERPRETATION not entered.**) |
+| Last updated | 2026-11-20 (**Stage 2 source-verification preparation (`ADR-0131`): the Sharma witness pinned and verses 109 to 113 located; in CEO review. No genuine rule published; INTERPRETATION not entered.**) |
 | Review cadence | Refresh at the start of a session if stale; not load-bearing if it isn't. |
 
 # ACE execution state
@@ -43,22 +43,22 @@ independently is in these fields plus the pointers they name.
 | Field | Value |
 |---|---|
 | `CURRENT_PHASE` | **EVIDENCE exited** (`ADR-0129`, owner-ratified 2026-11-19, evaluated `main` `ad4d5f7`). No further phase is entered. Stage 1 of the INTERPRETATION prerequisites (`ADR-0130`) is complete as a pre-entry work package; it enters no phase. |
-| `CURRENT_MILESTONE` | **EVIDENCE milestone CLOSED.** INTERPRETATION prerequisites, Stage 1 (`ADR-0130`): **complete**, merged at `main` `0873bba`. |
-| `CURRENT_AUTHORIZED_TASK` | None. Stage 2 (genuine rule publication) needs its own authorization. |
-| `TASK_OWNER` | USER (the Stage 2 decisions and authorization). |
+| `CURRENT_MILESTONE` | **EVIDENCE milestone CLOSED.** INTERPRETATION prerequisites: Stage 1 complete (`ADR-0130`, `main` `0873bba`); Stage 2 source-verification preparation (`ADR-0131`) on branch `stage2-source-verification`, in CEO review. |
+| `CURRENT_AUTHORIZED_TASK` | `ADR-0131`: Stage 2 source-verification preparation only, for five Parashari rules (the 10th lord in houses 1 to 5). Not authorized: publishing any genuine rule, Stage 2 implementation, entering INTERPRETATION, prediction issuance. |
+| `TASK_OWNER` | CHATGPT (review of the source-verification record), then USER (the open Stage 2 decisions). |
 | `STATUS` | EVIDENCE exited; Stage 1 complete. `EVIDENCE_FOUNDATIONS_V1` passes gates A to W; gates A to U are unchanged since the EVIDENCE exit. Every certified calculation is unchanged. The pinned rule snapshot and its pin are unchanged, and every published rule is still synthetic. Limitations carried: L2, the qualifications X1, X2, X3 and I4, every certification non-claim, the three `TRANSIT_V1` overclaims, and prediction issuance without a roadmap placement. The product contract's canonical text is `specs/PROJECT_CHARTER.md` v1.4.0 (owner-ratified, `ADR-0117` and its addendum); the product-objective definition is CLOSED (`ADR-0118` s2). Neither is restated here. |
-| `LAST_COMPLETED_ACTION` | Merged PR #64 (Stage 1, `ADR-0130`) on the CEO's PASS at `60f1e58` and the owner's authorization; verified the merge tree equals the reviewed head and post-merge CI passed. |
-| `LAST_COMMIT` (main) | `0873bbaed251dbddb1997eba163339dc871272b0` (PR #64 merge, Stage 1; parents `8595021` and `60f1e58`). |
-| `LAST_COMMIT` (stage1-completion-record) | This record only, from `main` `0873bbaed251dbddb1997eba163339dc871272b0`. |
-| `LAST_CI_RUN` | `44712659878` at `0873bba`: push to `main`, success on all four jobs. |
-| `LAST_CEO_DECISION` | PASS on PR #64 at `60f1e5890c41e011e6d2b18ffa8b274e40bcdf9c`, as the owner states, after the corrected Gate W HOLD. |
-| `NEXT_AUTHORIZED_ACTION` | None. Stage 2 (genuine rule publication) needs its own authorization. Entry into INTERPRETATION needs a separate owner decision under `Q8_CLOSURE_MATRIX.md`. Before any prediction implementation, an owner-approved roadmap placement. The retirement of `SUPPORT_PATHS_V1` gates H and I needs separate approval. |
-| `WAITING_FOR` | USER: the Stage 2 decisions and authorization, if any. |
-| `BLOCKER` | For Stage 2: blockers B1 to B5 in `docs/INTERPRETATION_SOURCE_WITNESSES.md` s3 (rights basis, a pinned witness scan, locators read in the edition, a named independent verifier, the rule count). |
-| `CEO_APPROVAL_REQUIRED` | Any Stage 2 proposal; entry into any next phase. |
+| `LAST_COMPLETED_ACTION` | Read the owner's BPHS Volume I directly, pinned it by SHA-256, read its title and imprint pages and verses 109 to 113 (chapter 26, printed pages 325 to 326), and recorded the witness, locators, rights layers and blockers in `docs/INTERPRETATION_SOURCE_WITNESSES.md` 0.2.0 (`ADR-0131`). |
+| `LAST_COMMIT` (main) | `287a2fccd0a807583f8ebc0f47dc004b24a82201` (PR #65 merge, the Stage 1 completion record; parents `0873bba` and `0eb20d9`). |
+| `LAST_COMMIT` (stage2-source-verification) | This branch's records, from `main` `287a2fccd0a807583f8ebc0f47dc004b24a82201`. |
+| `LAST_CI_RUN` | `44716088514` at `287a2fc`: push to `main`, success on all four jobs. This branch's results are on its review PR. |
+| `LAST_CEO_DECISION` | PASS on PR #64 at `60f1e58`, as the owner states; the owner then authorized Stage 2 source-verification preparation (`ADR-0131` s1). |
+| `NEXT_AUTHORIZED_ACTION` | The CEO's review of the source-verification record. Stage 2 implementation (publishing the five rules) needs its own authorization once B1, B2, B4, B6 and B7 are settled. Entry into INTERPRETATION needs a separate owner decision under `Q8_CLOSURE_MATRIX.md`. Before any prediction implementation, an owner-approved roadmap placement. The retirement of `SUPPORT_PATHS_V1` gates H and I needs separate approval. |
+| `WAITING_FOR` | CHATGPT: review of the Stage 2 source-verification record. USER: the open Stage 2 decisions. |
+| `BLOCKER` | For Stage 2 publication: B1 (rights basis), B2 (owner confirms the pinned witness), B4 (a named independent verifier), B6 (verse 109's polarity) and B7 (the text of S2-1 to S2-3), in `docs/INTERPRETATION_SOURCE_WITNESSES.md` s4. |
+| `CEO_APPROVAL_REQUIRED` | The Stage 2 source-verification record; later, any Stage 2 implementation and entry into any next phase. |
 | `CLAUDE_ACTION_REQUIRED` | None until directed. Every relevant specification, milestone and review carries the Charter-compliance statement. |
-| `CHATGPT_ACTION_REQUIRED` | None until a Stage 2 proposal exists. |
-| `USER_ACTION_REQUIRED` | For Stage 2: the source edition and its rights basis, a pinned witness scan, a named independent verifier who is not Claude, the rule count, and the Stage 2 authorization. A roadmap placement for prediction issuance before its implementation; a separate authorization for the bounded retirement of `SUPPORT_PATHS_V1` gates H and I. |
+| `CHATGPT_ACTION_REQUIRED` | Review the Stage 2 source-verification record; supply the text of S2-1 to S2-3 if the CEO defined them. |
+| `USER_ACTION_REQUIRED` | For Stage 2: the rights basis (B1), confirmation of the pinned witness (B2), a named independent verifier who is not Claude (B4), verse 109's polarity treatment (B6), the text of S2-1 to S2-3 (B7), and then the Stage 2 implementation authorization. A roadmap placement for prediction issuance before its implementation; a separate authorization for the bounded retirement of `SUPPORT_PATHS_V1` gates H and I. |
 | `HANDOFF_REQUIRED` | None beyond this file and the latest entry in `reports/AI_HANDOFF_CURRENT.md`. |
 
 ## How to independently verify every field above
@@ -79,6 +79,7 @@ exactly as `reports/AI_HANDOFF_CURRENT.md` already requires of itself.
 
 | Version | Date | Change |
 |---|---|---|
+| 7.65.0 | 2026-11-20 | **`ADR-0131`: Stage 2 source-verification preparation, owner-authorized.** W1 pinned by SHA-256; five locators read; rights layers and blockers recorded. |
 | 7.64.0 | 2026-11-20 | **Stage 1 (`ADR-0130`) complete:** PR #64 merged at `0873bba`; post-merge CI `44712659878` success. |
 | 7.63.0 | 2026-11-20 | **PR #64 Gate W HOLD corrected.** A no-answer segment renders a neutral abstention; a candidate-selected reason is refused. |
 | 7.62.0 | 2026-11-19 | **`ADR-0130`: Stage 1 prerequisite work package, owner-authorized.** A publication-only genuine-rule mechanism and a fail-closed explanation boundary, with gates V and W; no genuine rule published. |
