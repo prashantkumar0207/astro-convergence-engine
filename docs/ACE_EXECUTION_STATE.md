@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | **ACCEPTED (`ADR-0062`) - canonical, machine-checkable current-state record.** Regenerate/refresh on every meaningful implementation task, same discipline as `reports/AI_HANDOFF_CURRENT.md`. |
-| Version | 7.65.0 |
+| Version | 7.66.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-20 (**Stage 2 source-verification preparation (`ADR-0131`): the Sharma witness pinned and verses 109 to 113 located; in CEO review. No genuine rule published; INTERPRETATION not entered.**) |
+| Last updated | 2026-11-21 (Stage 2: draft PR #67, temporary ChatGPT builder, no self-certified review or merge, no INTERPRETATION entry.) |
 | Review cadence | Refresh at the start of a session if stale; not load-bearing if it isn't. |
 
 # ACE execution state
@@ -43,23 +43,23 @@ independently is in these fields plus the pointers they name.
 | Field | Value |
 |---|---|
 | `CURRENT_PHASE` | **EVIDENCE exited** (`ADR-0129`, owner-ratified 2026-11-19, evaluated `main` `ad4d5f7`). No further phase is entered. Stage 1 of the INTERPRETATION prerequisites (`ADR-0130`) is complete as a pre-entry work package; it enters no phase. |
-| `CURRENT_MILESTONE` | **EVIDENCE milestone CLOSED.** INTERPRETATION prerequisites: Stage 1 complete (`ADR-0130`, `main` `0873bba`); Stage 2 source-verification preparation (`ADR-0131`) on branch `stage2-source-verification`, in CEO review. |
-| `CURRENT_AUTHORIZED_TASK` | `ADR-0131`: Stage 2 source-verification preparation only, for five Parashari rules (the 10th lord in houses 1 to 5). Not authorized: publishing any genuine rule, Stage 2 implementation, entering INTERPRETATION, prediction issuance. |
-| `TASK_OWNER` | CHATGPT (review of the source-verification record), then USER (the open Stage 2 decisions). |
-| `STATUS` | EVIDENCE exited; Stage 1 complete. `EVIDENCE_FOUNDATIONS_V1` passes gates A to W; gates A to U are unchanged since the EVIDENCE exit. Every certified calculation is unchanged. The pinned rule snapshot and its pin are unchanged, and every published rule is still synthetic. Limitations carried: L2, the qualifications X1, X2, X3 and I4, every certification non-claim, the three `TRANSIT_V1` overclaims, and prediction issuance without a roadmap placement. The product contract's canonical text is `specs/PROJECT_CHARTER.md` v1.4.0 (owner-ratified, `ADR-0117` and its addendum); the product-objective definition is CLOSED (`ADR-0118` s2). Neither is restated here. |
-| `LAST_COMPLETED_ACTION` | Read the owner's BPHS Volume I directly, pinned it by SHA-256, read its title and imprint pages and verses 109 to 113 (chapter 26, printed pages 325 to 326), and recorded the witness, locators, rights layers and blockers in `docs/INTERPRETATION_SOURCE_WITNESSES.md` 0.2.0 (`ADR-0131`). |
-| `LAST_COMMIT` (main) | `287a2fccd0a807583f8ebc0f47dc004b24a82201` (PR #65 merge, the Stage 1 completion record; parents `0873bba` and `0eb20d9`). |
-| `LAST_COMMIT` (stage2-source-verification) | This branch's records, from `main` `287a2fccd0a807583f8ebc0f47dc004b24a82201`. |
-| `LAST_CI_RUN` | `44716088514` at `287a2fc`: push to `main`, success on all four jobs. This branch's results are on its review PR. |
-| `LAST_CEO_DECISION` | PASS on PR #64 at `60f1e58`, as the owner states; the owner then authorized Stage 2 source-verification preparation (`ADR-0131` s1). |
-| `NEXT_AUTHORIZED_ACTION` | The CEO's review of the source-verification record. Stage 2 implementation (publishing the five rules) needs its own authorization once B1, B2, B4, B6 and B7 are settled. Entry into INTERPRETATION needs a separate owner decision under `Q8_CLOSURE_MATRIX.md`. Before any prediction implementation, an owner-approved roadmap placement. The retirement of `SUPPORT_PATHS_V1` gates H and I needs separate approval. |
-| `WAITING_FOR` | CHATGPT: review of the Stage 2 source-verification record. USER: the open Stage 2 decisions. |
-| `BLOCKER` | For Stage 2 publication: B1 (rights basis), B2 (owner confirms the pinned witness), B4 (a named independent verifier), B6 (verse 109's polarity) and B7 (the text of S2-1 to S2-3), in `docs/INTERPRETATION_SOURCE_WITNESSES.md` s4. |
-| `CEO_APPROVAL_REQUIRED` | The Stage 2 source-verification record; later, any Stage 2 implementation and entry into any next phase. |
-| `CLAUDE_ACTION_REQUIRED` | None until directed. Every relevant specification, milestone and review carries the Charter-compliance statement. |
-| `CHATGPT_ACTION_REQUIRED` | Review the Stage 2 source-verification record; supply the text of S2-1 to S2-3 if the CEO defined them. |
-| `USER_ACTION_REQUIRED` | For Stage 2: the rights basis (B1), confirmation of the pinned witness (B2), a named independent verifier who is not Claude (B4), verse 109's polarity treatment (B6), the text of S2-1 to S2-3 (B7), and then the Stage 2 implementation authorization. A roadmap placement for prediction issuance before its implementation; a separate authorization for the bounded retirement of `SUPPORT_PATHS_V1` gates H and I. |
-| `HANDOFF_REQUIRED` | None beyond this file and the latest entry in `reports/AI_HANDOFF_CURRENT.md`. |
+| `CURRENT_MILESTONE` | EVIDENCE CLOSED; Stage 1 complete. Stage 2 source preparation merged at d60bd4a; provisional source publication in draft PR #67, unmerged. |
+| `CURRENT_AUTHORIZED_TASK` | Owner explicitly authorized ChatGPT as temporary builder to create a feature branch, commit, push and open one unmerged Stage 2 PR. No merge, rule application, INTERPRETATION entry, prediction issuance or production deployment. |
+| `TASK_OWNER` | ChatGPT temporary builder by owner exception while Claude is unavailable; independent review is required because the builder cannot certify its own work. |
+| `STATUS` | Stage 1 CLOSED. Stage 2 PR #67 publishes six provisional RUL identities and twelve source-cited variants only on the review branch. Synthetic evidence snapshot/pin unchanged; S2-3 human verification UNMET, rule applicability unassessed, no measured predictive performance. |
+| `LAST_COMPLETED_ACTION` | Stage 2 provisional sourced registry, one global authoring history, Gate M extension, Gate X and regenerated artifacts prepared in draft PR #67. Focused local tests: 216 passed. EVIDENCE Gates A-X local PASS; external CI must be reviewed. |
+| `LAST_COMMIT` (main) | d60bd4a08ebb6ada85e3f9e5e63274c7702f5071 (PR #66 merged; post-merge CI passed). |
+| `LAST_COMMIT` (stage2-source-verification) | Source preparation merged. Current work: stage2-provisional-bphs-source-rules, draft PR #67; verify current HEAD live. |
+| `LAST_CI_RUN` | Main run 44722217680 after d60bd4a: all four jobs PASS. Draft PR #67 has separate CI; retrieve its latest exact HEAD/run instead of trusting this index. |
+| `LAST_CEO_DECISION` | Technical design approved subject to owner implementation authorization, which was given. No independent CEO audit of PR #67 has occurred; ChatGPT is the temporary builder. |
+| `NEXT_AUTHORIZED_ACTION` | Complete and test draft PR #67; request independent review and separate owner merge authorization. Keep sourced rules out of evidence and interpretation. |
+| `WAITING_FOR` | Full draft PR #67 CI, independent technical/certification audit and later owner merge decision. |
+| `BLOCKER` | Human S2-3 Sanskrit attestation remains unmet; AI-assisted exception limited to provisional citation-only records; no permission to copy modern translation/commentary. Independent self-review unavailable. |
+| `CEO_APPROVAL_REQUIRED` | An independent reviewer must audit PR #67 before any merge. A builder self-review is not CEO certification. |
+| `CLAUDE_ACTION_REQUIRED` | None until available; on return Claude can independently audit PR #67 rather than repeating the builder work. |
+| `CHATGPT_ACTION_REQUIRED` | Finish and verify authorized PR #67 without issuing an independent PASS on self-authored code. |
+| `USER_ACTION_REQUIRED` | After independent review, separately authorize or reject merge. INTERPRETATION entry and prediction issuance remain unauthorised. |
+| `HANDOFF_REQUIRED` | Existing canonical state, handoff and live PR #67 only. |
 
 ## How to independently verify every field above
 
@@ -79,6 +79,7 @@ exactly as `reports/AI_HANDOFF_CURRENT.md` already requires of itself.
 
 | Version | Date | Change |
 |---|---|---|
+| 7.66.0 | 2026-11-21 | Draft Stage 2 PR #67, unmerged; evidence lineage preserved; ChatGPT temporary builder, no independent self-audit. |
 | 7.65.0 | 2026-11-20 | **`ADR-0131`: Stage 2 source-verification preparation, owner-authorized.** W1 pinned by SHA-256; five locators read; rights layers and blockers recorded. |
 | 7.64.0 | 2026-11-20 | **Stage 1 (`ADR-0130`) complete:** PR #64 merged at `0873bba`; post-merge CI `44712659878` success. |
 | 7.63.0 | 2026-11-20 | **PR #64 Gate W HOLD corrected.** A no-answer segment renders a neutral abstention; a candidate-selected reason is refused. |
