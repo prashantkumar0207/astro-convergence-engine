@@ -1368,8 +1368,23 @@ def registry_integrity_failures(registry: rule_registry.RuleRegistry, issued: di
             if len(registry.variants(rule, version)) > 1]:
         failures.append(("variants", "no published rule carries two named variants, so variant handling is "
                                      "unexercised"))
-    if sorted(issued) != list(range(1, len(issued) + 1)) or sorted(item.number for item in rule_ids) != sorted(issued):
-        failures.append(("allocation", "the published rules and the allocation history disagree"))
+    # The historical snapshot remains synthetic-only. Allocation is global across BOTH authored publications.
+    # G2 below verifies that the complete union was produced by the governed author, not a second issuer.
+    try:
+        fixture_keys = {record["key"] for record in json.loads(
+            (directory / author_rule_registry.SOURCE_NAME).read_bytes())["rules"]}
+        genuine_keys = {record["key"] for record in json.loads(
+            (directory / author_rule_registry.SOURCED_SOURCE_NAME).read_bytes())["rules"]}
+        issued_keys = {key for key, _school in issued.values()}
+        fixture_numbers = {number for number, (key, _school) in issued.items() if key in fixture_keys}
+        allocation_ok = (sorted(issued) == list(range(1, len(issued) + 1)) and
+                         fixture_keys.isdisjoint(genuine_keys) and
+                         issued_keys == fixture_keys | genuine_keys and
+                         {rule.number for rule in rule_ids} == fixture_numbers)
+    except (OSError, ValueError, KeyError, TypeError):
+        allocation_ok = False
+    if not allocation_ok:
+        failures.append(("allocation", "the two published rule families and the global allocation history disagree"))
     try:
         history, snapshot, manifest = author_rule_registry.build(directory)
     except SystemExit as exc:
