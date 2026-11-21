@@ -51,6 +51,9 @@ MANIFEST_NAME = "MANIFEST.json"
 HISTORY_NAME = "allocation_history.json"
 #: The pinned snapshot (ADR-0112 D-1). Changing the snapshot requires changing this pin, in a reviewed commit.
 PINNED_SNAPSHOT_SHA256 = "ea8d185ff0786e1c2d68b8010b45b9721367e8e55efca49a4c1a4b8402643d0d"
+#: A second, citation-only publication. Its pin and manifest never replace the synthetic evidence registry.
+SOURCED_PINNED_SNAPSHOT_SHA256 = "e5a9bfbc87d402391c31d24fcfad7c8b2db96d201e7dad1a15e9ffea175c4f91"
+SOURCED_MANIFEST_NAME = "SOURCED_MANIFEST.json"
 
 PLANETS = ("Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "Rahu", "Ketu")
 #: The declared condition schema: each kind, and the type of each parameter. A condition is data, never code.
@@ -460,12 +463,12 @@ class RuleRegistry:
             data_class=DataClass.SYNTHETIC))
 
 
-def load_registry(directory: Path, pinned_sha256: str) -> RuleRegistry:
+def load_registry(directory: Path, pinned_sha256: str, manifest_name: str = MANIFEST_NAME) -> RuleRegistry:
     """Load and verify a snapshot. A missing file, a changed byte, a changed pin, a schema violation, an identity
     the history never issued, or a rebinding each fails closed (ADR-0120 AC5; ADR-0121)."""
 
     try:
-        manifest = json.loads((directory / MANIFEST_NAME).read_bytes())
+        manifest = json.loads((directory / manifest_name).read_bytes())
     except (OSError, ValueError) as exc:
         raise RegistryError(f"the snapshot manifest cannot be read: {exc}") from exc
     manifest = _exact("the manifest", manifest, ("schema", "snapshot", "sha256"))
@@ -549,6 +552,15 @@ def _require_verified(rules: tuple, verifications: tuple) -> None:
 _PINNED: list = []
 
 
+def sourced() -> RuleRegistry:
+    """The separately pinned provisional publication. This is NEVER the evidence registry."""
+
+    published = load_registry(DATA_DIR, SOURCED_PINNED_SNAPSHOT_SHA256, SOURCED_MANIFEST_NAME)
+    if not published.sources() or any(item.synthetic for item in published.rules()):
+        raise RegistryError("the separately pinned publication is not genuinely sourced")
+    return published
+
+
 def pinned() -> RuleRegistry:
     """The registry the evidence store uses: the snapshot under engine/, verified against the pin in this module."""
 
@@ -561,4 +573,4 @@ __all__ = ["CONDITION_SCHEMA", "Citation", "ClaimState", "CertificationLevel", "
            "RegistryRule", "RuleRegistry", "content_hash", "content_record", "canonical", "load_registry", "pinned",
            "read_history", "rule_from_record", "PINNED_SNAPSHOT_SHA256", "DATA_DIR", "AuthorizedSource", "Verification",
            "LOCATOR_PATTERN", "SOURCED_SNAPSHOT_SCHEMA", "VERIFIED_ASPECTS", "source_from_record", "statement_digest",
-           "verification_from_record"]
+           "verification_from_record", "SOURCED_PINNED_SNAPSHOT_SHA256", "SOURCED_MANIFEST_NAME", "sourced"]
