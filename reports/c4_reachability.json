@@ -1924,14 +1924,22 @@
    "status": "IN_USE_COVERED"
   },
   "engine.evidence.rule_registry.RuleRegistry.rules": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.rule_registry.sourced"
+   ],
    "covered": true,
    "file": "engine/evidence/rule_registry.py",
-   "status": "NOT_IN_USE"
+   "status": "IN_USE_COVERED"
   },
   "engine.evidence.rule_registry.RuleRegistry.sources": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.rule_registry.sourced"
+   ],
    "covered": true,
    "file": "engine/evidence/rule_registry.py",
-   "status": "NOT_IN_USE"
+   "status": "IN_USE_COVERED"
   },
   "engine.evidence.rule_registry.RuleRegistry.variants": {
    "covered": true,
@@ -1986,9 +1994,10 @@
    "status": "IN_USE_COVERED"
   },
   "engine.evidence.rule_registry.load_registry": {
-   "caller_count": 2,
+   "caller_count": 3,
    "callers": [
     "engine.evidence.rule_registry.pinned",
+    "engine.evidence.rule_registry.sourced",
     "scripts.check_rule_registry.check_load"
    ],
    "covered": true,
@@ -2040,6 +2049,19 @@
    "status": "IN_USE_COVERED"
   },
   "engine.evidence.rule_registry.source_from_record": {
+   "caller_count": 2,
+   "callers": [
+    "engine.evidence.rule_registry.load_registry",
+    "scripts.author_rule_registry.publish"
+   ],
+   "covered": true,
+   "exported_by": [
+    "engine/evidence/rule_registry.py:__all__"
+   ],
+   "file": "engine/evidence/rule_registry.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.rule_registry.sourced": {
    "caller_count": 1,
    "callers": [
     "engine.evidence.rule_registry.load_registry"
@@ -2745,8 +2767,8 @@
  },
  "schema": "ace-c4-reachability-v1",
  "summary": {
-  "IN_USE_COVERED": 195,
-  "NOT_IN_USE": 145
+  "IN_USE_COVERED": 198,
+  "NOT_IN_USE": 143
  },
  "universe_exclusions": {
   "engine.main.": "API route handlers: callers and exports, not capabilities",
