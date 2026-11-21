@@ -464,7 +464,9 @@ ARTIFACT_DECLARATIONS = {
             # ADR-0120 s4 and ADR-0121: the H5 rule registry, its pinned snapshot and RUL issuance.
             _cap("evidence.rule_registry",
                  _fn("engine.evidence.rule_registry.pinned", "M_registry_integrity", "N_registry_refusals"),
-                 _fn("engine.evidence.rule_registry.load_registry", "V_genuine_rule_publication", "O_snapshot_fails_closed"),
+                 _fn("engine.evidence.rule_registry.sourced", "X_provisional_sourced_publication"),
+                 _fn("engine.evidence.rule_registry.load_registry", "V_genuine_rule_publication", "O_snapshot_fails_closed",
+                     "X_provisional_sourced_publication"),
                  _fn("engine.evidence.rule_registry.read_history", "M_registry_integrity"),
                  _fn("engine.evidence.rule_registry.rule_from_record", "V_genuine_rule_publication", "M_registry_integrity", "N_registry_refusals"),
                  _fn("engine.evidence.rule_registry.content_record", "V_genuine_rule_publication", "M_registry_integrity", "N_registry_refusals"),
