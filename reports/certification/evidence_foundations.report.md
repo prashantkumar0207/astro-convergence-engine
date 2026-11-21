@@ -38,7 +38,7 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 - **U_historical_rule_integrity**: classification=negative_control, forgeries=6, refusals_verified=60, legitimate_reads_preserved=7, controls_rejected=5
 - **V_genuine_rule_publication**: classification=negative_control, refusals_verified=27, legitimate_reads_preserved=3, controls_rejected=3
 - **W_explanation_boundary**: classification=negative_control, refusals_verified=31, legitimate_reads_preserved=2, controls_rejected=7
-- **X_provisional_sourced_publication**: classification=negative_control, refusals_verified=29, legitimate_reads_preserved=2, controls_rejected=4
+- **X_provisional_sourced_publication**: classification=negative_control, refusals_verified=35, legitimate_reads_preserved=2, controls_rejected=5
 
 ## Capabilities (ADR-0101 s2)
 
