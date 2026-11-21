@@ -1062,11 +1062,12 @@
   },
   "X_provisional_sourced_publication": {
    "classification": "negative_control",
-   "refusals_verified": 35,
+   "refusals_verified": 40,
    "legitimate_reads_preserved": 2,
-   "controls_rejected": 5,
+   "controls_rejected": 10,
    "refused": [
     "changed sourced snapshot byte refused",
+    "fabricated human attestation refused",
     "forged authored rule refused by classify",
     "forged authored rule refused by evidence_ids",
     "forged authored rule refused by explanation",
@@ -1075,8 +1076,12 @@
     "forged authored rule refused by reproduce",
     "planted claims error refused",
     "planted conditions error refused",
+    "planted identity error refused",
     "planted locators error refused",
+    "planted school_domain error refused",
     "planted source_pins error refused",
+    "planted structure error refused",
+    "planted timing error refused",
     "source identity 10 jha-1982 absent from evidence registry",
     "source identity 10 jha-1982 refused as evidence",
     "source identity 10 sharma-1999 absent from evidence registry",
@@ -1109,9 +1114,14 @@
    "controls": [
     "weakening claims admits the planted error",
     "weakening conditions admits the planted error",
+    "weakening identity admits the planted error",
     "weakening locators admits the planted error",
     "weakening rule projection admits forged authored evidence",
-    "weakening source_pins admits the planted error"
+    "weakening school_domain admits the planted error",
+    "weakening source_pins admits the planted error",
+    "weakening structure admits the planted error",
+    "weakening timing admits the planted error",
+    "weakening verification policy admits a fabricated attestation"
    ],
    "exercises": [
     "evidence.rule_registry"
