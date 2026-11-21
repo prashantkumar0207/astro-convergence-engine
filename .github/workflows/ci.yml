@@ -749,11 +749,3 @@ jobs:
             exit 1
           fi
           echo "negative controls passed: C2 exit $c2, C3 exit $c3, C4 exit $c4"
-
-      - name: Temporary Stage 2 workspace snapshot for local reproduction
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: stage2-workspace-for-build
-          path: .
-          if-no-files-found: error
