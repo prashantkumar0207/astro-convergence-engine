@@ -3380,11 +3380,11 @@ def gate_x_provisional_sourced_publication():
         if not _refusal(lambda item=item: sourced.rule_version(item.rule, item.version, item.variant),
                         "never projected into evidence"):
             fail(f"Gate X projected a genuine rule into evidence: {item.rule} {item.variant}")
-        refused[f"{item.rule} {item.variant} refused as evidence"] = True
+        refused[f"source identity {item.rule.number} {item.variant} refused as evidence"] = True
         if not _refusal(lambda item=item: fixture.lookup(item.rule, item.version, item.variant),
                         "not registered"):
             fail("Gate X let the evidence registry resolve a sourced rule")
-        refused[f"{item.rule} {item.variant} absent from evidence registry"] = True
+        refused[f"source identity {item.rule.number} {item.variant} absent from evidence registry"] = True
     preserved["12 explicit source variants carry only author-declared textual claims"] = True
     # Each individual rule contract check is indispensable: weakening it alone admits a
     # planted object. The forged objects are not the published objects and are never persisted.
@@ -3428,6 +3428,77 @@ def gate_x_provisional_sourced_publication():
                 rule_registry.SOURCED_MANIFEST_NAME), "bytes do not match"):
             fail("Gate X did not detect a changed sourced snapshot byte")
         refused["changed sourced snapshot byte refused"] = True
+    # An ACTUAL authored RUL is forged directly into SQLite, bypassing registration.
+    # The same checked store reads and reference-only explanation must refuse it.
+    with tempfile.TemporaryDirectory() as root:
+        store = EvidenceStore(Path(root) / "actual-sourced-forgery.sqlite")
+        owner = store.entities.persist(_synthetic_subjects()[0])
+        candidate = store.entities.load(owner).charts[0]
+        baseline = store.register_rule(fixture.rule_version(fixture.by_key(PARASHARI_KEY), 1, "base"))
+        world = _EvidenceWorld(owner, candidate.label, {ProducingSystem.PARASHARI: baseline})
+        good = store.persist(world.item())
+        actual = target
+        forged = RuleVersion(rule=actual.rule, version=actual.version, spec=RuleSpec(
+            school=actual.school, content_hash=actual.content_hash,
+            knowledge_snapshot_hash=fixture.snapshot_sha256, declared_strength=actual.declared_strength,
+            variant=actual.variant,
+            provenance=RecordProvenance(source="the pinned rule registry", method="published snapshot",
+                                        schema_version=rule_registry.SNAPSHOT_SCHEMA),
+            data_class=DataClass.SYNTHETIC))
+        forged_id = EvidenceId.from_number(998)
+        planted = world.item(facts=("Planted forged evidence",),
+                             rule=RuleReference(rule=actual.rule, version=1, variant=actual.variant),
+                             declared_strength=actual.declared_strength)
+        store._db.execute("INSERT INTO registered_rule_versions (rule_id, version, variant, payload) VALUES "
+                          "(?, ?, ?, ?)", (forged.rule.value, 1, actual.variant,
+                                           json.dumps(rule_to_record(forged))))
+        store._db.execute("INSERT INTO evidence_items (evidence_id, entity_id, recomputes, payload) VALUES "
+                          "(?, ?, NULL, ?)", (forged_id.value, planted.entity.value,
+                                              json.dumps(item_to_record(forged_id, planted))))
+        built = provenance_graph.record_graph(forged_id, planted, candidate, None, forged, {})
+        for node in built.nodes:
+            store._db.execute("INSERT OR IGNORE INTO graph_nodes (node_key, kind, payload) VALUES (?, ?, ?)",
+                              provenance_graph.node_to_row(node))
+        for edge in built.edges:
+            store._db.execute("INSERT OR IGNORE INTO graph_edges (source_key, kind, target_key, position) "
+                              "VALUES (?, ?, ?, ?)", (edge.source.key, edge.kind.value, edge.target.key,
+                                                       edge.position))
+        actions = (
+            ("load", lambda: store.load(forged_id)),
+            ("evidence_ids", lambda: store.evidence_ids()),
+            ("join", lambda: store.join((good, forged_id))),
+            ("classify", lambda: store.classify(good, forged_id)),
+            ("reproduce", lambda: store.reproduce(forged_id)),
+            ("explanation", lambda: explanation_boundary.render(
+                _candidate((forged_id,), [{"kind": "rule_citation", "evidence": forged_id.value}]), store,
+                fixture)),
+        )
+        for label, action in actions:
+            try:
+                action()
+            except (rule_registry.RegistryError, StoreError, explanation_boundary.BoundaryError) as exc:
+                if not any(reason in str(exc) for reason in ("not registered", "not published", "never issued",
+                                                          "snapshot", "read checks")):
+                    fail(f"Gate X rejected {label} for an unrelated reason: {exc}")
+                refused[f"forged authored rule refused by {label}"] = True
+            else:
+                fail(f"Gate X {label} admitted forged evidence for a sourced RUL")
+        # Deliberately weaken the one registry projection. A legitimate source-rule identity then
+        # reaches a previously refused checked read, demonstrating the real gate is meaningful.
+        original_pinned = rule_registry.pinned
+        weakened = rule_registry.RuleRegistry(fixture.rules(), fixture.snapshot_sha256)
+        weakened.rule_version = lambda rule, version, variant: forged if (rule, version, variant) == (
+            actual.rule, actual.version, actual.variant) else fixture.rule_version(rule, version, variant)
+        rule_registry.pinned = lambda: weakened
+        try:
+            if store.load(forged_id).rule.rule != actual.rule:
+                fail("Gate X weakening the real rule projection did not admit the forged row")
+            controls["weakening rule projection admits forged authored evidence"] = True
+        except StoreError as exc:
+            fail(f"Gate X weakening control did not distinguish the real refusal: {exc}")
+        finally:
+            rule_registry.pinned = original_pinned
+            store.close()
     return {"classification": "negative_control", "refusals_verified": len(refused),
             "legitimate_reads_preserved": len(preserved), "controls_rejected": len(controls),
             "refused": sorted(refused), "preserved": sorted(preserved), "controls": sorted(controls)}
