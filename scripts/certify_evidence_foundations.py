@@ -3390,6 +3390,14 @@ def gate_x_provisional_sourced_publication():
     # planted object. The forged objects are not the published objects and are never persisted.
     target = sourced.rules()[0]
     test_cases = [
+        ("identity", lambda src, rules: (src, tuple(
+            _forged_rule(item, rule=RuleId.from_number(1)) if item == target else item for item in rules))),
+        ("structure", lambda src, rules: (src, tuple(item for item in rules if item != target))),
+        ("timing", lambda src, rules: (src, tuple(
+            _forged_rule(item, statement="Learning and resources are described without timing.")
+            if item == target else item for item in rules))),
+        ("school_domain", lambda src, rules: (src, tuple(
+            _forged_rule(item, domain=Domain.PRASHNA) if item == target else item for item in rules))),
         ("source_pins", lambda src, rules: (
             tuple(dataclasses.replace(v, witness_sha256="f" * 64) if v.id == "W1-BPHS-Sharma-1999"
                   else v for v in src), rules)),
@@ -3416,6 +3424,18 @@ def gate_x_provisional_sourced_publication():
             fail(f"Gate X {label} mutation did not distinguish its real check: real={real}, weak={weakened}")
         refused[f"planted {label} error refused"] = True
         controls[f"weakening {label} admits the planted error"] = True
+    forged_attestation = rule_registry.Verification(
+        rule=target.rule, version=target.version, variant=target.variant,
+        verifier="fabricated reviewer", transcription_sha256=rule_registry.statement_digest(target.statement),
+        reviewed=rule_registry.VERIFIED_ASPECTS)
+    with_forged_attestation = rule_registry.RuleRegistry(
+        sourced.rules(), sourced.snapshot_sha256, sourced.sources(), (forged_attestation,))
+    if provisional_publication_failures(fixture, with_forged_attestation, issued) != ["verification"] or \
+            provisional_publication_failures(fixture, with_forged_attestation, issued,
+                                             frozenset({"verification"})):
+        fail("Gate X did not distinguish the no-human-attestation policy from a weakened comparator")
+    refused["fabricated human attestation refused"] = True
+    controls["weakening verification policy admits a fabricated attestation"] = True
     # Full byte-level pinning: content modification is not allowed even when a caller changes
     # the manifest's pin. Authoring/output agreement is independently enforced by G2/Gate M.
     with tempfile.TemporaryDirectory() as root:
