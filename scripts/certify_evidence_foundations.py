@@ -8,8 +8,8 @@ STRUCTURAL certification of the EVIDENCE foundations: the H0 entity model and st
 the H1 event model, event store and EVR issuer (ADR-0115), the H2 historical ledger and its
 protected holdouts (ADR-0116), the H4 evidence model, its store and the EVD issuer (ADR-0119), and
 the H5 rule registry, its pinned snapshot and the governed RUL authoring process (ADR-0120, ADR-0121),
-and the provenance graph recorded at evidence-creation time (ADR-0122). It is NOT astrological-calculation certification and certifies no production analytical input. Every record it uses is synthetic, and
-nothing it runs scores, weights, fits or computes confidence. It needs no oracle.
+and the provenance graph recorded at evidence-creation time (ADR-0122). It is NOT astrological-calculation certification and certifies no production analytical input. Every evidence item is synthetic; Gate X inspects provisional genuine rule citations without applying them.
+Nothing it runs scores, weights, fits or computes confidence. It needs no oracle.
 
 Gates:
   A  H0 structural integrity: every kind round-trips, competing charts are held, corrections
@@ -3276,6 +3276,161 @@ def gate_w_explanation_boundary():
             "refused": sorted(refused), "preserved": sorted(preserved), "controls": sorted(controls)}
 
 
+
+# Stage 2: fixed, source-scoped publication integrity. These expectations are deliberately frozen in
+# the certifier rather than imported from the authored publication. They make source/edition swaps
+# and silently weakened certification claims observable (provisional publication, NOT interpretation).
+SOURCE_PINS_S2 = {
+    "W1-BPHS-Sharma-1999": "3c63c1a22d5fec46624dd0f865e4cf35c2ac63e61b84485622f81b4a8175c3af",
+    "W2-BPHS-Jha-1982": "60f2407c3e924b3052ff2f92f912ad6c1c859eb9e9b9de9550d59664e4f8f54e",
+}
+STAGE2_VERSES = {
+    "first-favourable": (1, 109, "positive"),
+    "first-childhood-illness": (1, 109, "negative"),
+    "second-favourable": (2, 110, "positive"),
+    "third-favourable": (3, 111, "positive"),
+    "fourth-favourable": (4, 112, "positive"),
+    "fifth-favourable": (5, 113, "positive"),
+}
+STAGE2_VARIANTS = ("sharma-1999", "jha-1982")
+
+
+def provisional_publication_failures(legacy, publication, issued, disabled=frozenset()):
+    """An independently specified contract, not assertions derived from the authored source JSON.
+
+    'disabled' is used ONLY by Gate X's deliberately weakened controls. A planted violation must
+    fail the real comparator and pass its exact weakened counterpart; unrelated checks stay on.
+    """
+    problems = set()
+
+    def check(name, bad):
+        if name not in disabled and bad:
+            problems.add(name)
+
+    sources = {source.id: source for source in publication.sources()}
+    check("source_pins", set(sources) != set(SOURCE_PINS_S2) or any(
+        sources[key].witness_sha256 != expected or sources[key].school != ProducingSystem.PARASHARI
+        for key, expected in SOURCE_PINS_S2.items() if key in sources))
+    check("verification", publication.verifications() != ())
+    rules = publication.rules()
+    fixture = legacy.rules()
+    keys = {entry.key for entry in rules}
+    check("structure", len(rules) != 12 or keys != {
+        f"sourced.parashari.tenth-lord-{key}" for key in STAGE2_VERSES})
+    issued_by_number = {number: (key, school) for number, (key, school) in issued.items()}
+    observed = {(entry.rule.number, entry.key, entry.school) for entry in (*fixture, *rules)}
+    check("identity", sorted(issued) != list(range(1, len(issued) + 1)) or
+          len(issued) != 10 or len({entry.rule for entry in rules}) != 6 or
+          {entry.rule for entry in fixture} & {entry.rule for entry in rules} != set() or
+          any(issued_by_number.get(number) != (key, school) for number, key, school in observed) or
+          {number for number, _key, _school in observed} != set(issued))
+    for item in rules:
+        suffix = item.key.removeprefix("sourced.parashari.tenth-lord-")
+        expected = STAGE2_VERSES.get(suffix)
+        if expected is None:
+            continue
+        house, verse, polarity = expected
+        variant_set = {member.variant for member in rules if member.key == item.key}
+        check("structure", variant_set != set(STAGE2_VARIANTS) or
+              tuple(item.known_variants) != STAGE2_VARIANTS or item.version != 1)
+        check("conditions", item.condition.kind != "house_lord_in_house" or
+              dict(item.condition.parameters) != {"lord_of": 10, "house": house} or
+              item.activation_conditions != () or item.polarity.value != polarity)
+        check("school_domain", item.school != ProducingSystem.PARASHARI or
+              item.domain != Domain.JATAKA or item.synthetic is not False)
+        source_name = "W1-BPHS-Sharma-1999" if item.variant == "sharma-1999" else "W2-BPHS-Jha-1982"
+        locator = f"chapter {26 if item.variant == 'sharma-1999' else 25}, verse {verse}, " \
+                  f"page {325 if item.variant == 'sharma-1999' and verse <= 110 else 326 if item.variant == 'sharma-1999' else 136}"
+        check("locators", item.variant not in STAGE2_VARIANTS or
+              item.citation.source != source_name or item.citation.locator != locator)
+        cert = item.certification
+        check("claims", cert.transcription_fidelity != rule_registry.ClaimState.DECLARED_BY_AUTHOR or
+              cert.source_attribution != rule_registry.ClaimState.DECLARED_BY_AUTHOR or
+              cert.applicability_conditions != rule_registry.ClaimState.NOT_ASSESSED or
+              cert.measured_performance is not None)
+        if verse == 109:
+            check("timing", ("childhood" not in item.statement.lower()) if polarity == "negative"
+                  else ("later" not in item.statement.lower()))
+    return sorted(problems)
+
+
+def gate_x_provisional_sourced_publication():
+    """Source-specific Gate X: six RULs, two explicit witnesses per rule, none usable as evidence.
+
+    A check that only compares a snapshot with the same source JSON is inadequate. This gate fixes
+    witness hashes, verse locators, identities and claim states independently, with mutation controls.
+    It makes NO claim of human verification or measured predictive validity.
+    """
+    fixture = rule_registry.pinned()
+    sourced = rule_registry.sourced()
+    issued = rule_registry.read_history(rule_registry.DATA_DIR / rule_registry.HISTORY_NAME)
+    problems = provisional_publication_failures(fixture, sourced, issued)
+    if problems:
+        fail(f"Gate X sourced publication failed fixed checks: {problems}")
+    preserved = {}
+    refused = {}
+    controls = {}
+    if rule_registry.PINNED_SNAPSHOT_SHA256 != "ea8d185ff0786e1c2d68b8010b45b9721367e8e55efca49a4c1a4b8402643d0d" or \
+            fixture.sources() or any(entry.synthetic is not True for entry in fixture.rules()):
+        fail("Gate X changed the certified synthetic evidence registry")
+    preserved["the synthetic snapshot and pin are unchanged"] = True
+    for item in sourced.rules():
+        if not _refusal(lambda item=item: sourced.rule_version(item.rule, item.version, item.variant),
+                        "never projected into evidence"):
+            fail(f"Gate X projected a genuine rule into evidence: {item.rule} {item.variant}")
+        refused[f"{item.rule} {item.variant} refused as evidence"] = True
+        if not _refusal(lambda item=item: fixture.lookup(item.rule, item.version, item.variant),
+                        "not registered"):
+            fail("Gate X let the evidence registry resolve a sourced rule")
+        refused[f"{item.rule} {item.variant} absent from evidence registry"] = True
+    preserved["12 explicit source variants carry only author-declared textual claims"] = True
+    # Each individual rule contract check is indispensable: weakening it alone admits a
+    # planted object. The forged objects are not the published objects and are never persisted.
+    target = sourced.rules()[0]
+    test_cases = [
+        ("source_pins", lambda src, rules: (
+            tuple(dataclasses.replace(v, witness_sha256="f" * 64) if v.id == "W1-BPHS-Sharma-1999"
+                  else v for v in src), rules)),
+        ("locators", lambda src, rules: (src, tuple(
+            _forged_rule(item, citation=rule_registry.Citation(
+                source=item.citation.source, locator="chapter 25, verse 109, page 325"))
+            if item == target else item for item in rules))),
+        ("claims", lambda src, rules: (src, tuple(
+            _forged_rule(item, certification=dataclasses.replace(
+                item.certification, transcription_fidelity=rule_registry.ClaimState.INDEPENDENTLY_CHECKED))
+            if item == target else item for item in rules))),
+        ("conditions", lambda src, rules: (src, tuple(
+            _forged_rule(item, condition=rule_registry.Condition(
+                "house_lord_in_house", (("house", 12), ("lord_of", 10))))
+            if item == target else item for item in rules))),
+    ]
+    for label, mutate in test_cases:
+        source_items, rules = mutate(sourced.sources(), sourced.rules())
+        changed = rule_registry.RuleRegistry(tuple(rules), sourced.snapshot_sha256, source_items,
+                                             sourced.verifications())
+        real = provisional_publication_failures(fixture, changed, issued)
+        weakened = provisional_publication_failures(fixture, changed, issued, frozenset({label}))
+        if real != [label] or weakened:
+            fail(f"Gate X {label} mutation did not distinguish its real check: real={real}, weak={weakened}")
+        refused[f"planted {label} error refused"] = True
+        controls[f"weakening {label} admits the planted error"] = True
+    # Full byte-level pinning: content modification is not allowed even when a caller changes
+    # the manifest's pin. Authoring/output agreement is independently enforced by G2/Gate M.
+    with tempfile.TemporaryDirectory() as root:
+        directory = Path(root) / "pin"
+        shutil.copytree(rule_registry.DATA_DIR, directory)
+        p = directory / author_rule_registry.SOURCED_SNAPSHOT_NAME
+        p.write_bytes(p.read_bytes() + b" ")
+        if not _refusal(lambda: rule_registry.load_registry(
+                directory, rule_registry.SOURCED_PINNED_SNAPSHOT_SHA256,
+                rule_registry.SOURCED_MANIFEST_NAME), "bytes do not match"):
+            fail("Gate X did not detect a changed sourced snapshot byte")
+        refused["changed sourced snapshot byte refused"] = True
+    return {"classification": "negative_control", "refusals_verified": len(refused),
+            "legitimate_reads_preserved": len(preserved), "controls_rejected": len(controls),
+            "refused": sorted(refused), "preserved": sorted(preserved), "controls": sorted(controls)}
+
+
 def main():
     tee = support.start_transcript()
     preconditions = support.preflight()
@@ -3303,6 +3458,7 @@ def main():
         "U_historical_rule_integrity": gate_u_historical_rule_integrity(),
         "V_genuine_rule_publication": gate_v_genuine_rule_publication(),
         "W_explanation_boundary": gate_w_explanation_boundary(),
+        "X_provisional_sourced_publication": gate_x_provisional_sourced_publication(),
     }
     report = {
         "schema": "evidence_foundations_v1_certification",
@@ -3342,9 +3498,9 @@ def main():
             "application",
             "rule-version references are synthetic structural references: not proof of registration or validation "
             "in a future real-rule registry, and they authorize no interpretation",
-            "every rule the pinned snapshot publishes is a synthetic fixture rule: no real rule is transcribed, sourced "
+            "every rule the evidence-pinned snapshot publishes is synthetic: no real rule is used for evidence "
             "or attributed, and the registry's certification claims are all not_assessed. The publication mechanism for "
-            "genuine rules is exercised only on test snapshots with a test source (ADR-0130)",
+            "textual claims, unassessed applicability and no measured performance (ADR-0130; Stage 2 exception)",
             "a genuine rule, once published, is never projected into evidence; the explanation boundary renders only "
             "trusted data and contains no LLM client, so no generated text is evaluated here",
             "no rule condition is evaluated against a chart and no rule is applied; that belongs to INTERPRETATION",
