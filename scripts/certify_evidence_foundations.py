@@ -55,6 +55,8 @@ Gates:
   W  the explanation boundary: a candidate is references only, refused fail closed otherwise; every sentence is
      rendered from the evidence store's checked reads and the pinned registry, never from the candidate.
 
+  X  provisional sourced citation-only publication: 6 RUL identities, 12 named edition variants, Gate X controls.
+
 Exit 0 = PASS, 3 = FAIL.
 """
 
@@ -3498,9 +3500,9 @@ def main():
             "application",
             "rule-version references are synthetic structural references: not proof of registration or validation "
             "in a future real-rule registry, and they authorize no interpretation",
-            "every rule the evidence-pinned snapshot publishes is synthetic: no real rule is used for evidence "
-            "or attributed, and the registry's certification claims are all not_assessed. The publication mechanism for "
-            "textual claims, unassessed applicability and no measured performance (ADR-0130; Stage 2 exception)",
+            "the evidence-pinned registry still publishes synthetic fixture rules only, with no interpretive meaning; "
+            "the separately pinned sourced registry publishes provisional citation-only variants, with attribution "
+            "and transcription author-declared, applicability unassessed, no human verification, no measured performance",
             "a genuine rule, once published, is never projected into evidence; the explanation boundary renders only "
             "trusted data and contains no LLM client, so no generated text is evaluated here",
             "no rule condition is evaluated against a chart and no rule is applied; that belongs to INTERPRETATION",
