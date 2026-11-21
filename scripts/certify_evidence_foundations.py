@@ -1477,7 +1477,7 @@ def gate_m_registry_integrity():
             ("content changed under an unchanged hash", replacing(target, _forged_rule(target, statement="planted")),
              issued, rule_registry.DATA_DIR, {"round_trip"}),
             ("a rule bound to another identity than the history issued", registry,
-             {**issued, first.number: ("synthetic.planted", target.school)}, rule_registry.DATA_DIR, {"binding"}),
+             {**issued, first.number: ("synthetic.planted", target.school)}, rule_registry.DATA_DIR, {"binding", "allocation"}),
             ("a rule not marked synthetic", replacing(target, non_synthetic), issued, rule_registry.DATA_DIR,
              {"round_trip", "published"}),
             ("measured performance supplied", replacing(target, _forged_rule(target, certification=_forged_rule(
