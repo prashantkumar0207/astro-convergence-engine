@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.65.0 |
+| Version | 9.66.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-20 (Stage 2 source-verification preparation (`ADR-0131`): witness pinned, verses 109 to 113 located; in CEO review.) |
+| Last updated | 2026-11-21 (Draft Stage 2 PR #67, ChatGPT temporary builder; independent audit still required.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -30,12 +30,11 @@ create a competing one.
 ## Role model (docs/PROJECT_CONSTITUTION.md s11, formalized ADR-0056)
 
 - **USER** - product owner, final ratifying authority.
-- **CLAUDE** - the primary and sole ACE builder/executor: all ACE coding, repository editing, test
-  execution, certification execution, and commits. Updates this file after every meaningful task.
-- **CHATGPT** - independent ACE CEO / technical auditor: audits architecture, specifications,
-  governance, code, tests, certification evidence, provenance, and claims; determines PASS / HOLD /
-  FAIL; gives Claude the exact next action when remediation is required. Not a builder; does not
-  commit.
+- **CLAUDE** - normally the primary ACE builder/executor and first auditor. For draft PR #67 only,
+  the owner explicitly authorized ChatGPT as temporary builder while Claude is unavailable.
+- **CHATGPT** - normally independent CEO/auditor. For draft PR #67 only, the owner-authorized
+  temporary builder; it cannot give itself an independent CEO PASS. Independent review and owner
+  merge authorization remain required.
 - **CODEX** - not part of the ACE workflow, unless the user explicitly changes it in a future decision
   entry.
 - **Git is the source of truth** for all of the above. This file is an evidence/index record, not a
@@ -67,6 +66,18 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+
+### 2026-11-21 - Draft Stage 2 PR #67: provisional BPHS source publication (temporary ChatGPT builder)
+
+- Base: main d60bd4a08ebb6ada85e3f9e5e63274c7702f5071. Owner authorized temporary builder, branch, commits and unmerged PR. This report is NOT an independent CEO audit.
+- PR: #67, branch stage2-provisional-bphs-source-rules, draft. Check HEAD and CI live.
+- Scope: six provisional Parashari rule IDs (tenth lord in houses 1-5, verses 109-113), two explicitly named edition variants each, 12 citation-only records. W1 Sharma and W2 Devachandra Jha source scans are SHA-pinned. No copied modern translation or scanned page.
+- Architecture: one global append-only rule history; original synthetic snapshot/pin unchanged; separate pinned sourced snapshot, governed dual authoring, stronger Gate M and new Gate X with negative checks and actual forged-evidence read refusals.
+- Verification: local 216 focused pytest PASS, EVIDENCE certifier Gates A-X PASS; Linux CI review is required. Local Python 3.13 full-test attempt hit a D45 test dependent on the CI environment.
+- Non-claims: S2-3 human Sanskrit review UNMET, AI textual checks only, no independent source certification, applicability unassessed, no historical predictive performance, no rule application, no INTERPRETATION entry, no prediction issuance.
+- Pending: full PR CI, source/governance review, independent technical audit by someone other than the builder and separate owner merge authorization. Do not self-approve.
+
 
 ### 2026-11-20 - Stage 2 source-verification preparation (`ADR-0131`)
 
