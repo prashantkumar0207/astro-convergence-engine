@@ -19,6 +19,36 @@
    "key": "synthetic.nakshatra-nadi.star-lord-in-tenth",
    "number": 4,
    "school": "nakshatra_nadi"
+  },
+  {
+   "key": "sourced.parashari.tenth-lord-first-favourable",
+   "number": 5,
+   "school": "parashari"
+  },
+  {
+   "key": "sourced.parashari.tenth-lord-first-childhood-illness",
+   "number": 6,
+   "school": "parashari"
+  },
+  {
+   "key": "sourced.parashari.tenth-lord-second-favourable",
+   "number": 7,
+   "school": "parashari"
+  },
+  {
+   "key": "sourced.parashari.tenth-lord-third-favourable",
+   "number": 8,
+   "school": "parashari"
+  },
+  {
+   "key": "sourced.parashari.tenth-lord-fourth-favourable",
+   "number": 9,
+   "school": "parashari"
+  },
+  {
+   "key": "sourced.parashari.tenth-lord-fifth-favourable",
+   "number": 10,
+   "school": "parashari"
   }
  ],
  "schema": "ace-rul-allocation-history-v1"

@@ -24,5 +24,6 @@ T_relationship_integrity: 89
 U_historical_rule_integrity: 60
 V_genuine_rule_publication: 27
 W_explanation_boundary: 31
+X_provisional_sourced_publication: 40
 archived: certification/EVIDENCE_FOUNDATIONS_V1_certification.json
 RESULT  : PASS
