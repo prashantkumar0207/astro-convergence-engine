@@ -1062,11 +1062,12 @@
   },
   "X_provisional_sourced_publication": {
    "classification": "negative_control",
-   "refusals_verified": 40,
+   "refusals_verified": 41,
    "legitimate_reads_preserved": 2,
-   "controls_rejected": 10,
+   "controls_rejected": 11,
    "refused": [
     "changed sourced snapshot byte refused",
+    "consistently re-pinned sourced files refused as unauthored",
     "fabricated human attestation refused",
     "forged authored rule refused by classify",
     "forged authored rule refused by evidence_ids",
@@ -1119,6 +1120,7 @@
     "weakening rule projection admits forged authored evidence",
     "weakening school_domain admits the planted error",
     "weakening source_pins admits the planted error",
+    "weakening sourced authoring comparison admits the repinned forgery",
     "weakening structure admits the planted error",
     "weakening timing admits the planted error",
     "weakening verification policy admits a fabricated attestation"
