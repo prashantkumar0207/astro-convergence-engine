@@ -13233,7 +13233,7 @@ Report concisely whether access succeeded, what you verified directly, and any e
 ## ADR-0132 - Stage 2 provisional BPHS citation-only publication and temporary ChatGPT builder
 
 - **Date:** 2026-11-21
-- **Status:** **PROPOSED for final ratification at merge.** The owner explicitly authorized branch work and an unmerged PR, not a merge to main or entry into INTERPRETATION. This entry does not claim independent technical approval of self-authored code.
+- **Status:** **ACCEPTED, on the owner's ratification quoted in s5** (2026-11-23), after the independent CEO PASS on PR #67 at `5678a53a4f34722acaac17224c11ddafed81e829`. Ratified exactly as proposed in sections 1 to 4: a narrowly bounded, provisional, citation-only exception. **S2-3 remains UNMET**, no human textual verification exists, and no rule may be used as evidence, interpreted, issued as a prediction or used to claim confidence. Before ratification this entry read: "PROPOSED for final ratification at merge. The owner explicitly authorized branch work and an unmerged PR, not a merge to main or entry into INTERPRETATION. This entry does not claim independent technical approval of self-authored code."
 - **Context:** ADR-0130 s3 requires separate Stage 2 authorization and independent verification; ADR-0131 approved source preparation only. The owner stated that no human verifier was available, directed ACE to use classical Jyotisha sources with edition-specific conflicts preserved, asked ChatGPT to implement temporarily while Claude is usage-limited, and answered "authorised" when asked for permission to create a branch, commit, push and open an unmerged PR.
 
 ### 1. Bounded provisional exception, not fulfilment of S2-3
@@ -13259,6 +13259,32 @@ Retain the existing pinned synthetic evidence snapshot, original hash, historica
 ### 4. Owner authority, independent review and remaining approvals
 
 The owner's "authorised" reply grants ChatGPT a temporary builder role for this one unmerged branch and PR while Claude is unavailable. It does **not** grant ChatGPT an independent CEO-audit role over its own implementation or authorize a merge. The final PR must pass applicable fresh verification, independent review by a reviewer other than its author, and separate owner merge authorization. No genuine rule may be projected into EVIDENCE, interpreted against a chart, issued as a prediction, or used to claim confidence. INTERPRETATION remains unentered; prediction issuance still needs a separate ratified roadmap placement.
+
+### 5. The owner's ratification (exact text)
+
+The CEO's re-audit of PR #67 issued PASS at `5678a53a4f34722acaac17224c11ddafed81e829` (CI run `45159910130`, all four jobs
+passed), as technical approval only. The owner then directed, exactly:
+
+```text
+ACE Stage 2 — Owner Direction
+
+I accept the CEO recommendation to ratify ADR-0132's narrowly bounded provisional citation-only exception and conditionally authorize a normal merge of PR #67.
+
+Execute in this order:
+
+1. Verify the PR head remains `5678a53a4f34722acaac17224c11ddafed81e829`, the approved scope is unchanged, and required CI passes.
+2. Record my ratification in ADR-0132, preserving the exact exception, S2-3 UNMET status, lack of human textual verification, and prohibition on evidence, interpretation, prediction or confidence use.
+3. Commit and push the ratification record without changing implementation or certification evidence.
+4. Before merging, verify the final PR diff, ratification record, required checks and merge conditions.
+5. Merge PR #67 normally only after those conditions are satisfied. Never force-push.
+6. Update canonical execution-state and handoff records only through the separately authorized governance workflow.
+7. Report exact resulting SHAs, tests, certification status and next milestone.
+
+Do not expand scope or reopen nonblocking findings.
+```
+
+The ratification covers sections 1 to 4 exactly as proposed. It does not satisfy S2-3, enter INTERPRETATION, authorize prediction
+issuance or confidence claims, or turn the recorded nonblocking findings into Stage 2 exit criteria.
 
 - **Decision requested:** ratify only the provisional, citation-only exception and bounded implementation in sections 1-4 after independent review.
 - **Consequences:** A reviewable first-source package without artificial human-verification claims, preserving protected history and all existing calculation lineage. Later interpretation requires its own explicit entry decision.
