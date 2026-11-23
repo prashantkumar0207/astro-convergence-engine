@@ -3356,6 +3356,25 @@ def provisional_publication_failures(legacy, publication, issued, disabled=froze
     return sorted(problems)
 
 
+def sourced_authoring_failures(directory: Path, same_file=files_match) -> list[str]:
+    """Gate X's separate sourced-publication comparison against the governed authoring output.
+
+    A copied or consistently re-pinned snapshot is NOT trusted as its own authoring source.
+    The real source.json and sourced_source.json must reproduce every published byte.
+    """
+    try:
+        built = author_rule_registry.build_all(directory)
+    except (OSError, ValueError, KeyError, SystemExit) as exc:
+        return [f"the governed dual-snapshot build refused the source: {exc}"]
+    mismatches = []
+    for name, expected in zip((author_rule_registry.SOURCED_SNAPSHOT_NAME,
+                               author_rule_registry.SOURCED_MANIFEST_NAME), built[3:]):
+        path = directory / name
+        if not path.exists() or not same_file(path.read_bytes(), expected):
+            mismatches.append(name)
+    return mismatches
+
+
 def gate_x_provisional_sourced_publication():
     """Source-specific Gate X: six RULs, two explicit witnesses per rule, none usable as evidence.
 
@@ -3366,6 +3385,9 @@ def gate_x_provisional_sourced_publication():
     fixture = rule_registry.pinned()
     sourced = rule_registry.sourced()
     issued = rule_registry.read_history(rule_registry.DATA_DIR / rule_registry.HISTORY_NAME)
+    authored_mismatches = sourced_authoring_failures(rule_registry.DATA_DIR)
+    if authored_mismatches:
+        fail(f"Gate X sourced publication is not the governed authoring output: {authored_mismatches}")
     problems = provisional_publication_failures(fixture, sourced, issued)
     if problems:
         fail(f"Gate X sourced publication failed fixed checks: {problems}")
@@ -3436,8 +3458,9 @@ def gate_x_provisional_sourced_publication():
         fail("Gate X did not distinguish the no-human-attestation policy from a weakened comparator")
     refused["fabricated human attestation refused"] = True
     controls["weakening verification policy admits a fabricated attestation"] = True
-    # Full byte-level pinning: content modification is not allowed even when a caller changes
-    # the manifest's pin. Authoring/output agreement is independently enforced by G2/Gate M.
+    # Two independent defenses are intentionally tested: immutable pinning rejects unpinned bytes,
+    # while G2 and Gate X compare the sourced bytes with the authoring process after a forged,
+    # consistently re-pinned modification. Gate M checks only the three synthetic authored files.
     with tempfile.TemporaryDirectory() as root:
         directory = Path(root) / "pin"
         shutil.copytree(rule_registry.DATA_DIR, directory)
@@ -3448,6 +3471,45 @@ def gate_x_provisional_sourced_publication():
                 rule_registry.SOURCED_MANIFEST_NAME), "bytes do not match"):
             fail("Gate X did not detect a changed sourced snapshot byte")
         refused["changed sourced snapshot byte refused"] = True
+
+        # A source-specific attack changes a genuine Jha verse-109 statement to Sharma's
+        # wording and consistently rehashes both the rule content and snapshot manifest.
+        # It is schema-valid under its new SHA, so raw pinning alone is NOT the tested defense.
+        altered = Path(root) / "repinned-sourced-authoring"
+        shutil.copytree(rule_registry.DATA_DIR, altered)
+        p = altered / author_rule_registry.SOURCED_SNAPSHOT_NAME
+        document = json.loads(p.read_bytes())
+        favourable = [item for item in document["rules"]
+                      if item["key"].endswith("first-favourable") and item["version"] == 1]
+        if len(favourable) != 2:
+            fail("Gate X's authored-source control cannot locate two verse-109 variants")
+        sharma = next(item for item in favourable if item["variant"] == "sharma-1999")
+        jha = next(item for item in favourable if item["variant"] == "jha-1982")
+        if sharma["statement"] == jha["statement"]:
+            fail("Gate X's forged edition difference is equivalent to the committed publication")
+        jha["statement"] = sharma["statement"]
+        jha["content_hash"] = hashlib.sha256(rule_registry.canonical({
+            key: value for key, value in jha.items() if key != "content_hash"})).hexdigest()
+        _write_json(p, document)
+        malicious_pin = hashlib.sha256(p.read_bytes()).hexdigest()
+        manifest_path = altered / author_rule_registry.SOURCED_MANIFEST_NAME
+        malicious_manifest = json.loads(manifest_path.read_bytes())
+        malicious_manifest["sha256"] = malicious_pin
+        _write_json(manifest_path, malicious_manifest)
+        try:
+            rule_registry.load_registry(altered, malicious_pin, author_rule_registry.SOURCED_MANIFEST_NAME)
+        except rule_registry.RegistryError as exc:
+            fail(f"Gate X's forged publication must pass the schema check under its own pin: {exc}")
+        authored_errors = sourced_authoring_failures(altered)
+        if sorted(authored_errors) != sorted([author_rule_registry.SOURCED_SNAPSHOT_NAME,
+                                             author_rule_registry.SOURCED_MANIFEST_NAME]):
+            fail(f"Gate X did not reject consistently re-pinned, hand-edited sourced files: {authored_errors}")
+        refused["consistently re-pinned sourced files refused as unauthored"] = True
+        # Comparator weakening must admit this same malicious publication with no other
+        # failure. This is the precise missing safeguard identified in the PR #67 HOLD.
+        if sourced_authoring_failures(altered, same_file=lambda _actual, _expected: True):
+            fail("Gate X weakening the authored-byte comparator did not admit the repinned forgery")
+        controls["weakening sourced authoring comparison admits the repinned forgery"] = True
     # An ACTUAL authored RUL is forged directly into SQLite, bypassing registration.
     # The same checked store reads and reference-only explanation must refuse it.
     with tempfile.TemporaryDirectory() as root:
