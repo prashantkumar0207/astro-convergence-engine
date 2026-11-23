@@ -11,7 +11,7 @@ It fails when:
       dropped, reused or rebound), or a version or variant published there is rewritten or withdrawn.
 
   python scripts/check_rule_registry.py --base HEAD^1
-  python scripts/check_rule_registry.py --dir DIR --pin SHA --previous-history F --previous-snapshot F
+  python scripts/check_rule_registry.py --dir DIR --pin SHA --previous-history F --previous-snapshot F [--previous-sourced SOURCED_F]
 
 A base revision that cannot be resolved is a failure, not a skip. A base with no registry is the first
 publication and is reported as such. Exit 0 = PASS, 1 = FAIL.
@@ -113,7 +113,9 @@ def main(argv: list[str]) -> int:
     if _option(argv, "--previous-history"):
         previous = (json.loads(Path(_option(argv, "--previous-history")).read_bytes()),
                     json.loads(Path(_option(argv, "--previous-snapshot")).read_bytes()))
-        errors += check_against(*previous, directory)
+        previous_sourced_path = _option(argv, "--previous-sourced")
+        previous_sourced = json.loads(Path(previous_sourced_path).read_bytes()) if previous_sourced_path else None
+        errors += check_against(*previous, directory, previous_sourced)
     elif _option(argv, "--base"):
         base = _option(argv, "--base")
         if subprocess.run(["git", "-C", str(ROOT), "rev-parse", "--verify", "--quiet", f"{base}^{{commit}}"],
