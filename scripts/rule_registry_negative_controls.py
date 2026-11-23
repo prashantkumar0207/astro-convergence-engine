@@ -147,8 +147,8 @@ def main() -> int:
                 # checks as the real implementation would. The poisoned bytes must now pass.
                 def weak_build(directory):
                     built = original(directory)
-                    return (*built[:3], *(directory / name).read_bytes() for name in (
-                        gate.author.SOURCED_SNAPSHOT_NAME, gate.author.SOURCED_MANIFEST_NAME))
+                    return (*built[:3], *((directory / name).read_bytes() for name in (
+                        gate.author.SOURCED_SNAPSHOT_NAME, gate.author.SOURCED_MANIFEST_NAME)))
 
                 gate.author.build_all = weak_build
                 if gate.check_authored(sourced_edited) != []:
