@@ -1957,10 +1957,11 @@
    "status": "NOT_IN_USE"
   },
   "engine.evidence.rule_registry.canonical": {
-   "caller_count": 2,
+   "caller_count": 3,
    "callers": [
     "engine.evidence.rule_registry.content_hash",
-    "scripts.author_rule_registry.publish"
+    "scripts.author_rule_registry.publish",
+    "scripts.rule_registry_negative_controls.main"
    ],
    "covered": true,
    "exported_by": [
@@ -1994,11 +1995,12 @@
    "status": "IN_USE_COVERED"
   },
   "engine.evidence.rule_registry.load_registry": {
-   "caller_count": 3,
+   "caller_count": 4,
    "callers": [
     "engine.evidence.rule_registry.pinned",
     "engine.evidence.rule_registry.sourced",
-    "scripts.check_rule_registry.check_load"
+    "scripts.check_rule_registry.check_load",
+    "scripts.rule_registry_negative_controls.main"
    ],
    "covered": true,
    "exported_by": [
