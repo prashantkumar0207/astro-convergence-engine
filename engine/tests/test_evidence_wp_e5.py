@@ -292,7 +292,14 @@ def test_adr0121_the_gate_refuses_a_rewritten_or_withdrawn_version_against_the_b
 def test_adr0121_the_negative_controls_script_catches_every_planted_violation():
     result = subprocess.run([sys.executable, str(ROOT / "scripts" / "rule_registry_negative_controls.py")],
                             capture_output=True, text=True)
-    assert result.returncode == 0 and "8 planted violations" in result.stdout, result.stdout
+    assert result.returncode == 0 and "15 planted violations" in result.stdout, result.stdout
+    # The Stage 2 sourced-publication controls (PR #67 HOLD): G2 re-pin tampering and G3 rewrite/withdrawal against a
+    # sourced baseline, each with the weakened check that admits it.
+    for label in ("G2 consistently re-pinned sourced snapshot", "weakened sourced G2 comparison admits forgery",
+                  "G3 identical sourced publication baseline passes", "a sourced version rewritten",
+                  "a sourced version withdrawn", "weakened sourced G3 comparison admits a sourced version rewritten",
+                  "weakened sourced G3 comparison admits a sourced version withdrawn"):
+        assert label in result.stdout, label
 
 
 # ------------------------------------------------------------------ AC9 to AC13

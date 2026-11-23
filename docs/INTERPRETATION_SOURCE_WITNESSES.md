@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | **PROPOSED. A record of candidate source witnesses only (`ADR-0130` s3).** Nothing here authorizes publication of any rule. |
-| Version | 0.2.0 |
+| Version | 0.3.0 |
 | Owner | Project Owner (`ADR-0051` D4) |
-| Last updated | 2026-11-20 |
+| Last updated | 2026-11-21 |
 | Review cadence | On any change to a witness, a locator or a rights decision |
 
 # INTERPRETATION source witnesses
@@ -76,3 +76,58 @@ Chapter and verse numbering differs between editions, so every locator names its
 | B5 | The rule count | **Five** (verses 109 to 113), as the owner's Stage 2 preparation authorization sets | Settled for preparation |
 | B6 | Verse 109 states both favourable and adverse effects; a rule carries one polarity, with no mixed value | **Open**: one rule with one polarity, or one rule per effect | The owner, with the verifier |
 | B7 | The criteria S2-1 to S2-3 cited in the owner's authorization are not defined in the repository | **Open**: their text is needed before the rules can be checked against them | The owner or the CEO |
+
+
+## 5. Stage 2 provisional source publication (PR #67; not merged)
+
+**Status: PROPOSED, subject to independent CEO review and separate owner merge authorization.** The
+original independent human-verifier requirement is not fulfilled. ChatGPT is the temporary
+owner-authorized builder and cannot independently certify its own implementation.
+
+### 5.1 Previously fixed Stage 2 criteria (exact text)
+
+- **S2-1:** Edition, publication information and rights basis verified.
+- **S2-2:** Exact witness scan SHA-256 pinned; chapter, verse and page references checked directly.
+- **S2-3:** Named non-Claude verifier independently checks transcription, conditions, polarity and interpretation.
+
+S2-1: edition and publication facts checked; source-use policy restricts ACE to originally written
+English descriptions and precise citations, without reproducing modern translation, commentary or
+scanned pages. No publisher licence or blanket legal clearance is claimed. S2-2: two source
+scans pinned, the locators inspected by AI. **S2-3: UNMET.** A proposed, strictly limited
+AI-assisted exception would permit citation-only provisional publication, not human
+certification, rule application or predictive performance claims. It does not declare S2-3 satisfied.
+
+### 5.2 W2 and comparison
+
+- W2: Pt. Devachandra Jha, Brihat Parashara Hora Shastra with Sudha commentary; Kashi Sanskrit
+  Series 220, Chaukhamba Sanskrit Sansthan, third edition 1982.
+- W2 owner-controlled PDF SHA-256:
+  60f2407c3e924b3052ff2f92f912ad6c1c859eb9e9b9de9550d59664e4f8f54e.
+- W2 locators: chapter 25, verses 109-113, printed page 136 (PDF page 168).
+- W1 remains Sharma Volume I, SHA-256 3c63c1a22d5fec46624dd0f865e4cf35c2ac63e61b84485622f81b4a8175c3af;
+  chapter 26, verses 109-113, printed pages 325-326, PDF pages 333-334.
+- W1 verse 109 first line describes learning, fame, wealth and poetry; W2 instead describes
+  learning and good qualities. Both describe childhood illness and later happiness and growth
+  of resources. These are edition-specific readings, not one universal text.
+- Verses 110-113 have separately cited readings; any unverified exact wording remains author-declared.
+- Mishra Volume 1 page images were inspected: the examined house-lord chapter ends after the
+  ninth-lord verses, closing at verses 104-107, without the corresponding tenth-lord sequence
+  *in that chapter*. This does not establish absence elsewhere in the volumes.
+- Original text, scans, copyrighted commentary and private Drive links are NOT published.
+
+### 5.3 Fixed provisional publication scope
+
+Five verses correspond to six single-polarity, grouped RUL identities, each with explicit
+Sharma and Jha variants (12 records). Verse 109 is divided into positive and negative
+outcomes with later-life and childhood qualifiers. No variant is automatically preferred.
+Every RUL identity belongs to the original global append-only allocation history.
+House counting and applicability remain unassessed: no rule is machine-applied.
+
+All sourced records carry declared_by_author for transcription fidelity and source attribution,
+not_assessed for applicability, and no measured performance. No verification attestation
+is recorded. The original pinned synthetic snapshot and evidence boundaries remain unchanged;
+a distinct pinned sourced snapshot is citation-only and cannot enter evidence, explanation
+or prediction. INTERPRETATION remains unentered.
+
+The Stage 2 package must maintain or strengthen Gate M and G1-G3, add Gate X refusals,
+negative/mutation controls, pass CI, and undergo independent CEO review before any merge.

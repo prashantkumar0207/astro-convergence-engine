@@ -1,0 +1,466 @@
+{
+ "rules": [
+  {
+   "key": "sourced.parashari.tenth-lord-first-favourable",
+   "school": "parashari",
+   "versions": [
+    {
+     "variants": [
+      {
+       "activation_conditions": [],
+       "certification": {
+        "applicability_conditions": "not_assessed",
+        "measured_performance": null,
+        "source_attribution": "declared_by_author",
+        "transcription_fidelity": "declared_by_author"
+       },
+       "citation": {
+        "locator": "chapter 26, verse 109, page 325",
+        "source": "W1-BPHS-Sharma-1999"
+       },
+       "condition": {
+        "kind": "house_lord_in_house",
+        "parameters": {
+         "house": 1,
+         "lord_of": 10
+        }
+       },
+       "declared_strength": "provisional citation-only; no human verification, applicability, or measured predictive performance",
+       "domain": "jataka",
+       "effect": "Favourable qualities and later-life prosperity, as stated by the Sharma witness.",
+       "known_variants": [
+        "sharma-1999",
+        "jha-1982"
+       ],
+       "polarity": "positive",
+       "statement": "Learning, public recognition, personal resources and poetic ability are described alongside happiness in later life and continuing growth of resources.",
+       "synthetic": false,
+       "variant": "sharma-1999"
+      },
+      {
+       "activation_conditions": [],
+       "certification": {
+        "applicability_conditions": "not_assessed",
+        "measured_performance": null,
+        "source_attribution": "declared_by_author",
+        "transcription_fidelity": "declared_by_author"
+       },
+       "citation": {
+        "locator": "chapter 25, verse 109, page 136",
+        "source": "W2-BPHS-Jha-1982"
+       },
+       "condition": {
+        "kind": "house_lord_in_house",
+        "parameters": {
+         "house": 1,
+         "lord_of": 10
+        }
+       },
+       "declared_strength": "provisional citation-only; no human verification, applicability, or measured predictive performance",
+       "domain": "jataka",
+       "effect": "Favourable qualities and later-life prosperity, as stated by the Jha witness.",
+       "known_variants": [
+        "sharma-1999",
+        "jha-1982"
+       ],
+       "polarity": "positive",
+       "statement": "Learning and good qualities are described alongside happiness in later life and continuing growth of resources.",
+       "synthetic": false,
+       "variant": "jha-1982"
+      }
+     ],
+     "version": 1
+    }
+   ]
+  },
+  {
+   "key": "sourced.parashari.tenth-lord-first-childhood-illness",
+   "school": "parashari",
+   "versions": [
+    {
+     "variants": [
+      {
+       "activation_conditions": [],
+       "certification": {
+        "applicability_conditions": "not_assessed",
+        "measured_performance": null,
+        "source_attribution": "declared_by_author",
+        "transcription_fidelity": "declared_by_author"
+       },
+       "citation": {
+        "locator": "chapter 26, verse 109, page 325",
+        "source": "W1-BPHS-Sharma-1999"
+       },
+       "condition": {
+        "kind": "house_lord_in_house",
+        "parameters": {
+         "house": 1,
+         "lord_of": 10
+        }
+       },
+       "declared_strength": "provisional citation-only; no human verification, applicability, or measured predictive performance",
+       "domain": "jataka",
+       "effect": "Adverse childhood health outcome, with no specific diagnosis.",
+       "known_variants": [
+        "sharma-1999",
+        "jha-1982"
+       ],
+       "polarity": "negative",
+       "statement": "Illness during childhood is described, without a precise age, diagnosis or severity.",
+       "synthetic": false,
+       "variant": "sharma-1999"
+      },
+      {
+       "activation_conditions": [],
+       "certification": {
+        "applicability_conditions": "not_assessed",
+        "measured_performance": null,
+        "source_attribution": "declared_by_author",
+        "transcription_fidelity": "declared_by_author"
+       },
+       "citation": {
+        "locator": "chapter 25, verse 109, page 136",
+        "source": "W2-BPHS-Jha-1982"
+       },
+       "condition": {
+        "kind": "house_lord_in_house",
+        "parameters": {
+         "house": 1,
+         "lord_of": 10
+        }
+       },
+       "declared_strength": "provisional citation-only; no human verification, applicability, or measured predictive performance",
+       "domain": "jataka",
+       "effect": "Adverse childhood health outcome, with no specific diagnosis.",
+       "known_variants": [
+        "sharma-1999",
+        "jha-1982"
+       ],
+       "polarity": "negative",
+       "statement": "Illness during childhood is described, without a precise age, diagnosis or severity.",
+       "synthetic": false,
+       "variant": "jha-1982"
+      }
+     ],
+     "version": 1
+    }
+   ]
+  },
+  {
+   "key": "sourced.parashari.tenth-lord-second-favourable",
+   "school": "parashari",
+   "versions": [
+    {
+     "variants": [
+      {
+       "activation_conditions": [],
+       "certification": {
+        "applicability_conditions": "not_assessed",
+        "measured_performance": null,
+        "source_attribution": "declared_by_author",
+        "transcription_fidelity": "declared_by_author"
+       },
+       "citation": {
+        "locator": "chapter 26, verse 110, page 325",
+        "source": "W1-BPHS-Sharma-1999"
+       },
+       "condition": {
+        "kind": "house_lord_in_house",
+        "parameters": {
+         "house": 2,
+         "lord_of": 10
+        }
+       },
+       "declared_strength": "provisional citation-only; no human verification, applicability, or measured predictive performance",
+       "domain": "jataka",
+       "effect": "Favourable resources, character, recognition and paternal relationship.",
+       "known_variants": [
+        "sharma-1999",
+        "jha-1982"
+       ],
+       "polarity": "positive",
+       "statement": "Resources, good character, recognition from a ruler, generosity and satisfaction involving the father are described.",
+       "synthetic": false,
+       "variant": "sharma-1999"
+      },
+      {
+       "activation_conditions": [],
+       "certification": {
+        "applicability_conditions": "not_assessed",
+        "measured_performance": null,
+        "source_attribution": "declared_by_author",
+        "transcription_fidelity": "declared_by_author"
+       },
+       "citation": {
+        "locator": "chapter 25, verse 110, page 136",
+        "source": "W2-BPHS-Jha-1982"
+       },
+       "condition": {
+        "kind": "house_lord_in_house",
+        "parameters": {
+         "house": 2,
+         "lord_of": 10
+        }
+       },
+       "declared_strength": "provisional citation-only; no human verification, applicability, or measured predictive performance",
+       "domain": "jataka",
+       "effect": "Favourable resources, character, recognition and paternal relationship.",
+       "known_variants": [
+        "sharma-1999",
+        "jha-1982"
+       ],
+       "polarity": "positive",
+       "statement": "Resources, good character, recognition from authority, generosity and happiness involving the father are described.",
+       "synthetic": false,
+       "variant": "jha-1982"
+      }
+     ],
+     "version": 1
+    }
+   ]
+  },
+  {
+   "key": "sourced.parashari.tenth-lord-third-favourable",
+   "school": "parashari",
+   "versions": [
+    {
+     "variants": [
+      {
+       "activation_conditions": [],
+       "certification": {
+        "applicability_conditions": "not_assessed",
+        "measured_performance": null,
+        "source_attribution": "declared_by_author",
+        "transcription_fidelity": "declared_by_author"
+       },
+       "citation": {
+        "locator": "chapter 26, verse 111, page 326",
+        "source": "W1-BPHS-Sharma-1999"
+       },
+       "condition": {
+        "kind": "house_lord_in_house",
+        "parameters": {
+         "house": 3,
+         "lord_of": 10
+        }
+       },
+       "declared_strength": "provisional citation-only; no human verification, applicability, or measured predictive performance",
+       "domain": "jataka",
+       "effect": "Favourable family and personal qualities.",
+       "known_variants": [
+        "sharma-1999",
+        "jha-1982"
+       ],
+       "polarity": "positive",
+       "statement": "Happiness associated with siblings and helpers, courage, effective speech and truthfulness are described.",
+       "synthetic": false,
+       "variant": "sharma-1999"
+      },
+      {
+       "activation_conditions": [],
+       "certification": {
+        "applicability_conditions": "not_assessed",
+        "measured_performance": null,
+        "source_attribution": "declared_by_author",
+        "transcription_fidelity": "declared_by_author"
+       },
+       "citation": {
+        "locator": "chapter 25, verse 111, page 136",
+        "source": "W2-BPHS-Jha-1982"
+       },
+       "condition": {
+        "kind": "house_lord_in_house",
+        "parameters": {
+         "house": 3,
+         "lord_of": 10
+        }
+       },
+       "declared_strength": "provisional citation-only; no human verification, applicability, or measured predictive performance",
+       "domain": "jataka",
+       "effect": "Favourable family and personal qualities.",
+       "known_variants": [
+        "sharma-1999",
+        "jha-1982"
+       ],
+       "polarity": "positive",
+       "statement": "Happiness associated with siblings and helpers, courage, effective speech and truthfulness are described.",
+       "synthetic": false,
+       "variant": "jha-1982"
+      }
+     ],
+     "version": 1
+    }
+   ]
+  },
+  {
+   "key": "sourced.parashari.tenth-lord-fourth-favourable",
+   "school": "parashari",
+   "versions": [
+    {
+     "variants": [
+      {
+       "activation_conditions": [],
+       "certification": {
+        "applicability_conditions": "not_assessed",
+        "measured_performance": null,
+        "source_attribution": "declared_by_author",
+        "transcription_fidelity": "declared_by_author"
+       },
+       "citation": {
+        "locator": "chapter 26, verse 112, page 326",
+        "source": "W1-BPHS-Sharma-1999"
+       },
+       "condition": {
+        "kind": "house_lord_in_house",
+        "parameters": {
+         "house": 4,
+         "lord_of": 10
+        }
+       },
+       "declared_strength": "provisional citation-only; no human verification, applicability, or measured predictive performance",
+       "domain": "jataka",
+       "effect": "Favourable domestic, property and resource effects.",
+       "known_variants": [
+        "sharma-1999",
+        "jha-1982"
+       ],
+       "polarity": "positive",
+       "statement": "Contentment, attachment to the mother and possession of land, dwellings, vehicles and resources are described.",
+       "synthetic": false,
+       "variant": "sharma-1999"
+      },
+      {
+       "activation_conditions": [],
+       "certification": {
+        "applicability_conditions": "not_assessed",
+        "measured_performance": null,
+        "source_attribution": "declared_by_author",
+        "transcription_fidelity": "declared_by_author"
+       },
+       "citation": {
+        "locator": "chapter 25, verse 112, page 136",
+        "source": "W2-BPHS-Jha-1982"
+       },
+       "condition": {
+        "kind": "house_lord_in_house",
+        "parameters": {
+         "house": 4,
+         "lord_of": 10
+        }
+       },
+       "declared_strength": "provisional citation-only; no human verification, applicability, or measured predictive performance",
+       "domain": "jataka",
+       "effect": "Favourable domestic, property and resource effects.",
+       "known_variants": [
+        "sharma-1999",
+        "jha-1982"
+       ],
+       "polarity": "positive",
+       "statement": "Contentment, respect for the mother and possession of land, dwellings, vehicles and resources are described.",
+       "synthetic": false,
+       "variant": "jha-1982"
+      }
+     ],
+     "version": 1
+    }
+   ]
+  },
+  {
+   "key": "sourced.parashari.tenth-lord-fifth-favourable",
+   "school": "parashari",
+   "versions": [
+    {
+     "variants": [
+      {
+       "activation_conditions": [],
+       "certification": {
+        "applicability_conditions": "not_assessed",
+        "measured_performance": null,
+        "source_attribution": "declared_by_author",
+        "transcription_fidelity": "declared_by_author"
+       },
+       "citation": {
+        "locator": "chapter 26, verse 113, page 326",
+        "source": "W1-BPHS-Sharma-1999"
+       },
+       "condition": {
+        "kind": "house_lord_in_house",
+        "parameters": {
+         "house": 5,
+         "lord_of": 10
+        }
+       },
+       "declared_strength": "provisional citation-only; no human verification, applicability, or measured predictive performance",
+       "domain": "jataka",
+       "effect": "Favourable learning, resources and offspring effects in the text's terms.",
+       "known_variants": [
+        "sharma-1999",
+        "jha-1982"
+       ],
+       "polarity": "positive",
+       "statement": "Learning, cheerfulness, resources and sons are described.",
+       "synthetic": false,
+       "variant": "sharma-1999"
+      },
+      {
+       "activation_conditions": [],
+       "certification": {
+        "applicability_conditions": "not_assessed",
+        "measured_performance": null,
+        "source_attribution": "declared_by_author",
+        "transcription_fidelity": "declared_by_author"
+       },
+       "citation": {
+        "locator": "chapter 25, verse 113, page 136",
+        "source": "W2-BPHS-Jha-1982"
+       },
+       "condition": {
+        "kind": "house_lord_in_house",
+        "parameters": {
+         "house": 5,
+         "lord_of": 10
+        }
+       },
+       "declared_strength": "provisional citation-only; no human verification, applicability, or measured predictive performance",
+       "domain": "jataka",
+       "effect": "Favourable learning, resources and offspring effects in the text's terms.",
+       "known_variants": [
+        "sharma-1999",
+        "jha-1982"
+       ],
+       "polarity": "positive",
+       "statement": "Learning, cheerfulness, resources and sons are described.",
+       "synthetic": false,
+       "variant": "jha-1982"
+      }
+     ],
+     "version": 1
+    }
+   ]
+  }
+ ],
+ "schema": "ace-sourced-rule-source-v1",
+ "sources": [
+  {
+   "edition": "Girish Chand Sharma; Sagar Publications; first published 1994, reprint 1999",
+   "id": "W1-BPHS-Sharma-1999",
+   "language": "Sanskrit (with modern English translation/commentary excluded)",
+   "rights_basis": "Internal source consultation only; ACE-original English wording; bibliographic citations only; no modern translation, notes, Sanskrit scan or page images reproduced; no licence claimed",
+   "school": "parashari",
+   "witness_sha256": "3c63c1a22d5fec46624dd0f865e4cf35c2ac63e61b84485622f81b4a8175c3af",
+   "witness_url": "ace-private://owner-library/W1-BPHS-Sharma-1999",
+   "work": "Brihat Parasara Hora Sastra, Volume I"
+  },
+  {
+   "edition": "Pt. Devachandra Jha; Kashi Sanskrit Series 220, Chaukhamba Sanskrit Sansthan, third edition 1982",
+   "id": "W2-BPHS-Jha-1982",
+   "language": "Sanskrit (with modern Hindi commentary excluded)",
+   "rights_basis": "Internal source consultation only; ACE-original English wording; bibliographic citations only; no modern commentary, edited text, scan or page images reproduced; no licence claimed",
+   "school": "parashari",
+   "witness_sha256": "60f2407c3e924b3052ff2f92f912ad6c1c859eb9e9b9de9550d59664e4f8f54e",
+   "witness_url": "ace-private://owner-library/W2-BPHS-Jha-1982",
+   "work": "Brihat Parashara Hora Shastra, Sudha commentary"
+  }
+ ],
+ "verifications": []
+}

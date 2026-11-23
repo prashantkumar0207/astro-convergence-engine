@@ -28,6 +28,10 @@ from engine.evidence import rule_registry as registry  # noqa: E402
 SOURCE_SCHEMA = "ace-rule-source-v1"
 SOURCE_NAME = "source.json"
 SNAPSHOT_NAME = "snapshot.json"
+SOURCED_SOURCE_NAME = "sourced_source.json"
+SOURCED_SNAPSHOT_NAME = "sourced_snapshot.json"
+SOURCED_MANIFEST_NAME = "SOURCED_MANIFEST.json"
+SOURCED_SOURCE_SCHEMA = "ace-sourced-rule-source-v1"
 VARIANT_FIELDS = ("variant", "citation", "statement", "condition", "activation_conditions", "effect", "polarity",
                   "domain", "known_variants", "certification", "declared_strength", "synthetic")
 
@@ -36,17 +40,19 @@ def pretty(data) -> bytes:
     return (json.dumps(data, sort_keys=True, indent=1, ensure_ascii=True) + "\n").encode("ascii")
 
 
-def allocate(source: dict, history: dict) -> dict:
+def allocate(source: dict, history: dict, sourced_rules=()) -> dict:
     """Extend the history with one new number per new rule key. Existing allocations are never changed."""
 
     allocations = list(history["allocations"])
     bound = {entry["key"]: entry for entry in allocations}
-    authored = {rule["key"] for rule in source["rules"]}
+    authored = {rule["key"] for rule in source["rules"]} | {rule["key"] for rule in sourced_rules}
+    if len(authored) != len(source["rules"]) + len(sourced_rules):
+        raise SystemExit("FAIL: a rule key is authored more than once across the two sources")
     orphans = sorted(entry["number"] for entry in allocations if entry["key"] not in authored)
     if orphans:
         raise SystemExit(f"FAIL: RUL numbers {orphans} are allocated to keys the source never authored; every "
                          f"allocation comes from the authoring process, and a published rule is never withdrawn")
-    for rule in source["rules"]:
+    for rule in [*source["rules"], *sourced_rules]:
         if rule["key"] in bound:
             if bound[rule["key"]]["school"] != rule["school"]:
                 raise SystemExit(f"FAIL: {rule['key']!r} is bound to school {bound[rule['key']]['school']!r}; a rule "
@@ -58,7 +64,7 @@ def allocate(source: dict, history: dict) -> dict:
     return {"schema": registry.HISTORY_SCHEMA, "allocations": allocations}
 
 
-def publish(source: dict, history: dict) -> bytes:
+def publish(source: dict, history: dict, sources=(), verifications=()) -> bytes:
     """The snapshot: every authored version and variant under its issued RUL number, each validated and hashed."""
 
     numbers = {entry["key"]: entry["number"] for entry in history["allocations"]}
@@ -72,50 +78,70 @@ def publish(source: dict, history: dict) -> bytes:
                 record = {"rule": numbers[rule["key"]], "key": rule["key"], "version": version["version"],
                           "school": rule["school"], **variant}
                 record["content_hash"] = hashlib.sha256(registry.canonical(record)).hexdigest()
-                registry.rule_from_record(record)  # Refuse anything the registry would refuse.
+                registry.rule_from_record(record, tuple(registry.source_from_record(item) for item in sources))
                 records.append(record)
+    if sources:
+        return pretty({"schema": registry.SOURCED_SNAPSHOT_SCHEMA, "rules": records,
+                       "sources": list(sources), "verifications": list(verifications)})
     return pretty({"schema": registry.SNAPSHOT_SCHEMA, "rules": records})
 
 
-def manifest(snapshot: bytes) -> bytes:
-    return pretty({"schema": registry.MANIFEST_SCHEMA, "snapshot": SNAPSHOT_NAME,
+def manifest(snapshot: bytes, name: str = SNAPSHOT_NAME) -> bytes:
+    return pretty({"schema": registry.MANIFEST_SCHEMA, "snapshot": name,
                    "sha256": hashlib.sha256(snapshot).hexdigest()})
 
 
-def build(directory: Path):
+def build_all(directory: Path):
+    """Build both immutable publications from one append-only RUL allocation history."""
     source = json.loads((directory / SOURCE_NAME).read_bytes())
+    sourced = json.loads((directory / SOURCED_SOURCE_NAME).read_bytes())
     if set(source) != {"schema", "rules"} or source["schema"] != SOURCE_SCHEMA:
-        raise SystemExit("FAIL: not a rule source of this schema")
+        raise SystemExit("FAIL: not a synthetic rule source of this schema")
+    if set(sourced) != {"schema", "rules", "sources", "verifications"} or \
+            sourced["schema"] != SOURCED_SOURCE_SCHEMA or not sourced["rules"] or \
+            len(sourced["sources"]) != 2 or sourced["verifications"] != []:
+        raise SystemExit("FAIL: not the provisional two-witness source of this schema")
+    if any(record["synthetic"] is not False for rule in sourced["rules"]
+           for version in rule["versions"] for record in version["variants"]):
+        raise SystemExit("FAIL: a sourced rule cannot be synthetic")
+    if any(record["synthetic"] is not True for rule in source["rules"]
+           for version in rule["versions"] for record in version["variants"]):
+        raise SystemExit("FAIL: a fixture rule must remain synthetic")
     history_path = directory / registry.HISTORY_NAME
     history = json.loads(history_path.read_bytes()) if history_path.exists() else \
         {"schema": registry.HISTORY_SCHEMA, "allocations": []}
-    extended = allocate(source, history)
-    snapshot = publish(source, extended)
-    return pretty(extended), snapshot, manifest(snapshot)
+    extended = allocate(source, history, sourced["rules"])
+    synthetic_snapshot = publish(source, extended)
+    sourced_snapshot = publish(sourced, extended, sourced["sources"], sourced["verifications"])
+    # Validate the generated genuine publication against the same pin and schema that readers use.
+    return (pretty(extended), synthetic_snapshot, manifest(synthetic_snapshot), sourced_snapshot,
+            manifest(sourced_snapshot, SOURCED_SNAPSHOT_NAME))
+
+
+def build(directory: Path):
+    """Legacy three-file interface retained for Gate M's historical checks."""
+    return build_all(directory)[:3]
 
 
 def main(argv: list[str]) -> int:
     directory = Path(argv[argv.index("--dir") + 1]) if "--dir" in argv else registry.DATA_DIR
-    history, snapshot, manifest_bytes = build(directory)
+    produced = build_all(directory)
+    files = (registry.HISTORY_NAME, SNAPSHOT_NAME, registry.MANIFEST_NAME,
+             SOURCED_SNAPSHOT_NAME, SOURCED_MANIFEST_NAME)
     if "--write" in argv:
-        (directory / registry.HISTORY_NAME).write_bytes(history)
-        (directory / SNAPSHOT_NAME).write_bytes(snapshot)
-        (directory / registry.MANIFEST_NAME).write_bytes(manifest_bytes)
-        print(f"published: {SNAPSHOT_NAME} sha256 {hashlib.sha256(snapshot).hexdigest()}")
+        for name, content in zip(files, produced):
+            (directory / name).write_bytes(content)
+        print(f"published: {SNAPSHOT_NAME} sha256 {hashlib.sha256(produced[1]).hexdigest()}")
+        print(f"published: {SOURCED_SNAPSHOT_NAME} sha256 {hashlib.sha256(produced[3]).hexdigest()}")
         return 0
-    errors = []
-    for name, expected in ((registry.HISTORY_NAME, history), (SNAPSHOT_NAME, snapshot),
-                           (registry.MANIFEST_NAME, manifest_bytes)):
-        path = directory / name
-        if not path.exists() or path.read_bytes() != expected:
-            errors.append(f"{name} is not exactly what the authoring process produces from {SOURCE_NAME}")
+    errors = [name for name, expected in zip(files, produced)
+              if not (directory / name).exists() or (directory / name).read_bytes() != expected]
     if errors:
-        print("FAIL: the published rule registry was not produced by the governed authoring process")
-        for error in errors:
-            print(f"    {error}")
+        print("FAIL: the committed registry files are not exactly what the governed authoring process produces:")
+        for name in errors:
+            print("   ", name)
         return 1
-    print(f"PASS: the history, snapshot and manifest are exactly the authoring process's output "
-          f"(snapshot sha256 {hashlib.sha256(snapshot).hexdigest()})")
+    print("PASS: both snapshots, both manifests and one RUL history were generated by the authoring process")
     return 0
 
 

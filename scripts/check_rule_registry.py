@@ -11,7 +11,7 @@ It fails when:
       dropped, reused or rebound), or a version or variant published there is rewritten or withdrawn.
 
   python scripts/check_rule_registry.py --base HEAD^1
-  python scripts/check_rule_registry.py --dir DIR --pin SHA --previous-history F --previous-snapshot F
+  python scripts/check_rule_registry.py --dir DIR --pin SHA --previous-history F --previous-snapshot F [--previous-sourced SOURCED_F]
 
 A base revision that cannot be resolved is a failure, not a skip. A base with no registry is the first
 publication and is reported as such. Exit 0 = PASS, 1 = FAIL.
@@ -43,17 +43,23 @@ def check_load(directory: Path, pin: str) -> list[str]:
         registry.load_registry(directory, pin)
     except registry.RegistryError as exc:
         return [f"G1 {exc}"]
+    if (directory / author.SOURCED_MANIFEST_NAME).exists():
+        try:
+            registry.load_registry(directory, registry.SOURCED_PINNED_SNAPSHOT_SHA256,
+                                   registry.SOURCED_MANIFEST_NAME)
+        except registry.RegistryError as exc:
+            return [f"G1 sourced publication: {exc}"]
     return []
 
 
 def check_authored(directory: Path) -> list[str]:
     try:
-        history, snapshot, manifest = author.build(directory)
+        built = author.build_all(directory)
     except SystemExit as exc:
         return [f"G2 the authoring process refuses the committed source: {exc}"]
     errors = []
-    for name, expected in ((registry.HISTORY_NAME, history), (author.SNAPSHOT_NAME, snapshot),
-                           (registry.MANIFEST_NAME, manifest)):
+    for name, expected in zip((registry.HISTORY_NAME, author.SNAPSHOT_NAME, registry.MANIFEST_NAME,
+                               author.SOURCED_SNAPSHOT_NAME, author.SOURCED_MANIFEST_NAME), built):
         path = directory / name
         if not path.exists() or path.read_bytes() != expected:
             errors.append(f"G2 {name} is not exactly what the authoring process produces; it was edited by hand or "
@@ -61,7 +67,8 @@ def check_authored(directory: Path) -> list[str]:
     return errors
 
 
-def check_against(previous_history: dict, previous_snapshot: dict, directory: Path) -> list[str]:
+def check_against(previous_history: dict, previous_snapshot: dict, directory: Path,
+                  previous_sourced: dict | None = None) -> list[str]:
     errors = []
     current = json.loads((directory / registry.HISTORY_NAME).read_bytes())["allocations"]
     before = previous_history["allocations"]
@@ -80,6 +87,16 @@ def check_against(previous_history: dict, previous_snapshot: dict, directory: Pa
         elif published[identity] != item["content_hash"]:
             errors.append(f"G3 RUL {item['rule']} version {item['version']} {item['variant']!r} was rewritten; a "
                           f"published version is immutable, and a change is a new version")
+    if previous_sourced is not None:
+        current_sourced = json.loads((directory / author.SOURCED_SNAPSHOT_NAME).read_bytes())
+        published_sourced = {(item["rule"], item["version"], item["variant"]): item["content_hash"]
+                             for item in current_sourced["rules"]}
+        for item in previous_sourced["rules"]:
+            identity = (item["rule"], item["version"], item["variant"])
+            if identity not in published_sourced:
+                errors.append(f"G3 sourced RUL {item['rule']} v{item['version']} was withdrawn")
+            elif published_sourced[identity] != item["content_hash"]:
+                errors.append(f"G3 sourced RUL {item['rule']} v{item['version']} was rewritten")
     return errors
 
 
@@ -96,7 +113,9 @@ def main(argv: list[str]) -> int:
     if _option(argv, "--previous-history"):
         previous = (json.loads(Path(_option(argv, "--previous-history")).read_bytes()),
                     json.loads(Path(_option(argv, "--previous-snapshot")).read_bytes()))
-        errors += check_against(*previous, directory)
+        previous_sourced_path = _option(argv, "--previous-sourced")
+        previous_sourced = json.loads(Path(previous_sourced_path).read_bytes()) if previous_sourced_path else None
+        errors += check_against(*previous, directory, previous_sourced)
     elif _option(argv, "--base"):
         base = _option(argv, "--base")
         if subprocess.run(["git", "-C", str(ROOT), "rev-parse", "--verify", "--quiet", f"{base}^{{commit}}"],
@@ -109,7 +128,7 @@ def main(argv: list[str]) -> int:
             elif history is None or snapshot is None:
                 errors.append(f"G3 the base {base} has a partial registry; refusing to compare")
             else:
-                errors += check_against(history, snapshot, directory)
+                errors += check_against(history, snapshot, directory, _at(base, author.SOURCED_SNAPSHOT_NAME))
                 note = f"; append-only against {base}"
     else:
         errors.append("G3 no base given: pass --base REF, or --previous-history and --previous-snapshot")
