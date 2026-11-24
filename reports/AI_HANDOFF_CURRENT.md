@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.66.0 |
+| Version | 9.67.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-21 (Draft Stage 2 PR #67, ChatGPT temporary builder; independent audit still required.) |
+| Last updated | 2026-11-24 (Stage 2 closed: PR #67 merged at `89a4631`; `ADR-0132` ACCEPTED; S2-3 UNMET; INTERPRETATION not entered.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -30,11 +30,13 @@ create a competing one.
 ## Role model (docs/PROJECT_CONSTITUTION.md s11, formalized ADR-0056)
 
 - **USER** - product owner, final ratifying authority.
-- **CLAUDE** - normally the primary ACE builder/executor and first auditor. For draft PR #67 only,
-  the owner explicitly authorized ChatGPT as temporary builder while Claude is unavailable.
-- **CHATGPT** - normally independent CEO/auditor. For draft PR #67 only, the owner-authorized
-  temporary builder; it cannot give itself an independent CEO PASS. Independent review and owner
-  merge authorization remain required.
+- **CLAUDE** - the primary and sole ACE builder/executor: all ACE coding, repository editing, test
+  execution, certification execution, and commits. Updates this file after every meaningful task.
+- **CHATGPT** - independent ACE CEO / technical auditor: audits architecture, specifications,
+  governance, code, tests, certification evidence, provenance, and claims; determines PASS / HOLD /
+  FAIL; gives Claude the exact next action when remediation is required. Not a builder; does not
+  commit. The one exception, ChatGPT as temporary builder of PR #67 only (`ADR-0132` s4), ended
+  with that PR's merge at `89a4631`; Claude audited it independently.
 - **CODEX** - not part of the ACE workflow, unless the user explicitly changes it in a future decision
   entry.
 - **Git is the source of truth** for all of the above. This file is an evidence/index record, not a
@@ -67,6 +69,36 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
 
+### 2026-11-24 - Stage 2 closed: PR #67 merged (`ADR-0132` ACCEPTED)
+
+- **Approval:** independent CEO PASS at `5678a53a4f34722acaac17224c11ddafed81e829`, the re-audit after Claude's HOLD at `03c6cbd`. The
+  owner ratified `ADR-0132` and authorized a normal merge; the ratification is quoted exactly in `ADR-0132` s5, commit
+  `16f506f48de1dc19b809278234fcc29b23d3e829` (`docs/DECISION_LOG.md`, `ADR-0132` only; its s1 to s4 byte-identical).
+- **Merge:** `89a4631a9cda630580c1dbbf4b8d20291b14724a`, a normal merge with parents `d60bd4a` and `16f506f`; its tree equals `16f506f`.
+  The branch is kept; nothing was force-pushed.
+- **CI:** `45159910130` at `5678a53`, `45170445684` at `16f506f`, and post-merge `45172595504` (push to `main`, at `89a4631`): success on
+  all four jobs each.
+- **Verification at `5678a53`** (clean Linux run): all 24 certifiers pass; artifact drift passes on 76 files; pytest 2412 passed,
+  0 skipped. `EVIDENCE_FOUNDATIONS_V1` gates A to X PASS (gate X: 41 refusals, 2 preserved, 11 controls). The remediation's mutation
+  audit: 7 of 7 caught. Certified calculations unchanged.
+- **Preserved restrictions:** the six RUL identities and their 12 variants are provisional and citation-only. S2-3 is UNMET, so there is
+  no human textual verification; applicability is not assessed and no predictive performance is measured. No sourced rule may be used
+  for evidence, explanation, interpretation, prediction or confidence.
+- **Nonblocking backlog** from the PR #67 audits, recorded here once, unchanged, and not Stage 2 exit criteria:
+  1. Gate M gained no union-specific controls; its new allocation branches are redundant with its authoring and binding checks, and its
+     original binding control now also expects "allocation", so that control no longer isolates the binding check.
+  2. Gate X's timing check is a substring match on "later" and "childhood"; its forged-row check accepts any refusal message containing
+     "snapshot".
+  3. Gate X does not lock in verse 109's textual difference; a legitimate re-authoring could erase it without any gate noticing.
+  4. The statements for verses 111 and 112 omit "good qualities", which both witnesses have, and verse 111 omits Jha's "truth and dharma".
+  5. `ADR-0132` s1 to s4 paraphrase the owner's implementation authorization rather than quoting it (s5 quotes the ratification exactly).
+  6. The witness record says Mishra's page images were inspected; Claude confirmed the omission only from the archive's OCR text.
+  7. No Stage 2 tests were added beyond one updated count assertion; Stage 2's assurance sits in the certifier's gates.
+  8. With gate X's committed-file check removed, the tampering case is still caught, but only through a precondition of gate X's
+     forged-copy control: one detection path masks the other.
+  9. The control script's "15 planted violations" counts baseline passes and weakened-check demonstrations, not only violations.
+- **Not done:** no INTERPRETATION entry or implementation, no rule application, no prediction issuance, no confidence claim.
+- **Next:** the CEO's architecture and prerequisite review for INTERPRETATION, then a separate owner decision.
 
 ### 2026-11-21 - Draft Stage 2 PR #67: provisional BPHS source publication (temporary ChatGPT builder)
 
