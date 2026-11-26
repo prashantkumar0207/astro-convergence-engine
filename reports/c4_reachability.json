@@ -2192,6 +2192,39 @@
    "file": "engine/evidence/store.py",
    "status": "IN_USE_COVERED"
   },
+  "engine.interpretation.application.ChartOrigin.chart": {
+   "caller_count": 1,
+   "callers": [
+    "engine.interpretation.application.SyntheticChart.chart"
+   ],
+   "covered": true,
+   "file": "engine/interpretation/application.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.interpretation.application.ChartOrigin.digest": {
+   "caller_count": 2,
+   "callers": [
+    "engine.interpretation.application._record",
+    "engine.interpretation.application.check_origin"
+   ],
+   "covered": true,
+   "file": "engine/interpretation/application.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.interpretation.application.ChartOrigin.from_snapshot": {
+   "covered": true,
+   "file": "engine/interpretation/application.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.interpretation.application.SyntheticChart.chart": {
+   "caller_count": 1,
+   "callers": [
+    "engine.interpretation.application._evaluate_all"
+   ],
+   "covered": true,
+   "file": "engine/interpretation/application.py",
+   "status": "IN_USE_COVERED"
+  },
   "engine.interpretation.application.admit": {
    "caller_count": 2,
    "callers": [
@@ -2253,6 +2286,15 @@
    "status": "IN_USE_COVERED"
   },
   "engine.interpretation.application.check_identity": {
+   "caller_count": 1,
+   "callers": [
+    "engine.interpretation.application.verify"
+   ],
+   "covered": true,
+   "file": "engine/interpretation/application.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.interpretation.application.check_origin": {
    "caller_count": 1,
    "callers": [
     "engine.interpretation.application.verify"
@@ -2346,9 +2388,8 @@
    "status": "IN_USE_COVERED"
   },
   "engine.interpretation.conditions.answer": {
-   "caller_count": 2,
+   "caller_count": 1,
    "callers": [
-    "engine.interpretation.application.check_evaluations",
     "engine.interpretation.conditions.evaluate"
    ],
    "covered": true,
@@ -2899,8 +2940,9 @@
    "status": "NOT_IN_USE"
   },
   "engine.parashari.house_lord.house_lords_from_snapshot": {
-   "caller_count": 1,
+   "caller_count": 2,
    "callers": [
+    "engine.interpretation.application.ChartOrigin.chart",
     "engine.parashari.house_lord.house_lords"
    ],
    "covered": true,
@@ -3030,8 +3072,8 @@
  },
  "schema": "ace-c4-reachability-v1",
  "summary": {
-  "IN_USE_COVERED": 225,
-  "NOT_IN_USE": 144
+  "IN_USE_COVERED": 229,
+  "NOT_IN_USE": 145
  },
  "universe_exclusions": {
   "engine.main.": "API route handlers: callers and exports, not capabilities",

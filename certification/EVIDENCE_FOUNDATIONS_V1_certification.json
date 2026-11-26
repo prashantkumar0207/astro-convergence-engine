@@ -1131,26 +1131,32 @@
   },
   "Y_rule_application": {
    "classification": "negative_control",
-   "refusals_verified": 39,
-   "legitimate_reads_preserved": 8,
-   "controls_rejected": 12,
+   "refusals_verified": 48,
+   "legitimate_reads_preserved": 9,
+   "controls_rejected": 14,
    "refused": [
     "a KP rule",
     "a Nakshatra Nadi rule",
     "a Parashari rule with a condition kind not evaluated here",
     "a bare chart, not a SyntheticChart",
-    "a chart computed under another profile",
     "a chart not declared synthetic",
-    "a chart that is not a certified house-lord chart",
+    "a chart origin under another profile",
     "a condition that is not a registry Condition",
     "a dictionary in place of a record",
+    "a forged record whose rehashed facts and outcome contradict its chart",
+    "a hostile label passed by name",
+    "a hostile label passed to a synthetic chart",
+    "a house-lord chart in place of a chart origin",
+    "a house-lord chart under another profile evaluated directly",
     "a planted ledger or KP import",
+    "a provenance that is not Provenance",
     "a record changed after it was hashed",
     "a record from another certified input content",
     "a record missing an activation evaluation",
     "a record naming a genuine rule",
     "a record that does not match its published rule",
-    "a record whose answer does not follow from its facts",
+    "a record verified against another chart with the same facts",
+    "a record verified against no chart",
     "a record whose outcome does not follow",
     "a record with an added timing field",
     "a rule named by text",
@@ -1173,29 +1179,35 @@
     "genuine rule 8 version 1 through apply_rule",
     "genuine rule 9 version 1 from a registry carrying it",
     "genuine rule 9 version 1 through apply_rule",
+    "hostile text in place of a graha name",
+    "hostile text in place of a longitude",
+    "hostile text in place of the Lagna",
     "text in place of a record"
    ],
    "preserved": [
     "4320 condition evaluations agree with a closed-form recomputation",
     "a record carries exactly its schema's fields, none of them a prediction field",
     "a rule fires only when its activation conditions also hold",
-    "an explanation is rendered from the record and the pinned registry alone",
+    "a synthetic chart carries no text field, and text in a provenance field never reaches an explanation",
+    "an explanation is rendered from the verified record, its chart and the pinned registry alone",
     "every variant is applied and kept, and their disagreement is stated",
     "repeated application gives byte-identical records and explanations",
     "the interpretation package imports only its allowlist",
     "the tenth lord in the tenth fires RUL-1 version 1, and elsewhere it does not"
    ],
    "controls": [
+    "H1: a renderer interpolating a caller label carries the hostile claim, and the detector sees it",
+    "H2: the rehashed forgery renders when facts are checked only against themselves",
     "a changed polarity renders without the published-rule match",
-    "a changed record renders without check_hash",
+    "a changed record is refused only by the later published-rule check without check_hash",
     "a chart not declared synthetic is accepted without the data-class check",
     "a genuine rule is applied without require_synthetic",
     "a missing variant renders without check_coverage",
+    "a record renders against another chart without check_origin",
     "a rule with altered content is applied without require_content",
     "a widened import allowlist admits a planted ledger or KP import",
     "an added timing field renders without check_shape",
     "an unevaluated kind is silently not fired by a permissive evaluator",
-    "an unsupported outcome renders without check_evaluations",
     "another input content renders without check_identity",
     "another school's rule is applied without require_school"
    ],
@@ -2546,6 +2558,46 @@
     },
     {
      "callable": "engine.interpretation.application.check_coverage",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.application.check_origin",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.application.ChartOrigin.from_snapshot",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.application.ChartOrigin.digest",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.application.ChartOrigin.chart",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.application.SyntheticChart.chart",
      "kind": "callable",
      "disposition": "GATED",
      "exercised_by": [
