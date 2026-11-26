@@ -40,7 +40,7 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 - **W_explanation_boundary**: classification=negative_control, refusals_verified=31, legitimate_reads_preserved=2, controls_rejected=7
 - **X_provisional_sourced_publication**: classification=negative_control, refusals_verified=41, legitimate_reads_preserved=2, controls_rejected=11
 - **Y_rule_application**: classification=negative_control, refusals_verified=48, legitimate_reads_preserved=9, controls_rejected=14
-- **Z_untimed_natal_evidence**: classification=negative_control, refusals_verified=33, legitimate_reads_preserved=7, controls_rejected=10
+- **Z_untimed_natal_evidence**: classification=negative_control, refusals_verified=33, legitimate_reads_preserved=9, controls_rejected=10
 
 ## Capabilities (ADR-0101 s2)
 

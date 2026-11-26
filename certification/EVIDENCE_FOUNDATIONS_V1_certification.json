@@ -1218,7 +1218,7 @@
   "Z_untimed_natal_evidence": {
    "classification": "negative_control",
    "refusals_verified": 33,
-   "legitimate_reads_preserved": 7,
+   "legitimate_reads_preserved": 9,
    "controls_rejected": 10,
    "refused": [
     "a forged chart context",
@@ -1257,12 +1257,14 @@
    ],
    "preserved": [
     "a dated item keeps the v3 record and its timing node, beside untimed items",
+    "a projected item's facts and chart context match their independent statement",
     "a reopened natal store reads every untimed item again, verified",
     "an untimed item never conflicts with a dated item, or with another rule's untimed item",
     "an untimed item's timing renders one fixed sentence with no date",
     "fired records project to v4 untimed items that load and reproduce exactly",
     "only the dated branches of four named functions read a timing's dates or label",
-    "opposite-polarity variants of one rule version on one chart are kept as disagreement"
+    "opposite-polarity variants of one rule version on one chart are kept as disagreement",
+    "the entity chart's recorded birth input maps exactly to the kernel's input"
    ],
    "controls": [
     "a forged fact is persisted by a store whose verifier accepts anything",
