@@ -26,5 +26,6 @@ V_genuine_rule_publication: 27
 W_explanation_boundary: 31
 X_provisional_sourced_publication: 41
 Y_rule_application: 48
+Z_untimed_natal_evidence: 33
 archived: certification/EVIDENCE_FOUNDATIONS_V1_certification.json
 RESULT  : PASS

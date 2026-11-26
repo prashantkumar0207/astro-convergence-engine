@@ -109,7 +109,8 @@ def test_c3_reads_it_with_its_own_certifier():
                             "evidence.rule_registry",  # added by ADR-0120 s4 and ADR-0121 (WP-E5)
                             "evidence.explanation_boundary",  # added by ADR-0130 (Stage 1)
                             "evidence.provenance_graph",  # added by ADR-0122 s4 (WP-E6)
-                            "interpretation.rule_application"]  # added by ADR-0133 (WP-I1, PROPOSED), gate Y
+                            "interpretation.rule_application",  # added by ADR-0133 (WP-I1), gate Y
+                            "evidence.untimed_natal"]  # added by ADR-0134 (WP-I2), gate Z
 
 
 def test_c3_rejects_a_withdrawn_enumeration(corpus, graph):

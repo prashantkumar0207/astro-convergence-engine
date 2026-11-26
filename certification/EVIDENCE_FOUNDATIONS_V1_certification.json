@@ -1,8 +1,8 @@
 {
  "schema": "evidence_foundations_v1_certification",
- "adr": "ADR-0115 s4; ADR-0116 s4; ADR-0119 s3, s5; ADR-0120 s4, s6; ADR-0121; ADR-0122 s4, s6; ADR-0124; ADR-0125; ADR-0127; ADR-0130; ADR-0132; ADR-0133 (PROPOSED)",
+ "adr": "ADR-0115 s4; ADR-0116 s4; ADR-0119 s3, s5; ADR-0120 s4, s6; ADR-0121; ADR-0122 s4, s6; ADR-0124; ADR-0125; ADR-0127; ADR-0130; ADR-0132; ADR-0133; ADR-0134",
  "date": "2026-11-26",
- "scope": "Structural certification of the EVIDENCE foundations: the H0 entity model, append-only entity store and ENT issuer (ADR-0114 WP-E1), and the H1 event model, append-only event store, separate confirmation records, EVR issuer and seeded event-class vocabulary (ADR-0115 WP-E2), and the H2 historical ledger, protected holdouts, pre-registered protocols and purpose-declared access log (ADR-0116 WP-E3), and the H4 evidence model, append-only evidence store, EVD and RUL issuers, provenance-checked joins, decomposable aggregates and structural relationship records (ADR-0119 WP-E4), and the H5 interpretation rule registry, its hash-pinned fail-closed snapshot and the governed RUL authoring process (ADR-0120 WP-E5; ADR-0121), and the provenance graph recorded at evidence-creation time (ADR-0122 WP-E6); and, for INTERPRETATION work package WP-I1, the synthetic application of Parashari fixture rules and its deterministic explanation (ADR-0133, PROPOSED; gate Y).",
+ "scope": "Structural certification of the EVIDENCE foundations: the H0 entity model, append-only entity store and ENT issuer (ADR-0114 WP-E1), and the H1 event model, append-only event store, separate confirmation records, EVR issuer and seeded event-class vocabulary (ADR-0115 WP-E2), and the H2 historical ledger, protected holdouts, pre-registered protocols and purpose-declared access log (ADR-0116 WP-E3), and the H4 evidence model, append-only evidence store, EVD and RUL issuers, provenance-checked joins, decomposable aggregates and structural relationship records (ADR-0119 WP-E4), and the H5 interpretation rule registry, its hash-pinned fail-closed snapshot and the governed RUL authoring process (ADR-0120 WP-E5; ADR-0121), and the provenance graph recorded at evidence-creation time (ADR-0122 WP-E6); and, for INTERPRETATION work package WP-I1, the synthetic application of Parashari fixture rules and its deterministic explanation (ADR-0133; gate Y), and the untimed natal evidence projected from it (ADR-0134 WP-I2; gate Z).",
  "reference": {
   "structure": "the model contracts of ADR-0114 s3, ADR-0115 s5, ADR-0116 s5, ADR-0119 s5, ADR-0120 s6 and ADR-0122 s6, exercised on synthetic records",
   "event_classes": "knowledge/hlkg/domains/career/CAREER_EVENT_REGISTRY.md s3, read by this runner independently of the code"
@@ -1214,6 +1214,71 @@
    "exercises": [
     "interpretation.rule_application"
    ]
+  },
+  "Z_untimed_natal_evidence": {
+   "classification": "negative_control",
+   "refusals_verified": 33,
+   "legitimate_reads_preserved": 7,
+   "controls_rejected": 10,
+   "refused": [
+    "a forged chart context",
+    "a forged completeness statement",
+    "a forged declared strength",
+    "a forged fact persisted directly",
+    "a forged polarity",
+    "a forged untimed row written past persist",
+    "a genuine rule's expected item",
+    "a graph with an untimed and a timing node",
+    "a graph with neither node",
+    "a persisted relationship claiming that independence",
+    "a plain store listing a store holding untimed items",
+    "a plain store persisting an untimed item",
+    "a plain store reading an untimed item",
+    "a record made on a substituted chart",
+    "a record that did not fire",
+    "a record verified against another chart",
+    "a timing node planted on an untimed item's stored graph",
+    "a v3 record carrying untimed timing",
+    "a v4 record carrying dated timing",
+    "a v4 timing with a date added",
+    "a v4 timing with an unknown basis",
+    "an item with no timing",
+    "an untimed basis of none",
+    "an untimed basis of unknown",
+    "an untimed item claiming another entity's chart",
+    "an untimed item in another domain",
+    "an untimed item of another system",
+    "an untimed item on another varga",
+    "an untimed item whose rule has a condition kind outside the natal placements",
+    "an untimed node of another entity's chart",
+    "independence between an untimed item and another item of its entity",
+    "projection into a plain store",
+    "the verifier given a dated item"
+   ],
+   "preserved": [
+    "a dated item keeps the v3 record and its timing node, beside untimed items",
+    "a reopened natal store reads every untimed item again, verified",
+    "an untimed item never conflicts with a dated item, or with another rule's untimed item",
+    "an untimed item's timing renders one fixed sentence with no date",
+    "fired records project to v4 untimed items that load and reproduce exactly",
+    "only the dated branches of four named functions read a timing's dates or label",
+    "opposite-polarity variants of one rule version on one chart are kept as disagreement"
+   ],
+   "controls": [
+    "a forged fact is persisted by a store whose verifier accepts anything",
+    "a graph with both nodes reproduces without the exactly-one check",
+    "a plain store persists an untimed item without the verifier requirement",
+    "a projection fabricating a lifetime window is detected as not untimed v4",
+    "a record that did not fire is refused only by expected_item without require_fired",
+    "a rule outside the natal placements is persisted without the kind check",
+    "a substituted chart's record is projected without require_entity_chart",
+    "a v4 record with dated timing is read without the v4 timing check",
+    "an untimed item is classified independent without withholds_independence",
+    "another rule's untimed item is flagged conflicting when the rule identity is ignored"
+   ],
+   "exercises": [
+    "evidence.untimed_natal"
+   ]
   }
  },
  "explicit_non_claims": [
@@ -1230,9 +1295,9 @@
   "rule-version references are synthetic structural references: not proof of registration or validation in a future real-rule registry, and they authorize no interpretation",
   "the evidence-pinned registry still publishes synthetic fixture rules only, with no interpretive meaning; the separately pinned sourced registry publishes provisional citation-only variants, with attribution and transcription author-declared, applicability unassessed, no human verification, no measured performance",
   "a genuine rule, once published, is never projected into evidence; the explanation boundary renders only trusted data and contains no LLM client, so no generated text is evaluated here",
-  "gate Y (ADR-0133 WP-I1, PROPOSED) evaluates synthetic Parashari fixture rules on synthetic charts and checks the application records and their rendering; no genuine rule is evaluated or applied, no record is persisted or projected into evidence, and the fixture rules carry no interpretive meaning",
+  "gate Y (ADR-0133 WP-I1) evaluates synthetic Parashari fixture rules on synthetic charts and checks the application records and their rendering; no genuine rule is evaluated or applied, no record is persisted or projected into evidence, and the fixture rules carry no interpretive meaning",
   "RUL issuance is append-only against the base commit in CI; the gate cannot see allocations made in an unreviewed fork that was never merged",
-  "no evidence item comes from a rule application: evidence items are synthetic records exercising the model, and no chart is interpreted",
+  "gate Y's application records are never persisted; gate Z (ADR-0134 WP-I2) projects only fired synthetic Parashari fixture rules on synthetic charts into untimed natal evidence, re-derived from the entity chart by the certified kernel; every other evidence item is a synthetic record exercising the model, and no chart is interpreted",
   "confidence components and historical performance are carried as supplied or absent, never computed; measured reliability, cross-method and timing convergence are absent",
   "relationships are classified only from each item's own recorded inputs, derivation links and completeness statements; no convergence count or bound is computed, and CORRELATED is never assigned",
   "the store cannot verify that a producer's completeness statements are true; it only refuses to call a pair INDEPENDENT without them",
@@ -1267,7 +1332,7 @@
    "residual_limitation": "coordinated edits to every repository-held trust record cannot be cryptographically prevented by an in-repository trust anchor; only upstream provenance would anchor this, and it is out of M1 scope"
   },
   "anti_fitting": {
-   "modules_scanned": 227,
+   "modules_scanned": 229,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."
@@ -2618,6 +2683,155 @@
      "disposition": "GATED",
      "exercised_by": [
       "Y_rule_application"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "evidence.untimed_natal",
+   "members": [
+    {
+     "callable": "engine.projection.natal.birth_data",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Z_untimed_natal_evidence"
+     ]
+    },
+    {
+     "callable": "engine.projection.natal.kernel_chart",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Z_untimed_natal_evidence"
+     ]
+    },
+    {
+     "callable": "engine.projection.natal.fact_text",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Z_untimed_natal_evidence"
+     ]
+    },
+    {
+     "callable": "engine.projection.natal.natal_context",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Z_untimed_natal_evidence"
+     ]
+    },
+    {
+     "callable": "engine.projection.natal.expected_item",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Z_untimed_natal_evidence"
+     ]
+    },
+    {
+     "callable": "engine.projection.natal.verify_natal_item",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Z_untimed_natal_evidence"
+     ]
+    },
+    {
+     "callable": "engine.projection.natal.natal_store",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Z_untimed_natal_evidence"
+     ]
+    },
+    {
+     "callable": "engine.projection.natal.entity_chart",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Z_untimed_natal_evidence"
+     ]
+    },
+    {
+     "callable": "engine.projection.natal.require_fired",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Z_untimed_natal_evidence"
+     ]
+    },
+    {
+     "callable": "engine.projection.natal.require_entity_chart",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Z_untimed_natal_evidence"
+     ]
+    },
+    {
+     "callable": "engine.projection.natal.project",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Z_untimed_natal_evidence"
+     ]
+    },
+    {
+     "callable": "engine.evidence.evidence_store.untimed_timing_from",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Z_untimed_natal_evidence"
+     ]
+    },
+    {
+     "callable": "engine.evidence.evidence_store.untimed_conflict",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Z_untimed_natal_evidence"
+     ]
+    },
+    {
+     "callable": "engine.evidence.evidence_store.withholds_independence",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Z_untimed_natal_evidence"
+     ]
+    },
+    {
+     "callable": "engine.evidence.evidence_store.EvidenceStore._require_untimed",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Z_untimed_natal_evidence"
+     ]
+    },
+    {
+     "callable": "engine.evidence.evidence_store.EvidenceStore._candidate",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Z_untimed_natal_evidence"
+     ]
+    },
+    {
+     "callable": "engine.evidence.provenance_graph.untimed_node",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Z_untimed_natal_evidence"
+     ]
+    },
+    {
+     "callable": "engine.evidence.provenance_graph.untimed_timing",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Z_untimed_natal_evidence"
      ]
     }
    ]

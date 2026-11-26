@@ -1744,6 +1744,10 @@ def gate_o_snapshot_fails_closed():
 
 # ------------------------------------------------------------------ H4 provenance graph (ADR-0122, WP-E6)
 
+#: The node kinds a dated item records: the recording schema of docs/EVIDENCE_INDEPENDENCE_DESIGN.md s3 (ADR-0122 D1).
+DATED_NODE_KINDS = frozenset(provenance_graph.NodeKind) - {provenance_graph.NodeKind.UNTIMED}
+
+
 class _GraphWorld:
     """A store over one synthetic subject and a derived subject of it, with registry rules recorded, and a set of
     items that between them reach every node kind, ordered inputs, derivation and recomputation links, incomplete
@@ -1846,7 +1850,9 @@ def gate_p_graph_integrity():
         before = store.item_graph(first)
         ids = [first] + setting.populate()
         recorded = store.recorded_graph()
-        if {node.kind for node in recorded.nodes} != set(provenance_graph.NodeKind):
+        # Every node kind a dated item records. The UNTIMED kind ADR-0134 adds is recorded only by untimed natal items,
+        # never by this dated world; gate Z checks it.
+        if {node.kind for node in recorded.nodes} != DATED_NODE_KINDS:
             fail("not every node kind was recorded")
         for evidence_id in ids:
             upstream = recorded_ancestry(store, evidence_id)
@@ -1911,7 +1917,7 @@ def gate_p_graph_integrity():
         if not durable:
             fail("the recorded graph is not durable")
     return {"classification": "structural_integrity", "items_recorded": len(ids), "node_kinds": len(
-        provenance_graph.NodeKind), "nodes_recorded": counts[0], "edges_recorded": counts[1],
+        DATED_NODE_KINDS), "nodes_recorded": counts[0], "edges_recorded": counts[1],
             "provenance_fields_separated": len(provenance_graph.PROVENANCE_FIELDS), "mismatches": 0,
             "controls_rejected": len(controls), "controls": sorted(controls)}
 

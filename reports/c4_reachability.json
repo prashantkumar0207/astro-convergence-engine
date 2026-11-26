@@ -944,7 +944,7 @@
    "status": "IN_USE_COVERED"
   },
   "engine.calculations.calculations.calculate": {
-   "caller_count": 7,
+   "caller_count": 8,
    "callers": [
     "engine.dasha.vimshottari.vimshottari_kp",
     "engine.dasha.vimshottari.vimshottari_parashari",
@@ -1324,10 +1324,23 @@
    "file": "engine/evidence/evidence_store.py",
    "status": "IN_USE_COVERED"
   },
-  "engine.evidence.evidence_store.EvidenceStore.persist": {
+  "engine.evidence.evidence_store.EvidenceStore.natal_verifier": {
+   "caller_count": 1,
+   "callers": [
+    "engine.projection.natal.project"
+   ],
    "covered": true,
    "file": "engine/evidence/evidence_store.py",
-   "status": "NOT_IN_USE"
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.evidence_store.EvidenceStore.persist": {
+   "caller_count": 1,
+   "callers": [
+    "engine.projection.natal.project"
+   ],
+   "covered": true,
+   "file": "engine/evidence/evidence_store.py",
+   "status": "IN_USE_COVERED"
   },
   "engine.evidence.evidence_store.EvidenceStore.recomputations": {
    "covered": true,
@@ -1462,6 +1475,33 @@
    "exported_by": [
     "engine/evidence/evidence_store.py:__all__"
    ],
+   "file": "engine/evidence/evidence_store.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.evidence_store.untimed_conflict": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.evidence_store._conflicting"
+   ],
+   "covered": true,
+   "file": "engine/evidence/evidence_store.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.evidence_store.untimed_timing_from": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.evidence_store.item_from_record"
+   ],
+   "covered": true,
+   "file": "engine/evidence/evidence_store.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.evidence_store.withholds_independence": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.evidence_store.EvidenceStore.classify"
+   ],
+   "covered": true,
    "file": "engine/evidence/evidence_store.py",
    "status": "IN_USE_COVERED"
   },
@@ -1781,7 +1821,7 @@
    "status": "IN_USE_COVERED"
   },
   "engine.evidence.provenance_graph.make_node": {
-   "caller_count": 7,
+   "caller_count": 8,
    "callers": [
     "engine.evidence.provenance_graph.astronomical_node",
     "engine.evidence.provenance_graph.chart_node",
@@ -1901,30 +1941,55 @@
    "file": "engine/evidence/provenance_graph.py",
    "status": "IN_USE_COVERED"
   },
+  "engine.evidence.provenance_graph.untimed_node": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.provenance_graph.record_graph"
+   ],
+   "covered": true,
+   "exported_by": [
+    "engine/evidence/provenance_graph.py:__all__"
+   ],
+   "file": "engine/evidence/provenance_graph.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.provenance_graph.untimed_timing": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.provenance_graph.reproduce"
+   ],
+   "covered": true,
+   "exported_by": [
+    "engine/evidence/provenance_graph.py:__all__"
+   ],
+   "file": "engine/evidence/provenance_graph.py",
+   "status": "IN_USE_COVERED"
+  },
   "engine.evidence.rule_registry.RuleRegistry.by_key": {
    "covered": true,
    "file": "engine/evidence/rule_registry.py",
    "status": "NOT_IN_USE"
   },
   "engine.evidence.rule_registry.RuleRegistry.lookup": {
-   "caller_count": 5,
+   "caller_count": 7,
    "callers": [
+    "engine.evidence.evidence_store.EvidenceStore._require_untimed",
     "engine.evidence.explanation_boundary._published",
     "engine.evidence.rule_registry.RuleRegistry.rule_version",
     "engine.interpretation.application.apply_published",
-    "engine.interpretation.application.check_published",
-    "scripts.check_evidence_identifiers.check_store"
+    "engine.interpretation.application.check_published"
    ],
    "covered": true,
    "file": "engine/evidence/rule_registry.py",
    "status": "IN_USE_COVERED"
   },
   "engine.evidence.rule_registry.RuleRegistry.rule_version": {
-   "caller_count": 3,
+   "caller_count": 4,
    "callers": [
     "engine.evidence.evidence_store.EvidenceStore._require_published",
     "engine.evidence.evidence_store.EvidenceStore._require_unchanged_publication",
-    "engine.evidence.evidence_store.EvidenceStore.register_rule"
+    "engine.evidence.evidence_store.EvidenceStore.register_rule",
+    "engine.projection.natal.expected_item"
    ],
    "covered": true,
    "file": "engine/evidence/rule_registry.py",
@@ -2023,13 +2088,13 @@
    "status": "IN_USE_COVERED"
   },
   "engine.evidence.rule_registry.pinned": {
-   "caller_count": 7,
+   "caller_count": 9,
    "callers": [
     "engine.evidence.evidence_store.EvidenceStore._admitted_rule",
     "engine.evidence.evidence_store.EvidenceStore._check",
+    "engine.evidence.evidence_store.EvidenceStore._require_untimed",
     "engine.evidence.evidence_store.EvidenceStore.register_rule",
-    "engine.interpretation.application.apply_rule",
-    "engine.interpretation.application.check_coverage"
+    "engine.interpretation.application.apply_rule"
    ],
    "covered": true,
    "exported_by": [
@@ -2212,24 +2277,30 @@
    "status": "IN_USE_COVERED"
   },
   "engine.interpretation.application.ChartOrigin.from_snapshot": {
-   "covered": true,
-   "file": "engine/interpretation/application.py",
-   "status": "NOT_IN_USE"
-  },
-  "engine.interpretation.application.SyntheticChart.chart": {
    "caller_count": 1,
    "callers": [
-    "engine.interpretation.application._evaluate_all"
+    "engine.projection.natal.kernel_chart"
+   ],
+   "covered": true,
+   "file": "engine/interpretation/application.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.interpretation.application.SyntheticChart.chart": {
+   "caller_count": 2,
+   "callers": [
+    "engine.interpretation.application._evaluate_all",
+    "engine.projection.natal.expected_item"
    ],
    "covered": true,
    "file": "engine/interpretation/application.py",
    "status": "IN_USE_COVERED"
   },
   "engine.interpretation.application.admit": {
-   "caller_count": 2,
+   "caller_count": 3,
    "callers": [
     "engine.interpretation.application.apply_published",
-    "engine.interpretation.application.check_published"
+    "engine.interpretation.application.check_published",
+    "engine.projection.natal.expected_item"
    ],
    "covered": true,
    "file": "engine/interpretation/application.py",
@@ -2369,10 +2440,11 @@
    "status": "IN_USE_COVERED"
   },
   "engine.interpretation.application.verify": {
-   "caller_count": 2,
+   "caller_count": 3,
    "callers": [
     "engine.interpretation.application.verify_application",
-    "engine.interpretation.explanation.render"
+    "engine.interpretation.explanation.render",
+    "engine.projection.natal.project"
    ],
    "covered": true,
    "file": "engine/interpretation/application.py",
@@ -2397,9 +2469,10 @@
    "status": "IN_USE_COVERED"
   },
   "engine.interpretation.conditions.evaluate": {
-   "caller_count": 1,
+   "caller_count": 2,
    "callers": [
-    "engine.interpretation.application._evaluate_all"
+    "engine.interpretation.application._evaluate_all",
+    "engine.projection.natal.expected_item"
    ],
    "covered": true,
    "file": "engine/interpretation/conditions.py",
@@ -2998,6 +3071,100 @@
    "file": "engine/parashari/mahapurusha_yoga.py",
    "status": "NOT_IN_USE"
   },
+  "engine.projection.natal.birth_data": {
+   "caller_count": 1,
+   "callers": [
+    "engine.projection.natal.kernel_chart"
+   ],
+   "covered": true,
+   "file": "engine/projection/natal.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.projection.natal.entity_chart": {
+   "caller_count": 1,
+   "callers": [
+    "engine.projection.natal.project"
+   ],
+   "covered": true,
+   "file": "engine/projection/natal.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.projection.natal.expected_item": {
+   "caller_count": 2,
+   "callers": [
+    "engine.projection.natal.project",
+    "engine.projection.natal.verify_natal_item"
+   ],
+   "covered": true,
+   "file": "engine/projection/natal.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.projection.natal.fact_text": {
+   "caller_count": 1,
+   "callers": [
+    "engine.projection.natal.expected_item"
+   ],
+   "covered": true,
+   "file": "engine/projection/natal.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.projection.natal.kernel_chart": {
+   "caller_count": 2,
+   "callers": [
+    "engine.projection.natal.expected_item",
+    "engine.projection.natal.require_entity_chart"
+   ],
+   "covered": true,
+   "file": "engine/projection/natal.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.projection.natal.natal_context": {
+   "caller_count": 1,
+   "callers": [
+    "engine.projection.natal.expected_item"
+   ],
+   "covered": true,
+   "file": "engine/projection/natal.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.projection.natal.natal_store": {
+   "covered": true,
+   "file": "engine/projection/natal.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.projection.natal.project": {
+   "covered": true,
+   "file": "engine/projection/natal.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.projection.natal.require_entity_chart": {
+   "caller_count": 1,
+   "callers": [
+    "engine.projection.natal.project"
+   ],
+   "covered": true,
+   "file": "engine/projection/natal.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.projection.natal.require_fired": {
+   "caller_count": 1,
+   "callers": [
+    "engine.projection.natal.project"
+   ],
+   "covered": true,
+   "file": "engine/projection/natal.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.projection.natal.verify_natal_item": {
+   "caller_count": 2,
+   "callers": [
+    "engine.projection.natal.natal_store",
+    "engine.projection.natal.project"
+   ],
+   "covered": true,
+   "file": "engine/projection/natal.py",
+   "status": "IN_USE_COVERED"
+  },
   "engine.services.time_service.local_datetime": {
    "caller_count": 1,
    "callers": [
@@ -3072,7 +3239,7 @@
  },
  "schema": "ace-c4-reachability-v1",
  "summary": {
-  "IN_USE_COVERED": 229,
+  "IN_USE_COVERED": 246,
   "NOT_IN_USE": 145
  },
  "universe_exclusions": {
