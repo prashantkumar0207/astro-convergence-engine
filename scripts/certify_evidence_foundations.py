@@ -4111,6 +4111,17 @@ def gate_z_untimed_natal_evidence():
             if store.reproduce(evidence_id) != provenance_graph.recorded_fields(item):
                 fail(f"Gate Z: {key}'s recorded graph does not reproduce it")
         preserved["fired records project to v4 untimed items that load and reproduce exactly"] = True
+        stated = BirthData(2021, 1, 28, 5, 40, 0.0, 13.0827, 80.2707, "UTC")
+        if natal.birth_data(candidate) != stated or chart.origin.digest() != interpretation.ChartOrigin.from_snapshot(
+                calculate(stated, profile=PARASHARI_LAHIRI).snapshot).digest():
+            fail("Gate Z: the entity chart's recorded birth input does not map exactly to the kernel's input")
+        preserved["the entity chart's recorded birth input maps exactly to the kernel's input"] = True
+        base_item = store.load(base)
+        if [entry.fact for entry in base_item.lineage.inputs] != [
+                "house_lord_in_house (house 10, lord_of 10): house_sign 10, lord Saturn, lord_house 10"] or                 base_item.chart_context != ChartContext(varga="D1", planets=("Saturn",), houses=(10,), signs=(10,),
+                                                         significators=()):
+            fail(f"Gate Z: RUL-1 version 1's projected facts or context are not as independently stated: {base_item}")
+        preserved["a projected item's facts and chart context match their independent statement"] = True
         store.close()
         store = natal.natal_store(path)
         if [store.load(evidence_id) for evidence_id in ids.values()] != [

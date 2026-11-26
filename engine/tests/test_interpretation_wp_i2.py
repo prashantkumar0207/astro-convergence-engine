@@ -158,4 +158,4 @@ def test_gate_z_passes_with_its_refusals_and_controls():
     import certify_evidence_foundations
 
     result = certify_evidence_foundations.gate_z_untimed_natal_evidence()
-    assert (result["refusals_verified"], result["legitimate_reads_preserved"], result["controls_rejected"]) == (33, 7, 10)
+    assert (result["refusals_verified"], result["legitimate_reads_preserved"], result["controls_rejected"]) == (33, 9, 10)
