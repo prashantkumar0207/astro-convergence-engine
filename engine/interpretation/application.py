@@ -136,7 +136,8 @@ class SyntheticChart:
             raise ApplicationError(f"a synthetic chart is a ChartOrigin, from which {CERTIFIED_INPUT} computes its facts")
 
     def chart(self) -> house_lord.HouseLordChart:
-        return self.origin.chart()
+        origin: ChartOrigin = self.origin
+        return origin.chart()
 
 
 @dataclass(frozen=True, slots=True)
@@ -245,13 +246,14 @@ def _evaluate_all(item: rule_registry.RegistryRule, chart: SyntheticChart) -> tu
 def _record(item: rule_registry.RegistryRule, registry: rule_registry.RuleRegistry,
             chart: SyntheticChart) -> ApplicationRecord:
     evaluations = _evaluate_all(item, chart)
-    provenance = chart.origin.provenance
+    origin: ChartOrigin = chart.origin
+    provenance = origin.provenance
     draft = ApplicationRecord(
         schema=RECORD_SCHEMA, rule=item.rule.value, version=item.version, variant=item.variant, key=item.key,
         school=item.school.value, registry_snapshot_sha256=registry.snapshot_sha256,
         rule_content_hash=item.content_hash, evaluations=evaluations,
         fired=all(evaluation.holds for evaluation in evaluations), declared_polarity=item.polarity.value,
-        claims=claims_of(item), chart_origin_sha256=chart.origin.digest(),
+        claims=claims_of(item), chart_origin_sha256=origin.digest(),
         chart_provenance=tuple((field.name, provenance.__getattribute__(field.name)) for field in fields(provenance)),
         certified_input=CERTIFIED_INPUT, input_content_sha256=house_lord.rule_content_sha256(),
         data_class=DataClass.SYNTHETIC.value, record_sha256="")
@@ -325,9 +327,9 @@ def check_origin(record: ApplicationRecord, chart: SyntheticChart) -> None:
 
     if type(chart) is not SyntheticChart:
         raise ApplicationError("a record is verified only against the SyntheticChart it came from")
-    provenance = tuple((field.name, chart.origin.provenance.__getattribute__(field.name))
-                       for field in fields(chart.origin.provenance))
-    if (record.chart_origin_sha256, record.chart_provenance) != (chart.origin.digest(), provenance):
+    origin: ChartOrigin = chart.origin
+    provenance = tuple((field.name, origin.provenance.__getattribute__(field.name)) for field in fields(origin.provenance))
+    if (record.chart_origin_sha256, record.chart_provenance) != (origin.digest(), provenance):
         raise ApplicationError("the record was not produced from this chart")
 
 
