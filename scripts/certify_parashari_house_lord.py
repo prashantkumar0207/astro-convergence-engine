@@ -206,7 +206,7 @@ def gate_a_table_integrity():
         fail("certifier content hash does not match the pinned value")
     if production_module.rule_content_sha256() != CERTIFIED_PRODUCTION_CONTENT_SHA256:
         fail("engine.parashari.house_lord content hash does not match the pinned value")
-    return {"signs_checked": 12, "mismatches": 0, "content_sha256": rule_content_sha256(),
+    return {"signs_checked": 12, "mismatches": 0, "certifier_content_sha256": rule_content_sha256(),
             "production_content_sha256": production_module.rule_content_sha256(),
             "classification": "correctness_evidence",
             "disclosure": "the transcription is implementation-independent of engine/astrology/sign_lord.py (typed "

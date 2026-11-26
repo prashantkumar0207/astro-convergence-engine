@@ -73,7 +73,7 @@ def test_c2_pristine_passes():
     assert c2.check(_status_text()) == []
 
 
-SUPPORT_LINE = '"certified_support_not_declared": ["SUPPORT_PATHS_V1"]'
+SUPPORT_LINE = '"certified_support_not_declared": ["PARASHARI_HOUSE_LORD_V1", "SUPPORT_PATHS_V1"]'
 
 
 def test_c2_support_artifact_is_not_declared():
@@ -84,8 +84,10 @@ def test_c2_support_artifact_is_not_declared():
 
 
 @pytest.mark.parametrize("planted", [
-    '"certified_support_not_declared": ["SUPPORT_PATHS_V1", "TRANSIT_V1"]',
+    '"certified_support_not_declared": ["PARASHARI_HOUSE_LORD_V1", "SUPPORT_PATHS_V1", "TRANSIT_V1"]',
     '"certified_support_not_declared": ["TRANSIT_V1"]',
+    '"certified_support_not_declared": ["SUPPORT_PATHS_V1"]',
+    '"certified_support_not_declared": ["PARASHARI_HOUSE_LORD_V1"]',
     '"certified_support_not_declared": []',
 ])
 def test_c2_rejects_a_document_edit_of_the_support_list(planted):
@@ -183,7 +185,8 @@ def test_c3_pristine_passes(corpus, graph):
 
 def test_c3_covers_exactly_the_adr_0102_universe():
     # ADR-0102 s2's 22, plus the artifact ADR-0108 s4 item 5's certification route added, plus ADR-0115 s4's.
-    assert len(c3.SCOPE_BEARING_ARTIFACTS) == 24 and "SUPPORT_PATHS_V1_certification.json" in c3.SCOPE_BEARING_ARTIFACTS
+    assert len(c3.SCOPE_BEARING_ARTIFACTS) == 25 and "SUPPORT_PATHS_V1_certification.json" in c3.SCOPE_BEARING_ARTIFACTS
+    assert "PARASHARI_HOUSE_LORD_V1_certification.json" in c3.SCOPE_BEARING_ARTIFACTS  # ADR-0133 D5 (PROPOSED)
     assert "EVIDENCE_FOUNDATIONS_V1_certification.json" in c3.SCOPE_BEARING_ARTIFACTS
     frozen = c2.FROZEN_EVIDENCE
     assert not frozen & set(c3.SCOPE_BEARING_ARTIFACTS)

@@ -108,7 +108,7 @@ def _evaluation_record(item: Evaluation) -> dict:
 def canonical(record: ApplicationRecord) -> bytes:
     """Every field except the record's own hash, in canonical form."""
 
-    data = {name: getattr(record, name) for name in RECORD_FIELDS if name != "record_sha256"}
+    data = {name: record.__getattribute__(name) for name in RECORD_FIELDS if name != "record_sha256"}
     data["evaluations"] = [_evaluation_record(item) for item in record.evaluations]
     data["claims"] = [[name, value] for name, value in record.claims]
     data["chart_provenance"] = [[name, value] for name, value in record.chart_provenance]
@@ -176,10 +176,10 @@ def _record(item: rule_registry.RegistryRule, registry: rule_registry.RuleRegist
         rule_content_hash=item.content_hash, evaluations=evaluations,
         fired=all(evaluation.holds for evaluation in evaluations), declared_polarity=item.polarity.value,
         claims=claims_of(item), chart_label=chart.label,
-        chart_provenance=tuple((field.name, getattr(provenance, field.name)) for field in fields(provenance)),
+        chart_provenance=tuple((field.name, provenance.__getattribute__(field.name)) for field in fields(provenance)),
         certified_input=CERTIFIED_INPUT, input_content_sha256=house_lord.rule_content_sha256(),
         data_class=DataClass.SYNTHETIC.value, record_sha256="")
-    return ApplicationRecord(**{name: getattr(draft, name) for name in RECORD_FIELDS if name != "record_sha256"},
+    return ApplicationRecord(**{name: draft.__getattribute__(name) for name in RECORD_FIELDS if name != "record_sha256"},
                              record_sha256=record_hash(draft))
 
 

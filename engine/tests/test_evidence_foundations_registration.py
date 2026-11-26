@@ -90,8 +90,8 @@ def test_c2_rejects_classifying_it_as_astrological_calculation():
 
 def test_c2_rejects_classifying_it_as_certified_support():
     text = _status_text()
-    planted = text.replace('"certified_support_not_declared": ["SUPPORT_PATHS_V1"]',
-                           f'"certified_support_not_declared": ["SUPPORT_PATHS_V1", "{ARTIFACT}"]', 1)
+    planted = text.replace('"certified_support_not_declared": ["PARASHARI_HOUSE_LORD_V1", "SUPPORT_PATHS_V1"]',
+                           f'"certified_support_not_declared": ["PARASHARI_HOUSE_LORD_V1", "SUPPORT_PATHS_V1", "{ARTIFACT}"]', 1)
     assert planted != text
     errors = c2.check(planted)
     _expect(errors, "F18")
@@ -108,7 +108,8 @@ def test_c3_reads_it_with_its_own_certifier():
                             "evidence.evidence_model",  # added by ADR-0119 s3 (WP-E4)
                             "evidence.rule_registry",  # added by ADR-0120 s4 and ADR-0121 (WP-E5)
                             "evidence.explanation_boundary",  # added by ADR-0130 (Stage 1)
-                            "evidence.provenance_graph"]  # added by ADR-0122 s4 (WP-E6)
+                            "evidence.provenance_graph",  # added by ADR-0122 s4 (WP-E6)
+                            "interpretation.rule_application"]  # added by ADR-0133 (WP-I1, PROPOSED), gate Y
 
 
 def test_c3_rejects_a_withdrawn_enumeration(corpus, graph):

@@ -34,10 +34,10 @@
   }
  },
  "run": {
-  "source_revision": "330694af046ee953c2bb985a3a789ca218459008",
+  "source_revision": "5f1548bd332b7ed4cc6fb1d376982aa0ba4a50e4",
   "working_tree_dirty": false,
   "engine_version": "0.3.0",
-  "executed_utc": "2026-11-26T06:33:49Z",
+  "executed_utc": "2026-11-26T06:53:50Z",
   "python": "3.11.17",
   "holdout_cases": "H1_london_1823, H2_newyork_1900, H3_sydney_1946, H4_delhi_1979, H5_reykjavik_1992, H6_quito_2010, H7_tokyo_2033, H8_mumbai_2077, H9_paris_2350, H10_boundary_moon_a, H11_boundary_moon_b",
   "reference_binary": "swetest 2.10.03 (bundled, version-verified at runtime)"

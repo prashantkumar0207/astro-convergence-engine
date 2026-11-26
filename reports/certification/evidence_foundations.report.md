@@ -50,8 +50,8 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 - **evidence.evidence_model**: 24 members; GATED
 - **evidence.rule_registry**: 18 members; GATED
 - **evidence.explanation_boundary**: 4 members; GATED
-- **interpretation.rule_application**: 21 members; GATED
 - **evidence.provenance_graph**: 20 members; GATED
+- **interpretation.rule_application**: 21 members; GATED
 
 ## Scope not gated (ADR-0099 s4)
 

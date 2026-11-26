@@ -18,7 +18,7 @@
   "A_table_integrity": {
    "signs_checked": 12,
    "mismatches": 0,
-   "content_sha256": "58fbfa23227f35a90a83b2105b223a3e0260c6ed21dc41f7003af869a0e67850",
+   "certifier_content_sha256": "58fbfa23227f35a90a83b2105b223a3e0260c6ed21dc41f7003af869a0e67850",
    "production_content_sha256": "96bd191877e482d796b03c6a13bc08b84419d614b5922f5c5fda69fdc3f68465",
    "classification": "correctness_evidence",
    "disclosure": "the transcription is implementation-independent of engine/astrology/sign_lord.py (typed separately, never imported); it is not source-independent, since both follow the same classical lordship. Gate C adds PyJHora's table as an external reference.",

@@ -2213,179 +2213,6 @@
    ]
   },
   {
-   "id": "interpretation.rule_application",
-   "members": [
-    {
-     "callable": "engine.interpretation.conditions.evaluate",
-     "kind": "callable",
-     "disposition": "GATED",
-     "exercised_by": [
-      "Y_rule_application"
-     ]
-    },
-    {
-     "callable": "engine.interpretation.conditions.answer",
-     "kind": "callable",
-     "disposition": "GATED",
-     "exercised_by": [
-      "Y_rule_application"
-     ]
-    },
-    {
-     "callable": "engine.interpretation.application.apply_rule",
-     "kind": "callable",
-     "disposition": "GATED",
-     "exercised_by": [
-      "Y_rule_application"
-     ]
-    },
-    {
-     "callable": "engine.interpretation.application.apply_published",
-     "kind": "callable",
-     "disposition": "GATED",
-     "exercised_by": [
-      "Y_rule_application"
-     ]
-    },
-    {
-     "callable": "engine.interpretation.application.admit",
-     "kind": "callable",
-     "disposition": "GATED",
-     "exercised_by": [
-      "Y_rule_application"
-     ]
-    },
-    {
-     "callable": "engine.interpretation.application.require_synthetic",
-     "kind": "callable",
-     "disposition": "GATED",
-     "exercised_by": [
-      "Y_rule_application"
-     ]
-    },
-    {
-     "callable": "engine.interpretation.application.require_school",
-     "kind": "callable",
-     "disposition": "GATED",
-     "exercised_by": [
-      "Y_rule_application"
-     ]
-    },
-    {
-     "callable": "engine.interpretation.application.require_content",
-     "kind": "callable",
-     "disposition": "GATED",
-     "exercised_by": [
-      "Y_rule_application"
-     ]
-    },
-    {
-     "callable": "engine.interpretation.application.canonical",
-     "kind": "callable",
-     "disposition": "GATED",
-     "exercised_by": [
-      "Y_rule_application"
-     ]
-    },
-    {
-     "callable": "engine.interpretation.application.record_hash",
-     "kind": "callable",
-     "disposition": "GATED",
-     "exercised_by": [
-      "Y_rule_application"
-     ]
-    },
-    {
-     "callable": "engine.interpretation.application.claims_of",
-     "kind": "callable",
-     "disposition": "GATED",
-     "exercised_by": [
-      "Y_rule_application"
-     ]
-    },
-    {
-     "callable": "engine.interpretation.application.verify",
-     "kind": "callable",
-     "disposition": "GATED",
-     "exercised_by": [
-      "Y_rule_application"
-     ]
-    },
-    {
-     "callable": "engine.interpretation.application.verify_application",
-     "kind": "callable",
-     "disposition": "GATED",
-     "exercised_by": [
-      "Y_rule_application"
-     ]
-    },
-    {
-     "callable": "engine.interpretation.application.check_shape",
-     "kind": "callable",
-     "disposition": "GATED",
-     "exercised_by": [
-      "Y_rule_application"
-     ]
-    },
-    {
-     "callable": "engine.interpretation.application.check_hash",
-     "kind": "callable",
-     "disposition": "GATED",
-     "exercised_by": [
-      "Y_rule_application"
-     ]
-    },
-    {
-     "callable": "engine.interpretation.application.check_identity",
-     "kind": "callable",
-     "disposition": "GATED",
-     "exercised_by": [
-      "Y_rule_application"
-     ]
-    },
-    {
-     "callable": "engine.interpretation.application.check_published",
-     "kind": "callable",
-     "disposition": "GATED",
-     "exercised_by": [
-      "Y_rule_application"
-     ]
-    },
-    {
-     "callable": "engine.interpretation.application.check_evaluations",
-     "kind": "callable",
-     "disposition": "GATED",
-     "exercised_by": [
-      "Y_rule_application"
-     ]
-    },
-    {
-     "callable": "engine.interpretation.application.check_coverage",
-     "kind": "callable",
-     "disposition": "GATED",
-     "exercised_by": [
-      "Y_rule_application"
-     ]
-    },
-    {
-     "callable": "engine.interpretation.explanation.render",
-     "kind": "callable",
-     "disposition": "GATED",
-     "exercised_by": [
-      "Y_rule_application"
-     ]
-    },
-    {
-     "callable": "engine.interpretation.explanation.render_application",
-     "kind": "callable",
-     "disposition": "GATED",
-     "exercised_by": [
-      "Y_rule_application"
-     ]
-    }
-   ]
-  },
-  {
    "id": "evidence.provenance_graph",
    "members": [
     {
@@ -2566,6 +2393,179 @@
       "U_historical_rule_integrity",
       "S_evidence_read_integrity",
       "R_graph_agreement"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "interpretation.rule_application",
+   "members": [
+    {
+     "callable": "engine.interpretation.conditions.evaluate",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.conditions.answer",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.application.apply_rule",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.application.apply_published",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.application.admit",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.application.require_synthetic",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.application.require_school",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.application.require_content",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.application.canonical",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.application.record_hash",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.application.claims_of",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.application.verify",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.application.verify_application",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.application.check_shape",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.application.check_hash",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.application.check_identity",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.application.check_published",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.application.check_evaluations",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.application.check_coverage",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.explanation.render",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.explanation.render_application",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
      ]
     }
    ]

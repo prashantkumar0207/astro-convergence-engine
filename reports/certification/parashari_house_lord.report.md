@@ -15,7 +15,7 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 
 ## Gates
 
-- **A_table_integrity**: signs_checked=12, mismatches=0, content_sha256=58fbfa23227f35a90a83b2105b223a3e0260c6ed21dc41f7003af869a0e67850, production_content_sha256=96bd191877e482d796b03c6a13bc08b84419d614b5922f5c5fda69fdc3f68465, classification=correctness_evidence
+- **A_table_integrity**: signs_checked=12, mismatches=0, certifier_content_sha256=58fbfa23227f35a90a83b2105b223a3e0260c6ed21dc41f7003af869a0e67850, production_content_sha256=96bd191877e482d796b03c6a13bc08b84419d614b5922f5c5fda69fdc3f68465, classification=correctness_evidence
 - **B_logical_enumeration**: cases=144, mismatches=0, space=12 Lagna signs x 12 houses = 144, classification=correctness_evidence
 - **B2_placement_composition**: cases=288, mismatches=0, classification=correctness_evidence
 - **C_oracle**: package=PyJHora, version=4.8.7, table=jhora.const.house_owners, signs_checked=12, lordships_rebuilt=96, mismatches=0, classification=external_reference
