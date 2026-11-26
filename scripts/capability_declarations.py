@@ -126,6 +126,7 @@ _D45["capabilities"][0]["members"].append(_fn(BUILDER, "E_independent_validator"
 
 _SIGNIFICATORS = "engine.kp.significators"
 _YOGA = "engine.parashari.mahapurusha_yoga"
+_HOUSE_LORD = "engine.parashari.house_lord"
 _PANCHANGA = "engine.astrology.panchanga"
 _RISE_SET = "engine.astronomy.rise_set"
 _EVENTS = "engine.transits.events"
@@ -243,6 +244,34 @@ ARTIFACT_DECLARATIONS = {
             _data(f"{_YOGA}.KENDRA_HOUSES", "A_table_integrity", "B_logical_enumeration", "D_non_invasiveness",
                   "I_negative_controls"),
         )],
+    },
+    # ADR-0133 D5 (PROPOSED): certified support for INTERPRETATION's condition evaluation, not a production input.
+    "PARASHARI_HOUSE_LORD_V1_certification.json": {
+        "capabilities": [_cap(
+            "parashari.house_lords",
+            _fn(f"{_HOUSE_LORD}.house_lords", "C_oracle", "G_static_reference_regression"),
+            _fn(f"{_HOUSE_LORD}.house_lords_from_snapshot", "B2_placement_composition", "C_oracle",
+                "D_independent_validator", "F_boundary_cases", "G_static_reference_regression",
+                "I_composition_verification", "J_profile_refusal"),
+            _fn(f"{_HOUSE_LORD}.house_sign", "B_logical_enumeration", "B2_placement_composition"),
+            _fn(f"{_HOUSE_LORD}.house_lord", "B_logical_enumeration", "B2_placement_composition"),
+            _fn(f"{_HOUSE_LORD}.HouseLordChart.placement", "B2_placement_composition", "C_oracle",
+                "G_static_reference_regression", "I_composition_verification"),
+            _fn(f"{_HOUSE_LORD}.HouseLordChart.lordship", "G_static_reference_regression"),
+            _fn(f"{_HOUSE_LORD}.rule_content_sha256", "A_table_integrity", "E_non_invasiveness"),
+            _data(f"{_HOUSE_LORD}.PLACED_GRAHAS", "B2_placement_composition", "G_static_reference_regression"),
+            _data(f"{_HOUSE_LORD}.HOUSES", "B_logical_enumeration", "B2_placement_composition"),
+            _fn("engine.astrology.sign_lord.sign_lord", "A_table_integrity", "C_oracle", "E_non_invasiveness"),
+            _data("engine.astrology.sign_lord.SIGN_LORDS", "A_table_integrity"),
+            _fn("engine.astrology.house.whole_sign_house", "B2_placement_composition", "E_non_invasiveness",
+                "F_boundary_cases"),
+            _fn("engine.astrology.signs.zodiac_sign", "B2_placement_composition", "E_non_invasiveness",
+                "F_boundary_cases"),
+        )],
+        "empty_exercises": {
+            "H_negative_controls": "compares planted corrupted copies with the real production output; the production "
+                                   "module itself is corrupted only by gate I's monkeypatch self-check",
+        },
     },
     "RISE_SET_V1_certification.json": {
         "capabilities": [
@@ -489,6 +518,29 @@ ARTIFACT_DECLARATIONS = {
                  _fn("engine.evidence.explanation_boundary.admit", "W_explanation_boundary"),
                  _fn("engine.evidence.explanation_boundary.render", "W_explanation_boundary"),
                  _fn("engine.evidence.explanation_boundary.render_segment", "W_explanation_boundary")),
+            # ADR-0133 WP-I1 (PROPOSED): synthetic rule application, verification and deterministic explanation.
+            _cap("interpretation.rule_application",
+                 _fn("engine.interpretation.conditions.evaluate", "Y_rule_application"),
+                 _fn("engine.interpretation.conditions.answer", "Y_rule_application"),
+                 _fn("engine.interpretation.application.apply_rule", "Y_rule_application"),
+                 _fn("engine.interpretation.application.apply_published", "Y_rule_application"),
+                 _fn("engine.interpretation.application.admit", "Y_rule_application"),
+                 _fn("engine.interpretation.application.require_synthetic", "Y_rule_application"),
+                 _fn("engine.interpretation.application.require_school", "Y_rule_application"),
+                 _fn("engine.interpretation.application.require_content", "Y_rule_application"),
+                 _fn("engine.interpretation.application.canonical", "Y_rule_application"),
+                 _fn("engine.interpretation.application.record_hash", "Y_rule_application"),
+                 _fn("engine.interpretation.application.claims_of", "Y_rule_application"),
+                 _fn("engine.interpretation.application.verify", "Y_rule_application"),
+                 _fn("engine.interpretation.application.verify_application", "Y_rule_application"),
+                 _fn("engine.interpretation.application.check_shape", "Y_rule_application"),
+                 _fn("engine.interpretation.application.check_hash", "Y_rule_application"),
+                 _fn("engine.interpretation.application.check_identity", "Y_rule_application"),
+                 _fn("engine.interpretation.application.check_published", "Y_rule_application"),
+                 _fn("engine.interpretation.application.check_evaluations", "Y_rule_application"),
+                 _fn("engine.interpretation.application.check_coverage", "Y_rule_application"),
+                 _fn("engine.interpretation.explanation.render", "Y_rule_application"),
+                 _fn("engine.interpretation.explanation.render_application", "Y_rule_application")),
             # ADR-0122 s4: the provenance graph, recorded at evidence-creation time.
             _cap("evidence.provenance_graph",
                  _fn("engine.evidence.provenance_graph.record_graph", "P_graph_integrity", "Q_graph_refusals",

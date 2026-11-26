@@ -20,7 +20,8 @@ Evaluated from each artifact's own declarations, never by parsing `scope` prose:
 
 The gate reads the 22 scope-bearing artifacts named by ADR-0102 s2, plus SUPPORT_PATHS_V1,
 which ADR-0108 s4 item 5's certification route added later, and EVIDENCE_FOUNDATIONS_V1, the
-structural EVIDENCE certification ADR-0115 s4 added. The four frozen artifacts carry
+structural EVIDENCE certification ADR-0115 s4 added, and PARASHARI_HOUSE_LORD_V1, the certified
+support ADR-0133 D5 (PROPOSED) adds. The four frozen artifacts carry
 no such content; their dispositions live in the backlog.
 
 Exit 0 = PASS, 1 = FAIL. Paths are injectable so the negative controls can run the
@@ -47,7 +48,8 @@ SCOPE_BEARING_ARTIFACTS = (
     "EVIDENCE_FOUNDATIONS_V1_certification.json",
     "current_engine_certification.json", "KP_CHAIN_V1_certification.json",
     "KP_SIGNIFICATOR_V1_certification.json", "PANCHANGA_V1_certification.json",
-    "PARASHARI_DRISHTI_V1_certification.json", "PARASHARI_YOGA_V1_certification.json",
+    "PARASHARI_DRISHTI_V1_certification.json", "PARASHARI_HOUSE_LORD_V1_certification.json",
+    "PARASHARI_YOGA_V1_certification.json",
     "RISE_SET_V1_certification.json", "SIGN_CONVENTION_V1_certification.json",
     "SUPPORT_PATHS_V1_certification.json",
     "TRANSIT_V1_certification.json", "TRIKALAM_V1_certification.json",
@@ -66,6 +68,7 @@ CERTIFIERS = {
     "KP_SIGNIFICATOR_V1_certification.json": "certify_kp_significator.py",
     "PANCHANGA_V1_certification.json": "certify_panchanga.py",
     "PARASHARI_DRISHTI_V1_certification.json": "certify_parashari_drishti.py",
+    "PARASHARI_HOUSE_LORD_V1_certification.json": "certify_parashari_house_lord.py",
     "PARASHARI_YOGA_V1_certification.json": "certify_parashari_yoga.py",
     "RISE_SET_V1_certification.json": "certify_rise_set.py",
     "SIGN_CONVENTION_V1_certification.json": "certify_sign_convention.py",

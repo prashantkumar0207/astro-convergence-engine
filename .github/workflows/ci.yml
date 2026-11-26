@@ -77,7 +77,7 @@ jobs:
       - name: Default gate (engine/tests)
         run: python -m pytest -q
 
-      - name: Independent holdout validators (all fourteen)
+      - name: Independent holdout validators (all fifteen)
         run: |
           set -e
           for v in validate_d9_holdout.py \
@@ -93,7 +93,8 @@ jobs:
                    validate_parashari_drishti_holdout.py \
                    validate_rise_set_holdout.py \
                    validate_panchanga_holdout.py \
-                   validate_trikalam_holdout.py; do
+                   validate_trikalam_holdout.py \
+                   validate_parashari_house_lord_holdout.py; do
             echo "::group::$v"
             python "$v"
             echo "::endgroup::"
@@ -290,7 +291,7 @@ jobs:
       - name: Verify ephemeris asset checksums
         run: sha256sum --check CHECKSUMS.sha256
 
-      - name: Oracle certification runners (all sixteen)
+      - name: Oracle certification runners (all eighteen)
         # certify_d20.py added here (ADR-0095 certification; CI-wiring
         # authorization 2026-09-07). D20's gate C is CONDITIONAL: a genuine
         # PyJHora vimsamsa_chart(chart_method=1) comparison at zero categorical
@@ -340,7 +341,8 @@ jobs:
                    scripts/certify_parashari_drishti.py \
                    scripts/certify_panchanga.py \
                    scripts/certify_trikalam.py \
-                   scripts/certify_support_paths.py; do
+                   scripts/certify_support_paths.py \
+                   scripts/certify_parashari_house_lord.py; do
             echo "::group::$c"
             python "$c"
             echo "::endgroup::"
