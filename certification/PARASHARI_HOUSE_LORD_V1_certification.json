@@ -1,0 +1,332 @@
+{
+ "schema": "parashari_house_lord_v1_certification",
+ "adr": "ADR-0133 (PROPOSED)",
+ "date": "2026-11-26",
+ "scope": "PARASHARI_HOUSE_LORD_V1: for a natal D1 chart under the PARASHARI_LAHIRI profile, each house's whole-sign sign, its classical lord, the lord's sign and whole-sign house, and each of the nine grahas' sign and whole-sign house. The module under certification is engine/parashari/house_lord.py.",
+ "rule": {
+  "kind": "engine/parashari/house_lord.py - production module",
+  "convention": "whole-sign houses from the D1 Lagna (ADR-0133 D3), the seven classical sign lords",
+  "certifier_content_sha256": "58fbfa23227f35a90a83b2105b223a3e0260c6ed21dc41f7003af869a0e67850",
+  "production_content_sha256": "96bd191877e482d796b03c6a13bc08b84419d614b5922f5c5fda69fdc3f68465"
+ },
+ "oracle": {
+  "package": "PyJHora",
+  "version": "4.8.7",
+  "use": "the house-owner table (gate C)"
+ },
+ "gates": {
+  "A_table_integrity": {
+   "signs_checked": 12,
+   "mismatches": 0,
+   "content_sha256": "58fbfa23227f35a90a83b2105b223a3e0260c6ed21dc41f7003af869a0e67850",
+   "production_content_sha256": "96bd191877e482d796b03c6a13bc08b84419d614b5922f5c5fda69fdc3f68465",
+   "classification": "correctness_evidence",
+   "disclosure": "the transcription is implementation-independent of engine/astrology/sign_lord.py (typed separately, never imported); it is not source-independent, since both follow the same classical lordship. Gate C adds PyJHora's table as an external reference.",
+   "exercises": [
+    "parashari.house_lords"
+   ]
+  },
+  "B_logical_enumeration": {
+   "cases": 144,
+   "mismatches": 0,
+   "space": "12 Lagna signs x 12 houses = 144",
+   "classification": "correctness_evidence",
+   "exercises": [
+    "parashari.house_lords"
+   ]
+  },
+  "B2_placement_composition": {
+   "cases": 288,
+   "mismatches": 0,
+   "space": "12 Lagna signs x 12 target signs x 2 patterns (all grahas together; grahas spread five signs apart)",
+   "classification": "correctness_evidence",
+   "disclosure": "the spread pattern places every graha in a different sign, so a lord's house cannot be confused with another graha's",
+   "exercises": [
+    "parashari.house_lords"
+   ]
+  },
+  "C_oracle": {
+   "package": "PyJHora",
+   "version": "4.8.7",
+   "table": "jhora.const.house_owners",
+   "signs_checked": 12,
+   "lordships_rebuilt": 96,
+   "mismatches": 0,
+   "classification": "external_reference",
+   "disclosure": "a table-level oracle: PyJHora's lordship table, with each lord's house rebuilt from this project's own certified placements. PyJHora does not compute the charts here, so the astronomical substrate is not re-checked by this gate (it is Tier-0 certified).",
+   "exercises": [
+    "parashari.house_lords"
+   ]
+  },
+  "D_independent_validator": {
+   "result": "PASS",
+   "classification": "corroborating_correctness_evidence",
+   "note": "separate-process reimplementation; derives sign, house and lordship itself, importing no engine.astrology module and not engine.parashari.house_lord for its own derivation",
+   "exercises": [
+    "parashari.house_lords"
+   ]
+  },
+  "E_non_invasiveness": {
+   "production_module": "engine/parashari/house_lord.py",
+   "isolated": true,
+   "shared_functions": [
+    "engine.astrology.house.whole_sign_house",
+    "engine.astrology.sign_lord.sign_lord",
+    "engine.astrology.signs.zodiac_sign"
+   ],
+   "exercises": [
+    "parashari.house_lords"
+   ]
+  },
+  "F_boundary_cases": {
+   "cases": 146,
+   "mismatches": 0,
+   "convention": "exact lower sign edges belong to the sign; the 360/0 wrap is not promoted; inherited from engine.astrology.signs.zodiac_sign, which SIGN_CONVENTION_V1 certifies",
+   "exercises": [
+    "parashari.house_lords"
+   ]
+  },
+  "G_static_reference_regression": {
+   "charts": 8,
+   "mismatches": 0,
+   "facts_per_chart": 43,
+   "methodology": "LIVE production house_lords() on fixed synthetic charts, against STATIC values frozen once from the independent validator's own derivation",
+   "classification": "correctness_evidence",
+   "exercises": [
+    "parashari.house_lords"
+   ]
+  },
+  "H_negative_controls": {
+   "controls": [
+    {
+     "control": "Scorpio's lord replaced by Ketu",
+     "case": "HL1_lima_1911",
+     "detected": true
+    },
+    {
+     "control": "houses counted backwards from the Lagna",
+     "case": "HL1_lima_1911",
+     "detected": true
+    },
+    {
+     "control": "house signs off by one",
+     "case": "HL1_lima_1911",
+     "detected": true
+    },
+    {
+     "control": "lord's house by equal houses from the Lagna degree",
+     "case": "HL1_lima_1911",
+     "detected": true
+    },
+    {
+     "control": "lord's house taken as the house it rules",
+     "case": "HL1_lima_1911",
+     "detected": true
+    }
+   ],
+   "all_detected": true,
+   "classification": "negative_control",
+   "exercises": [],
+   "exercises_note": "compares planted corrupted copies with the real production output; the production module itself is corrupted only by gate I's monkeypatch self-check"
+  },
+  "I_composition_verification": {
+   "result": "PASS",
+   "classification": "correctness_evidence_and_mutation_detection",
+   "scope": "house_lords_from_snapshot() field by field on the validator's 8 synthetic charts, and a monkeypatch self-check: whole_sign_house arguments swapped, Scorpio given to Ketu, Aquarius given to Rahu, zodiac_sign off by one; each caught, and the module restored",
+   "exercises": [
+    "parashari.house_lords"
+   ]
+  },
+  "J_profile_refusal": {
+   "refused": [
+    "a KP snapshot",
+    "a snapshot with no provenance",
+    "a Parashari-named snapshot with another ayanamsa"
+   ],
+   "preserved": [
+    "the PARASHARI_LAHIRI snapshot"
+   ],
+   "classification": "negative_control",
+   "exercises": [
+    "parashari.house_lords"
+   ]
+  }
+ },
+ "explicit_non_claims": [
+  "certified support, not a production analytical input: no ratified entry serves it (ADR-0133 D5, PROPOSED)",
+  "the seven classical lords only: no Rahu or Ketu co-lordship of Scorpio or Aquarius",
+  "whole-sign houses only: no bhava-chalit, equal-house or cusp-based house",
+  "D1 only: no varga",
+  "no strength, dignity, aspect, yoga or dasha",
+  "no interpretive or predictive claim: a house lord's placement is a calculated fact, never an indication",
+  "every chart used is synthetic; no real person's chart is certified",
+  "PyJHora is a table-level reference only; it computes no chart here"
+ ],
+ "environment": {
+  "python": "3.11.17"
+ },
+ "preconditions": {
+  "data_assets": {
+   "assets_verified": 3,
+   "sha256": {
+    "seas_18.se1": "a2cd8fc33807c78ca9a700c91c2e042258b12fc4796519e00781440b5ad8b2e2",
+    "semo_18.se1": "1ca07bd67c24374d77226180c20a4f9996cba013697894810518e7eb582ca4f7",
+    "sepl_18.se1": "ca1393ceab3a44fbc895887cf789c68819ae6a1cbc9b22225872dbe4ccd99a66"
+   }
+  },
+  "trust_records": {
+   "reference_binary": "swetest",
+   "reference_binary_sha256_verified": "f53943bb6ede1575974270e0a01aff9affdabe58315c1cf69ed4d4738346dac5",
+   "reference_binary_bytes": 712872,
+   "manifest_sha256_verified": "74de363ec1d335ecce26e891634ca9358a4ac198c56c226f22c3d6b4c3401ad1",
+   "manifest_blob_id_verified": "0885f0446ba4306c7afa78eef06a0be2e7b6c5a7",
+   "manifest_anchor_commit": "a62a2c8f9e021575deeac7dee61f53aaae1bc265",
+   "cross_record_assets_agreed": 3,
+   "residual_limitation": "coordinated edits to every repository-held trust record cannot be cryptographically prevented by an in-repository trust anchor; only upstream provenance would anchor this, and it is out of M1 scope"
+  },
+  "anti_fitting": {
+   "modules_scanned": 227,
+   "findings": [],
+   "justified_exceptions": [
+    "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."
+   ]
+  }
+ },
+ "result": "PASS",
+ "capability_schema": "ace-capability-enumeration-v1",
+ "capabilities": [
+  {
+   "id": "parashari.house_lords",
+   "members": [
+    {
+     "callable": "engine.parashari.house_lord.house_lords",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "C_oracle",
+      "G_static_reference_regression"
+     ]
+    },
+    {
+     "callable": "engine.parashari.house_lord.house_lords_from_snapshot",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "B2_placement_composition",
+      "C_oracle",
+      "D_independent_validator",
+      "F_boundary_cases",
+      "G_static_reference_regression",
+      "I_composition_verification",
+      "J_profile_refusal"
+     ]
+    },
+    {
+     "callable": "engine.parashari.house_lord.house_sign",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "B_logical_enumeration",
+      "B2_placement_composition"
+     ]
+    },
+    {
+     "callable": "engine.parashari.house_lord.house_lord",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "B_logical_enumeration",
+      "B2_placement_composition"
+     ]
+    },
+    {
+     "callable": "engine.parashari.house_lord.HouseLordChart.placement",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "B2_placement_composition",
+      "C_oracle",
+      "G_static_reference_regression",
+      "I_composition_verification"
+     ]
+    },
+    {
+     "callable": "engine.parashari.house_lord.HouseLordChart.lordship",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "G_static_reference_regression"
+     ]
+    },
+    {
+     "callable": "engine.parashari.house_lord.rule_content_sha256",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_table_integrity",
+      "E_non_invasiveness"
+     ]
+    },
+    {
+     "callable": "engine.parashari.house_lord.PLACED_GRAHAS",
+     "kind": "data",
+     "disposition": "GATED",
+     "exercised_by": [
+      "B2_placement_composition",
+      "G_static_reference_regression"
+     ]
+    },
+    {
+     "callable": "engine.parashari.house_lord.HOUSES",
+     "kind": "data",
+     "disposition": "GATED",
+     "exercised_by": [
+      "B_logical_enumeration",
+      "B2_placement_composition"
+     ]
+    },
+    {
+     "callable": "engine.astrology.sign_lord.sign_lord",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_table_integrity",
+      "C_oracle",
+      "E_non_invasiveness"
+     ]
+    },
+    {
+     "callable": "engine.astrology.sign_lord.SIGN_LORDS",
+     "kind": "data",
+     "disposition": "GATED",
+     "exercised_by": [
+      "A_table_integrity"
+     ]
+    },
+    {
+     "callable": "engine.astrology.house.whole_sign_house",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "B2_placement_composition",
+      "E_non_invasiveness",
+      "F_boundary_cases"
+     ]
+    },
+    {
+     "callable": "engine.astrology.signs.zodiac_sign",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "B2_placement_composition",
+      "E_non_invasiveness",
+      "F_boundary_cases"
+     ]
+    }
+   ]
+  }
+ ],
+ "scope_not_gated": [],
+ "_artifact_name": "PARASHARI_HOUSE_LORD_V1_certification.json",
+ "_slug": "parashari_house_lord"
+}

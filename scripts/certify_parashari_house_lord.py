@@ -52,6 +52,7 @@ from engine.models.birth_data import BirthData  # noqa: E402
 from engine.parashari.house_lord import (  # noqa: E402
     HOUSES,
     PLACED_GRAHAS,
+    HouseLordChart,
     HouseLordProfileError,
     house_lord,
     house_lords,
@@ -178,7 +179,7 @@ def _closed_form(longitudes: dict, ascendant: float) -> dict:
     return {"ascendant_sign": asc_sign, "signs": signs, "houses": houses, "lordships": lordships}
 
 
-def _disagreements(chart, expected) -> list:
+def _disagreements(chart: HouseLordChart, expected: dict) -> list:
     found = []
     if chart.ascendant_sign != expected["ascendant_sign"]:
         found.append("ascendant_sign")
