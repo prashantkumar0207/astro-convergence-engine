@@ -141,7 +141,8 @@
    "refused": [
     "a KP snapshot",
     "a snapshot with no provenance",
-    "a Parashari-named snapshot with another ayanamsa"
+    "a Parashari-named snapshot with another ayanamsa",
+    "another profile's name with the Lahiri ayanamsa"
    ],
    "preserved": [
     "the PARASHARI_LAHIRI snapshot"

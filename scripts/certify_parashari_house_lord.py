@@ -408,9 +408,12 @@ def gate_j_profile_refusal():
     unprovenanced = SimpleNamespace(provenance=None, houses=real.houses, sidereal_planets=real.sidereal_planets)
     wrong_ayanamsa = SimpleNamespace(provenance=replace(real.provenance, ayanamsa_mode=real.provenance.ayanamsa_mode + 1),
                                      houses=real.houses, sidereal_planets=real.sidereal_planets)
+    other_name = SimpleNamespace(provenance=replace(real.provenance, profile_name=KP_KRISHNAMURTI.name),
+                                 houses=real.houses, sidereal_planets=real.sidereal_planets)
     refused = []
     for label, snapshot in (("a KP snapshot", kp), ("a snapshot with no provenance", unprovenanced),
-                            ("a Parashari-named snapshot with another ayanamsa", wrong_ayanamsa)):
+                            ("a Parashari-named snapshot with another ayanamsa", wrong_ayanamsa),
+                            ("another profile's name with the Lahiri ayanamsa", other_name)):
         try:
             house_lords_from_snapshot(snapshot)
         except HouseLordProfileError:

@@ -57,6 +57,11 @@ def test_house_lordship_refuses_another_profile_and_an_unprovenanced_snapshot():
         house_lord.house_lords_from_snapshot(calculate(BIRTH, profile=KP_KRISHNAMURTI).snapshot)
     with pytest.raises(house_lord.HouseLordProfileError):
         house_lord.house_lords_from_snapshot(SimpleNamespace(provenance=None))
+    real = calculate(BIRTH, profile=PARASHARI_LAHIRI).snapshot
+    renamed = SimpleNamespace(provenance=dataclasses.replace(real.provenance, profile_name=KP_KRISHNAMURTI.name),
+                              houses=real.houses, sidereal_planets=real.sidereal_planets)
+    with pytest.raises(house_lord.HouseLordProfileError, match="requires the parashari_lahiri profile"):
+        house_lord.house_lords_from_snapshot(renamed)
 
 
 # --------------------------------------------------------------- conditions
