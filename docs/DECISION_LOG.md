@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | ACTIVE REGISTER. **ACCEPTED (47): ADR-0001, ADR-0002, ADR-0005 through ADR-0012, ADR-0015, ADR-0016, ADR-0017, ADR-0033 through ADR-0037, ADR-0039 through ADR-0042, ADR-0044, ADR-0045, ADR-0046, ADR-0048 through ADR-0069**, owner-ratified across 2026-08-13, 2026-08-14, 2026-08-17, 2026-08-18, 2026-08-19, 2026-08-20, 2026-08-21 and 2026-08-22. **`ADR-0069` ratifies `DP-016` Option 1: H-05 closed via a new hermetic-tier test file (`engine/tests/test_vimshottari_hermetic_baseline.py`) freezing the already-oracle-validated Vimshottari anchor construction for five seed cases, plus a genuine negative control independently verified by actually mutating and reverting the production line in-session. No certified value changes; `certify_vimshottari.py`/`VIMSHOTTARI_V1_certification.json` untouched; M-03 scan surface confirmed unaffected. H-06/H-08/M-02/dasha boundary-proximity indicator not touched.** **`ADR-0068` records the owner's ratification of the FOUNDATION-exit readiness audit: "CEO RATIFICATION — FOUNDATION EXIT. I ratify ADR-0068 and declare FOUNDATION EXITED." All six `Q8_CLOSURE_MATRIX.md` s4 implementation-scope items have a settled, ratified disposition (rise/set, panchanga, `TRIKALAM_V1` certified and checkpointed; H-01/H-02 resolved; boundary-proximity indicators and civil-date rendering explicitly decoupled from the checkpoint by their own ratified decisions, `ADR-0067` and the `ADR-0063` addendum). **FOUNDATION IS FORMALLY EXITED AS OF 2026-08-22.** This does NOT authorize JATAKA - `Q8_CLOSURE_MATRIX.md` s5's own entry criteria (the Dasha roadmap's six steps, `docs/DASHA_CERTIFICATION_ROADMAP.md`, `Status: PROPOSED`) remain separately unmet. No certified calculation changed; no FOUNDATION item reopened; `phase-g-governance` not merged to `main`.** **`ADR-0067` ratifies `DP-015`: H-01/`ADR-0066`'s Q8 carve-out reading confirmed textually valid but novel, no precedent claimed; the carve-out's general reach beyond H-01/H-02 confirmed genuinely ambiguous, not silently generalized to any other FOUNDATION item; boundary-proximity indicators decoupled from the current FOUNDATION-exit checkpoint via `DP-015` §F "Option 3 (AMENDED)", ratified exactly as written - explicitly tracked as future work, not certified, does not gate exit, no future consumer may treat it as certified, any future consumer must certify first or explicitly refuse/gate, no certified values changed, no methodology specified here, a future decision paper determines it.** **`ADR-0066` ratifies `DP-014` Option 2: `find_crossings()` now raises `UnsupportedNodePolicyError` for Rahu/Ketu under any `node_policy` other than the certified mean node, converting H-01's silent transit-event incompleteness into an explicit refusal. No certified `TRANSIT_V1` value changes (confirmed by isolated-venv regeneration - only the already-understood ULP noise and volatile fields differed, and that regenerated artifact was discarded, not committed); Options 1/3 not chosen; Tier-0's Locked scope not touched.** **`ADR-0065` ratifies `DP-013`'s H-02 fix Option 1: `TransitEvent.declared_division`, an additive field classified from the exact `target_longitude`, with a new Gate E (genuine negative control) in `certify_transits.py`. No certified `TRANSIT_V1` value changes; Options 2/3 not chosen; Tier-0's Locked scope not touched.** **`ADR-0063` ratifies `DP-012` Option C: civil-date rendering for dasha boundaries is explicitly deferred, not authorized for implementation - `DP-012` itself unedited, per the established "paper is not the decision" discipline. A 2026-08-22 addendum to `ADR-0063` (**ratified**, `Status: ACCEPTED`, per the owner's "CEO RATIFICATION — ADR-0063 ADDENDUM" instruction) records a narrow qualification - `ADR-0063`'s original claim of independently satisfying `Q8_CLOSURE_MATRIX.md` s4 must not be relied upon without it, following `DP-015`'s finding that the carve-out's general reach is genuinely ambiguous - and explicitly decouples civil-date rendering from the current FOUNDATION-exit checkpoint, matching `ADR-0067`'s equivalent treatment of boundary-proximity indicators.** `ADR-0064` ratifies `DP-013` Option C (independent reference + PyJHora) and records the executed reproduction: H-02 independently confirmed for the Sun (2 of 12 sankranti, exact match to the original audit), PyJHora recorded as an evidenced limitation (cannot resolve the defect's own precision scale, by either method tested) rather than manufactured agreement. `TRANSIT_V1` unmodified by the reproduction itself; **pushed and CI-confirmed green** (run `32375941348`, all four jobs, both new steps genuinely executed under the hash-pinned oracle environment). A fix option was chosen 2026-08-21 - see `ADR-0065`.** **`ADR-0062` adds the permanent ACE execution-state mechanism (`docs/ACE_EXECUTION_STATE.md`) plus an explicit prohibition on the user relaying reports between Claude and ChatGPT - operationalizes `ADR-0056`'s already-ratified s11 point 3, does not reopen it.** **`ADR-0060` ratifies `DP-011` Option C seeded by Option B: Rahu Kalam/Yamaganda/Gulika become named, profile-selectable variants; the PyJHora 4.8.7 `trikalam()` convention is independently inspected, transcribed and frozen as the seed variant `PYJHORA_TRIKALAM_V1`. Authorizes only that one variant's implementation/certification work - does not itself certify it, does not authorize a second variant, and does not authorize Muhurta-specific consumption. `ADR-0061` records that implementation as built, locally verified, then **pushed and CI-confirmed green** (run `32358109807`, all four jobs, oracle job genuinely executing `TRIKALAM_V1`'s Gate F) - a 2026-08-20 evidence addendum records the CI confirmation and a recovered, expected M-03 drift finding (177->180, same class as `ADR-0053`/`ADR-0054`); a second 2026-08-20 addendum records a genuine ULP battery added to Gate C (exact sunrise weekday-rollover instant, with negative control), remediating a CEO-audit finding that the prior Gate C was a pinning/tolerance check, not a true ULP battery - **pushed and CI-confirmed green** (run `32361308330`, all four jobs, oracle-job log directly confirming `ulp_boundary_checked: True, ulp_negative_control_verified: True`). A third 2026-08-20 addendum records the **owner's acceptance of `TRIKALAM_V1`'s FOUNDATION per-capability checkpoint** - `TRIKALAM_V1` is now FOUNDATION checkpoint-accepted / production-certified. FOUNDATION's own phase-exit criteria remain open: civil-date rendering is now explicitly deferred by decision (`ADR-0063`, `DP-012` Option C), not implemented; H-01 and H-02 still lack any ratified decision paper.** **`ADR-0056` formalizes the four-role AI collaboration model (USER/CLAUDE/CHATGPT/CODEX); Codex is explicitly excluded from the ACE workflow. `ADR-0057` (CEO-audit HOLD remediation) adds ACE interaction mode and mandatory session-start audit to `specs/CLAUDE_WORKFLOW.md`. `ADR-0058` adds an execution-continuity rule (do not stop prematurely; five terminal stop conditions) to the same document; its `specs/CLAUDE_WORKFLOW.md` edit is committed (`20a9589e3d567bbf86e36b13bf2d61ca734e728e`). `ADR-0059` records the CEO-approved `PANCHANGA_V1` Gate F (genuine PyJHora external-oracle comparison for tithi/yoga/karana, nakshatra explicitly excluded): implemented, committed (`4177d6108236e64d07f6b23499307001f0d7c421`), pushed, and **CI-confirmed green** (run `32242462766`, all four jobs, oracle job genuinely executing Gate F: 66 comparisons, 0 mismatches, negative control verified) under the hash-pinned oracle environment. A 2026-08-19 evidence addendum to `ADR-0059` records the owner's acceptance of Panchanga's FOUNDATION per-capability checkpoint (`Q8_CLOSURE_MATRIX.md` s4); this does not close FOUNDATION's own phase-exit criteria, which still require Rahu Kalam/Yamaganda/Gulika, H-01, and H-02.** Tier-0 is **FORMALLY LOCKED** (ADR-0034), the only s12 Locked artifact. The registry vargas and the sign conventions are **owner-ratified but NOT s12 Locked** (ADR-0035 D3, ADR-0036 D3). **Q8 is now CLOSED** (ADR-0048); **Phase G exited and FOUNDATION entry criteria were independently confirmed satisfied** (this session's evidence reports). **FOUNDATION's first work package, rise/set, is CERTIFIED (`ADR-0054`, `RISE_SET_V1`)**: five owner-ratified conventions (upper-limb disc, standard -50' refraction, elevation accounted for, structured NO_RISE/NO_SET, conventions in `CalculationProfile`/`BirthData`), zero calculation impact on any existing certified capability, two genuine defects found and fixed during its own construction (recorded in the entry). **Panchanga classification-only work (tithi/vara/nakshatra/yoga/karana at a given instant) is now authorised (`ADR-0055`)**: engine-wide 1e-10 promote-up boundary convention, vara consumes the certified rise/set layer, element transition-timing deferred. **Rahu Kalam/Yamaganda/Gulika: `DP-011` (`ADR-0055` item 2's authorized paper) is now ratified (`ADR-0060`, Option C seeded by Option B) and its seed variant `PYJHORA_TRIKALAM_V1` is implemented and CI-confirmed (`ADR-0061`); a second variant remains explicitly NOT authorised.** No later phase (Muhurta, Varshaphal, Prashna, Mundane, BTR, Interpretation, Convergence, UI, ML) is thereby authorised - `docs/Q8_CLOSURE_MATRIX.md` s4 requires its own per-capability checkpoint for each. **Still PROPOSED: ADR-0003, ADR-0004, ADR-0013, ADR-0014, ADR-0018 through ADR-0032, ADR-0038, and ADR-0047.** **`ADR-0079` (`KP_SIGNIFICATOR_V1` certification-integrity repair) is now `ACCEPTED`, ratified 2026-08-28 per the owner's "CEO AUTHORIZATION — ADR-0079 RATIFICATION" instruction, recorded in the "Ratification of ADR-0079" sub-entry - `DP-030`'s own separate primary-source question remains fully open and unaddressed by this ratification.** `ADR-0047`'s originally-reported G5 sample accounting (22/22 complete, 16 independent, 4 ADB_MATCH, 2 unresolved, 14 events) was briefly, and **erroneously**, corrected to "12/22 attempted" by a 2026-08-18 addendum that has since been found (owner-directed forensic reconciliation) to rest on a conflation of the 22-person sample with an unrelated 5-person bridging pilot; a second, later 2026-08-18 addendum **restores 22/22 as the authoritative state** (16 independent, 4 ADB_MATCH: Fichera/Aimar/Serantoni/Bobet, 2 unresolved: Veen/Perquier, 14 independent events) and marks the "12/22" addendum SUPERSEDED/RETRACTED, preserved unedited. `ADR-0047` remains PROPOSED, not ratified, throughout. Ratification is per-entry; an owner existing is not the register being ratified. Includes the ADR-0018 remote-CI evidence addendum (2026-08-11), the ADR-0047 "12/22" addendum (2026-08-18, now retracted), and the ADR-0047 restoration addendum (2026-08-18). |
-| Version | 4.19.0 |
+| Version | 4.20.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-21 (ADR-0132 proposed: provisional BPHS citation-only package and temporary builder; no merge or independent PASS) |
+| Last updated | 2026-11-26 (ADR-0133 proposed: INTERPRETATION entry and WP-I1, with criteria I1 to I10 fixed before coding; not ratified) |
 | Review cadence | TBD |
 
 # Decision Log (ADR register)
@@ -13289,6 +13289,115 @@ issuance or confidence claims, or turn the recorded nonblocking findings into St
 - **Decision requested:** ratify only the provisional, citation-only exception and bounded implementation in sections 1-4 after independent review.
 - **Consequences:** A reviewable first-source package without artificial human-verification claims, preserving protected history and all existing calculation lineage. Later interpretation requires its own explicit entry decision.
 - **Evidence:** draft PR #67; its exact HEAD, tests, regenerated Gates A-X and CI must be verified independently before a PASS or merge. This decision text is proposed and does not itself establish any PASS.
+
+---
+
+## ADR-0133 - INTERPRETATION entry and work package WP-I1 (certified house-lord placement, closed condition evaluation, synthetic rule application, deterministic explanation), with its acceptance criteria fixed before coding (PROPOSED)
+
+- **Date:** 2026-11-26
+- **Status:** **PROPOSED. Not ratified.** It records a direction the CEO relayed, and proposes decisions D1 to D6 and WP-I1's acceptance
+  criteria. INTERPRETATION is not entered until the owner ratifies this entry. The sourced-rule exception in D2 is not active in code:
+  activating it needs this entry's ratification and a separate reviewed change. S2-3 remains UNMET.
+- **Context:**
+  - `docs/Q8_CLOSURE_MATRIX.md` s7 (ACCEPTED, `ADR-0048`) makes INTERPRETATION depend on EVIDENCE exit (`ADR-0129`) and a rule registry
+    populated with at least one school's source-cited rules (`ADR-0132`: RUL 5 to 10, citation-only). Its entry criteria are H5 ratified
+    (`ADR-0113`) and the LLM boundary implemented as a refusal (`ADR-0130` s2.3, gate W).
+  - The CEO's read-only entry review at `main` `e043e75b8e9a31ee111fa819873d631323ee2c26` found each of these on the record, and
+    recommended Option 1. Its text is session input, not a repository file.
+  - `ADR-0132` s4 forbids projecting a genuine rule into EVIDENCE or interpreting it against a chart. Nothing in the repository evaluates a
+    rule condition (`engine/evidence/rule_registry.py`, `Condition`: "Data only; nothing evaluates it"), and no certified calculation
+    produced the house-lord fact the sourced rules' condition needs (`reports/c4_reachability.json`: `engine.astrology.sign_lord.sign_lord`
+    uncovered, NOT_IN_USE).
+
+### 1. The direction (exact text)
+
+```text
+ACE — EXECUTE NEXT MILESTONE
+
+Owner has directed ACE to proceed with the CEO-recommended Option 1. Stop repeating the entry-readiness review.
+
+Baseline: `main` at `e043e75b8e9a31ee111fa819873d631323ee2c26`.
+
+Claude is the builder. ChatGPT remains the independent CEO auditor.
+
+**Execute:**
+
+1. Verify current Git state, applicable Charter, Q8 and ADR-0130–0132.
+2. Prepare ADR-0133 recording INTERPRETATION entry and the bounded WP-I1 decisions D1–D5 from the reviewed decision packet. Quote the owner's actual authorization accurately; do not invent ratification wording.
+3. Fix WP-I1 acceptance criteria I1–I10 before coding.
+4. Implement the authorized, synthetic-only engineering scope: independently certified house-lord placement, closed condition evaluation, explicit source-variant handling, provenance, deterministic explanation and fail-closed refusal controls.
+5. Preserve S2-3 UNMET and ADR-0132's restrictions. Any exception enabling sourced-rule test application must be explicit and ratified before activation. No real charts, prediction, confidence, production evidence or cross-system mixing.
+6. Run all applicable certifiers, mutation controls, full pytest, governance checks and artifact-drift verification.
+7. Open a draft PR with exact SHAs, evidence and unresolved material defects for CEO audit.
+
+Do not merge, force-push or declare an unratified ADR ACCEPTED. Do not reopen Stage 2 or expand its backlog.
+
+Return a concise evidence-backed implementation packet, not another preliminary review. Stop only for a demonstrated material blocker or an indispensable owner-reserved decision.
+```
+
+The direction reports that the owner directed Option 1. **The owner's own words are not part of it and are not in the repository; this
+entry does not stand in for them.** Ratification is the owner's, recorded in a later section of this entry quoting the owner's text.
+
+### 2. Proposed decisions
+
+- **D1. Entry.** INTERPRETATION is entered under Q8 s7 from `main` `e043e75`, effective on the owner's ratification of this entry. Its
+  scope is Q8 s7's alone: rule application, explanation traceable to rule identifiers, and strictly no prediction. CEO approval is
+  required at entry, at the LLM-boundary checkpoint and at exit (Q8 s7). Phase exit stays exactly as Q8 s7 fixes it.
+- **D2. A sourced-rule application exception: proposed, and inactive.** It would narrowly amend `ADR-0132` s4 for RUL 5 to 10 only, both
+  variants: they could be evaluated against synthetic charts and rendered as application records, with every claim state unchanged.
+  Everything else in `ADR-0132` s4 would hold: no projection into persisted evidence, and no prediction, confidence, real data or claim of
+  human verification. **WP-I1's code refuses every genuine rule.** Activation needs this entry's ratification and then a separate
+  reviewed change with its own gate evidence.
+- **D3. House-counting convention.** Whole-sign houses from the D1 Lagna under `PARASHARI_LAHIRI`. This is the existing documented
+  convention (`engine/astrology/house.py`; `PARASHARI_YOGA_V1`), so no second convention is introduced (Q8 s14).
+- **D4. S2-3.** Not required for synthetic application. It remains required, or an owner-ratified replacement, before any claim is
+  marked independently checked or any rule is used beyond synthetic data. S2-3 remains UNMET.
+- **D5. A new certified calculation capability, `PARASHARI_HOUSE_LORD_V1`.** It is certified support, not a production analytical
+  input, until a ratified entry declares it one (`check_capability_state.py` F15, F17, F18).
+- **D6. Evidence projection: open, for the owner.** H4 s3 (ACCEPTED) and `engine/evidence/evidence.py` require every evidence item to
+  carry a timing context: a dasha, a transit or a window, with dates. A natal placement rule has none, and inventing one is not
+  permitted. **WP-I1 therefore produces in-memory application records, not evidence items, and persists nothing.** How an untimed
+  natal application may become evidence is undecided. Options include an H4 amendment admitting an explicitly absent timing, with its
+  own gates, or projecting only timing-bearing rules.
+
+### 3. WP-I1 scope
+
+- **Production modules:** `engine/parashari/house_lord.py` (the certified calculation, D5); `engine/interpretation/` (condition
+  evaluation, rule application and explanation).
+- **Certification:** `scripts/certify_parashari_house_lord.py` with an independent validator, writing
+  `certification/PARASHARI_HOUSE_LORD_V1_certification.json`; and gate Y in `scripts/certify_evidence_foundations.py`, following the
+  precedent of the INTERPRETATION-prerequisite gates V, W and X.
+- **Not wired** to the API, the calculation path, the evidence store or any certified artifact's production path.
+
+### 4. Acceptance criteria (fixed before coding)
+
+Each must be met, with evidence, before WP-I1 can be proposed for merge.
+
+| # | Criterion | Measured by |
+|---|---|---|
+| I1 | `PARASHARI_HOUSE_LORD_V1` gives, for a `PARASHARI_LAHIRI` D1 snapshot, each house's whole-sign sign, its lord (`engine.astrology.sign_lord`), the lord's sign and whole-sign house, and each of the nine grahas' sign and whole-sign house | Its own certificate: an independently transcribed lordship table checked against production and against PyJHora's house-owner table (oracle job; an unavailable oracle fails); exhaustive enumeration against the closed form; a separate-process validator importing no production astrology module; a static reference regression on fixed synthetic birth instants, frozen from the validator; boundary cases; composition checks with monkeypatch mutation detection; negative controls. C2, C3 and C4 pass with it classified as certified support. |
+| I2 | Conditions are evaluated only for `planet_in_house`, `planet_in_sign` and `house_lord_in_house`, from a certified house-lord chart only | An undeclared or unsupported kind (including `cusp_sublord_signifies`) is refused; an input that is not the certified chart type is refused; evaluation agrees with an independent recomputation on every case |
+| I3 | Every published variant of an applied rule version is applied, each giving one record, fired or not fired. None is silently chosen. Variants that disagree in polarity are all kept, and the disagreement is flagged | Gate Y variant coverage on the synthetic RUL-3 readings, with a control that drops a variant |
+| I4 | Refused: a rule the pinned registry does not publish; a rule of another school; every genuine rule (RUL 5 to 10, `ADR-0132` s4) while D2 is inactive; a content-hash mismatch; a chart not computed under `PARASHARI_LAHIRI` | Gate Y refusals, each with a weakened-check control that admits the violation |
+| I5 | An explanation is rendered only from the record and the pinned registry: the rule's identity, version and variant, its statement, the condition and the certified facts it read, the outcome, all four claim states, and fixed non-claims. It takes no text input, and a tampered record is refused | Gate Y, with a control showing a weakened integrity check would render a tampered statement |
+| I6 | No prediction: a record carries no event class, timing, window, issuance, confidence or performance field | An exact-field-set check; a record with an added field is refused |
+| I7 | Synthetic only, nothing persisted: the interpretation package imports no ledger, event, evidence-store, store or provenance-graph module, and requires its chart to be declared synthetic | A static import gate; a chart not declared synthetic is refused |
+| I8 | Parashari only: the package imports no KP, drishti, Nadi or Jaimini module, and applies no other school's rule | A static import gate; RUL-2 (KP) and RUL-4 (Nakshatra Nadi) refused |
+| I9 | Deterministic: the same chart and versions give byte-identical records and renderings | Repeated runs compared byte for byte; a content hash on every record |
+| I10 | Certification preserved | `EVIDENCE_FOUNDATIONS_V1` gates A to X byte-identical. Other artifacts change only in disclosed structural counts (modules scanned, source counts, capability enumeration), non-claims made false by gate Y, and the regenerated reachability report. Every certified calculation result is unchanged; artifact drift passes; full pytest has zero skips; a mutation audit of the new checks. |
+
+### 5. What this entry does not do
+
+- **It enters nothing yet.** INTERPRETATION is entered only on the owner's ratification.
+- **No genuine rule is evaluated or applied.** `ADR-0132` is unchanged, and so are its claim states and its prohibitions.
+- **No evidence is persisted, no prediction is issued, and no confidence is computed.** There is no LLM client.
+- **No real data:** every chart is computed from synthetic birth details.
+- **It edits no earlier entry** and does not amend `Q8_CLOSURE_MATRIX.md`.
+
+- **Decision:** proposed, as s2 to s4.
+- **Consequences:** on ratification, INTERPRETATION is entered with WP-I1 as its first work package. D2's activation and D6 remain for
+  the owner.
+- **Evidence:** the WP-I1 draft PR, its tests, regenerated certificates and CI. The direction in s1 is session input, not a repository file.
 
 ---
 
