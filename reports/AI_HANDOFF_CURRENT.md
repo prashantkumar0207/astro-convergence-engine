@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | INDEX ONLY - navigation aid, not evidence. See "What this file is" below. |
-| Version | 9.67.0 |
+| Version | 9.68.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-24 (Stage 2 closed: PR #67 merged at `89a4631`; `ADR-0132` ACCEPTED; S2-3 UNMET; INTERPRETATION not entered.) |
+| Last updated | 2026-11-26 (INTERPRETATION entered; WP-I1 closed at `5715c34`; `ADR-0134` WP-I2 in a draft PR.) |
 | Review cadence | Regenerate at the start of a session if stale; not load-bearing if it isn't. |
 
 # AI handoff: current state index
@@ -68,6 +68,21 @@ python scripts/check_adr_numbering.py             # highest issued ADR number
 - `CLAUDE.md` and `.claude/rules/*.md` - operating rules for an AI collaborator in this repository.
 
 ## Task handoff log (Claude -> ChatGPT, most recent first)
+
+### 2026-11-26 - INTERPRETATION entered; WP-I1 closed; WP-I2 (`ADR-0134`) in a draft PR
+
+- **WP-I1 (PR #69):** merged normally at `5715c342a90b8eb6f64ce55c3e0d219c825b94a0` (parents `e043e75`, `e623e55`) after the CEO
+  PASS at `3e60d0b` and the owner's ratification of `ADR-0133` (s7, `e623e55`). Post-merge CI `45806224937`: all four jobs passed.
+  PR #68 (the Stage 2 closure records) merged earlier at `e043e75`.
+- **`ADR-0133` ACCEPTED:** INTERPRETATION entered, synthetic-only. D1, D3, D4, D5 accepted; D2 approved only as a future conditional
+  exception, inactive; D6 deferred, then resolved by `ADR-0134`.
+- **`ADR-0134` ACCEPTED, WP-I2 (branch `interpretation-wp-i2`):** the closed `UntimedNatal(NATAL_PLACEMENT)` timing; v4 untimed
+  records beside unchanged v3 dated records; projection only of verified, fired synthetic Parashari records, on the kernel's
+  recomputation of the entity chart's recorded birth input; integrity re-derived on every write and read; D6-c conflict and
+  independence rules; gate Z. H4 2.1.0 adds s13. Criteria U1 to U10 fixed before coding.
+- **Not done:** no genuine rule applied (D2 inactive; S2-3 UNMET), no prediction, confidence, real data or production use; WP-I3 not
+  begun.
+- **Next:** the CEO audit of the WP-I2 draft PR, then the owner's merge decision.
 
 ### 2026-11-24 - Stage 2 closed: PR #67 merged (`ADR-0132` ACCEPTED)
 
