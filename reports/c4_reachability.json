@@ -280,10 +280,11 @@
    "status": "NOT_IN_USE"
   },
   "engine.astrology.house.whole_sign_house": {
-   "caller_count": 4,
+   "caller_count": 5,
    "callers": [
     "engine.astrology.chart_planet_builder.build_chart_planet",
     "engine.astrology.planet_mapper.map_planet",
+    "engine.parashari.house_lord.house_lords_from_snapshot",
     "engine.parashari.mahapurusha_yoga.graha_mahapurusha_from_snapshot",
     "engine.parashari.mahapurusha_yoga.yoga_present"
    ],
@@ -578,9 +579,13 @@
    "status": "NOT_IN_USE"
   },
   "engine.astrology.sign_lord.sign_lord": {
-   "covered": false,
+   "caller_count": 1,
+   "callers": [
+    "engine.parashari.house_lord.house_lord"
+   ],
+   "covered": true,
    "file": "engine/astrology/sign_lord.py",
-   "status": "NOT_IN_USE"
+   "status": "IN_USE_COVERED"
   },
   "engine.astrology.sign_names.sign_name": {
    "covered": false,
@@ -588,7 +593,7 @@
    "status": "NOT_IN_USE"
   },
   "engine.astrology.signs.zodiac_sign": {
-   "caller_count": 9,
+   "caller_count": 10,
    "callers": [
     "engine.astrology.chart_house_builder.build_chart_house",
     "engine.astrology.chart_lagna_builder.build_chart_lagna",
@@ -939,7 +944,7 @@
    "status": "IN_USE_COVERED"
   },
   "engine.calculations.calculations.calculate": {
-   "caller_count": 6,
+   "caller_count": 7,
    "callers": [
     "engine.dasha.vimshottari.vimshottari_kp",
     "engine.dasha.vimshottari.vimshottari_parashari",
@@ -1902,10 +1907,12 @@
    "status": "NOT_IN_USE"
   },
   "engine.evidence.rule_registry.RuleRegistry.lookup": {
-   "caller_count": 3,
+   "caller_count": 5,
    "callers": [
     "engine.evidence.explanation_boundary._published",
     "engine.evidence.rule_registry.RuleRegistry.rule_version",
+    "engine.interpretation.application.apply_published",
+    "engine.interpretation.application.check_published",
     "scripts.check_evidence_identifiers.check_store"
    ],
    "covered": true,
@@ -1942,9 +1949,14 @@
    "status": "IN_USE_COVERED"
   },
   "engine.evidence.rule_registry.RuleRegistry.variants": {
+   "caller_count": 2,
+   "callers": [
+    "engine.interpretation.application.apply_published",
+    "engine.interpretation.application.check_coverage"
+   ],
    "covered": true,
    "file": "engine/evidence/rule_registry.py",
-   "status": "NOT_IN_USE"
+   "status": "IN_USE_COVERED"
   },
   "engine.evidence.rule_registry.RuleRegistry.verifications": {
    "covered": false,
@@ -1971,9 +1983,10 @@
    "status": "IN_USE_COVERED"
   },
   "engine.evidence.rule_registry.content_hash": {
-   "caller_count": 1,
+   "caller_count": 2,
    "callers": [
-    "engine.evidence.rule_registry.RegistryRule.__post_init__"
+    "engine.evidence.rule_registry.RegistryRule.__post_init__",
+    "engine.interpretation.application.require_content"
    ],
    "covered": true,
    "exported_by": [
@@ -2010,12 +2023,13 @@
    "status": "IN_USE_COVERED"
   },
   "engine.evidence.rule_registry.pinned": {
-   "caller_count": 4,
+   "caller_count": 7,
    "callers": [
     "engine.evidence.evidence_store.EvidenceStore._admitted_rule",
     "engine.evidence.evidence_store.EvidenceStore._check",
     "engine.evidence.evidence_store.EvidenceStore.register_rule",
-    "scripts.check_evidence_identifiers.check_store"
+    "engine.interpretation.application.apply_rule",
+    "engine.interpretation.application.check_coverage"
    ],
    "covered": true,
    "exported_by": [
@@ -2177,6 +2191,233 @@
    "covered": true,
    "file": "engine/evidence/store.py",
    "status": "IN_USE_COVERED"
+  },
+  "engine.interpretation.application.ChartOrigin.chart": {
+   "caller_count": 1,
+   "callers": [
+    "engine.interpretation.application.SyntheticChart.chart"
+   ],
+   "covered": true,
+   "file": "engine/interpretation/application.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.interpretation.application.ChartOrigin.digest": {
+   "caller_count": 2,
+   "callers": [
+    "engine.interpretation.application._record",
+    "engine.interpretation.application.check_origin"
+   ],
+   "covered": true,
+   "file": "engine/interpretation/application.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.interpretation.application.ChartOrigin.from_snapshot": {
+   "covered": true,
+   "file": "engine/interpretation/application.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.interpretation.application.SyntheticChart.chart": {
+   "caller_count": 1,
+   "callers": [
+    "engine.interpretation.application._evaluate_all"
+   ],
+   "covered": true,
+   "file": "engine/interpretation/application.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.interpretation.application.admit": {
+   "caller_count": 2,
+   "callers": [
+    "engine.interpretation.application.apply_published",
+    "engine.interpretation.application.check_published"
+   ],
+   "covered": true,
+   "file": "engine/interpretation/application.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.interpretation.application.apply_published": {
+   "caller_count": 1,
+   "callers": [
+    "engine.interpretation.application.apply_rule"
+   ],
+   "covered": true,
+   "file": "engine/interpretation/application.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.interpretation.application.apply_rule": {
+   "covered": true,
+   "file": "engine/interpretation/application.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.interpretation.application.canonical": {
+   "caller_count": 1,
+   "callers": [
+    "engine.interpretation.application.record_hash"
+   ],
+   "covered": true,
+   "file": "engine/interpretation/application.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.interpretation.application.check_coverage": {
+   "caller_count": 1,
+   "callers": [
+    "engine.interpretation.application.verify_application"
+   ],
+   "covered": true,
+   "file": "engine/interpretation/application.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.interpretation.application.check_evaluations": {
+   "caller_count": 1,
+   "callers": [
+    "engine.interpretation.application.verify"
+   ],
+   "covered": true,
+   "file": "engine/interpretation/application.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.interpretation.application.check_hash": {
+   "caller_count": 1,
+   "callers": [
+    "engine.interpretation.application.verify"
+   ],
+   "covered": true,
+   "file": "engine/interpretation/application.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.interpretation.application.check_identity": {
+   "caller_count": 1,
+   "callers": [
+    "engine.interpretation.application.verify"
+   ],
+   "covered": true,
+   "file": "engine/interpretation/application.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.interpretation.application.check_origin": {
+   "caller_count": 1,
+   "callers": [
+    "engine.interpretation.application.verify"
+   ],
+   "covered": true,
+   "file": "engine/interpretation/application.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.interpretation.application.check_published": {
+   "caller_count": 1,
+   "callers": [
+    "engine.interpretation.application.verify"
+   ],
+   "covered": true,
+   "file": "engine/interpretation/application.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.interpretation.application.check_shape": {
+   "caller_count": 1,
+   "callers": [
+    "engine.interpretation.application.verify"
+   ],
+   "covered": true,
+   "file": "engine/interpretation/application.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.interpretation.application.claims_of": {
+   "caller_count": 2,
+   "callers": [
+    "engine.interpretation.application._record",
+    "engine.interpretation.application.check_published"
+   ],
+   "covered": true,
+   "file": "engine/interpretation/application.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.interpretation.application.record_hash": {
+   "caller_count": 2,
+   "callers": [
+    "engine.interpretation.application._record",
+    "engine.interpretation.application.check_hash"
+   ],
+   "covered": true,
+   "file": "engine/interpretation/application.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.interpretation.application.require_content": {
+   "caller_count": 1,
+   "callers": [
+    "engine.interpretation.application.admit"
+   ],
+   "covered": true,
+   "file": "engine/interpretation/application.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.interpretation.application.require_school": {
+   "caller_count": 1,
+   "callers": [
+    "engine.interpretation.application.admit"
+   ],
+   "covered": true,
+   "file": "engine/interpretation/application.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.interpretation.application.require_synthetic": {
+   "caller_count": 1,
+   "callers": [
+    "engine.interpretation.application.admit"
+   ],
+   "covered": true,
+   "file": "engine/interpretation/application.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.interpretation.application.verify": {
+   "caller_count": 2,
+   "callers": [
+    "engine.interpretation.application.verify_application",
+    "engine.interpretation.explanation.render"
+   ],
+   "covered": true,
+   "file": "engine/interpretation/application.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.interpretation.application.verify_application": {
+   "caller_count": 1,
+   "callers": [
+    "engine.interpretation.explanation.render_application"
+   ],
+   "covered": true,
+   "file": "engine/interpretation/application.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.interpretation.conditions.answer": {
+   "caller_count": 1,
+   "callers": [
+    "engine.interpretation.conditions.evaluate"
+   ],
+   "covered": true,
+   "file": "engine/interpretation/conditions.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.interpretation.conditions.evaluate": {
+   "caller_count": 1,
+   "callers": [
+    "engine.interpretation.application._evaluate_all"
+   ],
+   "covered": true,
+   "file": "engine/interpretation/conditions.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.interpretation.explanation.render": {
+   "caller_count": 1,
+   "callers": [
+    "engine.interpretation.explanation.render_application"
+   ],
+   "covered": true,
+   "file": "engine/interpretation/explanation.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.interpretation.explanation.render_application": {
+   "covered": true,
+   "file": "engine/interpretation/explanation.py",
+   "status": "NOT_IN_USE"
   },
   "engine.knowledge.cache.KnowledgeCache.clear": {
    "covered": false,
@@ -2666,6 +2907,68 @@
    "file": "engine/parashari/drishti.py",
    "status": "NOT_IN_USE"
   },
+  "engine.parashari.house_lord.HouseLordChart.lordship": {
+   "caller_count": 1,
+   "callers": [
+    "engine.interpretation.conditions.evaluate"
+   ],
+   "covered": true,
+   "file": "engine/parashari/house_lord.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.parashari.house_lord.HouseLordChart.placement": {
+   "caller_count": 1,
+   "callers": [
+    "engine.interpretation.conditions.evaluate"
+   ],
+   "covered": true,
+   "file": "engine/parashari/house_lord.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.parashari.house_lord.house_lord": {
+   "caller_count": 1,
+   "callers": [
+    "engine.parashari.house_lord.house_lords_from_snapshot"
+   ],
+   "covered": true,
+   "file": "engine/parashari/house_lord.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.parashari.house_lord.house_lords": {
+   "covered": true,
+   "file": "engine/parashari/house_lord.py",
+   "status": "NOT_IN_USE"
+  },
+  "engine.parashari.house_lord.house_lords_from_snapshot": {
+   "caller_count": 2,
+   "callers": [
+    "engine.interpretation.application.ChartOrigin.chart",
+    "engine.parashari.house_lord.house_lords"
+   ],
+   "covered": true,
+   "file": "engine/parashari/house_lord.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.parashari.house_lord.house_sign": {
+   "caller_count": 2,
+   "callers": [
+    "engine.parashari.house_lord.house_lord",
+    "engine.parashari.house_lord.house_lords_from_snapshot"
+   ],
+   "covered": true,
+   "file": "engine/parashari/house_lord.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.parashari.house_lord.rule_content_sha256": {
+   "caller_count": 2,
+   "callers": [
+    "engine.interpretation.application._record",
+    "engine.interpretation.application.check_identity"
+   ],
+   "covered": true,
+   "file": "engine/parashari/house_lord.py",
+   "status": "IN_USE_COVERED"
+  },
   "engine.parashari.mahapurusha_yoga.MahapurushaYogaChart.present_yogas": {
    "covered": false,
    "file": "engine/parashari/mahapurusha_yoga.py",
@@ -2769,8 +3072,8 @@
  },
  "schema": "ace-c4-reachability-v1",
  "summary": {
-  "IN_USE_COVERED": 198,
-  "NOT_IN_USE": 143
+  "IN_USE_COVERED": 229,
+  "NOT_IN_USE": 145
  },
  "universe_exclusions": {
   "engine.main.": "API route handlers: callers and exports, not capabilities",

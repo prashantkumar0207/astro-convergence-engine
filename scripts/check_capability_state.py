@@ -91,7 +91,9 @@ FROZEN_EVIDENCE = frozenset({
 # Certified support, and NOT a production analytical input (ADR-0099 s2): no ratified entry serves
 # it in production and it is in no declaring list. Pinned here, not read from the document, so that
 # a documentation edit cannot move a declared capability out of the declared set.
-NON_DECLARING_SUPPORT = frozenset({"SUPPORT_PATHS_V1"})
+# PARASHARI_HOUSE_LORD_V1 joins it under ADR-0133 D5 (PROPOSED): it supports INTERPRETATION's synthetic condition
+# evaluation and no ratified entry serves it in production, so it is in no declaring list either.
+NON_DECLARING_SUPPORT = frozenset({"PARASHARI_HOUSE_LORD_V1", "SUPPORT_PATHS_V1"})
 
 # Structural certification of the EVIDENCE foundations (ADR-0115 s4). It is NOT astrological-calculation
 # certification and NOT a production analytical input, so it has its own list, apart from certified

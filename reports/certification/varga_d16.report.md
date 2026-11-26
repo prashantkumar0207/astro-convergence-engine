@@ -5,14 +5,14 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 
 - Decision entry: ADR-0089
 - Supersedes provisional identifier: NOTHING_AUTHORISED
-- Date: 2026-11-19
+- Date: 2026-11-26
 - Scope: D16 Shodasamsa, Parashara/BPHS variant, Traditional Parasara construction. Rule under certification is a STANDALONE, UNREGISTERED CyclicVargaRule instance embedded in this certifier - not engine/astrology/varga_d16.py, no production module is authorized or created this execution.
 - Result: **PASS**
 
 ## Preconditions
 
 - Data assets verified against CHECKSUMS.sha256: 3
-- Anti-fitting scan: 220 production modules, 0 findings
+- Anti-fitting scan: 227 production modules, 0 findings
 
 ## Gates
 

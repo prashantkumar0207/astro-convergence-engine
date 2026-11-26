@@ -1,8 +1,8 @@
 {
  "schema": "evidence_foundations_v1_certification",
- "adr": "ADR-0115 s4; ADR-0116 s4; ADR-0119 s3, s5; ADR-0120 s4, s6; ADR-0121; ADR-0122 s4, s6; ADR-0124; ADR-0125; ADR-0127; ADR-0130",
- "date": "2026-11-21",
- "scope": "Structural certification of the EVIDENCE foundations: the H0 entity model, append-only entity store and ENT issuer (ADR-0114 WP-E1), and the H1 event model, append-only event store, separate confirmation records, EVR issuer and seeded event-class vocabulary (ADR-0115 WP-E2), and the H2 historical ledger, protected holdouts, pre-registered protocols and purpose-declared access log (ADR-0116 WP-E3), and the H4 evidence model, append-only evidence store, EVD and RUL issuers, provenance-checked joins, decomposable aggregates and structural relationship records (ADR-0119 WP-E4), and the H5 interpretation rule registry, its hash-pinned fail-closed snapshot and the governed RUL authoring process (ADR-0120 WP-E5; ADR-0121), and the provenance graph recorded at evidence-creation time (ADR-0122 WP-E6).",
+ "adr": "ADR-0115 s4; ADR-0116 s4; ADR-0119 s3, s5; ADR-0120 s4, s6; ADR-0121; ADR-0122 s4, s6; ADR-0124; ADR-0125; ADR-0127; ADR-0130; ADR-0132; ADR-0133 (PROPOSED)",
+ "date": "2026-11-26",
+ "scope": "Structural certification of the EVIDENCE foundations: the H0 entity model, append-only entity store and ENT issuer (ADR-0114 WP-E1), and the H1 event model, append-only event store, separate confirmation records, EVR issuer and seeded event-class vocabulary (ADR-0115 WP-E2), and the H2 historical ledger, protected holdouts, pre-registered protocols and purpose-declared access log (ADR-0116 WP-E3), and the H4 evidence model, append-only evidence store, EVD and RUL issuers, provenance-checked joins, decomposable aggregates and structural relationship records (ADR-0119 WP-E4), and the H5 interpretation rule registry, its hash-pinned fail-closed snapshot and the governed RUL authoring process (ADR-0120 WP-E5; ADR-0121), and the provenance graph recorded at evidence-creation time (ADR-0122 WP-E6); and, for INTERPRETATION work package WP-I1, the synthetic application of Parashari fixture rules and its deterministic explanation (ADR-0133, PROPOSED; gate Y).",
  "reference": {
   "structure": "the model contracts of ADR-0114 s3, ADR-0115 s5, ADR-0116 s5, ADR-0119 s5, ADR-0120 s6 and ADR-0122 s6, exercised on synthetic records",
   "event_classes": "knowledge/hlkg/domains/career/CAREER_EVENT_REGISTRY.md s3, read by this runner independently of the code"
@@ -1128,6 +1128,92 @@
    "exercises": [
     "evidence.rule_registry"
    ]
+  },
+  "Y_rule_application": {
+   "classification": "negative_control",
+   "refusals_verified": 48,
+   "legitimate_reads_preserved": 9,
+   "controls_rejected": 14,
+   "refused": [
+    "a KP rule",
+    "a Nakshatra Nadi rule",
+    "a Parashari rule with a condition kind not evaluated here",
+    "a bare chart, not a SyntheticChart",
+    "a chart not declared synthetic",
+    "a chart origin under another profile",
+    "a condition that is not a registry Condition",
+    "a dictionary in place of a record",
+    "a forged record whose rehashed facts and outcome contradict its chart",
+    "a hostile label passed by name",
+    "a hostile label passed to a synthetic chart",
+    "a house-lord chart in place of a chart origin",
+    "a house-lord chart under another profile evaluated directly",
+    "a planted ledger or KP import",
+    "a provenance that is not Provenance",
+    "a record changed after it was hashed",
+    "a record from another certified input content",
+    "a record missing an activation evaluation",
+    "a record naming a genuine rule",
+    "a record that does not match its published rule",
+    "a record verified against another chart with the same facts",
+    "a record verified against no chart",
+    "a record whose outcome does not follow",
+    "a record with an added timing field",
+    "a rule named by text",
+    "a rule never issued",
+    "a rule version never published",
+    "a rule whose content does not match its hash",
+    "an application hiding its variants' disagreement",
+    "an application missing a variant",
+    "an application mixing rule versions",
+    "an undeclared condition kind evaluated directly",
+    "genuine rule 10 version 1 from a registry carrying it",
+    "genuine rule 10 version 1 through apply_rule",
+    "genuine rule 5 version 1 from a registry carrying it",
+    "genuine rule 5 version 1 through apply_rule",
+    "genuine rule 6 version 1 from a registry carrying it",
+    "genuine rule 6 version 1 through apply_rule",
+    "genuine rule 7 version 1 from a registry carrying it",
+    "genuine rule 7 version 1 through apply_rule",
+    "genuine rule 8 version 1 from a registry carrying it",
+    "genuine rule 8 version 1 through apply_rule",
+    "genuine rule 9 version 1 from a registry carrying it",
+    "genuine rule 9 version 1 through apply_rule",
+    "hostile text in place of a graha name",
+    "hostile text in place of a longitude",
+    "hostile text in place of the Lagna",
+    "text in place of a record"
+   ],
+   "preserved": [
+    "4320 condition evaluations agree with a closed-form recomputation",
+    "a record carries exactly its schema's fields, none of them a prediction field",
+    "a rule fires only when its activation conditions also hold",
+    "a synthetic chart carries no text field, and text in a provenance field never reaches an explanation",
+    "an explanation is rendered from the verified record, its chart and the pinned registry alone",
+    "every variant is applied and kept, and their disagreement is stated",
+    "repeated application gives byte-identical records and explanations",
+    "the interpretation package imports only its allowlist",
+    "the tenth lord in the tenth fires RUL-1 version 1, and elsewhere it does not"
+   ],
+   "controls": [
+    "H1: a renderer interpolating a caller label carries the hostile claim, and the detector sees it",
+    "H2: the rehashed forgery renders when facts are checked only against themselves",
+    "a changed polarity renders without the published-rule match",
+    "a changed record is refused only by the later published-rule check without check_hash",
+    "a chart not declared synthetic is accepted without the data-class check",
+    "a genuine rule is applied without require_synthetic",
+    "a missing variant renders without check_coverage",
+    "a record renders against another chart without check_origin",
+    "a rule with altered content is applied without require_content",
+    "a widened import allowlist admits a planted ledger or KP import",
+    "an added timing field renders without check_shape",
+    "an unevaluated kind is silently not fired by a permissive evaluator",
+    "another input content renders without check_identity",
+    "another school's rule is applied without require_school"
+   ],
+   "exercises": [
+    "interpretation.rule_application"
+   ]
   }
  },
  "explicit_non_claims": [
@@ -1144,9 +1230,9 @@
   "rule-version references are synthetic structural references: not proof of registration or validation in a future real-rule registry, and they authorize no interpretation",
   "the evidence-pinned registry still publishes synthetic fixture rules only, with no interpretive meaning; the separately pinned sourced registry publishes provisional citation-only variants, with attribution and transcription author-declared, applicability unassessed, no human verification, no measured performance",
   "a genuine rule, once published, is never projected into evidence; the explanation boundary renders only trusted data and contains no LLM client, so no generated text is evaluated here",
-  "no rule condition is evaluated against a chart and no rule is applied; that belongs to INTERPRETATION",
+  "gate Y (ADR-0133 WP-I1, PROPOSED) evaluates synthetic Parashari fixture rules on synthetic charts and checks the application records and their rendering; no genuine rule is evaluated or applied, no record is persisted or projected into evidence, and the fixture rules carry no interpretive meaning",
   "RUL issuance is append-only against the base commit in CI; the gate cannot see allocations made in an unreviewed fork that was never merged",
-  "no rule is applied and no chart is interpreted: evidence items are synthetic records exercising the model",
+  "no evidence item comes from a rule application: evidence items are synthetic records exercising the model, and no chart is interpreted",
   "confidence components and historical performance are carried as supplied or absent, never computed; measured reliability, cross-method and timing convergence are absent",
   "relationships are classified only from each item's own recorded inputs, derivation links and completeness statements; no convergence count or bound is computed, and CORRELATED is never assigned",
   "the store cannot verify that a producer's completeness statements are true; it only refuses to call a pair INDEPENDENT without them",
@@ -1159,7 +1245,7 @@
   "the graph's node and edge kinds adopt the recording schema of docs/EVIDENCE_INDEPENDENCE_DESIGN.md s3 only (ADR-0122 D1); that document stays PROPOSED in every other respect"
  ],
  "environment": {
-  "python": "3.13.5"
+  "python": "3.11.17"
  },
  "preconditions": {
   "data_assets": {
@@ -1181,7 +1267,7 @@
    "residual_limitation": "coordinated edits to every repository-held trust record cannot be cryptographically prevented by an in-repository trust anchor; only upstream provenance would anchor this, and it is out of M1 scope"
   },
   "anti_fitting": {
-   "modules_scanned": 220,
+   "modules_scanned": 227,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."
@@ -2319,6 +2405,219 @@
       "U_historical_rule_integrity",
       "S_evidence_read_integrity",
       "R_graph_agreement"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "interpretation.rule_application",
+   "members": [
+    {
+     "callable": "engine.interpretation.conditions.evaluate",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.conditions.answer",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.application.apply_rule",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.application.apply_published",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.application.admit",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.application.require_synthetic",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.application.require_school",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.application.require_content",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.application.canonical",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.application.record_hash",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.application.claims_of",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.application.verify",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.application.verify_application",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.application.check_shape",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.application.check_hash",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.application.check_identity",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.application.check_published",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.application.check_evaluations",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.application.check_coverage",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.application.check_origin",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.application.ChartOrigin.from_snapshot",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.application.ChartOrigin.digest",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.application.ChartOrigin.chart",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.application.SyntheticChart.chart",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.explanation.render",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
+     ]
+    },
+    {
+     "callable": "engine.interpretation.explanation.render_application",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Y_rule_application"
      ]
     }
    ]

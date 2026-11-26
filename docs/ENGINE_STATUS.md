@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | CURRENT - regenerate on every certified change. Reconciled against live repository evidence 2026-09-05 per `ADR-0093`. Section 6's machine-readable capability block is now mechanically enforced against live sources by `scripts/check_capability_state.py` (`ADR-0094`); **the prose in sections 1-5 is not machine-checked and remains a manual discipline.** |
-| Version | 3.3.0 |
+| Version | 3.4.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-09-18 (**M2 record reconciliation.** Version raised to 3.0.0; **the basis for document version numbering is an unresolved governance issue** - `docs/DOCUMENTATION_STANDARD.md` s2 item 4 describes MAJOR/MINOR/PATCH, but that document is a DRAFT placeholder, so no version decision here rests on it. 3.0.0 records that statements changed meaning, following this document's own 2.0.0 precedent, and is open to correction. Corrections: section 2's statement that D16/D4 are not wired into CI was false since `ADR-0096`; section 3's "eleven served / eight registered" contradicted section 2 and the section 6 block; section 1's validator-source count was 21, not 22. No capability claim and no certified value changed.) |
+| Last updated | 2026-11-26 (`PARASHARI_HOUSE_LORD_V1` added as certified support, not a production analytical input, with WP-I1 (`ADR-0133`, PROPOSED). Effective only on that PR's approval and merge.) |
 | Review cadence | TBD (see docs/OPEN_QUESTIONS.md Q1) |
 
 # Consolidated engine status
@@ -40,6 +40,8 @@ The Parashari school layer (`engine/parashari/`) provides full graha drishti fac
 **KP significators are certified (`KP_SIGNIFICATOR_V1`, `ADR-0078`, with the certification-integrity repair recorded in `ADR-0079`).** This supersedes the earlier repository-wide non-claim on significators; four-step, ruling planets and horary remain unclaimed and unimplemented.
 
 FOUNDATION capabilities are certified: rise and set with declared conventions (`RISE_SET_V1`, `ADR-0054`); panchanga classification - tithi, vara, nakshatra as a panchanga element, yoga, karana (`PANCHANGA_V1`, `ADR-0055`); and Rahu Kalam, Yamaganda and Gulika under the named seed variant `PYJHORA_TRIKALAM_V1` (`TRIKALAM_V1`, `ADR-0060`). FOUNDATION was formally exited 2026-08-22 (`ADR-0068`).
+
+**House lordship and whole-sign placement are certified support, not a production analytical input (`PARASHARI_HOUSE_LORD_V1`, `ADR-0133` D5, PROPOSED, `engine/parashari/house_lord.py`).** For a D1 chart under `parashari_lahiri` it gives each house's sign, its classical lord and the lord's sign and house, and each graha's sign and house, checked against an independent validator and PyJHora's house-owner table. Only INTERPRETATION's synthetic condition evaluation reads it, and it makes no interpretive claim.
 
 Sign conventions are explicit and enforced (`engine/astrology/sign.py` and `sign_conventions.py`). See the open-items section for what this did and deliberately did not change.
 
@@ -117,7 +119,7 @@ gates its capability and cites an ACCEPTED decision entry.
     "TRIKALAM_V1",
     "VIMSHOTTARI_V1"
   ],
-  "certified_support_not_declared": ["SUPPORT_PATHS_V1"],
+  "certified_support_not_declared": ["PARASHARI_HOUSE_LORD_V1", "SUPPORT_PATHS_V1"],
   "certified_evidence_structure_not_calculation": ["EVIDENCE_FOUNDATIONS_V1"],
   "non_claims": [
     "planet_strength",
@@ -132,8 +134,8 @@ gates its capability and cites an ACCEPTED decision entry.
     "numerology"
   ],
   "counts": {
-    "certifier_sources": 24,
-    "validator_sources": 22
+    "certifier_sources": 25,
+    "validator_sources": 23
   }
 }
 ```
@@ -143,6 +145,7 @@ gates its capability and cites an ACCEPTED decision entry.
 
 | Version | Date | Change |
 |---|---|---|
+| 3.4.0 | 2026-11-26 | Section 6: `PARASHARI_HOUSE_LORD_V1` joins `certified_support_not_declared`. It certifies house lordship and whole-sign placement for INTERPRETATION's synthetic condition evaluation (`ADR-0133` D5) and is not a production analytical input. Counts 24/22 -> 25/23 for its certifier and validator. Section 2 gains one paragraph saying so. **Proposed with WP-I1 (`ADR-0133`, PROPOSED); it takes effect only on that PR's approval and merge.** |
 | 3.3.0 | 2026-11-09 | Section 6 gains `certified_evidence_structure_not_calculation`: `EVIDENCE_FOUNDATIONS_V1` is structural certification of the EVIDENCE foundations (H0 and H1). It is not astrological-calculation certification, not a production analytical input, and in no declaring or support list (`ADR-0115` s4). Certifier count 23 -> 24. **Proposed with WP-E2; it takes effect only on that PR's approval and merge.** |
 | 3.2.1 | 2026-11-05 | `certified_support_not_declared` ratified by the owner (`ADR-0109` s3A item 2). No list or count changes. |
 | 3.2.0 | 2026-11-05 | Section 6 gains `certified_support_not_declared`: `SUPPORT_PATHS_V1` is certified support that `ADR-0099` s3 places in use, and is not a production analytical input. The declaring lists do not change. Certifier count 22 -> 23. **PROPOSED with the Stage C record, not ratified.** |

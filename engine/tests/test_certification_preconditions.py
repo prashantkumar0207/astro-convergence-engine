@@ -61,8 +61,8 @@ def test_anti_fitting_scan_covers_every_declared_certification_source():
     # its disposition assigned to Phase G item G7 and never executed.
     # Stage C: 22 -> 23. `scripts/certify_support_paths.py` added (ADR-0108 s4 item 5's certification route).
     # WP-E2: 23 -> 24. `scripts/certify_evidence_foundations.py` added (ADR-0115 s4, structural, no oracle).
-    assert len(support.CERTIFIER_SOURCES) == 24
-    assert len(support.VALIDATOR_SOURCES) == 22
+    assert len(support.CERTIFIER_SOURCES) == 25  # PARASHARI_HOUSE_LORD_V1 added (ADR-0133 D5, PROPOSED)
+    assert len(support.VALIDATOR_SOURCES) == 23
     assert support.FIXTURE_SOURCES == ("brihat_fixtures.py",)
     discovered_certifiers = {
         str(path.relative_to(ROOT)).replace("\\", "/")
