@@ -75,6 +75,13 @@ class TimingKind(Enum):
     WINDOW = "window"
 
 
+class UntimedBasis(Enum):
+    """Why an item is untimed (ADR-0134 D6-a; H4 s13). There is one basis: the rule states a natal placement, which
+    has no period. Untimed never means unknown, missing, arbitrary or lifelong timing."""
+
+    NATAL_PLACEMENT = "natal_placement"
+
+
 class DependencyClass(Enum):
     """How two items depend on each other (H4 s10, s11; ADR-0119 D4 A). Conflict is recorded separately."""
 
@@ -267,6 +274,24 @@ class TimingContext:
 
 
 @dataclass(frozen=True, slots=True)
+class UntimedNatal:
+    """An explicitly untimed natal item (ADR-0134 D6-a; H4 s13): a structured timing context with no label, date or
+    window. It is admitted only for a natal Parashari item on the D1 chart (EvidenceItem) whose rule's every condition
+    is a natal placement (the evidence store)."""
+
+    basis: UntimedBasis
+
+    def __post_init__(self):
+        if self.basis is not UntimedBasis.NATAL_PLACEMENT:
+            raise EvidenceModelError("an untimed item's basis is NATAL_PLACEMENT, its only value; untimed is never "
+                                     "unknown or missing timing (ADR-0134)")
+
+
+#: The varga, domain and system an untimed item must have (ADR-0134 U2).
+UNTIMED_VARGA = "D1"
+
+
+@dataclass(frozen=True, slots=True)
 class Supplied:
     """A value supplied to EVIDENCE, kept as given, with where it came from. EVIDENCE never computes one."""
 
@@ -331,7 +356,7 @@ class EvidenceItem:
     lineage: Lineage
     chart: ChartReference
     chart_context: ChartContext
-    timing: TimingContext
+    timing: TimingContext | UntimedNatal
     polarity: Polarity
     confidence: Confidence
     historical_performance: Performance | None
@@ -356,8 +381,13 @@ class EvidenceItem:
                                      "(ADR-0119 AC9)")
         for name, kind in (("lineage", Lineage), ("chart", ChartReference), ("chart_context", ChartContext),
                            ("timing", TimingContext), ("confidence", Confidence), ("provenance", RecordProvenance)):
-            if not isinstance(self.__getattribute__(name), kind):
+            value = self.__getattribute__(name)
+            if not isinstance(value, kind) and not (name == "timing" and type(value) is UntimedNatal):
                 raise EvidenceModelError(f"an evidence item requires its {name} ({kind.__name__})")
+        if type(self.timing) is UntimedNatal and (
+                self.domain is not Domain.JATAKA or self.producing_system is not ProducingSystem.PARASHARI or
+                self.chart_context.varga != UNTIMED_VARGA):
+            raise EvidenceModelError("an untimed natal item is a Jataka, Parashari item on the D1 chart (ADR-0134 U2)")
         _member("polarity", self.polarity, Polarity)
         if self.historical_performance is not None and not isinstance(self.historical_performance, Performance):
             raise EvidenceModelError("historical performance is Performance or explicitly absent")

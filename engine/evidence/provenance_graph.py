@@ -2,7 +2,8 @@
 
 The graph an evidence item consumed, recorded when the item is persisted and in the same transaction
 (D2 A). Its schema is the recording schema of docs/EVIDENCE_INDEPENDENCE_DESIGN.md s3 and nothing else
-of that document (D1 A): six node kinds and two edge kinds. CORRELATED_WITH is not an edge kind here:
+of that document (D1 A): six node kinds and two edge kinds, and the UNTIMED node kind ADR-0134 adds, which an
+untimed natal item records in place of a timing node (H4 s13). CORRELATED_WITH is not an edge kind here:
 it is measured, and nothing in EVIDENCE measures.
 
 - Identity (D3 A): a node is the SHA-256 of its kind and canonical identity record. Two items share a
@@ -32,6 +33,7 @@ from enum import Enum
 from engine.evidence.entity import ChartCandidate, ParentLink
 from engine.evidence.evidence import (
     CalculatedInput, ChartReference, EvidenceItem, Lineage, RuleReference, RuleVersion, TimingContext, TimingKind,
+    UntimedBasis, UntimedNatal,
 )
 from engine.evidence.evidence_identifiers import EvidenceId, RuleId
 from engine.evidence.identifiers import EntityId
@@ -55,6 +57,7 @@ class NodeKind(Enum):
     TIMING = "timing"
     RULE = "rule"
     EVIDENCE = "evidence"
+    UNTIMED = "untimed"  # ADR-0134: an untimed natal item's basis, in place of a timing node
 
 
 class EdgeKind(Enum):
@@ -74,6 +77,7 @@ IDENTITY_FIELDS = {
     NodeKind.TIMING: ("entity", "entity_revision", "chart_label", "kind", "label", "start", "end"),
     NodeKind.RULE: ("rule", "version", "variant", "content_hash", "knowledge_snapshot_hash"),
     NodeKind.EVIDENCE: ("evidence", "inputs_complete", "derivations_complete", "recomputes"),
+    NodeKind.UNTIMED: ("entity", "entity_revision", "chart_label", "kind", "basis"),
 }
 
 #: The declared node-kind pairs of each edge kind (AC3). Anything else is refused.
@@ -84,6 +88,7 @@ ALLOWED_PAIRS = {
         (NodeKind.DERIVED_CHART, NodeKind.DERIVED_CHART),   # a derived subject's chart from its parent chart (H0)
         (NodeKind.DERIVED_CHART, NodeKind.EVIDENCE),        # the item, from the chart and varga it reads
         (NodeKind.TIMING, NodeKind.EVIDENCE),               # the item, within its timing context
+        (NodeKind.UNTIMED, NodeKind.EVIDENCE),              # an untimed natal item, on its basis (ADR-0134)
         (NodeKind.EVIDENCE, NodeKind.EVIDENCE),             # derivation and recomputation links
     }),
     EdgeKind.APPLIES_TO: frozenset({
@@ -259,6 +264,12 @@ def timing_node(entity: EntityId, chart: ChartReference, timing: TimingContext) 
                      start=timing.start, end=timing.end)
 
 
+def untimed_node(entity: EntityId, chart: ChartReference, untimed: UntimedNatal) -> Node:
+    """An untimed natal item's basis, tied to its chart (ADR-0134 U7)."""
+
+    return make_node(NodeKind.UNTIMED, **_chart_identity(entity, chart), kind="untimed_natal", basis=untimed.basis.value)
+
+
 def rule_node(rule: RuleVersion) -> Node:
     identity: RuleId = rule.rule
     return make_node(NodeKind.RULE, rule=identity.value, version=rule.version, variant=rule.spec.variant,
@@ -310,7 +321,10 @@ def record_graph(evidence_id: EvidenceId, item: EvidenceItem, candidate: ChartCa
         edges.append(Edge(source=origin, kind=EdgeKind.DERIVES_FROM, target=fact))
         add(fact, EdgeKind.APPLIES_TO, position)
     add(read, EdgeKind.DERIVES_FROM)
-    add(timing_node(entity, chart, item.timing), EdgeKind.DERIVES_FROM)
+    if type(item.timing) is UntimedNatal:
+        add(untimed_node(entity, chart, item.timing), EdgeKind.DERIVES_FROM)
+    else:
+        add(timing_node(entity, chart, item.timing), EdgeKind.DERIVES_FROM)
     add(rule_node(rule), EdgeKind.APPLIES_TO)
     for position, link in enumerate(item.derived_from):
         add(evidence_node(link, linked[link]), EdgeKind.DERIVES_FROM, position)
@@ -328,6 +342,20 @@ def _one(edges, kind: NodeKind, label: str):
     return found[0].source.fields()
 
 
+def untimed_timing(incoming, chart: dict) -> UntimedNatal:
+    """An untimed item's basis from its incoming edges: exactly one untimed node, for the item's own chart, and no
+    timing node (ADR-0134 U7)."""
+
+    untimed = [edge for edge in incoming if edge.source.kind is NodeKind.UNTIMED]
+    if len(untimed) != 1 or any(edge.source.kind is NodeKind.TIMING for edge in incoming):
+        raise GraphError("an untimed natal item records exactly one untimed node and no timing node (ADR-0134)")
+    basis = untimed[0].source.fields()
+    if (basis["kind"], basis["entity"], basis["entity_revision"], basis["chart_label"]) != (
+            "untimed_natal", chart["entity"], chart["entity_revision"], chart["chart_label"]):
+        raise GraphError("an untimed node is recorded for another chart, or with another kind")
+    return UntimedNatal(basis=UntimedBasis(basis["basis"]))
+
+
 def reproduce(graph: Graph, evidence_id: EvidenceId) -> dict:
     """What `graph` alone records of one item: its entity, chart reference, varga, lineage, timing, rule reference,
     derivation links and recomputation link. Nothing is read from the item itself."""
@@ -340,7 +368,12 @@ def reproduce(graph: Graph, evidence_id: EvidenceId) -> dict:
     record = target.fields()
     incoming = [edge for edge in graph.edges if edge.target.key == target.key]
     chart = _one(incoming, NodeKind.DERIVED_CHART, "chart")
-    timing = _one(incoming, NodeKind.TIMING, "timing context")
+    if any(edge.source.kind is NodeKind.UNTIMED for edge in incoming):
+        timing_context = untimed_timing(incoming, chart)
+    else:
+        timing = _one(incoming, NodeKind.TIMING, "timing context")
+        timing_context = TimingContext(kind=TimingKind(timing["kind"]), label=timing["label"], start=timing["start"],
+                                       end=timing["end"])
     rule = _one(incoming, NodeKind.RULE, "rule version")
     facts = sorted((edge for edge in incoming if edge.source.kind is NodeKind.ASTRONOMICAL),
                    key=lambda edge: edge.position)
@@ -369,8 +402,7 @@ def reproduce(graph: Graph, evidence_id: EvidenceId) -> dict:
                                         for edge in facts),
                            inputs_complete=record["inputs_complete"],
                            derivations_complete=record["derivations_complete"]),
-        "timing": TimingContext(kind=TimingKind(timing["kind"]), label=timing["label"], start=timing["start"],
-                                end=timing["end"]),
+        "timing": timing_context,
         "rule": RuleReference(rule=RuleId(rule["rule"]), version=rule["version"], variant=rule["variant"]),
         "derived_from": tuple(EvidenceId(edge.source.fields()["evidence"]) for edge in derived),
         "recomputes": None if recomputes is None else EvidenceId(recomputes),
@@ -447,4 +479,4 @@ def edge_from_row(nodes: dict, source: str, kind: str, target: str, position: in
 __all__ = ["GRAPH_SCHEMA", "ALLOWED_PAIRS", "IDENTITY_FIELDS", "Edge", "EdgeKind", "Graph", "GraphError", "Node",
            "NodeKind", "unjustified_rows", "astronomical_node", "canonical", "chart_node", "edge_from_row", "evidence_node",
            "input_node", "make_node", "node_from_row", "node_to_row", "parent_chart_node", "record_graph",
-           "recorded_fields", "reproduce", "rule_node", "timing_node"]
+           "recorded_fields", "reproduce", "rule_node", "timing_node", "untimed_node", "untimed_timing"]
