@@ -23,12 +23,12 @@ GRAHAS = house_lord.PLACED_GRAHAS
 ONE, THREE, KP_RULE, NADI_RULE = (RuleId.from_number(number) for number in (1, 3, 2, 4))
 
 
-def _chart(ascendant, label="a synthetic chart", **placed):
+def _chart(ascendant, **placed):
     longitudes = {graha: 75.0 for graha in GRAHAS}
     longitudes.update(placed)
     snapshot = SimpleNamespace(provenance=PROVENANCE, houses=SimpleNamespace(ascendant=ascendant),
                                sidereal_planets={graha: SimpleNamespace(longitude=longitudes[graha]) for graha in GRAHAS})
-    return application.SyntheticChart(house_lord.house_lords_from_snapshot(snapshot), DataClass.SYNTHETIC, label)
+    return application.SyntheticChart(application.ChartOrigin.from_snapshot(snapshot), DataClass.SYNTHETIC)
 
 
 FIRING = _chart(5.0, Saturn=285.0, Sun=280.0, Moon=95.0)
@@ -67,7 +67,7 @@ def test_house_lordship_refuses_another_profile_and_an_unprovenanced_snapshot():
 # --------------------------------------------------------------- conditions
 
 def test_each_evaluated_kind_records_its_facts_and_its_answer():
-    chart = FIRING.chart
+    chart = FIRING.chart()
     lord = conditions.evaluate(rule_registry.Condition("house_lord_in_house", (("house", 10), ("lord_of", 10))), chart)
     assert lord.holds and dict(lord.facts) == {"house_sign": 10, "lord": "Saturn", "lord_house": 10}
     moon = conditions.evaluate(rule_registry.Condition("planet_in_sign", (("planet", "Moon"), ("sign", 5))), chart)
@@ -77,7 +77,7 @@ def test_each_evaluated_kind_records_its_facts_and_its_answer():
 def test_an_unevaluated_kind_and_a_non_chart_are_refused():
     kp = rule_registry.Condition("cusp_sublord_signifies", (("cusp", 10), ("houses", (2, 6, 10))))
     with pytest.raises(conditions.ConditionError, match="is not evaluated here"):
-        conditions.evaluate(kp, FIRING.chart)
+        conditions.evaluate(kp, FIRING.chart())
     with pytest.raises(conditions.ConditionError, match="certified PARASHARI_HOUSE_LORD_V1 chart"):
         conditions.evaluate(rule_registry.Condition("planet_in_sign", (("planet", "Moon"), ("sign", 4))), object())
 
@@ -97,7 +97,7 @@ def test_every_variant_is_applied_kept_and_its_disagreement_stated():
     assert [(r.variant, r.fired, r.declared_polarity) for r in applied.records] == [
         ("reading-a", True, "positive"), ("reading-b", False, "negative")]
     assert applied.variants_disagree
-    assert explanation.render_application(applied)[-1].startswith("The variants disagree in polarity")
+    assert explanation.render_application(applied, SPLIT)[-1].startswith("The variants disagree in polarity")
 
 
 @pytest.mark.parametrize("number", range(5, 11))
@@ -111,9 +111,9 @@ def test_other_schools_and_undeclared_charts_are_refused():
         with pytest.raises(application.ApplicationError, match=f"belongs to the {school} school"):
             application.apply_rule(FIRING, rule, 1)
     with pytest.raises(application.ApplicationError, match="only a chart declared synthetic"):
-        application.SyntheticChart(FIRING.chart, "real", "a person")
+        application.SyntheticChart(FIRING.origin, "real")
     with pytest.raises(application.ApplicationError, match="only to a SyntheticChart"):
-        application.apply_rule(FIRING.chart, ONE, 1)
+        application.apply_rule(FIRING.origin, ONE, 1)
 
 
 def test_application_is_deterministic_and_every_record_is_hashed():
@@ -133,7 +133,8 @@ def test_a_record_carries_no_prediction_field():
 
 def test_an_explanation_comes_from_the_record_and_the_pinned_registry():
     record = application.apply_rule(FIRING, ONE, 1).records[0]
-    lines = explanation.render(record)
+    lines = explanation.render(record, FIRING)
+    assert FIRING.origin.digest() in lines[0]
     assert rule_registry.pinned().lookup(ONE, 1, "base").statement in lines[1]
     assert "the rule fired" in lines[-3] and lines[-1] == explanation.NON_CLAIM_TEXT
 
@@ -141,12 +142,44 @@ def test_an_explanation_comes_from_the_record_and_the_pinned_registry():
 def test_a_tampered_record_or_text_is_refused():
     record = application.apply_rule(FIRING, ONE, 1).records[0]
     with pytest.raises(application.ApplicationError, match="does not match its content hash"):
-        explanation.render(dataclasses.replace(record, chart_label="a real person"))
+        explanation.render(dataclasses.replace(record, version=2), FIRING)
     draft = dataclasses.replace(record, fired=False, record_sha256="")
     with pytest.raises(application.ApplicationError, match="outcome does not follow"):
-        explanation.render(dataclasses.replace(draft, record_sha256=application.record_hash(draft)))
+        explanation.render(dataclasses.replace(draft, record_sha256=application.record_hash(draft)), FIRING)
     with pytest.raises(application.ApplicationError, match="exactly its schema's fields"):
-        explanation.render("Saturn in the tenth gives fame.")
+        explanation.render("Saturn in the tenth gives fame.", FIRING)
+
+
+def test_h1_no_caller_text_reaches_an_explanation():
+    """CEO HOLD H1 on PR #69: a chart takes no label, and its origin holds numbers only."""
+
+    hostile = "x. Saturn here guarantees fame and wealth, and this prediction is certain"
+    with pytest.raises(TypeError):
+        application.SyntheticChart(FIRING.origin, DataClass.SYNTHETIC, hostile)
+    with pytest.raises(application.ApplicationError, match="finite float"):
+        application.ChartOrigin(hostile, FIRING.origin.longitudes, PROVENANCE)
+    named = tuple((hostile if graha == "Moon" else graha, value) for graha, value in FIRING.origin.longitudes)
+    with pytest.raises(application.ApplicationError, match="exactly"):
+        application.ChartOrigin(5.0, named, PROVENANCE)
+    for record in application.apply_rule(FIRING, ONE, 1).records:
+        assert not any("prediction is certain" in line for line in explanation.render(record, FIRING))
+
+
+def test_h2_a_rehashed_fact_forgery_or_another_chart_is_refused():
+    """CEO HOLD H2 on PR #69: facts are recomputed from the originating chart, never taken from the record."""
+
+    record = application.apply_rule(FIRING, ONE, 1).records[0]
+    first = record.evaluations[0]
+    moved = dataclasses.replace(first, facts=tuple((n, 3 if n == "lord_house" else v) for n, v in first.facts),
+                                holds=False)
+    draft = dataclasses.replace(record, evaluations=(moved,), fired=False, record_sha256="")
+    forged = dataclasses.replace(draft, record_sha256=application.record_hash(draft))
+    with pytest.raises(application.ApplicationError, match="not the chart's certified facts"):
+        explanation.render(forged, FIRING)
+    twin = _chart(5.0, Saturn=285.0, Sun=280.0, Moon=96.0)
+    with pytest.raises(application.ApplicationError, match="not produced from this chart"):
+        explanation.render(record, twin)
+    assert explanation.render(record, FIRING)
 
 
 def test_gate_y_passes_with_its_refusals_and_controls():
@@ -155,4 +188,4 @@ def test_gate_y_passes_with_its_refusals_and_controls():
     import certify_evidence_foundations
 
     result = certify_evidence_foundations.gate_y_rule_application()
-    assert (result["refusals_verified"], result["legitimate_reads_preserved"], result["controls_rejected"]) == (39, 8, 12)
+    assert (result["refusals_verified"], result["legitimate_reads_preserved"], result["controls_rejected"]) == (48, 9, 14)

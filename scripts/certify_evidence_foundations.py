@@ -3604,13 +3604,17 @@ from engine.models.birth_data import BirthData  # noqa: E402
 INTERPRETATION_IMPORTS = frozenset({
     "__future__", "dataclasses", "hashlib", "json",
     "engine.evidence.entity", "engine.evidence.evidence_identifiers", "engine.evidence.rule_registry",
-    "engine.interpretation.application", "engine.interpretation.conditions", "engine.parashari.house_lord",
+    "engine.interpretation.application", "engine.interpretation.conditions", "engine.models.provenance",
+    "engine.parashari.house_lord",
 })
 INTERPRETATION_DIR = ROOT / "engine" / "interpretation"
 #: Gate Y's own table for the closed-form recomputation of every condition (ADR-0133 I2). Typed here, not imported.
 Y_SIGN_LORDS = ("Mars", "Venus", "Mercury", "Moon", "Sun", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Saturn",
                 "Jupiter")
 Y_GRAHAS = ("Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "Rahu", "Ketu")
+#: The CEO's H1 attack text (PR #69 HOLD): a claim no rule, fact or registry entry supports.
+Y_HOSTILE = "x. Saturn here guarantees fame and wealth, and this prediction is certain"
+Y_HOSTILE_CLAIM = "this prediction is certain"
 
 
 def interpretation_import_violations(source: str, allowed=INTERPRETATION_IMPORTS) -> list:
@@ -3636,13 +3640,13 @@ def _y_snapshot(provenance, ascendant: float, longitudes: dict):
                            sidereal_planets={graha: SimpleNamespace(longitude=longitudes[graha]) for graha in Y_GRAHAS})
 
 
-def _y_chart(provenance, label: str, ascendant: float, **placed) -> interpretation.SyntheticChart:
-    """A synthetic chart: every graha mid-sign in Gemini unless placed, through the certified house-lord function."""
+def _y_chart(provenance, ascendant: float, **placed) -> interpretation.SyntheticChart:
+    """A synthetic chart origin: every graha mid-sign in Gemini unless placed."""
 
     longitudes = {graha: 75.0 for graha in Y_GRAHAS}
     longitudes.update(placed)
-    snapshot = _y_snapshot(provenance, ascendant, longitudes)
-    return interpretation.SyntheticChart(house_lord.house_lords_from_snapshot(snapshot), DataClass.SYNTHETIC, label)
+    return interpretation.SyntheticChart(interpretation.ChartOrigin.from_snapshot(
+        _y_snapshot(provenance, ascendant, longitudes)), DataClass.SYNTHETIC)
 
 
 def _y_closed_form(kind: str, parameters: dict, ascendant: float, longitudes: dict) -> bool:
@@ -3668,31 +3672,44 @@ def _y_forged_rule(item, **content):
     return rule_registry.rule_from_record(record)
 
 
+def _y_carries(lines, text: str) -> bool:
+    return any(text in line for line in lines)
+
+
 def gate_y_rule_application():
     """WP-I1: synthetic Parashari rules applied to synthetic charts from certified house-lord facts, every variant kept,
-    each record verified before it renders, and every genuine rule refused. Each refusing check, weakened, admits what
-    it refuses (ADR-0133 I2 to I9; ADR-0132 s4)."""
+    each record verified against the chart it came from before it renders, no caller text in any explanation, and every
+    genuine rule refused. Each refusing check, weakened, admits what it refuses, or hands the refusal to the one later
+    check that also covers it (ADR-0133 I2 to I9; ADR-0132 s4; CEO HOLD H1 and H2 on PR #69)."""
 
     refused, controls, preserved = {}, {}, {}
     Refusal = (interpretation.ApplicationError, interpretation_conditions.ConditionError)
 
-    def refuses(label, action, reason):
+    def refuses(label, action, reason, kinds=Refusal):
         try:
             action()
-        except Refusal as exc:
+        except kinds as exc:
             if reason not in str(exc):
                 fail(f"Gate Y: {label} was refused for another reason: {exc}")
             refused[label] = True
             return
         fail(f"Gate Y: not refused: {label}")
 
-    def weakened(label, owner, name, replacement, action):
+    def weakened(label, owner, name, replacement, action, handed_to=None):
+        """Weaken one check. The violation it refuses is then admitted, or, with `handed_to`, refused only by that
+        later check, so the weakened check is shown to be the one that refuses first."""
+
         original = getattr(owner, name)
         setattr(owner, name, replacement)
         try:
             outcome = action()
         except Refusal as exc:
-            fail(f"Gate Y control {label!r} still refused, so the weakened check is not the one that refuses: {exc}")
+            if handed_to is None or handed_to not in str(exc):
+                fail(f"Gate Y control {label!r}: still refused, by another check than expected: {exc}")
+            outcome = True
+        else:
+            if handed_to is not None:
+                fail(f"Gate Y control {label!r}: expected the later check {handed_to!r} to refuse, but nothing did")
         finally:
             setattr(owner, name, original)
         if not outcome:
@@ -3700,19 +3717,20 @@ def gate_y_rule_application():
         controls[label] = True
 
     registry = rule_registry.pinned()
-    provenance = calculate(BirthData(1983, 6, 8, 11, 30, 0.0, 13.0827, 80.2707, "UTC"),
-                           profile=PARASHARI_LAHIRI).snapshot.provenance
-    real = interpretation.SyntheticChart(house_lord.house_lords(BirthData(1983, 6, 8, 11, 30, 0.0, 13.0827, 80.2707,
-                                                                          "UTC")), DataClass.SYNTHETIC,
-                                         "synthetic birth details, Chennai 1983")
+    kernel = calculate(BirthData(1983, 6, 8, 11, 30, 0.0, 13.0827, 80.2707, "UTC"), profile=PARASHARI_LAHIRI).snapshot
+    provenance = kernel.provenance
+    real = interpretation.SyntheticChart(interpretation.ChartOrigin.from_snapshot(kernel), DataClass.SYNTHETIC)
     # Aries rising: Saturn, lord of the 10th (Capricorn), in Capricorn; the Sun in Capricorn; the Moon in Cancer.
-    firing = _y_chart(provenance, "tenth lord in the tenth", 5.0, Saturn=285.0, Sun=280.0, Moon=95.0)
+    firing = _y_chart(provenance, 5.0, Saturn=285.0, Sun=280.0, Moon=95.0)
+    # The same facts for every rule here, from a different origin: the Moon one degree further on in Cancer.
+    twin = _y_chart(provenance, 5.0, Saturn=285.0, Sun=280.0, Moon=96.0)
     # The same, but the Sun in Aries: RUL-1 version 2's activation condition fails.
-    partial = _y_chart(provenance, "activation condition unmet", 5.0, Saturn=285.0, Sun=10.0, Moon=95.0)
+    partial = _y_chart(provenance, 5.0, Saturn=285.0, Sun=10.0, Moon=95.0)
     # Taurus rising, the Moon in Leo: the 4th house, but not Cancer, so only RUL-3 reading A fires.
-    split = _y_chart(provenance, "readings split", 35.0, Moon=135.0)
-    quiet = _y_chart(provenance, "nothing fires", 5.0, Saturn=10.0, Sun=130.0, Moon=65.0)
+    split = _y_chart(provenance, 35.0, Moon=135.0)
+    quiet = _y_chart(provenance, 5.0, Saturn=10.0, Sun=130.0, Moon=65.0)
     one, three, kp_rule, nadi_rule = (RuleId.from_number(number) for number in (1, 2 + 1, 2, 4))
+    render, render_application = interpretation_explanation.render, interpretation_explanation.render_application
 
     def fired(chart, rule, version):
         return tuple(record.fired for record in interpretation.apply_rule(chart, rule, version).records)
@@ -3728,30 +3746,42 @@ def gate_y_rule_application():
     if tuple((record.variant, record.fired, record.declared_polarity) for record in applied.records) != (
             ("reading-a", True, "positive"), ("reading-b", False, "negative")) or not applied.variants_disagree:
         fail("Gate Y: RUL-3's variants are not each applied and kept")
-    lines = interpretation_explanation.render_application(applied)
     if "The variants disagree in polarity: reading-a (positive), reading-b (negative). All are kept, and none is " \
-       "preferred." not in lines:
+       "preferred." not in render_application(applied, split):
         fail("Gate Y: the variants' disagreement is not stated")
     preserved["every variant is applied and kept, and their disagreement is stated"] = True
     record = interpretation.apply_rule(firing, one, 1).records[0]
     published = registry.lookup(one, 1, "base")
-    rendered = interpretation_explanation.render(record)
-    if not (published.statement in rendered[1] and published.citation.locator in rendered[2] and
-            "lord Saturn, lord_house 10; it holds." in rendered[3] and "the rule fired" in rendered[4] and
-            rendered[-1] == interpretation_explanation.NON_CLAIM_TEXT):
-        fail("Gate Y: an explanation sentence does not come from the record and the pinned registry")
-    if list(inspect.signature(interpretation_explanation.render).parameters) != ["record"] or \
-            list(inspect.signature(interpretation_explanation.render_application).parameters) != ["application"]:
-        fail("Gate Y: the renderer accepts something other than a record")
-    preserved["an explanation is rendered from the record and the pinned registry alone"] = True
+    rendered = render(record, firing)
+    if not (firing.origin.digest() in rendered[0] and published.statement in rendered[1] and
+            published.citation.locator in rendered[2] and "lord Saturn, lord_house 10; it holds." in rendered[3] and
+            "the rule fired" in rendered[4] and rendered[-1] == interpretation_explanation.NON_CLAIM_TEXT):
+        fail("Gate Y: an explanation sentence does not come from the record, the chart and the pinned registry")
+    if list(inspect.signature(render).parameters) != ["record", "chart"] or \
+            list(inspect.signature(render_application).parameters) != ["application", "chart"]:
+        fail("Gate Y: the renderer accepts something other than a record and its chart")
+    preserved["an explanation is rendered from the verified record, its chart and the pinned registry alone"] = True
+    # H1: no text reaches a chart, and so none reaches an explanation.
+    if tuple(field.name for field in dataclasses.fields(interpretation.SyntheticChart)) != ("origin", "data_class") or \
+            tuple(field.name for field in dataclasses.fields(interpretation.ChartOrigin)) != (
+                "ascendant", "longitudes", "provenance"):
+        fail("Gate Y: a synthetic chart carries a field that could hold text")
+    hostile_provenance = interpretation.SyntheticChart(interpretation.ChartOrigin.from_snapshot(_y_snapshot(
+        dataclasses.replace(provenance, time_basis=Y_HOSTILE), 5.0,
+        {**{graha: 75.0 for graha in Y_GRAHAS}, "Saturn": 285.0})), DataClass.SYNTHETIC)
+    hostile_lines = render_application(interpretation.apply_rule(hostile_provenance, one, 1), hostile_provenance)
+    if _y_carries(hostile_lines, Y_HOSTILE_CLAIM):
+        fail("Gate Y: text in a provenance field reached an explanation")
+    preserved["a synthetic chart carries no text field, and text in a provenance field never reaches an explanation"] = True
     for chart in (real, firing, partial, split, quiet):
         for rule, version in ((one, 1), (one, 2), (three, 1)):
             first, second = (interpretation.apply_rule(chart, rule, version) for _ in range(2))
             if [interpretation.canonical(item) for item in first.records] != [
                     interpretation.canonical(item) for item in second.records] or \
-                    interpretation_explanation.render_application(first) != \
-                    interpretation_explanation.render_application(second):
+                    render_application(first, chart) != render_application(second, chart):
                 fail("Gate Y: repeated application is not byte-identical")
+            if _y_carries(render_application(first, chart), Y_HOSTILE_CLAIM):
+                fail("Gate Y: an explanation carries the hostile claim")
     preserved["repeated application gives byte-identical records and explanations"] = True
     if tuple(field.name for field in dataclasses.fields(interpretation.ApplicationRecord)) != \
             interpretation.RECORD_FIELDS or set(interpretation.RECORD_FIELDS) & set(interpretation.FORBIDDEN_FIELDS):
@@ -3791,8 +3821,8 @@ def gate_y_rule_application():
         carrying = rule_registry.RuleRegistry(tuple(item for item in sourced.rules()
                                                     if (item.rule, item.version) == (rule, version)),
                                               rule_registry.PINNED_SNAPSHOT_SHA256)
-        refuses(f"genuine rule {rule.number} version {version} from a registry carrying it", lambda: interpretation.apply_published(
-            firing, carrying, rule, version), "is a genuine rule")
+        refuses(f"genuine rule {rule.number} version {version} from a registry carrying it",
+                lambda: interpretation.apply_published(firing, carrying, rule, version), "is a genuine rule")
     refuses("a KP rule", lambda: interpretation.apply_rule(firing, kp_rule, 1), "belongs to the kp school")
     refuses("a Nakshatra Nadi rule", lambda: interpretation.apply_rule(firing, nadi_rule, 1),
             "belongs to the nakshatra_nadi school")
@@ -3810,31 +3840,46 @@ def gate_y_rule_application():
     tampered_registry = rule_registry.RuleRegistry((tampered_rule,), rule_registry.PINNED_SNAPSHOT_SHA256)
     refuses("a rule whose content does not match its hash", lambda: interpretation.apply_published(
         firing, tampered_registry, one, 1), "does not match its content hash")
-    # ---- refusals: charts and conditions
-    refuses("a chart not declared synthetic", lambda: interpretation.SyntheticChart(
-        firing.chart, "synthetic", "a label"), "only a chart declared synthetic")
-    refuses("a chart that is not a certified house-lord chart", lambda: interpretation.SyntheticChart(
-        SimpleNamespace(**{name: getattr(firing.chart, name) for name in ("ascendant_sign", "placements", "lordships",
-                                                                           "provenance")}),
-        DataClass.SYNTHETIC, "a label"), "certified PARASHARI_HOUSE_LORD_V1 chart")
-    refuses("a bare chart, not a SyntheticChart", lambda: interpretation.apply_rule(firing.chart, one, 1),
+    # ---- refusals: charts and conditions (H1: no text channel)
+    refuses("a chart not declared synthetic", lambda: interpretation.SyntheticChart(firing.origin, "synthetic"),
+            "only a chart declared synthetic")
+    refuses("a hostile label passed to a synthetic chart", lambda: interpretation.SyntheticChart(
+        firing.origin, DataClass.SYNTHETIC, Y_HOSTILE), "positional argument", (TypeError,))
+    refuses("a hostile label passed by name", lambda: interpretation.SyntheticChart(
+        origin=firing.origin, data_class=DataClass.SYNTHETIC, label=Y_HOSTILE), "label", (TypeError,))
+    named = tuple((Y_HOSTILE if graha == "Saturn" else graha, value) for graha, value in firing.origin.longitudes)
+    refuses("hostile text in place of a graha name", lambda: interpretation.ChartOrigin(5.0, named, provenance),
+            "exactly")
+    worded = tuple((graha, Y_HOSTILE if graha == "Saturn" else value) for graha, value in firing.origin.longitudes)
+    refuses("hostile text in place of a longitude", lambda: interpretation.ChartOrigin(5.0, worded, provenance),
+            "finite float")
+    refuses("hostile text in place of the Lagna", lambda: interpretation.ChartOrigin(
+        Y_HOSTILE, firing.origin.longitudes, provenance), "finite float")
+    refuses("a provenance that is not Provenance", lambda: interpretation.ChartOrigin(
+        5.0, firing.origin.longitudes, {"profile_name": "parashari_lahiri"}), "calculation Provenance")
+    refuses("a house-lord chart in place of a chart origin", lambda: interpretation.SyntheticChart(
+        firing.chart(), DataClass.SYNTHETIC), "is a ChartOrigin")
+    refuses("a bare chart, not a SyntheticChart", lambda: interpretation.apply_rule(firing.origin, one, 1),
             "only to a SyntheticChart")
     other_profile = interpretation.SyntheticChart(dataclasses.replace(
-        firing.chart, provenance=dataclasses.replace(provenance, profile_name="kp_krishnamurti")),
-        DataClass.SYNTHETIC, "another profile")
-    refuses("a chart computed under another profile", lambda: interpretation.apply_rule(other_profile, one, 1),
-            "not computed under parashari_lahiri")
+        firing.origin, provenance=dataclasses.replace(provenance, profile_name="kp_krishnamurti")), DataClass.SYNTHETIC)
+    refuses("a chart origin under another profile", lambda: interpretation.apply_rule(other_profile, one, 1),
+            "requires the parashari_lahiri profile")
+    refuses("a house-lord chart under another profile evaluated directly", lambda: interpretation_conditions.evaluate(
+        published.condition, dataclasses.replace(firing.chart(), provenance=other_profile.origin.provenance)),
+        "not computed under parashari_lahiri")
     refuses("an undeclared condition kind evaluated directly", lambda: interpretation_conditions.evaluate(
-        kp_kind.condition, firing.chart), "is not evaluated here")
+        kp_kind.condition, firing.chart()), "is not evaluated here")
     refuses("a condition that is not a registry Condition", lambda: interpretation_conditions.evaluate(
-        {"kind": "planet_in_house"}, firing.chart), "only a registry Condition")
-    # ---- refusals: records and applications, each caught by exactly one check
+        {"kind": "planet_in_house"}, firing.chart()), "only a registry Condition")
+    # ---- refusals: records and applications (H2: facts bound to the originating chart)
     v2 = interpretation.apply_rule(firing, one, 2).records[0]
-    relabelled = dataclasses.replace(record, chart_label="a real person")
-    flipped = _y_rehashed(record, fired=False)
     first = record.evaluations[0]
-    moved = _y_rehashed(record, evaluations=(dataclasses.replace(first, facts=tuple(
-        (name, 3 if name == "lord_house" else value) for name, value in first.facts)),))
+    moved_facts = (dataclasses.replace(first, facts=tuple(
+        (name, 3 if name == "lord_house" else value) for name, value in first.facts), holds=False),)
+    forged = _y_rehashed(record, evaluations=moved_facts, fired=False)
+    unhashed = dataclasses.replace(record, version=2)
+    flipped = _y_rehashed(record, fired=False)
     repolarised = _y_rehashed(record, declared_polarity="negative")
     other_input = _y_rehashed(record, input_content_sha256="0" * 64)
     genuine_named = _y_rehashed(record, rule=genuine[0][0].value)
@@ -3842,32 +3887,34 @@ def gate_y_rule_application():
     Timed = dataclasses.make_dataclass("Timed", [("timing", str)], bases=(interpretation.ApplicationRecord,),
                                        frozen=True)
     timed = Timed(**{name: getattr(record, name) for name in interpretation.RECORD_FIELDS}, timing="2010-01-01")
-    render = interpretation_explanation.render
-    refuses("a record changed after it was hashed", lambda: render(relabelled), "does not match its content hash")
-    refuses("a record whose outcome does not follow", lambda: render(flipped), "outcome does not follow")
-    refuses("a record whose answer does not follow from its facts", lambda: render(moved),
-            "answer does not follow from the facts")
-    refuses("a record that does not match its published rule", lambda: render(repolarised),
+    refuses("a forged record whose rehashed facts and outcome contradict its chart", lambda: render(forged, firing),
+            "not the chart's certified facts")
+    refuses("a record verified against another chart with the same facts", lambda: render(record, twin),
+            "not produced from this chart")
+    refuses("a record verified against no chart", lambda: render(record, firing.origin), "only against the SyntheticChart")
+    refuses("a record changed after it was hashed", lambda: render(unhashed, firing), "does not match its content hash")
+    refuses("a record whose outcome does not follow", lambda: render(flipped, firing), "outcome does not follow")
+    refuses("a record that does not match its published rule", lambda: render(repolarised, firing),
             "does not match the published rule")
-    refuses("a record from another certified input content", lambda: render(other_input),
+    refuses("a record from another certified input content", lambda: render(other_input, firing),
             "another PARASHARI_HOUSE_LORD_V1 content")
-    refuses("a record naming a genuine rule", lambda: render(genuine_named), "does not publish")
-    refuses("a record missing an activation evaluation", lambda: render(dropped), "exactly the rule's conditions")
-    refuses("a record with an added timing field", lambda: render(timed), "exactly its schema's fields")
-    refuses("text in place of a record", lambda: render("The tenth lord in the tenth gives fame."),
+    refuses("a record naming a genuine rule", lambda: render(genuine_named, firing), "does not publish")
+    refuses("a record missing an activation evaluation", lambda: render(dropped, firing),
+            "not the chart's certified facts")
+    refuses("a record with an added timing field", lambda: render(timed, firing), "exactly its schema's fields")
+    refuses("text in place of a record", lambda: render("The tenth lord in the tenth gives fame.", firing),
             "exactly its schema's fields")
-    refuses("a dictionary in place of a record", lambda: render({"rule": record.rule}), "exactly its schema's fields")
+    refuses("a dictionary in place of a record", lambda: render({"rule": record.rule}, firing),
+            "exactly its schema's fields")
     one_variant = dataclasses.replace(applied, records=applied.records[:1], variants_disagree=False)
-    refuses("an application missing a variant", lambda: interpretation_explanation.render_application(one_variant),
-            "every published variant")
+    refuses("an application missing a variant", lambda: render_application(one_variant, split), "every published variant")
     unflagged = dataclasses.replace(applied, variants_disagree=False)
-    refuses("an application hiding its variants' disagreement", lambda: interpretation_explanation.render_application(
-        unflagged), "disagreement flag")
-    mixed = dataclasses.replace(applied, records=(applied.records[0], record))
-    refuses("an application mixing rule versions", lambda: interpretation_explanation.render_application(mixed),
-            "one rule version")
+    refuses("an application hiding its variants' disagreement", lambda: render_application(unflagged, split),
+            "disagreement flag")
+    mixed = dataclasses.replace(applied, records=(applied.records[0], interpretation.apply_rule(split, one, 1).records[0]))
+    refuses("an application mixing rule versions", lambda: render_application(mixed, split), "one rule version")
 
-    # ---- controls: each refusing check, weakened alone, admits what it refused
+    # ---- controls: each refusing check, weakened alone
     item_genuine = carrying.rules()[0]
     weakened("a genuine rule is applied without require_synthetic", interpretation, "require_synthetic",
              lambda item: None, lambda: interpretation.apply_published(firing, carrying, item_genuine.rule,
@@ -3886,20 +3933,43 @@ def gate_y_rule_application():
              lambda item: None, lambda: interpretation.apply_published(firing, tampered_registry, one, 1).records)
     weakened("a chart not declared synthetic is accepted without the data-class check", interpretation.SyntheticChart,
              "__post_init__", lambda self: None,
-             lambda: interpretation.apply_rule(interpretation.SyntheticChart(firing.chart, "real", "a person"), one,
-                                               1).records)
-    weakened("a changed record renders without check_hash", interpretation, "check_hash", lambda item: None,
-             lambda: "a real person" in render(relabelled)[0])
-    weakened("an unsupported outcome renders without check_evaluations", interpretation, "check_evaluations",
-             lambda item, rule: None, lambda: "the rule did not fire" in render(flipped)[4])
+             lambda: interpretation.apply_rule(interpretation.SyntheticChart(firing.origin, "real"), one, 1).records)
+
+    def self_consistent(record, item, chart):
+        """The pre-remediation check: answers recomputed from the record's own facts, never from the chart."""
+
+        for evaluation in record.evaluations:
+            if evaluation.holds is not interpretation_conditions.answer(evaluation.kind, dict(evaluation.parameters),
+                                                                        dict(evaluation.facts)):
+                raise interpretation.ApplicationError("answer does not follow")
+        if record.fired is not all(evaluation.holds for evaluation in record.evaluations):
+            raise interpretation.ApplicationError("outcome does not follow")
+
+    weakened("H2: the rehashed forgery renders when facts are checked only against themselves", interpretation,
+             "check_evaluations", self_consistent, lambda: "lord_house 3; it does not hold." in render(forged, firing)[3])
+    weakened("a record renders against another chart without check_origin", interpretation, "check_origin",
+             lambda record, chart: None, lambda: bool(render(record, twin)))
+    weakened("a changed record is refused only by the later published-rule check without check_hash", interpretation,
+             "check_hash", lambda record: None, lambda: render(unhashed, firing), handed_to="does not match the published rule")
     weakened("a changed polarity renders without the published-rule match", interpretation, "check_published",
-             lambda item: registry.lookup(one, 1, "base"), lambda: "polarity is negative" in render(repolarised)[4])
+             lambda item: registry.lookup(one, 1, "base"), lambda: "polarity is negative" in render(repolarised,
+                                                                                                   firing)[4])
     weakened("another input content renders without check_identity", interpretation, "check_identity",
-             lambda item: None, lambda: bool(render(other_input)))
+             lambda item: None, lambda: bool(render(other_input, firing)))
     weakened("an added timing field renders without check_shape", interpretation, "check_shape", lambda item: None,
-             lambda: bool(render(timed)))
+             lambda: bool(render(timed, firing)))
     weakened("a missing variant renders without check_coverage", interpretation, "check_coverage", lambda item: None,
-             lambda: bool(interpretation_explanation.render_application(one_variant)))
+             lambda: bool(render_application(one_variant, split)))
+
+    def labelled(record, label):
+        """The pre-remediation sentence, which interpolated a caller's label."""
+
+        return (f"{record.rule} version {record.version}, variant {record.variant} ({record.key}), {record.school} "
+                f"school, applied to the synthetic chart {label}.",)
+
+    if not _y_carries(labelled(record, Y_HOSTILE), Y_HOSTILE_CLAIM):
+        fail("Gate Y control: the hostile-claim detector cannot see an interpolated label")
+    controls["H1: a renderer interpolating a caller label carries the hostile claim, and the detector sees it"] = True
     planted = "import engine.evidence.ledger\nfrom engine.kp import chain\n"
     if interpretation_import_violations(planted) != ["engine.evidence.ledger", "engine.kp"]:
         fail("Gate Y: the import allowlist does not refuse a planted ledger or KP import")
