@@ -13295,9 +13295,15 @@ issuance or confidence claims, or turn the recorded nonblocking findings into St
 ## ADR-0133 - INTERPRETATION entry and work package WP-I1 (certified house-lord placement, closed condition evaluation, synthetic rule application, deterministic explanation), with its acceptance criteria fixed before coding (PROPOSED)
 
 - **Date:** 2026-11-26
-- **Status:** **PROPOSED. Not ratified.** It records a direction the CEO relayed, and proposes decisions D1 to D6 and WP-I1's acceptance
-  criteria. INTERPRETATION is not entered until the owner ratifies this entry. The sourced-rule exception in D2 is not active in code:
-  activating it needs this entry's ratification and a separate reviewed change. S2-3 remains UNMET.
+- **Status:** **ACCEPTED, on the owner's ratification quoted in s7** (2026-11-26), after the independent CEO PASS on PR #69 at
+  `3e60d0b19b24643eb3f41f785a36820d4f3e6ed2`. INTERPRETATION is entered, with the synthetic-only WP-I1 scope. D1, D3, D4 and D5 are
+  accepted within their stated restrictions. **D2 is approved only as a future, conditional synthetic-testing exception: it stays
+  inactive, and activation needs its separately reviewed implementation.** D6: the H4 timing contract is preserved, untimed natal
+  application records stay separate from evidence items, and resolving untimed evidence is deferred to a future authorized work
+  package; no timing may be fabricated. **S2-3 remains UNMET.** Before ratification this entry read: "PROPOSED. Not ratified. It
+  records a direction the CEO relayed, and proposes decisions D1 to D6 and WP-I1's acceptance criteria. INTERPRETATION is not entered
+  until the owner ratifies this entry. The sourced-rule exception in D2 is not active in code: activating it needs this entry's
+  ratification and a separate reviewed change. S2-3 remains UNMET."
 - **Context:**
   - `docs/Q8_CLOSURE_MATRIX.md` s7 (ACCEPTED, `ADR-0048`) makes INTERPRETATION depend on EVIDENCE exit (`ADR-0129`) and a rule registry
     populated with at least one school's source-cited rules (`ADR-0132`: RUL 5 to 10, citation-only). Its entry criteria are H5 ratified
@@ -13424,6 +13430,36 @@ No merge, no owner ratification inferred, no unrelated changes. Return the focus
 - **H1.** A synthetic chart carries no text: it is a chart origin (the Lagna and nine graha sidereal longitudes, as floats, and the calculation provenance), declared synthetic, and is identified in every explanation by the origin's deterministic digest. No provenance field is rendered.
 - **H2.** A record is verified only against the chart it came from: it must carry that chart's origin digest and provenance, and its evaluations must equal the ones PARASHARI_HOUSE_LORD_V1 gives when recomputed from that origin. A record's own facts are never trusted.
 - **I5 and I9, as measured.** Rendering now takes the record and its chart, and nothing else. Neither criterion's wording in s4 changes.
+
+### 7. The owner's ratification (exact text)
+
+The CEO's re-audit of PR #69 issued PASS at `3e60d0b19b24643eb3f41f785a36820d4f3e6ed2` (CI run `45800510060`, all four jobs
+passed). The owner then directed, exactly:
+
+```text
+ACE — Owner Ratification and Conditional Merge Authorization
+
+I ratify ADR-0133 for INTERPRETATION entry and the completed synthetic-only WP-I1 scope, following the CEO PASS at `3e60d0b19b24643eb3f41f785a36820d4f3e6ed2`.
+
+I accept D1, D3, D4 and D5 within their stated restrictions.
+
+D2 is approved only as a future, conditional synthetic-testing exception. It remains inactive and does not authorize genuine-rule activation in this PR. Activation requires its separately reviewed implementation.
+
+For D6, preserve the existing H4 timing contract. Untimed natal application records remain separate from evidence items. Resolution of untimed evidence is deferred to a future authorized work package; no timing may be fabricated.
+
+S2-3 remains UNMET. No real-person interpretation, prediction, confidence, production evidence or human-verification claim is authorized.
+
+Claude is authorized to record this ratification accurately in ADR-0133, without changing the approved implementation.
+
+I conditionally authorize a normal merge of PR #69 once the ratification-only change is committed, the approved implementation remains unchanged, and required CI passes.
+
+No force-push. After merging, verify the exact main SHA and post-merge CI. Update canonical records only through the separately authorized governance workflow.
+
+Do not reopen WP-I1 or begin the next implementation milestone without its fixed authorization and exit criteria.
+```
+
+The ratification covers sections 1 to 6 as recorded. It does not activate D2, satisfy S2-3, or authorize real-person interpretation,
+prediction, confidence, production evidence, a human-verification claim, or the next implementation milestone.
 
 - **Decision:** proposed, as s2 to s4.
 - **Consequences:** on ratification, INTERPRETATION is entered with WP-I1 as its first work package. D2's activation and D6 remain for
