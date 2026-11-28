@@ -589,7 +589,10 @@ ARTIFACT_DECLARATIONS = {
                  _fn("engine.evidence.evidence_store.EvidenceStore._require_untimed", "Z_untimed_natal_evidence"),
                  _fn("engine.evidence.evidence_store.EvidenceStore._candidate", "Z_untimed_natal_evidence"),
                  _fn("engine.evidence.provenance_graph.untimed_node", "Z_untimed_natal_evidence"),
-                 _fn("engine.evidence.provenance_graph.untimed_timing", "Z_untimed_natal_evidence")),
+                 _fn("engine.evidence.provenance_graph.untimed_timing", "Z_untimed_natal_evidence"),
+                 _fn("engine.evidence.evidence.require_projection_timing", "Z_untimed_natal_evidence"),
+                 _fn("engine.evidence.evidence_store.require_governed_verifier", "Z_untimed_natal_evidence"),
+                 _fn("engine.projection.natal.require_expected", "Z_untimed_natal_evidence")),
         ],
         "empty_exercises": {
             "F_negative_controls": "runs the other gates' comparators against planted wrong functions, so no "
