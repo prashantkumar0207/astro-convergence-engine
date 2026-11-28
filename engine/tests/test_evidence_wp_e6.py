@@ -100,7 +100,9 @@ def test_ac1_no_api_adds_a_node_or_edge_after_persist():
 # ------------------------------------------------------------------ AC2 node kinds and identity
 
 def test_ac2_six_kinds_each_declare_identity_fields_and_keys_are_content_hashes():
-    assert set(NodeKind) == set(graph.IDENTITY_FIELDS) and len(NodeKind) == 6
+    # The six kinds of the dated recording schema (ADR-0122 D1), and UNTIMED, added by ADR-0134 for untimed natal items.
+    assert set(NodeKind) == set(graph.IDENTITY_FIELDS) and {kind.value for kind in NodeKind} == {
+        "input", "astronomical", "derived_chart", "timing", "rule", "evidence", "untimed"}
     node = graph.make_node(NodeKind.RULE, rule="RUL-000001", version=1, variant="base", content_hash="a" * 64,
                            knowledge_snapshot_hash="b" * 64)
     assert node.key == hashlib.sha256(graph.canonical({"kind": "rule", "identity": node.fields()}).encode()).hexdigest()

@@ -4121,6 +4121,12 @@ def gate_z_untimed_natal_evidence():
                 "house_lord_in_house (house 10, lord_of 10): house_sign 10, lord Saturn, lord_house 10"] or                 base_item.chart_context != ChartContext(varga="D1", planets=("Saturn",), houses=(10,), signs=(10,),
                                                          significators=()):
             fail(f"Gate Z: RUL-1 version 1's projected facts or context are not as independently stated: {base_item}")
+        activated = store.load(ids[(1, 2, "base")])
+        if [entry.fact for entry in activated.lineage.inputs] != [
+                "house_lord_in_house (house 10, lord_of 10): house_sign 10, lord Saturn, lord_house 10",
+                "planet_in_sign (planet Sun, sign 10): planet_sign 10"] or activated.chart_context != ChartContext(
+                varga="D1", planets=("Saturn", "Sun"), houses=(10,), signs=(10,), significators=()):
+            fail(f"Gate Z: RUL-1 version 2's projected facts or context are not as independently stated: {activated}")
         preserved["a projected item's facts and chart context match their independent statement"] = True
         store.close()
         store = natal.natal_store(path)
@@ -4245,6 +4251,10 @@ def gate_z_untimed_natal_evidence():
                 "carries only its model fields")
         refuses("a v4 timing with an unknown basis", lambda: evidence_store_module.item_from_record(unknown),
                 "is not a valid UntimedBasis")
+        wrong_kind = json.loads(json.dumps(untimed_record))
+        wrong_kind["evidence"]["timing"]["kind"] = "window"
+        refuses("a v4 timing whose kind is a dated kind", lambda: evidence_store_module.item_from_record(wrong_kind),
+                "a v4 record's timing is 'untimed_natal'")
 
         # ---- refusals: graph tampering (U7)
         built = expected_graph(store, base)

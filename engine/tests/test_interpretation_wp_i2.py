@@ -84,6 +84,10 @@ def test_untimed_records_are_v4_and_dated_records_stay_v3(world):
         item_from_record({**record, "schema": SCHEMA_VERSION})
     with pytest.raises(StoreError):
         item_from_record({**dated_record, "schema": UNTIMED_SCHEMA_VERSION})
+    wrong_kind = json.loads(json.dumps(record))
+    wrong_kind["evidence"]["timing"]["kind"] = "window"
+    with pytest.raises(StoreError, match="untimed_natal"):
+        item_from_record(wrong_kind)
 
 
 def test_a_plain_store_refuses_untimed_items_on_write_and_read(world):
@@ -158,4 +162,4 @@ def test_gate_z_passes_with_its_refusals_and_controls():
     import certify_evidence_foundations
 
     result = certify_evidence_foundations.gate_z_untimed_natal_evidence()
-    assert (result["refusals_verified"], result["legitimate_reads_preserved"], result["controls_rejected"]) == (33, 9, 10)
+    assert (result["refusals_verified"], result["legitimate_reads_preserved"], result["controls_rejected"]) == (34, 9, 10)
