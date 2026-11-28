@@ -11,10 +11,10 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 
 ## Run metadata
 
-- source_revision: d39e1274df7ce71d7d2f9395660e5b44834f7a42
+- source_revision: 6a43e65a9c090c92eadc813e1511ad7e1c7e8b77
 - working_tree_dirty: False
 - engine_version: 0.3.0
-- executed_utc: 2026-11-28T09:48:15Z
+- executed_utc: 2026-11-28T10:46:49Z
 - python: 3.11.17
 - holdout_cases: H1_london_1823, H2_newyork_1900, H3_sydney_1946, H4_delhi_1979, H5_reykjavik_1992, H6_quito_2010, H7_tokyo_2033, H8_mumbai_2077, H9_paris_2350, H10_boundary_moon_a, H11_boundary_moon_b
 - reference_binary: swetest 2.10.03 (bundled, version-verified at runtime)

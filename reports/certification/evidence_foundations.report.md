@@ -40,7 +40,7 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 - **W_explanation_boundary**: classification=negative_control, refusals_verified=31, legitimate_reads_preserved=2, controls_rejected=7
 - **X_provisional_sourced_publication**: classification=negative_control, refusals_verified=41, legitimate_reads_preserved=2, controls_rejected=11
 - **Y_rule_application**: classification=negative_control, refusals_verified=48, legitimate_reads_preserved=9, controls_rejected=14
-- **Z_untimed_natal_evidence**: classification=negative_control, refusals_verified=34, legitimate_reads_preserved=9, controls_rejected=10
+- **Z_untimed_natal_evidence**: classification=negative_control, refusals_verified=40, legitimate_reads_preserved=9, controls_rejected=12
 
 ## Capabilities (ADR-0101 s2)
 
@@ -53,7 +53,7 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 - **evidence.explanation_boundary**: 4 members; GATED
 - **evidence.provenance_graph**: 20 members; GATED
 - **interpretation.rule_application**: 26 members; GATED
-- **evidence.untimed_natal**: 18 members; GATED
+- **evidence.untimed_natal**: 21 members; GATED
 
 ## Scope not gated (ADR-0099 s4)
 

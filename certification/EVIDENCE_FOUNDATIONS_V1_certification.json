@@ -1217,10 +1217,12 @@
   },
   "Z_untimed_natal_evidence": {
    "classification": "negative_control",
-   "refusals_verified": 34,
+   "refusals_verified": 40,
    "legitimate_reads_preserved": 9,
-   "controls_rejected": 10,
+   "controls_rejected": 12,
    "refused": [
+    "a dated item claiming only the projection's record schema",
+    "a dated row under projection provenance written past persist",
     "a forged chart context",
     "a forged completeness statement",
     "a forged declared strength",
@@ -1230,13 +1232,17 @@
     "a genuine rule's expected item",
     "a graph with an untimed and a timing node",
     "a graph with neither node",
+    "a permissive verifier assigned onto a governed store after construction",
     "a persisted relationship claiming that independence",
     "a plain store listing a store holding untimed items",
     "a plain store persisting an untimed item",
     "a plain store reading an untimed item",
+    "a projected item converted to a dated window under its projection provenance",
     "a record made on a substituted chart",
     "a record that did not fire",
     "a record verified against another chart",
+    "a store constructed with a permissive verifier",
+    "a store constructed with a wrapper of the governed verifier",
     "a timing node planted on an untimed item's stored graph",
     "a v3 record carrying untimed timing",
     "a v4 record carrying dated timing",
@@ -1268,10 +1274,12 @@
     "the entity chart's recorded birth input maps exactly to the kernel's input"
    ],
    "controls": [
-    "a forged fact is persisted by a store whose verifier accepts anything",
+    "a forged fact is persisted when the governed verifier's field comparison is skipped",
+    "a forged row is served on a checked read through a store with a permissive verifier without the governed binding",
+    "a forged write is admitted through a store with a permissive verifier without the governed binding",
     "a graph with both nodes reproduces without the exactly-one check",
     "a plain store persists an untimed item without the verifier requirement",
-    "a projection fabricating a lifetime window is detected as not untimed v4",
+    "a projected item converted to a lifetime window is stored under projection provenance without require_projection_timing",
     "a record that did not fire is refused only by expected_item without require_fired",
     "a rule outside the natal placements is persisted without the kind check",
     "a substituted chart's record is projected without require_entity_chart",
@@ -2831,6 +2839,30 @@
     },
     {
      "callable": "engine.evidence.provenance_graph.untimed_timing",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Z_untimed_natal_evidence"
+     ]
+    },
+    {
+     "callable": "engine.evidence.evidence.require_projection_timing",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Z_untimed_natal_evidence"
+     ]
+    },
+    {
+     "callable": "engine.evidence.evidence_store.require_governed_verifier",
+     "kind": "callable",
+     "disposition": "GATED",
+     "exercised_by": [
+      "Z_untimed_natal_evidence"
+     ]
+    },
+    {
+     "callable": "engine.projection.natal.require_expected",
      "kind": "callable",
      "disposition": "GATED",
      "exercised_by": [

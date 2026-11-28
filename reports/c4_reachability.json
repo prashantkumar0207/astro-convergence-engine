@@ -1204,6 +1204,15 @@
    "file": "engine/evidence/evidence.py",
    "status": "IN_USE_COVERED"
   },
+  "engine.evidence.evidence.require_projection_timing": {
+   "caller_count": 1,
+   "callers": [
+    "engine.evidence.evidence.EvidenceItem.__post_init__"
+   ],
+   "covered": true,
+   "file": "engine/evidence/evidence.py",
+   "status": "IN_USE_COVERED"
+  },
   "engine.evidence.evidence_identifiers.EvidenceId.from_number": {
    "caller_count": 1,
    "callers": [
@@ -1442,6 +1451,19 @@
    "caller_count": 1,
    "callers": [
     "engine.evidence.evidence_store.EvidenceStore.relate"
+   ],
+   "covered": true,
+   "exported_by": [
+    "engine/evidence/evidence_store.py:__all__"
+   ],
+   "file": "engine/evidence/evidence_store.py",
+   "status": "IN_USE_COVERED"
+  },
+  "engine.evidence.evidence_store.require_governed_verifier": {
+   "caller_count": 2,
+   "callers": [
+    "engine.evidence.evidence_store.EvidenceStore.__init__",
+    "engine.evidence.evidence_store.EvidenceStore._require_untimed"
    ],
    "covered": true,
    "exported_by": [
@@ -3146,6 +3168,15 @@
    "file": "engine/projection/natal.py",
    "status": "IN_USE_COVERED"
   },
+  "engine.projection.natal.require_expected": {
+   "caller_count": 1,
+   "callers": [
+    "engine.projection.natal.verify_natal_item"
+   ],
+   "covered": true,
+   "file": "engine/projection/natal.py",
+   "status": "IN_USE_COVERED"
+  },
   "engine.projection.natal.require_fired": {
    "caller_count": 1,
    "callers": [
@@ -3239,7 +3270,7 @@
  },
  "schema": "ace-c4-reachability-v1",
  "summary": {
-  "IN_USE_COVERED": 246,
+  "IN_USE_COVERED": 249,
   "NOT_IN_USE": 145
  },
  "universe_exclusions": {
