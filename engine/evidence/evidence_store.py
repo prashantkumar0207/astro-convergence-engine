@@ -85,8 +85,8 @@ def require_governed_verifier(verifier) -> None:
     (ADR-0134 U6; CEO HOLD on PR #70)."""
 
     module_name, function_name = GOVERNED_NATAL_VERIFIER
-    module = sys.modules.get(module_name)
-    governed = None if module is None else module.__dict__.get(function_name)
+    module = sys.modules[module_name] if module_name in sys.modules else None
+    governed = module.__dict__[function_name] if module is not None and function_name in module.__dict__ else None
     if governed is None or verifier is not governed:
         raise StoreError(f"a store's natal verifier is only the governed {module_name}.{function_name}; any other "
                          f"callback is refused (ADR-0134 U6)")

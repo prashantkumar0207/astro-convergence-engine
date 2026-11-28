@@ -4320,6 +4320,7 @@ def gate_z_untimed_natal_evidence():
                                                                     schema_version="ace-evidence-store-v4")),
                 "cannot carry the verified natal projection's provenance")
         honest = store.persist(dataclasses.replace(projected, timing=lifetime, provenance=PROVENANCE))
+        evidence_module.require_projection_timing(store.load(honest))  # a dated item with its own provenance passes
         masked = evidence_store_module.item_to_record(honest, store.load(honest))
         masked["evidence"]["provenance"] = {"source": evidence_module.NATAL_PROJECTION_PROVENANCE.source,
                                             "method": evidence_module.NATAL_PROJECTION_PROVENANCE.method,
