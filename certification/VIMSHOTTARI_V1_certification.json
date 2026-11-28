@@ -1,7 +1,7 @@
 {
  "schema": "vimshottari_v1_certification",
  "adr": "ADR-0007",
- "date": "2026-11-26",
+ "date": "2026-11-28",
  "scope": "Vimshottari maha/antar/pratyantar timelines, school-explicit seeding",
  "year_convention": {
   "profile": "vimshottari_mean_sidereal_year",

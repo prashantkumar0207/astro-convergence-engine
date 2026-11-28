@@ -2,7 +2,7 @@
  "schema": "varga_d3_v1_certification",
  "adr": "ADR-0009",
  "supersedes_provisional_id": "ADR-VARGA-D3-001",
- "date": "2026-11-26",
+ "date": "2026-11-28",
  "scope": "D3 Drekkana (Parashara variant) as the generic registry's first production entry",
  "rule": {
   "kind": "SegmentVargaRule",

@@ -2,7 +2,7 @@
  "schema": "varga_d12_v1_certification",
  "adr": "ADR-0010",
  "supersedes_provisional_id": "ADR-VARGA-D12-001",
- "date": "2026-11-26",
+ "date": "2026-11-28",
  "scope": "D12 Dwadasamsa (Parashara variant); first production use of the CyclicVargaRule path",
  "rule": {
   "kind": "CyclicVargaRule",

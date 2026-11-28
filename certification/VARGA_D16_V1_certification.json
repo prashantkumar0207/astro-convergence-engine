@@ -2,7 +2,7 @@
  "schema": "varga_d16_v1_certification",
  "adr": "ADR-0089",
  "supersedes_provisional_id": "NOTHING_AUTHORISED",
- "date": "2026-11-26",
+ "date": "2026-11-28",
  "scope": "D16 Shodasamsa, Parashara/BPHS variant, Traditional Parasara construction. Rule under certification is a STANDALONE, UNREGISTERED CyclicVargaRule instance embedded in this certifier - not engine/astrology/varga_d16.py, no production module is authorized or created this execution.",
  "rule": {
   "kind": "standalone CyclicVargaRule instance embedded in this certifier (scripts/certify_d16.py) - not a registered production rule",

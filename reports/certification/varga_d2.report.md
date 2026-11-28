@@ -5,7 +5,7 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 
 - Decision entry: ADR-0011
 - Supersedes provisional identifier: ADR-VARGA-D2-001
-- Date: 2026-11-26
+- Date: 2026-11-28
 - Scope: D2 Hora (Traditional Parashara): two-sign output space, Leo and Cancer only
 - Result: **PASS**
 

@@ -1,7 +1,7 @@
 {
  "schema": "sign_convention_v1_certification",
  "adr": "ADR-0012",
- "date": "2026-11-26",
+ "date": "2026-11-28",
  "scope": "explicit, machine-checked sign-index conventions across every layer; no certified value renumbered",
  "decisions": {
   "SC-A": "inert Sign value type as the shared convention carrier",

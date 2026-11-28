@@ -1,7 +1,7 @@
 {
  "schema": "current_engine_certification_v1",
  "adr": "ADR-0005",
- "date": "2026-11-26",
+ "date": "2026-11-28",
  "scope": "Current modular engine, Tier-0 astronomical kernel: sidereal planetary longitudes, Ascendant and 12 Placidus cusps, under both ratified calculation profiles, against the bundled independent swetest 2.10.03 binary over the frozen 11-case holdout; the certified D9/D10 mathematics through their independent holdout validators.",
  "engine": "engine/ (modular), version from engine/version.py",
  "reference": "Astrodienst swetest v2.10.03 (independent C binary, bundled, version-verified at runtime)",
@@ -34,10 +34,10 @@
   }
  },
  "run": {
-  "source_revision": "b05f58822844432d0da34955b08e51ec7f30b766",
+  "source_revision": "d39e1274df7ce71d7d2f9395660e5b44834f7a42",
   "working_tree_dirty": false,
   "engine_version": "0.3.0",
-  "executed_utc": "2026-11-26T11:42:15Z",
+  "executed_utc": "2026-11-28T09:48:15Z",
   "python": "3.11.17",
   "holdout_cases": "H1_london_1823, H2_newyork_1900, H3_sydney_1946, H4_delhi_1979, H5_reykjavik_1992, H6_quito_2010, H7_tokyo_2033, H8_mumbai_2077, H9_paris_2350, H10_boundary_moon_a, H11_boundary_moon_b",
   "reference_binary": "swetest 2.10.03 (bundled, version-verified at runtime)"

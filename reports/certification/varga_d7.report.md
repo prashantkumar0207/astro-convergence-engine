@@ -5,7 +5,7 @@ docs/VALIDATION_STANDARD.md s1. Do not edit: regenerate.
 
 - Decision entry: ADR-0011
 - Supersedes provisional identifier: ADR-VARGA-D7-001
-- Date: 2026-11-26
+- Date: 2026-11-28
 - Scope: D7 Saptamsa (Parashara variant): first non-identity start table on the cyclic path
 - Result: **PASS**
 

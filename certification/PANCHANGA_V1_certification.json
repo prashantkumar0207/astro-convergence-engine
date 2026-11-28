@@ -1,7 +1,7 @@
 {
  "schema": "panchanga_v1_certification",
  "adr": "ADR-0055",
- "date": "2026-11-26",
+ "date": "2026-11-28",
  "scope": "Classification only, at a given instant: tithi, nakshatra (reused), yoga, karana, vara. FOUNDATION Panchanga first work package.",
  "conventions": {
   "boundary": "engine-wide 1e-10 promote-up, [start, end), applied uniformly to both certified profiles",

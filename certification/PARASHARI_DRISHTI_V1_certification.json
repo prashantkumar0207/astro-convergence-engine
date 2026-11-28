@@ -1,7 +1,7 @@
 {
  "schema": "parashari_drishti_v1_certification",
  "adr": "ADR-0012",
- "date": "2026-11-26",
+ "date": "2026-11-28",
  "scope": "Parashari graha drishti, full (purna) aspects; facts only",
  "decisions": {
   "AS-A": "full aspects only; sputa drishti (fractional) deferred",

@@ -2,7 +2,7 @@
  "schema": "varga_d30_v1_certification",
  "adr": "ADR-0011",
  "supersedes_provisional_id": "ADR-VARGA-D30-001",
- "date": "2026-11-26",
+ "date": "2026-11-28",
  "scope": "D30 Trimsamsa (Parashara variant): unequal tara-graha segments",
  "rule": {
   "kind": "SegmentVargaRule",

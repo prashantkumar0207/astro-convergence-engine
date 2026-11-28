@@ -2,7 +2,7 @@
  "schema": "varga_d7_v1_certification",
  "adr": "ADR-0011",
  "supersedes_provisional_id": "ADR-VARGA-D7-001",
- "date": "2026-11-26",
+ "date": "2026-11-28",
  "scope": "D7 Saptamsa (Parashara variant): first non-identity start table on the cyclic path",
  "rule": {
   "kind": "CyclicVargaRule",
