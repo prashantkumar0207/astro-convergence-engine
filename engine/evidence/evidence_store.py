@@ -35,6 +35,14 @@ so a refused write takes none. Triggers refuse every UPDATE and DELETE.
   It must still be what the governed records prove (ADR-0127): its RUL issued by the allocation history, under that
   school, and the version published, unchanged, because a published version is never withdrawn or rewritten.
 
+- Untimed natal evidence (ADR-0134; H4 s13): an item whose timing is `UntimedNatal` is stored under its own record schema,
+  v4; dated items, rule versions and relationships keep v3, unchanged. A store accepts untimed items only when it is
+  constructed with the natal verifier, which re-derives each one from its entity chart's recorded birth input through the
+  certified kernel. This module cannot run the kernel itself (AC14), so the verifier is handed in; a store without it
+  refuses every untimed item, on write and on every read, so no direct call bypasses the check. A dated and an untimed
+  item never conflict by timing; two untimed items conflict only as opposite-polarity variants of one rule version on one
+  chart; and an untimed item is never independent of another item about the same entity (D6-c).
+
 Nothing here scores, weights, fits or divides, and nothing writes to calculation state.
 """
 
@@ -42,13 +50,14 @@ from __future__ import annotations
 
 import json
 import sqlite3
+import sys
 from pathlib import Path
 
 from engine.evidence.entity import ChartCandidate, DataClass, ParentLink, RecordProvenance
 from engine.evidence.evidence import (
     CONFIDENCE_COMPONENTS, CalculatedInput, ChartContext, ChartReference, Confidence, DependencyClass, Domain,
     EvidenceItem, EvidenceModelError, Lineage, Performance, Polarity, ProducingSystem, Relationship, RuleReference,
-    RuleSpec, RuleVersion, Supplied, TimingContext, TimingKind, provenance_differences,
+    RuleSpec, RuleVersion, Supplied, TimingContext, TimingKind, UntimedBasis, UntimedNatal, provenance_differences,
 )
 from engine.evidence.evidence_identifiers import EVD_FAMILY, EVD_LAST, EvidenceId, RuleId
 import engine.evidence.provenance_graph as provenance_graph
@@ -61,6 +70,26 @@ from engine.models.provenance import Provenance
 #: v3 (ADR-0122 D4): the provenance graph's node and edge tables. No v1 or v2 store exists outside temporary test
 #: databases; an earlier database's records carry their own schema version and are refused when read.
 SCHEMA_VERSION = "ace-evidence-store-v3"
+#: v4 (ADR-0134 D6-b): an untimed natal item's record. Every other record, dated items included, stays v3.
+UNTIMED_SCHEMA_VERSION = "ace-evidence-store-v4"
+UNTIMED_KIND = "untimed_natal"
+#: The only condition kinds an untimed item's rule may have: each is a natal placement (ADR-0134 U2).
+NATAL_PLACEMENT_KINDS = ("house_lord_in_house", "planet_in_house", "planet_in_sign")
+#: The one natal verifier a store may hold: the governed `verify_natal_item` of engine/projection/natal.py (ADR-0134 U6).
+#: It is found by identity in the already-loaded module, never imported here: this module may not import the kernel (AC14).
+GOVERNED_NATAL_VERIFIER = ("engine.projection.natal", "verify_natal_item")
+
+
+def require_governed_verifier(verifier) -> None:
+    """Refuse any natal verifier but the governed one, by identity: a permissive callback, a wrapper or a copy is refused
+    (ADR-0134 U6; CEO HOLD on PR #70)."""
+
+    module_name, function_name = GOVERNED_NATAL_VERIFIER
+    module = sys.modules[module_name] if module_name in sys.modules else None
+    governed = module.__dict__[function_name] if module is not None and function_name in module.__dict__ else None
+    if governed is None or verifier is not governed:
+        raise StoreError(f"a store's natal verifier is only the governed {module_name}.{function_name}; any other "
+                         f"callback is refused (ADR-0134 U6)")
 
 _APPEND_ONLY = ("registered_rule_versions", "evidence_items", "evidence_relationships", "graph_nodes",
                 "graph_edges")
@@ -185,7 +214,8 @@ def item_to_record(evidence_id: EvidenceId, item: EvidenceItem) -> dict:
     if not isinstance(evidence_id, EvidenceId) or not isinstance(item, EvidenceItem):
         raise StoreError("an evidence record is an EVD identifier and an EvidenceItem")
     lineage, context, timing, performance = item.lineage, item.chart_context, item.timing, item.historical_performance
-    return {"schema": SCHEMA_VERSION, "id": evidence_id.value, "evidence": {
+    untimed = type(timing) is UntimedNatal
+    return {"schema": UNTIMED_SCHEMA_VERSION if untimed else SCHEMA_VERSION, "id": evidence_id.value, "evidence": {
         "entity": item.entity.value,
         "domain": item.domain.value,
         "question": None,
@@ -200,7 +230,8 @@ def item_to_record(evidence_id: EvidenceId, item: EvidenceItem) -> dict:
         "chart": {"entity_revision": item.chart.entity_revision, "chart_label": item.chart.chart_label},
         "chart_context": {"varga": context.varga, "planets": list(context.planets), "houses": list(context.houses),
                           "signs": list(context.signs), "significators": list(context.significators)},
-        "timing": {"kind": timing.kind.value, "label": timing.label, "start": timing.start, "end": timing.end},
+        "timing": {"kind": UNTIMED_KIND, "basis": timing.basis.value} if untimed else
+                  {"kind": timing.kind.value, "label": timing.label, "start": timing.start, "end": timing.end},
         "polarity": item.polarity.value,
         "confidence": {name: _supplied(item.confidence.__getattribute__(name)) for name in CONFIDENCE_COMPONENTS},
         "historical_performance": None if performance is None else {
@@ -213,19 +244,32 @@ def item_to_record(evidence_id: EvidenceId, item: EvidenceItem) -> dict:
     }}
 
 
+def untimed_timing_from(data) -> dict:
+    """A v4 record's timing: exactly the untimed kind and its basis (ADR-0134 D6-b, U3)."""
+
+    timing = _exact("untimed timing (v4)", data, ("kind", "basis"))
+    if timing["kind"] != UNTIMED_KIND:
+        raise StoreError(f"a v4 record's timing is {UNTIMED_KIND!r}; a dated timing is a v3 record (ADR-0134 D6-b)")
+    return timing
+
+
 def item_from_record(record: dict) -> tuple:
     """Rebuild (EvidenceId, EvidenceItem), refusing any key the model does not define, at any level."""
 
     if not isinstance(record, dict) or set(record) != {"schema", "id", "evidence"} or \
-            record["schema"] != SCHEMA_VERSION:
+            record["schema"] not in (SCHEMA_VERSION, UNTIMED_SCHEMA_VERSION):
         raise StoreError("not an evidence record of this schema: it needs its schema version and EVD identity")
     data = _exact("an evidence item", record["evidence"], ITEM_FIELDS)
+    untimed = record["schema"] == UNTIMED_SCHEMA_VERSION
     lineage = _exact("lineage", data["lineage"], ("inputs", "inputs_complete", "derivations_complete"))
     inputs = tuple(CalculatedInput(fact=_exact("a calculated input", entry, ("fact", "provenance"))["fact"],
                                    provenance=_calculation_from(entry["provenance"])) for entry in lineage["inputs"])
     chart = _exact("chart", data["chart"], ("entity_revision", "chart_label"))
     context = _exact("chart context", data["chart_context"], ("varga", "planets", "houses", "signs", "significators"))
-    timing = _exact("timing", data["timing"], ("kind", "label", "start", "end"))
+    if untimed:
+        timing = untimed_timing_from(data["timing"])
+    else:
+        timing = _exact("timing", data["timing"], ("kind", "label", "start", "end"))
     rule = _exact("rule reference", data["rule"], ("rule", "version", "variant"))
     confidence = _exact("confidence", data["confidence"], CONFIDENCE_COMPONENTS)
     performance = data["historical_performance"]
@@ -244,8 +288,8 @@ def item_from_record(record: dict) -> tuple:
         chart_context=ChartContext(varga=context["varga"], planets=tuple(context["planets"]),
                                    houses=tuple(context["houses"]), signs=tuple(context["signs"]),
                                    significators=tuple(context["significators"])),
-        timing=TimingContext(kind=TimingKind(timing["kind"]), label=timing["label"], start=timing["start"],
-                             end=timing["end"]),
+        timing=UntimedNatal(basis=UntimedBasis(timing["basis"])) if untimed else
+        TimingContext(kind=TimingKind(timing["kind"]), label=timing["label"], start=timing["start"], end=timing["end"]),
         polarity=Polarity(data["polarity"]),
         confidence=Confidence(**{name: _supplied_from(confidence[name]) for name in CONFIDENCE_COMPONENTS}),
         historical_performance=performance,
@@ -276,9 +320,34 @@ def _encode(record: dict) -> str:
     return json.dumps(record, sort_keys=True, separators=(",", ":"))
 
 
-def _conflicting(first: EvidenceItem, second: EvidenceItem) -> bool:
-    """Opposite polarity about the same entity, domain and an overlapping timing window."""
+def _untimed(item: EvidenceItem) -> bool:
+    return type(item.timing) is UntimedNatal
 
+
+def untimed_conflict(first: EvidenceItem, second: EvidenceItem) -> bool:
+    """D6-c, where either item is untimed: a conflict only between two untimed, opposite-polarity variants of one rule
+    version on one chart of one entity and domain. A dated and an untimed item never conflict by timing."""
+
+    opposite = {first.polarity, second.polarity} == {Polarity.POSITIVE, Polarity.NEGATIVE}
+    return (opposite and _untimed(first) and _untimed(second) and first.entity == second.entity and
+            first.domain == second.domain and first.chart == second.chart and
+            (first.rule.rule, first.rule.version) == (second.rule.rule, second.rule.version))
+
+
+def withholds_independence(first: EvidenceItem, second: EvidenceItem) -> bool:
+    """D6-c: an untimed natal item is never independent of another item about the same entity, whose chart origin it
+    shares."""
+
+    return (_untimed(first) or _untimed(second)) and first.entity == second.entity
+
+
+def _conflicting(first: EvidenceItem, second: EvidenceItem) -> bool:
+    """Opposite polarity about the same entity, domain and an overlapping timing window. An untimed item has no window: it
+    never conflicts with a dated item by timing, and two untimed items conflict only as variants of one rule version on
+    one chart (ADR-0134 D6-c)."""
+
+    if _untimed(first) or _untimed(second):
+        return untimed_conflict(first, second)
     opposite = {first.polarity, second.polarity} == {Polarity.POSITIVE, Polarity.NEGATIVE}
     overlap = first.timing.start <= second.timing.end and second.timing.start <= first.timing.end
     return opposite and overlap and first.entity == second.entity and first.domain == second.domain
@@ -287,8 +356,14 @@ def _conflicting(first: EvidenceItem, second: EvidenceItem) -> bool:
 class EvidenceStore:
     """An append-only evidence store over the entity database at `path`, with its own EVD issuer. It issues no RUL."""
 
-    def __init__(self, path: Path | str):
+    def __init__(self, path: Path | str, natal_verifier=None):
+        """`natal_verifier(item, candidate)` re-derives an untimed item from its chart through the certified kernel and
+        raises if it differs (engine/projection/natal.py). Without it, every untimed item is refused (ADR-0134 U6)."""
+
+        if natal_verifier is not None:
+            require_governed_verifier(natal_verifier)
         self.path = Path(path)
+        self._natal_verifier = natal_verifier
         self.entities = EntityStore(self.path)
         self._db = sqlite3.connect(str(self.path), isolation_level=None, timeout=10.0)
         self._db.executescript(_SCHEMA)
@@ -297,6 +372,12 @@ class EvidenceStore:
     def close(self) -> None:
         self._db.close()
         self.entities.close()
+
+    @property
+    def natal_verifier(self):
+        """The verifier this store checks untimed items with, or None: then it refuses every untimed item."""
+
+        return self._natal_verifier
 
     def __enter__(self):
         return self
@@ -516,6 +597,34 @@ class EvidenceStore:
         self._require_fit(item, rule)
         return rule
 
+    def _require_untimed(self, item: EvidenceItem, candidate: ChartCandidate) -> None:
+        """An untimed item is admitted only by a store holding the natal verifier, only for a rule whose every condition
+        is a natal placement, and only if the verifier re-derives it exactly (ADR-0134 U2, U6)."""
+
+        if self._natal_verifier is None:
+            raise StoreError("an untimed natal item is written and read only by a store holding the natal verifier "
+                             "(ADR-0134 U6)")
+        require_governed_verifier(self._natal_verifier)
+        published = rule_registry.pinned().lookup(item.rule.rule, item.rule.version, item.rule.variant)
+        kinds = [condition.kind for condition in (published.condition, *published.activation_conditions)]
+        if any(kind not in NATAL_PLACEMENT_KINDS for kind in kinds):
+            raise StoreError(f"an untimed item's rule has only natal placement conditions; {item.rule.rule} needs "
+                             f"{kinds} (ADR-0134 U2)")
+        try:
+            self._natal_verifier(item, candidate)
+        except (ValueError, KeyError, TypeError) as exc:
+            raise StoreError(f"the untimed item is not its chart's certified natal evidence: {exc}") from exc
+
+    def _candidate(self, item: EvidenceItem) -> ChartCandidate:
+        history = self.entities.history(item.entity)
+        if item.chart.entity_revision > len(history):
+            raise StoreError(f"{item.entity} has no revision {item.chart.entity_revision}")
+        _number, subject, _reason = history[item.chart.entity_revision - 1]
+        candidates = [chart for chart in subject.charts if chart.label == item.chart.chart_label]
+        if not candidates:
+            raise StoreError(f"{item.chart.chart_label!r} is not a chart of {item.entity}")
+        return candidates[0]
+
     def _check(self, item: EvidenceItem) -> tuple:
         """Every refusal before an item is written. Returns the records its graph is recorded from: the registered
         rule version, the chart it names at its entity revision, and that revision's parent link."""
@@ -548,6 +657,8 @@ class EvidenceStore:
                 raise StoreError("a recomputation names its original once, as recomputes")
         candidate: ChartCandidate = candidates[0]
         parent: ParentLink | None = subject.parent
+        if _untimed(item):
+            self._require_untimed(item, candidate)
         return rule, candidate, parent
 
     # ------------------------------------------------------------ the provenance graph (ADR-0122)
@@ -688,6 +799,8 @@ class EvidenceStore:
             raise StoreError(f"no such evidence item: {evidence_id}")
         stored_id, item = item_from_record(json.loads(row[2]))
         self._require_row_identity(evidence_id, stored_id, item, row[0], row[1])
+        if _untimed(item):
+            self._require_untimed(item, self._candidate(item))
         return item
 
     def load(self, evidence_id: EvidenceId) -> EvidenceItem:
@@ -815,7 +928,10 @@ class EvidenceStore:
             return Relationship(first, second, DependencyClass.SHARED_ORIGIN, conflicting,
                                 "a shared recorded ancestor: " + ", ".join(sorted(link.value for link in
                                                                                  ancestors_a & ancestors_b)))
-        for missing, reason in ((not (a.lineage.derivations_complete and b.lineage.derivations_complete),
+        for missing, reason in ((withholds_independence(a, b),
+                                 "an untimed natal item and another item about the same entity share its chart's origin; "
+                                 "independence is not established (ADR-0134 D6-c)"),
+                                (not (a.lineage.derivations_complete and b.lineage.derivations_complete),
                                  "a derivation link may be missing: not every derivation list is stated complete"),
                                 (not (a.lineage.inputs_complete and b.lineage.inputs_complete),
                                  "incomplete lineage: not every input list is stated complete"),
@@ -895,5 +1011,6 @@ class EvidenceStore:
         return {**{kind: tuple(pairs) for kind, pairs in groups.items()}, "conflicting": tuple(conflicts)}
 
 
-__all__ = ["SCHEMA_VERSION", "EvidenceStore", "EvidenceModelError", "item_to_record", "item_from_record",
+__all__ = ["SCHEMA_VERSION", "UNTIMED_SCHEMA_VERSION", "NATAL_PLACEMENT_KINDS", "GOVERNED_NATAL_VERIFIER",
+           "require_governed_verifier", "EvidenceStore", "EvidenceModelError", "item_to_record", "item_from_record",
            "rule_to_record", "rule_from_record", "relationship_to_record", "relationship_from_record"]

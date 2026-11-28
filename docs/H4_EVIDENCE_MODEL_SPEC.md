@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | ACCEPTED (`ADR-0113`, 2026-11-07). Specification only: no implementation is authorised by this document, and EVIDENCE entry needs CEO approval and the owner's explicit authorization. |
-| Version | 2.0.0 |
+| Version | 2.1.0 |
 | Owner | Project Owner (`ADR-0051` D4) |
-| Last updated | 2026-11-07 |
+| Last updated | 2026-11-26 (additive s13, untimed natal evidence, `ADR-0134`) |
 | Review cadence | On amendment |
 
 # H4. Evidence Model, the central hub
@@ -182,6 +182,22 @@ history.
 - **s3's note** that the transit and drishti provenance defects must be fixed before either feeds evidence is satisfied. M-05
   is PR #45 and M-04 is PR #44, both merged.
 
+## 13. Explicitly untimed natal evidence (ADR-0134, additive)
+
+This section adds to s3's timing context and changes no earlier sentence.
+
+- **Two forms of timing context.** An item's timing context is either a dated context (a dasha period, a transit or a window, with
+  its dates, exactly as s3 describes) or **untimed natal**, with the single basis *natal placement*. Untimed natal is a structured
+  field, never prose, so `ADR-0119` AC4's "structured timing context" is met.
+- **Untimed is a fact about the rule, never a gap.** It is admitted only for a natal (Jataka) Parashari item on the D1 chart whose rule's
+  every condition is a natal placement. It never means unknown, missing, arbitrary or lifelong timing, and it carries no date or window.
+- **Stored separately.** Untimed items use the evidence record schema v4; dated items keep v3, unchanged.
+- **Not comparable with dated timing.** A dated and an untimed item are never in conflict by timing, and opposite-polarity variants of
+  one rule version on one chart are kept as disagreement. No untimed item is ever classified as independent of another item about the
+  same entity.
+- **Graph.** The recording schema gains one node kind, UNTIMED, recorded in place of a timing node; dated items' nodes are unchanged.
+- **Never a prediction.** Untimed evidence carries no window, so it cannot be issued as a prediction (H6) or scored by timing.
+
 ## 12. Change history
 
 | Version | Date | Change |
@@ -189,4 +205,5 @@ history.
 | 1.0.0 | 2026-08-11 | Created in the G1 work package as Phase H preparation. |
 | 1.1.0 | 2026-08-11 | Additive section 8: entity, domain and chart reference, and the shared-origin rationale. Sections 1 to 7 unmodified. |
 | 1.2.0 | 2026-08-11 | Additive section 10: the five evidence relationship classes per ADR-0020 D4, and the structural-versus-measured distinction. Sections 1 to 9 unmodified. |
+| 2.1.0 | 2026-11-26 | **Additive s13 by `ADR-0134`** (owner-ratified): explicitly untimed natal evidence. No earlier sentence changes. |
 | 2.0.0 | 2026-11-07 | **Promoted to ACCEPTED by `ADR-0113`.** Additive decisions section; superseded wording named, not deleted. |

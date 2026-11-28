@@ -26,7 +26,7 @@ from dataclasses import dataclass
 from enum import Enum
 
 import engine.evidence.rule_registry as rule_registry
-from engine.evidence.evidence import CONFIDENCE_COMPONENTS, EvidenceItem
+from engine.evidence.evidence import CONFIDENCE_COMPONENTS, EvidenceItem, UntimedNatal
 from engine.evidence.evidence_identifiers import EvidenceId, IdentifierError
 from engine.evidence.evidence_store import EvidenceStore
 from engine.evidence.store import StoreError
@@ -51,6 +51,8 @@ class SegmentKind(Enum):
 
 #: The one sentence a no-answer segment renders. It asserts nothing about the evidence, the rules or the question.
 ABSTENTION_TEXT = "No answer is given."
+#: The one timing sentence of an untimed natal item, after its EVD identifier (ADR-0134 U9). It states no date or window.
+UNTIMED_TEXT = "states no period: it is an untimed natal placement."
 CHART_FIELDS = ("varga", "planets", "houses", "signs", "significators")
 UNCERTAINTY_FIELDS = CONFIDENCE_COMPONENTS + ("historical_performance",)
 #: Each kind's keys, exactly. Nothing else may appear in a segment.
@@ -197,6 +199,8 @@ def render_segment(segment: Segment, item: EvidenceItem | None, registry: rule_r
     if segment.kind is SegmentKind.CALCULATED_INPUT:
         calculated = item.lineage.inputs[segment.index]
         return f"{segment.evidence} uses {calculated.fact}, calculated under {calculated.provenance.profile_name}."
+    if segment.kind is SegmentKind.TIMING and type(item.timing) is UntimedNatal:
+        return f"{segment.evidence} {UNTIMED_TEXT}"
     if segment.kind is SegmentKind.TIMING:
         timing = item.timing
         return f"{segment.evidence} applies to the {timing.kind.value} period {timing.label}, {timing.start} to {timing.end}."

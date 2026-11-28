@@ -1744,6 +1744,10 @@ def gate_o_snapshot_fails_closed():
 
 # ------------------------------------------------------------------ H4 provenance graph (ADR-0122, WP-E6)
 
+#: The node kinds a dated item records: the recording schema of docs/EVIDENCE_INDEPENDENCE_DESIGN.md s3 (ADR-0122 D1).
+DATED_NODE_KINDS = frozenset(provenance_graph.NodeKind) - {provenance_graph.NodeKind.UNTIMED}
+
+
 class _GraphWorld:
     """A store over one synthetic subject and a derived subject of it, with registry rules recorded, and a set of
     items that between them reach every node kind, ordered inputs, derivation and recomputation links, incomplete
@@ -1846,7 +1850,9 @@ def gate_p_graph_integrity():
         before = store.item_graph(first)
         ids = [first] + setting.populate()
         recorded = store.recorded_graph()
-        if {node.kind for node in recorded.nodes} != set(provenance_graph.NodeKind):
+        # Every node kind a dated item records. The UNTIMED kind ADR-0134 adds is recorded only by untimed natal items,
+        # never by this dated world; gate Z checks it.
+        if {node.kind for node in recorded.nodes} != DATED_NODE_KINDS:
             fail("not every node kind was recorded")
         for evidence_id in ids:
             upstream = recorded_ancestry(store, evidence_id)
@@ -1911,7 +1917,7 @@ def gate_p_graph_integrity():
         if not durable:
             fail("the recorded graph is not durable")
     return {"classification": "structural_integrity", "items_recorded": len(ids), "node_kinds": len(
-        provenance_graph.NodeKind), "nodes_recorded": counts[0], "edges_recorded": counts[1],
+        DATED_NODE_KINDS), "nodes_recorded": counts[0], "edges_recorded": counts[1],
             "provenance_fields_separated": len(provenance_graph.PROVENANCE_FIELDS), "mismatches": 0,
             "controls_rejected": len(controls), "controls": sorted(controls)}
 
@@ -3982,6 +3988,446 @@ def gate_y_rule_application():
             "refused": sorted(refused), "preserved": sorted(preserved), "controls": sorted(controls)}
 
 
+# --------------------------------------------------------------- Gate Z: untimed natal evidence, WP-I2 (ADR-0134)
+
+import engine.evidence.evidence as evidence_module  # noqa: E402
+import engine.evidence.evidence_store as evidence_store_module  # noqa: E402
+from engine.evidence.evidence_identifiers import EVD_FAMILY  # noqa: E402
+from engine.evidence.evidence import UNTIMED_VARGA, UntimedBasis, UntimedNatal  # noqa: E402
+from engine.projection import natal  # noqa: E402
+
+#: The fixture chart: Aries rising, the Moon in Cancer, Saturn and the Sun in Capricorn, each at least 3 degrees from a
+#: sign edge, so RUL-1 versions 1 and 2 and both RUL-3 readings fire. Synthetic birth details, not a real person.
+Z_FIRING = "2021-01-28T05:40:00"
+#: Another chart on which every one of those rules also fires: a substitute for the controls.
+Z_SUBSTITUTE = "2021-01-29T05:40:00"
+#: A chart on which RUL-1 version 1 does not fire (the tenth lord is not in the tenth).
+Z_QUIET = "1983-06-08T11:30:00"
+Z_DATE = re.compile(r"\d{4}-\d{2}-\d{2}")
+#: The only engine functions that read an item's timing dates or label: each reads them in its dated branch (U9).
+Z_TIMING_READERS = frozenset({
+    ("engine/evidence/evidence_store.py", "item_to_record"), ("engine/evidence/evidence_store.py", "_conflicting"),
+    ("engine/evidence/explanation_boundary.py", "render_segment"), ("engine/evidence/provenance_graph.py", "timing_node"),
+})
+
+
+def _z_chart(label: str, when: str) -> ChartCandidate:
+    return ChartCandidate(label=label, origin=OriginMoment(local_datetime=when, timezone="UTC",
+                                                           timezone_source="synthetic fixture", latitude=13.0827,
+                                                           longitude=80.2707, precision="second"),
+                          origin_certainty=OriginCertainty.REPORTED, provenance=PROVENANCE)
+
+
+def _z_person(*charts) -> Person:
+    return Person(kind=EntityKind.PERSON, shape=Shape.ORIGIN, charts=charts, applicable_domains=("synthetic",),
+                  applicable_systems=("parashari", "kp"), provenance=PROVENANCE, data_class=DataClass.SYNTHETIC)
+
+
+def timing_readers(root: Path = ROOT) -> set:
+    """Every (file, function) in engine/ that reads `.start`, `.end` or `.label` of a timing value."""
+
+    found = set()
+    for path in sorted((root / "engine").rglob("*.py")):
+        if "tests" in path.parts:
+            continue
+        tree = ast.parse(path.read_text(encoding="utf-8-sig"))
+        for function in ast.walk(tree):
+            if not isinstance(function, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                continue
+            for node in ast.walk(function):
+                if isinstance(node, ast.Attribute) and node.attr in ("start", "end", "label") and (
+                        (isinstance(node.value, ast.Attribute) and node.value.attr == "timing") or
+                        (isinstance(node.value, ast.Name) and node.value.id == "timing")):
+                    found.add((path.relative_to(root).as_posix(), function.name))
+    return found
+
+
+def gate_z_untimed_natal_evidence():
+    """WP-I2: untimed natal evidence is projected only from a verified, fired application record on the kernel's
+    recomputation of the entity chart, is re-derived on every write and every read, is stored as v4 beside unchanged v3
+    dated records, records one untimed graph node, never conflicts with dated evidence by timing, and is never
+    independent of its entity's other evidence. Each refusing check, weakened, admits what it refuses, or hands the
+    refusal to the one later check that also covers it (ADR-0134 U1 to U10)."""
+
+    refused, controls, preserved = {}, {}, {}
+    Refusal = (StoreError, EvidenceModelError, natal.ProjectionError, provenance_graph.GraphError, ValueError)
+
+    def refuses(label, action, reason):
+        try:
+            action()
+        except Refusal as exc:
+            if reason not in str(exc):
+                fail(f"Gate Z: {label} was refused for another reason: {exc}")
+            refused[label] = True
+            return
+        fail(f"Gate Z: not refused: {label}")
+
+    def weakened(label, owner, name, replacement, action, handed_to=None):
+        original = getattr(owner, name)
+        setattr(owner, name, replacement)
+        try:
+            outcome = action()
+        except Refusal as exc:
+            if handed_to is None or handed_to not in str(exc):
+                fail(f"Gate Z control {label!r}: still refused, by another check than expected: {exc}")
+            outcome = True
+        else:
+            if handed_to is not None:
+                fail(f"Gate Z control {label!r}: expected the later check {handed_to!r} to refuse, but nothing did")
+        finally:
+            setattr(owner, name, original)
+        if not outcome:
+            fail(f"Gate Z control {label!r} did not admit the violation")
+        controls[label] = True
+
+    registry = rule_registry.pinned()
+    one, three, kp_rule = RuleId.from_number(1), RuleId.from_number(3), RuleId.from_number(2)
+    at = ChartReference(1, "natal")
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as folder:
+        path = Path(folder) / "evidence.sqlite"
+        store = natal.natal_store(path)
+        owner = store.entities.persist(_z_person(_z_chart("natal", Z_FIRING)))
+        quiet_owner = store.entities.persist(_z_person(_z_chart("natal", Z_QUIET)))
+        for rule, version, variant in ((one, 1, "base"), (one, 2, "base"), (three, 1, "reading-a"),
+                                       (three, 1, "reading-b"), (kp_rule, 1, "base")):
+            store.register_rule(registry.rule_version(rule, version, variant))
+        candidate = natal.entity_chart(store, owner, at)
+        chart = natal.kernel_chart(candidate)
+        records, ids = {}, {}
+        for rule, version in ((one, 1), (one, 2), (three, 1)):
+            for record in interpretation.apply_rule(chart, rule, version).records:
+                records[(rule.number, version, record.variant)] = record
+        for key in sorted(records):
+            ids[key] = natal.project(store, records[key], chart, owner, at)
+        base, readings_a, readings_b = ids[(1, 1, "base")], ids[(3, 1, "reading-a")], ids[(3, 1, "reading-b")]
+
+        # ---- legitimate
+        for key, evidence_id in ids.items():
+            item = store.load(evidence_id)
+            record = evidence_store_module.item_to_record(evidence_id, item)
+            if record["schema"] != "ace-evidence-store-v4" or record["evidence"]["timing"] != {
+                    "kind": "untimed_natal", "basis": "natal_placement"} or item != natal.expected_item(
+                    owner, at, candidate, item.rule):
+                fail(f"Gate Z: projected item {key} is not the v4 untimed natal evidence of its chart")
+            if store.reproduce(evidence_id) != provenance_graph.recorded_fields(item):
+                fail(f"Gate Z: {key}'s recorded graph does not reproduce it")
+        preserved["fired records project to v4 untimed items that load and reproduce exactly"] = True
+        stated = BirthData(2021, 1, 28, 5, 40, 0.0, 13.0827, 80.2707, "UTC")
+        if natal.birth_data(candidate) != stated or chart.origin.digest() != interpretation.ChartOrigin.from_snapshot(
+                calculate(stated, profile=PARASHARI_LAHIRI).snapshot).digest():
+            fail("Gate Z: the entity chart's recorded birth input does not map exactly to the kernel's input")
+        preserved["the entity chart's recorded birth input maps exactly to the kernel's input"] = True
+        base_item = store.load(base)
+        if [entry.fact for entry in base_item.lineage.inputs] != [
+                "house_lord_in_house (house 10, lord_of 10): house_sign 10, lord Saturn, lord_house 10"] or                 base_item.chart_context != ChartContext(varga="D1", planets=("Saturn",), houses=(10,), signs=(10,),
+                                                         significators=()):
+            fail(f"Gate Z: RUL-1 version 1's projected facts or context are not as independently stated: {base_item}")
+        activated = store.load(ids[(1, 2, "base")])
+        if [entry.fact for entry in activated.lineage.inputs] != [
+                "house_lord_in_house (house 10, lord_of 10): house_sign 10, lord Saturn, lord_house 10",
+                "planet_in_sign (planet Sun, sign 10): planet_sign 10"] or activated.chart_context != ChartContext(
+                varga="D1", planets=("Saturn", "Sun"), houses=(10,), signs=(10,), significators=()):
+            fail(f"Gate Z: RUL-1 version 2's projected facts or context are not as independently stated: {activated}")
+        preserved["a projected item's facts and chart context match their independent statement"] = True
+        store.close()
+        store = natal.natal_store(path)
+        if [store.load(evidence_id) for evidence_id in ids.values()] != [
+                natal.expected_item(owner, at, candidate, store.load(evidence_id).rule) for evidence_id in ids.values()]:
+            fail("Gate Z: a reopened natal store does not read the same items")
+        preserved["a reopened natal store reads every untimed item again, verified"] = True
+        projected = store.load(base)
+        window = TimingContext(kind=TimingKind.WINDOW, label="a synthetic window", start="2010-01-01", end="2011-01-01")
+        dated = dataclasses.replace(projected, timing=window, polarity=Polarity.NEGATIVE, provenance=PROVENANCE)
+        dated_id = store.persist(dated)
+        dated_record = evidence_store_module.item_to_record(dated_id, store.load(dated_id))
+        if dated_record["schema"] != evidence_store_module.SCHEMA_VERSION or dated_record["evidence"]["timing"] != {
+                "kind": "window", "label": "a synthetic window", "start": "2010-01-01", "end": "2011-01-01"}:
+            fail("Gate Z: a dated record is not the unchanged v3 form")
+        kinds = {node.kind for node in store.item_graph(dated_id).nodes}
+        if provenance_graph.NodeKind.TIMING not in kinds or provenance_graph.NodeKind.UNTIMED in kinds:
+            fail("Gate Z: a dated item's graph is not the unchanged timing form")
+        preserved["a dated item keeps the v3 record and its timing node, beside untimed items"] = True
+        readings = store.classify(readings_a, readings_b)
+        if readings.dependency is not DependencyClass.SHARED_ORIGIN or readings.conflicting is not True:
+            fail(f"Gate Z: RUL-3's opposite-polarity readings are not kept as shared-origin disagreement: {readings}")
+        preserved["opposite-polarity variants of one rule version on one chart are kept as disagreement"] = True
+        if store.classify(dated_id, base).conflicting or store.classify(base, readings_b).conflicting:
+            fail("Gate Z: an untimed item conflicts with a dated item, or with another rule's untimed item")
+        preserved["an untimed item never conflicts with a dated item, or with another rule's untimed item"] = True
+        lines = explanation_boundary.render(_candidate((base,), [{"kind": "timing", "evidence": base.value}]), store,
+                                            registry)
+        if lines != (f"{base.value} {explanation_boundary.UNTIMED_TEXT}",) or any(Z_DATE.search(line) for line in lines):
+            fail(f"Gate Z: the untimed timing sentence is not the fixed, dateless one: {lines}")
+        preserved["an untimed item's timing renders one fixed sentence with no date"] = True
+        if timing_readers() != Z_TIMING_READERS:
+            fail(f"Gate Z: engine code reads timing dates outside the dated branches: {sorted(timing_readers())}")
+        preserved["only the dated branches of four named functions read a timing's dates or label"] = True
+
+        # ---- refusals: direct store calls (U6), forged facts and rows
+        plain = EvidenceStore(path)
+        fresh = natal.expected_item(owner, ChartReference(1, "natal"), candidate,
+                                    RuleReference(rule=one, version=2, variant="base"))
+        refuses("a plain store persisting an untimed item", lambda: plain.persist(fresh), "holding the natal verifier")
+        refuses("a plain store reading an untimed item", lambda: plain.load(base), "holding the natal verifier")
+        refuses("a plain store listing a store holding untimed items", lambda: plain.evidence_ids(),
+                "holding the natal verifier")
+        plain.close()
+        first = projected.lineage.inputs[0]
+        moved = dataclasses.replace(projected, lineage=dataclasses.replace(projected.lineage, inputs=(
+            dataclasses.replace(first, fact=first.fact.replace("lord_house 10", "lord_house 3")),)))
+        refuses("a forged fact persisted directly", lambda: store.persist(moved), "not its chart's certified natal evidence")
+        for label, changed in (
+                ("a forged chart context", dataclasses.replace(projected, chart_context=dataclasses.replace(
+                    projected.chart_context, houses=(3,)))),
+                ("a forged polarity", dataclasses.replace(projected, polarity=Polarity.NEGATIVE)),
+                ("a forged completeness statement", dataclasses.replace(projected, lineage=dataclasses.replace(
+                    projected.lineage, inputs_complete=False)))):
+            refuses(label, lambda changed=changed: store.persist(changed), "not its chart's certified natal evidence")
+        refuses("a forged declared strength", lambda: store.persist(dataclasses.replace(projected, declared_strength="x")),
+                "declared strength")
+        refuses("an untimed item claiming another entity's chart", lambda: store.persist(dataclasses.replace(
+            projected, entity=quiet_owner)), "not its chart's certified natal evidence")
+        forged_id = EvidenceId.from_number(store.issued_count(EVD_FAMILY) + 1)
+        store._db.execute("INSERT INTO evidence_items (evidence_id, entity_id, recomputes, payload) VALUES (?, ?, ?, ?)",
+                          (forged_id.value, owner.value, None, json.dumps(
+                              evidence_store_module.item_to_record(forged_id, moved), sort_keys=True,
+                              separators=(",", ":"))))
+        refuses("a forged untimed row written past persist", lambda: store.load(forged_id),
+                "not its chart's certified natal evidence")
+
+        # ---- refusals: projection (U5)
+        substitute = natal.kernel_chart(_z_chart("natal", Z_SUBSTITUTE))
+        substituted = interpretation.apply_rule(substitute, one, 1).records[0]
+        refuses("a record made on a substituted chart", lambda: natal.project(store, substituted, substitute, owner, at),
+                "not the certified kernel's recomputation")
+        quiet_candidate = natal.entity_chart(store, quiet_owner, at)
+        quiet_chart = natal.kernel_chart(quiet_candidate)
+        quiet = interpretation.apply_rule(quiet_chart, one, 1).records[0]
+        if quiet.fired:
+            fail("Gate Z: the quiet chart was expected not to fire RUL-1 version 1")
+        refuses("a record that did not fire", lambda: natal.project(store, quiet, quiet_chart, quiet_owner, at),
+                "did not fire")
+        refuses("a record verified against another chart", lambda: natal.project(store, records[(1, 1, "base")],
+                                                                                 substitute, owner, at),
+                "does not verify against its chart")
+        refuses("a genuine rule's expected item", lambda: natal.expected_item(
+            owner, at, candidate, RuleReference(rule=RuleId.from_number(5), version=1, variant="sharma-1999")),
+                "not a published synthetic rule")
+        refuses("projection into a plain store", lambda: natal.project(EvidenceStore(path), records[(1, 1, "base")],
+                                                                      chart, owner, at), "holding the natal verifier")
+
+        # ---- refusals: unsupported timing (U1, U2)
+        refuses("an untimed basis of unknown", lambda: UntimedNatal(basis="unknown"), "NATAL_PLACEMENT")
+        refuses("an untimed basis of none", lambda: UntimedNatal(basis=None), "NATAL_PLACEMENT")
+        refuses("an item with no timing", lambda: dataclasses.replace(projected, timing=None), "requires its timing")
+        refuses("an untimed item in another domain", lambda: dataclasses.replace(projected, domain=Domain.MUHURTA),
+                "Jataka, Parashari item on the D1 chart")
+        refuses("an untimed item of another system", lambda: dataclasses.replace(
+            projected, producing_system=ProducingSystem.KP), "Jataka, Parashari item on the D1 chart")
+        refuses("an untimed item on another varga", lambda: dataclasses.replace(projected, chart_context=dataclasses.replace(
+            projected.chart_context, varga="D9")), "Jataka, Parashari item on the D1 chart")
+        refuses("the verifier given a dated item", lambda: natal.verify_natal_item(dated, candidate),
+                "untimed natal evidence items only")
+        original_kinds = evidence_store_module.NATAL_PLACEMENT_KINDS
+        evidence_store_module.NATAL_PLACEMENT_KINDS = ("planet_in_house", "planet_in_sign")
+        try:
+            refuses("an untimed item whose rule has a condition kind outside the natal placements",
+                    lambda: store.persist(fresh), "only natal placement conditions")
+        finally:
+            evidence_store_module.NATAL_PLACEMENT_KINDS = original_kinds
+
+        # ---- refusals: mixed schemas (U3)
+        untimed_record = evidence_store_module.item_to_record(base, store.load(base))
+        v3_untimed = {**untimed_record, "schema": evidence_store_module.SCHEMA_VERSION}
+        v4_dated = {**dated_record, "schema": "ace-evidence-store-v4"}
+        extra = json.loads(json.dumps(untimed_record))
+        extra["evidence"]["timing"]["start"] = "2010-01-01"
+        unknown = json.loads(json.dumps(untimed_record))
+        unknown["evidence"]["timing"]["basis"] = "unknown"
+        refuses("a v3 record carrying untimed timing", lambda: evidence_store_module.item_from_record(v3_untimed),
+                "carries only its model fields")
+        refuses("a v4 record carrying dated timing", lambda: evidence_store_module.item_from_record(v4_dated),
+                "carries only its model fields")
+        refuses("a v4 timing with a date added", lambda: evidence_store_module.item_from_record(extra),
+                "carries only its model fields")
+        refuses("a v4 timing with an unknown basis", lambda: evidence_store_module.item_from_record(unknown),
+                "is not a valid UntimedBasis")
+        wrong_kind = json.loads(json.dumps(untimed_record))
+        wrong_kind["evidence"]["timing"]["kind"] = "window"
+        refuses("a v4 timing whose kind is a dated kind", lambda: evidence_store_module.item_from_record(wrong_kind),
+                "a v4 record's timing is 'untimed_natal'")
+
+        # ---- refusals: graph tampering (U7)
+        built = expected_graph(store, base)
+        target = provenance_graph.evidence_node(base, store.load(base))
+        timing_node = provenance_graph.timing_node(owner, at, window)
+        untimed_edge = [edge for edge in built.edges if edge.source.kind is provenance_graph.NodeKind.UNTIMED][0]
+        both = provenance_graph.Graph(nodes=built.nodes + (timing_node,), edges=built.edges + (provenance_graph.Edge(
+            source=timing_node, kind=provenance_graph.EdgeKind.DERIVES_FROM, target=target),))
+        neither = provenance_graph.Graph(nodes=tuple(node for node in built.nodes if node.key != untimed_edge.source.key),
+                                         edges=tuple(edge for edge in built.edges if edge is not untimed_edge))
+        elsewhere = provenance_graph.untimed_node(quiet_owner, at, projected.timing)
+        moved_node = provenance_graph.Graph(
+            nodes=tuple(node for node in built.nodes if node.key != untimed_edge.source.key) + (elsewhere,),
+            edges=tuple(edge for edge in built.edges if edge is not untimed_edge) + (provenance_graph.Edge(
+                source=elsewhere, kind=provenance_graph.EdgeKind.DERIVES_FROM, target=target),))
+        refuses("a graph with an untimed and a timing node", lambda: provenance_graph.reproduce(both, base),
+                "exactly one untimed node and no timing node")
+        refuses("a graph with neither node", lambda: provenance_graph.reproduce(neither, base), "exactly one timing context")
+        refuses("an untimed node of another entity's chart", lambda: provenance_graph.reproduce(moved_node, base),
+                "another chart")
+        store._db.execute("INSERT OR IGNORE INTO graph_nodes (node_key, kind, payload) VALUES (?, ?, ?)",
+                          provenance_graph.node_to_row(timing_node))
+        store._db.execute("INSERT INTO graph_edges (source_key, kind, target_key, position) VALUES (?, ?, ?, ?)",
+                          (timing_node.key, "derives_from", target.key, 0))
+        refuses("a timing node planted on an untimed item's stored graph", lambda: store.load(base), "do not account")
+
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as folder:
+        path = Path(folder) / "evidence.sqlite"
+        store = natal.natal_store(path)
+        owner = store.entities.persist(_z_person(_z_chart("natal", Z_FIRING)))
+        for rule, version, variant in ((one, 1, "base"), (one, 2, "base"), (three, 1, "reading-a"),
+                                       (three, 1, "reading-b"), (kp_rule, 1, "base")):
+            store.register_rule(registry.rule_version(rule, version, variant))
+        candidate = natal.entity_chart(store, owner, at)
+        chart = natal.kernel_chart(candidate)
+        base = natal.project(store, interpretation.apply_rule(chart, one, 1).records[0], chart, owner, at)
+        reading_b = natal.project(store, interpretation.apply_rule(chart, three, 1).records[1], chart, owner, at)
+        projected = store.load(base)
+        kp_version = store.rule_version(RuleReference(rule=kp_rule, version=1, variant="base"))
+        kp_item = dataclasses.replace(
+            projected, producing_system=ProducingSystem.KP, rule=RuleReference(rule=kp_rule, version=1, variant="base"),
+            declared_strength=kp_version.spec.declared_strength, timing=TimingContext(
+                kind=TimingKind.DASHA, label="a synthetic period", start="2010-01-01", end="2011-01-01"),
+            lineage=dataclasses.replace(projected.lineage, inputs=(dataclasses.replace(
+                projected.lineage.inputs[0], fact="a disjoint synthetic KP fact"),)), provenance=PROVENANCE)
+        kp_id = store.persist(kp_item)
+        lifetime = TimingContext(kind=TimingKind.WINDOW, label="a lifetime", start="1900-01-01", end="2100-12-31")
+
+        # ---- refusals: an unauthorized verifier, and fabricated timing under projection provenance (CEO HOLD, PR #70)
+        def wrapper(item, chart_candidate):
+            return natal.verify_natal_item(item, chart_candidate)
+
+        refuses("a store constructed with a permissive verifier", lambda: EvidenceStore(
+            path, natal_verifier=lambda item, chart_candidate: None), "only the governed")
+        refuses("a store constructed with a wrapper of the governed verifier", lambda: EvidenceStore(
+            path, natal_verifier=wrapper), "only the governed")
+        refuses("a projected item converted to a dated window under its projection provenance",
+                lambda: dataclasses.replace(projected, timing=lifetime),
+                "cannot carry the verified natal projection's provenance")
+        refuses("a dated item claiming only the projection's record schema", lambda: dataclasses.replace(
+            projected, timing=lifetime, provenance=RecordProvenance(source="another source", method="another method",
+                                                                    schema_version="ace-evidence-store-v4")),
+                "cannot carry the verified natal projection's provenance")
+        honest = store.persist(dataclasses.replace(projected, timing=lifetime, provenance=PROVENANCE))
+        evidence_module.require_projection_timing(store.load(honest))  # a dated item with its own provenance passes
+        masked = evidence_store_module.item_to_record(honest, store.load(honest))
+        masked["evidence"]["provenance"] = {"source": evidence_module.NATAL_PROJECTION_PROVENANCE.source,
+                                            "method": evidence_module.NATAL_PROJECTION_PROVENANCE.method,
+                                            "schema_version": evidence_module.NATAL_PROJECTION_PROVENANCE.schema_version}
+        masked_id = EvidenceId.from_number(9_000_000_000)  # never issued here, so no later persist collides
+        masked["id"] = masked_id.value
+        store._db.execute("INSERT INTO evidence_items (evidence_id, entity_id, recomputes, payload) VALUES (?, ?, ?, ?)",
+                          (masked_id.value, owner.value, None, json.dumps(masked, sort_keys=True, separators=(",", ":"))))
+        refuses("a dated row under projection provenance written past persist", lambda: store.load(masked_id),
+                "cannot carry the verified natal projection's provenance")
+
+        # ---- refusals: fabricated independence (U8)
+        relationship = store.classify(base, kp_id)
+        if relationship.dependency is not DependencyClass.UNKNOWN or relationship.conflicting:
+            fail(f"Gate Z: an untimed item and a dated item of the same entity are not kept unknown: {relationship}")
+        refused["independence between an untimed item and another item of its entity"] = True
+        store.relate(base, kp_id)
+        payload = json.dumps(evidence_store_module.relationship_to_record(Relationship(
+            first=base, second=kp_id, dependency=DependencyClass.INDEPENDENT, conflicting=False,
+            basis="different systems, complete recorded lineage, ancestors' included, with disjoint inputs, and no "
+                  "recorded derivation path")), sort_keys=True, separators=(",", ":"))
+        store._db.execute("INSERT INTO evidence_relationships (first_id, second_id, payload) VALUES (?, ?, ?)",
+                          (base.value, kp_id.value, payload))
+        refuses("a persisted relationship claiming that independence", lambda: store.relationships(),
+                "not supported by its source evidence")
+
+        # ---- controls: each refusing check, weakened alone
+        moved = dataclasses.replace(projected, lineage=dataclasses.replace(projected.lineage, inputs=(
+            dataclasses.replace(projected.lineage.inputs[0],
+                                fact=projected.lineage.inputs[0].fact.replace("lord_house 10", "lord_house 3")),)))
+        reassigned = natal.natal_store(path)
+        reassigned._natal_verifier = lambda item, chart_candidate: None
+        refuses("a permissive verifier assigned onto a governed store after construction",
+                lambda: reassigned.persist(moved), "only the governed")
+        reassigned.close()
+        forged_rows = []
+        weakened("a forged fact is persisted when the governed verifier's field comparison is skipped", natal,
+                 "require_expected", lambda item, expected: None,
+                 lambda: bool(forged_rows.append(store.persist(moved)) or forged_rows))
+        weakened("a forged write is admitted through a store with a permissive verifier without the governed binding",
+                 evidence_store_module, "require_governed_verifier", lambda verifier: None,
+                 lambda: bool(EvidenceStore(path, natal_verifier=lambda item, chart_candidate: None).persist(moved)))
+        weakened("a forged row is served on a checked read through a store with a permissive verifier without the "
+                 "governed binding", evidence_store_module, "require_governed_verifier", lambda verifier: None,
+                 lambda: "lord_house 3" in EvidenceStore(path, natal_verifier=lambda item, chart_candidate: None).load(
+                     forged_rows[0]).lineage.inputs[0].fact)
+
+        def masquerade():
+            evidence_id = store.persist(dataclasses.replace(projected, timing=lifetime))
+            stored = evidence_store_module.item_to_record(evidence_id, store.load(evidence_id))
+            return stored["schema"] == evidence_store_module.SCHEMA_VERSION and \
+                stored["evidence"]["provenance"]["source"] == evidence_module.NATAL_PROJECTION_PROVENANCE.source
+
+        weakened("a projected item converted to a lifetime window is stored under projection provenance without "
+                 "require_projection_timing", evidence_module, "require_projection_timing", lambda item: None,
+                 masquerade)
+        fresh = natal.expected_item(owner, at, candidate, RuleReference(rule=one, version=2, variant="base"))
+        plain = EvidenceStore(path)
+        weakened("a plain store persists an untimed item without the verifier requirement", plain, "_require_untimed",
+                 lambda item, candidate: None, lambda: bool(plain.persist(fresh)))
+        plain.close()
+        substitute = natal.kernel_chart(_z_chart("natal", Z_SUBSTITUTE))
+        substituted = interpretation.apply_rule(substitute, three, 1).records[0]
+        weakened("a substituted chart's record is projected without require_entity_chart", natal, "require_entity_chart",
+                 lambda chart, candidate: None, lambda: bool(natal.project(store, substituted, substitute, owner, at)))
+        quiet_store_owner = store.entities.persist(_z_person(_z_chart("natal", Z_QUIET)))
+        quiet_chart = natal.kernel_chart(natal.entity_chart(store, quiet_store_owner, at))
+        quiet = interpretation.apply_rule(quiet_chart, one, 1).records[0]
+        weakened("a record that did not fire is refused only by expected_item without require_fired", natal,
+                 "require_fired", lambda record: None,
+                 lambda: natal.project(store, quiet, quiet_chart, quiet_store_owner, at), handed_to="does not fire")
+        original_kinds = evidence_store_module.NATAL_PLACEMENT_KINDS
+        evidence_store_module.NATAL_PLACEMENT_KINDS = ("planet_in_house", "planet_in_sign")
+        try:
+            weakened("a rule outside the natal placements is persisted without the kind check", store, "_require_untimed",
+                     lambda item, chart_candidate: store._natal_verifier(item, chart_candidate),
+                     lambda: bool(store.persist(fresh)))
+        finally:
+            evidence_store_module.NATAL_PLACEMENT_KINDS = original_kinds
+        record = evidence_store_module.item_to_record(base, store.load(base))
+        dated_shape = json.loads(json.dumps(record))
+        dated_shape["evidence"]["timing"] = {"kind": "window", "label": "x", "start": "2010-01-01", "end": "2011-01-01"}
+        weakened("a v4 record with dated timing is read without the v4 timing check", evidence_store_module,
+                 "untimed_timing_from", lambda data: {"kind": "untimed_natal", "basis": "natal_placement"},
+                 lambda: bool(evidence_store_module.item_from_record(dated_shape)))
+        built = expected_graph(store, base)
+        target = provenance_graph.evidence_node(base, projected)
+        extra_timing = provenance_graph.timing_node(owner, at, TimingContext(
+            kind=TimingKind.WINDOW, label="x", start="2010-01-01", end="2011-01-01"))
+        both = provenance_graph.Graph(nodes=built.nodes + (extra_timing,), edges=built.edges + (provenance_graph.Edge(
+            source=extra_timing, kind=provenance_graph.EdgeKind.DERIVES_FROM, target=target),))
+        weakened("a graph with both nodes reproduces without the exactly-one check", provenance_graph, "untimed_timing",
+                 lambda incoming, chart: UntimedNatal(basis=UntimedBasis.NATAL_PLACEMENT),
+                 lambda: bool(provenance_graph.reproduce(both, base)))
+        weakened("an untimed item is classified independent without withholds_independence", evidence_store_module,
+                 "withholds_independence", lambda first, second: False,
+                 lambda: store.classify(base, kp_id).dependency is DependencyClass.INDEPENDENT)
+        weakened("another rule's untimed item is flagged conflicting when the rule identity is ignored",
+                 evidence_store_module, "untimed_conflict",
+                 lambda first, second: {first.polarity, second.polarity} == {Polarity.POSITIVE, Polarity.NEGATIVE},
+                 lambda: store.classify(base, reading_b).conflicting is True)
+        store.close()
+    return {"classification": "negative_control", "refusals_verified": len(refused),
+            "legitimate_reads_preserved": len(preserved), "controls_rejected": len(controls),
+            "refused": sorted(refused), "preserved": sorted(preserved), "controls": sorted(controls)}
+
+
 def main():
     tee = support.start_transcript()
     preconditions = support.preflight()
@@ -4011,10 +4457,11 @@ def main():
         "W_explanation_boundary": gate_w_explanation_boundary(),
         "X_provisional_sourced_publication": gate_x_provisional_sourced_publication(),
         "Y_rule_application": gate_y_rule_application(),
+        "Z_untimed_natal_evidence": gate_z_untimed_natal_evidence(),
     }
     report = {
         "schema": "evidence_foundations_v1_certification",
-        "adr": "ADR-0115 s4; ADR-0116 s4; ADR-0119 s3, s5; ADR-0120 s4, s6; ADR-0121; ADR-0122 s4, s6; ADR-0124; ADR-0125; ADR-0127; ADR-0130; ADR-0132; ADR-0133 (PROPOSED)",
+        "adr": "ADR-0115 s4; ADR-0116 s4; ADR-0119 s3, s5; ADR-0120 s4, s6; ADR-0121; ADR-0122 s4, s6; ADR-0124; ADR-0125; ADR-0127; ADR-0130; ADR-0132; ADR-0133; ADR-0134",
         "date": str(date.today()),
         "scope": ("Structural certification of the EVIDENCE foundations: the H0 entity model, append-only entity store "
                   "and ENT issuer (ADR-0114 WP-E1), and the H1 event model, append-only event store, separate "
@@ -4025,7 +4472,8 @@ def main():
                   "(ADR-0119 WP-E4), and the H5 interpretation rule registry, its hash-pinned fail-closed snapshot "
                   "and the governed RUL authoring process (ADR-0120 WP-E5; ADR-0121), and the provenance graph "
                   "recorded at evidence-creation time (ADR-0122 WP-E6); and, for INTERPRETATION work package WP-I1, the synthetic "
-                  "application of Parashari fixture rules and its deterministic explanation (ADR-0133, PROPOSED; gate Y)."),
+                  "application of Parashari fixture rules and its deterministic explanation (ADR-0133; gate Y), and the "
+                  "untimed natal evidence projected from it (ADR-0134 WP-I2; gate Z)."),
         "reference": {
             "structure": "the model contracts of ADR-0114 s3, ADR-0115 s5, ADR-0116 s5, ADR-0119 s5, ADR-0120 s6 "
                          "and ADR-0122 s6, exercised on synthetic records",
@@ -4056,13 +4504,15 @@ def main():
             "and transcription author-declared, applicability unassessed, no human verification, no measured performance",
             "a genuine rule, once published, is never projected into evidence; the explanation boundary renders only "
             "trusted data and contains no LLM client, so no generated text is evaluated here",
-            "gate Y (ADR-0133 WP-I1, PROPOSED) evaluates synthetic Parashari fixture rules on synthetic charts and checks "
+            "gate Y (ADR-0133 WP-I1) evaluates synthetic Parashari fixture rules on synthetic charts and checks "
             "the application records and their rendering; no genuine rule is evaluated or applied, no record is persisted "
             "or projected into evidence, and the fixture rules carry no interpretive meaning",
             "RUL issuance is append-only against the base commit in CI; the gate cannot see allocations made in an "
             "unreviewed fork that was never merged",
-            "no evidence item comes from a rule application: evidence items are synthetic records exercising the model, "
-            "and no chart is interpreted",
+            "gate Y's application records are never persisted; gate Z (ADR-0134 WP-I2) projects only fired synthetic "
+            "Parashari fixture rules on synthetic charts into untimed natal evidence, re-derived from the entity chart by "
+            "the certified kernel; every other evidence item is a synthetic record exercising the model, and no chart is "
+            "interpreted",
             "confidence components and historical performance are carried as supplied or absent, never computed; "
             "measured reliability, cross-method and timing convergence are absent",
             "relationships are classified only from each item's own recorded inputs, derivation links and completeness "

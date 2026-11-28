@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | **ACCEPTED (`ADR-0062`) - canonical, machine-checkable current-state record.** Regenerate/refresh on every meaningful implementation task, same discipline as `reports/AI_HANDOFF_CURRENT.md`. |
-| Version | 7.67.0 |
+| Version | 7.68.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-24 (**Stage 2 closed: PR #67 merged at `89a4631`; `ADR-0132` ACCEPTED. S2-3 UNMET; the sourced rules are provisional and citation-only. INTERPRETATION not entered.**) |
+| Last updated | 2026-11-26 (**INTERPRETATION entered (`ADR-0133` ACCEPTED; PR #69 merged at `5715c34`). WP-I1 closed. WP-I2 (`ADR-0134` ACCEPTED: untimed natal evidence) in a draft PR for CEO audit.** D2 inactive; S2-3 UNMET.) |
 | Review cadence | Refresh at the start of a session if stale; not load-bearing if it isn't. |
 
 # ACE execution state
@@ -42,24 +42,24 @@ independently is in these fields plus the pointers they name.
 
 | Field | Value |
 |---|---|
-| `CURRENT_PHASE` | **EVIDENCE exited** (`ADR-0129`, owner-ratified 2026-11-19, evaluated `main` `ad4d5f7`). No further phase is entered. Stages 1 and 2 of the INTERPRETATION prerequisites (`ADR-0130`; `ADR-0131` and `ADR-0132`) are complete as pre-entry work packages; they enter no phase. |
-| `CURRENT_MILESTONE` | **EVIDENCE milestone CLOSED.** INTERPRETATION prerequisites: Stage 1 complete (`ADR-0130`, `main` `0873bba`). Stage 2 complete and technically approved: source-verification preparation (`ADR-0131`, `main` `d60bd4a`) and the provisional citation-only source publication (`ADR-0132` ACCEPTED; PR #67 merged at `89a4631`). No INTERPRETATION entry decision has been taken. |
-| `CURRENT_AUTHORIZED_TASK` | The owner's Stage 2 closure direction: an administrative update of this file and `reports/AI_HANDOFF_CURRENT.md` only, on branch `stage2-closure-canonical-records`, for CEO review; no merge without separate approval. Not authorized: entering INTERPRETATION or beginning its implementation, applying any rule, any use of a sourced rule in evidence, explanation, interpretation, prediction or confidence, prediction issuance, and changes to code, specifications, certification artifacts or other ADRs. |
-| `TASK_OWNER` | CLAUDE (this record update), then CHATGPT (CEO review of its PR), then USER (merge approval). ChatGPT's temporary builder role covered PR #67's one branch and PR only (`ADR-0132` s4); the `ADR-0056` role model applies otherwise. |
-| `STATUS` | Stage 2 merged and technically approved: independent CEO PASS at `5678a53`; `ADR-0132` ACCEPTED on the owner's ratification, quoted exactly in its s5. Published: six provisional RUL identities (5 to 10) in the one global append-only allocation history, with 12 explicitly Sharma- or Jha-specific variants of BPHS verses 109 to 113, in a separately pinned sourced snapshot (`e5a9bfbc...`). **Preserved restriction:** the sourced rules are provisional and citation-only. No rule is applied, and none may be used for evidence, explanation, interpretation, prediction or confidence (`rule_version()` refuses them; only gate X reads the sourced snapshot). **S2-3 UNMET:** no named non-Claude verifier has checked transcription, conditions, polarity or interpretation, so there is no human textual verification; attribution and transcription are author-declared, applicability is not assessed, and no predictive performance is measured. `EVIDENCE_FOUNDATIONS_V1` passes gates A to X. The synthetic pinned snapshot (`ea8d185f...`) and its pin are unchanged, and every certified calculation is unchanged. Limitations carried: L2, the qualifications X1, X2, X3 and I4, every certification non-claim, the three `TRANSIT_V1` overclaims, and prediction issuance without a roadmap placement. The product contract's canonical text is `specs/PROJECT_CHARTER.md` v1.4.0 (owner-ratified, `ADR-0117` and its addendum); the product-objective definition is CLOSED (`ADR-0118` s2). Neither is restated here. |
-| `LAST_COMPLETED_ACTION` | PR #67 merged normally at `89a4631`, pinned to head `16f506f`, after the CEO PASS at `5678a53` and the owner's ratification of `ADR-0132`, recorded in `16f506f` (`docs/DECISION_LOG.md`, `ADR-0132` only). The merged tree equals `16f506f`'s; the branch is kept; nothing was force-pushed. A clean Linux run of `5678a53`: 24 certifiers pass, artifact drift passes on 76 files, pytest 2412 passed and 0 skipped. |
-| `LAST_COMMIT` (main) | `89a4631a9cda630580c1dbbf4b8d20291b14724a` (PR #67 merge, the Stage 2 provisional source publication; parents `d60bd4a` and `16f506f`). |
-| `LAST_COMMIT` (stage2-closure-canonical-records) | This branch's record update, from `main` `89a4631a9cda630580c1dbbf4b8d20291b14724a`. |
-| `LAST_CI_RUN` | `45172595504` at `89a4631`: push to `main`, success on all four jobs. PR #67: `45159910130` at `5678a53` and `45170445684` at `16f506f`, each success on all four jobs. This branch's results are on its review PR. |
-| `LAST_CEO_DECISION` | PASS on PR #67 at `5678a53` (the re-audit after the HOLD at `03c6cbd`); the remaining observations are nonblocking backlog items. The owner then ratified `ADR-0132` and authorized the merge (`ADR-0132` s5). |
-| `NEXT_AUTHORIZED_ACTION` | The CEO's review of this record-update PR; its merge needs separate approval. The next milestone, the INTERPRETATION entry decision, follows a separate CEO architecture and prerequisite review and then a separate owner decision under `Q8_CLOSURE_MATRIX.md`; neither entry nor implementation is authorized. Before any prediction implementation, an owner-approved roadmap placement. The retirement of `SUPPORT_PATHS_V1` gates H and I needs separate approval. |
-| `WAITING_FOR` | CHATGPT: review of this record-update PR, then the INTERPRETATION architecture and prerequisite review. USER: this PR's merge approval. |
-| `BLOCKER` | None for this record update. Any use of the sourced rules beyond provisional citation needs S2-3 (a named non-Claude verifier), which is UNMET; the `ADR-0132` exception covers citation-only publication alone. |
-| `CEO_APPROVAL_REQUIRED` | This record-update PR; the INTERPRETATION architecture and prerequisite review; later, entry into any next phase. |
-| `CLAUDE_ACTION_REQUIRED` | None until directed. Every relevant specification, milestone and review carries the Charter-compliance statement. |
-| `CHATGPT_ACTION_REQUIRED` | Review this record-update PR; when directed, the INTERPRETATION architecture and prerequisite review. |
-| `USER_ACTION_REQUIRED` | Approve or reject this PR's merge. After the CEO's review, the INTERPRETATION entry decision. For any use of a sourced rule beyond citation, a named independent verifier who is not Claude (S2-3). A roadmap placement for prediction issuance before its implementation; a separate authorization for the bounded retirement of `SUPPORT_PATHS_V1` gates H and I. |
-| `HANDOFF_REQUIRED` | None beyond this file and the latest entry in `reports/AI_HANDOFF_CURRENT.md`, which also records PR #67's nonblocking backlog (not exit criteria). |
+| `CURRENT_PHASE` | **INTERPRETATION entered** (`ADR-0133`, owner-ratified 2026-11-26, from `main` `e043e75`), synthetic-only. EVIDENCE exited (`ADR-0129`). Phase exit (Q8 s7) is not decided. |
+| `CURRENT_MILESTONE` | INTERPRETATION WP-I1 CLOSED (PR #69, `main` `5715c34`). WP-I2, explicitly untimed natal evidence (`ADR-0134` ACCEPTED), on branch `interpretation-wp-i2`, in a draft PR for CEO audit. |
+| `CURRENT_AUTHORIZED_TASK` | `ADR-0134` WP-I2: the closed `UntimedNatal(NATAL_PLACEMENT)` timing, v4 untimed records beside unchanged v3 dated records, verified projection from the entity chart through the certified kernel, store integrity on write and read, gate Z; and this minimal records reconciliation. Not authorized: merge, genuine-rule application (D2 inactive), WP-I3, prediction, confidence, real data, production use. |
+| `TASK_OWNER` | CLAUDE (WP-I2 build), then CHATGPT (CEO audit of its draft PR), then USER (merge decision). |
+| `STATUS` | INTERPRETATION entered, synthetic-only. WP-I1 closed: certified house-lord placement (`PARASHARI_HOUSE_LORD_V1`, certified support), closed condition evaluation, synthetic rule application and deterministic explanation (gate Y). `ADR-0133` D1, D3, D4 and D5 accepted; D2 approved only as a future conditional exception and inactive. `ADR-0134` resolves D6: H4 2.1.0 adds explicitly untimed natal evidence (s13). Every genuine rule is still refused (`ADR-0132` s4); S2-3 UNMET. `EVIDENCE_FOUNDATIONS_V1` passes gates A to Y on `main`; gate Z is on the WP-I2 branch. Every certified calculation is unchanged. Limitations carried: L2, the qualifications X1, X2, X3 and I4, every certification non-claim, the three `TRANSIT_V1` overclaims, and prediction issuance without a roadmap placement. The product contract's canonical text is `specs/PROJECT_CHARTER.md` v1.4.0 (owner-ratified, `ADR-0117` and its addendum); the product-objective definition is CLOSED (`ADR-0118` s2). Neither is restated here. |
+| `LAST_COMPLETED_ACTION` | PR #69 (WP-I1) merged normally at `5715c34` after the CEO PASS at `3e60d0b` and the owner's ratification of `ADR-0133` (`e623e55`). Since then: `ADR-0134` recorded and WP-I2 implemented on `interpretation-wp-i2`. |
+| `LAST_COMMIT` (main) | `5715c342a90b8eb6f64ce55c3e0d219c825b94a0` (PR #69 merge; parents `e043e75` and `e623e55`). |
+| `LAST_COMMIT` (interpretation-wp-i2) | This branch, from `main` `5715c342a90b8eb6f64ce55c3e0d219c825b94a0`; check its head live. |
+| `LAST_CI_RUN` | `45806224937` at `5715c34`: push to `main`, success on all four jobs. WP-I2's results are on its draft PR. |
+| `LAST_CEO_DECISION` | PASS on PR #69 at `3e60d0b` (after the H1/H2 HOLD at `a4a9faf`). The CEO's D6 decision packet recommended the design `ADR-0134` ratifies. |
+| `NEXT_AUTHORIZED_ACTION` | The CEO's audit of the WP-I2 draft PR; its merge needs separate owner authorization. WP-I3, D2's activation and INTERPRETATION phase exit each need their own authorization and fixed criteria. Before any prediction implementation, an owner-approved roadmap placement. The retirement of `SUPPORT_PATHS_V1` gates H and I needs separate approval. |
+| `WAITING_FOR` | CHATGPT: the CEO audit of the WP-I2 draft PR. USER: its merge decision. |
+| `BLOCKER` | None for WP-I2. For INTERPRETATION phase exit: source-cited rules cannot be applied while D2 is inactive and S2-3 is UNMET. |
+| `CEO_APPROVAL_REQUIRED` | The WP-I2 draft PR; later, INTERPRETATION's LLM-boundary checkpoint and phase exit (Q8 s7). |
+| `CLAUDE_ACTION_REQUIRED` | None until directed after the CEO audit. Every relevant specification, milestone and review carries the Charter-compliance statement. |
+| `CHATGPT_ACTION_REQUIRED` | Audit the WP-I2 draft PR. |
+| `USER_ACTION_REQUIRED` | After the CEO audit, the WP-I2 merge decision. Later: D2's activation, S2-3 or its owner-ratified replacement, a roadmap placement for prediction issuance, and the bounded retirement of `SUPPORT_PATHS_V1` gates H and I. |
+| `HANDOFF_REQUIRED` | None beyond this file and the latest entry in `reports/AI_HANDOFF_CURRENT.md`. |
 
 ## How to independently verify every field above
 
@@ -79,6 +79,7 @@ exactly as `reports/AI_HANDOFF_CURRENT.md` already requires of itself.
 
 | Version | Date | Change |
 |---|---|---|
+| 7.68.0 | 2026-11-26 | **INTERPRETATION entered (`ADR-0133` ACCEPTED; PR #69 merged at `5715c34`); WP-I1 closed; `ADR-0134` ACCEPTED and WP-I2 in a draft PR.** Current-status fields reconciled (`ADR-0134` s1). |
 | 7.67.0 | 2026-11-24 | **Stage 2 closed: PR #67 merged at `89a4631`; `ADR-0132` ACCEPTED.** S2-3 UNMET; the sourced rules are citation-only; INTERPRETATION not entered. The carried limitations and owner actions omitted from 7.66.0 are restored. |
 | 7.66.0 | 2026-11-21 | Draft Stage 2 PR #67, unmerged; evidence lineage preserved; ChatGPT temporary builder, no independent self-audit. |
 | 7.65.0 | 2026-11-20 | **`ADR-0131`: Stage 2 source-verification preparation, owner-authorized.** W1 pinned by SHA-256; five locators read; rights layers and blockers recorded. |

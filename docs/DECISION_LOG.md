@@ -4,9 +4,9 @@ Document status header - keep current on every edit.
 | Field | Value |
 |---|---|
 | Status | ACTIVE REGISTER. **ACCEPTED (47): ADR-0001, ADR-0002, ADR-0005 through ADR-0012, ADR-0015, ADR-0016, ADR-0017, ADR-0033 through ADR-0037, ADR-0039 through ADR-0042, ADR-0044, ADR-0045, ADR-0046, ADR-0048 through ADR-0069**, owner-ratified across 2026-08-13, 2026-08-14, 2026-08-17, 2026-08-18, 2026-08-19, 2026-08-20, 2026-08-21 and 2026-08-22. **`ADR-0069` ratifies `DP-016` Option 1: H-05 closed via a new hermetic-tier test file (`engine/tests/test_vimshottari_hermetic_baseline.py`) freezing the already-oracle-validated Vimshottari anchor construction for five seed cases, plus a genuine negative control independently verified by actually mutating and reverting the production line in-session. No certified value changes; `certify_vimshottari.py`/`VIMSHOTTARI_V1_certification.json` untouched; M-03 scan surface confirmed unaffected. H-06/H-08/M-02/dasha boundary-proximity indicator not touched.** **`ADR-0068` records the owner's ratification of the FOUNDATION-exit readiness audit: "CEO RATIFICATION — FOUNDATION EXIT. I ratify ADR-0068 and declare FOUNDATION EXITED." All six `Q8_CLOSURE_MATRIX.md` s4 implementation-scope items have a settled, ratified disposition (rise/set, panchanga, `TRIKALAM_V1` certified and checkpointed; H-01/H-02 resolved; boundary-proximity indicators and civil-date rendering explicitly decoupled from the checkpoint by their own ratified decisions, `ADR-0067` and the `ADR-0063` addendum). **FOUNDATION IS FORMALLY EXITED AS OF 2026-08-22.** This does NOT authorize JATAKA - `Q8_CLOSURE_MATRIX.md` s5's own entry criteria (the Dasha roadmap's six steps, `docs/DASHA_CERTIFICATION_ROADMAP.md`, `Status: PROPOSED`) remain separately unmet. No certified calculation changed; no FOUNDATION item reopened; `phase-g-governance` not merged to `main`.** **`ADR-0067` ratifies `DP-015`: H-01/`ADR-0066`'s Q8 carve-out reading confirmed textually valid but novel, no precedent claimed; the carve-out's general reach beyond H-01/H-02 confirmed genuinely ambiguous, not silently generalized to any other FOUNDATION item; boundary-proximity indicators decoupled from the current FOUNDATION-exit checkpoint via `DP-015` §F "Option 3 (AMENDED)", ratified exactly as written - explicitly tracked as future work, not certified, does not gate exit, no future consumer may treat it as certified, any future consumer must certify first or explicitly refuse/gate, no certified values changed, no methodology specified here, a future decision paper determines it.** **`ADR-0066` ratifies `DP-014` Option 2: `find_crossings()` now raises `UnsupportedNodePolicyError` for Rahu/Ketu under any `node_policy` other than the certified mean node, converting H-01's silent transit-event incompleteness into an explicit refusal. No certified `TRANSIT_V1` value changes (confirmed by isolated-venv regeneration - only the already-understood ULP noise and volatile fields differed, and that regenerated artifact was discarded, not committed); Options 1/3 not chosen; Tier-0's Locked scope not touched.** **`ADR-0065` ratifies `DP-013`'s H-02 fix Option 1: `TransitEvent.declared_division`, an additive field classified from the exact `target_longitude`, with a new Gate E (genuine negative control) in `certify_transits.py`. No certified `TRANSIT_V1` value changes; Options 2/3 not chosen; Tier-0's Locked scope not touched.** **`ADR-0063` ratifies `DP-012` Option C: civil-date rendering for dasha boundaries is explicitly deferred, not authorized for implementation - `DP-012` itself unedited, per the established "paper is not the decision" discipline. A 2026-08-22 addendum to `ADR-0063` (**ratified**, `Status: ACCEPTED`, per the owner's "CEO RATIFICATION — ADR-0063 ADDENDUM" instruction) records a narrow qualification - `ADR-0063`'s original claim of independently satisfying `Q8_CLOSURE_MATRIX.md` s4 must not be relied upon without it, following `DP-015`'s finding that the carve-out's general reach is genuinely ambiguous - and explicitly decouples civil-date rendering from the current FOUNDATION-exit checkpoint, matching `ADR-0067`'s equivalent treatment of boundary-proximity indicators.** `ADR-0064` ratifies `DP-013` Option C (independent reference + PyJHora) and records the executed reproduction: H-02 independently confirmed for the Sun (2 of 12 sankranti, exact match to the original audit), PyJHora recorded as an evidenced limitation (cannot resolve the defect's own precision scale, by either method tested) rather than manufactured agreement. `TRANSIT_V1` unmodified by the reproduction itself; **pushed and CI-confirmed green** (run `32375941348`, all four jobs, both new steps genuinely executed under the hash-pinned oracle environment). A fix option was chosen 2026-08-21 - see `ADR-0065`.** **`ADR-0062` adds the permanent ACE execution-state mechanism (`docs/ACE_EXECUTION_STATE.md`) plus an explicit prohibition on the user relaying reports between Claude and ChatGPT - operationalizes `ADR-0056`'s already-ratified s11 point 3, does not reopen it.** **`ADR-0060` ratifies `DP-011` Option C seeded by Option B: Rahu Kalam/Yamaganda/Gulika become named, profile-selectable variants; the PyJHora 4.8.7 `trikalam()` convention is independently inspected, transcribed and frozen as the seed variant `PYJHORA_TRIKALAM_V1`. Authorizes only that one variant's implementation/certification work - does not itself certify it, does not authorize a second variant, and does not authorize Muhurta-specific consumption. `ADR-0061` records that implementation as built, locally verified, then **pushed and CI-confirmed green** (run `32358109807`, all four jobs, oracle job genuinely executing `TRIKALAM_V1`'s Gate F) - a 2026-08-20 evidence addendum records the CI confirmation and a recovered, expected M-03 drift finding (177->180, same class as `ADR-0053`/`ADR-0054`); a second 2026-08-20 addendum records a genuine ULP battery added to Gate C (exact sunrise weekday-rollover instant, with negative control), remediating a CEO-audit finding that the prior Gate C was a pinning/tolerance check, not a true ULP battery - **pushed and CI-confirmed green** (run `32361308330`, all four jobs, oracle-job log directly confirming `ulp_boundary_checked: True, ulp_negative_control_verified: True`). A third 2026-08-20 addendum records the **owner's acceptance of `TRIKALAM_V1`'s FOUNDATION per-capability checkpoint** - `TRIKALAM_V1` is now FOUNDATION checkpoint-accepted / production-certified. FOUNDATION's own phase-exit criteria remain open: civil-date rendering is now explicitly deferred by decision (`ADR-0063`, `DP-012` Option C), not implemented; H-01 and H-02 still lack any ratified decision paper.** **`ADR-0056` formalizes the four-role AI collaboration model (USER/CLAUDE/CHATGPT/CODEX); Codex is explicitly excluded from the ACE workflow. `ADR-0057` (CEO-audit HOLD remediation) adds ACE interaction mode and mandatory session-start audit to `specs/CLAUDE_WORKFLOW.md`. `ADR-0058` adds an execution-continuity rule (do not stop prematurely; five terminal stop conditions) to the same document; its `specs/CLAUDE_WORKFLOW.md` edit is committed (`20a9589e3d567bbf86e36b13bf2d61ca734e728e`). `ADR-0059` records the CEO-approved `PANCHANGA_V1` Gate F (genuine PyJHora external-oracle comparison for tithi/yoga/karana, nakshatra explicitly excluded): implemented, committed (`4177d6108236e64d07f6b23499307001f0d7c421`), pushed, and **CI-confirmed green** (run `32242462766`, all four jobs, oracle job genuinely executing Gate F: 66 comparisons, 0 mismatches, negative control verified) under the hash-pinned oracle environment. A 2026-08-19 evidence addendum to `ADR-0059` records the owner's acceptance of Panchanga's FOUNDATION per-capability checkpoint (`Q8_CLOSURE_MATRIX.md` s4); this does not close FOUNDATION's own phase-exit criteria, which still require Rahu Kalam/Yamaganda/Gulika, H-01, and H-02.** Tier-0 is **FORMALLY LOCKED** (ADR-0034), the only s12 Locked artifact. The registry vargas and the sign conventions are **owner-ratified but NOT s12 Locked** (ADR-0035 D3, ADR-0036 D3). **Q8 is now CLOSED** (ADR-0048); **Phase G exited and FOUNDATION entry criteria were independently confirmed satisfied** (this session's evidence reports). **FOUNDATION's first work package, rise/set, is CERTIFIED (`ADR-0054`, `RISE_SET_V1`)**: five owner-ratified conventions (upper-limb disc, standard -50' refraction, elevation accounted for, structured NO_RISE/NO_SET, conventions in `CalculationProfile`/`BirthData`), zero calculation impact on any existing certified capability, two genuine defects found and fixed during its own construction (recorded in the entry). **Panchanga classification-only work (tithi/vara/nakshatra/yoga/karana at a given instant) is now authorised (`ADR-0055`)**: engine-wide 1e-10 promote-up boundary convention, vara consumes the certified rise/set layer, element transition-timing deferred. **Rahu Kalam/Yamaganda/Gulika: `DP-011` (`ADR-0055` item 2's authorized paper) is now ratified (`ADR-0060`, Option C seeded by Option B) and its seed variant `PYJHORA_TRIKALAM_V1` is implemented and CI-confirmed (`ADR-0061`); a second variant remains explicitly NOT authorised.** No later phase (Muhurta, Varshaphal, Prashna, Mundane, BTR, Interpretation, Convergence, UI, ML) is thereby authorised - `docs/Q8_CLOSURE_MATRIX.md` s4 requires its own per-capability checkpoint for each. **Still PROPOSED: ADR-0003, ADR-0004, ADR-0013, ADR-0014, ADR-0018 through ADR-0032, ADR-0038, and ADR-0047.** **`ADR-0079` (`KP_SIGNIFICATOR_V1` certification-integrity repair) is now `ACCEPTED`, ratified 2026-08-28 per the owner's "CEO AUTHORIZATION — ADR-0079 RATIFICATION" instruction, recorded in the "Ratification of ADR-0079" sub-entry - `DP-030`'s own separate primary-source question remains fully open and unaddressed by this ratification.** `ADR-0047`'s originally-reported G5 sample accounting (22/22 complete, 16 independent, 4 ADB_MATCH, 2 unresolved, 14 events) was briefly, and **erroneously**, corrected to "12/22 attempted" by a 2026-08-18 addendum that has since been found (owner-directed forensic reconciliation) to rest on a conflation of the 22-person sample with an unrelated 5-person bridging pilot; a second, later 2026-08-18 addendum **restores 22/22 as the authoritative state** (16 independent, 4 ADB_MATCH: Fichera/Aimar/Serantoni/Bobet, 2 unresolved: Veen/Perquier, 14 independent events) and marks the "12/22" addendum SUPERSEDED/RETRACTED, preserved unedited. `ADR-0047` remains PROPOSED, not ratified, throughout. Ratification is per-entry; an owner existing is not the register being ratified. Includes the ADR-0018 remote-CI evidence addendum (2026-08-11), the ADR-0047 "12/22" addendum (2026-08-18, now retracted), and the ADR-0047 restoration addendum (2026-08-18). |
-| Version | 4.20.0 |
+| Version | 4.21.0 |
 | Owner | TBD (see docs/OPEN_QUESTIONS.md Q1) |
-| Last updated | 2026-11-26 (ADR-0133 s6: the CEO HOLD on PR #69 quoted and its remediation recorded; D6 as the CEO directs; still PROPOSED, not ratified) |
+| Last updated | 2026-11-26 (ADR-0133 ACCEPTED (PR #69, `main` `5715c34`); ADR-0134 ACCEPTED: D6 untimed natal evidence and WP-I2, criteria U1 to U10 fixed before coding) |
 | Review cadence | TBD |
 
 # Decision Log (ADR register)
@@ -13465,6 +13465,117 @@ prediction, confidence, production evidence, a human-verification claim, or the 
 - **Consequences:** on ratification, INTERPRETATION is entered with WP-I1 as its first work package. D2's activation and D6 remain for
   the owner.
 - **Evidence:** the WP-I1 draft PR, its tests, regenerated certificates and CI. The direction in s1 is session input, not a repository file.
+
+---
+
+## ADR-0134 - D6 resolved: explicitly untimed natal evidence, an additive H4 amendment, and work package WP-I2 (verified natal projection), with its acceptance criteria fixed before coding
+
+- **Date:** 2026-11-26
+- **Status:** **ACCEPTED, on the owner's authorization quoted in s1.** It records the owner's D6 decisions and the additive H4 amendment,
+  and fixes WP-I2's acceptance criteria before coding, as that authorization requires. WP-I2 merges only on an independent CEO PASS and
+  the owner's separate authorization. D2 stays inactive and S2-3 remains UNMET.
+- **Context:**
+  - `ADR-0133` D6 (ACCEPTED) kept H4's timing contract and deferred untimed evidence to a future authorized work package. H4 s3 and
+    `ADR-0119` AC4 require a structured timing context on every evidence item, and `TimingContext` admits a dasha, a transit or a window
+    only, with dates. A natal placement rule has none.
+  - The CEO's read-only D6 decision packet at `main` `5715c342a90b8eb6f64ce55c3e0d219c825b94a0` proposed a closed `UntimedNatal`
+    variant and criteria U1 to U10. Its text is session input, not a repository file.
+
+### 1. The owner's authorization (exact text)
+
+```text
+# ACE — ADR-0134 Ratification and WP-I2 Authorization
+
+I authorize the CEO-approved D6 architecture and WP-I2 from `main` `5715c342a90b8eb6f64ce55c3e0d219c825b94a0`.
+
+Ratify ADR-0134 and the additive H4 amendment with these decisions:
+
+- D6-a: Adopt the closed `UntimedNatal(NATAL_PLACEMENT)` representation.
+- D6-b: Use v4 for untimed evidence. Preserve existing v3 dated records, serialization, graph identities and historical reads without rewriting.
+- D6-c: Preserve dated conflict behavior. Untimed versus dated timing is not comparable. Preserve opposite-polarity, fired variants of the same rule version and chart as disagreement without claiming temporal overlap or independence.
+- D6-d: Authorize WP-I2 with U1–U10 from the reviewed packet, amended for these decisions.
+
+Before coding, fix the amended acceptance criteria in ADR-0134.
+
+Require verified projection from the entity's recorded birth inputs through the certified kernel. Enforce equivalent validation on persistence and checked reads; direct store calls must not bypass projection integrity. Include controls for forged facts, substituted charts, unsupported timing, mixed schemas, graph tampering and fabricated independence.
+
+Preserve gates A–Y and all certified calculation lineage. Add Gate Z with meaningful negative controls and mutation detection.
+
+D2 remains inactive. S2-3 remains UNMET. No genuine-rule application, real data, prediction, confidence or production activation.
+
+I separately authorize minimal reconciliation of the canonical execution-state and handoff records within this work package. Correct current-status metadata without rewriting historical certification evidence merely for status.
+
+Implement, certify, commit and push one draft PR for CEO audit. Return exact SHAs, CI, gate results and material blockers. No merge or force-push without separate authorization.
+
+Do not reopen WP-I1 or begin WP-I3.
+```
+
+### 2. What is decided
+
+- **D6-a.** An evidence item's timing is exactly one of a `TimingContext` (unchanged: a dasha, a transit or a window, with dates) or an
+  `UntimedNatal` whose basis is `NATAL_PLACEMENT`, its only value. Untimed is a stated fact about the rule, never a missing or unknown
+  timing, and it carries no label, date or window.
+- **D6-b.** Untimed items are stored under a new record schema, `ace-evidence-store-v4`. Dated items, rule versions and relationships
+  keep `ace-evidence-store-v3`, unchanged. No existing record, graph identity or read is rewritten.
+- **D6-c.** Dated conflict behaviour is unchanged. A dated and an untimed item are not comparable, so neither conflicts with the other.
+  Two untimed items conflict only when they are opposite-polarity variants of the same rule version on the same chart, and that
+  disagreement is kept without any claim of temporal overlap. No untimed item is ever classified as independent of another item about
+  the same entity.
+- **D6-d.** WP-I2 is authorized, with criteria U1 to U10 in s4.
+- **The H4 amendment** is H4 s13 (H4 2.0.0 to 2.1.0), additive. It records that `UntimedNatal` is a structured timing context, so
+  `ADR-0119` AC4 is satisfied without editing it, and it extends the recording schema `ADR-0122` D1 adopted with one node kind,
+  UNTIMED. No other H4 sentence changes.
+
+**Two placements the existing gates require**, stated so they are reviewed rather than assumed:
+
+1. **The store verifies through an injected verifier.** The ratified AC14 import gate (`engine/tests/test_evidence_wp_e4.py`) forbids
+   every evidence module from importing a calculation package, so the evidence store cannot run the kernel itself, and importing around
+   that gate is not permitted. A store therefore accepts untimed items only when it is constructed with the natal verifier: a store
+   without it refuses every untimed item, on write and on every checked read. A store with it re-derives each untimed item from its
+   entity's recorded birth input through the certified kernel, on persist and on every read.
+2. **The projection is its own package, `engine/projection/`.** WP-I1's import allowlist for `engine/interpretation/` (`ADR-0133` I7,
+   checked by gate Y) stays exactly as it is, and gate Y's code and output stay byte-identical. The projection package is the bounded
+   exception: it alone may write untimed synthetic evidence.
+
+### 3. WP-I2 scope
+
+- **Model and store:** `engine/evidence/evidence.py` (`UntimedNatal`, `UntimedBasis`), `engine/evidence/evidence_store.py` (the v4
+  schema, the verifier hook, the D6-c rules), `engine/evidence/provenance_graph.py` (the UNTIMED node kind) and
+  `engine/evidence/explanation_boundary.py` (the untimed timing sentence).
+- **Projection:** `engine/projection/natal.py`: the verifier, and the projection of a verified, fired application record.
+- **Certification:** gate Z in `scripts/certify_evidence_foundations.py`. Gates A to Y are unchanged.
+- **Records:** the minimal reconciliation of `docs/ACE_EXECUTION_STATE.md` and `reports/AI_HANDOFF_CURRENT.md` that s1 authorizes.
+
+### 4. Acceptance criteria (fixed before coding)
+
+| # | Criterion | Measured by |
+|---|---|---|
+| U1 | An item's timing is exactly a `TimingContext` or `UntimedNatal(NATAL_PLACEMENT)` | Refused: no timing, another basis (including "unknown"), a basis that is not the enum, and any label, date or window on an untimed item |
+| U2 | `UntimedNatal` only for `JATAKA`, `PARASHARI`, varga `D1`, and a rule whose every condition and activation condition is `house_lord_in_house`, `planet_in_house` or `planet_in_sign` | Refused for another domain, system or varga, and for a rule with any other condition kind |
+| U3 | Dated items, rule versions and relationships serialize exactly as v3; untimed items as v4, timing `{"kind": "untimed_natal", "basis": "natal_placement"}` | A dated record is byte-identical to its pre-WP-I2 form; refused: a v3 record with untimed timing, a v4 record with dated timing, a v4 timing with any other key or value |
+| U4 | Historical reads unchanged | A plain store reads dated items exactly as before; gates A to Y byte-identical to `main` |
+| U5 | Projection only from a verified, fired application record of a published synthetic Parashari rule, on the chart the certified kernel computes from the entity chart's recorded birth input | Refused: a record that did not fire, an unverifiable or tampered record, a genuine rule, and a substituted chart (an origin that is not that recomputation) |
+| U6 | Equivalent integrity on persistence and every checked read: direct store calls cannot bypass it | A store without the verifier refuses to write or read any untimed item; with it, forged facts, chart context, polarity, strength, lineage completeness or chart are refused on persist and on read, however the row was written |
+| U7 | An untimed item records exactly one UNTIMED node (`entity`, `entity_revision`, `chart_label`, `kind`, `basis`) and no TIMING node; dated graphs unchanged | Refused: neither node, both, and a tampered or unaccounted node row |
+| U8 | D6-c: dated against dated unchanged; dated against untimed never conflicting; untimed against untimed conflicting only for opposite-polarity variants of one rule version on one chart; an untimed item never independent of another item about the same entity | Each case as stated; a persisted relationship claiming otherwise is refused on read |
+| U9 | Explanation and no prediction: an untimed item's timing segment renders one fixed sentence with no date; no engine code reads an item's timing dates outside the dated branches of the conflict rule, the timing sentence and the timing node | A static scan of `engine/`; no prediction, confidence or performance computed; synthetic data only |
+| U10 | Certification preserved | Gates A to Y byte-identical; gate Z with refusals and single-check weakening controls for forged facts, substituted charts, unsupported timing, mixed schemas, graph tampering and fabricated independence; a mutation audit; C2, C3, C4, artifact drift, and pytest with zero skips |
+
+### 5. What this entry does not do
+
+- **No genuine rule is applied.** D2 stays inactive, `ADR-0132` s4 holds, S2-3 remains UNMET, and `rule_version()` still refuses every
+  genuine rule.
+- **No prediction, confidence, real data or production use.** Untimed evidence can never be issued as a prediction (H6 requires a
+  window). Every chart is synthetic.
+- **WP-I1 is not reopened and WP-I3 is not begun.** INTERPRETATION's phase exit still needs source-cited rules applied, which needs D2's
+  activation, and is not decided here.
+- **It edits no earlier entry**, and changes no ACCEPTED H4 sentence: s13 is additive.
+
+- **Decision:** as s2 to s4.
+- **Consequences:** untimed natal evidence can be persisted, read, graphed, related and explained without any fabricated timing; every
+  dated record and gate is unchanged.
+- **Evidence:** the WP-I2 draft PR, its tests, regenerated certificates and CI. The owner's text exists as session input, not as a
+  repository file.
 
 ---
 

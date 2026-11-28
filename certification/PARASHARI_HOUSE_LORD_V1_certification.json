@@ -1,7 +1,7 @@
 {
  "schema": "parashari_house_lord_v1_certification",
  "adr": "ADR-0133 (PROPOSED)",
- "date": "2026-11-26",
+ "date": "2026-11-28",
  "scope": "PARASHARI_HOUSE_LORD_V1: for a natal D1 chart under the PARASHARI_LAHIRI profile, each house's whole-sign sign, its classical lord, the lord's sign and whole-sign house, and each of the nine grahas' sign and whole-sign house. The module under certification is engine/parashari/house_lord.py.",
  "rule": {
   "kind": "engine/parashari/house_lord.py - production module",
@@ -186,7 +186,7 @@
    "residual_limitation": "coordinated edits to every repository-held trust record cannot be cryptographically prevented by an in-repository trust anchor; only upstream provenance would anchor this, and it is out of M1 scope"
   },
   "anti_fitting": {
-   "modules_scanned": 227,
+   "modules_scanned": 229,
    "findings": [],
    "justified_exceptions": [
     "Frozen holdout declarations and oracle imports are permitted only outside engine/; all scanned sources remain subject to suspicious-identifier detection."
