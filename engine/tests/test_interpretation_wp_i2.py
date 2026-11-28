@@ -74,7 +74,8 @@ def test_untimed_records_are_v4_and_dated_records_stay_v3(world):
     record = item_to_record(untimed_id, untimed)
     assert record["schema"] == UNTIMED_SCHEMA_VERSION
     assert record["evidence"]["timing"] == {"kind": "untimed_natal", "basis": "natal_placement"}
-    dated = dataclasses.replace(untimed, timing=TimingContext(TimingKind.WINDOW, "w", "2010-01-01", "2011-01-01"))
+    dated = dataclasses.replace(untimed, timing=TimingContext(TimingKind.WINDOW, "w", "2010-01-01", "2011-01-01"),
+                                provenance=PROV)
     dated_id = store.persist(dated)
     dated_record = item_to_record(dated_id, store.load(dated_id))
     assert dated_record["schema"] == SCHEMA_VERSION == "ace-evidence-store-v3"
@@ -144,7 +145,7 @@ def test_d6c_variants_disagree_without_independence_or_timing_conflict(world):
     other = store.classify(base, reading_b)
     assert not other.conflicting and other.dependency is not DependencyClass.INDEPENDENT
     dated = store.persist(dataclasses.replace(store.load(base), polarity=Polarity.NEGATIVE, timing=TimingContext(
-        TimingKind.WINDOW, "w", "2010-01-01", "2011-01-01")))
+        TimingKind.WINDOW, "w", "2010-01-01", "2011-01-01"), provenance=PROV))
     assert not store.classify(dated, base).conflicting
 
 
@@ -156,10 +157,32 @@ def test_the_graph_records_one_untimed_node_and_reproduces_the_item(world):
     assert store.reproduce(untimed_id) == provenance_graph.recorded_fields(store.load(untimed_id))
 
 
+def test_only_the_governed_verifier_is_accepted(world):
+    """CEO HOLD on PR #70: an ordinary constructor call cannot install a permissive verifier."""
+
+    _store, _owner, _chart, path = world
+    with pytest.raises(StoreError, match="only the governed"):
+        EvidenceStore(path, natal_verifier=lambda item, candidate: None)
+    with pytest.raises(StoreError, match="only the governed"):
+        EvidenceStore(path, natal_verifier=lambda item, candidate: natal.verify_natal_item(item, candidate))
+    EvidenceStore(path, natal_verifier=natal.verify_natal_item).close()
+
+
+def test_projected_evidence_cannot_be_redated_under_its_provenance(world):
+    """CEO HOLD on PR #70: fabricated timing cannot masquerade as verified natal projection."""
+
+    store, owner, chart, _path = world
+    item = store.load(_project(store, owner, chart, ONE, 1))
+    lifetime = TimingContext(TimingKind.WINDOW, "a lifetime", "1900-01-01", "2100-12-31")
+    with pytest.raises(EvidenceModelError, match="projection's provenance"):
+        dataclasses.replace(item, timing=lifetime)
+    assert store.persist(dataclasses.replace(item, timing=lifetime, provenance=PROV))
+
+
 def test_gate_z_passes_with_its_refusals_and_controls():
     root = Path(__file__).resolve().parents[2]
     sys.path[:0] = [str(root), str(root / "scripts")]
     import certify_evidence_foundations
 
     result = certify_evidence_foundations.gate_z_untimed_natal_evidence()
-    assert (result["refusals_verified"], result["legitimate_reads_preserved"], result["controls_rejected"]) == (34, 9, 10)
+    assert (result["refusals_verified"], result["legitimate_reads_preserved"], result["controls_rejected"]) == (40, 9, 12)

@@ -50,6 +50,7 @@ from __future__ import annotations
 
 import json
 import sqlite3
+import sys
 from pathlib import Path
 
 from engine.evidence.entity import ChartCandidate, DataClass, ParentLink, RecordProvenance
@@ -74,6 +75,21 @@ UNTIMED_SCHEMA_VERSION = "ace-evidence-store-v4"
 UNTIMED_KIND = "untimed_natal"
 #: The only condition kinds an untimed item's rule may have: each is a natal placement (ADR-0134 U2).
 NATAL_PLACEMENT_KINDS = ("house_lord_in_house", "planet_in_house", "planet_in_sign")
+#: The one natal verifier a store may hold: the governed `verify_natal_item` of engine/projection/natal.py (ADR-0134 U6).
+#: It is found by identity in the already-loaded module, never imported here: this module may not import the kernel (AC14).
+GOVERNED_NATAL_VERIFIER = ("engine.projection.natal", "verify_natal_item")
+
+
+def require_governed_verifier(verifier) -> None:
+    """Refuse any natal verifier but the governed one, by identity: a permissive callback, a wrapper or a copy is refused
+    (ADR-0134 U6; CEO HOLD on PR #70)."""
+
+    module_name, function_name = GOVERNED_NATAL_VERIFIER
+    module = sys.modules.get(module_name)
+    governed = None if module is None else module.__dict__.get(function_name)
+    if governed is None or verifier is not governed:
+        raise StoreError(f"a store's natal verifier is only the governed {module_name}.{function_name}; any other "
+                         f"callback is refused (ADR-0134 U6)")
 
 _APPEND_ONLY = ("registered_rule_versions", "evidence_items", "evidence_relationships", "graph_nodes",
                 "graph_edges")
@@ -344,6 +360,8 @@ class EvidenceStore:
         """`natal_verifier(item, candidate)` re-derives an untimed item from its chart through the certified kernel and
         raises if it differs (engine/projection/natal.py). Without it, every untimed item is refused (ADR-0134 U6)."""
 
+        if natal_verifier is not None:
+            require_governed_verifier(natal_verifier)
         self.path = Path(path)
         self._natal_verifier = natal_verifier
         self.entities = EntityStore(self.path)
@@ -586,6 +604,7 @@ class EvidenceStore:
         if self._natal_verifier is None:
             raise StoreError("an untimed natal item is written and read only by a store holding the natal verifier "
                              "(ADR-0134 U6)")
+        require_governed_verifier(self._natal_verifier)
         published = rule_registry.pinned().lookup(item.rule.rule, item.rule.version, item.rule.variant)
         kinds = [condition.kind for condition in (published.condition, *published.activation_conditions)]
         if any(kind not in NATAL_PLACEMENT_KINDS for kind in kinds):
@@ -992,5 +1011,6 @@ class EvidenceStore:
         return {**{kind: tuple(pairs) for kind, pairs in groups.items()}, "conflicting": tuple(conflicts)}
 
 
-__all__ = ["SCHEMA_VERSION", "UNTIMED_SCHEMA_VERSION", "NATAL_PLACEMENT_KINDS", "EvidenceStore", "EvidenceModelError", "item_to_record", "item_from_record",
+__all__ = ["SCHEMA_VERSION", "UNTIMED_SCHEMA_VERSION", "NATAL_PLACEMENT_KINDS", "GOVERNED_NATAL_VERIFIER",
+           "require_governed_verifier", "EvidenceStore", "EvidenceModelError", "item_to_record", "item_from_record",
            "rule_to_record", "rule_from_record", "relationship_to_record", "relationship_from_record"]

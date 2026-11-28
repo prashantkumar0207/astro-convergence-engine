@@ -289,6 +289,22 @@ class UntimedNatal:
 
 #: The varga, domain and system an untimed item must have (ADR-0134 U2).
 UNTIMED_VARGA = "D1"
+#: The provenance of every item the verified natal projection makes (engine/projection/natal.py). Projected evidence is
+#: untimed by construction, so no dated item may carry any field of it (CEO HOLD on PR #70).
+NATAL_PROJECTION_PROVENANCE = RecordProvenance(source="the verified natal projection (ADR-0134)",
+                                               method="certified-kernel recomputation of the entity chart",
+                                               schema_version="ace-evidence-store-v4")
+
+
+def require_projection_timing(item) -> None:
+    """A dated item never claims the verified natal projection made it: fabricated timing cannot masquerade as projected
+    natal evidence (ADR-0134 U5; CEO HOLD on PR #70)."""
+
+    if type(item.timing) is not UntimedNatal and any(
+            item.provenance.__getattribute__(name) == NATAL_PROJECTION_PROVENANCE.__getattribute__(name)
+            for name in ("source", "method", "schema_version")):
+        raise EvidenceModelError("a dated item cannot carry the verified natal projection's provenance: projected "
+                                 "evidence is untimed (ADR-0134 U5)")
 
 
 @dataclass(frozen=True, slots=True)
@@ -388,6 +404,7 @@ class EvidenceItem:
                 self.domain is not Domain.JATAKA or self.producing_system is not ProducingSystem.PARASHARI or
                 self.chart_context.varga != UNTIMED_VARGA):
             raise EvidenceModelError("an untimed natal item is a Jataka, Parashari item on the D1 chart (ADR-0134 U2)")
+        require_projection_timing(self)
         _member("polarity", self.polarity, Polarity)
         if self.historical_performance is not None and not isinstance(self.historical_performance, Performance):
             raise EvidenceModelError("historical performance is Performance or explicitly absent")

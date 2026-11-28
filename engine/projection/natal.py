@@ -26,10 +26,10 @@ from pathlib import Path
 import engine.evidence.rule_registry as rule_registry
 from engine.astronomy.profile import PARASHARI_LAHIRI
 from engine.calculations.calculations import calculate
-from engine.evidence.entity import ChartCandidate, DataClass, RecordProvenance
+from engine.evidence.entity import ChartCandidate, DataClass
 from engine.evidence.evidence import (
-    CONFIDENCE_COMPONENTS, CalculatedInput, ChartContext, ChartReference, Confidence, Domain, EvidenceItem, Lineage,
-    ProducingSystem, RuleReference, UntimedBasis, UntimedNatal,
+    CONFIDENCE_COMPONENTS, NATAL_PROJECTION_PROVENANCE, CalculatedInput, ChartContext, ChartReference, Confidence, Domain,
+    EvidenceItem, Lineage, ProducingSystem, RuleReference, UntimedBasis, UntimedNatal,
 )
 from engine.evidence.evidence_identifiers import EvidenceId, RuleId
 from engine.evidence.evidence_store import UNTIMED_SCHEMA_VERSION, EvidenceStore
@@ -38,10 +38,9 @@ from engine.interpretation import application
 from engine.interpretation.conditions import Evaluation, evaluate
 from engine.models.birth_data import BirthData
 
-#: Where every projected item says it came from.
-PROJECTION_PROVENANCE = RecordProvenance(source="the verified natal projection (ADR-0134)",
-                                         method="certified-kernel recomputation of the entity chart",
-                                         schema_version=UNTIMED_SCHEMA_VERSION)
+#: Where every projected item says it came from. Defined in the evidence model, which refuses it on any dated item.
+PROJECTION_PROVENANCE = NATAL_PROJECTION_PROVENANCE
+assert PROJECTION_PROVENANCE.schema_version == UNTIMED_SCHEMA_VERSION
 _LOCAL_DATETIME = re.compile(r"(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})")
 
 
@@ -138,7 +137,12 @@ def verify_natal_item(item: EvidenceItem, candidate: ChartCandidate) -> None:
 
     if type(item) is not EvidenceItem or type(item.timing) is not UntimedNatal:
         raise ProjectionError("the natal verifier checks untimed natal evidence items only")
-    expected = expected_item(item.entity, item.chart, candidate, item.rule)
+    require_expected(item, expected_item(item.entity, item.chart, candidate, item.rule))
+
+
+def require_expected(item: EvidenceItem, expected: EvidenceItem) -> None:
+    """The item is, field for field, its chart's certified natal evidence."""
+
     differing = [field.name for field in fields(EvidenceItem)
                  if item.__getattribute__(field.name) != expected.__getattribute__(field.name)]
     if differing:

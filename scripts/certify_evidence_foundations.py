@@ -3990,6 +3990,7 @@ def gate_y_rule_application():
 
 # --------------------------------------------------------------- Gate Z: untimed natal evidence, WP-I2 (ADR-0134)
 
+import engine.evidence.evidence as evidence_module  # noqa: E402
 import engine.evidence.evidence_store as evidence_store_module  # noqa: E402
 from engine.evidence.evidence_identifiers import EVD_FAMILY  # noqa: E402
 from engine.evidence.evidence import UNTIMED_VARGA, UntimedBasis, UntimedNatal  # noqa: E402
@@ -4136,7 +4137,7 @@ def gate_z_untimed_natal_evidence():
         preserved["a reopened natal store reads every untimed item again, verified"] = True
         projected = store.load(base)
         window = TimingContext(kind=TimingKind.WINDOW, label="a synthetic window", start="2010-01-01", end="2011-01-01")
-        dated = dataclasses.replace(projected, timing=window, polarity=Polarity.NEGATIVE)
+        dated = dataclasses.replace(projected, timing=window, polarity=Polarity.NEGATIVE, provenance=PROVENANCE)
         dated_id = store.persist(dated)
         dated_record = evidence_store_module.item_to_record(dated_id, store.load(dated_id))
         if dated_record["schema"] != evidence_store_module.SCHEMA_VERSION or dated_record["evidence"]["timing"] != {
@@ -4299,8 +4300,36 @@ def gate_z_untimed_natal_evidence():
             declared_strength=kp_version.spec.declared_strength, timing=TimingContext(
                 kind=TimingKind.DASHA, label="a synthetic period", start="2010-01-01", end="2011-01-01"),
             lineage=dataclasses.replace(projected.lineage, inputs=(dataclasses.replace(
-                projected.lineage.inputs[0], fact="a disjoint synthetic KP fact"),)))
+                projected.lineage.inputs[0], fact="a disjoint synthetic KP fact"),)), provenance=PROVENANCE)
         kp_id = store.persist(kp_item)
+        lifetime = TimingContext(kind=TimingKind.WINDOW, label="a lifetime", start="1900-01-01", end="2100-12-31")
+
+        # ---- refusals: an unauthorized verifier, and fabricated timing under projection provenance (CEO HOLD, PR #70)
+        def wrapper(item, chart_candidate):
+            return natal.verify_natal_item(item, chart_candidate)
+
+        refuses("a store constructed with a permissive verifier", lambda: EvidenceStore(
+            path, natal_verifier=lambda item, chart_candidate: None), "only the governed")
+        refuses("a store constructed with a wrapper of the governed verifier", lambda: EvidenceStore(
+            path, natal_verifier=wrapper), "only the governed")
+        refuses("a projected item converted to a dated window under its projection provenance",
+                lambda: dataclasses.replace(projected, timing=lifetime),
+                "cannot carry the verified natal projection's provenance")
+        refuses("a dated item claiming only the projection's record schema", lambda: dataclasses.replace(
+            projected, timing=lifetime, provenance=RecordProvenance(source="another source", method="another method",
+                                                                    schema_version="ace-evidence-store-v4")),
+                "cannot carry the verified natal projection's provenance")
+        honest = store.persist(dataclasses.replace(projected, timing=lifetime, provenance=PROVENANCE))
+        masked = evidence_store_module.item_to_record(honest, store.load(honest))
+        masked["evidence"]["provenance"] = {"source": evidence_module.NATAL_PROJECTION_PROVENANCE.source,
+                                            "method": evidence_module.NATAL_PROJECTION_PROVENANCE.method,
+                                            "schema_version": evidence_module.NATAL_PROJECTION_PROVENANCE.schema_version}
+        masked_id = EvidenceId.from_number(9_000_000_000)  # never issued here, so no later persist collides
+        masked["id"] = masked_id.value
+        store._db.execute("INSERT INTO evidence_items (evidence_id, entity_id, recomputes, payload) VALUES (?, ?, ?, ?)",
+                          (masked_id.value, owner.value, None, json.dumps(masked, sort_keys=True, separators=(",", ":"))))
+        refuses("a dated row under projection provenance written past persist", lambda: store.load(masked_id),
+                "cannot carry the verified natal projection's provenance")
 
         # ---- refusals: fabricated independence (U8)
         relationship = store.classify(base, kp_id)
@@ -4321,8 +4350,32 @@ def gate_z_untimed_natal_evidence():
         moved = dataclasses.replace(projected, lineage=dataclasses.replace(projected.lineage, inputs=(
             dataclasses.replace(projected.lineage.inputs[0],
                                 fact=projected.lineage.inputs[0].fact.replace("lord_house 10", "lord_house 3")),)))
-        weakened("a forged fact is persisted by a store whose verifier accepts anything", store, "_natal_verifier",
-                 lambda item, candidate: None, lambda: bool(store.persist(moved)))
+        reassigned = natal.natal_store(path)
+        reassigned._natal_verifier = lambda item, chart_candidate: None
+        refuses("a permissive verifier assigned onto a governed store after construction",
+                lambda: reassigned.persist(moved), "only the governed")
+        reassigned.close()
+        forged_rows = []
+        weakened("a forged fact is persisted when the governed verifier's field comparison is skipped", natal,
+                 "require_expected", lambda item, expected: None,
+                 lambda: bool(forged_rows.append(store.persist(moved)) or forged_rows))
+        weakened("a forged write is admitted through a store with a permissive verifier without the governed binding",
+                 evidence_store_module, "require_governed_verifier", lambda verifier: None,
+                 lambda: bool(EvidenceStore(path, natal_verifier=lambda item, chart_candidate: None).persist(moved)))
+        weakened("a forged row is served on a checked read through a store with a permissive verifier without the "
+                 "governed binding", evidence_store_module, "require_governed_verifier", lambda verifier: None,
+                 lambda: "lord_house 3" in EvidenceStore(path, natal_verifier=lambda item, chart_candidate: None).load(
+                     forged_rows[0]).lineage.inputs[0].fact)
+
+        def masquerade():
+            evidence_id = store.persist(dataclasses.replace(projected, timing=lifetime))
+            stored = evidence_store_module.item_to_record(evidence_id, store.load(evidence_id))
+            return stored["schema"] == evidence_store_module.SCHEMA_VERSION and \
+                stored["evidence"]["provenance"]["source"] == evidence_module.NATAL_PROJECTION_PROVENANCE.source
+
+        weakened("a projected item converted to a lifetime window is stored under projection provenance without "
+                 "require_projection_timing", evidence_module, "require_projection_timing", lambda item: None,
+                 masquerade)
         fresh = natal.expected_item(owner, at, candidate, RuleReference(rule=one, version=2, variant="base"))
         plain = EvidenceStore(path)
         weakened("a plain store persists an untimed item without the verifier requirement", plain, "_require_untimed",
@@ -4368,21 +4421,6 @@ def gate_z_untimed_natal_evidence():
                  evidence_store_module, "untimed_conflict",
                  lambda first, second: {first.polarity, second.polarity} == {Polarity.POSITIVE, Polarity.NEGATIVE},
                  lambda: store.classify(base, reading_b).conflicting is True)
-
-        def windowed(entity, chart_reference, chart_candidate, rule):
-            return dataclasses.replace(natal_expected(entity, chart_reference, chart_candidate, rule), timing=TimingContext(
-                kind=TimingKind.WINDOW, label="a lifetime", start="1900-01-01", end="2100-12-31"))
-
-        natal_expected = natal.expected_item
-        reading_a = interpretation.apply_rule(chart, three, 1).records[0]
-
-        def fabricated_window_detected():
-            evidence_id = natal.project(store, reading_a, chart, owner, at)
-            stored = evidence_store_module.item_to_record(evidence_id, store.load(evidence_id))
-            return stored["schema"] != "ace-evidence-store-v4" or "start" in stored["evidence"]["timing"]
-
-        weakened("a projection fabricating a lifetime window is detected as not untimed v4", natal, "expected_item",
-                 windowed, fabricated_window_detected)
         store.close()
     return {"classification": "negative_control", "refusals_verified": len(refused),
             "legitimate_reads_preserved": len(preserved), "controls_rejected": len(controls),
